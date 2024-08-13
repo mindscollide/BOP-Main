@@ -1,0 +1,68 @@
+/* Start Dealer Tenor Dropdown  */
+.DealerDropDown__indicator-separator {
+  display: none !important;
+}
+.DealerDropDown__placeholder {
+  color: #000 !important;
+}
+.DealerDropDown__option {
+  background-color: #d6d9e2 !important;
+  color: #002650 !important;
+  outline: none !important;
+}
+
+.DealerDropDown__option--is-focused {
+  background-color: #096fed !important;
+  color: #fff !important;
+  outline: none !important;
+}
+.DealerDropDown__control {
+  border-radius: 1px !important;
+  border: none !important;
+  color: #002650 !important;
+  outline: none !important;
+}
+
+.DealerDropDown__menu {
+  background-color: #d6d9e2 !important;
+}
+
+/* Start Category Dropdown  */
+.Category-Dropdown__indicator-separator {
+  display: none !important;
+}
+.Category-Dropdown__placeholder {
+  color: #000 !important;
+}
+.Category-Dropdown__option {
+  background-color: #d6d9e2 !important;
+  color: #002650 !important;
+  outline: none !important;
+}
+
+.Category-Dropdown__option--is-focused {
+  background-color: #096fed !important;
+  color: #fff !important;
+  outline: none !important;
+}
+.Category-Dropdown__control {
+  border-radius: 1px !important;
+  border: none !important;
+  color: #fff !important;
+  background-color: #4d4946 !important;
+  outline: none !important;
+}
+
+.Category-Dropdown__menu {
+  background-color: #d6d9e2 !important;
+}
+.Category-Dropdown__single-value {
+  color: #fff !important;
+}
+.Category-Dropdown__indicator {
+  color: #fff !important;
+}
+.Category-Dropdown__input {
+  color: #fff !important;
+}
+/* End Category Dropdown */

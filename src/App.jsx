@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext, useCallback } from "react";
+import "./App.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import InputField from "./components/common/inputField/InputField";
 import Button from "./components/common/globalButton/button";
@@ -6,7 +7,9 @@ import { PlusCircleFilled } from "@ant-design/icons";
 import RadioButton from "./components/common/radioButton/RadioBtn";
 import SelectDropdown from "./components/common/selectDropdown/SelectDropdown";
 import GlobalTable from "./components/common/table/GlobalTable";
+import GlobalModal from "./components/common/globalModal/Modal";
 import styles from "./App.module.css";
+import GroupingColumnTable from "./components/Table/Table";
 // import { CreateDemoContext } from "./Context";
 
 const MemoizedComponent = React.memo(({ state1 }) => {
@@ -73,23 +76,29 @@ function App() {
 
   return (
     <>
-      <SelectDropdown />
+      <SelectDropdown
+        isSearchable={true}
+        options={[
+          { label: "Test", value: 1 },
+          { label: "Test", value: 2 },
+        ]}
+        classNamePrefix={"DealerDropDown"}
+      />
+      <br />
       <GlobalTable />
       <RadioButton />
       <InputField
-        className={styles["DealerBitInput"]}
         value={value}
         onChange={onChangeInputField}
+        applyClass='DealerBitInput'
         type='number'
       />
       <Button
-        icon={<PlusCircleFilled size={50} />}
-        iconPosition={"start"}
-        className={styles["PlusButton"]}
+        applyClass={"publishDiscounting"}
         onClick={() => setState1(!state1)}
-        value={"Add"}
-        // type='primary'
+        value={"Clear Rates"}
       />
+      <GlobalModal  />
       <MemoizedComponent state1={state1} />
     </>
 

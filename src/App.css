@@ -2248,7 +2248,5 @@ i.close-add-user {
   max-height: 60vh;
   overflow: auto;
 }
-.groupTable-thead tr th {
-  background: #575351 !important;
-  color: #fff !important;
-}
+
+

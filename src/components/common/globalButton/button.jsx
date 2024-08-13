@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import styles from './button.module.css'
 import { Button } from "antd";
 const CustomButton = ({
   icon,
@@ -6,12 +7,12 @@ const CustomButton = ({
   shape,
   iconPosition,
   value,
-  className,
   onClick,
   rootClassName,
   classNames,
   size,
   prefixCls,
+  applyClass,
 }) => {
   return (
     <>
@@ -20,7 +21,7 @@ const CustomButton = ({
         icon={icon}
         shape={shape}
         rootClassName={rootClassName}
-        className={className}
+        className={styles[applyClass]}
         classNames={classNames}
         prefixCls={prefixCls}
         size={size}
