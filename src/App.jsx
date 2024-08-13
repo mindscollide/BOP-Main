@@ -1,5 +1,32 @@
+import "@fontsource/montserrat";
+import "@fontsource/montserrat/100.css";
+import "@fontsource/montserrat/200.css";
+import "@fontsource/montserrat/300.css";
+import "@fontsource/montserrat/400.css";
+import "@fontsource/montserrat/500.css";
+import "@fontsource/montserrat/600.css";
+import "@fontsource/montserrat/700.css";
+import "@fontsource/montserrat/800.css";
+import "@fontsource/montserrat/900.css";
+import "@fontsource/poppins";
+import "@fontsource/poppins/100.css";
+import "@fontsource/poppins/200.css";
+import "@fontsource/poppins/300.css";
+import "@fontsource/poppins/400.css";
+import "@fontsource/poppins/500.css";
+import "@fontsource/poppins/600.css";
+import "@fontsource/poppins/700.css";
+import "@fontsource/poppins/800.css";
+import "@fontsource/poppins/900.css";
+import "@fontsource/roboto";
+import "@fontsource/roboto/100.css";
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
+import "@fontsource/roboto/900.css";
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Row, Col } from "react-bootstrap";
 import InputField from "./components/common/inputField/InputField";
 import Button from "./components/common/globalButton/button";
 import { PlusCircleFilled } from "@ant-design/icons";
@@ -7,7 +34,8 @@ import RadioButton from "./components/common/radioButton/RadioBtn";
 import SelectDropdown from "./components/common/selectDropdown/SelectDropdown";
 import GlobalTable from "./components/common/table/GlobalTable";
 import styles from "./App.module.css";
-// import { CreateDemoContext } from "./Context";
+import CardDragger from "./components/common/cardDragger/cardDragger";
+import "./App.css";
 
 const MemoizedComponent = React.memo(({ state1 }) => {
   console.log("MemoizedComponent rendered");
@@ -80,7 +108,7 @@ function App() {
         className={styles["DealerBitInput"]}
         value={value}
         onChange={onChangeInputField}
-        type='number'
+        type="number"
       />
       <Button
         icon={<PlusCircleFilled size={50} />}
@@ -91,6 +119,17 @@ function App() {
         // type='primary'
       />
       <MemoizedComponent state1={state1} />
+      <Row className="m-0">
+        <Col className="px-1" lg={4} md={4} sm={6}>
+          <CardDragger />
+        </Col>
+        <Col className="px-1" lg={4} md={4} sm={6}>
+          <CardDragger />
+        </Col>
+        <Col className="px-1" lg={4} md={4} sm={6}>
+          <CardDragger />
+        </Col>
+      </Row>
     </>
 
     // <Router>

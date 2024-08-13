@@ -67,9 +67,9 @@ html {
 body {
   background: #f4f4f4;
   font-family: "Roboto", sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  overflow-x: hidden;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  overflow-x: hidden !important;
   min-height: 100%;
 }
 .ff-poppins {
