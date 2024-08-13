@@ -25,6 +25,7 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import "@fontsource/roboto/900.css";
 import React, { useState, useEffect, useContext, useCallback } from "react";
+import "./App.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Row, Col } from "react-bootstrap";
 import InputField from "./components/common/inputField/InputField";
@@ -33,9 +34,11 @@ import { PlusCircleFilled } from "@ant-design/icons";
 import RadioButton from "./components/common/radioButton/RadioBtn";
 import SelectDropdown from "./components/common/selectDropdown/SelectDropdown";
 import GlobalTable from "./components/common/table/GlobalTable";
+import GlobalModal from "./components/common/globalModal/Modal";
 import styles from "./App.module.css";
 import CardDragger from "./components/common/cardDragger/cardDragger";
 import "./App.css";
+// import { CreateDemoContext } from "./Context";
 
 const MemoizedComponent = React.memo(({ state1 }) => {
   console.log("MemoizedComponent rendered");
@@ -101,23 +104,29 @@ function App() {
 
   return (
     <>
-      <SelectDropdown />
+      <SelectDropdown
+        isSearchable={true}
+        options={[
+          { label: "Test", value: 1 },
+          { label: "Test", value: 2 },
+        ]}
+        classNamePrefix={"DealerDropDown"}
+      />
+      <br />
       <GlobalTable />
       <RadioButton />
       <InputField
-        className={styles["DealerBitInput"]}
         value={value}
         onChange={onChangeInputField}
         type="number"
+        applyClass="DealerBitInput"
       />
       <Button
-        icon={<PlusCircleFilled size={50} />}
-        iconPosition={"start"}
-        className={styles["PlusButton"]}
+        applyClass={"publishDiscounting"}
         onClick={() => setState1(!state1)}
-        value={"Add"}
-        // type='primary'
+        value={"Clear Rates"}
       />
+      <GlobalModal />
       <MemoizedComponent state1={state1} />
       <Row className="m-0">
         <Col className="px-1" lg={4} md={4} sm={6}>
