@@ -1,39 +1,4 @@
 :root {
-<<<<<<< Updated upstream
-    --color-black: #000000;
-    --color-dark: #4d4946;
-    --color-dark2: #290d00;
-    --color-light:#ebe8e6;
-    --color-gray:#808285;
-    --color-dark-gray:#616366;
-    --color-light-gray:#b6b9bf;
-    --color-light-gray2:#d6d9e1;
-    --color-white: #ffffff;
-    --color-blue:#096fed;
-    --color-red:#f21616;
-    --color-lighter:#f1f1f1;
-    --color-dark-blue:#081152;
-
-    --border-color:#e0e9ec;
-
-    --color-primary:#f26522;
-    --color-secondary:#096fed;
-
-    --border-primary:#f26522;
-    --border-secondary:#096fed;
-
-    --color-orange-gray1:#82756b;
-    --color-orange-gray2:#998e85;
-
-    --color-green:#0dc45f;
-
-    --color-Yorange-light:#fbd5b0;
-    --color-Yorange-light2:#f3b273;
-    --color-Yorange:#f8a041;
-
-    --color-Yorange-gray:#e9e2dc;
-}
-=======
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -98,4 +63,3 @@ button:hover {
     background-color: #f9f9f9;
   }
 }
->>>>>>> Stashed changes
