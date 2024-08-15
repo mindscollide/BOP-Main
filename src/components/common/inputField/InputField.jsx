@@ -15,6 +15,7 @@ const InputFIeld = ({
   minLength,
   name,
   required,
+  onFocus
 }) => (
   <input
     value={value}
@@ -29,6 +30,7 @@ const InputFIeld = ({
     minLength={minLength}
     name={name}
     required={required}
+    onFocus={onFocus}
   />
 );
 export default InputFIeld;

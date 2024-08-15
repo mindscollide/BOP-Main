@@ -1,6 +1,6 @@
 import { Table } from "antd";
 import React from "react";
-
+import "./GlobalTable.css";
 const GlobalTable = ({
   columns,
   prefixCls,
@@ -37,6 +37,7 @@ const GlobalTable = ({
       locale={locale}
       scroll={scroll}
       onScroll={onScroll}
+      
     />
   );
 };

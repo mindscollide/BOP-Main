@@ -26,18 +26,19 @@ import "@fontsource/roboto/700.css";
 import "@fontsource/roboto/900.css";
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import "./App.css";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Row, Col } from "react-bootstrap";
 import InputField from "./components/common/inputField/InputField";
 import Button from "./components/common/globalButton/button";
-import { PlusCircleFilled } from "@ant-design/icons";
-import RadioButton from "./components/common/radioButton/RadioBtn";
+import RadioButton from "./components/common/radioButton/SwitchBtn";
 import SelectDropdown from "./components/common/selectDropdown/SelectDropdown";
 import GlobalTable from "./components/common/table/GlobalTable";
 import GlobalModal from "./components/common/globalModal/Modal";
 import styles from "./App.module.css";
 import CardDragger from "./components/common/cardDragger/cardDragger";
 import "./App.css";
+import BitAmountBox from "./components/common/bitAmountBox/bitAmountBox";
+import DatePicker from "./components/common/datePicker/DatePicker";
+import IconElement from "./components/common/IconElement/IconElement";
 
 const MemoizedComponent = React.memo(({ state1 }) => {
   console.log("MemoizedComponent rendered");
@@ -46,61 +47,150 @@ const MemoizedComponent = React.memo(({ state1 }) => {
 function App() {
   const [value, setValue] = useState("");
   const [state1, setState1] = useState(null);
-  // const [routes, setRoutes] = useState([]);
-  // const {setButtonClicked,isButtonClicked} = useContext(CreateDemoContext)
-  // useEffect(() => {
-  //   const loadRoutes = async () => {
-  //     const tempRoutes = [];
 
-  //     if (import.meta.env.VITE_APP_INCLUDE_SYSTEM === "true") {
-  //       const SystemPage1 = (await import("./components/system/SystemPage1"))
-  //         .default;
-  //       const SystemPage2 = (await import("./components/system/SystemPage2"))
-  //         .default;
-  //       tempRoutes.push(
-  //         {
-  //           path: "/system/page1",
-  //           name: "System Page 1",
-  //           component: SystemPage1,
-  //         },
-  //         {
-  //           path: "/system/page2",
-  //           name: "System Page 2",
-  //           component: SystemPage2,
-  //         }
-  //       );
-  //     }
-
-  //     if (import.meta.env.VITE_APP_INCLUDE_SECURITY_ADMIN === "true") {
-  //       const SecurityAdminPage1 = (
-  //         await import("./components/securityAdmin/SecurityAdminPage1")
-  //       ).default;
-  //       const SecurityAdminPage2 = (
-  //         await import("./components/securityAdmin/SecurityAdminPage2")
-  //       ).default;
-  //       tempRoutes.push(
-  //         {
-  //           path: "/security/page1",
-  //           name: "Security Page 1",
-  //           component: SecurityAdminPage1,
-  //         },
-  //         {
-  //           path: "/security/page2",
-  //           name: "Security Page 2",
-  //           component: SecurityAdminPage2,
-  //         }
-  //       );
-  //     }
-
-  //     setRoutes(tempRoutes);
-  //   };
-
-  //   loadRoutes();
-  // }, []);
   const onChangeInputField = useCallback((event) => {
     setValue(event.target.value);
   }, []);
 
+  const columns = [
+    {
+      title: "",
+      dataIndex: "",
+      key: "",
+      align: "center",
+      children: [
+        {
+          title: "Tenor",
+          dataIndex: "tenor",
+          key: "tenor",
+          align: "center",
+        },
+      ],
+      // render: (text) => <strong>{text}</strong>,
+      // className: "header-cell", // Custom class for Tenor column header
+    },
+    {
+      title: "USD",
+      dataIndex: "usd",
+      key: "usd",
+      children: [
+        {
+          title: "Value",
+          dataIndex: "usdValue",
+          key: "usdValue",
+          align: "center",
+        },
+      ],
+    },
+    {
+      title: "EUR",
+      dataIndex: "eur",
+      key: "eur",
+      children: [
+        {
+          title: "Value",
+          dataIndex: "eurValue",
+          key: "eurValue",
+          align: "center",
+        },
+      ],
+    },
+    {
+      title: "GBP",
+      dataIndex: "gbp",
+      key: "gbp",
+      children: [
+        {
+          title: "Value",
+          dataIndex: "gbpValue",
+          key: "gbpValue",
+          align: "center",
+        },
+      ],
+    },
+    {
+      title: "JPY",
+      dataIndex: "jpy",
+      key: "jpy",
+      children: [
+        {
+          title: "Value",
+          dataIndex: "jpyValue",
+          key: "jpyValue",
+          align: "center",
+        },
+      ],
+    },
+    {
+      title: "CNY",
+      dataIndex: "cny",
+      key: "cny",
+      children: [
+        {
+          title: "Value",
+          dataIndex: "cnyValue",
+          key: "cnyValue",
+          align: "center",
+        },
+      ],
+    },
+  ];
+  const data = [
+    {
+      key: "1",
+      tenor: "1 MONTH",
+      usdValue: "287.12",
+      eurValue: "313.73",
+      gbpValue: "367.98",
+      jpyValue: "2.0251",
+      cnyValue: "40.2823",
+    },
+    {
+      key: "2",
+      tenor: "2 MONTH",
+      usdValue: "287.12",
+      eurValue: "313.73",
+      gbpValue: "367.98",
+      jpyValue: "2.0251",
+      cnyValue: "40.2823",
+    },
+    {
+      key: "3",
+      tenor: "3 MONTH",
+      usdValue: "287.12",
+      eurValue: "313.73",
+      gbpValue: "367.98",
+      jpyValue: "2.0251",
+      cnyValue: "40.2823",
+    },
+    {
+      key: "4",
+      tenor: "4 MONTH",
+      usdValue: "287.12",
+      eurValue: "313.73",
+      gbpValue: "367.98",
+      jpyValue: "2.0251",
+      cnyValue: "40.2823",
+    },
+    {
+      key: "5",
+      tenor: "5 MONTH",
+      usdValue: "287.12",
+      eurValue: "313.73",
+      gbpValue: "367.98",
+      jpyValue: "2.0251",
+      cnyValue: "40.2823",
+    },
+    {
+      key: "6",
+      tenor: "6 MONTH",
+      usdValue: "287.12",
+      eurValue: "313.73",
+      gbpValue: "367.98",
+      jpyValue: "2.0251",
+      cnyValue: "40.2823",
+    },
+  ];
   return (
     <>
       <SelectDropdown
@@ -112,28 +202,60 @@ function App() {
         classNamePrefix={"DealerDropDown"}
       />
       <br />
-      <GlobalTable />
+      <div style={{ maxWidth: "600px" }}>
+        <GlobalTable
+          columns={columns}
+          dataSource={data}
+          rowClassName={(record, index) =>
+            index % 2 === 0 ? "even-row" : "odd-row"
+          }
+          bordered
+          pagination={false}
+          prefixCls={"Discounting"}
+          scroll={{
+            y: 240, // Set the vertical scroll height to fix the header
+            x: "100vw", // Optional: Set horizontal scroll if needed
+          }}
+        />
+      </div>
       <RadioButton />
       <InputField
+        applyClass={"DealerDiscountingCurrentRateInput"}
         value={value}
         onChange={onChangeInputField}
-        type="number"
+        type='number'
       />
       <Button
         applyClass={"publishDiscounting"}
         onClick={() => setState1(!state1)}
         value={"Clear Rates"}
+        icon={<IconElement iconClass={"icon-add-circle-fill "} />}
       />
-      <GlobalModal  />
-      <MemoizedComponent state1={state1} />
-      <Row className="m-0">
-        <Col className="px-1" lg={4} md={4} sm={6}>
+      <div>
+        <BitAmountBox
+          applyClass={"BitCardBox"}
+          spot={false}
+          BitAmountValue={289}
+        />
+      </div>
+      <div>
+        <BitAmountBox
+          applyClass={"OfferCardBox"}
+          spot={false}
+          BitAmountValue={289}
+        />
+      </div>
+      <IconElement iconClass={"icon-add-circle-fill"} />
+      <DatePicker placeholder={"Select Date"} applyClass={"DatePickerField"} />
+      <GlobalModal />
+      <Row className='m-0'>
+        <Col className='px-1' lg={4} md={4} sm={6}>
           <CardDragger />
         </Col>
-        <Col className="px-1" lg={4} md={4} sm={6}>
+        <Col className='px-1' lg={4} md={4} sm={6}>
           <CardDragger />
         </Col>
-        <Col className="px-1" lg={4} md={4} sm={6}>
+        <Col className='px-1' lg={4} md={4} sm={6}>
           <CardDragger />
         </Col>
       </Row>
