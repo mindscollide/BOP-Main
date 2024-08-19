@@ -38,6 +38,7 @@ import GlobalModal from "./components/common/globalModal/Modal";
 import styles from "./App.module.css";
 import CardDragger from "./components/common/cardDragger/cardDragger";
 import "./App.css";
+import CardDraggerValues from "./components/common/cardDraggerWithValues/cardDraggerWithValues";
 // import { CreateDemoContext } from "./Context";
 
 const MemoizedComponent = React.memo(({ state1 }) => {
@@ -136,7 +137,7 @@ function App() {
           <CardDragger />
         </Col>
         <Col className="px-1" lg={4} md={4} sm={6}>
-          <CardDragger />
+          <CardDraggerValues />
         </Col>
       </Row>
     </>
