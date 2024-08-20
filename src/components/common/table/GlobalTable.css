@@ -1,31 +1,251 @@
-.Discounting-thead tr:nth-child(1) th {
+/* Start Treasury Discounting table  */
+.Tresuary_Discounting-wrapper .Tresuary_Discounting {
+  scrollbar-color: auto !important;
+}
+.Tresuary_Discounting-wrapper::-webkit-scrollbar {
+  width: 0.3rem !important;
+  border-radius: 20px !important;
+  background-color: #f2f2f2 !important;
+  height: 0.3rem !important;
+}
+
+.Tresuary_Discounting-wrapper::-webkit-scrollbar-thumb {
+  border-radius: 20px !important;
+  background: #ccc !important;
+  margin-left: -15px !important;
+}
+.Tresuary_Discounting-thead tr:nth-child(1) th {
   background-color: #f26522 !important;
   text-align: center;
   color: #fff;
   font-weight: 700;
   font-size: 14px;
 }
-.Discounting-thead tr:nth-child(1) th:nth-child(1) {
-  background-color: #fff !important;
+.Tresuary_Discounting-thead tr:nth-child(1) th:nth-child(1) {
+  background-color: transparent !important;
   text-align: center;
   color: #fff;
   font-weight: 700;
   font-size: 14px;
+  border-left: 0px !important;
 }
-.Discounting-thead tr:nth-child(2) th {
+.Tresuary_Discounting-thead tr:nth-child(2) th {
   background-color: #000 !important;
   text-align: center;
   color: #fff;
   font-weight: 700;
   font-size: 14px;
 }
-.header-cell {
+.Tresuary_Discounting-thead th {
+  padding: 5px 0px !important;
 }
-
-.even-row {
+.Tresuary_Discounting-tbody tr td {
+  padding: 5px 0px !important;
+}
+.Tresuary_Discounting-even-row {
   background-color: #f2f2f2;
 }
 
-.odd-row {
+.Tresuary_Discounting-odd-row {
   background-color: #fff;
 }
+/* End Treasury Discounting table  */
+
+/* Start Treasury  Bank Forwards table  */
+.TreasuryBankForwards-wrapper .TreasuryBankForwards {
+  scrollbar-color: auto !important;
+}
+.TreasuryBankForwards-wrapper::-webkit-scrollbar {
+  width: 0.3rem !important;
+  border-radius: 20px !important;
+  background-color: #f2f2f2 !important;
+  height: 0.3rem !important;
+}
+
+.TreasuryBankForwards-wrapper::-webkit-scrollbar-thumb {
+  border-radius: 20px !important;
+  background: #ccc !important;
+  margin-left: -15px !important;
+}
+.TreasuryBankForwards-thead tr:nth-child(1) th {
+  background-color: #f26522 !important;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+}
+.TreasuryBankForwards-thead tr:nth-child(1) th:nth-child(1) {
+  background-color: transparent !important;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  border-left: 0px !important;
+}
+.TreasuryBankForwards-thead tr:nth-child(2) th {
+  background-color: #000 !important;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+}
+.TreasuryBankForwards-thead th {
+  padding: 5px 0px !important;
+}
+.TreasuryBankForwards-tbody tr td {
+  padding: 5px 0px !important;
+}
+.TreasuryBankForwards-even-row {
+  background-color: #f2f2f2;
+}
+
+.TreasuryBankForwards-odd-row {
+  background-color: #fff;
+}
+/* End Treasury  Bank Forwards table  */
+
+/* Start Treasury  Tresmark Forwards table  */
+.TreasuryTresmarkForwards-wrapper .TreasuryTresmarkForwards {
+  scrollbar-color: auto !important;
+}
+.TreasuryTresmarkForwards-wrapper::-webkit-scrollbar {
+  width: 0.3rem !important;
+  border-radius: 20px !important;
+  background-color: #f2f2f2 !important;
+  height: 0.3rem !important;
+}
+.TreasuryTresmarkForwards-wrapper::-webkit-scrollbar-thumb {
+  border-radius: 20px !important;
+  background: #ccc !important;
+  margin-left: -15px !important;
+}
+.TreasuryTresmarkForwards-thead tr:nth-child(1) th {
+  background-color: #f26522 !important;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+}
+.TreasuryTresmarkForwards-thead tr:nth-child(1) th:nth-child(1) {
+  background-color: transparent !important;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  border-left: 0px !important;
+}
+.TreasuryTresmarkForwards-thead tr:nth-child(2) th {
+  background-color: #000 !important;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+}
+.TreasuryTresmarkForwards-thead th {
+  padding: 5px 0px !important;
+}
+.TreasuryTresmarkForwards-tbody tr td {
+  padding: 5px 0px !important;
+}
+.TreasuryTresmarkForwards-even-row {
+  background-color: #f2f2f2;
+}
+.TreasuryTresmarkForwards-odd-row {
+  background-color: #fff;
+}
+/* End Treasury  Tresmark Forwards table  */
+
+/* Start Treasury  Tresmark Crosses Premiums table  */
+.TreasuryTesmarkCrossesPremiums-wrapper .TreasuryTesmarkCrossesPremiums {
+  scrollbar-color: auto !important;
+}
+.TreasuryTesmarkCrossesPremiums-wrapper::-webkit-scrollbar {
+  width: 0.3rem !important;
+  border-radius: 20px !important;
+  background-color: #f2f2f2 !important;
+  height: 0.3rem !important;
+}
+.TreasuryTesmarkCrossesPremiums-wrapper::-webkit-scrollbar-thumb {
+  border-radius: 20px !important;
+  background: #ccc !important;
+  margin-left: -15px !important;
+}
+.TreasuryTesmarkCrossesPremiums-thead tr:nth-child(1) th {
+  background-color: #f26522 !important;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+}
+.TreasuryTesmarkCrossesPremiums-thead tr:nth-child(1) th:nth-child(1) {
+  background-color: transparent !important;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  border-left: 0px !important;
+}
+.TreasuryTesmarkCrossesPremiums-thead tr:nth-child(2) th {
+  background-color: #000 !important;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+}
+.TreasuryTesmarkCrossesPremiums-thead th {
+  padding: 5px 0px !important;
+}
+.TreasuryTesmarkCrossesPremiums-tbody tr td {
+  padding: 5px 0px !important;
+}
+.TreasuryTesmarkCrossesPremiums-even-row {
+  background-color: #f2f2f2;
+}
+.TreasuryTesmarkCrossesPremiums-odd-row {
+  background-color: #fff;
+}
+/* End Treasury Tresmark Crosses Premiums table  */
+
+/* Start Category Forwards table  */
+.CategoryForwards-wrapper .CategoryForwards {
+  scrollbar-color: auto !important;
+}
+.CategoryForwards-wrapper::-webkit-scrollbar {
+  width: 0.3rem !important;
+  border-radius: 20px !important;
+  background-color: #f2f2f2 !important;
+  height: 0.3rem !important;
+}
+.CategoryForwards-wrapper::-webkit-scrollbar-thumb {
+  border-radius: 20px !important;
+  background: #ccc !important;
+  margin-left: -15px !important;
+}
+.CategoryForwards-thead tr:nth-child(1) th {
+  background-color: #f26522 !important;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.CategoryForwards-thead tr:nth-child(2) th {
+  background-color: #000 !important;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+}
+.CategoryForwards-thead th {
+  padding: 5px 0px !important;
+}
+.CategoryForwards-tbody tr td {
+  padding: 5px 0px !important;
+}
+.CategoryForwards-even-row {
+  background-color: #f2f2f2;
+}
+.CategoryForwards-odd-row {
+  background-color: #fff;
+}
+/* End Category Forwards table  */

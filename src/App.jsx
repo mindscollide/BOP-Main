@@ -39,6 +39,7 @@ import "./App.css";
 import BitAmountBox from "./components/common/bitAmountBox/bitAmountBox";
 import DatePicker from "./components/common/datePicker/DatePicker";
 import IconElement from "./components/common/IconElement/IconElement";
+import ProfileDropdown from "./components/common/profileDropdown/ProfileDropdown";
 
 const MemoizedComponent = React.memo(({ state1 }) => {
   console.log("MemoizedComponent rendered");
@@ -57,138 +58,277 @@ function App() {
       title: "",
       dataIndex: "",
       key: "",
+      fixed: "left",
+      width: "200px",
       align: "center",
       children: [
         {
           title: "Tenor",
           dataIndex: "tenor",
           key: "tenor",
+          width: "200px",
           align: "center",
         },
       ],
-      // render: (text) => <strong>{text}</strong>,
-      // className: "header-cell", // Custom class for Tenor column header
     },
     {
       title: "USD",
-      dataIndex: "usd",
-      key: "usd",
       children: [
         {
-          title: "Value",
-          dataIndex: "usdValue",
-          key: "usdValue",
+          title: "Bid",
+          dataIndex: "usdBid",
+          key: "usdBid",
+          align: "center",
+        },
+        {
+          title: "Ask",
+          dataIndex: "usdAsk",
+          key: "usdAsk",
           align: "center",
         },
       ],
     },
     {
       title: "EUR",
-      dataIndex: "eur",
-      key: "eur",
       children: [
         {
-          title: "Value",
-          dataIndex: "eurValue",
-          key: "eurValue",
+          title: "Bid",
+          dataIndex: "eurBid",
+          key: "eurBid",
+          align: "center",
+        },
+        {
+          title: "Ask",
+          dataIndex: "eurAsk",
+          key: "eurAsk",
           align: "center",
         },
       ],
     },
     {
       title: "GBP",
-      dataIndex: "gbp",
-      key: "gbp",
       children: [
         {
-          title: "Value",
-          dataIndex: "gbpValue",
-          key: "gbpValue",
+          title: "Bid",
+          dataIndex: "gbpBid",
+          key: "gbpBid",
+          align: "center",
+        },
+        {
+          title: "Ask",
+          dataIndex: "gbpAsk",
+          key: "gbpAsk",
           align: "center",
         },
       ],
     },
     {
       title: "JPY",
-      dataIndex: "jpy",
-      key: "jpy",
       children: [
         {
-          title: "Value",
-          dataIndex: "jpyValue",
-          key: "jpyValue",
+          title: "Bid",
+          dataIndex: "jpyBid",
+          key: "jpyBid",
+          align: "center",
+        },
+        {
+          title: "Ask",
+          dataIndex: "jpyAsk",
+          key: "jpyAsk",
           align: "center",
         },
       ],
     },
     {
       title: "CNY",
-      dataIndex: "cny",
-      key: "cny",
       children: [
         {
-          title: "Value",
-          dataIndex: "cnyValue",
-          key: "cnyValue",
+          title: "Bid",
+          dataIndex: "cnyBid",
+          key: "cnyBid",
+          align: "center",
+        },
+        {
+          title: "Ask",
+          dataIndex: "cnyAsk",
+          key: "cnyAsk",
+          align: "center",
+        },
+      ],
+    },
+    {
+      title: "CHF",
+      children: [
+        {
+          title: "Bid",
+          dataIndex: "chfBid",
+          key: "chfBid",
+          align: "center",
+        },
+        {
+          title: "Ask",
+          dataIndex: "chfAsk",
+          key: "chfAsk",
+          align: "center",
+        },
+      ],
+    },
+    {
+      title: "CAD",
+      children: [
+        {
+          title: "Bid",
+          dataIndex: "cadBid",
+          key: "cadBid",
+          align: "center",
+        },
+        {
+          title: "Ask",
+          dataIndex: "cadAsk",
+          key: "cadAsk",
+          align: "center",
+        },
+      ],
+    },
+    {
+      title: "CNH",
+      children: [
+        {
+          title: "Bid",
+          dataIndex: "cnhBid",
+          key: "cnhBid",
+          align: "center",
+        },
+        {
+          title: "Ask",
+          dataIndex: "cnhAsk",
+          key: "cnhAsk",
           align: "center",
         },
       ],
     },
   ];
+
   const data = [
     {
       key: "1",
-      tenor: "1 MONTH",
-      usdValue: "287.12",
-      eurValue: "313.73",
-      gbpValue: "367.98",
-      jpyValue: "2.0251",
-      cnyValue: "40.2823",
+      tenor: "ON",
+      usdBid: "287.12",
+      usdAsk: "313.73",
+      eurBid: "367.98",
+      eurAsk: "2.0251",
+      gbpBid: "40.2823",
+      gbpAsk: "2.0251",
+      jpyBid: "40.2823",
+      jpyAsk: "2.0251",
+      cnyBid: "40.2823",
+      cnyAsk: "2.0251",
+      chfBid: "40.2823",
+      chfAsk: "2.0251",
+      cadBid: "40.2823",
+      cadAsk: "2.0251",
+      cnhBid: "40.2823",
+      cnhAsk: "2.0251",
     },
     {
       key: "2",
-      tenor: "2 MONTH",
-      usdValue: "287.12",
-      eurValue: "313.73",
-      gbpValue: "367.98",
-      jpyValue: "2.0251",
-      cnyValue: "40.2823",
+      tenor: "1 WEEK",
+      usdBid: "287.12",
+      usdAsk: "313.73",
+      eurBid: "367.98",
+      eurAsk: "2.0251",
+      gbpBid: "40.2823",
+      gbpAsk: "2.0251",
+      jpyBid: "40.2823",
+      jpyAsk: "2.0251",
+      cnyBid: "40.2823",
+      cnyAsk: "2.0251",
+      chfBid: "40.2823",
+      chfAsk: "2.0251",
+      cadBid: "40.2823",
+      cadAsk: "2.0251",
+      cnhBid: "40.2823",
+      cnhAsk: "2.0251",
     },
     {
       key: "3",
-      tenor: "3 MONTH",
-      usdValue: "287.12",
-      eurValue: "313.73",
-      gbpValue: "367.98",
-      jpyValue: "2.0251",
-      cnyValue: "40.2823",
+      tenor: "3 WEEK",
+      usdBid: "287.12",
+      usdAsk: "313.73",
+      eurBid: "367.98",
+      eurAsk: "2.0251",
+      gbpBid: "40.2823",
+      gbpAsk: "2.0251",
+      jpyBid: "40.2823",
+      jpyAsk: "2.0251",
+      cnyBid: "40.2823",
+      cnyAsk: "2.0251",
+      chfBid: "40.2823",
+      chfAsk: "2.0251",
+      cadBid: "40.2823",
+      cadAsk: "2.0251",
+      cnhBid: "40.2823",
+      cnhAsk: "2.0251",
     },
     {
       key: "4",
-      tenor: "4 MONTH",
-      usdValue: "287.12",
-      eurValue: "313.73",
-      gbpValue: "367.98",
-      jpyValue: "2.0251",
-      cnyValue: "40.2823",
+      tenor: "1 MONTH",
+      usdBid: "287.12",
+      usdAsk: "313.73",
+      eurBid: "367.98",
+      eurAsk: "2.0251",
+      gbpBid: "40.2823",
+      gbpAsk: "2.0251",
+      jpyBid: "40.2823",
+      jpyAsk: "2.0251",
+      cnyBid: "40.2823",
+      cnyAsk: "2.0251",
+      chfBid: "40.2823",
+      chfAsk: "2.0251",
+      cadBid: "40.2823",
+      cadAsk: "2.0251",
+      cnhBid: "40.2823",
+      cnhAsk: "2.0251",
     },
     {
       key: "5",
-      tenor: "5 MONTH",
-      usdValue: "287.12",
-      eurValue: "313.73",
-      gbpValue: "367.98",
-      jpyValue: "2.0251",
-      cnyValue: "40.2823",
+      tenor: "3 MONTH",
+      usdBid: "287.12",
+      usdAsk: "313.73",
+      eurBid: "367.98",
+      eurAsk: "2.0251",
+      gbpBid: "40.2823",
+      gbpAsk: "2.0251",
+      jpyBid: "40.2823",
+      jpyAsk: "2.0251",
+      cnyBid: "40.2823",
+      cnyAsk: "2.0251",
+      chfBid: "40.2823",
+      chfAsk: "2.0251",
+      cadBid: "40.2823",
+      cadAsk: "2.0251",
+      cnhBid: "40.2823",
+      cnhAsk: "2.0251",
     },
     {
       key: "6",
       tenor: "6 MONTH",
-      usdValue: "287.12",
-      eurValue: "313.73",
-      gbpValue: "367.98",
-      jpyValue: "2.0251",
-      cnyValue: "40.2823",
+      usdBid: "287.12",
+      usdAsk: "313.73",
+      eurBid: "367.98",
+      eurAsk: "2.0251",
+      gbpBid: "40.2823",
+      gbpAsk: "2.0251",
+      jpyBid: "40.2823",
+      jpyAsk: "2.0251",
+      cnyBid: "40.2823",
+      cnyAsk: "2.0251",
+      chfBid: "40.2823",
+      chfAsk: "2.0251",
+      cadBid: "40.2823",
+      cadAsk: "2.0251",
+      cnhBid: "40.2823",
+      cnhAsk: "2.0251",
     },
   ];
   return (
@@ -202,16 +342,18 @@ function App() {
         classNamePrefix={"DealerDropDown"}
       />
       <br />
-      <div style={{ maxWidth: "600px" }}>
+      <div>
         <GlobalTable
           columns={columns}
           dataSource={data}
           rowClassName={(record, index) =>
-            index % 2 === 0 ? "even-row" : "odd-row"
+            index % 2 === 0
+              ? "CategoryForwards-even-row"
+              : "CategoryForwards-odd-row"
           }
           bordered
           pagination={false}
-          prefixCls={"Discounting"}
+          prefixCls={"CategoryForwards"}
           scroll={{
             y: 240, // Set the vertical scroll height to fix the header
             x: "100vw", // Optional: Set horizontal scroll if needed
@@ -245,9 +387,10 @@ function App() {
           BitAmountValue={289}
         />
       </div>
-      <IconElement iconClass={"icon-add-circle-fill"} />
       <DatePicker placeholder={"Select Date"} applyClass={"DatePickerField"} />
       <GlobalModal />
+      <ProfileDropdown userName='Owais Wajid' />
+
       <Row className='m-0'>
         <Col className='px-1' lg={4} md={4} sm={6}>
           <CardDragger />
