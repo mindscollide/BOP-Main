@@ -1,6 +1,6 @@
 import React from "react";
 import Select from "react-select";
-
+import "./SelectDropdown.css"
 const SelectDropdown = ({
   options,
   className,
@@ -15,9 +15,11 @@ const SelectDropdown = ({
   isSearchable,
   menuPlacement,
   filterOptions,
+  menuIsOpen,
 }) => {
   return (
     <Select
+      menuIsOpen={menuIsOpen}
       options={options}
       className={className}
       classNamePrefix={classNamePrefix}
@@ -27,7 +29,7 @@ const SelectDropdown = ({
       maxMenuHeight={maxMenuHeight}
       isDisabled={isDisabled}
       isSearchable={isSearchable || false}
-      menuPlacement={ menuPlacement || "bottom"}
+      menuPlacement={menuPlacement || "bottom"}
       placeholder={placeholder}
       value={value}
       pageSize={0}
@@ -36,4 +38,4 @@ const SelectDropdown = ({
   );
 };
 
-export default SelectDropdown
+export default SelectDropdown;

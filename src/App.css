@@ -65,11 +65,11 @@ html {
 }
 
 body {
-  background: #f4f4f4;
+  background: #f4f4f4 !important;
   font-family: "Roboto", sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  overflow-x: hidden;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  overflow-x: hidden !important;
   min-height: 100%;
 }
 .ff-poppins {
@@ -820,57 +820,7 @@ input[type="number"] {
   color: #ffffff;
 }
 
-.top-header {
-  position: relative;
-  background: #290d00;
-}
-.top-header .nav-top {
-  padding: 0;
-}
-.top-header .nav-link {
-  padding: 8px 15px;
-  color: var(--color-white);
-}
-.top-header .nav-link.active,
-.top-header .nav-link:hover {
-  background: var(--color-primary);
-  color: var(--color-white);
-}
-/*User dropdown*/
-.user-dd {
-  background: #ffffff;
-  border-radius: 4px;
-  height: 48px;
-  padding: 1px 0px;
-}
-.user-dd-trigger {
-  display: inline-block;
-  padding: 13px;
-}
-.user-dd .user-thumb {
-  width: 40px;
-  display: inline-block;
-  transform: translate(0px, 0px);
-}
-.dropdown-item {
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-}
-.dropdown-item.active,
-.dropdown-item:active {
-  color: #fff;
-  text-decoration: none;
-  background-color: var(--color-blue);
-}
-.dropdown-menu {
-  border: 0px;
-  box-shadow: 10px 10px 40px rgb(0 0 0 / 10%);
-  -moz-box-shadow: 10px 10px 40px rgb(0 0 0 / 10%);
-  -ms-box-shadow: 10px 10px 40px rgb(0 0 0 / 10%);
-  -o-box-shadow: 10px 10px 40px rgb(0 0 0 / 10%);
-  -webkit-box-shadow: 10px 10px 40px rgb(0 0 0 / 10%);
-}
+
 /*Site Header Style Begin*/
 
 [class^="icon-"],
@@ -2248,7 +2198,5 @@ i.close-add-user {
   max-height: 60vh;
   overflow: auto;
 }
-.groupTable-thead tr th {
-  background: #575351 !important;
-  color: #fff !important;
-}
+
+
