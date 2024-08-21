@@ -13,42 +13,49 @@ const Header = ({
 }) => {
   return (
     <Navbar className={styles["top-header"]}>
-        <Nav className='ms-auto'>
-          <Nav.Item className={styles["nav-item"]}>
-            <Nav.Link
-              href={DealarLink || "/"}
-              className={`${styles["nav-link_active"]} `}
-              onClick={handleCLickDealer}>
-              Dealer
-            </Nav.Link>
-          </Nav.Item>
-
-          <Nav.Item className={styles["nav-item"]}>
-            <Nav.Link
-              href={CategoryLink || "/"}
-              className={`${styles["nav-link"]} `}
-              onClick={handleCLickCategory}>
-              Category
-            </Nav.Link>
-          </Nav.Item>
-
-          <Nav.Item className={styles["nav-item"]}>
-            <Nav.Link
-              href={TreasuryLink || "/"}
-              // as={Link}
-              // to={TreasuryLink || "/"}
-              className={`${styles["nav-link"]}`}
-              onClick={handleCLickTreasury}>
-              Treasury
-            </Nav.Link>
-          </Nav.Item>
-
-          <Nav.Item className={styles["nav-item"]}>
-            <Nav.Link href='' className={styles["nav-link_active"]}>
-              Gul Ahmed
-            </Nav.Link>
-          </Nav.Item>
-        </Nav>
+      <Nav className='ms-auto'>
+        {import.meta.env.VITE_APP_INCLUDE_BRANCH === "true" ||
+        import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true" ? (
+          <>
+            <Nav.Item className={styles["nav-item"]}>
+              <Nav.Link href='' className={styles["nav-link_active"]}>
+                Gul Ahmed
+              </Nav.Link>
+            </Nav.Item>
+          </>
+        ) : null}
+        {import.meta.env.VITE_APP_INCLUDE_DEALER === "true" ||
+        import.meta.env.VITE_APP_INCLUDE_TREASURY === "true" ? (
+          <>
+            <Nav.Item className={styles["nav-item"]}>
+              <Nav.Link
+                href={DealarLink || "/"}
+                className={`${styles["nav-link_active"]} `}
+                onClick={handleCLickDealer}>
+                Dealer
+              </Nav.Link>
+            </Nav.Item>
+            <Nav.Item className={styles["nav-item"]}>
+              <Nav.Link
+                href={CategoryLink || "/"}
+                className={`${styles["nav-link"]} `}
+                onClick={handleCLickCategory}>
+                Category
+              </Nav.Link>
+            </Nav.Item>
+            <Nav.Item className={styles["nav-item"]}>
+              <Nav.Link
+                href={TreasuryLink || "/"}
+                // as={Link}
+                // to={TreasuryLink || "/"}
+                className={`${styles["nav-link"]}`}
+                onClick={handleCLickTreasury}>
+                Treasury
+              </Nav.Link>
+            </Nav.Item>
+          </>
+        ) : null}
+      </Nav>
     </Navbar>
   );
 };
