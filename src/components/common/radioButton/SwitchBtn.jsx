@@ -1,13 +1,12 @@
 import React from "react";
 import { Switch } from "antd";
-
+import "./SwitchBtn.css"
 const RadioButton = ({
   checked,
   onChange,
   size,
   onClick,
   disabled,
-  prefixCls,
   className,
   rootClassName,
   checkedChildren,
@@ -16,8 +15,7 @@ const RadioButton = ({
 }) => (
   <Switch
     size={size}
-    prefixCls={prefixCls}
-    className={className}
+    className={"switchBtn"}
     rootClassName={rootClassName}
     onClick={onClick}
     disabled={disabled}
