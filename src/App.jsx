@@ -40,6 +40,8 @@ import BitAmountBox from "./components/common/bitAmountBox/bitAmountBox";
 import DatePicker from "./components/common/datePicker/DatePicker";
 import IconElement from "./components/common/IconElement/IconElement";
 import ProfileDropdown from "./components/common/profileDropdown/ProfileDropdown";
+import Header from "./components/layout/header/header";
+import { Route, Router, Routes } from "react-router-dom";
 
 const MemoizedComponent = React.memo(({ state1 }) => {
   console.log("MemoizedComponent rendered");
@@ -333,6 +335,7 @@ function App() {
   ];
   return (
     <>
+      <Header />
       <SelectDropdown
         isSearchable={true}
         options={[
@@ -403,23 +406,6 @@ function App() {
         </Col>
       </Row>
     </>
-
-    // <Router>
-    //   <div className="App">
-    //     {/* <SharedComponent /> */}
-    //     {/* <Navbar routes={routes} /> */}
-    //     {/* <Routes>
-    //       {routes.map((route, index) => (
-    //         <Route
-    //           key={index}
-    //           path={route.path}
-    //           element={<route.component />}
-    //         />
-    //       ))}
-    //     </Routes> */}
-    //     {/* <button onClick={() => setButtonClicked(!isButtonClicked)}>handle Click</button> */}
-    //   </div>
-    // </Router>
   );
 }
 
