@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
+import "./assets/globalstyles/height.css"
 import Dashboard from "./container/dashboard/Dashboard";
 import "@fontsource/montserrat";
 import "@fontsource/montserrat/100.css";

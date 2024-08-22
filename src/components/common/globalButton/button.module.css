@@ -73,6 +73,9 @@
   background-color: #096fed !important;
   border-color: #096fed !important;
   font-family: "Poppins", sans-serif !important;
+  height: 37px;
+  border-top-left-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
 
 }
 .PlusButton:hover {
@@ -89,9 +92,13 @@
   position: relative !important;
   transition: all 0.3s ease-in !important;
   -webkit-transition: all 0.3s ease-in !important;
-  background: #f7f8ff !important;
-  border-color: #f7f8ff !important;
+  background: transparent !important;
+  border-color: #000 !important;
   color: #000 !important;
+  padding: 0 10px !important;
+  min-height: 35px !important;
+  font-family: "Poppins", sans-serif !important;
+
 }
 .createTenorBtn:hover {
   background: #000 !important;

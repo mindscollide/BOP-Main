@@ -395,43 +395,8 @@ const footerButtons = (
 );
 
 const GroupingColumnTable = () => {
-  const { isButtonClicked } = useContext(CreateDemoContext);
   const [data, setData] = useState(initialState);
-  const updateData = useCallback(() => {
-    setData((prevData) => {
-      const newData = prevData.map((item) => {
-        const keys = [
-          "usdBid",
-          "usdAsk",
-          "eurBid",
-          "eurAsk",
-          "gbpBid",
-          "gbpAsk",
-          "hkdBid",
-          "hkdAsk",
-          "jpyBid",
-          "jpyAsk",
-        ];
-        keys.forEach((key) => {
-          const currentValue = parseFloat(item[key]);
-          const changeValue = Math.random() < 0.5 ? -0.02 : 0.02;
-          item[key] = (currentValue + changeValue).toFixed(2);
-        });
-        return { ...item };
-      });
-      return newData;
-    });
-  }, []);
-  useEffect(() => {
-    let interval;
-    if (isButtonClicked) {
-      interval = setInterval(updateData, 1000);
-    } else {
-      clearInterval(interval);
-      // Cleanup interval on unmount or when isButtonClicked changes to false
-    }
-    return () => clearInterval(interval);
-  }, [isButtonClicked, updateData]);
+
 
   return (
     <Table
