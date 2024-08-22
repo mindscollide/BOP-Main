@@ -1,11 +1,11 @@
 import React from "react";
-import Navbar from "../../../components/common/nav/Navbar";
 import MainTabs from "./tabsContent/MainTabs";
+import NavbarTreasury from "../../../components/layout/nav/Navbar";
 
 const MainTreasury = () => {
     return (
         <>
-            <Navbar />
+            <NavbarTreasury />
 
             <MainTabs />
         </>
