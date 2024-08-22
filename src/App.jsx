@@ -20,7 +20,7 @@ function App() {
       const Branch = (await import("./container/pages/mainBranch/MainBranch"))
         .default;
       dashboardRoute.children.push({
-        path: "branch",
+        path: "",
         element: <Branch />,
       });
     }
@@ -29,7 +29,7 @@ function App() {
       const Dealer = (await import("./container/pages/mainDealer/MainDealer"))
         .default;
       dashboardRoute.children.push({
-        path: "dealer",
+        path: "",
         element: <Dealer />,
       });
     }
@@ -39,7 +39,7 @@ function App() {
         await import("./container/pages/mainTreasury/MainTreasury")
       ).default;
       dashboardRoute.children.push({
-        path: "treasury",
+        path: "",
         element: <Treasury />,
       });
     }
@@ -49,7 +49,7 @@ function App() {
         await import("./container/pages/mainCorporate/MainCorporate")
       ).default;
       dashboardRoute.children.push({
-        path: "corporate",
+        path: "",
         element: <Corporate />,
       });
     }
