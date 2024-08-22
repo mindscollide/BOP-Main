@@ -1,9 +1,12 @@
-import React from 'react'
+import React from "react";
+import SpotRates from "../../../components/features/spotRates/SpotRates";
 
 const MainDealer = () => {
   return (
-    <div>MainDealer</div>
-  )
-}
+    <div className="px-3">
+      <SpotRates />
+    </div>
+  );
+};
 
-export default MainDealer
+export default MainDealer;

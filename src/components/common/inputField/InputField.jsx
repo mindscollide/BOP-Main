@@ -15,7 +15,9 @@ const InputFIeld = ({
   minLength,
   name,
   required,
-  onFocus
+  onFocus,
+  max,
+  min
 }) => (
   <input
     value={value}
@@ -28,6 +30,8 @@ const InputFIeld = ({
     disabled={disabled}
     maxLength={maxLength}
     minLength={minLength}
+    max={max}
+    min={min}
     name={name}
     required={required}
     onFocus={onFocus}

@@ -39,11 +39,14 @@ html {
 
 body {
   background: #f4f4f4 !important;
-  font-family: "Roboto", sans-serif;
+  font-family: "Roboto", sans-serif !important;
   font-size: 13px !important;
   font-weight: 500 !important;
   overflow-x: hidden !important;
   min-height: 100%;
+}
+.roboto {
+  font-family: "Roboto", sans-serif !important;
 }
 
 .ff-poppins {
