@@ -42,7 +42,7 @@ import IconElement from "./components/common/IconElement/IconElement";
 import ProfileDropdown from "./components/common/profileDropdown/ProfileDropdown";
 import Header from "./components/layout/header/header";
 import { Route, Router, Routes } from "react-router-dom";
-import GlobalTabs from "./components/common/tabs/Tabs";
+import Dashboard from "./container/dashboard/Dashboard";
 
 const MemoizedComponent = React.memo(({ state1 }) => {
   console.log("MemoizedComponent rendered");
@@ -343,7 +343,8 @@ function App() {
 
   return (
     <>
-      <Header />
+    <Dashboard />
+      {/* <Header />
       <SelectDropdown
         isSearchable={true}
         options={[
@@ -412,9 +413,7 @@ function App() {
         <Col className='px-1' lg={4} md={4} sm={6}>
           <CardDragger />
         </Col>
-      </Row>
-
-      <GlobalTabs tabs={tabsData} defaultActiveKey="0" />
+      </Row> */}
     </>
   );
 }

@@ -7,8 +7,14 @@
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
-    "start:system": "env-cmd -f .env.system vite",
-    "start:securityAdmin": "env-cmd -f .env.securityAdmin vite"
+    "start:dealer": "env-cmd -f .env.dealer vite",
+    "start:corporate": "env-cmd -f .env.corporate vite",
+    "start:branch": "env-cmd -f .env.branch vite",
+    "start:treasury": "env-cmd -f .env.treasury vite",
+    "build:dealer": "env-cmd -f .env.dealer vite build",
+    "build:corporate": "env-cmd -f .env.corporate vite build",
+    "build:branch": "env-cmd -f .env.branch vite build",
+    "build:treasury": "env-cmd -f .env.treasury vite build"
   },
   "dependencies": {
     "@fontsource/montserrat": "^5.0.18",
