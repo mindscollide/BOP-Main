@@ -1,0 +1,31 @@
+.top-header {
+    position: relative;
+    background: #290d00;
+    padding: 0 !important;
+}
+.top-header .nav-top {
+    top: 0;
+    height: 35px;
+    padding-right: 0 !important;
+}
+.nav-item {
+    font-family: "Poppins", sans-serif;
+}
+.nav-link {
+    padding: 8px 15px !important;
+    color: #fff !important;
+    text-decoration: none;
+    transition: all .2s ease-in-out;
+    cursor: pointer;
+}
+.nav-link:hover {
+    background-color: #f26522 !important;
+}
+.nav-link_active {
+    background-color: #f26522 !important;
+    padding: 8px 15px !important;
+    color: #fff !important;
+    text-decoration: none;
+    cursor: pointer;
+
+}
