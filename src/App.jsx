@@ -336,7 +336,7 @@ function App() {
   ];
   return (
     <>
-    <Dashboard />
+      <Dashboard />
       {/* <Header />
       <SelectDropdown
         isSearchable={true}
