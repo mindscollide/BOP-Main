@@ -42,6 +42,7 @@ import IconElement from "./components/common/IconElement/IconElement";
 import ProfileDropdown from "./components/common/profileDropdown/ProfileDropdown";
 import Header from "./components/layout/header/header";
 import { Route, Router, Routes } from "react-router-dom";
+import GlobalTabs from "./components/common/tabs/Tabs";
 
 const MemoizedComponent = React.memo(({ state1 }) => {
   console.log("MemoizedComponent rendered");
@@ -333,6 +334,13 @@ function App() {
       cnhAsk: "2.0251",
     },
   ];
+
+  const tabsData = [
+    { title: 'Live Rates', content: <div>Tab content for Home</div> },
+    { title: 'Forwards', content: <div>Tab content for Profile</div> },
+    { title: 'Discounting', content: <div>Tab content for Contact</div> }
+  ];
+
   return (
     <>
       <Header />
@@ -405,6 +413,8 @@ function App() {
           <CardDragger />
         </Col>
       </Row>
+
+      <GlobalTabs tabs={tabsData} defaultActiveKey="0" />
     </>
   );
 }
