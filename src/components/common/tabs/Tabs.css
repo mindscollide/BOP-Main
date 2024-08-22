@@ -1,0 +1,27 @@
+ul.nav.nav-tabs {
+  justify-content: center;
+  border-bottom: 0;
+}
+
+ul.nav.nav-tabs .nav-link,
+ul.nav.nav-tabs .nav-link:hover {
+  font-size: 14px;
+  padding: 4px 8px;
+  background: var(--color-light-gray);
+  border-radius: 3px;
+  margin-right: 1px;
+  color: var(--color-white);
+  font-weight: 600;
+  padding-right: 1.5rem !important;
+  padding-left: 1.5rem !important;
+}
+
+ul.nav.nav-tabs .nav-link.active,
+ul.nav.nav-tabs .nav-link.active:hover {
+  padding-right: 1.5rem !important;
+  padding-left: 1.5rem !important;
+  border-color: transparent;
+  border-radius: 2px;
+  background: var(--color-blue);
+  color: #ffffff;
+}
