@@ -17,7 +17,7 @@ const Routing = () => {
       <Routes>
         <Route path='/' element={<Dashboard />}>
           <Route path='branch' element={<MainBranch />} />
-          <Route path='treasury' element={<MainTreasury />} />
+          <Route path='Treasury' element={<MainTreasury />} />
           <Route path='corporate' element={<MainCorporate />} />
           <Route path='dealer' element={<MainDealer />} />
         </Route>

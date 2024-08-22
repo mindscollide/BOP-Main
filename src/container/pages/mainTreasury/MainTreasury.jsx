@@ -1,7 +1,8 @@
 import React from "react";
+import Navbar from "../../../components/common/nav/Navbar";
 
 const MainTreasury = () => {
-  return <div>MainTreasury</div>;
+    return <div><Navbar /></div>;
 };
 
-export default MainTreasury;
+export default MainTreasury; 
