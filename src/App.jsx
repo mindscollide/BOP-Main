@@ -43,6 +43,7 @@ import ProfileDropdown from "./components/common/profileDropdown/ProfileDropdown
 import Header from "./components/layout/header/header";
 import { Route, Router, Routes } from "react-router-dom";
 import Dashboard from "./container/dashboard/Dashboard";
+import Routing from "./routes/routers";
 
 const MemoizedComponent = React.memo(({ state1 }) => {
   console.log("MemoizedComponent rendered");
@@ -336,77 +337,7 @@ function App() {
   ];
   return (
     <>
-      <Dashboard />
-      {/* <Header />
-      <SelectDropdown
-        isSearchable={true}
-        options={[
-          { label: "Test", value: 1 },
-          { label: "Test", value: 2 },
-        ]}
-        classNamePrefix={"DealerDropDown"}
-      />
-      <br />
-      <div>
-        <GlobalTable
-          columns={columns}
-          dataSource={data}
-          rowClassName={(record, index) =>
-            index % 2 === 0
-              ? "CategoryForwards-even-row"
-              : "CategoryForwards-odd-row"
-          }
-          bordered
-          pagination={false}
-          prefixCls={"CategoryForwards"}
-          scroll={{
-            y: 240, // Set the vertical scroll height to fix the header
-            x: "100vw", // Optional: Set horizontal scroll if needed
-          }}
-        />
-      </div>
-      <RadioButton />
-      <InputField
-        applyClass={"DealerDiscountingCurrentRateInput"}
-        value={value}
-        onChange={onChangeInputField}
-        type='number'
-      />
-      <Button
-        applyClass={"publishDiscounting"}
-        onClick={() => setState1(!state1)}
-        value={"Clear Rates"}
-        icon={<IconElement iconClass={"icon-add-circle-fill "} />}
-      />
-      <div>
-        <BitAmountBox
-          applyClass={"BitCardBox"}
-          spot={false}
-          BitAmountValue={289}
-        />
-      </div>
-      <div>
-        <BitAmountBox
-          applyClass={"OfferCardBox"}
-          spot={false}
-          BitAmountValue={289}
-        />
-      </div>
-      <DatePicker placeholder={"Select Date"} applyClass={"DatePickerField"} />
-      <GlobalModal />
-      <ProfileDropdown userName='Owais Wajid' />
-
-      <Row className='m-0'>
-        <Col className='px-1' lg={4} md={4} sm={6}>
-          <CardDragger />
-        </Col>
-        <Col className='px-1' lg={4} md={4} sm={6}>
-          <CardDragger />
-        </Col>
-        <Col className='px-1' lg={4} md={4} sm={6}>
-          <CardDragger />
-        </Col>
-      </Row> */}
+      <Routing />
     </>
   );
 }
