@@ -9,7 +9,6 @@ const Dashboard = () => {
   return (
     <Layout>
       <Header />
-      <Navbar />
       <Content>
         <Outlet />
       </Content>
