@@ -268,15 +268,15 @@ input[type="number"] {
 
 /*bootstrap buttons*/
 .btn {
-  border-radius: 4px;
-  font-size: 14px;
-  font-weight: 500;
-  transition: all 0.3s ease-in;
-  -webkit-transition: all 0.3s ease-in;
-  -moz-transition: all 0.3s ease-in;
-  -o-transition: all 0.3s ease-in;
-  -ms-transition: all 0.3s ease-in;
-  position: relative;
+  border-radius: 4px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  transition: all 0.3s ease-in !important;
+  -webkit-transition: all 0.3s ease-in !important;
+  -moz-transition: all 0.3s ease-in !important;
+  -o-transition: all 0.3s ease-in !important;
+  -ms-transition: all 0.3s ease-in !important;
+  position: relative !important;
 }
 
 /*.btn-primary{
@@ -289,17 +289,17 @@ input[type="number"] {
 }*/
 
 .btn {
-  cursor: pointer;
+  cursor: pointer !important;
   font-family: "Poppins", sans-serif !important;
 }
 
 .btn-info:hover {
-  background: #0270dd;
+  background: #0270dd !important;
 }
 
 .btn-primary {
-  background: var(--color-secondary);
-  border-color: var(--color-secondary);
+  background: var(--color-secondary) !important;
+  border-color: var(--color-secondary) !important;
 }
 
 .btn-primary:hover,
@@ -307,42 +307,42 @@ input[type="number"] {
 .btn-primary:active,
 .btn-primary.active,
 .btn-primary.active:hover {
-  background: #feac78;
+  background: #feac78 !important;
   /* Old browsers */
-  background: -moz-linear-gradient(top, #feac78 0%, #e97225 100%);
+  background: -moz-linear-gradient(top, #feac78 0%, #e97225 100%) !important;
   /* FF3.6-15 */
-  background: -webkit-linear-gradient(top, #feac78 0%, #e97225 100%);
+  background: -webkit-linear-gradient(top, #feac78 0%, #e97225 100%) !important;
   /* Chrome10-25,Safari5.1-6 */
-  background: linear-gradient(to bottom, #feac78 0%, #e97225 100%);
+  background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
   /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#feac78', endColorstr='#e97225', GradientType=0);
   /* IE6-9 */
-  border-color: #feac78;
+  border-color: #feac78 !important;
 }
 
 .btn-default {
-  background: #f7f8ff;
-  border-color: #f7f8ff;
+  background: #f7f8ff !important;
+  border-color: #f7f8ff !important;
 }
 
 .btn-default:hover {
-  background: var(--color-black);
-  border-color: var(--color-black);
-  color: var(--color-white);
+  background: var(--color-black) !important;
+  border-color: var(--color-black) !important;
+  color: var(--color-white) !important;
 }
 
 .btn-secondary {
-  background: #feac78;
+  background: #feac78 !important;
   /* Old browsers */
-  background: -moz-linear-gradient(top, #feac78 0%, #e97225 100%);
+  background: -moz-linear-gradient(top, #feac78 0%, #e97225 100%) !important;
   /* FF3.6-15 */
-  background: -webkit-linear-gradient(top, #feac78 0%, #e97225 100%);
+  background: -webkit-linear-gradient(top, #feac78 0%, #e97225 100%) !important;
   /* Chrome10-25,Safari5.1-6 */
-  background: linear-gradient(to bottom, #feac78 0%, #e97225 100%);
+  background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
   /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#feac78', endColorstr='#e97225', GradientType=0);
   /* IE6-9 */
-  border-color: #feac78;
+  border-color: #feac78 !important;
 }
 
 .btn-secondary:hover,
@@ -350,8 +350,8 @@ input[type="number"] {
 .btn-secondary:active,
 .btn-secondary.active,
 .btn-secondary.active:hover {
-  background: var(--color-blue);
-  border-color: var(--color-blue);
+  background: var(--color-blue) !important;
+  border-color: var(--color-blue) !important;
 }
 
 .no-radius {
@@ -458,9 +458,9 @@ input[type="number"] {
 .nav-tabs .nav-link.active.btn-hd,
 .nav-pills .nav-item.show .nav-link.btn-hd,
 .nav-pills .nav-link.active.btn-hd {
-  background: transparent;
-  background-color: transparent;
-  color: #002650;
+  background: transparent !important;
+  background-color: transparent !important;
+  color: #002650 !important;
 }
 
 .nav-fill .nav-item .nav-link,
@@ -584,7 +584,7 @@ input[type="number"] {
 
 .col-chat .btn-sm,
 .col-action .btn-sm {
-  padding: 0 3px;
+  padding: 0 3px !important;
 }
 
 .col-blotter-table tr td,
@@ -824,18 +824,18 @@ input[type="number"] {
 }
 
 .btn-select2-selection {
-  border-radius: 4px;
+  border-radius: 4px !important;
 }
 
 .btn-select2-selection .select2-selection {
-  height: auto;
-  border-radius: 4px;
+  height: auto !important;
+  border-radius: 4px !important;
 }
 
 .btn-select2-selection .select2-selection .select2-selection__rendered {
-  font-size: 14px;
-  padding: 4px 1.5rem;
-  border-radius: 4px;
+  font-size: 14px !important;
+  padding: 4px 1.5rem !important;
+  border-radius: 4px !important;
 }
 
 .btn-select2-selection .select2-selection .select2-selection__arrow {
@@ -864,39 +864,39 @@ input[type="number"] {
 }
 
 .vol-meter-container {
-  background: #ffffff;
-  padding: 8px 15px;
-  border-radius: 4px;
-  height: 48px;
+  background: #ffffff !important;
+  padding: 8px 15px !important;
+  border-radius: 4px !important;
+  height: 48px !important;
 }
 
 .vol-meter {
-  transition: all 0.3s ease-in;
-  -webkit-transition: all 0.3s ease-in;
-  -moz-transition: all 0.3s ease-in;
-  -o-transition: all 0.3s ease-in;
-  -ms-transition: all 0.3s ease-in;
+  transition: all 0.3s ease-in !important;
+  -webkit-transition: all 0.3s ease-in !important;
+  -moz-transition: all 0.3s ease-in !important;
+  -o-transition: all 0.3s ease-in !important;
+  -ms-transition: all 0.3s ease-in !important;
 }
 
 .vol-meter.vol-meter-off {
-  background: #e30a0a;
-  background: -moz-linear-gradient(top, #fe6565 0%, #e30a0a 100%);
-  background: -webkit-linear-gradient(top, #fe6565 0%, #e30a0a 100%);
-  background: linear-gradient(to bottom, #fe6565 0%, #e30a0a 100%);
+  background: #e30a0a !important;
+  background: -moz-linear-gradient(top, #fe6565 0%, #e30a0a 100%) !important;
+  background: -webkit-linear-gradient(top, #fe6565 0%, #e30a0a 100%) !important;
+  background: linear-gradient(to bottom, #fe6565 0%, #e30a0a 100%) !important;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fe6565', endColorstr='#e30a0a', GradientType=0);
-  border-color: #e30a0a;
-  color: #ffffff;
+  border-color: #e30a0a !important;
+  color: #ffffff !important;
 }
 
 .vol-meter.vol-meter-off:hover,
 .vol-meter.active-vol {
-  background: #feac78;
-  background: -moz-linear-gradient(top, #feac78 0%, #e97225 100%);
-  background: -webkit-linear-gradient(top, #feac78 0%, #e97225 100%);
-  background: linear-gradient(to bottom, #feac78 0%, #e97225 100%);
+  background: #feac78 !important;
+  background: -moz-linear-gradient(top, #feac78 0%, #e97225 100%) !important;
+  background: -webkit-linear-gradient(top, #feac78 0%, #e97225 100%) !important;
+  background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#feac78', endColorstr='#e97225', GradientType=0);
-  border-color: #feac78;
-  color: #ffffff;
+  border-color: #feac78 !important;
+  color: #ffffff !important;
 }
 
 /*Site Header Style Begin*/
@@ -1058,15 +1058,15 @@ input[type="number"] {
 }
 
 .btn-icn {
-  display: inline-block;
-  padding: 4px;
-  margin-right: 5px;
-  cursor: pointer;
-  border-radius: 3px;
+  display: inline-block !important;
+  padding: 4px !important;
+  margin-right: 5px !important;
+  cursor: pointer !important;
+  border-radius: 3px !important;
 }
 
 .btn-icn:last-child {
-  margin-right: 0px;
+  margin-right: 0px !important;
 }
 
 .dropdown-menu-filter label.checkbox {
@@ -1657,13 +1657,13 @@ thead .dropdown-menu-filter .dropdown-item label span {
 .bootstrap-select .dropdown-toggle,
 .bootstrap-select .btn-light,
 .bootstrap-select button.btn-light {
-  position: relative;
+  position: relative !important;
   background: var(--color-light) !important;
-  color: #7c8288;
-  border-color: transparent;
+  color: #7c8288 !important;
+  border-color: transparent !important;
   outline: 0 !important;
-  text-transform: uppercase;
-  padding: 3px 7px;
+  text-transform: uppercase !important;
+  padding: 3px 7px !important;
 }
 
 .bootstrap-select .dropdown-toggle:focus,
@@ -1800,11 +1800,11 @@ thead .dropdown-menu-filter .dropdown-item label span {
 
 /*chat style*/
 .chat-main-btn {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  display: inline-block;
-  z-index: 10;
+  position: fixed !important;
+  bottom: 20px !important;
+  right: 20px !important;
+  display: inline-block !important;
+  z-index: 10 !important;
 }
 
 .chat-sidebar-inner {

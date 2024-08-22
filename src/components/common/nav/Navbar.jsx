@@ -27,7 +27,7 @@ const Navbar = () => {
                                     onSelect={(value) => setSelectedValue(value)}
                                 />
                                 {/*User Dropdown*/}
-                                <ProfileDropdown userName="Owais Khan" />
+                                <ProfileDropdown userName="Michael Hawk" />
                             </div>
                         </div>
                     </div>
