@@ -27,12 +27,13 @@ import "@fontsource/roboto/900.css";
 import React from "react";
 import "./App.css";
 import Dashboard from "./container/dashboard/Dashboard";
+import Routing from "./routes/routers";
 
 function App() {
 
   return (
     <>
-      <Dashboard />
+      <Routing />
     </>
   );
 }

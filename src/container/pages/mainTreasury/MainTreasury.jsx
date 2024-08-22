@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from "react";
 
-const MainTresury = () => {
-    return (
-        <>Component</>
-    )
-}
+const MainTreasury = () => {
+  return <div>MainTreasury</div>;
+};
 
-export default MainTresury;
+export default MainTreasury;
