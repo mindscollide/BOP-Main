@@ -9,7 +9,7 @@ const Dashboard = () => {
   return (
     <Layout>
       <Header DealarLink={"/dealer"} CategoryLink={"/category"} TreasuryLink={"/treasury"} />
-      <Navbar />
+      <GlobalNavbar />
       <Content>
         <Outlet />
       </Content>
