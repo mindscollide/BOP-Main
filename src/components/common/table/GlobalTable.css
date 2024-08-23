@@ -568,3 +568,97 @@ tr.Tresuary_Forwards-row.Tresuary_Forwards-row-level-0.striped-design:nth-child(
   font-size: 1rem !important;
 }
 /* End Branch Forward table */
+
+/* Branch Spot Table WatchList Starts */
+
+.WatchList_table-wrapper .Tresuary_Discounting {
+  scrollbar-color: auto !important;
+}
+.WatchList_table-wrapper::-webkit-scrollbar {
+  width: 0.3rem !important;
+  border-radius: 20px !important;
+  background-color: #f2f2f2 !important;
+  height: 0.3rem !important;
+}
+
+.WatchList_table-wrapper::-webkit-scrollbar-thumb {
+  border-radius: 20px !important;
+  background: #ccc !important;
+  margin-left: -15px !important;
+}
+.WatchList_table-thead tr:nth-child(1) th {
+  background-color: #fff !important;
+  text-align: center;
+  color: #f26522;
+  font-weight: 700;
+  border: none !important;
+  font-size: 14px;
+}
+
+.WatchList_table-thead th {
+  padding: 5px 0px !important;
+  background-color: #fff !important;
+  text-align: center;
+  color: #f26522;
+  font-weight: 700;
+  border: none !important;
+  font-size: 14px;
+  padding: 5px 5px !important;
+}
+.WatchList_table-tbody tr td {
+  padding: 5px 0px !important;
+}
+
+.WatchList_table-thead tr {
+  background: #e9e2dc !important;
+  border-radius: 0px !important;
+}
+
+.WatchList_table {
+  background: none !important;
+}
+.WatchList_table-tbody {
+  background: #e9e2dc !important;
+  border: none !important;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: "Roboto", sans-serif !important;
+}
+
+.WatchList_table-tbody tr td:nth-child(1) {
+  padding-left: 10px;
+}
+
+.WatchList_table-wrapper
+  .WatchList_table-container
+  table
+  > thead
+  > tr:first-child
+  > *:first-child {
+  border-start-start-radius: 0px !important;
+  padding: 5px;
+}
+
+.WatchList_table-wrapper
+  .WatchList_table-container
+  table
+  > thead
+  > tr:first-child
+  > *:last-child {
+  border-start-end-radius: 0px !important;
+}
+
+.WatchList_table-wrapper
+  .WatchList_table-tbody
+  .WatchList_table-row
+  > .WatchList_table-cell-row-hover {
+  background: none !important;
+}
+
+.WatchList_table-wrapper
+  .WatchList_table-tbody
+  .WatchList_table-row
+  > .WatchList_table-cell {
+  border-bottom: none !important;
+}
+/* Branch Spot Table WatchList Ends */

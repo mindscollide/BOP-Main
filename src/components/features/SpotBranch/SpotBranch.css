@@ -42,45 +42,34 @@
   font-family: "Roboto", sans-serif !important;
 }
 
-.DroppableBoxSellBuyOuterBox {
-  background: transparent !important;
-  padding: 0.5rem !important;
-  text-align: center !important;
-  border: 1px solid #ffffff !important;
-  transition: all 0.3s ease !important;
-  display: inline-block;
-  width: 100% !important;
-  height: 100% !important;
-  padding-top: 0.5rem !important;
-  padding-bottom: 0.5rem !important;
-  cursor: pointer !important;
-  color: #ffffff !important;
-}
-
-.DroppableBoxSellBuyOuterBox:hover {
-  background: #ffffff !important;
-  padding: 0.5rem !important;
-  text-align: center !important;
-  padding-right: 0.25rem !important;
-  padding-left: 0.25rem !important;
-  border: 1px solid #ffffff !important;
-  transition: all 0.3s ease !important;
-  color: #000 !important;
-  display: inline-block;
-  width: 100% !important;
-  cursor: pointer !important;
-  height: 100% !important;
-}
-
-.DroppableBoxSellBuyOuterBoxContent {
-  font-size: 1rem !important;
-  cursor: pointer !important;
-  font-family: "Roboto", sans-serif !important;
-}
-
 .WatchlistLabel {
   text-align: left !important;
   font-weight: 700 !important;
   font-size: 1rem !important;
   font-family: "Roboto", sans-serif !important;
+}
+
+.instrument-column {
+  font-weight: bold;
+  color: #e65100;
+}
+
+.bid-column {
+  background: #096fed !important;
+  color: #fff !important;
+  display: inline-block;
+  padding: 2px 3px;
+  border-radius: 2px;
+  width: 60px;
+  cursor: pointer;
+}
+
+.offer-column {
+  background: #fb8c00 !important;
+  color: #fff !important;
+  display: inline-block;
+  padding: 2px 3px;
+  border-radius: 2px;
+  width: 60px;
+  cursor: pointer;
 }
