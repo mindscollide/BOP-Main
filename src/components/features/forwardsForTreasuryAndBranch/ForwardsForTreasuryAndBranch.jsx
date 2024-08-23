@@ -1,48 +1,77 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { Row, Col } from "react-bootstrap";
-import CustomButton from "../../common/globalButton/button";
-import SelectDropdown from "../../common/selectDropdown/SelectDropdown";
-import IconElement from "../../common/IconElement/IconElement";
-import ForwardsForTreasuryAndBranchTable from "../forwardsForTreasuryAndBranchTable/ForwardsForTreasuryAndBranchTable";
+
+// Conditionally import CustomButton based on the environment variables
+const shouldIncludeComponents =
+  import.meta.env.VITE_APP_INCLUDE_DEALER === "true" ||
+  import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
+
+const CustomButton = shouldIncludeComponents
+  ? lazy(() => import("../../common/globalButton/button"))
+  : null;
+
+const SelectDropdown = shouldIncludeComponents
+  ? lazy(() => import("../../common/selectDropdown/SelectDropdown"))
+  : null;
+
+const IconElement = shouldIncludeComponents
+  ? lazy(() => import("../../common/IconElement/IconElement"))
+  : null;
+
+const ForwardsForTreasuryAndBranchTable = shouldIncludeComponents
+  ? lazy(() => import("../forwardsForTreasuryAndBranchTable/ForwardsForTreasuryAndBranchTable"))
+  : null;
 
 const ForwardsForTreasuryAndBranch = () => {
   return (
     <>
-      <Row className='mt-4 mb-2'>
+      <Row className="mt-4 mb-2">
         <Col sm={12} md={6} lg={6}>
-          <h6 className='fs-4 fw-bold color-primary'>
+          <h6 className="fs-4 fw-bold color-primary">
             Forwards For Treasury & Branch
           </h6>
         </Col>
-        <Col sm={12} md={6} lg={6} className='flex-fill text-end'>
-          <CustomButton value={"Create Tenor"} applyClass='createTenorBtn' />
+        <Col sm={12} md={6} lg={6} className="flex-fill text-end">
+          {CustomButton && (
+            <Suspense fallback={<div>Loading button...</div>}>
+              <CustomButton value={"Create Tenor"} applyClass="createTenorBtn" />
+            </Suspense>
+          )}
         </Col>
         <Col sm={12} md={12} lg={12}>
           <div
-            class='d-flex select-br-days flex-wrap justify-content-center'
-            data-select2-id='6'>
-            <div class='w-fix-350  '>
-              <div className='input-group'>
-                <SelectDropdown classNamePrefix={"DealerDropDown"} />
-                <CustomButton
-                  value={"Add"}
-                  iconPosition={"start"}
-                  applyClass='PlusButton'
-                  icon={<IconElement iconClass={"icon-add-circle-fill fs-4"} />}
-                />
+            className="d-flex select-br-days flex-wrap justify-content-center"
+            data-select2-id="6"
+          >
+            <div className="w-fix-350">
+              <div className="input-group">
+                {SelectDropdown && (
+                  <Suspense fallback={<div>Loading dropdown...</div>}>
+                    <SelectDropdown classNamePrefix={"DealerDropDown"} />
+                  </Suspense>
+                )}
+                {IconElement && (
+                  <Suspense fallback={<div>Loading icon...</div>}>
+                    <CustomButton
+                      value={"Add"}
+                      iconPosition={"start"}
+                      applyClass="PlusButton"
+                      icon={<IconElement iconClass={"icon-add-circle-fill fs-4"} />}
+                    />
+                  </Suspense>
+                )}
               </div>
             </div>
           </div>
         </Col>
-        <Col sm={12} md={12} lg={12} className="mt-3">
-          <ForwardsForTreasuryAndBranchTable />
-        </Col>
+        {ForwardsForTreasuryAndBranchTable && (
+          <Col sm={12} md={12} lg={12} className="mt-3">
+            <Suspense fallback={<div>Loading table...</div>}>
+              <ForwardsForTreasuryAndBranchTable />
+            </Suspense>
+          </Col>
+        )}
       </Row>
-      {/* <Row className='mt-4 mb-2'>
-        <Col sm={12} md={6} lg={6} className="d-flex justify-content-center">
-            <SelectDropdown /><CustomButton value={"Add"} iconPosition={"end"} icon={<IconElement iconClass={"icon-add-circle-fill"} />} />
-        </Col>
-      </Row> */}
     </>
   );
 };

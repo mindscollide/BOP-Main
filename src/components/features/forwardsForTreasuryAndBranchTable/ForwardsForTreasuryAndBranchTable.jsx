@@ -3,7 +3,6 @@ import GlobalTable from "../../common/table/GlobalTable";
 import InputFIeld from "../../common/inputField/InputField";
 import CustomButton from "../../common/globalButton/button";
 import IconElement from "../../common/IconElement/IconElement";
-InputFIeld;
 const ForwardsForTreasuryAndBranchTable = () => {
   const dataSource = [
     { key: "1", tenor: "O N" },
@@ -113,7 +112,6 @@ const ForwardsForTreasuryAndBranchTable = () => {
       columns={columns}
       dataSource={dataSource}
       prefixCls={"ForwardsForTreasuryAndBranchTable"}
-      // bordered
       pagination={false}
     />
   );
