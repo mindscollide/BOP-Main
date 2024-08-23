@@ -356,7 +356,7 @@ const Forwards = () => {
       <GlobalTable
         columns={columns}
         dataSource={data}
-        prefixCls={"Tresuary_Forwards"}
+        prefixCls={"Treasury_Forwards"}
         // bordered
         pagination={false}
         rowClassName={"striped-design"}
