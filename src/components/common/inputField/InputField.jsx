@@ -15,7 +15,10 @@ const InputFIeld = ({
   minLength,
   name,
   required,
-  onFocus
+  onFocus,
+  max,
+  min,
+  className,
 }) => (
   <input
     value={value}
@@ -23,11 +26,13 @@ const InputFIeld = ({
     onChange={onChange}
     pattern={pattern}
     placeholder={placeholder}
-    className={styles[applyClass]}
+    className={`${styles[applyClass]} ${className}`}
     checked={checked}
     disabled={disabled}
     maxLength={maxLength}
     minLength={minLength}
+    max={max}
+    min={min}
     name={name}
     required={required}
     onFocus={onFocus}

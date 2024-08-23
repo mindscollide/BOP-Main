@@ -8,7 +8,7 @@ const GlobalTabs = ({ tabs, defaultActiveKey = '0' }) => {
         <Tabs
             defaultActiveKey={defaultActiveKey}
             id="uncontrolled-tab-example"
-            className="mb-3"
+            className="mt-2 mb-4"
         >
             {tabs.map((tab, index) => (
                 <Tab eventKey={index.toString()} title={tab.title} key={index}>
