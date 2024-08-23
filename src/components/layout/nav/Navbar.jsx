@@ -3,12 +3,13 @@ import Voltmeter from "./../../common/voltMeter/Voltmeter";
 import ProfileDropdown from "./../../common/profileDropdown/ProfileDropdown";
 import CustomButton from "./../../common/globalButton/button";
 import SiteLogoComponent from "./../../common/siteLogo/SiteLogo";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const GlobalNavbar = () => {
   const [selectedValue, setSelectedValue] = useState(1);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleCalculatorClick = () => {
     navigate("/calculator");
@@ -24,17 +25,21 @@ const GlobalNavbar = () => {
             <SiteLogoComponent />
             <div className="ms-auto">
               <div className="d-flex align-items-center">
-                <CustomButton
-                  applyClass="calcBtn"
-                  value="Calculators"
-                  size="large"
-                  onClick={handleCalculatorClick}
-                />
-                {/*Vol Meter*/}
-                <Voltmeter
-                  activeValue={selectedValue}
-                  onSelect={(value) => setSelectedValue(value)}
-                />
+                {location.pathname !== "/calculator" && (
+                  <>
+                    <CustomButton
+                      applyClass="calcBtn"
+                      value="Calculators"
+                      size="large"
+                      onClick={handleCalculatorClick}
+                    />
+                    {/*Vol Meter*/}
+                    <Voltmeter
+                      activeValue={selectedValue}
+                      onSelect={(value) => setSelectedValue(value)}
+                    />
+                  </>
+                )}
                 {/*User Dropdown*/}
                 <ProfileDropdown userName="Michael Hawk" />
               </div>
