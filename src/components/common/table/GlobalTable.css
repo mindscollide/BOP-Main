@@ -283,6 +283,7 @@
   font-size: 14px;
   border-left: 0px !important;
   border-inline-width: 0 !important;
+  border-top: none !important;
 }
 .Tresuary_Forwards-thead tr:nth-child(2) th {
   background-color: #000 !important;
@@ -314,6 +315,7 @@
 
 th.Tresuary_Forwards-cell {
   border-inline-end: 1px solid #f0f0f0 !important;
+  border-top: 1px solid #f0f0f0;
 }
 
 th.Tresuary_Forwards-cell::before {
@@ -322,10 +324,24 @@ th.Tresuary_Forwards-cell::before {
 
 td.Tresuary_Forwards-cell {
   border-inline-end: 1px solid #f0f0f0 !important;
+  text-align: center !important;
 }
 
-tr.Tresuary_Forwards-row.Tresuary_Forwards-row-level-0.striped-design {
-  background: rgba(0, 0, 0, 0.05);
+tr.Tresuary_Forwards-row.Tresuary_Forwards-row-level-0.striped-design:nth-child(
+    even
+  ) {
+  background: #fff; /* Background color for even rows */
+}
+
+tr.Tresuary_Forwards-row.Tresuary_Forwards-row-level-0.striped-design:nth-child(
+    odd
+  ) {
+  background: rgba(
+    0,
+    0,
+    0,
+    0.05
+  ); /* Background color for odd rows (default white) */
 }
 
 :where(.css-dev-only-do-not-override-1c0na6j).Tresuary_Forwards-wrapper
