@@ -1,0 +1,59 @@
+.FxTradingOuterBox {
+  display: inline-block !important;
+  width: 100% !important;
+  background: #fbd5b0 !important;
+  border-radius: 4px !important;
+  height: 100% !important;
+  padding: 0px 13px !important;
+}
+
+.WatchListOuterBox {
+  background: #e9e2dc !important;
+  border-radius: 4px !important;
+  display: inline-block !important;
+  height: 100% !important;
+  width: 360px !important;
+  padding: 8px 13px !important;
+}
+
+.FxTradingLabel {
+  text-align: left !important;
+  font-weight: 700 !important;
+  font-size: 1rem !important;
+  font-family: "Roboto", sans-serif !important;
+}
+
+.DroppableBox {
+  display: inline-block !important;
+  width: 100% !important;
+  border-radius: 8px;
+  border: 1px solid #e2e2e2;
+  padding: 0px 10px;
+  background-color: #f26522;
+  height: 155px;
+  padding: 9px 12px !important;
+  transition: all 0.3s ease-in;
+}
+
+.DroppableBoxCurrencyLabel {
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  font-family: "Roboto", sans-serif !important;
+}
+
+.WatchlistLabel {
+  text-align: left !important;
+  font-weight: 700 !important;
+  font-size: 1rem !important;
+  font-family: "Roboto", sans-serif !important;
+}
+
+.instrument-column {
+  font-weight: bold;
+  color: #e65100;
+}
+
+.sectionsporBranch {
+  width: 95% !important;
+}
