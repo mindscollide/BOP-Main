@@ -9,7 +9,6 @@ import GlobalNavbar from "../../../components/layout/nav/Navbar";
 const MainCalculator = () => {
   return (
     <>
-      <GlobalNavbar />
       <div className="d-flex gap-0 mt-2 p-1">
         <CalculatorFxDiscounting />
         <CalculatorNonFxDiscounting />
