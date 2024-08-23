@@ -739,7 +739,6 @@ tr.Treasury_Discounting-row.Treasury_Discounting-row-level-0.striped-design:nth-
   > tr:first-child
   > *:first-child {
   border-start-start-radius: 0px !important;
-  padding: 5px;
 }
 
 .WatchList_table-wrapper
@@ -764,6 +763,7 @@ tr.Treasury_Discounting-row.Treasury_Discounting-row-level-0.striped-design:nth-
   > .WatchList_table-cell {
   border-bottom: none !important;
 }
+
 /* Branch Spot Table WatchList Ends */
 
 /* Start branch forwards table */

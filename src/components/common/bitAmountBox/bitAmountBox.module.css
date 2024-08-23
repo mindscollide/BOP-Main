@@ -70,7 +70,7 @@
 
 .SellandBuyCardBracnh {
   background-color: transparent;
-  max-width: 120px;
+  max-width: 100% !important;
   display: flex;
   justify-content: center;
   align-items: center;
