@@ -17,7 +17,7 @@ const GlobalTable = ({
   className,
   onHeaderRow,
   scroll,
-  onScroll,
+  onScroll, rowHoverBg
 }) => {
   return (
     <Table
@@ -37,7 +37,8 @@ const GlobalTable = ({
       locale={locale}
       scroll={scroll}
       onScroll={onScroll}
-      
+      rowHoverBg={rowHoverBg}
+
     />
   );
 };
