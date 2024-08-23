@@ -285,11 +285,13 @@ const columns = [
         title: 'Bid',
         dataIndex: 'usdBid',
         key: 'usdBid',
+        className: 'bidClass',
       },
       {
         title: 'Ask',
         dataIndex: 'usdAsk',
         key: 'usdAsk',
+        className: 'askClass',
       }
     ]
   },
@@ -300,11 +302,13 @@ const columns = [
         title: 'Bid',
         dataIndex: 'eurBid',
         key: 'eurBid',
+        className: 'bidClass',
       },
       {
         title: 'Ask',
         dataIndex: 'eurAsk',
         key: 'eurAsk',
+        className: 'askClass',
       }
     ]
   },
@@ -315,11 +319,13 @@ const columns = [
         title: 'Bid',
         dataIndex: 'gbpBid',
         key: 'gbpBid',
+        className: 'bidClass',
       },
       {
         title: 'Ask',
         dataIndex: 'gbpAsk',
         key: 'gbpAsk',
+        className: 'askClass',
       }
     ]
   },
@@ -330,11 +336,13 @@ const columns = [
         title: 'Bid',
         dataIndex: 'jpyBid',
         key: 'jpyBid',
+        className: 'bidClass',
       },
       {
         title: 'Ask',
         dataIndex: 'jpyAsk',
         key: 'jpyAsk',
+        className: 'askClass',
       }
     ]
   },
