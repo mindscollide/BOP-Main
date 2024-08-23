@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
-import "./assets/globalstyles/height.css"
+import "./assets/globalstyles/height.css";
 import Dashboard from "./container/dashboard/Dashboard";
 import "@fontsource/montserrat";
 import "@fontsource/montserrat/100.css";
@@ -29,6 +29,7 @@ import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import "@fontsource/roboto/900.css";
+import CalculatorFxDiscounting from "./components/features/calculatorFxDiscounting/CalculatorFxDiscounting";
 
 function App() {
   const [routes, setRoutes] = useState(null); // Initially null to indicate loading state
@@ -80,6 +81,12 @@ function App() {
         element: <Corporate />,
       });
     }
+
+    // Add the CalculatorFxDiscounting route
+    dashboardRoute.children.push({
+      path: "calculator",
+      element: <CalculatorFxDiscounting />,
+    });
 
     tempRoutes.push(dashboardRoute); // Add the dashboard route with its children
     setRoutes(tempRoutes); // Set the routes state with the loaded routes
