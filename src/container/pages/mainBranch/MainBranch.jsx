@@ -1,6 +1,8 @@
 import React, { lazy } from "react";
-import { Container } from "react-bootstrap";
 import ForwardTableBranchComponent from "../../../components/features/ForwardTableBranchComponent/ForwardTableBranchComponent";
+import BranchDiscountingTable from "../../../components/features/branchDiscountingTable/BranchDiscountingTable";
+import SpotBranch from "../../../components/features/SpotBranch/SpotBranch";
+
 // Conditionally import CustomButton based on the environment variables
 const shouldIncludeComponents =
   import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
@@ -12,9 +14,9 @@ const GlobalTabs = shouldIncludeComponents
 
 const MainBranch = () => {
   const tabsData = [
-    { title: "Spot", content: <div>Tab content for Home</div> },
+    { title: "Spot", content: <SpotBranch /> },
     { title: "Forwards", content: <ForwardTableBranchComponent /> },
-    { title: "Discounting", content: <div>Tab content for Contact</div> },
+    { title: "Discounting", content: <BranchDiscountingTable /> },
   ];
   return (
     <>

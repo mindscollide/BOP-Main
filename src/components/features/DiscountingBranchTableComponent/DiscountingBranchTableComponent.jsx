@@ -5,16 +5,16 @@ import { Col } from "react-bootstrap";
 const shouldIncludeComponents =
   import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
 
-const ForwardsForBranch = shouldIncludeComponents
-  ? lazy(() => import("../branchForwardsTable/BranchForwardsTable"))
+const DiscountingForBranch = shouldIncludeComponents
+  ? lazy(() => import("../branchDiscountingTable/BranchDiscountingTable"))
   : null;
 
-const ForwardTableBranchComponent = () => {
+const DiscountingBranchTableComponent = () => {
   return (
     <Col lg={12} md={12} sm={12}>
-      {shouldIncludeComponents ? <ForwardsForBranch /> : null}
+      {DiscountingForBranch ? <DiscountingForBranch /> : null}
     </Col>
   );
 };
 
-export default ForwardTableBranchComponent;
+export default DiscountingBranchTableComponent;

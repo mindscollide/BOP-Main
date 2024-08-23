@@ -1,7 +1,7 @@
 import React from "react";
 import GlobalTable from "../../common/table/GlobalTable";
 
-const BranchForwardsTable = () => {
+const BranchDiscountingTable = () => {
   const dataSource = [
     {
       key: "1",
@@ -115,18 +115,9 @@ const BranchForwardsTable = () => {
       title: "USD",
       children: [
         {
-          title: "Bid",
+          title: "Value",
           dataIndex: "currentBid",
           key: "currentBid",
-          align: "center",
-          render: (text) => {
-            return <span className="ms-3">{text}</span>;
-          },
-        },
-        {
-          title: "Ask",
-          dataIndex: "currentAsk",
-          key: "currentAsk",
           align: "center",
           render: (text) => {
             return <span className="ms-3">{text}</span>;
@@ -138,18 +129,9 @@ const BranchForwardsTable = () => {
       title: "EUR",
       children: [
         {
-          title: "Bid",
+          title: "Value",
           dataIndex: "lastBid",
           key: "lastBid",
-          align: "center",
-          render: (text) => {
-            return <span className="ms-3">{text}</span>;
-          },
-        },
-        {
-          title: "Ask",
-          dataIndex: "lastAsk",
-          key: "lastAsk",
           align: "center",
           render: (text) => {
             return <span className="ms-3">{text}</span>;
@@ -161,7 +143,7 @@ const BranchForwardsTable = () => {
       title: "GBP",
       children: [
         {
-          title: "Bid",
+          title: "Value",
           dataIndex: "lastBidGBP",
           key: "lastBidGBP",
           align: "center",
@@ -169,10 +151,15 @@ const BranchForwardsTable = () => {
             return <span className="ms-3">{text}</span>;
           },
         },
+      ],
+    },
+    {
+      title: "CNY",
+      children: [
         {
-          title: "Ask",
-          dataIndex: "lastAskGBP",
-          key: "lastAskGBP",
+          title: "Value",
+          dataIndex: "lastBidGBP",
+          key: "lastBidGBP",
           align: "center",
           render: (text) => {
             return <span className="ms-3">{text}</span>;
@@ -181,7 +168,6 @@ const BranchForwardsTable = () => {
       ],
     },
   ];
-
   return (
     <GlobalTable
       columns={columns}
@@ -193,4 +179,4 @@ const BranchForwardsTable = () => {
   );
 };
 
-export default BranchForwardsTable;
+export default BranchDiscountingTable;
