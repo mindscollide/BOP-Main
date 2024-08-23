@@ -19,6 +19,3 @@
 .ProfileDropdown::after {
   display: none !important;
 }
-.ProfileDropdown_menu {
-    min-width: 135px !important
-}

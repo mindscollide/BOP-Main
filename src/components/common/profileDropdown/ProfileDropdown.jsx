@@ -3,21 +3,21 @@ import { Dropdown, Nav } from "react-bootstrap";
 import IconElement from "../IconElement/IconElement";
 import styles from "./ProfileDropdown.module.css";
 
-const ProfileDropdown = ({userName}) => {
+const ProfileDropdown = ({ userName }) => {
   return (
     <Dropdown>
       <Dropdown.Toggle className={styles["ProfileDropdown"]}>
-        <p className='user-name-header2 mb-0'>{userName}</p>
+        <span className='user-logdin-name fw-bold color-hd max-w-fix-100 text-truncate d-inline-block align-middle'>{userName}</span>
         <IconElement iconClass={"icon-arrow-down"} />
       </Dropdown.Toggle>
       <Dropdown.Menu className={styles["ProfileDropdown_menu"]}>
-        <Dropdown.Item>
-          <Nav.Link>
+        <Dropdown.Item className="d-flex align-items-center cursor-pointer">
+          <Nav.Link >
             <IconElement iconClass={"icon-settings me-1"} />
             <label>Setting</label>
           </Nav.Link>
         </Dropdown.Item>
-        <Dropdown.Item>
+        <Dropdown.Item className="d-flex align-items-center cursor-pointer">
           <IconElement iconClass={"icon-logout me-1"} />
           <label>Logout</label>
         </Dropdown.Item>

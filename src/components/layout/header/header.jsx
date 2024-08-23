@@ -18,7 +18,7 @@ const Header = ({
         import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true" ? (
           <>
             <Nav.Item className={styles["nav-item"]}>
-              <Nav.Link href='' className={styles["nav-link_active"]}>
+              <Nav.Link className={styles["nav-link_active"]}>
                 Gul Ahmed
               </Nav.Link>
             </Nav.Item>
@@ -29,15 +29,18 @@ const Header = ({
           <>
             <Nav.Item className={styles["nav-item"]}>
               <Nav.Link
-                href={DealarLink || "/"}
-                className={`${styles["nav-link_active"]} `}
+                as={Link}
+                active={true}
+                to={DealarLink || "/"}
+                className={`${styles["nav-link"]} `}
                 onClick={handleCLickDealer}>
                 Dealer
               </Nav.Link>
             </Nav.Item>
             <Nav.Item className={styles["nav-item"]}>
               <Nav.Link
-                href={CategoryLink || "/"}
+                as={Link}
+                to={CategoryLink || "/"}
                 className={`${styles["nav-link"]} `}
                 onClick={handleCLickCategory}>
                 Category
@@ -45,10 +48,10 @@ const Header = ({
             </Nav.Item>
             <Nav.Item className={styles["nav-item"]}>
               <Nav.Link
-                href={TreasuryLink || "/"}
-                // as={Link}
-                // to={TreasuryLink || "/"}
-                className={`${styles["nav-link"]}`}
+                // href={TreasuryLink || "/"}
+                as={Link}
+                to={TreasuryLink || "/"}
+                className={`${styles["nav-link_active"]}`}
                 onClick={handleCLickTreasury}>
                 Treasury
               </Nav.Link>

@@ -41,3 +41,6 @@ button.ant-switch.switchBtn.css-dev-only-do-not-override-1c0na6j.ant-switch-chec
   transition: all 0.2s ease-in-out;
   content: "";
 }
+.switchBtn_TextValue {
+  font-size: 12px !important;
+}
