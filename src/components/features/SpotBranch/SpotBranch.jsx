@@ -21,6 +21,7 @@ const SpotBranch = () => {
       title: "Instrument",
       dataIndex: "instrument",
       key: "instrument",
+      width: "130px",
       align: "left",
       render: (text) => <span className="instrument-column">{text}</span>,
     },
