@@ -15,7 +15,7 @@ const Header = ({
     <Navbar className={styles["top-header"]}>
       <Nav className='ms-auto'>
         {import.meta.env.VITE_APP_INCLUDE_BRANCH === "true" ||
-        import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true" ? (
+          import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true" ? (
           <>
             <Nav.Item className={styles["nav-item"]}>
               <Nav.Link href='' className={styles["nav-link_active"]}>
@@ -25,12 +25,12 @@ const Header = ({
           </>
         ) : null}
         {import.meta.env.VITE_APP_INCLUDE_DEALER === "true" ||
-        import.meta.env.VITE_APP_INCLUDE_TREASURY === "true" ? (
+          import.meta.env.VITE_APP_INCLUDE_TREASURY === "true" ? (
           <>
             <Nav.Item className={styles["nav-item"]}>
               <Nav.Link
                 href={DealarLink || "/"}
-                className={`${styles["nav-link_active"]} `}
+                className={`${styles["nav-link"]} `}
                 onClick={handleCLickDealer}>
                 Dealer
               </Nav.Link>
@@ -48,7 +48,7 @@ const Header = ({
                 href={TreasuryLink || "/"}
                 // as={Link}
                 // to={TreasuryLink || "/"}
-                className={`${styles["nav-link"]}`}
+                className={`${styles["nav-link_active"]}`}
                 onClick={handleCLickTreasury}>
                 Treasury
               </Nav.Link>

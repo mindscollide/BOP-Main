@@ -1,14 +1,12 @@
 import React, { useState } from 'react'
-import ProfileDropdown from '../profileDropdown/ProfileDropdown'
-import SiteLogo from "./../../../assets/logo.png"
-import CustomButton from '../globalButton/button'
-import Voltmeter from '../voltMeter/Voltmeter'
-import SiteLogoComponent from '../siteLogo/SiteLogo'
+import Voltmeter from "./../../common/voltMeter/Voltmeter";
+import ProfileDropdown from "./../../common/profileDropdown/ProfileDropdown";
+import CustomButton from "./../../common/globalButton/button";
+import SiteLogoComponent from "./../../common/siteLogo/SiteLogo";
 
-const Navbar = () => {
+const NavbarTreasury = () => {
 
     const [selectedValue, setSelectedValue] = useState(1);
-
 
     return (
         <>
@@ -40,4 +38,4 @@ const Navbar = () => {
     )
 }
 
-export default Navbar
+export default NavbarTreasury
