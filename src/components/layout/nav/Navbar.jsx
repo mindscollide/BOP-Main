@@ -4,7 +4,7 @@ import ProfileDropdown from "./../../common/profileDropdown/ProfileDropdown";
 import CustomButton from "./../../common/globalButton/button";
 import SiteLogoComponent from "./../../common/siteLogo/SiteLogo";
 
-const NavbarTreasury = () => {
+const GlobalNavbar = () => {
 
     const [selectedValue, setSelectedValue] = useState(1);
 
@@ -38,4 +38,4 @@ const NavbarTreasury = () => {
     )
 }
 
-export default NavbarTreasury
+export default GlobalNavbar
