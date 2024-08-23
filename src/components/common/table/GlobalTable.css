@@ -272,6 +272,7 @@
   text-align: center;
   color: #fff;
   font-weight: 700;
+  font-family: "Roboto" !important;
   font-size: 14px;
 }
 .Tresuary_Forwards-thead tr:nth-child(1) th:nth-child(1),
@@ -303,27 +304,30 @@
 }
 
 .Tresuary_Forwards-thead th {
+  font-family: "Roboto" !important;
   padding: 5px 0px !important;
 }
 .Tresuary_Forwards-tbody tr td {
+  font-family: "Roboto" !important;
   padding: 5px 0px !important;
+  font-size: 13px !important;
 }
 
 .Tresuary_Forwards-wrapper .Tresuary_Forwards {
   background: none !important;
 }
 
-th.Tresuary_Forwards-cell {
+/* th.Tresuary_Forwards-cell {
   border-inline-end: 1px solid #f0f0f0 !important;
   border-top: 1px solid #f0f0f0;
-}
+} */
 
 th.Tresuary_Forwards-cell::before {
   background-color: transparent !important;
 }
 
 td.Tresuary_Forwards-cell {
-  border-inline-end: 1px solid #f0f0f0 !important;
+  /* border-inline-end: 1px solid #f0f0f0 !important; */
   text-align: center !important;
 }
 
@@ -351,7 +355,34 @@ tr.Tresuary_Forwards-row.Tresuary_Forwards-row-level-0.striped-design:nth-child(
   background: transparent;
 }
 
-/* End Forwards Treasury table  */
+:where(.css-dev-only-do-not-override-1c0na6j)[class^="Tresuary_Forwards"]
+  [class^="Tresuary_Forwards"],
+:where(.css-dev-only-do-not-override-1c0na6j)[class*=" Tresuary_Forwards"]
+  [class^="Tresuary_Forwards"],
+:where(.css-dev-only-do-not-override-1c0na6j)[class^="Tresuary_Forwards"]
+  [class*=" Tresuary_Forwards"],
+:where(.css-dev-only-do-not-override-1c0na6j)[class*=" Tresuary_Forwards"]
+  [class*=" Tresuary_Forwards"] {
+  box-sizing: border-box !important;
+  border-inline-width: 1px !important;
+  border-inline-color: #d2d2d2 !important;
+  border-bottom: 1px solid #d2d2d2 !important;
+}
+
+tr.Tresuary_Forwards-row.Tresuary_Forwards-row-level-0.striped-design:first-child
+  td.Tresuary_Forwards-cell.bidClass {
+  color: #12a812 !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+}
+
+tr.Tresuary_Forwards-row.Tresuary_Forwards-row-level-0.striped-design:first-child
+  td.Tresuary_Forwards-cell.askClass {
+  color: #cf5b5b !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+}
+/* End Treasury Discounting table  */
 
 /* Start Treasury Discounting table  */
 .ForwardsForTreasuryAndBranchTable-wrapper .Tresuary_Discounting {
@@ -425,7 +456,7 @@ tr.Tresuary_Forwards-row.Tresuary_Forwards-row-level-0.striped-design:nth-child(
   text-align: left;
   font-size: 1rem !important;
 }
-/* End Treasury Discounting table  */
+/* End Forwards Treasury table  */
 
 /* Start Dealer Discount Table */
 .ForwardsForTreasuryAndBranchTable-wrapper .Tresuary_Discounting {
@@ -443,7 +474,6 @@ tr.Tresuary_Forwards-row.Tresuary_Forwards-row-level-0.striped-design:nth-child(
   background: #ccc !important;
   margin-left: -15px !important;
 }
-
 
 .DealerAndTreasuryDiscountTable-thead tr:nth-child(1) th {
   background-color: #575351 !important;
@@ -483,9 +513,161 @@ tr.Tresuary_Forwards-row.Tresuary_Forwards-row-level-0.striped-design:nth-child(
   border: 1px solid #e1e1e1 !important;
 }
 
-
 .DealerAndTreasuryDiscountTable-thead tr:nth-child(2) th {
   text-align: left;
   font-size: 1rem !important;
 }
 /* End Dealer Discount Table */
+
+/* Treasury Discounting Starts */
+.Treasury_Discounting-wrapper .Treasury_Discounting {
+  scrollbar-color: auto !important;
+}
+.Treasury_Discounting-wrapper::-webkit-scrollbar {
+  width: 0.3rem !important;
+  border-radius: 20px !important;
+  background-color: #f2f2f2 !important;
+  height: 0.3rem !important;
+}
+
+.Treasury_Discounting-wrapper::-webkit-scrollbar-thumb {
+  border-radius: 20px !important;
+  background: #ccc !important;
+  margin-left: -15px !important;
+}
+.Treasury_Discounting-thead tr:nth-child(1) th {
+  background-color: #f26522 !important;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-family: "Roboto" !important;
+  font-size: 14px;
+}
+.Treasury_Discounting-thead tr:nth-child(1) th:nth-child(1) {
+  background-color: transparent !important;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  border-left: 0px !important;
+  border-inline-width: 0 !important;
+  border-top: none !important;
+}
+.Treasury_Discounting-thead tr:nth-child(2) th {
+  background-color: #000 !important;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+:where(.css-dev-only-do-not-override-1c0na6j).Treasury_Discounting-wrapper
+  .Treasury_Discounting-container
+  table
+  > thead
+  > tr:first-child
+  > *:last-child {
+  border-start-end-radius: 0px;
+}
+
+.Treasury_Discounting-thead th {
+  font-family: "Roboto" !important;
+  padding: 5px 0px !important;
+}
+.Treasury_Discounting-tbody tr td {
+  font-family: "Roboto" !important;
+  padding: 5px 0px !important;
+  font-size: 13px !important;
+}
+
+.Treasury_Discounting-wrapper .Treasury_Discounting {
+  background: none !important;
+}
+
+/* th.Treasury_Discounting-cell {
+  border-inline-end: 1px solid #f0f0f0 !important;
+  border-top: 1px solid #f0f0f0;
+} */
+
+th.Treasury_Discounting-cell::before {
+  background-color: transparent !important;
+}
+
+td.Treasury_Discounting-cell {
+  /* border-inline-end: 1px solid #f0f0f0 !important; */
+  text-align: center !important;
+}
+
+tr.Treasury_Discounting-row.Treasury_Discounting-row-level-0.striped-design:nth-child(
+    even
+  ) {
+  background: #fff; /* Background color for even rows */
+}
+
+tr.Treasury_Discounting-row.Treasury_Discounting-row-level-0.striped-design:nth-child(
+    odd
+  ) {
+  background: rgba(
+    0,
+    0,
+    0,
+    0.05
+  ); /* Background color for odd rows (default white) */
+}
+
+:where(.css-dev-only-do-not-override-1c0na6j).Treasury_Discounting-wrapper
+  .Treasury_Discounting-tbody
+  .Treasury_Discounting-row
+  > .Treasury_Discounting-cell-row-hover {
+  background: transparent;
+}
+
+:where(.css-dev-only-do-not-override-1c0na6j)[class^="Treasury_Discounting"]
+  [class^="Treasury_Discounting"],
+:where(.css-dev-only-do-not-override-1c0na6j)[class*=" Treasury_Discounting"]
+  [class^="Treasury_Discounting"],
+:where(.css-dev-only-do-not-override-1c0na6j)[class^="Treasury_Discounting"]
+  [class*=" Treasury_Discounting"],
+:where(.css-dev-only-do-not-override-1c0na6j)[class*=" Treasury_Discounting"]
+  [class*=" Treasury_Discounting"] {
+  box-sizing: border-box !important;
+  border-inline-width: 1px !important;
+  border-inline-color: #d2d2d2 !important;
+  border-bottom: 1px solid #d2d2d2 !important;
+}
+
+:where(.css-dev-only-do-not-override-1c0na6j)[class^="Treasury_Discounting"]
+  [class^="Treasury_Discounting"]
+  tr:last-child,
+:where(.css-dev-only-do-not-override-1c0na6j)[class*=" Treasury_Discounting"]
+  [class^="Treasury_Discounting"]
+  tr:last-child,
+:where(.css-dev-only-do-not-override-1c0na6j)[class^="Treasury_Discounting"]
+  [class*=" Treasury_Discounting"]
+  tr:last-child,
+:where(.css-dev-only-do-not-override-1c0na6j)[class*=" Treasury_Discounting"]
+  [class*=" Treasury_Discounting"]
+  tr:last-child {
+  border-bottom: none;
+}
+
+:where(.css-dev-only-do-not-override-1c0na6j)[class^="Treasury_Discounting"]
+  [class^="Treasury_Discounting"]
+  tr:last-child
+  td,
+:where(.css-dev-only-do-not-override-1c0na6j)[class*=" Treasury_Discounting"]
+  [class^="Treasury_Discounting"]
+  tr:last-child
+  td,
+:where(.css-dev-only-do-not-override-1c0na6j)[class^="Treasury_Discounting"]
+  [class*=" Treasury_Discounting"]
+  tr:last-child
+  td,
+:where(.css-dev-only-do-not-override-1c0na6j)[class*=" Treasury_Discounting"]
+  [class*=" Treasury_Discounting"]
+  tr:last-child
+  td {
+  border-bottom: none;
+}
+
+/* Treasury Discounting Ends */
