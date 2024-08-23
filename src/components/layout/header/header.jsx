@@ -15,21 +15,23 @@ const Header = ({
     <Navbar className={styles["top-header"]}>
       <Nav className='ms-auto'>
         {import.meta.env.VITE_APP_INCLUDE_BRANCH === "true" ||
-          import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true" ? (
+        import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true" ? (
           <>
             <Nav.Item className={styles["nav-item"]}>
-              <Nav.Link href='' className={styles["nav-link_active"]}>
+              <Nav.Link className={styles["nav-link_active"]}>
                 Gul Ahmed
               </Nav.Link>
             </Nav.Item>
           </>
         ) : null}
         {import.meta.env.VITE_APP_INCLUDE_DEALER === "true" ||
-          import.meta.env.VITE_APP_INCLUDE_TREASURY === "true" ? (
+        import.meta.env.VITE_APP_INCLUDE_TREASURY === "true" ? (
           <>
             <Nav.Item className={styles["nav-item"]}>
               <Nav.Link
-                href={DealarLink || "/"}
+                as={Link}
+                active={true}
+                to={DealarLink || "/"}
                 className={`${styles["nav-link"]} `}
                 onClick={handleCLickDealer}>
                 Dealer
@@ -37,7 +39,8 @@ const Header = ({
             </Nav.Item>
             <Nav.Item className={styles["nav-item"]}>
               <Nav.Link
-                href={CategoryLink || "/"}
+                as={Link}
+                to={CategoryLink || "/"}
                 className={`${styles["nav-link"]} `}
                 onClick={handleCLickCategory}>
                 Category
@@ -45,9 +48,9 @@ const Header = ({
             </Nav.Item>
             <Nav.Item className={styles["nav-item"]}>
               <Nav.Link
-                href={TreasuryLink || "/"}
-                // as={Link}
-                // to={TreasuryLink || "/"}
+                // href={TreasuryLink || "/"}
+                as={Link}
+                to={TreasuryLink || "/"}
                 className={`${styles["nav-link_active"]}`}
                 onClick={handleCLickTreasury}>
                 Treasury

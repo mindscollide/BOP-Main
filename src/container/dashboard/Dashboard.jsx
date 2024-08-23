@@ -8,7 +8,7 @@ const Dashboard = () => {
   const { Sider, Content } = Layout;
   return (
     <Layout>
-      <Header />
+      <Header DealarLink={"/dealer"} CategoryLink={"/category"} TreasuryLink={"/treasury"} />
       <GlobalNavbar />
       <Content>
         <Outlet />
