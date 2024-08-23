@@ -2,6 +2,7 @@ import React from "react";
 import RadioButton from "../../common/radioButton/SwitchBtn";
 import CustomButton from "../../common/globalButton/button";
 import InputFIeld from "../../common/inputField/InputField";
+import "./SpotRates.css";
 
 const SpotRates = () => {
   return (
@@ -9,7 +10,7 @@ const SpotRates = () => {
       <div className='card-box p-0  h-auto'>
         <div className='box-header p-2 bg-Yorange-light color-dark'>
           <div className='d-flex align-items-center'>
-            <div className='flex-fill roboto fs-6 fw-bold color-dark'>
+            <div className='flex-fill ff-roboto fs-6 fw-bold color-dark'>
               Spot Rates (USD/PKR)
             </div>
             <div className='d-flex align-items-center'>
@@ -33,7 +34,7 @@ const SpotRates = () => {
               <div className='d-flex justify-content-end'>
                 <div className='col-6'>
                   <div className='d-flex align-items-center justify-content-end refresh-interval-wrapper'>
-                    <span className='updloadrates-hd fs-6 me-1 roboto'>
+                    <span className='updloadrates-hd fs-6 me-1 ff-roboto'>
                       Refresh Interval
                     </span>
                     <InputFIeld
@@ -54,8 +55,8 @@ const SpotRates = () => {
             {/* last updated column Begin */}
             <div className='col-md-6 col-sm-12 ps-1 pe-1 rate-box'>
               <div className='rate box-header d-flex align-items-center px-2'>
-                <div className='fw-bold fs-6 roboto'>Last Published @</div>
-                <div className='datetime ms-auto roboto'>
+                <div className='fw-bold fs-6 ff-roboto'>Last Published @</div>
+                <div className='datetime ms-auto ff-roboto'>
                   02 May 2023, 10:46:20
                 </div>
               </div>
@@ -64,19 +65,19 @@ const SpotRates = () => {
                   <table className='table text-center fs-6'>
                     <thead className=''>
                       <tr>
-                        <th className='fs-6 bg-light'>Bid</th>
-                        <th className='fs-6 bg-light'>Ask</th>
+                        <th className='fs-6 color-primary border-bottom-1 bg-trRow'>Bid</th>
+                        <th className='fs-6 color-primary  border-bottom-1 bg-trRow'>Ask</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
                         <td className='border-0'>
-                          <span className='bid-val mt-4 d-block fs-5 fw-bold'>
+                          <span className='bid-val mt-4 d-block fs-5  ff-roboto fw-bold'>
                             285.07
                           </span>
                         </td>
                         <td className='border-0'>
-                          <span className='ask-val  mt-4 d-block fs-5 fw-bold'>
+                          <span className='ask-val  mt-4 d-block fs-5 ff-roboto fw-bold'>
                             285.32
                           </span>
                         </td>
@@ -90,35 +91,38 @@ const SpotRates = () => {
             {/* last updated column Begin */}
             <div className='col-md-6 col-sm-12 ps-1 pe-1 rate-box'>
               <div className='rate box-header d-flex align-items-center px-2'>
-                <div className='fw-bold fs-6 roboto'>Current Value @</div>
-                <div className='datetime ms-auto roboto'>
+                <div className='fw-bold fs-6 ff-roboto'>Current Value @</div>
+                <div className='datetime ms-auto ff-roboto'>
                   02 May 2023, 10:46:20
                 </div>
               </div>
               <div className='rate-box-content'>
-                <div className='table-responsive h-auto'>
-                  <table className='table text-center fs-6'>
+                <div className=' h-auto'>
+                  <table className='table mb-0 text-center fs-6'>
                     <thead className=''>
                       <tr>
-                        <th className='fs-6 bg-light'>Bid</th>
-                        <th className='fs-6 bg-light'>Ask</th>
+                        <th className='fs-6 color-primary bg-trRow'>Bid</th>
+                        <th className='fs-6 color-primary bg-trRow'>Ask</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr>
-                        <td className='border-0 '>
+                        <td className='border-0'>
                           <InputFIeld
                             min={1}
                             type='number'
-                            applyClass='DealerBitInput'
-                            
+                            className={
+                              "text-center form-control ff-roboto mt-4 d-block fs-5 fw-bold mb-0"
+                            }
                           />
                         </td>
                         <td className='border-0'>
                           <InputFIeld
                             min={1}
                             type='number'
-                            applyClass='DealerBitInput '
+                            className={
+                              "text-center form-control ff-roboto  mt-4 d-block fs-5 fw-bold mb-0"
+                            }
                           />
                         </td>
                       </tr>

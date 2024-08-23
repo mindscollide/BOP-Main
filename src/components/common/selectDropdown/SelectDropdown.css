@@ -21,6 +21,11 @@
   border: none !important;
   color: #002650 !important;
   outline: none !important;
+  min-width: 240px !important;
+}
+.DealerDropDown__control--is-focused {
+  outline: none !important;
+  border-color: transparent !important;
 }
 
 .DealerDropDown__menu {
