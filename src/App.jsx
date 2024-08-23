@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
-import "./assets/globalstyles/height.css"
+import "./assets/globalstyles/height.css";
 import Dashboard from "./container/dashboard/Dashboard";
 import "@fontsource/montserrat";
 import "@fontsource/montserrat/100.css";
@@ -47,7 +47,7 @@ function App() {
       const Branch = (await import("./container/pages/mainBranch/MainBranch"))
         .default;
       dashboardRoute.children.push({
-        path: "",
+        path: "/",
         element: <Branch />,
       });
     }
@@ -55,9 +55,23 @@ function App() {
     if (import.meta.env.VITE_APP_INCLUDE_DEALER === "true") {
       const Dealer = (await import("./container/pages/mainDealer/MainDealer"))
         .default;
+      const Treasury = (
+        await import("./container/pages/mainTreasury/MainTreasury")
+      ).default;
+      const Category = (
+        await import("./container/pages/mainCategory/MainCategory")
+      ).default;
       dashboardRoute.children.push({
-        path: "",
+        path: "/dealer",
         element: <Dealer />,
+      });
+      dashboardRoute.children.push({
+        path: "/treasury",
+        element: <Treasury />,
+      });
+      dashboardRoute.children.push({
+        path: "/category",
+        element: <Category />,
       });
     }
 
@@ -65,9 +79,22 @@ function App() {
       const Treasury = (
         await import("./container/pages/mainTreasury/MainTreasury")
       ).default;
+      const Dealer = (await import("./container/pages/mainDealer/MainDealer"))
+        .default;
+      const Category = (
+        await import("./container/pages/mainCategory/MainCategory")
+      ).default;
       dashboardRoute.children.push({
-        path: "",
+        path: "/dealer",
+        element: <Dealer />,
+      });
+      dashboardRoute.children.push({
+        path: "/treasury",
         element: <Treasury />,
+      });
+      dashboardRoute.children.push({
+        path: "/category",
+        element: <Category />,
       });
     }
 

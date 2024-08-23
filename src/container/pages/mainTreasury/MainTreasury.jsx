@@ -9,4 +9,4 @@ const MainTreasury = () => {
     )
 };
 
-export default MainTreasury; 
+export default MainTreasury;

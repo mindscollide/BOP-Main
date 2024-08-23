@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from "react";
-import GlobalTable from "../../common/table/GlobalTable";
+// import GlobalTable from "../../common/table/GlobalTable";
 
 // Define condition to include components
 const shouldIncludeComponents =
@@ -17,6 +17,10 @@ const CustomButton = shouldIncludeComponents
 
 const IconElement = shouldIncludeComponents
   ? lazy(() => import("../../common/IconElement/IconElement"))
+  : null;
+
+const GlobalTable = shouldIncludeComponents
+  ? lazy(() => import("../../common/table/GlobalTable"))
   : null;
 
 const ForwardsForTreasuryAndBranchTable = () => {
@@ -48,9 +52,6 @@ const ForwardsForTreasuryAndBranchTable = () => {
           dataIndex: "tenor",
           key: "tenor",
           width: 250,
-          render: (text) => {
-            return <span className="ms-2">{text}</span>;
-          },
         },
       ],
     },
@@ -65,7 +66,7 @@ const ForwardsForTreasuryAndBranchTable = () => {
           render: () =>
             InputFIeld ? (
               <Suspense fallback={<div>Loading input...</div>}>
-                <InputFIeld type="number" applyClass={"DealerTableBitInput"} />
+                <InputFIeld type='number' applyClass={"DealerTableBitInput"} />
               </Suspense>
             ) : null,
         },
@@ -77,7 +78,7 @@ const ForwardsForTreasuryAndBranchTable = () => {
           render: () =>
             InputFIeld ? (
               <Suspense fallback={<div>Loading input...</div>}>
-                <InputFIeld type="number" applyClass={"DealerTableBitInput"} />
+                <InputFIeld type='number' applyClass={"DealerTableBitInput"} />
               </Suspense>
             ) : null,
         },
@@ -94,7 +95,7 @@ const ForwardsForTreasuryAndBranchTable = () => {
           render: () =>
             InputFIeld ? (
               <Suspense fallback={<div>Loading input...</div>}>
-                <InputFIeld type="number" applyClass={"DealerTableBitInput"} />
+                <InputFIeld type='number' applyClass={"DealerTableBitInput"} />
               </Suspense>
             ) : null,
         },
@@ -106,7 +107,7 @@ const ForwardsForTreasuryAndBranchTable = () => {
           render: () =>
             InputFIeld ? (
               <Suspense fallback={<div>Loading input...</div>}>
-                <InputFIeld type="number" applyClass={"DealerTableBitInput"} />
+                <InputFIeld type='number' applyClass={"DealerTableBitInput"} />
               </Suspense>
             ) : null,
         },
@@ -128,7 +129,7 @@ const ForwardsForTreasuryAndBranchTable = () => {
               IconElement && (
                 <Suspense fallback={<div>Loading button...</div>}>
                   <CustomButton
-                    type="link"
+                    type='link'
                     icon={
                       <Suspense fallback={<div>Loading icon...</div>}>
                         <IconElement
@@ -147,12 +148,28 @@ const ForwardsForTreasuryAndBranchTable = () => {
   ];
 
   return (
-    <GlobalTable
-      columns={columns}
-      dataSource={dataSource}
-      prefixCls={"ForwardsForTreasuryAndBranchTable"}
-      pagination={false}
-    />
+    <>
+      {GlobalTable && (
+        <>
+          <Suspense fallback={<div>Loading Table...</div>}>
+            <GlobalTable
+              columns={columns}
+              dataSource={dataSource}
+              prefixCls={"ForwardsForTreasuryAndBranchTable"}
+              pagination={false}
+            />
+            {CustomButton && (
+              <span className='d-flex justify-content-center mt-4'>
+                <CustomButton
+                  applyClass='publishForwardsBtn'
+                  value={"Publish Forwards"}
+                />
+              </span>
+            )}
+          </Suspense>
+        </>
+      )}
+    </>
   );
 };
 
