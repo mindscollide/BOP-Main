@@ -351,6 +351,8 @@ const Forwards = () => {
         prefixCls={"Tresuary_Forwards"}
         // bordered
         pagination={false}
+        rowClassName={"striped-design"}
+        rowHoverBg={"#000"}
       />
     </>
   )

@@ -1,8 +1,28 @@
-import React from "react";
-import GlobalTable from "../../common/table/GlobalTable";
-import InputFIeld from "../../common/inputField/InputField";
-import CustomButton from "../../common/globalButton/button";
-import IconElement from "../../common/IconElement/IconElement";
+import React, { lazy, Suspense } from "react";
+// import GlobalTable from "../../common/table/GlobalTable";
+
+// Define condition to include components
+const shouldIncludeComponents =
+  import.meta.env.VITE_APP_INCLUDE_DEALER === "true" ||
+  import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
+
+// Conditionally import components based on environment variables
+const InputFIeld = shouldIncludeComponents
+  ? lazy(() => import("../../common/inputField/InputField"))
+  : null;
+
+const CustomButton = shouldIncludeComponents
+  ? lazy(() => import("../../common/globalButton/button"))
+  : null;
+
+const IconElement = shouldIncludeComponents
+  ? lazy(() => import("../../common/IconElement/IconElement"))
+  : null;
+
+const GlobalTable = shouldIncludeComponents
+  ? lazy(() => import("../../common/table/GlobalTable"))
+  : null;
+
 const ForwardsForTreasuryAndBranchTable = () => {
   const dataSource = [
     { key: "1", tenor: "O N" },
@@ -32,9 +52,6 @@ const ForwardsForTreasuryAndBranchTable = () => {
           dataIndex: "tenor",
           key: "tenor",
           width: 250,
-          render: (text) => {
-            return <span className="ms-2">{text}</span>
-          }
         },
       ],
     },
@@ -46,15 +63,24 @@ const ForwardsForTreasuryAndBranchTable = () => {
           dataIndex: "currentBid",
           key: "currentBid",
           align: "center",
-          render: () => <InputFIeld type="number" applyClass={"DealerTableBitInput"}/>,
+          render: () =>
+            InputFIeld ? (
+              <Suspense fallback={<div>Loading input...</div>}>
+                <InputFIeld type='number' applyClass={"DealerTableBitInput"} />
+              </Suspense>
+            ) : null,
         },
         {
           title: "Ask",
           dataIndex: "currentAsk",
           key: "currentAsk",
           align: "center",
-
-          render: () => <InputFIeld type="number" applyClass={"DealerTableBitInput"} />,
+          render: () =>
+            InputFIeld ? (
+              <Suspense fallback={<div>Loading input...</div>}>
+                <InputFIeld type='number' applyClass={"DealerTableBitInput"} />
+              </Suspense>
+            ) : null,
         },
       ],
     },
@@ -66,23 +92,30 @@ const ForwardsForTreasuryAndBranchTable = () => {
           dataIndex: "lastBid",
           key: "lastBid",
           align: "center",
-
-          render: () => <InputFIeld type="number" applyClass={"DealerTableBitInput"} />,
+          render: () =>
+            InputFIeld ? (
+              <Suspense fallback={<div>Loading input...</div>}>
+                <InputFIeld type='number' applyClass={"DealerTableBitInput"} />
+              </Suspense>
+            ) : null,
         },
         {
           title: "Ask",
           dataIndex: "lastAsk",
           key: "lastAsk",
           align: "center",
-
-          render: () => <InputFIeld type="number" applyClass={"DealerTableBitInput"} />,
+          render: () =>
+            InputFIeld ? (
+              <Suspense fallback={<div>Loading input...</div>}>
+                <InputFIeld type='number' applyClass={"DealerTableBitInput"} />
+              </Suspense>
+            ) : null,
         },
       ],
     },
     {
       title: "",
       key: "",
-
       children: [
         {
           title: "",
@@ -92,14 +125,21 @@ const ForwardsForTreasuryAndBranchTable = () => {
           align: "center",
           render: () => {
             return (
-              <CustomButton
-                type='link'
-                icon={
-                  <IconElement
-                    iconClass={"icon-trash color-red fs-6 cursor-pointer"}
+              CustomButton &&
+              IconElement && (
+                <Suspense fallback={<div>Loading button...</div>}>
+                  <CustomButton
+                    type='link'
+                    icon={
+                      <Suspense fallback={<div>Loading icon...</div>}>
+                        <IconElement
+                          iconClass={"icon-trash color-red fs-6 cursor-pointer"}
+                        />
+                      </Suspense>
+                    }
                   />
-                }
-              />
+                </Suspense>
+              )
             );
           },
         },
@@ -108,12 +148,28 @@ const ForwardsForTreasuryAndBranchTable = () => {
   ];
 
   return (
-    <GlobalTable
-      columns={columns}
-      dataSource={dataSource}
-      prefixCls={"ForwardsForTreasuryAndBranchTable"}
-      pagination={false}
-    />
+    <>
+      {GlobalTable && (
+        <>
+          <Suspense fallback={<div>Loading Table...</div>}>
+            <GlobalTable
+              columns={columns}
+              dataSource={dataSource}
+              prefixCls={"ForwardsForTreasuryAndBranchTable"}
+              pagination={false}
+            />
+            {CustomButton && (
+              <span className='d-flex justify-content-center mt-4'>
+                <CustomButton
+                  applyClass='publishForwardsBtn'
+                  value={"Publish Forwards"}
+                />
+              </span>
+            )}
+          </Suspense>
+        </>
+      )}
+    </>
   );
 };
 

@@ -282,6 +282,8 @@
   font-weight: 700;
   font-size: 14px;
   border-left: 0px !important;
+  border-inline-width: 0 !important;
+  border-top: none !important;
 }
 .Tresuary_Forwards-thead tr:nth-child(2) th {
   background-color: #000 !important;
@@ -290,23 +292,65 @@
   font-weight: 700;
   font-size: 14px;
 }
+
+:where(.css-dev-only-do-not-override-1c0na6j).Tresuary_Forwards-wrapper
+  .Tresuary_Forwards-container
+  table
+  > thead
+  > tr:first-child
+  > *:last-child {
+  border-start-end-radius: 0px;
+}
+
 .Tresuary_Forwards-thead th {
   padding: 5px 0px !important;
 }
 .Tresuary_Forwards-tbody tr td {
   padding: 5px 0px !important;
 }
-.Tresuary_Forwards-even-row {
-  background-color: #f2f2f2;
-}
-
-.Tresuary_Forwards-odd-row {
-  background-color: #fff;
-}
 
 .Tresuary_Forwards-wrapper .Tresuary_Forwards {
   background: none !important;
 }
+
+th.Tresuary_Forwards-cell {
+  border-inline-end: 1px solid #f0f0f0 !important;
+  border-top: 1px solid #f0f0f0;
+}
+
+th.Tresuary_Forwards-cell::before {
+  background-color: transparent !important;
+}
+
+td.Tresuary_Forwards-cell {
+  border-inline-end: 1px solid #f0f0f0 !important;
+  text-align: center !important;
+}
+
+tr.Tresuary_Forwards-row.Tresuary_Forwards-row-level-0.striped-design:nth-child(
+    even
+  ) {
+  background: #fff; /* Background color for even rows */
+}
+
+tr.Tresuary_Forwards-row.Tresuary_Forwards-row-level-0.striped-design:nth-child(
+    odd
+  ) {
+  background: rgba(
+    0,
+    0,
+    0,
+    0.05
+  ); /* Background color for odd rows (default white) */
+}
+
+:where(.css-dev-only-do-not-override-1c0na6j).Tresuary_Forwards-wrapper
+  .Tresuary_Forwards-tbody
+  .Tresuary_Forwards-row
+  > .Tresuary_Forwards-cell-row-hover {
+  background: transparent;
+}
+
 /* End Forwards Treasury table  */
 
 /* Start Treasury Discounting table  */
@@ -348,10 +392,10 @@
   font-size: 14px;
 }
 .ForwardsForTreasuryAndBranchTable-thead th {
-  padding: 5px 0px !important;
+  padding: 5px 5px !important;
 }
 .ForwardsForTreasuryAndBranchTable-tbody tr td {
-  padding: 5px 0px !important;
+  padding: 5px 5px !important;
 }
 .ForwardsForTreasuryAndBranchTable-even-row {
   background-color: #f2f2f2;
@@ -376,15 +420,73 @@
   .ForwardsForTreasuryAndBranchTable-cell {
   border: 1px solid #e1e1e1 !important;
 }
-.ForwardsForTreasuryAndBranchTable-tbody tr td:nth-child(1) {
-  padding-left: 10px;
-}
+
 .ForwardsForTreasuryAndBranchTable-thead tr:nth-child(2) th {
   text-align: left;
   font-size: 1rem !important;
 }
 /* End Treasury Discounting table  */
 
+/* Start Dealer Discount Table */
+.ForwardsForTreasuryAndBranchTable-wrapper .Tresuary_Discounting {
+  scrollbar-color: auto !important;
+}
+.ForwardsForTreasuryAndBranchTable-wrapper::-webkit-scrollbar {
+  width: 0.3rem !important;
+  border-radius: 20px !important;
+  background-color: #f2f2f2 !important;
+  height: 0.3rem !important;
+}
+
+.ForwardsForTreasuryAndBranchTable-wrapper::-webkit-scrollbar-thumb {
+  border-radius: 20px !important;
+  background: #ccc !important;
+  margin-left: -15px !important;
+}
+
+.DealerAndTreasuryDiscountTable-thead tr:nth-child(1) th {
+  background-color: #575351 !important;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+}
+.DealerAndTreasuryDiscountTable-thead th {
+  padding: 5px 5px !important;
+  border-radius: 0px !important;
+}
+.DealerAndTreasuryDiscountTable-tbody tr td {
+  padding: 5px 5px !important;
+}
+.DealerAndTreasuryDiscountTable-even-row {
+  background-color: #f2f2f2;
+}
+
+.DealerAndTreasuryDiscountTable-odd-row {
+  background-color: #fff;
+}
+
+.DealerAndTreasuryDiscountTable {
+  background: none !important;
+}
+.DealerAndTreasuryDiscountTable-tbody {
+  background: #fff !important;
+  border: 1px solid #e1e1e1;
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: "Roboto", sans-serif !important;
+}
+.DealerAndTreasuryDiscountTable-tbody
+  .DealerAndTreasuryDiscountTable-row
+  .DealerAndTreasuryDiscountTable-cell {
+  border: 1px solid #e1e1e1 !important;
+}
+
+.DealerAndTreasuryDiscountTable-thead tr:nth-child(2) th {
+  text-align: left;
+  font-size: 1rem !important;
+}
+/* End Dealer Discount Table */
 /* Start branch forwards table */
 .branch_forwardsTable-wrapper .Tresuary_Discounting {
   scrollbar-color: auto !important;
