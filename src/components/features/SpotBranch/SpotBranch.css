@@ -12,7 +12,7 @@
   border-radius: 4px !important;
   display: inline-block !important;
   height: 100% !important;
-  width: 100% !important;
+  width: 360px !important;
   padding: 8px 13px !important;
 }
 
@@ -54,22 +54,6 @@
   color: #e65100;
 }
 
-.bid-column {
-  background: #096fed !important;
-  color: #fff !important;
-  display: inline-block;
-  padding: 2px 3px;
-  border-radius: 2px;
-  width: 60px;
-  cursor: pointer;
-}
-
-.offer-column {
-  background: #fb8c00 !important;
-  color: #fff !important;
-  display: inline-block;
-  padding: 2px 3px;
-  border-radius: 2px;
-  width: 60px;
-  cursor: pointer;
+.sectionsporBranch {
+  width: 95% !important;
 }

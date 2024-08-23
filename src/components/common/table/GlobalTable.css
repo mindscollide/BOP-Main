@@ -571,8 +571,9 @@ tr.Tresuary_Forwards-row.Tresuary_Forwards-row-level-0.striped-design:nth-child(
 
 /* Branch Spot Table WatchList Starts */
 
-.WatchList_table-wrapper .Tresuary_Discounting {
+.WatchList_table-wrapper .WatchList_table {
   scrollbar-color: auto !important;
+  overflow-x: hidden !important;
 }
 .WatchList_table-wrapper::-webkit-scrollbar {
   width: 0.3rem !important;

@@ -14,6 +14,11 @@ const SpotBranch = () => {
     { key: "6", instrument: "JPYPKR", bid: "2.0727", offer: "2.0742" },
     { key: "7", instrument: "AUDPKR", bid: "188.45", offer: "188.60" },
     { key: "8", instrument: "CHFPKR", bid: "181.24", offer: "180.09" },
+    { key: "9", instrument: "GBPPKR", bid: "355.18", offer: "355.44" },
+    { key: "10", instrument: "CNYPKR", bid: "40.76", offer: "40.80" },
+    { key: "11", instrument: "JPYPKR", bid: "2.0727", offer: "2.0742" },
+    { key: "12", instrument: "AUDPKR", bid: "188.45", offer: "188.60" },
+    { key: "13", instrument: "CHFPKR", bid: "181.24", offer: "180.09" },
   ];
 
   const columns = [
@@ -21,7 +26,7 @@ const SpotBranch = () => {
       title: "Instrument",
       dataIndex: "instrument",
       key: "instrument",
-      width: "130px",
+      width: "160px",
       align: "left",
       render: (text) => <span className="instrument-column">{text}</span>,
     },
@@ -29,6 +34,7 @@ const SpotBranch = () => {
       title: "Bid",
       dataIndex: "bid",
       key: "bid",
+      width: "120px",
       align: "center",
       render: (text) => (
         <>
@@ -47,6 +53,7 @@ const SpotBranch = () => {
       dataIndex: "offer",
       key: "offer",
       align: "center",
+      width: "120px",
       render: (text) => (
         <>
           <div className="d-flex justify-content-center">
@@ -61,7 +68,7 @@ const SpotBranch = () => {
     },
   ];
   return (
-    <div className="px-3">
+    <section className="sectionsporBranch">
       <Row>
         <Col lg={9} md={9} sm={12}>
           <span className="FxTradingOuterBox">
@@ -238,7 +245,7 @@ const SpotBranch = () => {
             </Row>
           </span>
         </Col>
-        <Col lg={3} md={3} sm={12}>
+        <Col lg={3} md={3} sm={12} className="m-0 p-0">
           <span className="WatchListOuterBox">
             <Row>
               <Col lg={6} md={6} sm={12}>
@@ -253,6 +260,7 @@ const SpotBranch = () => {
                 <GlobalTable
                   columns={columns}
                   dataSource={dataSource}
+                  scroll={{ y: 300, x: false }}
                   prefixCls={"WatchList_table"}
                   pagination={false}
                   bordered={false}
@@ -262,7 +270,7 @@ const SpotBranch = () => {
           </span>
         </Col>
       </Row>
-    </div>
+    </section>
   );
 };
 
