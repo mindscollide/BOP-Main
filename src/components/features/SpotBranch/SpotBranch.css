@@ -12,7 +12,7 @@
   border-radius: 4px !important;
   display: inline-block !important;
   height: 100% !important;
-  width: 360px !important;
+  max-width: 360px !important;
   padding: 8px 13px !important;
 }
 

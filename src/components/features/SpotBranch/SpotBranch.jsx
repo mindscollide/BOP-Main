@@ -14,11 +14,11 @@ const SpotBranch = () => {
     { key: "6", instrument: "JPYPKR", bid: "2.0727", offer: "2.0742" },
     { key: "7", instrument: "AUDPKR", bid: "188.45", offer: "188.60" },
     { key: "8", instrument: "CHFPKR", bid: "181.24", offer: "180.09" },
-    // { key: "9", instrument: "GBPPKR", bid: "355.18", offer: "355.44" },
-    // { key: "10", instrument: "CNYPKR", bid: "40.76", offer: "40.80" },
-    // { key: "11", instrument: "JPYPKR", bid: "2.0727", offer: "2.0742" },
-    // { key: "12", instrument: "AUDPKR", bid: "188.45", offer: "188.60" },
-    // { key: "13", instrument: "CHFPKR", bid: "181.24", offer: "180.09" },
+    { key: "9", instrument: "GBPPKR", bid: "355.18", offer: "355.44" },
+    { key: "10", instrument: "CNYPKR", bid: "40.76", offer: "40.80" },
+    { key: "11", instrument: "JPYPKR", bid: "2.0727", offer: "2.0742" },
+    { key: "12", instrument: "AUDPKR", bid: "188.45", offer: "188.60" },
+    { key: "13", instrument: "CHFPKR", bid: "181.24", offer: "180.09" },
   ];
 
   const columns = [
@@ -248,10 +248,10 @@ const SpotBranch = () => {
         <Col lg={3} md={3} sm={12} className="m-0 p-0">
           <span className="WatchListOuterBox">
             <Row>
-              <Col lg={6} md={6} sm={12}>
+              <Col lg={7} md={7} sm={12}>
                 <span className="WatchlistLabel">Watchlist</span>
               </Col>
-              <Col lg={6} md={6} sm={12}>
+              <Col lg={5} md={5} sm={12}>
                 <span>21-11-2022 9:18 PM</span>
               </Col>
             </Row>
@@ -260,6 +260,7 @@ const SpotBranch = () => {
                 <GlobalTable
                   columns={columns}
                   dataSource={dataSource}
+                  scroll={{ y: 300, x: "auto" }}
                   prefixCls={"WatchList_table"}
                   pagination={false}
                   bordered={false}
