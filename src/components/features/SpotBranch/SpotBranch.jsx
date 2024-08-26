@@ -5,7 +5,7 @@ import { Draggable } from "react-beautiful-dnd";
 import BranchRateCardsOfWatchList from "../../common/branchWatchlistDroppableCard/branchWatchlistCard";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import { Table } from "antd";
-import BidAmountBox from "../../common/BidAmountBox/BidAmountBox";
+import BidAmountBox from "../../common/bidAmountBox/BidAmountBox";
 import GlobalTable from "../../common/table/GlobalTable";
 
 const SpotBranch = () => {

@@ -3,7 +3,7 @@
 import React from "react";
 import { Row, Col } from "react-bootstrap";
 import "./branchWatchlistCard.css";
-import BitAmountBox from "../../common/bitAmountBox/bitAmountBox";
+import BidAmountBox from "../../common/bidAmountBox/BidAmountBox";
 const BranchRateCardsOfWatchList = ({
   currencyLabel,
   buyHeading,
@@ -20,18 +20,18 @@ const BranchRateCardsOfWatchList = ({
       </Row>
       <Row className="mt-4">
         <Col lg={6} md={6} sm={6}>
-          <BitAmountBox
+          <BidAmountBox
             spot={true}
-            BitBoxHeading={sellHeading}
-            BitAmountValue={sellValue}
+            BidBoxHeading={sellHeading}
+            BidAmountValue={sellValue}
             applyClass={"SellandBuyCardBracnh"}
           />
         </Col>
         <Col lg={6} md={6} sm={6}>
-          <BitAmountBox
+          <BidAmountBox
             spot={true}
-            BitBoxHeading={buyHeading}
-            BitAmountValue={buyValue}
+            BidBoxHeading={buyHeading}
+            BidAmountValue={buyValue}
             applyClass={"SellandBuyCardBracnh"}
           />
         </Col>
