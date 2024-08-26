@@ -1,6 +1,6 @@
 import React from "react";
 import { Container, Nav, Navbar } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import styles from "./header.module.css";
 
 const Header = ({
@@ -11,6 +11,8 @@ const Header = ({
   CategoryLink,
   TreasuryLink,
 }) => {
+  const location = useLocation();
+  console.log(location, "locationlocationlocationlocation");
   return (
     <Navbar className={styles["top-header"]}>
       <Nav className='ms-auto'>
@@ -32,7 +34,11 @@ const Header = ({
                 as={Link}
                 active={true}
                 to={DealarLink || "/"}
-                className={`${styles["nav-link"]} `}
+                className={
+                  location.pathname.includes("/dealer")
+                    ? `${styles["nav-link_active"]} `
+                    : `${styles["nav-link"]}`
+                }
                 onClick={handleCLickDealer}>
                 Dealer
               </Nav.Link>
@@ -41,7 +47,11 @@ const Header = ({
               <Nav.Link
                 as={Link}
                 to={CategoryLink || "/"}
-                className={`${styles["nav-link"]} `}
+                className={
+                  location.pathname.includes("/category")
+                    ? `${styles["nav-link"]} `
+                    : `${styles["nav-link_active"]}`
+                }
                 onClick={handleCLickCategory}>
                 Category
               </Nav.Link>
@@ -51,7 +61,11 @@ const Header = ({
                 // href={TreasuryLink || "/"}
                 as={Link}
                 to={TreasuryLink || "/"}
-                className={`${styles["nav-link_active"]}`}
+                className={
+                  location.pathname.includes("/treasury")
+                    ? `${styles["nav-link"]}`
+                    : `${styles["nav-link_active"]}`
+                }
                 onClick={handleCLickTreasury}>
                 Treasury
               </Nav.Link>
