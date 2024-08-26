@@ -1,0 +1,24 @@
+.SpotBoxCard {
+  position: relative;
+  border-radius: 8px;
+  border: 1px solid #e2e2e2;
+  background: #fff !important;
+  padding: 10px 15px  20px 15px;
+  background-color: #f8a041;
+  height: auto;
+  margin-bottom: 15px;
+  transition: all 0.3s ease-in;
+  box-shadow: 3px 3px 4px rgba(0, 0, 0, 0.05);
+}
+.SpotCurrentHeading {
+  color: #4d4946 !important;
+  font-size: 1.5rem;
+  margin-right: 5px;
+  font-weight: 700;
+}
+
+.SpotCurrentValue {
+  color: #808285 !important;
+  font-weight: 500;
+  font-size: 18px !important;
+}
