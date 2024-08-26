@@ -14,7 +14,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-
 }
 .publishBtn_active {
   border-radius: 4px !important;
@@ -31,7 +30,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-
 }
 .publishBtn:hover {
   background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
@@ -53,7 +51,6 @@
   padding: 0px 10px;
   height: 35px !important;
   font-family: "Poppins", sans-serif !important;
-
 }
 .clearRates:hover {
   background: #000 !important;
@@ -76,7 +73,6 @@
   height: 37px;
   border-top-left-radius: 0px !important;
   border-bottom-left-radius: 0px !important;
-
 }
 .PlusButton:hover {
   background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
@@ -98,7 +94,6 @@
   padding: 0 10px !important;
   min-height: 35px !important;
   font-family: "Poppins", sans-serif !important;
-
 }
 .createTenorBtn:hover {
   background: #000 !important;
@@ -197,3 +192,26 @@
   background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
   border-color: #feac78 !important;
 }
+
+/* button for calculator start */
+.calculatorButton {
+  border-radius: 4px !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  position: relative !important;
+  transition: all 0.3s ease-in !important;
+  -webkit-transition: all 0.3s ease-in !important;
+  background: #f7f8ff !important;
+  border-color: #f7f8ff !important;
+  color: #000 !important;
+  padding: 6px 12px;
+  height: 35px !important;
+  font-family: "Poppins", sans-serif !important;
+}
+.calculatorButton:hover {
+  background: #000 !important;
+  border-color: #000 !important;
+  color: #fff !important;
+}
+
+/* button for calculator end */

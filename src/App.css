@@ -205,8 +205,9 @@ input[type="number"] {
   border-color: transparent !important;
 }
 
-.bg-primary {
+.bg-primary-orange {
   background: var(--color-primary) !important;
+  background-color: var(--color-primary) !important;
 }
 
 .bg-secondary {
@@ -869,7 +870,7 @@ input[type="number"] {
 }
 
 .page-gutter {
-  padding: 0 15px;
+  padding: 0 15px !important;
 }
 
 .vol-meter-container {
