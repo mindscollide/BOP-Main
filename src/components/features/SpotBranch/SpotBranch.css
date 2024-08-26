@@ -23,25 +23,6 @@
   font-family: "Roboto", sans-serif !important;
 }
 
-.DroppableBox {
-  display: inline-block !important;
-  width: 100% !important;
-  border-radius: 8px;
-  border: 1px solid #e2e2e2;
-  padding: 0px 10px;
-  background-color: #f26522;
-  height: 155px;
-  padding: 9px 12px !important;
-  transition: all 0.3s ease-in;
-}
-
-.DroppableBoxCurrencyLabel {
-  font-size: 1.5rem !important;
-  font-weight: 700 !important;
-  color: #ffffff !important;
-  font-family: "Roboto", sans-serif !important;
-}
-
 .WatchlistLabel {
   text-align: left !important;
   font-weight: 700 !important;

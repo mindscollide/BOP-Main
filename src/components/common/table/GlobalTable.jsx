@@ -1,6 +1,7 @@
 import { Table } from "antd";
 import React from "react";
 import "./GlobalTable.css";
+
 const GlobalTable = ({
   columns,
   prefixCls,
@@ -17,7 +18,10 @@ const GlobalTable = ({
   className,
   onHeaderRow,
   scroll,
-  onScroll, rowHoverBg
+  onScroll,
+  rowHoverBg,
+  components,
+  onRow, // Add this line to accept the onRow prop
 }) => {
   return (
     <Table
@@ -38,7 +42,8 @@ const GlobalTable = ({
       scroll={scroll}
       onScroll={onScroll}
       rowHoverBg={rowHoverBg}
-
+      components={components} // Pass the components prop to Table
+      onRow={onRow} // Pass the onRow prop to Table
     />
   );
 };
