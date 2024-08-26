@@ -181,7 +181,7 @@ const SpotBranch = () => {
             <Row>
               <Col lg={12} md={12} sm={12}>
                 <DragDropContext onDragEnd={onDragEnd}>
-                  <Droppable droppableId="droppable" direction="horizontal">
+                  <Droppable droppableId="droppable" direction="vertical">
                     {(provided) => (
                       <div ref={provided.innerRef} {...provided.droppableProps}>
                         <GlobalTable
