@@ -3,16 +3,9 @@ import { Container, Nav, Navbar } from "react-bootstrap";
 import { Link, useLocation } from "react-router-dom";
 import styles from "./header.module.css";
 
-const Header = ({
-  handleCLickDealer,
-  handleCLickCategory,
-  handleCLickTreasury,
-  DealarLink,
-  CategoryLink,
-  TreasuryLink,
-}) => {
+const Header = () => {
   const location = useLocation();
-  console.log(location, "locationlocationlocationlocation");
+  console.log(location.pathname, "locationlocationlocationlocation");
   return (
     <Navbar className={styles["top-header"]}>
       <Nav className='ms-auto'>
@@ -33,26 +26,28 @@ const Header = ({
               <Nav.Link
                 as={Link}
                 active={true}
-                to={DealarLink || "/"}
+                to={"dealer"}
                 className={
-                  location.pathname.includes("/dealer")
+                  location.pathname === "/dealer"
                     ? `${styles["nav-link_active"]} `
                     : `${styles["nav-link"]}`
                 }
-                onClick={handleCLickDealer}>
+                // onClick={handleCLickDealer}
+              >
                 Dealer
               </Nav.Link>
             </Nav.Item>
             <Nav.Item className={styles["nav-item"]}>
               <Nav.Link
                 as={Link}
-                to={CategoryLink || "/"}
+                to={"category"}
                 className={
-                  location.pathname.includes("/category")
-                    ? `${styles["nav-link"]} `
-                    : `${styles["nav-link_active"]}`
+                  location.pathname === "/category"
+                    ? `${styles["nav-link_active"]} `
+                    : `${styles["nav-link"]}`
                 }
-                onClick={handleCLickCategory}>
+                // onClick={handleCLickCategory}
+              >
                 Category
               </Nav.Link>
             </Nav.Item>
@@ -60,13 +55,14 @@ const Header = ({
               <Nav.Link
                 // href={TreasuryLink || "/"}
                 as={Link}
-                to={TreasuryLink || "/"}
+                to={"treasury"}
                 className={
-                  location.pathname.includes("/treasury")
-                    ? `${styles["nav-link"]}`
-                    : `${styles["nav-link_active"]}`
+                  location.pathname === "/treasury"
+                    ? `${styles["nav-link_active"]}`
+                    : `${styles["nav-link"]}`
                 }
-                onClick={handleCLickTreasury}>
+                // onClick={handleCLickTreasury}
+              >
                 Treasury
               </Nav.Link>
             </Nav.Item>
