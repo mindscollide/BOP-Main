@@ -7,7 +7,7 @@ import GlobalNavbar from "../../components/layout/nav/Navbar";
 const Dashboard = () => {
   const { Content } = Layout;
   return (
-    <Layout>
+    <Layout className="roboto-13">
       <Header
         DealarLink={"/dealer"}
         CategoryLink={"/category"}

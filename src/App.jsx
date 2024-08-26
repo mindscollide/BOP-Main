@@ -69,6 +69,10 @@ function App() {
         await import("./container/pages/mainCategory/MainCategory")
       ).default;
       dashboardRoute.children.push({
+        path: "/",
+        element: <Dealer />,
+      });
+      dashboardRoute.children.push({
         path: "/dealer",
         element: <Dealer />,
       });
@@ -93,6 +97,10 @@ function App() {
       ).default;
       dashboardRoute.children.push({
         path: "/dealer",
+        element: <Dealer />,
+      });
+      dashboardRoute.children.push({
+        path: "/",
         element: <Dealer />,
       });
       dashboardRoute.children.push({

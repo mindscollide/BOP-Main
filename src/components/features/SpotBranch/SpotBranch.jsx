@@ -2,10 +2,10 @@ import React from "react";
 import "./SpotBranch.css";
 import { Col, Row } from "react-bootstrap";
 import { Draggable } from "react-beautiful-dnd";
-import BitAmountBox from "../../common/bitAmountBox/bitAmountBox";
 import BranchRateCardsOfWatchList from "../../common/branchWatchlistDroppableCard/branchWatchlistCard";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import { Table } from "antd";
+import BidAmountBox from "../../common/BidAmountBox/BidAmountBox";
 import GlobalTable from "../../common/table/GlobalTable";
 
 const SpotBranch = () => {
@@ -36,13 +36,15 @@ const SpotBranch = () => {
       width: "120px",
       align: "center",
       render: (text) => (
-        <div className="d-flex justify-content-center">
-          <BitAmountBox
-            spot={false}
-            BitAmountValue={text}
-            applyClass={"BitCardBox"}
-          />
-        </div>
+        <>
+          <div className="d-flex justify-content-center">
+            <BidAmountBox
+              spot={false}
+              BidAmountValue={text}
+              applyClass={"BidCardBox"}
+            />
+          </div>
+        </>
       ),
     },
     {
@@ -52,13 +54,15 @@ const SpotBranch = () => {
       align: "center",
       width: "120px",
       render: (text) => (
-        <div className="d-flex justify-content-center">
-          <BitAmountBox
-            spot={false}
-            BitAmountValue={text}
-            applyClass={"OfferCardBox"}
-          />
-        </div>
+        <>
+          <div className="d-flex justify-content-center">
+            <BidAmountBox
+              spot={false}
+              BidAmountValue={text}
+              applyClass={"OfferCardBox"}
+            />
+          </div>
+        </>
       ),
     },
   ];

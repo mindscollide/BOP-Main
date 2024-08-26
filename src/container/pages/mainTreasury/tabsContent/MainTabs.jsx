@@ -15,7 +15,7 @@ const MainTabs = () => {
 
     return (
         <Container fluid className='page-gutter'>
-            <GlobalTabs tabs={tabsData} defaultActiveKey={"2"} />
+            <GlobalTabs tabs={tabsData} defaultActiveKey={"0"} />
         </Container>
     )
 }
