@@ -739,7 +739,6 @@ tr.Treasury_Discounting-row.Treasury_Discounting-row-level-0.striped-design:nth-
   > tr:first-child
   > *:first-child {
   border-start-start-radius: 0px !important;
-  padding: 5px;
 }
 
 .WatchList_table-wrapper
@@ -764,4 +763,110 @@ tr.Treasury_Discounting-row.Treasury_Discounting-row-level-0.striped-design:nth-
   > .WatchList_table-cell {
   border-bottom: none !important;
 }
+
 /* Branch Spot Table WatchList Ends */
+
+/* Start branch forwards table */
+.branch_forwardsTable-wrapper .Tresuary_Discounting {
+  scrollbar-color: auto !important;
+}
+.branch_forwardsTable-wrapper::-webkit-scrollbar {
+  width: 0.3rem !important;
+  border-radius: 20px !important;
+  background-color: #f2f2f2 !important;
+  height: 0.3rem !important;
+}
+
+.branch_forwardsTable-wrapper::-webkit-scrollbar-thumb {
+  border-radius: 20px !important;
+  background: #ccc !important;
+  margin-left: -15px !important;
+}
+.branch_forwardsTable-thead tr:nth-child(1) th {
+  background-color: #096fed !important;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+}
+.branch_forwardsTable-thead tr:nth-child(1) th:nth-child(1) {
+  background-color: transparent !important;
+  text-align: center;
+  font-weight: 700;
+  font-size: 14px;
+  border-left: 0px !important;
+}
+.branch_forwardsTable-thead tr:nth-child(2) th {
+  background-color: #f26522 !important;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+}
+.branch_forwardsTable-thead tr:nth-child(2) th:nth-child(1) {
+  background-color: #f26522 !important;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+}
+.branch_forwardsTable-thead th {
+  padding: 5px 0px !important;
+}
+.branch_forwardsTable-tbody tr td {
+  padding: 5px 0px !important;
+}
+.branch_forwardsTable-even-row {
+  background-color: #f2f2f2;
+}
+
+.branch_forwardsTable-odd-row {
+  background-color: #fff;
+}
+
+.branch_forwardsTable {
+  background: none !important;
+}
+.branch_forwardsTable-tbody {
+  background: #fff !important;
+  border: 1px solid #e1e1e1;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: "Roboto", sans-serif !important;
+}
+.branch_forwardsTable-tbody
+  .branch_forwardsTable-row
+  .branch_forwardsTable-cell {
+  border: 1px solid #e1e1e1 !important;
+}
+.branch_forwardsTable-tbody tr td:nth-child(1) {
+  padding-left: 10px;
+}
+.branch_forwardsTable-thead tr:nth-child(2) th {
+  text-align: left;
+  font-size: 1rem !important;
+}
+/* End Branch Forward table */
+
+/* Bank Spot Table Design */
+
+th.BankSpot_Table-cell {
+  padding: 5px !important;
+  text-align: center !important;
+  border: 0 !important;
+  background: #fff !important;
+  border-radius: 0 !important;
+  color: #f26522 !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  font-family: 'Roboto' !important;
+}
+
+th.BankSpot_Table-cell:before {
+  content: none !important;
+}
+
+td.BankSpot_Table-cell {
+  padding: 5px !important;
+  text-align: center;
+}

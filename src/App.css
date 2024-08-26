@@ -2499,3 +2499,8 @@ i.close-add-user {
 .padding-x-10 {
   padding: 0 10px !important;
 }
+
+.roboto-13 {
+  font-family: "Roboto", sans-serif !important;
+  font-size: 13px !important;
+}

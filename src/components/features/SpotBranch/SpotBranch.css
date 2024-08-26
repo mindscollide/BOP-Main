@@ -12,8 +12,8 @@
   border-radius: 4px !important;
   display: inline-block !important;
   height: 100% !important;
-  width: 360px !important;
-  padding: 8px 13px !important;
+  max-width: 360px !important;
+  padding: 8px 7px !important;
 }
 
 .FxTradingLabel {
@@ -50,10 +50,10 @@
 }
 
 .instrument-column {
-  font-weight: bold;
-  color: #e65100;
+  font-weight: 500;
+  color: #4d4946;
 }
 
 .sectionsporBranch {
-  width: 95% !important;
+  width: 97% !important;
 }
