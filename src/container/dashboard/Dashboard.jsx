@@ -15,7 +15,9 @@ const Dashboard = () => {
       />
       <GlobalNavbar />
       <Content>
+        <main className="px-4">
         <Outlet />
+        </main>
       </Content>
     </Layout>
   );

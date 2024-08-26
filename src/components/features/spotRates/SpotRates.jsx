@@ -3,10 +3,12 @@ import RadioButton from "../../common/radioButton/SwitchBtn";
 import CustomButton from "../../common/globalButton/button";
 import InputFIeld from "../../common/inputField/InputField";
 import "./SpotRates.css";
+import { Col, Row } from "react-bootstrap";
 
 const SpotRates = () => {
   return (
-    <div className='col-12 px-1'>
+    <Row>
+    <Col sm={12} md={12} lg={12}>
       <div className='card-box p-0  h-auto'>
         <div className='box-header p-2 bg-Yorange-light color-dark'>
           <div className='d-flex align-items-center'>
@@ -135,7 +137,8 @@ const SpotRates = () => {
           </div>
         </div>
       </div>
-    </div>
+    </Col>
+    </Row>
   );
 };
 

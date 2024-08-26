@@ -4,10 +4,10 @@ import ForwardsForTreasuryAndBranch from "../../../components/features/forwardsF
 
 const MainDealer = () => {
   return (
-    <div className='px-3'>
+    <>
       <SpotRates />
       <ForwardsForTreasuryAndBranch />
-    </div>
+    </>
   );
 };
 

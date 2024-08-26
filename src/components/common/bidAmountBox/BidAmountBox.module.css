@@ -20,7 +20,10 @@
 .BuyCard:hover p {
   color: #000;
 }
-
+.afterDotValue {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
 .SellCard {
   background-color: #f26522;
   max-width: 100%;

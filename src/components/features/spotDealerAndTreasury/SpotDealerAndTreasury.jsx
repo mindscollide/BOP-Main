@@ -1,77 +1,122 @@
 import React from "react";
 import { Col, Row } from "react-bootstrap";
-import BitAmountBox from "../../common/bitAmountBox/bitAmountBox";
+import BidAmountBox from "../../common/bidAmountBox/BidAmountBox";
+import styles from "./spotDealerAndTreasury.module.css";
 
-const SpotDealerAndTreasury = () => {
+const SpotDealerAndTreasury = ({
+  currentHeading,
+  currentValue,
+  bidSellHeading,
+  bidSellValue,
+  bidBuyHeading,
+  bidBuyValue,
+}) => {
+  const currencyData = [
+    {
+      code: "USD",
+      sellRate: 289,
+      buyRate: 288,
+    },
+    {
+      code: "EUR",
+      sellRate: 289,
+      buyRate: 288,
+    },
+    {
+      code: "GBP",
+      sellRate: 289,
+      buyRate: 288,
+    },
+    {
+      code: "JPY",
+      sellRate: 289,
+      buyRate: 288,
+    },
+    {
+      code: "CHF",
+      sellRate: 289,
+      buyRate: 288,
+    },
+    {
+      code: "CAD",
+      sellRate: 289,
+      buyRate: 288,
+    },
+    {
+      code: "CNY",
+      sellRate: 289,
+      buyRate: 288,
+    },
+    {
+      code: "CNH",
+      sellRate: 289,
+      buyRate: 288,
+    },
+    {
+      code: "AUD",
+      sellRate: 289,
+      buyRate: 288,
+    },
+    {
+      code: "SGD",
+      sellRate: 289,
+      buyRate: 288,
+    },
+    {
+      code: "DKK",
+      sellRate: 289,
+      buyRate: 288,
+    },
+    {
+      code: "SAR",
+      sellRate: 289,
+      buyRate: 288,
+    },
+  ];
+
   return (
-    <div className='col-md-3 col-sm-6 px-1'>
-      <div className='box-item bg-white mt-0'>
-        <div>
-          {/*box header*/}
-          <div className='box-header d-flex align-items-center'>
-            <div className='heading'>
-              <span className='fs-4 fw-bold ins-title'>USD</span>
-              <small className='fw-normal ins-subtitle'>PKR</small>
-            </div>
-          </div>
-          {/*box content*/}
-          {/*USD spot item*/}
-          <Row className="mt-2">
-            <Col sm={6} md={6} lg={6}>
-              <BitAmountBox
-                spot={true}
-                BitBoxHeading={"I Sell"}
-                BitAmountValue={"289.00"}
-                applyClass={"SellCard"}
-              />
-            </Col>
-            <Col sm={6} md={6} lg={6} className="">
-              <BitAmountBox
-                spot={true}
-                BitBoxHeading={"I Buy"}
-                BitAmountValue={"289.00"}
-                applyClass={"BuyCard"}
-              />
-            </Col>
-          </Row>
-
-          {/* <div
-              className="col px-1 py-2 col-rate-showcase input-col-forexdata"
-              data-target="#BuysMDForex"
-              deal-type="Deal"
-              col-type="Sell"
-            >
-              <div
-                className="text-center rate-area showcase-sell p-2"
-                aria-hidden="true"
-              >
-                <div className="rate-heading fs-6">I Sell</div>
-                <div className="rate-showcase">
-                  <span className="fs-6 rate">289.</span>
-                  <span className="fs-5 fw-bold rate-decimal">00</span>
-                </div>
-              </div> */}
-          {/* </div> */}
-          {/* <div
-              className="col px-1 col-rate-showcase input-col-forexdata"
-              data-target="#BuysMDForex"
-              deal-type="Deal"
-              col-type="Buy"
-            >
-              <div
-                className="text-center rate-area showcase-buy p-2"
-                aria-hidden="true"
-              >
-                <div className="rate-heading fs-6">I Buy</div>
-                <div className="rate-showcase">
-                  <span className="fs-6 rate">288.</span>
-                  <span className="fs-5 fw-bold rate-decimal">00</span>
+    <>
+      <Row>
+        {currencyData.map((spotCardsData, index) => {
+          return (
+            <Col sm={6} md={3} className='px-1' key={spotCardsData}>
+              <div className={styles["SpotBoxCard"]}>
+                <div>
+                  {/*box header*/}
+                  <div className='mb-3 '>
+                    <span className={styles["SpotCurrentHeading"]}>
+                      {spotCardsData.code}
+                    </span>
+                    <span className={styles["SpotCurrentValue"]}>
+                      {"PKR"}
+                    </span>
+                  </div>
+                  {/*box content*/}
+                  <div className='d-flex gap-2 mt-2'>
+                    <Col>
+                      <BidAmountBox
+                        spot={true}
+                        BidBoxHeading={"I Sell"}
+                        BidAmountValue={spotCardsData.sellRate}
+                        applyClass={"SellCard"}
+                      />
+                    </Col>
+                    <Col>
+                      <BidAmountBox
+                        spot={true}
+                        BidBoxHeading={"I Buy"}
+                        BidAmountValue={spotCardsData.buyRate}
+                        applyClass={"BuyCard"}
+                      />
+                    </Col>
+                  </div>
                 </div>
               </div>
-            </div> */}
-        </div>
-      </div>
-    </div>
+            </Col>
+          );
+        })}
+      </Row>
+    </>
   );
 };
 
