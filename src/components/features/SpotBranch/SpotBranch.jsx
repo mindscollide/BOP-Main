@@ -1,9 +1,12 @@
 import React from "react";
 import "./SpotBranch.css";
 import { Col, Row } from "react-bootstrap";
+import { Draggable } from "react-beautiful-dnd";
 import BitAmountBox from "../../common/bitAmountBox/bitAmountBox";
-import GlobalTable from "../../common/table/GlobalTable";
 import BranchRateCardsOfWatchList from "../../common/branchWatchlistDroppableCard/branchWatchlistCard";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import { Table } from "antd";
+import GlobalTable from "../../common/table/GlobalTable";
 
 const SpotBranch = () => {
   const dataSource = [
@@ -15,11 +18,6 @@ const SpotBranch = () => {
     { key: "6", instrument: "JPYPKR", bid: "2.0727", offer: "2.0742" },
     { key: "7", instrument: "AUDPKR", bid: "188.45", offer: "188.60" },
     { key: "8", instrument: "CHFPKR", bid: "181.24", offer: "180.09" },
-    { key: "9", instrument: "GBPPKR", bid: "355.18", offer: "355.44" },
-    { key: "10", instrument: "CNYPKR", bid: "40.76", offer: "40.80" },
-    { key: "11", instrument: "JPYPKR", bid: "2.0727", offer: "2.0742" },
-    { key: "12", instrument: "AUDPKR", bid: "188.45", offer: "188.60" },
-    { key: "13", instrument: "CHFPKR", bid: "181.24", offer: "180.09" },
   ];
 
   const columns = [
@@ -38,15 +36,13 @@ const SpotBranch = () => {
       width: "120px",
       align: "center",
       render: (text) => (
-        <>
-          <div className="d-flex justify-content-center">
-            <BitAmountBox
-              spot={false}
-              BitAmountValue={text}
-              applyClass={"BitCardBox"}
-            />
-          </div>
-        </>
+        <div className="d-flex justify-content-center">
+          <BitAmountBox
+            spot={false}
+            BitAmountValue={text}
+            applyClass={"BitCardBox"}
+          />
+        </div>
       ),
     },
     {
@@ -56,18 +52,52 @@ const SpotBranch = () => {
       align: "center",
       width: "120px",
       render: (text) => (
-        <>
-          <div className="d-flex justify-content-center">
-            <BitAmountBox
-              spot={false}
-              BitAmountValue={text}
-              applyClass={"OfferCardBox"}
-            />
-          </div>
-        </>
+        <div className="d-flex justify-content-center">
+          <BitAmountBox
+            spot={false}
+            BitAmountValue={text}
+            applyClass={"OfferCardBox"}
+          />
+        </div>
       ),
     },
   ];
+
+  const onDragEnd = (result) => {
+    const { source, destination } = result;
+
+    // If no destination, return
+    if (!destination) {
+      return;
+    }
+
+    // Reordering logic
+    const reorderedDataSource = Array.from(dataSource);
+    const [movedItem] = reorderedDataSource.splice(source.index, 1);
+    reorderedDataSource.splice(destination.index, 0, movedItem);
+
+    // Update your state or perform actions here with the reorderedDataSource
+  };
+
+  const DraggableBodyRow = ({ className, style, ...restProps }) => {
+    const { index, moveRow } = restProps;
+    return (
+      <Draggable draggableId={restProps["data-row-key"]} index={index}>
+        {(provided) => (
+          <tr
+            ref={provided.innerRef}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+            className={className}
+            style={{ ...style, ...provided.draggableProps.style }}
+          >
+            {restProps.children}
+          </tr>
+        )}
+      </Draggable>
+    );
+  };
+
   return (
     <section className="sectionsporBranch">
       <Row>
@@ -150,14 +180,32 @@ const SpotBranch = () => {
             </Row>
             <Row>
               <Col lg={12} md={12} sm={12}>
-                <GlobalTable
-                  columns={columns}
-                  dataSource={dataSource}
-                  scroll={{ y: 300, x: "auto" }}
-                  prefixCls={"WatchList_table"}
-                  pagination={false}
-                  bordered={false}
-                />
+                <DragDropContext onDragEnd={onDragEnd}>
+                  <Droppable droppableId="droppable" direction="horizontal">
+                    {(provided) => (
+                      <div ref={provided.innerRef} {...provided.droppableProps}>
+                        <GlobalTable
+                          columns={columns}
+                          dataSource={dataSource}
+                          prefixCls={"WatchList_table"}
+                          pagination={false}
+                          bordered={false}
+                          components={{
+                            body: {
+                              row: DraggableBodyRow,
+                            },
+                          }}
+                          onRow={(record, index) => ({
+                            index,
+                            "data-row-key": record.key,
+                          })}
+                          scroll={{ y: 300, x: "auto" }}
+                        />
+                        {provided.placeholder}
+                      </div>
+                    )}
+                  </Droppable>
+                </DragDropContext>
               </Col>
             </Row>
           </span>
