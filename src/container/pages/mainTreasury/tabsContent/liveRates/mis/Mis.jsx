@@ -3,6 +3,7 @@ import GlobalTable from '../../../../../../components/common/table/GlobalTable'
 import IconElement from '../../../../../../components/common/IconElement/IconElement';
 import './Mis.css'
 import DatePickerCom from '../../../../../../components/common/datePicker/DatePicker';
+import CustomButton from '../../../../../../components/common/globalButton/button';
 
 const MIS = () => {
 
@@ -119,15 +120,15 @@ const MIS = () => {
                         <label className="mb-2 fs-6 color-blue">Select Range</label>
                         <div className="form-group">
                             <label className="mb-1">From</label>
-                            <DatePickerCom />
+                            <DatePickerCom placeholder="Select Date" applyClass={"DatePickerField"} />
                         </div>
                         <div className="form-group">
-                            <label className="mb-1">To</label>
-                            <DatePickerCom />
+                            <label className="mb-1">To  <span className='invisible'> 123</span></label>
+                            <DatePickerCom placeholder="Select Date" applyClass={"DatePickerField"} />
                         </div>
-                        <div className="filter-mis-btn mt-3">
-                            <button className="btn btn-sm btn-secondary">Search</button>
-                            <button className="btn btn-sm btn-primary">Reset</button>
+                        <div className="filter-mis-btn mt-3 d-flex gap-1">
+                            <CustomButton value="Search" applyClass="searchBtn" />
+                            <CustomButton value="Reset" applyClass="resetBtn" />
                         </div>
                     </div>
                 </div>
