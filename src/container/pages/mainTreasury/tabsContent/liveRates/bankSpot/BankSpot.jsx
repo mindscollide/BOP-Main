@@ -7,7 +7,7 @@ const BankSpot = () => {
     const tableData = [
         {
             key: '1',
-            currencyPair: 'USDPKR',
+            instrument: 'USDPKR',
             bid: '288',
             offer: '289',
             currency: 'USD',
@@ -17,7 +17,7 @@ const BankSpot = () => {
         },
         {
             key: '2',
-            currencyPair: 'EURPKR',
+            instrument: 'EURPKR',
             bid: '308.60',
             offer: '308.85',
             currency: 'EUR',
@@ -27,7 +27,7 @@ const BankSpot = () => {
         },
         {
             key: '3',
-            currencyPair: 'GBPPKR',
+            instrument: 'GBPPKR',
             bid: '355.18',
             offer: '355.44',
             currency: 'GBP',
@@ -37,7 +37,7 @@ const BankSpot = () => {
         },
         {
             key: '4',
-            currencyPair: 'CNYPKR',
+            instrument: 'CNYPKR',
             bid: '40.76',
             offer: '40.80',
             currency: 'CNY',
@@ -47,7 +47,7 @@ const BankSpot = () => {
         },
         {
             key: '5',
-            currencyPair: 'JPYPKR',
+            instrument: 'JPYPKR',
             bid: '2.0727',
             offer: '2.0742',
             currency: 'JPY',
@@ -57,7 +57,7 @@ const BankSpot = () => {
         },
         {
             key: '6',
-            currencyPair: 'AUDPKR',
+            instrument: 'AUDPKR',
             bid: '188.45',
             offer: '188.60',
             currency: 'AUD',
@@ -67,7 +67,7 @@ const BankSpot = () => {
         },
         {
             key: '7',
-            currencyPair: 'USDPKR',
+            instrument: 'USDPKR',
             bid: '288',
             offer: '289',
             currency: 'USD',
@@ -77,7 +77,7 @@ const BankSpot = () => {
         },
         {
             key: '8',
-            currencyPair: 'EURPKR',
+            instrument: 'EURPKR',
             bid: '308.60',
             offer: '308.85',
             currency: 'EUR',
@@ -87,7 +87,7 @@ const BankSpot = () => {
         },
         {
             key: '9',
-            currencyPair: 'GBPPKR',
+            instrument: 'GBPPKR',
             bid: '355.18',
             offer: '355.44',
             currency: 'GBP',
@@ -97,7 +97,7 @@ const BankSpot = () => {
         },
         {
             key: '10',
-            currencyPair: 'CNYPKR',
+            instrument: 'CNYPKR',
             bid: '40.76',
             offer: '40.80',
             currency: 'CNY',
@@ -107,7 +107,7 @@ const BankSpot = () => {
         },
         {
             key: '11',
-            currencyPair: 'JPYPKR',
+            instrument: 'JPYPKR',
             bid: '2.0727',
             offer: '2.0742',
             currency: 'JPY',
@@ -117,7 +117,7 @@ const BankSpot = () => {
         },
         {
             key: '12',
-            currencyPair: 'AUDPKR',
+            instrument: 'AUDPKR',
             bid: '188.45',
             offer: '188.60',
             currency: 'AUD',
@@ -157,21 +157,29 @@ const BankSpot = () => {
             title: '',
             dataIndex: 'currency',
             key: 'currency',
+            className: 'roboto-13',
         },
         {
             title: 'Bid',
             dataIndex: 'previousBid',
             key: 'previousBid',
+            render: (text, record) => (
+                <BidAmountBox applyClass={"BidCardBox"} spot={false} BidAmountValue={text} />
+            ),
         },
         {
             title: 'Offer',
             dataIndex: 'previousOffer',
             key: 'previousOffer',
+            render: (text, record) => (
+                <BidAmountBox applyClass={"OfferCardBox"} spot={false} BidAmountValue={text} />
+            ),
         },
         {
             title: 'Time',
             dataIndex: 'time',
             key: 'time',
+            className: 'roboto-13',
         },
     ]
 

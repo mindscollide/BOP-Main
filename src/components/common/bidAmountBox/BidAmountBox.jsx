@@ -8,7 +8,7 @@ const BidAmountBox = ({
   spot,
 }) => {
   return (
-    <div className={styles[applyClass]}>
+    <div className={`${styles[applyClass]} roboto-13`}>
       {spot && <p className='m-0'>{BidBoxHeading}</p>}
 
       <p className='m-0'>{BidAmountValue}</p>

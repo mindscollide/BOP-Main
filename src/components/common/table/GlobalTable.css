@@ -853,13 +853,12 @@ tr.Treasury_Discounting-row.Treasury_Discounting-row-level-0.striped-design:nth-
 th.BankSpot_Table-cell {
   padding: 5px !important;
   text-align: center !important;
-  border: 0 !important;
+  border-color: #dee2e6 !important;
   background: #fff !important;
-  border-radius: 0 !important;
   color: #f26522 !important;
   font-weight: 700 !important;
   font-size: 14px !important;
-  font-family: 'Roboto' !important;
+  font-family: "Roboto" !important;
 }
 
 th.BankSpot_Table-cell:before {
@@ -869,4 +868,6 @@ th.BankSpot_Table-cell:before {
 td.BankSpot_Table-cell {
   padding: 5px !important;
   text-align: center;
+  border-bottom-width: 1px;
+  border-color: #dee2e6 !important;
 }
