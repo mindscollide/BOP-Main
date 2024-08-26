@@ -1,7 +1,7 @@
 import React from "react";
 import "./SpotBranch.css";
 import { Col, Row } from "react-bootstrap";
-import BitAmountBox from "../../common/bitAmountBox/bitAmountBox";
+import BidAmountBox from "../../common/BidAmountBox/BidAmountBox";
 import GlobalTable from "../../common/table/GlobalTable";
 
 const SpotBranch = () => {
@@ -39,10 +39,10 @@ const SpotBranch = () => {
       render: (text) => (
         <>
           <div className="d-flex justify-content-center">
-            <BitAmountBox
+            <BidAmountBox
               spot={false}
-              BitAmountValue={text}
-              applyClass={"BitCardBox"}
+              BidAmountValue={text}
+              applyClass={"BidCardBox"}
             />
           </div>
         </>
@@ -57,9 +57,9 @@ const SpotBranch = () => {
       render: (text) => (
         <>
           <div className="d-flex justify-content-center">
-            <BitAmountBox
+            <BidAmountBox
               spot={false}
-              BitAmountValue={text}
+              BidAmountValue={text}
               applyClass={"OfferCardBox"}
             />
           </div>
@@ -87,18 +87,18 @@ const SpotBranch = () => {
                   </Row>
                   <Row className="mt-4">
                     <Col lg={6} md={6} sm={6}>
-                      <BitAmountBox
+                      <BidAmountBox
                         spot={true}
-                        BitBoxHeading={"I Sell"}
-                        BitAmountValue={"208.3"}
+                        BidBoxHeading={"I Sell"}
+                        BidAmountValue={"208.3"}
                         applyClass={"SellandBuyCardBracnh"}
                       />
                     </Col>
                     <Col lg={6} md={6} sm={6}>
-                      <BitAmountBox
+                      <BidAmountBox
                         spot={true}
-                        BitBoxHeading={"I Buy"}
-                        BitAmountValue={"208.3"}
+                        BidBoxHeading={"I Buy"}
+                        BidAmountValue={"208.3"}
                         applyClass={"SellandBuyCardBracnh"}
                       />
                     </Col>
@@ -114,18 +114,18 @@ const SpotBranch = () => {
                   </Row>
                   <Row className="mt-4">
                     <Col lg={6} md={6} sm={6}>
-                      <BitAmountBox
+                      <BidAmountBox
                         spot={true}
-                        BitBoxHeading={"I Buy"}
-                        BitAmountValue={"208.3"}
+                        BidBoxHeading={"I Buy"}
+                        BidAmountValue={"208.3"}
                         applyClass={"SellandBuyCardBracnh"}
                       />
                     </Col>
                     <Col lg={6} md={6} sm={6}>
-                      <BitAmountBox
+                      <BidAmountBox
                         spot={true}
-                        BitBoxHeading={"I Buy"}
-                        BitAmountValue={"208.3"}
+                        BidBoxHeading={"I Buy"}
+                        BidAmountValue={"208.3"}
                         applyClass={"SellandBuyCardBracnh"}
                       />
                     </Col>
@@ -141,18 +141,18 @@ const SpotBranch = () => {
                   </Row>{" "}
                   <Row className="mt-4">
                     <Col lg={6} md={6} sm={6}>
-                      <BitAmountBox
+                      <BidAmountBox
                         spot={true}
-                        BitBoxHeading={"I Buy"}
-                        BitAmountValue={"208.3"}
+                        BidBoxHeading={"I Buy"}
+                        BidAmountValue={"208.3"}
                         applyClass={"SellandBuyCardBracnh"}
                       />
                     </Col>
                     <Col lg={6} md={6} sm={6}>
-                      <BitAmountBox
+                      <BidAmountBox
                         spot={true}
-                        BitBoxHeading={"I Buy"}
-                        BitAmountValue={"208.3"}
+                        BidBoxHeading={"I Buy"}
+                        BidAmountValue={"208.3"}
                         applyClass={"SellandBuyCardBracnh"}
                       />
                     </Col>
@@ -170,18 +170,18 @@ const SpotBranch = () => {
                   </Row>{" "}
                   <Row className="mt-4">
                     <Col lg={6} md={6} sm={6}>
-                      <BitAmountBox
+                      <BidAmountBox
                         spot={true}
-                        BitBoxHeading={"I Sell"}
-                        BitAmountValue={"208.3"}
+                        BidBoxHeading={"I Sell"}
+                        BidAmountValue={"208.3"}
                         applyClass={"SellandBuyCardBracnh"}
                       />
                     </Col>
                     <Col lg={6} md={6} sm={6}>
-                      <BitAmountBox
+                      <BidAmountBox
                         spot={true}
-                        BitBoxHeading={"I Sell"}
-                        BitAmountValue={"208.3"}
+                        BidBoxHeading={"I Sell"}
+                        BidAmountValue={"208.3"}
                         applyClass={"SellandBuyCardBracnh"}
                       />
                     </Col>
@@ -197,18 +197,18 @@ const SpotBranch = () => {
                   </Row>{" "}
                   <Row className="mt-4">
                     <Col lg={6} md={6} sm={6}>
-                      <BitAmountBox
+                      <BidAmountBox
                         spot={true}
-                        BitBoxHeading={"I Sell"}
-                        BitAmountValue={"208.3"}
+                        BidBoxHeading={"I Sell"}
+                        BidAmountValue={"208.3"}
                         applyClass={"SellandBuyCardBracnh"}
                       />
                     </Col>
                     <Col lg={6} md={6} sm={6}>
-                      <BitAmountBox
+                      <BidAmountBox
                         spot={true}
-                        BitBoxHeading={"I Sell"}
-                        BitAmountValue={"208.3"}
+                        BidBoxHeading={"I Sell"}
+                        BidAmountValue={"208.3"}
                         applyClass={"SellandBuyCardBracnh"}
                       />
                     </Col>
@@ -224,18 +224,18 @@ const SpotBranch = () => {
                   </Row>{" "}
                   <Row className="mt-4">
                     <Col lg={6} md={6} sm={6}>
-                      <BitAmountBox
+                      <BidAmountBox
                         spot={true}
-                        BitBoxHeading={"I Sell"}
-                        BitAmountValue={"208.3"}
+                        BidBoxHeading={"I Sell"}
+                        BidAmountValue={"208.3"}
                         applyClass={"SellandBuyCardBracnh"}
                       />
                     </Col>
                     <Col lg={6} md={6} sm={6}>
-                      <BitAmountBox
+                      <BidAmountBox
                         spot={true}
-                        BitBoxHeading={"I Sell"}
-                        BitAmountValue={"208.3"}
+                        BidBoxHeading={"I Sell"}
+                        BidAmountValue={"208.3"}
                         applyClass={"SellandBuyCardBracnh"}
                       />
                     </Col>
