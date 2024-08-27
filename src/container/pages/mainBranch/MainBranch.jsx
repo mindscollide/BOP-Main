@@ -21,7 +21,7 @@ const MainBranch = () => {
   return (
     <>
       {" "}
-      <div className="px-3">
+      <div>
         {GlobalTabs && <GlobalTabs tabs={tabsData} defaultActiveKey={"1"} />}
       </div>
     </>
