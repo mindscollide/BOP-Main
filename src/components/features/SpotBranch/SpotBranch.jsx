@@ -108,18 +108,22 @@ const SpotBranch = () => {
     }
   };
 
-  //Draggable Row of the table
+  // Draggable Row of the table
   const DraggableBodyRow = ({ index, className, style, ...restProps }) => {
     const { children, ...draggableProps } = restProps;
 
     return (
       <Draggable draggableId={draggableProps["data-row-key"]} index={index}>
-        {(provided) => (
+        {(provided, snapshot) => (
           <tr
             ref={provided.innerRef}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
-            style={{ ...style, ...provided.draggableProps.style }}
+            style={{
+              ...style,
+              height: "0px", // Apply 20px height to the row itself
+              ...provided.draggableProps.style, // Important: ensure that this stays last to not interfere with provided styles
+            }}
             className={className}
           >
             {children}
@@ -131,13 +135,7 @@ const SpotBranch = () => {
 
   return (
     <section className="sectionsporBranch">
-      <DragDropContext
-        onDragStart={() => document.body.classList.add("dragging")}
-        onDragEnd={(result) => {
-          document.body.classList.remove("dragging");
-          onDragEnd(result);
-        }}
-      >
+      <DragDropContext onDragEnd={onDragEnd}>
         <Row>
           <Col lg={9} md={9} sm={12}>
             <span className="FxTradingOuterBox">
@@ -146,20 +144,12 @@ const SpotBranch = () => {
                   <span className="FxTradingLabel">FX Trading</span>
                 </Col>
               </Row>
-              {/* First Row of Dragger */}
+              {/* First Row of Dragger below */}
               <Row className="mt-2">
                 <Col lg={4} md={4} sm={12}>
                   <Droppable droppableId="watchlist1">
-                    {(provided, snapshot) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.droppableProps}
-                        className={
-                          snapshot.isDraggingOver
-                            ? "DroppableDragging"
-                            : "Droppable"
-                        }
-                      >
+                    {(provided) => (
+                      <div ref={provided.innerRef} {...provided.droppableProps}>
                         <BranchRateCardsOfWatchList
                           currencyLabel={
                             watchlistData.watchlist1.currecncyLabel
@@ -176,16 +166,8 @@ const SpotBranch = () => {
                 </Col>
                 <Col lg={4} md={4} sm={12}>
                   <Droppable droppableId="watchlist2">
-                    {(provided, snapshot) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.droppableProps}
-                        className={
-                          snapshot.isDraggingOver
-                            ? "DroppableDragging"
-                            : "Droppable"
-                        }
-                      >
+                    {(provided) => (
+                      <div ref={provided.innerRef} {...provided.droppableProps}>
                         <BranchRateCardsOfWatchList
                           currencyLabel={
                             watchlistData.watchlist2.currecncyLabel
@@ -202,16 +184,8 @@ const SpotBranch = () => {
                 </Col>
                 <Col lg={4} md={4} sm={12}>
                   <Droppable droppableId="watchlist3">
-                    {(provided, snapshot) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.droppableProps}
-                        className={
-                          snapshot.isDraggingOver
-                            ? "DroppableDragging"
-                            : "Droppable"
-                        }
-                      >
+                    {(provided) => (
+                      <div ref={provided.innerRef} {...provided.droppableProps}>
                         <BranchRateCardsOfWatchList
                           currencyLabel={
                             watchlistData.watchlist3.currecncyLabel
@@ -227,20 +201,12 @@ const SpotBranch = () => {
                   </Droppable>
                 </Col>
               </Row>
-              {/* Second Row of Dragger */}
+              {/* Second Row of Dragger below */}
               <Row className="mt-2">
                 <Col lg={4} md={4} sm={12}>
                   <Droppable droppableId="watchlist4">
-                    {(provided, snapshot) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.droppableProps}
-                        className={
-                          snapshot.isDraggingOver
-                            ? "DroppableDragging"
-                            : "Droppable"
-                        }
-                      >
+                    {(provided) => (
+                      <div ref={provided.innerRef} {...provided.droppableProps}>
                         <BranchRateCardsOfWatchList
                           currencyLabel={
                             watchlistData.watchlist4.currecncyLabel
@@ -257,16 +223,8 @@ const SpotBranch = () => {
                 </Col>
                 <Col lg={4} md={4} sm={12}>
                   <Droppable droppableId="watchlist5">
-                    {(provided, snapshot) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.droppableProps}
-                        className={
-                          snapshot.isDraggingOver
-                            ? "DroppableDragging"
-                            : "Droppable"
-                        }
-                      >
+                    {(provided) => (
+                      <div ref={provided.innerRef} {...provided.droppableProps}>
                         <BranchRateCardsOfWatchList
                           currencyLabel={
                             watchlistData.watchlist5.currecncyLabel
@@ -283,16 +241,8 @@ const SpotBranch = () => {
                 </Col>
                 <Col lg={4} md={4} sm={12}>
                   <Droppable droppableId="watchlist6">
-                    {(provided, snapshot) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.droppableProps}
-                        className={
-                          snapshot.isDraggingOver
-                            ? "DroppableDragging"
-                            : "Droppable"
-                        }
-                      >
+                    {(provided) => (
+                      <div ref={provided.innerRef} {...provided.droppableProps}>
                         <BranchRateCardsOfWatchList
                           currencyLabel={
                             watchlistData.watchlist6.currecncyLabel
