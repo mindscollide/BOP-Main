@@ -1,29 +1,47 @@
 import React, { memo } from "react";
-import { Modal } from "antd";
+import { Modal } from "react-bootstrap";
 
 const GlobalModal = ({
-  title,
-  centered,
   show,
-  footer,
-  modalBody,
-  mask,
-  prefixCls,
+  centered,
+  onHide,
+  keyboard,
+  modalBody, // Only include this once
+  className,
+  fullscreen,
+  size,
+  scrollable,
+  style,
+  modalFooter,
+  backdrop = "static",
+  closeButton,
+  modalHeader,
+  headerClassName,
+  bodyClassName,
+  footerClassName,
 }) => {
   return (
-    <>
-      <Modal
-        title={title}
-        centered={centered}
-        open={show || false}
-        footer={footer || null}
-        mask={mask}
-        prefixCls={prefixCls}
-        closeIcon={false}
-        loading={false}>
-        {modalBody}
-      </Modal>
-    </>
+    <Modal
+      show={show}
+      onHide={onHide}
+      backdrop={backdrop}
+      keyboard={keyboard}
+      className={className}
+      centered={centered}
+      fullscreen={fullscreen}
+      size={size}
+      scrollable={scrollable}
+      style={style}>
+      {modalHeader && (
+        <Modal.Header className={headerClassName} closeButton={closeButton}>
+          {modalHeader}
+        </Modal.Header>
+      )}
+      <Modal.Body className={bodyClassName}>{modalBody}</Modal.Body>
+      {modalFooter && (
+        <Modal.Footer className={footerClassName}>{modalFooter}</Modal.Footer>
+      )}
+    </Modal>
   );
 };
 
