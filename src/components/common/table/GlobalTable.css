@@ -931,3 +931,448 @@ tr.MIS_Table-expanded-row {
   position: relative;
   top: -28px;
 }
+
+/* End */
+
+/* Dealer Forwards Table Starts */
+.Dealer_Forwards-wrapper .Dealer_Forwards {
+  scrollbar-color: auto !important;
+}
+.Dealer_Forwards-wrapper::-webkit-scrollbar {
+  width: 0.3rem !important;
+  border-radius: 20px !important;
+  background-color: #f2f2f2 !important;
+  height: 0.3rem !important;
+}
+
+.Dealer_Forwards-wrapper::-webkit-scrollbar-thumb {
+  border-radius: 20px !important;
+  background: #ccc !important;
+  margin-left: -15px !important;
+}
+.Dealer_Forwards-thead tr:nth-child(1) th {
+  background-color: #f26522 !important;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-family: "Roboto" !important;
+  font-size: 14px;
+}
+.Dealer_Forwards-thead tr:nth-child(1) th:nth-child(1) {
+  background-color: transparent !important;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  border-left: 0px !important;
+  border-inline-width: 0 !important;
+  border-top: none !important;
+}
+.Dealer_Forwards-thead tr:nth-child(2) th {
+  background-color: #000 !important;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+:where(.css-dev-only-do-not-override-1c0na6j).Dealer_Forwards-wrapper
+  .Dealer_Forwards-container
+  table
+  > thead
+  > tr:first-child
+  > *:last-child {
+  border-start-end-radius: 0px;
+}
+
+.Dealer_Forwards-thead th {
+  font-family: "Roboto" !important;
+  padding: 5px 0px !important;
+}
+.Dealer_Forwards-tbody tr td {
+  font-family: "Roboto" !important;
+  padding: 5px 0px !important;
+  font-size: 13px !important;
+}
+
+.Dealer_Forwards-tbody tr:nth-child(odd) {
+  background-color: #f9f9f9;
+}
+.Dealer_Forwards-tbody tr:nth-child(even) {
+  background-color: #fff;
+}
+
+.Dealer_Forwards-wrapper .Dealer_Forwards {
+  background: none !important;
+}
+
+th.Dealer_Forwards-cell {
+  border-inline-end: 1px solid #f0f0f0 !important;
+  border-top: 1px solid #f0f0f0;
+}
+
+th.Dealer_Forwards-cell::before {
+  background-color: transparent !important;
+}
+
+td.Dealer_Forwards-cell {
+  /* border-inline-end: 1px solid #f0f0f0 !important; */
+  text-align: center !important;
+}
+
+:where(.css-dev-only-do-not-override-1c0na6j).Dealer_Forwards-wrapper
+  .Dealer_Forwards-tbody
+  .Dealer_Forwards-row
+  > .Dealer_Forwards-cell-row-hover {
+  background: transparent;
+}
+:where(.css-dev-only-do-not-override-1c0na6j).Dealer_Forwards-wrapper
+  .Dealer_Forwards-cell-fix-left,
+:where(.css-dev-only-do-not-override-1c0na6j).Dealer_Forwards-wrapper
+  .Dealer_Forwards-cell-fix-right {
+  background: none !important;
+}
+:where(.css-dev-only-do-not-override-1c0na6j)[class^="Dealer_Forwards"]
+  [class^="Dealer_Forwards"],
+:where(.css-dev-only-do-not-override-1c0na6j)[class*=" Dealer_Forwards"]
+  [class^="Dealer_Forwards"],
+:where(.css-dev-only-do-not-override-1c0na6j)[class^="Dealer_Forwards"]
+  [class*=" Dealer_Forwards"],
+:where(.css-dev-only-do-not-override-1c0na6j)[class*=" Dealer_Forwards"]
+  [class*=" Dealer_Forwards"] {
+  box-sizing: border-box !important;
+  border-inline-width: 1px !important;
+  border-inline-color: #d2d2d2 !important;
+  border-bottom: 1px solid #d2d2d2 !important;
+}
+
+:where(.css-dev-only-do-not-override-1c0na6j)[class^="Dealer_Forwards"]
+  [class^="Dealer_Forwards"]
+  tr:last-child,
+:where(.css-dev-only-do-not-override-1c0na6j)[class*=" Dealer_Forwards"]
+  [class^="Dealer_Forwards"]
+  tr:last-child,
+:where(.css-dev-only-do-not-override-1c0na6j)[class^="Dealer_Forwards"]
+  [class*=" Dealer_Forwards"]
+  tr:last-child,
+:where(.css-dev-only-do-not-override-1c0na6j)[class*=" Dealer_Forwards"]
+  [class*=" Dealer_Forwards"]
+  tr:last-child {
+  border-bottom: none;
+}
+
+:where(.css-dev-only-do-not-override-1c0na6j)[class^="Dealer_Forwards"]
+  [class^="Dealer_Forwards"]
+  tr:last-child
+  td,
+:where(.css-dev-only-do-not-override-1c0na6j)[class*=" Dealer_Forwards"]
+  [class^="Dealer_Forwards"]
+  tr:last-child
+  td,
+:where(.css-dev-only-do-not-override-1c0na6j)[class^="Dealer_Forwards"]
+  [class*=" Dealer_Forwards"]
+  tr:last-child
+  td,
+:where(.css-dev-only-do-not-override-1c0na6j)[class*=" Dealer_Forwards"]
+  [class*=" Dealer_Forwards"]
+  tr:last-child
+  td {
+  border-bottom: none;
+}
+
+/* Treasury Discounting Ends */
+
+/* Dealer Forwards Table Starts */
+.Dealer_Forwards-wrapper .Dealer_Forwards {
+  scrollbar-color: auto !important;
+}
+.Dealer_Forwards-wrapper::-webkit-scrollbar {
+  width: 0.3rem !important;
+  border-radius: 20px !important;
+  background-color: #f2f2f2 !important;
+  height: 0.3rem !important;
+}
+
+.Dealer_Forwards-wrapper::-webkit-scrollbar-thumb {
+  border-radius: 20px !important;
+  background: #ccc !important;
+  margin-left: -15px !important;
+}
+.Dealer_Forwards-thead tr:nth-child(1) th {
+  background-color: #f26522 !important;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-family: "Roboto" !important;
+  font-size: 14px;
+}
+.Dealer_Forwards-thead tr:nth-child(1) th:nth-child(1) {
+  background-color: transparent !important;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  border-left: 0px !important;
+  border-inline-width: 0 !important;
+  border-top: none !important;
+}
+.Dealer_Forwards-thead tr:nth-child(2) th {
+  background-color: #000 !important;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+:where(.css-dev-only-do-not-override-1c0na6j).Dealer_Forwards-wrapper
+  .Dealer_Forwards-container
+  table
+  > thead
+  > tr:first-child
+  > *:last-child {
+  border-start-end-radius: 0px;
+}
+
+.Dealer_Forwards-thead th {
+  font-family: "Roboto" !important;
+  padding: 5px 0px !important;
+}
+.Dealer_Forwards-tbody tr td {
+  font-family: "Roboto" !important;
+  padding: 5px 0px !important;
+  font-size: 13px !important;
+}
+
+.Dealer_Forwards-tbody tr:nth-child(odd) {
+  background-color: #f9f9f9;
+}
+.Dealer_Forwards-tbody tr:nth-child(even) {
+  background-color: #fff;
+}
+
+.Dealer_Forwards-wrapper .Dealer_Forwards {
+  background: none !important;
+}
+
+th.Dealer_Forwards-cell {
+  border-inline-end: 1px solid #f0f0f0 !important;
+  border-top: 1px solid #f0f0f0;
+}
+
+th.Dealer_Forwards-cell::before {
+  background-color: transparent !important;
+}
+
+td.Dealer_Forwards-cell {
+  /* border-inline-end: 1px solid #f0f0f0 !important; */
+  text-align: center !important;
+}
+
+:where(.css-dev-only-do-not-override-1c0na6j).Dealer_Forwards-wrapper
+  .Dealer_Forwards-tbody
+  .Dealer_Forwards-row
+  > .Dealer_Forwards-cell-row-hover {
+  background: transparent;
+}
+:where(.css-dev-only-do-not-override-1c0na6j).Dealer_Forwards-wrapper
+  .Dealer_Forwards-cell-fix-left,
+:where(.css-dev-only-do-not-override-1c0na6j).Dealer_Forwards-wrapper
+  .Dealer_Forwards-cell-fix-right {
+  background: none !important;
+}
+:where(.css-dev-only-do-not-override-1c0na6j)[class^="Dealer_Forwards"]
+  [class^="Dealer_Forwards"],
+:where(.css-dev-only-do-not-override-1c0na6j)[class*=" Dealer_Forwards"]
+  [class^="Dealer_Forwards"],
+:where(.css-dev-only-do-not-override-1c0na6j)[class^="Dealer_Forwards"]
+  [class*=" Dealer_Forwards"],
+:where(.css-dev-only-do-not-override-1c0na6j)[class*=" Dealer_Forwards"]
+  [class*=" Dealer_Forwards"] {
+  box-sizing: border-box !important;
+  border-inline-width: 1px !important;
+  border-inline-color: #d2d2d2 !important;
+  border-bottom: 1px solid #d2d2d2 !important;
+}
+
+:where(.css-dev-only-do-not-override-1c0na6j)[class^="Dealer_Forwards"]
+  [class^="Dealer_Forwards"]
+  tr:last-child,
+:where(.css-dev-only-do-not-override-1c0na6j)[class*=" Dealer_Forwards"]
+  [class^="Dealer_Forwards"]
+  tr:last-child,
+:where(.css-dev-only-do-not-override-1c0na6j)[class^="Dealer_Forwards"]
+  [class*=" Dealer_Forwards"]
+  tr:last-child,
+:where(.css-dev-only-do-not-override-1c0na6j)[class*=" Dealer_Forwards"]
+  [class*=" Dealer_Forwards"]
+  tr:last-child {
+  border-bottom: none;
+}
+
+:where(.css-dev-only-do-not-override-1c0na6j)[class^="Dealer_Forwards"]
+  [class^="Dealer_Forwards"]
+  tr:last-child
+  td,
+:where(.css-dev-only-do-not-override-1c0na6j)[class*=" Dealer_Forwards"]
+  [class^="Dealer_Forwards"]
+  tr:last-child
+  td,
+:where(.css-dev-only-do-not-override-1c0na6j)[class^="Dealer_Forwards"]
+  [class*=" Dealer_Forwards"]
+  tr:last-child
+  td,
+:where(.css-dev-only-do-not-override-1c0na6j)[class*=" Dealer_Forwards"]
+  [class*=" Dealer_Forwards"]
+  tr:last-child
+  td {
+  border-bottom: none;
+}
+
+/* Treasury Discounting Ends */
+
+/* Start Dealer and Treasury Table  */
+.Dealer_Discounting-wrapper .Dealer_Discounting {
+  scrollbar-color: auto !important;
+}
+.Dealer_Discounting-wrapper::-webkit-scrollbar {
+  width: 0.3rem !important;
+  border-radius: 20px !important;
+  background-color: #f2f2f2 !important;
+  height: 0.3rem !important;
+}
+
+.Dealer_Discounting-wrapper::-webkit-scrollbar-thumb {
+  border-radius: 20px !important;
+  background: #ccc !important;
+  margin-left: -15px !important;
+}
+.Dealer_Discounting-thead tr:nth-child(1) th {
+  background-color: #f26522 !important;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-family: "Roboto" !important;
+  font-size: 14px;
+}
+.Dealer_Discounting-thead tr:nth-child(1) th:nth-child(1) {
+  background-color: transparent !important;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  border-left: 0px !important;
+  border-inline-width: 0 !important;
+  border-top: none !important;
+}
+.Dealer_Discounting-thead tr:nth-child(2) th {
+  background-color: #000 !important;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+:where(.css-dev-only-do-not-override-1c0na6j).Dealer_Discounting-wrapper
+  .Dealer_Discounting-container
+  table
+  > thead
+  > tr:first-child
+  > *:last-child {
+  border-start-end-radius: 0px;
+}
+
+.Dealer_Discounting-thead th {
+  font-family: "Roboto" !important;
+  padding: 5px 0px !important;
+}
+.Dealer_Discounting-tbody tr td {
+  font-family: "Roboto" !important;
+  padding: 5px 0px !important;
+  font-size: 13px !important;
+}
+
+.Dealer_Discounting-tbody tr:nth-child(odd) {
+  background-color: #f9f9f9;
+}
+.Dealer_Discounting-tbody tr:nth-child(even) {
+  background-color: #fff;
+}
+
+.Dealer_Discounting-wrapper .Dealer_Discounting {
+  background: none !important;
+}
+
+th.Dealer_Discounting-cell {
+  border-inline-end: 1px solid #f0f0f0 !important;
+  border-top: 1px solid #f0f0f0;
+}
+
+th.Dealer_Discounting-cell::before {
+  background-color: transparent !important;
+}
+
+td.Dealer_Discounting-cell {
+  /* border-inline-end: 1px solid #f0f0f0 !important; */
+  text-align: center !important;
+}
+
+:where(.css-dev-only-do-not-override-1c0na6j).Dealer_Discounting-wrapper
+  .Dealer_Discounting-tbody
+  .Dealer_Discounting-row
+  > .Dealer_Discounting-cell-row-hover {
+  background: transparent;
+}
+:where(.css-dev-only-do-not-override-1c0na6j).Dealer_Discounting-wrapper
+  .Dealer_Discounting-cell-fix-left,
+:where(.css-dev-only-do-not-override-1c0na6j).Dealer_Discounting-wrapper
+  .Dealer_Discounting-cell-fix-right {
+  background: none !important;
+}
+:where(.css-dev-only-do-not-override-1c0na6j)[class^="Dealer_Discounting"]
+  [class^="Dealer_Discounting"],
+:where(.css-dev-only-do-not-override-1c0na6j)[class*=" Dealer_Discounting"]
+  [class^="Dealer_Discounting"],
+:where(.css-dev-only-do-not-override-1c0na6j)[class^="Dealer_Discounting"]
+  [class*=" Dealer_Discounting"],
+:where(.css-dev-only-do-not-override-1c0na6j)[class*=" Dealer_Discounting"]
+  [class*=" Dealer_Discounting"] {
+  box-sizing: border-box !important;
+  border-inline-width: 1px !important;
+  border-inline-color: #d2d2d2 !important;
+  border-bottom: 1px solid #d2d2d2 !important;
+}
+
+:where(.css-dev-only-do-not-override-1c0na6j)[class^="Dealer_Discounting"]
+  [class^="Dealer_Discounting"]
+  tr:last-child,
+:where(.css-dev-only-do-not-override-1c0na6j)[class*=" Dealer_Discounting"]
+  [class^="Dealer_Discounting"]
+  tr:last-child,
+:where(.css-dev-only-do-not-override-1c0na6j)[class^="Dealer_Discounting"]
+  [class*=" Dealer_Discounting"]
+  tr:last-child,
+:where(.css-dev-only-do-not-override-1c0na6j)[class*=" Dealer_Discounting"]
+  [class*=" Dealer_Discounting"]
+  tr:last-child {
+  border-bottom: none;
+}
+
+:where(.css-dev-only-do-not-override-1c0na6j)[class^="Dealer_Discounting"]
+  [class^="Dealer_Discounting"]
+  tr:last-child
+  td,
+:where(.css-dev-only-do-not-override-1c0na6j)[class*=" Dealer_Discounting"]
+  [class^="Dealer_Discounting"]
+  tr:last-child
+  td,
+:where(.css-dev-only-do-not-override-1c0na6j)[class^="Dealer_Discounting"]
+  [class*=" Dealer_Discounting"]
+  tr:last-child
+  td,
+:where(.css-dev-only-do-not-override-1c0na6j)[class*=" Dealer_Discounting"]
+  [class*=" Dealer_Discounting"]
+  tr:last-child
+  td {
+  border-bottom: none;
+}
+/* End Dealer and Treasury Table */

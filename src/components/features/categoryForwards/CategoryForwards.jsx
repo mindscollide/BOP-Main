@@ -142,7 +142,6 @@ const CategoryForwards = () => {
           title: "Tenor",
           dataIndex: "tenor",
           key: "tenor",
-          width: 100,
           fixed: "left", // Optional: to fix the column on the left
           width: 280,
         },

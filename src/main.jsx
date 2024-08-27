@@ -5,11 +5,15 @@ import "./index.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Provider } from "react-redux";
 import store from "./store/store.js";
+import { GloballyModalProvider } from "./context/ModalContext.jsx";
+GloballyModalProvider;
 // import { CreateDemoProvider } from "./Context.jsx";
 ReactDOM.createRoot(document.getElementById("root")).render(
-  // <CreateDemoProvider>
   <Provider store={store}>
-    <App />
+    <GloballyModalProvider>
+      <App />
+    </GloballyModalProvider>
   </Provider>
-  // </CreateDemoProvider>
+
+  // </GloballyModalProvider>
 );

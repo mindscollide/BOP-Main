@@ -1,5 +1,7 @@
 import React, { lazy, Suspense } from "react";
 import { Row, Col } from "react-bootstrap";
+import { useModal } from "../../../context/ModalContext";
+import GlobalModal from "../../common/globalModal/Modal";
 
 // Conditionally import CustomButton based on the environment variables
 const shouldIncludeComponents =
@@ -35,6 +37,8 @@ const DealeAndTreasuryDiscountingTable = shouldIncludeComponents
   : null;
 
 const ForwardsForTreasuryAndBranch = () => {
+  const { createTenorModal, setCreateTenorModal } = useModal();
+  console.log(createTenorModal, "createTenorModalcreateTenorModal");
   return (
     <>
       <Row className='mt-4 mb-2'>
@@ -49,6 +53,7 @@ const ForwardsForTreasuryAndBranch = () => {
               <CustomButton
                 value={"Create Tenor"}
                 applyClass='createTenorBtn'
+                onClick={() => setCreateTenorModal(true)}
               />
             </Suspense>
           )}
@@ -90,14 +95,17 @@ const ForwardsForTreasuryAndBranch = () => {
         {DealeAndTreasuryDiscountingTable && (
           <Col sm={12} md={12} lg={12} className='mt-3'>
             <Suspense fallback={<div>Loading table...</div>}>
-              <h6 className='fs-4 fw-bold color-primary'>
-                Discounting
-              </h6>
+              <h6 className='fs-4 fw-bold color-primary'>Discounting</h6>
               <DealeAndTreasuryDiscountingTable />
             </Suspense>
           </Col>
         )}
       </Row>
+      <GlobalModal
+        show={createTenorModal}
+        backdrop="static"
+
+      />
     </>
   );
 };
