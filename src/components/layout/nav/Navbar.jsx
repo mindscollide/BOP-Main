@@ -12,7 +12,8 @@ const GlobalNavbar = () => {
   const location = useLocation();
 
   const handleCalculatorClick = () => {
-    navigate("/calculator");
+    // navigate("/calculator");
+    window.open("/calculator", "_blank");
   };
 
   return (
