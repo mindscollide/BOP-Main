@@ -1,11 +1,12 @@
 import React from 'react'
 import GlobalTabs from '../../../components/common/tabs/Tabs';
 import SpotDealerAndTreasury from '../../../components/features/spotDealerAndTreasury/SpotDealerAndTreasury';
+import CategoryForwards from '../../../components/features/categoryForwards/CategoryForwards';
 
 const MainCategory = () => {
   const tabsData = [
     { title: "Spot", content: <SpotDealerAndTreasury /> },
-    { title: "Forwards", content: "Delaer and Tresury Forwards" },
+    { title: "Forwards", content: <CategoryForwards /> },
     { title: "Discounting", content: "Discounting" },
   ];
   return (

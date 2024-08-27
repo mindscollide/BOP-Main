@@ -1,7 +1,7 @@
 import React from "react";
 import "./SpotBranch.css";
 import { Col, Row } from "react-bootstrap";
-import BidAmountBox from "../../common/BidAmountBox/BidAmountBox";
+import BidAmountBox from "../../common/bidAmountBox/BidAmountBox";
 import GlobalTable from "../../common/table/GlobalTable";
 
 const SpotBranch = () => {
