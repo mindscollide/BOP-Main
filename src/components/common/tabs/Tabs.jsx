@@ -3,12 +3,12 @@ import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import "./Tabs.css"
 
-const GlobalTabs = ({ tabs, defaultActiveKey = '0' }) => {
+const GlobalTabs = ({ tabs, defaultActiveKey = '0', tabClass }) => {
     return (
         <Tabs
             defaultActiveKey={defaultActiveKey}
             id="uncontrolled-tab-example"
-            className="mt-2 mb-4"
+            className={`${tabClass}`}
         >
             {tabs.map((tab, index) => (
                 <Tab eventKey={index.toString()} title={tab.title} key={index}>
