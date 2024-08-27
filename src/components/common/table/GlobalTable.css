@@ -1414,3 +1414,16 @@ th.TXNSummary_Table-cell {
 th.TXNSummary_Table-cell:before {
   content: none !important;
 }
+
+th.TXNSummary_Table-cell.comment-class {
+  font-weight: bold !important;
+  font-family: "Roboto", sans-serif !important;
+}
+
+td.TXNSummary_Table-cell.ff-poppins.fw-bold {
+  padding: 8px 10px !important;
+  font-family: "Roboto", sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: #212529 !important;
+}
