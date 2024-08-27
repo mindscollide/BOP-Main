@@ -1,7 +1,7 @@
 import React from "react";
 import { Switch } from "antd";
 import "./SwitchBtn.css";
-const RadioButton = ({
+const SwitchButton = ({
   checked,
   onChange,
   size,
@@ -32,4 +32,4 @@ const RadioButton = ({
     </span>
   </>
 );
-export default RadioButton;
+export default SwitchButton;
