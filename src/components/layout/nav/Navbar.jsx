@@ -15,6 +15,10 @@ const GlobalNavbar = () => {
     navigate("/calculator");
   };
 
+  // Conditionally import CustomButton based on the environment variables
+  const shouldIncludeComponents =
+    import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
+
   return (
     <>
       <div className="site-header pt-1">
@@ -34,10 +38,14 @@ const GlobalNavbar = () => {
                       onClick={handleCalculatorClick}
                     />
                     {/*Vol Meter*/}
-                    <Voltmeter
-                      activeValue={selectedValue}
-                      onSelect={(value) => setSelectedValue(value)}
-                    />
+                    {shouldIncludeComponents ? null : (
+                      <>
+                        <Voltmeter
+                          activeValue={selectedValue}
+                          onSelect={(value) => setSelectedValue(value)}
+                        />
+                      </>
+                    )}
                   </>
                 )}
                 {/*User Dropdown*/}
