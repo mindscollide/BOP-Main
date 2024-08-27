@@ -111,13 +111,14 @@ const ForwardsForTreasuryAndBranch = () => {
       <GlobalModal
         show={createTenorModal}
         backdrop='static'
+        onHide={() => setCreateTenorModal(false)}
         centered={true}
         footerClassName='d-block border-0'
         modalBody={
           <>
             <Row>
               <Col sm={12} md={12} lg={12} className='mb-4'>
-                <div className='color-blue fw-bold fs-6'>Create Tenor</div>
+                <div className='color-blue fw-bold fs-5'>Create Tenor</div>
               </Col>
               <Col sm={12} md={12} lg={12} className='mb-4'>
                 <label className='mb-1'>Tenor</label>
@@ -133,24 +134,17 @@ const ForwardsForTreasuryAndBranch = () => {
         modalFooter={
           <>
             <Row>
-              <Col sm={6} md={6} lg={6} className='d-flex justify-content-end'>
+              <Col
+                sm={12}
+                md={12}
+                lg={12}
+                className='d-flex justify-content-center gap-2'>
                 {CustomButton && (
                   <Suspense fallback={<div>Loading button...</div>}>
                     <CustomButton
                       value={"Create Tenor"}
                       applyClass={"createTenorModalFooterBtn"}
                     />
-                  </Suspense>
-                )}
-              </Col>
-              <Col
-                sm={6}
-                md={6}
-                lg={6}
-                className='d-flex justify-content-start'>
-                {CustomButton && (
-                  <Suspense fallback={<div>Loading button...</div>}>
-                    {" "}
                     <CustomButton
                       value={"Cancel"}
                       applyClass={"cancelTenorModalFooterBtn"}
