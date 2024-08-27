@@ -1,0 +1,16 @@
+ul.nav.nav-tabs.buttonClassTab .nav-link.active,
+ul.nav.nav-tabs.buttonClassTab .nav-link.active:hover,
+ul.nav.nav-tabs.buttonClassTab .nav-link.active,
+ul.nav.nav-tabs.buttonClassTab .nav-link.active,
+ul.nav.nav-tabs.buttonClassTab {
+  margin-right: 0.5rem !important;
+  padding-right: 1rem !important;
+  padding-left: 1rem !important;
+}
+
+ul.nav.nav-tabs.buttonClassTab .nav-link,
+ul.nav.nav-tabs.buttonClassTab .nav-link:hover {
+  margin-right: 0.5rem !important;
+  padding-right: 1rem !important;
+  padding-left: 1rem !important;
+}
