@@ -5,6 +5,10 @@ import TXNSummary from '../txnSummary/TXNSummary';
 import OutstandingDeals from '../outstandingDeals/OutstandingDeals';
 import CustomButton from '../../../../../../../components/common/globalButton/button';
 import NopModal from '../nopModal/NopModal';
+import pdfImage from "./../../../../../../../assets/icons/pdf.png";
+import emailImage from "./../../../../../../../assets/icons/email.png";
+import excelImage from "./../../../../../../../assets/icons/excel.png";
+import printImage from "./../../../../../../../assets/icons/print.png";
 
 const BlotterHeader = () => {
 

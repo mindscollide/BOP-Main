@@ -1399,3 +1399,18 @@ td.Dealer_Discounting-cell {
 }
 
 /* Treasury Nop Modal Table End */
+
+/* TXN Summary Start */
+th.TXNSummary_Table-cell {
+  background: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  color: #ffffff !important;
+  padding: 10px 5px !important;
+  border-radius: 0 !important;
+  text-align: center !important;
+  font-size: 14px !important;
+}
+
+th.TXNSummary_Table-cell:before {
+  content: none !important;
+}
