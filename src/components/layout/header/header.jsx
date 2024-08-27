@@ -1,16 +1,11 @@
 import React from "react";
 import { Container, Nav, Navbar } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import styles from "./header.module.css";
 
-const Header = ({
-  handleCLickDealer,
-  handleCLickCategory,
-  handleCLickTreasury,
-  DealarLink,
-  CategoryLink,
-  TreasuryLink,
-}) => {
+const Header = () => {
+  const location = useLocation();
+  console.log(location.pathname, "locationlocationlocationlocation");
   return (
     <Navbar className={styles["top-header"]}>
       <Nav className='ms-auto'>
@@ -31,18 +26,28 @@ const Header = ({
               <Nav.Link
                 as={Link}
                 active={true}
-                to={DealarLink || "/"}
-                className={`${styles["nav-link"]} `}
-                onClick={handleCLickDealer}>
+                to={"dealer"}
+                className={
+                  location.pathname === "/dealer"
+                    ? `${styles["nav-link_active"]} `
+                    : `${styles["nav-link"]}`
+                }
+                // onClick={handleCLickDealer}
+              >
                 Dealer
               </Nav.Link>
             </Nav.Item>
             <Nav.Item className={styles["nav-item"]}>
               <Nav.Link
                 as={Link}
-                to={CategoryLink || "/"}
-                className={`${styles["nav-link"]} `}
-                onClick={handleCLickCategory}>
+                to={"category"}
+                className={
+                  location.pathname === "/category"
+                    ? `${styles["nav-link_active"]} `
+                    : `${styles["nav-link"]}`
+                }
+                // onClick={handleCLickCategory}
+              >
                 Category
               </Nav.Link>
             </Nav.Item>
@@ -50,9 +55,14 @@ const Header = ({
               <Nav.Link
                 // href={TreasuryLink || "/"}
                 as={Link}
-                to={TreasuryLink || "/"}
-                className={`${styles["nav-link_active"]}`}
-                onClick={handleCLickTreasury}>
+                to={"treasury"}
+                className={
+                  location.pathname === "/treasury"
+                    ? `${styles["nav-link_active"]}`
+                    : `${styles["nav-link"]}`
+                }
+                // onClick={handleCLickTreasury}
+              >
                 Treasury
               </Nav.Link>
             </Nav.Item>

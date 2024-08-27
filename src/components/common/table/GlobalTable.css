@@ -252,30 +252,31 @@
 
 /* Forwards Treasury */
 /* Start Forwards Treasury table  */
-.Tresuary_Forwards-wrapper .Tresuary_Forwards {
+.Treasury_Forwards-wrapper .Treasury_Forwards {
   scrollbar-color: auto !important;
 }
-.Tresuary_Forwards-wrapper::-webkit-scrollbar {
+.Treasury_Forwards-wrapper::-webkit-scrollbar {
   width: 0.3rem !important;
   border-radius: 20px !important;
   background-color: #f2f2f2 !important;
   height: 0.3rem !important;
 }
 
-.Tresuary_Forwards-wrapper::-webkit-scrollbar-thumb {
+.Treasury_Forwards-wrapper::-webkit-scrollbar-thumb {
   border-radius: 20px !important;
   background: #ccc !important;
   margin-left: -15px !important;
 }
-.Tresuary_Forwards-thead tr:nth-child(1) th {
+.Treasury_Forwards-thead tr:nth-child(1) th {
   background-color: #f26522 !important;
   text-align: center;
   color: #fff;
   font-weight: 700;
+  font-family: "Roboto" !important;
   font-size: 14px;
 }
-.Tresuary_Forwards-thead tr:nth-child(1) th:nth-child(1),
-.Tresuary_Forwards-thead tr:nth-child(1) th:nth-child(2) {
+.Treasury_Forwards-thead tr:nth-child(1) th:nth-child(1),
+.Treasury_Forwards-thead tr:nth-child(1) th:nth-child(2) {
   background-color: transparent !important;
   text-align: center;
   color: #fff;
@@ -285,7 +286,7 @@
   border-inline-width: 0 !important;
   border-top: none !important;
 }
-.Tresuary_Forwards-thead tr:nth-child(2) th {
+.Treasury_Forwards-thead tr:nth-child(2) th {
   background-color: #000 !important;
   text-align: center;
   color: #fff;
@@ -293,8 +294,8 @@
   font-size: 14px;
 }
 
-:where(.css-dev-only-do-not-override-1c0na6j).Tresuary_Forwards-wrapper
-  .Tresuary_Forwards-container
+:where(.css-dev-only-do-not-override-1c0na6j).Treasury_Forwards-wrapper
+  .Treasury_Forwards-container
   table
   > thead
   > tr:first-child
@@ -302,38 +303,41 @@
   border-start-end-radius: 0px;
 }
 
-.Tresuary_Forwards-thead th {
+.Treasury_Forwards-thead th {
+  font-family: "Roboto" !important;
   padding: 5px 0px !important;
 }
-.Tresuary_Forwards-tbody tr td {
+.Treasury_Forwards-tbody tr td {
+  font-family: "Roboto" !important;
   padding: 5px 0px !important;
+  font-size: 13px !important;
 }
 
-.Tresuary_Forwards-wrapper .Tresuary_Forwards {
+.Treasury_Forwards-wrapper .Treasury_Forwards {
   background: none !important;
 }
 
-th.Tresuary_Forwards-cell {
+/* th.Treasury_Forwards-cell {
   border-inline-end: 1px solid #f0f0f0 !important;
   border-top: 1px solid #f0f0f0;
-}
+} */
 
-th.Tresuary_Forwards-cell::before {
+th.Treasury_Forwards-cell::before {
   background-color: transparent !important;
 }
 
-td.Tresuary_Forwards-cell {
-  border-inline-end: 1px solid #f0f0f0 !important;
+td.Treasury_Forwards-cell {
+  /* border-inline-end: 1px solid #f0f0f0 !important; */
   text-align: center !important;
 }
 
-tr.Tresuary_Forwards-row.Tresuary_Forwards-row-level-0.striped-design:nth-child(
+tr.Treasury_Forwards-row.Treasury_Forwards-row-level-0.striped-design:nth-child(
     even
   ) {
   background: #fff; /* Background color for even rows */
 }
 
-tr.Tresuary_Forwards-row.Tresuary_Forwards-row-level-0.striped-design:nth-child(
+tr.Treasury_Forwards-row.Treasury_Forwards-row-level-0.striped-design:nth-child(
     odd
   ) {
   background: rgba(
@@ -344,14 +348,41 @@ tr.Tresuary_Forwards-row.Tresuary_Forwards-row-level-0.striped-design:nth-child(
   ); /* Background color for odd rows (default white) */
 }
 
-:where(.css-dev-only-do-not-override-1c0na6j).Tresuary_Forwards-wrapper
-  .Tresuary_Forwards-tbody
-  .Tresuary_Forwards-row
-  > .Tresuary_Forwards-cell-row-hover {
+:where(.css-dev-only-do-not-override-1c0na6j).Treasury_Forwards-wrapper
+  .Treasury_Forwards-tbody
+  .Treasury_Forwards-row
+  > .Treasury_Forwards-cell-row-hover {
   background: transparent;
 }
 
-/* End Forwards Treasury table  */
+:where(.css-dev-only-do-not-override-1c0na6j)[class^="Treasury_Forwards"]
+  [class^="Treasury_Forwards"],
+:where(.css-dev-only-do-not-override-1c0na6j)[class*=" Treasury_Forwards"]
+  [class^="Treasury_Forwards"],
+:where(.css-dev-only-do-not-override-1c0na6j)[class^="Treasury_Forwards"]
+  [class*=" Treasury_Forwards"],
+:where(.css-dev-only-do-not-override-1c0na6j)[class*=" Treasury_Forwards"]
+  [class*=" Treasury_Forwards"] {
+  box-sizing: border-box !important;
+  border-inline-width: 1px !important;
+  border-inline-color: #d2d2d2 !important;
+  border-bottom: 1px solid #d2d2d2 !important;
+}
+
+tr.Treasury_Forwards-row.Treasury_Forwards-row-level-0.striped-design:first-child
+  td.Treasury_Forwards-cell.bidClass {
+  color: #12a812 !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+}
+
+tr.Treasury_Forwards-row.Treasury_Forwards-row-level-0.striped-design:first-child
+  td.Treasury_Forwards-cell.askClass {
+  color: #cf5b5b !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+}
+/* End Treasury Discounting table  */
 
 /* Start Treasury Discounting table  */
 .ForwardsForTreasuryAndBranchTable-wrapper .Tresuary_Discounting {
@@ -425,7 +456,7 @@ tr.Tresuary_Forwards-row.Tresuary_Forwards-row-level-0.striped-design:nth-child(
   text-align: left;
   font-size: 1rem !important;
 }
-/* End Treasury Discounting table  */
+/* End Forwards Treasury table  */
 
 /* Start Dealer Discount Table */
 .ForwardsForTreasuryAndBranchTable-wrapper .Tresuary_Discounting {
@@ -443,7 +474,6 @@ tr.Tresuary_Forwards-row.Tresuary_Forwards-row-level-0.striped-design:nth-child(
   background: #ccc !important;
   margin-left: -15px !important;
 }
-
 
 .DealerAndTreasuryDiscountTable-thead tr:nth-child(1) th {
   background-color: #575351 !important;
@@ -483,9 +513,361 @@ tr.Tresuary_Forwards-row.Tresuary_Forwards-row-level-0.striped-design:nth-child(
   border: 1px solid #e1e1e1 !important;
 }
 
-
 .DealerAndTreasuryDiscountTable-thead tr:nth-child(2) th {
   text-align: left;
   font-size: 1rem !important;
 }
 /* End Dealer Discount Table */
+
+/* Treasury Discounting Starts */
+.Treasury_Discounting-wrapper .Treasury_Discounting {
+  scrollbar-color: auto !important;
+}
+.Treasury_Discounting-wrapper::-webkit-scrollbar {
+  width: 0.3rem !important;
+  border-radius: 20px !important;
+  background-color: #f2f2f2 !important;
+  height: 0.3rem !important;
+}
+
+.Treasury_Discounting-wrapper::-webkit-scrollbar-thumb {
+  border-radius: 20px !important;
+  background: #ccc !important;
+  margin-left: -15px !important;
+}
+.Treasury_Discounting-thead tr:nth-child(1) th {
+  background-color: #f26522 !important;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-family: "Roboto" !important;
+  font-size: 14px;
+}
+.Treasury_Discounting-thead tr:nth-child(1) th:nth-child(1) {
+  background-color: transparent !important;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  border-left: 0px !important;
+  border-inline-width: 0 !important;
+  border-top: none !important;
+}
+.Treasury_Discounting-thead tr:nth-child(2) th {
+  background-color: #000 !important;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+:where(.css-dev-only-do-not-override-1c0na6j).Treasury_Discounting-wrapper
+  .Treasury_Discounting-container
+  table
+  > thead
+  > tr:first-child
+  > *:last-child {
+  border-start-end-radius: 0px;
+}
+
+.Treasury_Discounting-thead th {
+  font-family: "Roboto" !important;
+  padding: 5px 0px !important;
+}
+.Treasury_Discounting-tbody tr td {
+  font-family: "Roboto" !important;
+  padding: 5px 0px !important;
+  font-size: 13px !important;
+}
+
+.Treasury_Discounting-wrapper .Treasury_Discounting {
+  background: none !important;
+}
+
+/* th.Treasury_Discounting-cell {
+  border-inline-end: 1px solid #f0f0f0 !important;
+  border-top: 1px solid #f0f0f0;
+} */
+
+th.Treasury_Discounting-cell::before {
+  background-color: transparent !important;
+}
+
+td.Treasury_Discounting-cell {
+  /* border-inline-end: 1px solid #f0f0f0 !important; */
+  text-align: center !important;
+}
+
+tr.Treasury_Discounting-row.Treasury_Discounting-row-level-0.striped-design:nth-child(
+    even
+  ) {
+  background: #fff; /* Background color for even rows */
+}
+
+tr.Treasury_Discounting-row.Treasury_Discounting-row-level-0.striped-design:nth-child(
+    odd
+  ) {
+  background: rgba(
+    0,
+    0,
+    0,
+    0.05
+  ); /* Background color for odd rows (default white) */
+}
+
+:where(.css-dev-only-do-not-override-1c0na6j).Treasury_Discounting-wrapper
+  .Treasury_Discounting-tbody
+  .Treasury_Discounting-row
+  > .Treasury_Discounting-cell-row-hover {
+  background: transparent;
+}
+
+:where(.css-dev-only-do-not-override-1c0na6j)[class^="Treasury_Discounting"]
+  [class^="Treasury_Discounting"],
+:where(.css-dev-only-do-not-override-1c0na6j)[class*=" Treasury_Discounting"]
+  [class^="Treasury_Discounting"],
+:where(.css-dev-only-do-not-override-1c0na6j)[class^="Treasury_Discounting"]
+  [class*=" Treasury_Discounting"],
+:where(.css-dev-only-do-not-override-1c0na6j)[class*=" Treasury_Discounting"]
+  [class*=" Treasury_Discounting"] {
+  box-sizing: border-box !important;
+  border-inline-width: 1px !important;
+  border-inline-color: #d2d2d2 !important;
+  border-bottom: 1px solid #d2d2d2 !important;
+}
+
+:where(.css-dev-only-do-not-override-1c0na6j)[class^="Treasury_Discounting"]
+  [class^="Treasury_Discounting"]
+  tr:last-child,
+:where(.css-dev-only-do-not-override-1c0na6j)[class*=" Treasury_Discounting"]
+  [class^="Treasury_Discounting"]
+  tr:last-child,
+:where(.css-dev-only-do-not-override-1c0na6j)[class^="Treasury_Discounting"]
+  [class*=" Treasury_Discounting"]
+  tr:last-child,
+:where(.css-dev-only-do-not-override-1c0na6j)[class*=" Treasury_Discounting"]
+  [class*=" Treasury_Discounting"]
+  tr:last-child {
+  border-bottom: none;
+}
+
+:where(.css-dev-only-do-not-override-1c0na6j)[class^="Treasury_Discounting"]
+  [class^="Treasury_Discounting"]
+  tr:last-child
+  td,
+:where(.css-dev-only-do-not-override-1c0na6j)[class*=" Treasury_Discounting"]
+  [class^="Treasury_Discounting"]
+  tr:last-child
+  td,
+:where(.css-dev-only-do-not-override-1c0na6j)[class^="Treasury_Discounting"]
+  [class*=" Treasury_Discounting"]
+  tr:last-child
+  td,
+:where(.css-dev-only-do-not-override-1c0na6j)[class*=" Treasury_Discounting"]
+  [class*=" Treasury_Discounting"]
+  tr:last-child
+  td {
+  border-bottom: none;
+}
+
+/* Treasury Discounting Ends */
+
+/* Branch Spot Table WatchList Starts */
+
+.WatchList_table-wrapper .WatchList_table {
+  scrollbar-color: auto !important;
+}
+.WatchList_table-wrapper::-webkit-scrollbar {
+  width: 0.3rem !important;
+  border-radius: 20px !important;
+  background-color: #f2f2f2 !important;
+  height: 0.3rem !important;
+}
+
+.WatchList_table-wrapper::-webkit-scrollbar-thumb {
+  border-radius: 20px !important;
+  background: #ccc !important;
+  margin-left: -15px !important;
+}
+.WatchList_table-thead tr:nth-child(1) th {
+  background-color: #fff !important;
+  text-align: center;
+  color: #f26522;
+  font-weight: 700;
+  border: none !important;
+  font-size: 14px;
+}
+
+.WatchList_table-thead th {
+  padding: 5px 0px !important;
+  background-color: #fff !important;
+  text-align: center;
+  color: #f26522;
+  font-weight: 700;
+  border: none !important;
+  font-size: 14px;
+  padding: 5px 5px !important;
+}
+.WatchList_table-tbody tr td {
+  padding: 8px 5px !important;
+}
+
+.WatchList_table-thead tr {
+  background: #e9e2dc !important;
+  border-radius: 0px !important;
+}
+
+.WatchList_table {
+  background: none !important;
+}
+.WatchList_table-tbody {
+  background: #e9e2dc !important;
+  border: none !important;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: "Roboto", sans-serif !important;
+}
+
+.WatchList_table-tbody tr td:nth-child(1) {
+  padding-left: 10px;
+}
+
+.WatchList_table-wrapper
+  .WatchList_table-container
+  table
+  > thead
+  > tr:first-child
+  > *:first-child {
+  border-start-start-radius: 0px !important;
+}
+
+.WatchList_table-wrapper
+  .WatchList_table-container
+  table
+  > thead
+  > tr:first-child
+  > *:last-child {
+  border-start-end-radius: 0px !important;
+}
+
+.WatchList_table-wrapper
+  .WatchList_table-tbody
+  .WatchList_table-row
+  > .WatchList_table-cell-row-hover {
+  background: none !important;
+}
+
+.WatchList_table-wrapper
+  .WatchList_table-tbody
+  .WatchList_table-row
+  > .WatchList_table-cell {
+  border-bottom: none !important;
+}
+
+/* Branch Spot Table WatchList Ends */
+
+/* Start branch forwards table */
+.branch_forwardsTable-wrapper .Tresuary_Discounting {
+  scrollbar-color: auto !important;
+}
+.branch_forwardsTable-wrapper::-webkit-scrollbar {
+  width: 0.3rem !important;
+  border-radius: 20px !important;
+  background-color: #f2f2f2 !important;
+  height: 0.3rem !important;
+}
+
+.branch_forwardsTable-wrapper::-webkit-scrollbar-thumb {
+  border-radius: 20px !important;
+  background: #ccc !important;
+  margin-left: -15px !important;
+}
+.branch_forwardsTable-thead tr:nth-child(1) th {
+  background-color: #096fed !important;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+}
+.branch_forwardsTable-thead tr:nth-child(1) th:nth-child(1) {
+  background-color: transparent !important;
+  text-align: center;
+  font-weight: 700;
+  font-size: 14px;
+  border-left: 0px !important;
+}
+.branch_forwardsTable-thead tr:nth-child(2) th {
+  background-color: #f26522 !important;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+}
+.branch_forwardsTable-thead tr:nth-child(2) th:nth-child(1) {
+  background-color: #f26522 !important;
+  text-align: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+}
+.branch_forwardsTable-thead th {
+  padding: 5px 0px !important;
+}
+.branch_forwardsTable-tbody tr td {
+  padding: 5px 0px !important;
+}
+.branch_forwardsTable-even-row {
+  background-color: #f2f2f2;
+}
+
+.branch_forwardsTable-odd-row {
+  background-color: #fff;
+}
+
+.branch_forwardsTable {
+  background: none !important;
+}
+.branch_forwardsTable-tbody {
+  background: #fff !important;
+  border: 1px solid #e1e1e1;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: "Roboto", sans-serif !important;
+}
+.branch_forwardsTable-tbody
+  .branch_forwardsTable-row
+  .branch_forwardsTable-cell {
+  border: 1px solid #e1e1e1 !important;
+}
+.branch_forwardsTable-tbody tr td:nth-child(1) {
+  padding-left: 10px;
+}
+.branch_forwardsTable-thead tr:nth-child(2) th {
+  text-align: left;
+  font-size: 1rem !important;
+}
+/* End Branch Forward table */
+
+/* Bank Spot Table Design */
+
+th.BankSpot_Table-cell {
+  padding: 5px !important;
+  text-align: center !important;
+  border-color: #dee2e6 !important;
+  background: #fff !important;
+  color: #f26522 !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  font-family: "Roboto" !important;
+}
+
+th.BankSpot_Table-cell:before {
+  content: none !important;
+}
+
+td.BankSpot_Table-cell {
+  padding: 5px !important;
+  text-align: center;
+  border-bottom-width: 1px;
+  border-color: #dee2e6 !important;
+}

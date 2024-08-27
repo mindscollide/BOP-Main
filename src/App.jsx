@@ -29,6 +29,8 @@ import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import "@fontsource/roboto/900.css";
+import CalculatorFxDiscounting from "./components/features/calculatorFxDiscounting/CalculatorFxDiscounting";
+import MainCalculator from "./container/pages/mainCalculator/MainCalculator";
 
 function App() {
   const [routes, setRoutes] = useState(null); // Initially null to indicate loading state
@@ -41,6 +43,11 @@ function App() {
       path: "/",
       element: <Dashboard />,
       children: [],
+    };
+
+    const calculatorRoute = {
+      path: "/calculator",
+      element: <MainCalculator />,
     };
 
     if (import.meta.env.VITE_APP_INCLUDE_BRANCH === "true") {
@@ -61,6 +68,10 @@ function App() {
       const Category = (
         await import("./container/pages/mainCategory/MainCategory")
       ).default;
+      dashboardRoute.children.push({
+        path: "/",
+        element: <Dealer />,
+      });
       dashboardRoute.children.push({
         path: "/dealer",
         element: <Dealer />,
@@ -89,6 +100,10 @@ function App() {
         element: <Dealer />,
       });
       dashboardRoute.children.push({
+        path: "/",
+        element: <Dealer />,
+      });
+      dashboardRoute.children.push({
         path: "/treasury",
         element: <Treasury />,
       });
@@ -108,7 +123,7 @@ function App() {
       });
     }
 
-    tempRoutes.push(dashboardRoute); // Add the dashboard route with its children
+    tempRoutes.push(dashboardRoute, calculatorRoute); // Add the dashboard route with its children
     setRoutes(tempRoutes); // Set the routes state with the loaded routes
   };
 

@@ -42,8 +42,8 @@
   color: #000;
 }
 
-.BitCardBox {
-  background: #096fed;
+.BidCardBox {
+  /* background: #096fed;
   color: #fff;
   display: flex;
   justify-content: center;
@@ -52,11 +52,18 @@
   padding: 2px 3px;
   border-radius: 2px;
   width: 60px;
+  cursor: pointer; */
+  background: #096fed;
+  color: var(--color-white);
+  display: inline-block;
+  border-radius: 2px;
+  width: 60px;
   cursor: pointer;
+  padding: 2px 3px;
 }
 
 .OfferCardBox {
-  background: #f8a041;
+  /* background: #f8a041;
   color: #fff;
   padding: 2px 3px;
   border-radius: 2px;
@@ -65,5 +72,39 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column; */
+  background: #f8a041;
+  color: var(--color-white);
+  display: inline-block;
+  border-radius: 2px;
+  width: 60px;
+  cursor: pointer;
+  padding: 2px 3px;
+}
+
+.SellandBuyCardBracnh {
+  background-color: transparent;
+  max-width: 100% !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  cursor: pointer !important;
   flex-direction: column;
+  padding: 0.5rem;
+  border: 1px solid #ffffff;
+  transition: background-color 0.3s ease, color 0.3s ease; /* Transition on background and color */
+}
+
+.SellandBuyCardBracnh p {
+  font-size: 1rem;
+  transition: color 0.3s ease; /* Apply transition to color */
+}
+
+.SellandBuyCardBracnh:hover p {
+  color: #000;
+}
+
+.SellandBuyCardBracnh:hover {
+  background: #ffffff !important;
 }
