@@ -5,8 +5,16 @@ import "./index.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Provider } from "react-redux";
 import { DragDropContext } from "react-beautiful-dnd";
+import store from "./store/store.js";
+import { GloballyModalProvider } from "./context/ModalContext.jsx";
+GloballyModalProvider;
+// import { CreateDemoProvider } from "./Context.jsx";
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <DragDropContext>
-    <App />
-  </DragDropContext>
+  <Provider store={store}>
+    <GloballyModalProvider>
+      <DragDropContext>
+        <App />
+      </DragDropContext>
+    </GloballyModalProvider>
+  </Provider>
 );
