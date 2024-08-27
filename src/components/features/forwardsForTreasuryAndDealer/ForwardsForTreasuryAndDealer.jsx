@@ -23,7 +23,7 @@ const IconElement = shouldIncludeComponents
 const ForwardsForTreasuryAndBranchTable = shouldIncludeComponents
   ? lazy(() =>
       import(
-        "../forwardsForTreasuryAndBranchTable/ForwardsForTreasuryAndBranchTable"
+        "../forwardsForTreasuryAndDealerTable/ForwardsForTreasuryAndDealerTable"
       )
     )
   : null;
@@ -36,7 +36,7 @@ const DealeAndTreasuryDiscountingTable = shouldIncludeComponents
     )
   : null;
 
-const ForwardsForTreasuryAndBranch = () => {
+const ForwardsForTreasuryAndDealer = () => {
   const { createTenorModal, setCreateTenorModal } = useModal();
 
   const handleOpenModal = () => {
@@ -144,9 +144,12 @@ const ForwardsForTreasuryAndBranch = () => {
                     <CustomButton
                       value={"Create Tenor"}
                       applyClass={"createTenorModalFooterBtn"}
+                      onClick={() => setCreateTenorModal(false)}
+
                     />
                     <CustomButton
                       value={"Cancel"}
+                      onClick={() => setCreateTenorModal(false)}
                       applyClass={"cancelTenorModalFooterBtn"}
                     />
                   </Suspense>
@@ -160,4 +163,4 @@ const ForwardsForTreasuryAndBranch = () => {
   );
 };
 
-export default ForwardsForTreasuryAndBranch;
+export default ForwardsForTreasuryAndDealer;

@@ -1,12 +1,12 @@
 import React from "react";
 import SpotRates from "../../../components/features/spotRates/SpotRates";
-import ForwardsForTreasuryAndBranch from "../../../components/features/forwardsForTreasuryAndBranch/ForwardsForTreasuryAndBranch.jsx";
+import ForwardsForTreasuryAndDealer from "../../../components/features/forwardsForTreasuryAndDealer/ForwardsForTreasuryAndDealer.jsx";
 
 const MainDealer = () => {
   return (
     <>
       <SpotRates />
-      <ForwardsForTreasuryAndBranch />
+      <ForwardsForTreasuryAndDealer />
     </>
   );
 };
