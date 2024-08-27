@@ -21,10 +21,19 @@ const MailModal = ({ openMailModal, setOpenMailModal }) => {
           <>
             <div className="modal-body transaction-doc-content pt-0 pb-0">
               <Row className="mb-3 align-items-start">
-                <Col className="transaction-doc-select-wrapper">
-                  <InputFIeld type="search" placeholder="" />
+                <Col
+                  lg={10}
+                  md={10}
+                  sm={10}
+                  className="transaction-doc-select-wrapper"
+                >
+                  <InputFIeld
+                    applyClass="DealerBitInput"
+                    type="search"
+                    placeholder=""
+                  />
                 </Col>
-                <Col>
+                <Col lg={2} md={2} sm={2}>
                   <CustomButton
                     className="add-user-selected-list"
                     variant="primary"
@@ -36,12 +45,12 @@ const MailModal = ({ openMailModal, setOpenMailModal }) => {
                 <Form.Label>Message (Optional)</Form.Label>
                 <Form.Control as="textarea" name="transaction-doc-message" />
               </Form.Group>
-              <Row className="mb-3 doc-attached-wrapper">
-                <Col className="doc-attached">
+              <Row className="mb-3 doc-attached-wrapper ps-3">
+                <Col lg={1} md={1} sm={1} className="doc-attached">
                   <img src={PdfIcon} width={30} alt="PDF" />
                   <i className="icon-trash remove-doc" />
                 </Col>
-                <Col className="doc-attached">
+                <Col lg={1} md={1} sm={1} className="doc-attached">
                   <img src={XlsIcon} width={40} alt="XLS" />
                   <i className="icon-trash remove-doc" />
                 </Col>
