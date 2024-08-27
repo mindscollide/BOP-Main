@@ -7,6 +7,7 @@ import Modal from "../../../../../../../components/common/globalModal/Modal";
 import RadioButton from "../../../../../../../components/common/radioButton/SwitchBtn";
 import GlobalTable from "../../../../../../../components/common/table/GlobalTable";
 import DatePickerCom from "../../../../../../../components/common/datePicker/DatePicker";
+import "./NopModal.css";
 
 const NopModal = ({ openNopModal, setOpenNopModal }) => {
   const [openDownloadTab, setOpenDownloadTab] = useState(false);
@@ -76,18 +77,51 @@ const NopModal = ({ openNopModal, setOpenNopModal }) => {
       dataIndex: "InflowData",
       key: "InflowData",
       align: "center",
+      render: (text, record, index) => {
+        if (index === 3) {
+          return {
+            children: null,
+            props: {
+              colSpan: 0,
+            },
+          };
+        }
+        return text;
+      },
     },
     {
       title: "Outflow",
       dataIndex: "OutflowData",
       key: "OutflowData",
       align: "center",
+      render: (text, record, index) => {
+        if (index === 3) {
+          return {
+            children: null,
+            props: {
+              colSpan: 0,
+            },
+          };
+        }
+        return text;
+      },
     },
     {
       title: "Net",
       dataIndex: "NetData",
       key: "NetData",
       align: "center",
+      render: (text, record, index) => {
+        if (index === 3) {
+          return {
+            children: null,
+            props: {
+              colSpan: 3,
+            },
+          };
+        }
+        return text;
+      },
     },
     {
       title: "Conversion to US$",
@@ -140,11 +174,17 @@ const NopModal = ({ openNopModal, setOpenNopModal }) => {
                           <Radio value={2}>
                             Select Range
                             <span className="ps-3">
-                              <DatePickerCom applyClass={"DatePickerField"} />
-                              <span className="bg-dark color-white col-2 text-center p-1">
+                              <DatePickerCom
+                                applyClass={"DatePickerField-NOP"}
+                                zIndex={9999}
+                              />
+                              <span className="picker-date-range-To-Span">
                                 To
                               </span>
-                              <DatePickerCom applyClass={"DatePickerField"} />
+                              <DatePickerCom
+                                applyClass={"DatePickerField-NOP"}
+                                zIndex={9999}
+                              />
                             </span>
                           </Radio>
                         </Space>
@@ -153,7 +193,7 @@ const NopModal = ({ openNopModal, setOpenNopModal }) => {
                   </Row>
 
                   <Row>
-                    <Col className="d-flex justify-content-center align-items-center mt-3">
+                    <Col className="d-flex justify-content-center align-items-center mt-3 mb-3">
                       <CustomButton
                         className="btn-sm btn-primary ms-2 download-history-btn-trigger"
                         applyClass={"NopModalBtn"}
