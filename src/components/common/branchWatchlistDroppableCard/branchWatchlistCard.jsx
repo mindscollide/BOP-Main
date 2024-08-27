@@ -1,9 +1,8 @@
-// BranchRateCardsOfWatchList.js
-
 import React from "react";
 import { Row, Col } from "react-bootstrap";
 import "./branchWatchlistCard.css";
 import BidAmountBox from "../../common/bidAmountBox/BidAmountBox";
+
 const BranchRateCardsOfWatchList = ({
   currencyLabel,
   buyHeading,

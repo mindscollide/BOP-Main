@@ -1,9 +1,9 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, startTransition } from "react";
 import { Row, Col } from "react-bootstrap";
 import { useModal } from "../../../context/ModalContext";
 import GlobalModal from "../../common/globalModal/Modal";
+import InputFIeld from "../../common/inputField/InputField";
 
-// Conditionally import CustomButton based on the environment variables
 const shouldIncludeComponents =
   import.meta.env.VITE_APP_INCLUDE_DEALER === "true" ||
   import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
@@ -38,7 +38,14 @@ const DealeAndTreasuryDiscountingTable = shouldIncludeComponents
 
 const ForwardsForTreasuryAndBranch = () => {
   const { createTenorModal, setCreateTenorModal } = useModal();
-  console.log(createTenorModal, "createTenorModalcreateTenorModal");
+
+  const handleOpenModal = () => {
+    // Wrap the state update in startTransition
+    startTransition(() => {
+      setCreateTenorModal(true);
+    });
+  };
+
   return (
     <>
       <Row className='mt-4 mb-2'>
@@ -53,7 +60,7 @@ const ForwardsForTreasuryAndBranch = () => {
               <CustomButton
                 value={"Create Tenor"}
                 applyClass='createTenorBtn'
-                onClick={() => setCreateTenorModal(true)}
+                onClick={handleOpenModal}
               />
             </Suspense>
           )}
@@ -103,8 +110,51 @@ const ForwardsForTreasuryAndBranch = () => {
       </Row>
       <GlobalModal
         show={createTenorModal}
-        backdrop="static"
-
+        backdrop='static'
+        onHide={() => setCreateTenorModal(false)}
+        centered={true}
+        footerClassName='d-block border-0'
+        modalBody={
+          <>
+            <Row>
+              <Col sm={12} md={12} lg={12} className='mb-4'>
+                <div className='color-blue fw-bold fs-5'>Create Tenor</div>
+              </Col>
+              <Col sm={12} md={12} lg={12} className='mb-4'>
+                <label className='mb-1'>Tenor</label>
+                <InputFIeld type='text' className={"form-control"} />
+              </Col>
+              <Col sm={12} md={12} lg={12} className='mb-2'>
+                <label># Of Days</label>
+                <InputFIeld type='number' className={"form-control"} />
+              </Col>
+            </Row>
+          </>
+        }
+        modalFooter={
+          <>
+            <Row>
+              <Col
+                sm={12}
+                md={12}
+                lg={12}
+                className='d-flex justify-content-center gap-2'>
+                {CustomButton && (
+                  <Suspense fallback={<div>Loading button...</div>}>
+                    <CustomButton
+                      value={"Create Tenor"}
+                      applyClass={"createTenorModalFooterBtn"}
+                    />
+                    <CustomButton
+                      value={"Cancel"}
+                      applyClass={"cancelTenorModalFooterBtn"}
+                    />
+                  </Suspense>
+                )}
+              </Col>
+            </Row>
+          </>
+        }
       />
     </>
   );

@@ -1,4 +1,5 @@
 import React from "react";
+import "./MainTabs.css"
 import GlobalTabs from "../../../../components/common/tabs/Tabs";
 import Forwards from "./forwards/Forwards";
 import { Container } from "react-bootstrap";
@@ -12,7 +13,7 @@ const MainTabs = () => {
     { title: "Discounting", content: <Discounting /> },
   ];
 
-  return <GlobalTabs tabs={tabsData} defaultActiveKey={"0"} />;
+  return <GlobalTabs tabClass={"mainTabsClass"} tabs={tabsData} defaultActiveKey={"0"} />;
 };
 
 export default MainTabs;

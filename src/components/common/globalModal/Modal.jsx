@@ -16,6 +16,9 @@ const GlobalModal = ({
   backdrop = "static",
   closeButton,
   modalHeader,
+  headerClassName,
+  bodyClassName,
+  footerClassName,
 }) => {
   return (
     <Modal
@@ -30,10 +33,14 @@ const GlobalModal = ({
       scrollable={scrollable}
       style={style}>
       {modalHeader && (
-        <Modal.Header closeButton={closeButton}>{modalHeader}</Modal.Header>
+        <Modal.Header className={headerClassName} closeButton={closeButton}>
+          {modalHeader}
+        </Modal.Header>
       )}
-      <Modal.Body>{modalBody}</Modal.Body>
-      {modalFooter && <Modal.Footer>{modalFooter}</Modal.Footer>}
+      <Modal.Body className={bodyClassName}>{modalBody}</Modal.Body>
+      {modalFooter && (
+        <Modal.Footer className={footerClassName}>{modalFooter}</Modal.Footer>
+      )}
     </Modal>
   );
 };
