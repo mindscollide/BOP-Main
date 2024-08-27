@@ -215,3 +215,54 @@
 }
 
 /* button for calculator end */
+
+/* Search and Reset Button */
+.searchBtn,
+.searchBtn:active {
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease-in;
+  -webkit-transition: all 0.3s ease-in;
+  -moz-transition: all 0.3s ease-in;
+  -o-transition: all 0.3s ease-in;
+  -ms-transition: all 0.3s ease-in;
+  position: relative;
+  font-family: "Poppins", sans-serif !important;
+  background: #feac78;
+  background: -moz-linear-gradient(top, #feac78 0%, #e97225 100%);
+  background: -webkit-linear-gradient(top, #feac78 0%, #e97225 100%);
+  background: linear-gradient(to bottom, #feac78 0%, #e97225 100%);
+  border-color: #feac78;
+  padding: 0.25rem 0.5rem !important;
+}
+
+.searchBtn:hover {
+  background: #096fed !important;
+  border-color: #096fed !important;
+}
+
+.resetBtn,
+.resetBtn:active {
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease-in;
+  -webkit-transition: all 0.3s ease-in;
+  -moz-transition: all 0.3s ease-in;
+  -o-transition: all 0.3s ease-in;
+  -ms-transition: all 0.3s ease-in;
+  position: relative;
+  font-family: "Poppins", sans-serif !important;
+  background: #096fed !important;
+  border-color: #096fed !important;
+  padding: 0.25rem 0.5rem !important;
+}
+
+.resetBtn:hover {
+  background: #feac78 !important;
+  background: -moz-linear-gradient(top, #feac78 0%, #e97225 100%) !important;
+  background: -webkit-linear-gradient(top, #feac78 0%, #e97225 100%) !important;
+  background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
+  border-color: #feac78 !important;
+}

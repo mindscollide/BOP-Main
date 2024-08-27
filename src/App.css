@@ -240,11 +240,11 @@ input[type="number"] {
 }
 
 .mis-volumwise-value {
-  display: inline-block;
-  padding: 5px 8px;
+  display: inline-block !important;
+  padding: 5px 8px !important;
   background: #edf5fa;
-  border-radius: 5px;
-  font-weight: bold;
+  border-radius: 5px !important;
+  font-weight: bold !important;
   color: var(--color-blue);
 }
 

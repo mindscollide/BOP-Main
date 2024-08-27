@@ -853,9 +853,8 @@ tr.Treasury_Discounting-row.Treasury_Discounting-row-level-0.striped-design:nth-
 th.BankSpot_Table-cell {
   padding: 5px !important;
   text-align: center !important;
-  border: 0 !important;
+  border-color: #dee2e6 !important;
   background: #fff !important;
-  border-radius: 0 !important;
   color: #f26522 !important;
   font-weight: 700 !important;
   font-size: 14px !important;
@@ -869,9 +868,69 @@ th.BankSpot_Table-cell:before {
 td.BankSpot_Table-cell {
   padding: 5px !important;
   text-align: center;
+  border-bottom-width: 1px;
+  border-color: #dee2e6 !important;
 }
 
-/* End */
+:where(.css-dev-only-do-not-override-1c0na6j).BankSpot_Table-wrapper
+  .BankSpot_Table-tbody
+  .BankSpot_Table-row
+  > .BankSpot_Table-cell-row-hover {
+  background: transparent;
+}
+
+/* Bank Spot Table End */
+
+/* Mis Table Design */
+
+th.MIS_Table-cell {
+  padding: 5px !important;
+  border-color: #dee2e6 !important;
+  background: #fff !important;
+  color: #f26522 !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  font-family: "Roboto" !important;
+}
+
+th.MIS_Table-cell:before {
+  content: none !important;
+}
+
+th.MIS_Table-cell.value {
+  text-align: right !important;
+}
+
+td.MIS_Table-cell {
+  padding: 12px 5px !important;
+  border-bottom-width: 1px !important;
+  border-color: #dee2e6 !important;
+  vertical-align: top !important;
+}
+
+td.MIS_Table-cell.value {
+  text-align: right !important;
+}
+
+/* td.MIS_Table-cell:has(span.expanded) {
+  border-bottom-width: 0 !important;
+} */
+
+:where(.css-dev-only-do-not-override-1c0na6j).MIS_Table-wrapper
+  .MIS_Table-tbody
+  .MIS_Table-row
+  > .MIS_Table-cell-row-hover {
+  background: transparent;
+}
+
+tr.MIS_Table-expanded-row td {
+  background: none !important;
+}
+
+tr.MIS_Table-expanded-row {
+  position: relative;
+  top: -28px;
+}
 /* Dealer Forwards Table Starts */
 .Dealer_Forwards-wrapper .Dealer_Forwards {
   scrollbar-color: auto !important;

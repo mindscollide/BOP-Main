@@ -1,0 +1,18 @@
+.expanded-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 5px;
+}
+
+.expanded-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.first-column {
+  width: 33%; /* Adjust the width to match the first column */
+}
+
+.third-column {
+  text-align: right; /* Align the values to the right */
+}
