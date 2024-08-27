@@ -18,18 +18,6 @@ const GlobalTabs = ({ tabs, defaultActiveKey = '0', tabClass }) => {
                     </Tab>
                 ))}
             </Tabs>
-            <div className="filter-export-wrapper ms-auto">
-                <div className="d-flex align-items-center">
-                    <div className="nop-hd-container">
-                        <div className="d-flex align-items-center">
-                            <span className="hd-txt me-3">NOP (US$)</span>
-                            <span className="hd-cr me-2">46,999</span>
-                            <CustomButton applyClass={"NOP-button"} value="+" />
-                            <CustomButton applyClass={"Export-button"} value="Export" />
-                        </div>
-                    </div>
-                </div>
-            </div>
         </>
     );
 }
