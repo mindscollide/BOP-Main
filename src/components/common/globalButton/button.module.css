@@ -95,7 +95,7 @@
   min-height: 35px !important;
   font-family: "Poppins", sans-serif !important;
 }
-.createTenorBtn:is(:hover, :focus, :focus-visible, :visited, :active) {
+.createTenorBtn:is(:hover) {
   background: #000 !important;
   border-color: #000 !important;
   color: #fff !important;
