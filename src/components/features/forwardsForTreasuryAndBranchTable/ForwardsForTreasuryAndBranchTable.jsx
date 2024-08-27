@@ -66,7 +66,7 @@ const ForwardsForTreasuryAndBranchTable = () => {
           render: () =>
             InputFIeld ? (
               <Suspense fallback={<div>Loading input...</div>}>
-                <InputFIeld type='number' applyClass={"DealerTableBitInput"} />
+                <InputFIeld type="number" applyClass={"DealerTableBitInput"} />
               </Suspense>
             ) : null,
         },
@@ -78,7 +78,7 @@ const ForwardsForTreasuryAndBranchTable = () => {
           render: () =>
             InputFIeld ? (
               <Suspense fallback={<div>Loading input...</div>}>
-                <InputFIeld type='number' applyClass={"DealerTableBitInput"} />
+                <InputFIeld type="number" applyClass={"DealerTableBitInput"} />
               </Suspense>
             ) : null,
         },
@@ -95,7 +95,7 @@ const ForwardsForTreasuryAndBranchTable = () => {
           render: () =>
             InputFIeld ? (
               <Suspense fallback={<div>Loading input...</div>}>
-                <InputFIeld type='number' applyClass={"DealerTableBitInput"} />
+                <InputFIeld type="number" applyClass={"DealerTableBitInput"} />
               </Suspense>
             ) : null,
         },
@@ -107,7 +107,7 @@ const ForwardsForTreasuryAndBranchTable = () => {
           render: () =>
             InputFIeld ? (
               <Suspense fallback={<div>Loading input...</div>}>
-                <InputFIeld type='number' applyClass={"DealerTableBitInput"} />
+                <InputFIeld type="number" applyClass={"DealerTableBitInput"} />
               </Suspense>
             ) : null,
         },
@@ -129,7 +129,7 @@ const ForwardsForTreasuryAndBranchTable = () => {
               IconElement && (
                 <Suspense fallback={<div>Loading button...</div>}>
                   <CustomButton
-                    type='link'
+                    type="link"
                     icon={
                       <Suspense fallback={<div>Loading icon...</div>}>
                         <IconElement
@@ -159,9 +159,9 @@ const ForwardsForTreasuryAndBranchTable = () => {
               pagination={false}
             />
             {CustomButton && (
-              <span className='d-flex justify-content-center mt-4'>
+              <span className="d-flex justify-content-center mt-4">
                 <CustomButton
-                  applyClass='publishForwardsBtn'
+                  applyClass="publishForwardsBtn"
                   value={"Publish Forwards"}
                 />
               </span>
