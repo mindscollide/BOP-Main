@@ -131,7 +131,13 @@ const SpotBranch = () => {
 
   return (
     <section className="sectionsporBranch">
-      <DragDropContext onDragEnd={onDragEnd}>
+      <DragDropContext
+        onDragStart={() => document.body.classList.add("dragging")}
+        onDragEnd={(result) => {
+          document.body.classList.remove("dragging");
+          onDragEnd(result);
+        }}
+      >
         <Row>
           <Col lg={9} md={9} sm={12}>
             <span className="FxTradingOuterBox">
@@ -144,8 +150,16 @@ const SpotBranch = () => {
               <Row className="mt-2">
                 <Col lg={4} md={4} sm={12}>
                   <Droppable droppableId="watchlist1">
-                    {(provided) => (
-                      <div ref={provided.innerRef} {...provided.droppableProps}>
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                        className={
+                          snapshot.isDraggingOver
+                            ? "DroppableDragging"
+                            : "Droppable"
+                        }
+                      >
                         <BranchRateCardsOfWatchList
                           currencyLabel={
                             watchlistData.watchlist1.currecncyLabel
@@ -162,8 +176,16 @@ const SpotBranch = () => {
                 </Col>
                 <Col lg={4} md={4} sm={12}>
                   <Droppable droppableId="watchlist2">
-                    {(provided) => (
-                      <div ref={provided.innerRef} {...provided.droppableProps}>
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                        className={
+                          snapshot.isDraggingOver
+                            ? "DroppableDragging"
+                            : "Droppable"
+                        }
+                      >
                         <BranchRateCardsOfWatchList
                           currencyLabel={
                             watchlistData.watchlist2.currecncyLabel
@@ -180,8 +202,16 @@ const SpotBranch = () => {
                 </Col>
                 <Col lg={4} md={4} sm={12}>
                   <Droppable droppableId="watchlist3">
-                    {(provided) => (
-                      <div ref={provided.innerRef} {...provided.droppableProps}>
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                        className={
+                          snapshot.isDraggingOver
+                            ? "DroppableDragging"
+                            : "Droppable"
+                        }
+                      >
                         <BranchRateCardsOfWatchList
                           currencyLabel={
                             watchlistData.watchlist3.currecncyLabel
@@ -201,8 +231,16 @@ const SpotBranch = () => {
               <Row className="mt-2">
                 <Col lg={4} md={4} sm={12}>
                   <Droppable droppableId="watchlist4">
-                    {(provided) => (
-                      <div ref={provided.innerRef} {...provided.droppableProps}>
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                        className={
+                          snapshot.isDraggingOver
+                            ? "DroppableDragging"
+                            : "Droppable"
+                        }
+                      >
                         <BranchRateCardsOfWatchList
                           currencyLabel={
                             watchlistData.watchlist4.currecncyLabel
@@ -219,8 +257,16 @@ const SpotBranch = () => {
                 </Col>
                 <Col lg={4} md={4} sm={12}>
                   <Droppable droppableId="watchlist5">
-                    {(provided) => (
-                      <div ref={provided.innerRef} {...provided.droppableProps}>
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                        className={
+                          snapshot.isDraggingOver
+                            ? "DroppableDragging"
+                            : "Droppable"
+                        }
+                      >
                         <BranchRateCardsOfWatchList
                           currencyLabel={
                             watchlistData.watchlist5.currecncyLabel
@@ -237,8 +283,16 @@ const SpotBranch = () => {
                 </Col>
                 <Col lg={4} md={4} sm={12}>
                   <Droppable droppableId="watchlist6">
-                    {(provided) => (
-                      <div ref={provided.innerRef} {...provided.droppableProps}>
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                        className={
+                          snapshot.isDraggingOver
+                            ? "DroppableDragging"
+                            : "Droppable"
+                        }
+                      >
                         <BranchRateCardsOfWatchList
                           currencyLabel={
                             watchlistData.watchlist6.currecncyLabel
@@ -268,7 +322,7 @@ const SpotBranch = () => {
               </Row>
               <Row>
                 <Col lg={12} md={12} sm={12}>
-                  <Droppable droppableId="droppable" direction="horizontal">
+                  <Droppable droppableId="droppable" direction="vertical">
                     {(provided) => (
                       <div ref={provided.innerRef} {...provided.droppableProps}>
                         <GlobalTable
