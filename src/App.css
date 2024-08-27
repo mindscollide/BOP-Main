@@ -2504,3 +2504,9 @@ i.close-add-user {
   font-family: "Roboto", sans-serif !important;
   font-size: 13px !important;
 }
+
+.filter-export-wrapper {
+  position: absolute !important;
+  right: 10px !important;
+  top: 10px !important;
+}

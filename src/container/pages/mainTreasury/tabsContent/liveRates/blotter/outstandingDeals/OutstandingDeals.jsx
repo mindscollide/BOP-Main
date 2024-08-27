@@ -4,7 +4,9 @@ import GlobalTable from '../../../../../../../components/common/table/GlobalTabl
 const OutstandingDeals = () => {
   return (
     <>
-      <GlobalTable />
+      <div className='box-content-wrapper'>
+        <GlobalTable />
+      </div>
     </>
   )
 }

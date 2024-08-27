@@ -1,3 +1,8 @@
+.box-header ul.buttonClassTab.nav.nav-tabs {
+  justify-content: start !important;
+  padding-left: 0 !important;
+}
+
 ul.nav.nav-tabs.buttonClassTab .nav-link.active,
 ul.nav.nav-tabs.buttonClassTab .nav-link.active:hover,
 ul.nav.nav-tabs.buttonClassTab .nav-link.active,
