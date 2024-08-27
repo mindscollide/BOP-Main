@@ -1,5 +1,5 @@
 import React from "react";
-import RadioButton from "../../common/radioButton/SwitchBtn";
+import SwitchButton from "../../common/switchButton/SwitchBtn";
 import CustomButton from "../../common/globalButton/button";
 import InputFIeld from "../../common/inputField/InputField";
 import "./SpotRates.css";
@@ -21,7 +21,7 @@ const SpotRates = () => {
                 <button class="btn btn-default me-1 clearclose-spotrate">Clear &amp; Close</button>
                 <button class="btn btn-default me-1 enable-refresh-spotrate d-none">Enable Refresh</button>*/}
               <div className='form-check form-switch me-3'>
-                <RadioButton labelValue={"ON / OFF"} />
+                <SwitchButton labelValue={"ON / OFF"} />
                 {/* <label className='form-check-label mt-1' htmlFor='MarketStatus'>
                   ON / OFF
                 </label> */}
