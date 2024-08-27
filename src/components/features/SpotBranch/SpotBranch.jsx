@@ -108,18 +108,22 @@ const SpotBranch = () => {
     }
   };
 
-  //Draggable Row of the table
+  // Draggable Row of the table
   const DraggableBodyRow = ({ index, className, style, ...restProps }) => {
     const { children, ...draggableProps } = restProps;
 
     return (
       <Draggable draggableId={draggableProps["data-row-key"]} index={index}>
-        {(provided) => (
+        {(provided, snapshot) => (
           <tr
             ref={provided.innerRef}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
-            style={{ ...style, ...provided.draggableProps.style }}
+            style={{
+              ...style,
+              height: "0px", // Apply 20px height to the row itself
+              ...provided.draggableProps.style, // Important: ensure that this stays last to not interfere with provided styles
+            }}
             className={className}
           >
             {children}
@@ -140,6 +144,7 @@ const SpotBranch = () => {
                   <span className="FxTradingLabel">FX Trading</span>
                 </Col>
               </Row>
+              {/* First Row of Dragger below */}
               <Row className="mt-2">
                 <Col lg={4} md={4} sm={12}>
                   <Droppable droppableId="watchlist1">
@@ -196,6 +201,7 @@ const SpotBranch = () => {
                   </Droppable>
                 </Col>
               </Row>
+              {/* Second Row of Dragger below */}
               <Row className="mt-2">
                 <Col lg={4} md={4} sm={12}>
                   <Droppable droppableId="watchlist4">
@@ -266,7 +272,7 @@ const SpotBranch = () => {
               </Row>
               <Row>
                 <Col lg={12} md={12} sm={12}>
-                  <Droppable droppableId="droppable" direction="horizontal">
+                  <Droppable droppableId="droppable" direction="vertical">
                     {(provided) => (
                       <div ref={provided.innerRef} {...provided.droppableProps}>
                         <GlobalTable

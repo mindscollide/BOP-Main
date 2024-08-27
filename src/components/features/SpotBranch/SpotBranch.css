@@ -38,3 +38,24 @@
 .sectionsporBranch {
   width: 97% !important;
 }
+
+[data-rbd-droppable-id] {
+  position: relative;
+}
+
+.dragging {
+  position: fixed; /* This removes the dragged item from the document flow */
+  pointer-events: none; /* This prevents the dragged item from affecting the layout */
+}
+
+.droppable-container {
+  min-height: 150px; /* Adjust this height according to your layout */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+tr[data-rbd-placeholder-context-id] {
+  height: 0px !important; /* Enforce the height */
+}
