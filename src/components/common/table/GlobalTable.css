@@ -1376,3 +1376,26 @@ td.Dealer_Discounting-cell {
   border-bottom: none;
 }
 /* End Dealer and Treasury Table */
+
+/* Treasury Nop Modal Table Start */
+
+.NOP-Modal-thead th {
+  font-size: 14px;
+  font-weight: 500;
+  font-family: "Roboto" !important;
+  background-color: #f26522 !important;
+  color: #fff !important;
+  padding: 5px !important;
+  border-radius: 0 !important;
+}
+.NOP-Modal-tbody tr td {
+  font-family: "Roboto" !important;
+  padding: 5px 0px !important;
+  font-size: 13px !important;
+  font-weight: 500;
+}
+.NOP-Modal-tbody-tbody .NOP-Modal-tbody-row .NOP-Modal-tbody-cell {
+  border: 1px solid #e1e1e1 !important;
+}
+
+/* Treasury Nop Modal Table End */

@@ -266,3 +266,45 @@
   background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
   border-color: #feac78 !important;
 }
+
+/* Nop Modal Buttons in Treasury Start */
+.NopModalBtn {
+  border-radius: 4px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  transition: all 0.3s ease-in !important;
+  -webkit-transition: all 0.3s ease-in !important;
+  background-color: #096fed !important;
+  border-color: #096fed !important;
+  /* margin-right: 0.5rem !important; */
+  height: 32px;
+  width: 138px;
+  font-weight: 700;
+  font-family: "POPPINS";
+}
+
+.NopModalBtn:hover {
+  background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
+  border-color: #feac78 !important;
+}
+
+.NopdownloadButton {
+  border-radius: 0px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  transition: all 0.3s ease-in !important;
+  -webkit-transition: all 0.3s ease-in !important;
+  background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
+  border-color: #feac78 !important;
+  /* margin-right: 0.5rem !important; */
+  height: 32px;
+  width: auto;
+  font-weight: 700;
+  font-family: "POPPINS";
+}
+
+.NopdownloadButton:hover {
+  background: #096fed !important;
+  border-color: #096fed !important;
+}
+/* Nop Modal Buttons in Treasury End */
