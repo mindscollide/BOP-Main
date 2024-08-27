@@ -1,8 +1,13 @@
 import React from 'react'
+import GlobalTable from '../../../../../../../components/common/table/GlobalTable'
 
 const TXNSummary = () => {
     return (
-        <div></div>
+        <>
+            <div className='box-content-wrapper'>
+                <GlobalTable />
+            </div>
+        </>
     )
 }
 
