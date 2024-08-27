@@ -7,6 +7,7 @@ import BidAmountBox from "../../common/bidAmountBox/BidAmountBox";
 import GlobalTable from "../../common/table/GlobalTable";
 
 const SpotBranch = () => {
+  //Data to be rendered in the Table
   const [dataSource, setDataSource] = useState([
     { key: "1", instrument: "USDPKR", bid: "288.00", offer: "289.00" },
     { key: "2", instrument: "EURPKR", bid: "308.60", offer: "308.85" },
@@ -18,6 +19,7 @@ const SpotBranch = () => {
     { key: "8", instrument: "CHFPKR", bid: "181.24", offer: "180.09" },
   ]);
 
+  //Watch<List>Data State
   const [watchlistData, setWatchlistData] = useState({
     watchlist1: { currecncyLabel: "", buyValue: "", sellValue: "" },
     watchlist2: { currecncyLabel: "", buyValue: "", sellValue: "" },
@@ -27,6 +29,7 @@ const SpotBranch = () => {
     watchlist6: { currecncyLabel: "", buyValue: "", sellValue: "" },
   });
 
+  //Column of my watch<list> Table
   const columns = [
     {
       title: "Instrument",
@@ -70,6 +73,7 @@ const SpotBranch = () => {
     },
   ];
 
+  //Handle Draging function
   const onDragEnd = (result) => {
     const { source, destination } = result;
 
@@ -104,6 +108,7 @@ const SpotBranch = () => {
     }
   };
 
+  //Draggable Row of the table
   const DraggableBodyRow = ({ index, className, style, ...restProps }) => {
     const { children, ...draggableProps } = restProps;
 
@@ -261,7 +266,7 @@ const SpotBranch = () => {
               </Row>
               <Row>
                 <Col lg={12} md={12} sm={12}>
-                  <Droppable droppableId="droppable" direction="horizontal">
+                  <Droppable droppableId="droppable" direction="vertical">
                     {(provided) => (
                       <div ref={provided.innerRef} {...provided.droppableProps}>
                         <GlobalTable
