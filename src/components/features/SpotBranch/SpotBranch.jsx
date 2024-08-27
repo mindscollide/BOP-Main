@@ -140,6 +140,7 @@ const SpotBranch = () => {
                   <span className="FxTradingLabel">FX Trading</span>
                 </Col>
               </Row>
+              {/* First Row of Dragger */}
               <Row className="mt-2">
                 <Col lg={4} md={4} sm={12}>
                   <Droppable droppableId="watchlist1">
@@ -196,6 +197,7 @@ const SpotBranch = () => {
                   </Droppable>
                 </Col>
               </Row>
+              {/* Second Row of Dragger */}
               <Row className="mt-2">
                 <Col lg={4} md={4} sm={12}>
                   <Droppable droppableId="watchlist4">
