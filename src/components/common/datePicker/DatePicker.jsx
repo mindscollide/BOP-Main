@@ -7,6 +7,7 @@ const DatePickerCom = ({ placeholder, value, onChange, applyClass }) => {
     <DatePicker
       value={value}
       onChange={onChange}
+      portal={true}
       render={
         <InputField
           placeholder={placeholder}

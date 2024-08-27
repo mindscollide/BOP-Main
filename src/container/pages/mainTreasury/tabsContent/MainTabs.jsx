@@ -1,23 +1,18 @@
-import React from 'react'
-import GlobalTabs from '../../../../components/common/tabs/Tabs'
-import Forwards from './forwards/Forwards';
-import { Container } from 'react-bootstrap';
-import Discounting from './discounting/Discounting';
-import LiveRates from './liveRates/LiveRates';
+import React from "react";
+import GlobalTabs from "../../../../components/common/tabs/Tabs";
+import Forwards from "./forwards/Forwards";
+import { Container } from "react-bootstrap";
+import Discounting from "./discounting/Discounting";
+import LiveRates from "./liveRates/LiveRates";
 
 const MainTabs = () => {
+  const tabsData = [
+    { title: "Live Rates", content: <LiveRates /> },
+    { title: "Forwards", content: <Forwards /> },
+    { title: "Discounting", content: <Discounting /> },
+  ];
 
-    const tabsData = [
-        { title: 'Live Rates', content: <LiveRates /> },
-        { title: 'Forwards', content: <Forwards /> },
-        { title: 'Discounting', content: <Discounting /> }
-    ];
+  return <GlobalTabs tabs={tabsData} defaultActiveKey={"0"} />;
+};
 
-    return (
-        <Container fluid className='page-gutter'>
-            <GlobalTabs tabs={tabsData} defaultActiveKey={"0"} />
-        </Container>
-    )
-}
-
-export default MainTabs
+export default MainTabs;
