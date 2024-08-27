@@ -266,3 +266,28 @@
   background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
   border-color: #feac78 !important;
 }
+.createTenorModalFooterBtn {
+  border: 1px solid #0d6efd !important;
+  background: #fff !important;
+  border-radius: 4px !important;
+  color: #0d6efd !important;
+  font-size: 13px;
+  font-weight: 500;
+}
+.createTenorModalFooterBtn:hover {
+  background: #0d6efd !important;
+
+  color: #fff !important;
+}
+.cancelTenorModalFooterBtn {
+  border: 1px solid #dc3545 !important;
+  background: #fff !important;
+  border-radius: 4px !important;
+  color: #dc3545 !important;
+  font-size: 13px;
+  font-weight: 500;
+}
+.cancelTenorModalFooterBtn:hover {
+  color: #fff !important;
+  background: #dc3545 !important;
+}
