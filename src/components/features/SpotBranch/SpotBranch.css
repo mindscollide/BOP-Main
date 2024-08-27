@@ -56,6 +56,7 @@
   justify-content: flex-start;
 }
 
+/* Table Row Styles During Draggging  */
 tr[data-rbd-placeholder-context-id] {
-  height: 0px !important; /* Enforce the height */
+  height: 0px !important;
 }
