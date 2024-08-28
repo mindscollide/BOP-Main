@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import Voltmeter from "./../../common/voltMeter/Voltmeter";
 import ProfileDropdown from "./../../common/profileDropdown/ProfileDropdown";
 import CustomButton from "./../../common/globalButton/button";
 import SiteLogoComponent from "./../../common/siteLogo/SiteLogo";
 import { useLocation, useNavigate } from "react-router-dom";
 import SelectDropdown from "../../common/selectDropdown/SelectDropdown";
+import IconElement from "../../common/IconElement/IconElement";
 
 const GlobalNavbar = () => {
   const [selectedValue, setSelectedValue] = useState(1);
@@ -36,8 +37,20 @@ const GlobalNavbar = () => {
               <div className='d-flex align-items-center gap-2'>
                 {location.pathname !== "/calculator" ? (
                   <>
+                    {shouldIncludeCorporate && (
+                      <Suspense fallback={<>Loading RFQ...</>}>
+                        <CustomButton
+                          applyClass='rfqBtn'
+                          value='RFQ'
+                          size='small'
+                          icon={<IconElement iconClass={"icon-list fs-6"} />}
+                          // onClick={handleCalculatorClick}
+                        />
+                      </Suspense>
+                    )}
                     {location.pathname === "/treasury" ||
-                      (shouldIncludeBranch || shouldIncludeCorporate && (
+                      shouldIncludeBranch ||
+                      (shouldIncludeCorporate && (
                         <CustomButton
                           applyClass='calcBtn'
                           value='Calculators'
