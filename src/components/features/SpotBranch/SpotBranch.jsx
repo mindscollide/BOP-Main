@@ -142,7 +142,7 @@ const SpotBranch = () => {
   return (
     <section>
       <DragDropContext onDragEnd={onDragEnd}>
-        <Row>
+        <Row className="px-2">
           <Col lg={9} md={9} sm={12}>
             <span className="FxTradingOuterBox">
               <Row className="mt-2">
@@ -266,50 +266,43 @@ const SpotBranch = () => {
               </Row>
             </span>
           </Col>
-          <Col lg={3} md={3} sm={12}>
-            <span className="WatchListOuterBox">
-              <Row>
-                <Col lg={6} md={6} sm={12}>
-                  <span className="WatchlistLabel">Watchlist</span>
-                </Col>
-                <Col
-                  lg={6}
-                  md={6}
-                  sm={12}
-                  className="d-flex justify-content-end"
-                >
-                  <span>21-11-2022 9:18 PM</span>
-                </Col>
-              </Row>
-              <Row>
-                <Col lg={12} md={12} sm={12}>
-                  <Droppable droppableId="droppable" direction="vertical">
-                    {(provided) => (
-                      <div ref={provided.innerRef} {...provided.droppableProps}>
-                        <GlobalTable
-                          columns={columns}
-                          dataSource={dataSource}
-                          prefixCls={"WatchList_table"}
-                          pagination={false}
-                          bordered={false}
-                          components={{
-                            body: {
-                              row: DraggableBodyRow,
-                            },
-                          }}
-                          onRow={(record, index) => ({
-                            index,
-                            "data-row-key": record.key,
-                          })}
-                          scroll={{ y: 330, x: "auto" }}
-                        />
-                        {provided.placeholder}
-                      </div>
-                    )}
-                  </Droppable>
-                </Col>
-              </Row>
-            </span>
+          <Col lg={3} md={3} sm={12} className="WatchListOuterBox">
+            <Row>
+              <Col lg={6} md={6} sm={12}>
+                <span className="WatchlistLabel">Watchlist</span>
+              </Col>
+              <Col lg={6} md={6} sm={12} className="d-flex justify-content-end">
+                <span>21-11-2022 9:18 PM</span>
+              </Col>
+            </Row>
+            <Row>
+              <Col lg={12} md={12} sm={12}>
+                <Droppable droppableId="droppable" direction="vertical">
+                  {(provided) => (
+                    <div ref={provided.innerRef} {...provided.droppableProps}>
+                      <GlobalTable
+                        columns={columns}
+                        dataSource={dataSource}
+                        prefixCls={"WatchList_table"}
+                        pagination={false}
+                        bordered={false}
+                        components={{
+                          body: {
+                            row: DraggableBodyRow,
+                          },
+                        }}
+                        onRow={(record, index) => ({
+                          index,
+                          "data-row-key": record.key,
+                        })}
+                        scroll={{ y: 330, x: "auto" }}
+                      />
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              </Col>
+            </Row>
           </Col>
         </Row>
       </DragDropContext>
