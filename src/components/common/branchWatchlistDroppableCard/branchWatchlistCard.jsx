@@ -1,8 +1,9 @@
-import React from "react";
+import React, { startTransition } from "react";
 import { Row, Col } from "react-bootstrap";
 import "./branchWatchlistCard.css";
 import BidAmountBox from "../../common/bidAmountBox/BidAmountBox";
 import CardDragger from "../cardDragger/cardDragger";
+import { useModal } from "../../../context/ModalContext";
 
 const BranchRateCardsOfWatchList = ({
   currencyLabel,
@@ -11,6 +12,16 @@ const BranchRateCardsOfWatchList = ({
   buyValue,
   sellValue,
 }) => {
+  const { setISellAndBuyModal } = useModal();
+
+  const handleOpenModal = () => {
+    console.log(" ");
+    // Wrap the state update in startTransition
+    startTransition(() => {
+      setISellAndBuyModal(true);
+    });
+  };
+
   return (
     <>
       {currencyLabel && buyValue && sellValue ? (
@@ -30,6 +41,7 @@ const BranchRateCardsOfWatchList = ({
                   BidBoxHeading={sellHeading}
                   BidAmountValue={sellValue}
                   applyClass={"SellandBuyCardBracnh"}
+                  onClick={handleOpenModal}
                 />
               </Col>
               <Col lg={6} md={6} sm={6}>
@@ -38,6 +50,7 @@ const BranchRateCardsOfWatchList = ({
                   BidBoxHeading={buyHeading}
                   BidAmountValue={buyValue}
                   applyClass={"SellandBuyCardBracnh"}
+                  onClick={handleOpenModal}
                 />
               </Col>
             </Row>

@@ -180,6 +180,19 @@
 }
 /* End  Dealer Bit  Input Field */
 
+/* IBuySell Modal TextField Height Start*/
+
+.IBuyISellModalTextFileds {
+  height: 30px !important;
+  width: 100% !important;
+}
+/* IBuySell Modal TextField Height End*/
+
+.IBuyISellModalTextFileds {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+
 /* Start Date Picker for NOP Modal  Input Field  */
 .DatePickerField-NOP {
   display: block;
