@@ -13,7 +13,7 @@ const MainTabs = () => {
     { title: "Discounting", content: <Discounting /> },
   ];
 
-  return <GlobalTabs tabClass={"mainTabsClass"} tabs={tabsData} defaultActiveKey={"0"} />;
+  return <GlobalTabs tabClass='mb-4' tabs={tabsData} defaultActiveKey={"0"}  />;
 };
 
 export default MainTabs;

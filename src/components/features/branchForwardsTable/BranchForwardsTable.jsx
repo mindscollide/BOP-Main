@@ -106,7 +106,7 @@ const BranchForwardsTable = () => {
           width: 250,
           align: "center",
           render: (text) => {
-            return <span className="ms-3">{text}</span>;
+            return <span className='ms-3'>{text}</span>;
           },
         },
       ],
@@ -120,7 +120,7 @@ const BranchForwardsTable = () => {
           key: "currentBid",
           align: "center",
           render: (text) => {
-            return <span className="ms-3">{text}</span>;
+            return <span className='ms-3'>{text}</span>;
           },
         },
         {
@@ -129,7 +129,7 @@ const BranchForwardsTable = () => {
           key: "currentAsk",
           align: "center",
           render: (text) => {
-            return <span className="ms-3">{text}</span>;
+            return <span className='ms-3'>{text}</span>;
           },
         },
       ],
@@ -143,7 +143,7 @@ const BranchForwardsTable = () => {
           key: "lastBid",
           align: "center",
           render: (text) => {
-            return <span className="ms-3">{text}</span>;
+            return <span className='ms-3'>{text}</span>;
           },
         },
         {
@@ -152,7 +152,7 @@ const BranchForwardsTable = () => {
           key: "lastAsk",
           align: "center",
           render: (text) => {
-            return <span className="ms-3">{text}</span>;
+            return <span className='ms-3'>{text}</span>;
           },
         },
       ],
@@ -166,7 +166,7 @@ const BranchForwardsTable = () => {
           key: "lastBidGBP",
           align: "center",
           render: (text) => {
-            return <span className="ms-3">{text}</span>;
+            return <span className='ms-3'>{text}</span>;
           },
         },
         {
@@ -175,7 +175,7 @@ const BranchForwardsTable = () => {
           key: "lastAskGBP",
           align: "center",
           render: (text) => {
-            return <span className="ms-3">{text}</span>;
+            return <span className='ms-3'>{text}</span>;
           },
         },
       ],
@@ -189,6 +189,8 @@ const BranchForwardsTable = () => {
       prefixCls={"branch_forwardsTable"}
       pagination={false}
       bordered
+      rowClassName={(record, index) => index % 2 === 0 ? 'branch_forwardsTable-odd' :  'branch_forwardsTable-even'
+      }
     />
   );
 };

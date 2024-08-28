@@ -11,7 +11,7 @@ const MainCategory = () => {
     { title: "Discounting", content: <CategoryDiscounting />},
   ];
   return (
-    <GlobalTabs tabs={tabsData} defaultActiveKey='0' />
+    <GlobalTabs tabs={tabsData} defaultActiveKey='0' tabClass='mb-4' />
     
   )
 }
