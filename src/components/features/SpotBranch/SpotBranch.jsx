@@ -121,8 +121,8 @@ const SpotBranch = () => {
             {...provided.dragHandleProps}
             style={{
               ...style,
-              height: "0px", // Apply 20px height to the row itself
-              ...provided.draggableProps.style, // Important: ensure that this stays last to not interfere with provided styles
+              height: "0px",
+              ...provided.draggableProps.style,
             }}
             className={className}
           >
@@ -263,10 +263,15 @@ const SpotBranch = () => {
           <Col lg={3} md={3} sm={12} className="m-0 p-0">
             <span className="WatchListOuterBox">
               <Row>
-                <Col lg={7} md={7} sm={12}>
+                <Col lg={6} md={6} sm={12}>
                   <span className="WatchlistLabel">Watchlist</span>
                 </Col>
-                <Col lg={5} md={5} sm={12}>
+                <Col
+                  lg={6}
+                  md={6}
+                  sm={12}
+                  className="d-flex justify-content-end"
+                >
                   <span>21-11-2022 9:18 PM</span>
                 </Col>
               </Row>

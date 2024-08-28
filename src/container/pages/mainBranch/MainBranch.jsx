@@ -57,7 +57,15 @@ const MainBranch = () => {
   ];
   return (
     <>
-      <GlobalTabs tabs={tabsData} defaultActiveKey={"1"} tabClass='mb-4' />
+      <div>
+        {GlobalTabs && (
+          <GlobalTabs
+            tabs={tabsData}
+            defaultActiveKey={"1"}
+            tabClass={"mt-2 mb-4"}
+          />
+        )}
+      </div>
     </>
   );
 };

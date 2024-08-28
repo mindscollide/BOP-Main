@@ -696,10 +696,11 @@ tr.Treasury_Discounting-row.Treasury_Discounting-row-level-0.striped-design:nth-
   font-weight: 700;
   border: none !important;
   font-size: 14px;
+  z-index: 6 !important;
 }
 
 .WatchList_table-thead th {
-  padding: 5px 0px !important;
+  padding: 0px 0px !important;
   background-color: #fff !important;
   text-align: center;
   color: #f26522;
@@ -709,7 +710,7 @@ tr.Treasury_Discounting-row.Treasury_Discounting-row-level-0.striped-design:nth-
   padding: 5px 5px !important;
 }
 .WatchList_table-tbody tr td {
-  padding: 8px 5px !important;
+  padding: 7px 5px !important;
 }
 
 .WatchList_table-thead tr {
@@ -726,6 +727,10 @@ tr.Treasury_Discounting-row.Treasury_Discounting-row-level-0.striped-design:nth-
   font-size: 13px;
   font-weight: 500;
   font-family: "Roboto", sans-serif !important;
+}
+
+.WatchList_table-body {
+  margin-top: -14px;
 }
 
 .WatchList_table-tbody tr td:nth-child(1) {
