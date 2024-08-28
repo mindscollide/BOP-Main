@@ -16,9 +16,11 @@ const GlobalNavbar = () => {
   };
 
   // Conditionally import CustomButton based on the environment variables
-  const shouldIncludeComponents =
+  const shouldIncludeBranch =
     import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
 
+  const shouldIncludeCorporate =
+    import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
   const shouldIncludeTreasury =
     import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
 
@@ -34,14 +36,15 @@ const GlobalNavbar = () => {
               <div className='d-flex align-items-center gap-2'>
                 {location.pathname !== "/calculator" ? (
                   <>
-                    {location.pathname === "/treasury" && (
-                      <CustomButton
-                        applyClass='calcBtn'
-                        value='Calculators'
-                        size='large'
-                        onClick={handleCalculatorClick}
-                      />
-                    )}
+                    {location.pathname === "/treasury" ||
+                      (shouldIncludeBranch || shouldIncludeCorporate && (
+                        <CustomButton
+                          applyClass='calcBtn'
+                          value='Calculators'
+                          size='large'
+                          onClick={handleCalculatorClick}
+                        />
+                      ))}
                     {shouldIncludeTreasury &&
                     location.pathname === "/treasury" ? (
                       <Voltmeter
@@ -49,7 +52,9 @@ const GlobalNavbar = () => {
                         onSelect={(value) => setSelectedValue(value)}
                       />
                     ) : null}
-                    {location.pathname === "/category" && <SelectDropdown  classNamePrefix={"Category-Dropdown"} />}
+                    {location.pathname === "/category" && (
+                      <SelectDropdown classNamePrefix={"Category-Dropdown"} />
+                    )}
                   </>
                 ) : null}
                 {/*User Dropdown*/}

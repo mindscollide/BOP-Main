@@ -788,6 +788,7 @@ tr.Treasury_Discounting-row.Treasury_Discounting-row-level-0.striped-design:nth-
   color: #fff;
   font-weight: 700;
   font-size: 14px;
+  border-radius: 0px !important;
 }
 .branch_forwardsTable-thead tr:nth-child(1) th:nth-child(1) {
   background-color: transparent !important;
@@ -816,11 +817,11 @@ tr.Treasury_Discounting-row.Treasury_Discounting-row-level-0.striped-design:nth-
 .branch_forwardsTable-tbody tr td {
   padding: 5px 0px !important;
 }
-.branch_forwardsTable-even-row {
+
+.branch_forwardsTable-odd {
   background-color: #f2f2f2;
 }
-
-.branch_forwardsTable-odd-row {
+.branch_forwardsTable-even {
   background-color: #fff;
 }
 
@@ -1399,3 +1400,5 @@ td.Dealer_Discounting-cell {
 }
 
 /* Treasury Nop Modal Table End */
+
+

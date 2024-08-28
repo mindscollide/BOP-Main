@@ -106,7 +106,7 @@ const BranchDiscountingTable = () => {
           width: 250,
           align: "center",
           render: (text) => {
-            return <span className="ms-3">{text}</span>;
+            return <span className='ms-3'>{text}</span>;
           },
         },
       ],
@@ -120,7 +120,7 @@ const BranchDiscountingTable = () => {
           key: "currentBid",
           align: "center",
           render: (text) => {
-            return <span className="ms-3">{text}</span>;
+            return <span className='ms-3'>{text}</span>;
           },
         },
       ],
@@ -134,7 +134,7 @@ const BranchDiscountingTable = () => {
           key: "lastBid",
           align: "center",
           render: (text) => {
-            return <span className="ms-3">{text}</span>;
+            return <span className='ms-3'>{text}</span>;
           },
         },
       ],
@@ -148,7 +148,7 @@ const BranchDiscountingTable = () => {
           key: "lastBidGBP",
           align: "center",
           render: (text) => {
-            return <span className="ms-3">{text}</span>;
+            return <span className='ms-3'>{text}</span>;
           },
         },
       ],
@@ -162,7 +162,7 @@ const BranchDiscountingTable = () => {
           key: "lastBidGBP",
           align: "center",
           render: (text) => {
-            return <span className="ms-3">{text}</span>;
+            return <span className='ms-3'>{text}</span>;
           },
         },
       ],
@@ -175,6 +175,11 @@ const BranchDiscountingTable = () => {
       prefixCls={"branch_forwardsTable"}
       pagination={false}
       bordered
+      rowClassName={(record, index) =>
+        index % 2 === 0
+          ? "branch_forwardsTable-odd"
+          : "branch_forwardsTable-even"
+      }
     />
   );
 };
