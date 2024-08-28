@@ -21,6 +21,7 @@ const GlobalTable = ({
   onScroll,
   rowHoverBg,
   components,
+  sticky,
   onRow, // Add this line to accept the onRow prop
 }) => {
   return (
@@ -44,6 +45,7 @@ const GlobalTable = ({
       rowHoverBg={rowHoverBg}
       components={components} // Pass the components prop to Table
       onRow={onRow} // Pass the onRow prop to Table
+      sticky={sticky}
     />
   );
 };

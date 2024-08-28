@@ -95,7 +95,7 @@
   min-height: 35px !important;
   font-family: "Poppins", sans-serif !important;
 }
-.createTenorBtn:is(:hover, :focus, :focus-visible, :visited, :active) {
+.createTenorBtn:is(:hover) {
   background: #000 !important;
   border-color: #000 !important;
   color: #fff !important;
@@ -168,7 +168,7 @@
   -webkit-transition: all 0.3s ease-in !important;
   background-color: #096fed !important;
   border-color: #096fed !important;
-  margin-right: 0.5rem !important;
+  /* margin-right: 0.5rem !important; */
   height: 35px;
   width: 138px;
   font-weight: 700;
@@ -183,13 +183,33 @@
   -webkit-transition: all 0.3s ease-in !important;
   background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
   border-color: #feac78 !important;
-  margin-right: 0.5rem !important;
+  /* margin-right: 0.5rem !important; */
   height: 35px;
   width: 138px;
   font-weight: 700;
   font-family: "POPPINS";
 }
 .calcBtn:is(:hover, :focus, :focus-visible, :visited, :active) {
+  background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
+  border-color: #feac78 !important;
+  outline: none;
+}
+.rfqBtn {
+  border-radius: 4px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  position: relative !important;
+  transition: all 0.3s ease-in !important;
+  -webkit-transition: all 0.3s ease-in !important;
+  background-color: #096fed !important;
+  border-color: #096fed !important;
+  /* margin-right: 0.5rem !important; */
+  height: 35px;
+  min-width: 100px;
+  font-weight: 700;
+  font-family: "POPPINS";
+}
+.rfqBtn:is(:hover, :focus, :focus-visible, :visited, :active) {
   background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
   border-color: #feac78 !important;
   outline: none;
@@ -413,3 +433,25 @@
   background: #dc3545 !important;
   outline: none;
 }
+
+/* start mail modal add button */
+.addMailModalBtn {
+  border-radius: 4px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  transition: all 0.3s ease-in !important;
+  -webkit-transition: all 0.3s ease-in !important;
+  background-color: #096fed !important;
+  border-color: #096fed !important;
+  /* margin-right: 0.5rem !important; */
+  height: 37px;
+  width: 108px;
+  font-weight: 700;
+  font-family: "POPPINS";
+}
+
+.addMailModalBtn:hover {
+  background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
+  border-color: #feac78 !important;
+}
+/* End mail modal add button */

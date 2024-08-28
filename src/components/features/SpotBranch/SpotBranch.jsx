@@ -140,7 +140,7 @@ const SpotBranch = () => {
   };
 
   return (
-    <section className="sectionsporBranch">
+    <section>
       <DragDropContext onDragEnd={onDragEnd}>
         <Row>
           <Col lg={9} md={9} sm={12}>
@@ -266,7 +266,7 @@ const SpotBranch = () => {
               </Row>
             </span>
           </Col>
-          <Col lg={3} md={3} sm={12} className="m-0 p-0">
+          <Col lg={3} md={3} sm={12}>
             <span className="WatchListOuterBox">
               <Row>
                 <Col lg={6} md={6} sm={12}>
@@ -301,7 +301,7 @@ const SpotBranch = () => {
                             index,
                             "data-row-key": record.key,
                           })}
-                          scroll={{ y: 300, x: "auto" }}
+                          scroll={{ y: 330, x: "auto" }}
                         />
                         {provided.placeholder}
                       </div>
