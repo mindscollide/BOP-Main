@@ -1,8 +1,17 @@
-import React from 'react'
+import React, { Suspense, lazy } from 'react'
 import { Row, Col } from 'react-bootstrap'
 import BankSpot from './bankSpot/BankSpot'
 import MIS from './mis/Mis'
-import Blotter from './blotter/Blotter'
+
+const shouldIncludeComponents = import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
+
+const Blotter = shouldIncludeComponents
+    ? lazy(() => import("./blotter/Blotter"))
+    : null;
+
+// if (import.meta.env.VITE_APP_INCLUDE_BRANCH === "true") {
+//     const Branch = (await import("./container/pages/mainBranch/MainBranch"))
+//       .default;
 
 const LiveRates = () => {
     return (
@@ -15,7 +24,10 @@ const LiveRates = () => {
                     <MIS />
                 </Col>
             </Row>
-            <Blotter />
+            {Blotter && <Suspense fallback={<>Loading Blotter...</>}>
+                <Blotter />
+
+            </Suspense>}
         </>
     )
 }
