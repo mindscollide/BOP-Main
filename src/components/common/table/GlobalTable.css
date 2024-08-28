@@ -788,6 +788,7 @@ tr.Treasury_Discounting-row.Treasury_Discounting-row-level-0.striped-design:nth-
   color: #fff;
   font-weight: 700;
   font-size: 14px;
+  border-radius: 0px !important;
 }
 .branch_forwardsTable-thead tr:nth-child(1) th:nth-child(1) {
   background-color: transparent !important;
@@ -816,11 +817,11 @@ tr.Treasury_Discounting-row.Treasury_Discounting-row-level-0.striped-design:nth-
 .branch_forwardsTable-tbody tr td {
   padding: 5px 0px !important;
 }
-.branch_forwardsTable-even-row {
+
+.branch_forwardsTable-odd {
   background-color: #f2f2f2;
 }
-
-.branch_forwardsTable-odd-row {
+.branch_forwardsTable-even {
   background-color: #fff;
 }
 
@@ -1390,13 +1391,46 @@ td.Dealer_Discounting-cell {
 }
 .NOP-Modal-tbody tr td {
   font-family: "Roboto" !important;
-  padding: 5px 0px !important;
+  padding: 5px 5px !important;
   font-size: 13px !important;
   font-weight: 500;
 }
-.NOP-Modal-tbody-tbody .NOP-Modal-tbody-row .NOP-Modal-tbody-cell {
+.NOP-Modal-tbody .NOP-Modal-row .NOP-Modal-cell {
   border: 1px solid #e1e1e1 !important;
 }
+
+.NOP-Modal-wrapper .NOP-Modal-thead > tr > th {
+  border: none !important;
+}
+
+:where(.css-dev-only-do-not-override-1c0na6j).NOP-Modal-wrapper
+  .NOP-Modal-thead
+  > tr
+  > th:not(:last-child):not(.NOP-Modal-selection-column):not(
+    .NOP-Modal-row-expand-icon-cell
+  ):not([colspan])::before,
+:where(.css-dev-only-do-not-override-1c0na6j).NOP-Modal-wrapper
+  .NOP-Modal-thead
+  > tr
+  > td:not(:last-child):not(.NOP-Modal-selection-column):not(
+    .NOP-Modal-row-expand-icon-cell
+  ):not([colspan])::before {
+  position: absolute;
+  top: 50%;
+  inset-inline-end: 0;
+  width: 1px;
+  height: 2.3em !important;
+  border: 1px solid #e1e1e1;
+  transform: translateY(-50%);
+  transition: background-color 0.2s;
+  content: "";
+}
+
+/* .ForwardsForTreasuryAndBranchTable-tbody
+  .ForwardsForTreasuryAndBranchTable-row
+  .ForwardsForTreasuryAndBranchTable-cell {
+  border: 1px solid #d31a1a !important;
+} */
 
 /* Treasury Nop Modal Table End */
 

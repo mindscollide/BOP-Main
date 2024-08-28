@@ -1,0 +1,63 @@
+.MailModal-MainClass .modal-content {
+  width: 650px;
+}
+
+.Mail-footer-className {
+  display: contents !important;
+  padding: 20px 20px !important;
+  border: 1px solid #000 !important;
+  border-top: 1px solid #e1e1e1 !important;
+}
+
+.Mail-header-className {
+  margin: 0 !important;
+  border: none !important;
+  position: relative;
+  top: 10px !important;
+}
+
+.modal-footer-column {
+  padding: 15px 20px;
+  border-top: 1px solid #e1e1e1 !important;
+}
+
+.cancel-button-mail {
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: "Poppins", sans-serif;
+  height: 37px !important;
+  width: 100px !important;
+  /* background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important; */
+  background: #096fed;
+  color: #fff;
+}
+
+.cancel-button-mail:hover {
+  background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
+  color: #fff;
+}
+
+.Send-button-mail {
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: "Poppins", sans-serif;
+  height: 37px !important;
+  width: 85px !important;
+  /* background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important; */
+  background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
+  color: #fff;
+}
+
+.Send-button-mail:hover {
+  background: #096fed !important;
+  color: #fff;
+}
+
+.transaaction-headings {
+  font-size: 20px;
+  font-weight: 700;
+  color: #096fed;
+  margin: 0 !important;
+}
