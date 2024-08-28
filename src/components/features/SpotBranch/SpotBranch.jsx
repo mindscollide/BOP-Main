@@ -5,8 +5,15 @@ import { Draggable, DragDropContext, Droppable } from "react-beautiful-dnd";
 import BranchRateCardsOfWatchList from "../../common/branchWatchlistDroppableCard/branchWatchlistCard";
 import BidAmountBox from "../../common/bidAmountBox/BidAmountBox";
 import GlobalTable from "../../common/table/GlobalTable";
+import SellAndBuyModal from "./SellAndBuyModal/SellAndBuyModal";
+import { useModal } from "../../../context/ModalContext";
+import ChatBox from "../chatBox/ChatBox.jsx";
 
 const SpotBranch = () => {
+  //Modal Context State
+  const { iSellAndBuyModal } = useModal();
+
+  console.log(iSellAndBuyModal, "iSellAndBuyModal");
   //Data to be rendered in the Table
   const [dataSource, setDataSource] = useState([
     { key: "1", instrument: "USDPKR", bid: "288.00", offer: "289.00" },
@@ -136,8 +143,8 @@ const SpotBranch = () => {
   return (
     <section>
       <DragDropContext onDragEnd={onDragEnd}>
-        <Row>
-          <Col lg={9} md={9} sm={12}>
+        <Row className="px-2">
+          <Col >
             <span className="FxTradingOuterBox">
               <Row className="mt-2">
                 <Col lg={12} md={12} sm={12}>
@@ -260,53 +267,49 @@ const SpotBranch = () => {
               </Row>
             </span>
           </Col>
-          <Col lg={3} md={3} sm={12}>
-            <span className="WatchListOuterBox">
-              <Row>
-                <Col lg={6} md={6} sm={12}>
-                  <span className="WatchlistLabel">Watchlist</span>
-                </Col>
-                <Col
-                  lg={6}
-                  md={6}
-                  sm={12}
-                  className="d-flex justify-content-end"
-                >
-                  <span>21-11-2022 9:18 PM</span>
-                </Col>
-              </Row>
-              <Row>
-                <Col lg={12} md={12} sm={12}>
-                  <Droppable droppableId="droppable" direction="vertical">
-                    {(provided) => (
-                      <div ref={provided.innerRef} {...provided.droppableProps}>
-                        <GlobalTable
-                          columns={columns}
-                          dataSource={dataSource}
-                          prefixCls={"WatchList_table"}
-                          pagination={false}
-                          bordered={false}
-                          components={{
-                            body: {
-                              row: DraggableBodyRow,
-                            },
-                          }}
-                          onRow={(record, index) => ({
-                            index,
-                            "data-row-key": record.key,
-                          })}
-                          scroll={{ y: 330, x: "auto" }}
-                        />
-                        {provided.placeholder}
-                      </div>
-                    )}
-                  </Droppable>
-                </Col>
-              </Row>
-            </span>
+          <Col lg={3} md={3} sm={12} className="WatchListOuterBox">
+            <Row>
+              <Col lg={6} md={6} sm={12}>
+                <span className="WatchlistLabel">Watchlist</span>
+              </Col>
+              <Col lg={6} md={6} sm={12} className="d-flex justify-content-end">
+                <span>21-11-2022 9:18 PM</span>
+              </Col>
+            </Row>
+            <Row>
+              <Col lg={12} md={12} sm={12}>
+                <Droppable droppableId="droppable" direction="vertical">
+                  {(provided) => (
+                    <div ref={provided.innerRef} {...provided.droppableProps}>
+                      <GlobalTable
+                        columns={columns}
+                        dataSource={dataSource}
+                        prefixCls={"WatchList_table"}
+                        pagination={false}
+                        bordered={false}
+                        components={{
+                          body: {
+                            row: DraggableBodyRow,
+                          },
+                        }}
+                        onRow={(record, index) => ({
+                          index,
+                          "data-row-key": record.key,
+                        })}
+                        scroll={{ y: 330, x: "auto" }}
+                      />
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              </Col>
+            </Row>
           </Col>
         </Row>
       </DragDropContext>
+      {/* ChatBox Component */}
+      {/* <ChatBox /> */}
+      {iSellAndBuyModal && <SellAndBuyModal />}
     </section>
   );
 };

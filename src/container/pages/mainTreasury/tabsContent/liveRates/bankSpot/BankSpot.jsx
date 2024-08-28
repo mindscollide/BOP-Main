@@ -3,7 +3,8 @@ import { useSelector, useDispatch } from "react-redux";
 import GlobalTable from "../../../../../../components/common/table/GlobalTable";
 import BidAmountBox from "../../../../../../components/common/bidAmountBox/BidAmountBox";
 import { formatDateTimeToUTCTime } from "../../../../../../components/utils/timeFunction";
-import { getBankSpotData } from "./slicer/bankSpotSlicer";
+import { getBankSpotData, loaderInitialize } from "./slicer/bankSpotSlicer";
+import SectionLoader from "../../../../../../components/common/sectionLoader/SectionLoader";
 
 const BankSpot = () => {
   const { bankSpotReducer } = useSelector((state) => state);
@@ -122,7 +123,10 @@ const BankSpot = () => {
   ];
 
   useEffect(() => {
-    dispatch(getBankSpotData(bankSpotTableDummyData));
+    dispatch(loaderInitialize(true));
+    setTimeout(() => {
+      dispatch(getBankSpotData(bankSpotTableDummyData));
+    }, 3000);
   }, []);
 
   useEffect(() => {
@@ -142,14 +146,14 @@ const BankSpot = () => {
         <div className='text-start color-white fw-bold fs-6'>Bank Spot</div>
       </div>
 
-      <div className='box-content-wrapper px-2'>
+      <div className='box-content-wrapper position-relative px-2'>
         <GlobalTable
           columns={columns}
           dataSource={bankSpotData}
           prefixCls={"BankSpot_Table"}
-          // bordered
           pagination={false}
         />
+        {bankSpotReducer?.Loader ? <SectionLoader /> : null}
       </div>
     </div>
   );

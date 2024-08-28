@@ -27,7 +27,7 @@ const BranchDiscountingTable = shouldIncludeComponents
   : null;
 
 const MainBranch = () => {
-  const { discountRates, forwardsRates } = generateData(1);
+  const { discountRates, forwardsRates } = generateData(2);
   console.log(discountRates, forwardsRates, "forwardsRatesforwardsRates");
   const tabsData = [
     {
@@ -57,7 +57,7 @@ const MainBranch = () => {
   ];
   return (
     <>
-      <GlobalTabs tabs={tabsData} defaultActiveKey={"1"} tabClass='mb-4' />
+      <GlobalTabs tabs={tabsData} defaultActiveKey={"0"} tabClass='mb-4' />
     </>
   );
 };

@@ -89,10 +89,12 @@ export const generateData = (columnValue) => {
       const discountRateValue = {
         key: `index ${index + 1}`,
         Tenor: findTenorName ? findTenorName.tenorName : "",
+        TenorID: findTenorName ? findTenorName.tenorID : 0,
         tenorDays: findTenorName ? findTenorName.tenorDays : "",
-        instrumentName: findInstrumentName
+        instrumentTitle: findInstrumentName
           ? findInstrumentName.instrumentName
           : "",
+        InstrumentID: findInstrumentName ? findInstrumentName.instrumentID : 0,
         value: discValue.rate,
       };
 
@@ -111,10 +113,13 @@ export const generateData = (columnValue) => {
       const forwardRateData = {
         key: `index ${index + 1}`,
         Tenor: findTenorName ? findTenorName.tenorName : "",
+        TenorID: findTenorName ? findTenorName.tenorID : 0,
         tenorDays: findTenorName ? findTenorName.tenorDays : "",
         instrumentName: findInstrumentName
           ? findInstrumentName.instrumentName
           : "",
+        InstrumentID: findInstrumentName ? findInstrumentName.instrumentID : 0,
+
         ask: forwData.ask,
         bid: forwData.bid,
       };
