@@ -144,7 +144,7 @@ const SpotBranch = () => {
     <section>
       <DragDropContext onDragEnd={onDragEnd}>
         <Row className="px-2">
-          <Col lg={9} md={9} sm={12}>
+          <Col >
             <span className="FxTradingOuterBox">
               <Row className="mt-2">
                 <Col lg={12} md={12} sm={12}>
