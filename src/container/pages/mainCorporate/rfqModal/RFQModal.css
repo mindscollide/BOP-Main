@@ -1,0 +1,19 @@
+.RFQ-footer-className {
+  display: contents !important;
+  padding: 20px 20px !important;
+  border: 1px solid #000 !important;
+  border-top: 1px solid #e1e1e1 !important;
+}
+
+.RFQ-header-className {
+  margin: 0 !important;
+  border: none !important;
+  padding: 10px 30px;
+  position: relative;
+}
+
+.heading-RfqModal {
+  font-size: 20px;
+  font-weight: 500;
+  color: #f26522;
+}
