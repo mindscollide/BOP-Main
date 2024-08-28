@@ -7,6 +7,7 @@ import BidAmountBox from "../../common/bidAmountBox/BidAmountBox";
 import GlobalTable from "../../common/table/GlobalTable";
 import SellAndBuyModal from "./SellAndBuyModal/SellAndBuyModal";
 import { useModal } from "../../../context/ModalContext";
+import ChatBox from "../chatBox/ChatBox.jsx";
 
 const SpotBranch = () => {
   //Modal Context State
@@ -307,7 +308,7 @@ const SpotBranch = () => {
         </Row>
       </DragDropContext>
       {/* ChatBox Component */}
-      {/* <ChatBox /> */}
+      <ChatBox />
       {iSellAndBuyModal && <SellAndBuyModal />}
     </section>
   );
