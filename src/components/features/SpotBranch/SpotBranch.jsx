@@ -313,6 +313,8 @@ const SpotBranch = () => {
           </Col>
         </Row>
       </DragDropContext>
+      {/* ChatBox Component */}
+      {/* <ChatBox /> */}
       {iSellAndBuyModal && <SellAndBuyModal />}
     </section>
   );
