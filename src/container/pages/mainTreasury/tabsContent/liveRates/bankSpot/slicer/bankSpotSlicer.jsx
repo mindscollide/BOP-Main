@@ -11,10 +11,15 @@ const bankSpotSlicer = createSlice({
     reducers: {
         getBankSpotData: (state, { payload }) => {
             state.bankSpotData = payload
-        }
+            state.Loader = false
+        },
+        loaderInitialize: (state, { payload }) => {
+            state.Loader = payload
+        },
+
     }
 });
 
-export const { getBankSpotData } = bankSpotSlicer.actions;
+export const { getBankSpotData, loaderInitialize } = bankSpotSlicer.actions;
 export default bankSpotSlicer.reducer;
 
