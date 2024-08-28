@@ -157,7 +157,10 @@ const TXNSummary = () => {
     return (
         <>
             <div className='box-content-wrapper'>
-                <GlobalTable dataSource={tableData} bordered={false} prefixCls="TXNSummary_Table" columns={columns} />
+                <GlobalTable
+                
+                pagination={false}
+                dataSource={tableData} bordered={false} prefixCls="TXNSummary_Table" columns={columns} />
             </div>
         </>
     )

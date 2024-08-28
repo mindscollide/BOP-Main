@@ -944,7 +944,7 @@ input[type="number"] {
 .box-content-wrapper {
   padding: 0px 0px 10px 0px;
   height: 278px;
-  overflow: auto;
+  overflow: hidden auto;
   position: relative;
   margin-top: 10px;
 }
