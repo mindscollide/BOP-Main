@@ -5,6 +5,10 @@ import Modal from "../../../../../../../components/common/globalModal/Modal";
 import InputFIeld from "../../../../../../../components/common/inputField/InputField";
 import PdfIcon from "../../../../../../../assets/pdf-icon.png";
 import XlsIcon from "../../../../../../../assets/xls.svg";
+import TextArea from "../../../../../../../components/common/textArea/TextArea";
+import SelectDropdown from "../../../../../../../components/common/selectDropdown/SelectDropdown";
+import "./MailModal.css";
+import IconElement from "../../../../../../../components/common/IconElement/IconElement";
 
 const MailModal = ({ openMailModal, setOpenMailModal }) => {
   const onCloseModal = () => {
@@ -16,43 +20,56 @@ const MailModal = ({ openMailModal, setOpenMailModal }) => {
         show={openMailModal}
         onHide={onCloseModal}
         setShow={setOpenMailModal}
+        className="MailModal-MainClass"
         size="lg"
+        footerClassName="Mail-footer-className"
+        headerClassName="Mail-header-className"
+        closeButton
+        modalHeader={
+          <>
+            <Row>
+              <Col>
+                <p className="transaaction-headings mt-2">
+                  Transaction Document
+                </p>
+              </Col>
+            </Row>
+          </>
+        }
         modalBody={
           <>
-            <div className="modal-body transaction-doc-content pt-0 pb-0">
-              <Row className="mb-3 align-items-start">
+            <div>
+              <Row className="mb-5">
                 <Col
                   lg={10}
                   md={10}
                   sm={10}
                   className="transaction-doc-select-wrapper"
                 >
-                  <InputFIeld
-                    applyClass="DealerBitInput"
-                    type="search"
-                    placeholder=""
+                  <SelectDropdown
+                    classNamePrefix="BlotterSearchDropdown"
+                    placeholder="Search"
                   />
                 </Col>
-                <Col lg={2} md={2} sm={2}>
-                  <CustomButton
-                    className="add-user-selected-list"
-                    variant="primary"
-                    value="Add"
-                  />
+                <Col
+                  lg={2}
+                  md={2}
+                  sm={2}
+                  className="d-flex justify-content-end"
+                >
+                  <CustomButton applyClass="addMailModalBtn" value="Add" />
                 </Col>
               </Row>
-              <Form.Group className="mb-3">
-                <Form.Label>Message (Optional)</Form.Label>
-                <Form.Control as="textarea" name="transaction-doc-message" />
-              </Form.Group>
+              <Row>
+                <Col className="mb-3 mt-5">
+                  <label>Message (Optional)</label>
+                  <TextArea rows={2} />
+                </Col>
+              </Row>
               <Row className="mb-3 doc-attached-wrapper ps-3">
                 <Col lg={1} md={1} sm={1} className="doc-attached">
                   <img src={PdfIcon} width={30} alt="PDF" />
-                  <i className="icon-trash remove-doc" />
-                </Col>
-                <Col lg={1} md={1} sm={1} className="doc-attached">
-                  <img src={XlsIcon} width={40} alt="XLS" />
-                  <i className="icon-trash remove-doc" />
+                  <IconElement iconClass={"icon-trash remove-doc"} />
                 </Col>
               </Row>
             </div>
@@ -61,9 +78,22 @@ const MailModal = ({ openMailModal, setOpenMailModal }) => {
         modalFooter={
           <>
             <Row>
-              <Col lg={12} md={12} sm={12}>
-                <CustomButton value="Cancel" />
-                <CustomButton value="Send" />
+              <Col
+                lg={12}
+                md={12}
+                sm={12}
+                className="d-flex justify-content-center gap-2 modal-footer-column"
+              >
+                <CustomButton
+                  icon={<IconElement iconClass={"icon-close"} />}
+                  value="Cancel"
+                  className="cancel-button-mail"
+                />
+                <CustomButton
+                  icon={<IconElement iconClass={"icon-send"} />}
+                  className="Send-button-mail"
+                  value="Send"
+                />
               </Col>
             </Row>
           </>

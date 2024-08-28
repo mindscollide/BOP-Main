@@ -56,8 +56,7 @@
   color: #fff !important;
   background-color: #4d4946 !important;
   outline: none !important;
-  min-width: 140px !important; 
-
+  min-width: 140px !important;
 }
 
 .Category-Dropdown__menu {
@@ -73,3 +72,44 @@
   color: #fff !important;
 }
 /* End Category Dropdown */
+
+/* Start Blotter Export Modal Dropdown */
+.BlotterSearchDropdown__indicator-separator {
+  display: none !important;
+}
+.BlotterSearchDropdown__indicator__placeholder {
+  color: #fff !important;
+}
+.BlotterSearchDropdown__indicator__option {
+  background-color: #d6d9e2 !important;
+  color: #002650 !important;
+  outline: none !important;
+}
+
+.BlotterSearchDropdown__indicator__option--is-focused {
+  background-color: #096fed !important;
+  color: #fff !important;
+  outline: none !important;
+}
+.BlotterSearchDropdown__indicator__control {
+  border-radius: 1px !important;
+  border: none !important;
+  color: #fff !important;
+  background-color: #4d4946 !important;
+  outline: none !important;
+  min-width: 140px !important;
+}
+
+.BlotterSearchDropdown__indicator__menu {
+  background-color: #d6d9e2 !important;
+}
+.BlotterSearchDropdown__indicator__single-value {
+  color: #fff !important;
+}
+.BlotterSearchDropdown__indicator__indicator {
+  color: #fff !important;
+}
+.BlotterSearchDropdown__indicator__input {
+  color: #fff !important;
+}
+/*  */
