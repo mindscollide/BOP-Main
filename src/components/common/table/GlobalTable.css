@@ -1426,4 +1426,6 @@ td.TXNSummary_Table-cell.ff-poppins.fw-bold {
   font-size: 13px !important;
   font-weight: 500 !important;
   color: #212529 !important;
+  text-align: center !important;
+  white-space: nowrap !important;
 }

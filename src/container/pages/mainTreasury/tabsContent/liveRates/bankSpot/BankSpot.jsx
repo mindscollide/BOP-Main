@@ -1,131 +1,52 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux';
 import GlobalTable from '../../../../../../components/common/table/GlobalTable';
 import BidAmountBox from '../../../../../../components/common/bidAmountBox/BidAmountBox';
+import { formatDateTimeToUTCTime } from '../../../../../../components/utils/timeFunction';
+import { getBankSpotData } from './slicer/bankSpotSlicer';
 
 const BankSpot = () => {
 
-    const tableData = [
-        {
-            key: '1',
-            instrument: 'USDPKR',
-            bid: '288',
-            offer: '289',
-            currency: 'USD',
-            previousBid: '288',
-            previousOffer: '289',
-            time: '11:15:00',
-        },
-        {
-            key: '2',
-            instrument: 'EURPKR',
-            bid: '308.60',
-            offer: '308.85',
-            currency: 'EUR',
-            previousBid: '308.60',
-            previousOffer: '308.85',
-            time: '11:15:00',
-        },
-        {
-            key: '3',
-            instrument: 'GBPPKR',
-            bid: '355.18',
-            offer: '355.44',
-            currency: 'GBP',
-            previousBid: '355.18',
-            previousOffer: '355.44',
-            time: '11:15:00',
-        },
-        {
-            key: '4',
-            instrument: 'CNYPKR',
-            bid: '40.76',
-            offer: '40.80',
-            currency: 'CNY',
-            previousBid: '40.76',
-            previousOffer: '40.80',
-            time: '11:15:00',
-        },
-        {
-            key: '5',
-            instrument: 'JPYPKR',
-            bid: '2.0727',
-            offer: '2.0742',
-            currency: 'JPY',
-            previousBid: '2.0727',
-            previousOffer: '2.0742',
-            time: '11:15:00',
-        },
-        {
-            key: '6',
-            instrument: 'AUDPKR',
-            bid: '188.45',
-            offer: '188.60',
-            currency: 'AUD',
-            previousBid: '188.45',
-            previousOffer: '188.60',
-            time: '11:15:00',
-        },
-        {
-            key: '7',
-            instrument: 'USDPKR',
-            bid: '288',
-            offer: '289',
-            currency: 'USD',
-            previousBid: '288',
-            previousOffer: '289',
-            time: '11:15:00',
-        },
-        {
-            key: '8',
-            instrument: 'EURPKR',
-            bid: '308.60',
-            offer: '308.85',
-            currency: 'EUR',
-            previousBid: '308.60',
-            previousOffer: '308.85',
-            time: '11:15:00',
-        },
-        {
-            key: '9',
-            instrument: 'GBPPKR',
-            bid: '355.18',
-            offer: '355.44',
-            currency: 'GBP',
-            previousBid: '355.18',
-            previousOffer: '355.44',
-            time: '11:15:00',
-        },
-        {
-            key: '10',
-            instrument: 'CNYPKR',
-            bid: '40.76',
-            offer: '40.80',
-            currency: 'CNY',
-            previousBid: '40.76',
-            previousOffer: '40.80',
-            time: '11:15:00',
-        },
-        {
-            key: '11',
-            instrument: 'JPYPKR',
-            bid: '2.0727',
-            offer: '2.0742',
-            currency: 'JPY',
-            previousBid: '2.0727',
-            previousOffer: '2.0742',
-            time: '11:15:00',
-        },
-        {
-            key: '12',
-            instrument: 'AUDPKR',
-            bid: '188.45',
-            offer: '188.60',
-            currency: 'AUD',
-            previousBid: '188.45',
-            previousOffer: '188.60',
-            time: '11:15:00',
-        },
-    ];
+    const { bankSpotReducer } = useSelector((state) => state)
+
+    const dispatch = useDispatch();
+
+    const [bankSpotData, setBankSpotData] = useState(null)
+
+    let bankSpotTableDummyData = {
+        instruments: [
+            {
+                worldCurrency: {
+                    instrumentID: 101,
+                    instrumentName: "USD/EUR",
+                    bid: 1.1234,
+                    offer: 1.1244
+                },
+                worldCrosses: {
+                    instrumentID: 102,
+                    instrumentName: "GBP/USD",
+                    bid: 1.2345,
+                    offer: 1.2355
+                },
+                time: "20240828070208"
+            },
+            {
+                worldCurrency: {
+                    instrumentID: 103,
+                    instrumentName: "JPY/USD",
+                    bid: 0.0091,
+                    offer: 0.0092
+                },
+                worldCrosses: {
+                    instrumentID: 104,
+                    instrumentName: "AUD/USD",
+                    bid: 0.715,
+                    offer: 0.716
+                },
+                time: "20240828070208"
+            }
+        ]
+    }
 
     const columns = [
         {
@@ -134,7 +55,7 @@ const BankSpot = () => {
             dataIndex: 'instrument',
             className: 'color-hd fw-bold title-col text-nowrap roboto-13',
             render: (text, record) => (
-                <span>{text}</span>
+                <span>{record?.worldCurrency?.instrumentName}</span>
             ),
         },
         {
@@ -142,7 +63,7 @@ const BankSpot = () => {
             dataIndex: 'bid',
             key: 'bid',
             render: (text, record) => (
-                <BidAmountBox applyClass={"BidCardBox"} spot={false} BidAmountValue={text} />
+                <BidAmountBox applyClass={"BidCardBox"} spot={false} BidAmountValue={record?.worldCurrency?.bid} />
             ),
         },
         {
@@ -150,21 +71,24 @@ const BankSpot = () => {
             dataIndex: 'offer',
             key: 'offer',
             render: (text, record) => (
-                <BidAmountBox applyClass={"OfferCardBox"} spot={false} BidAmountValue={text} />
+                <BidAmountBox applyClass={"OfferCardBox"} spot={false} BidAmountValue={record?.worldCurrency?.offer} />
             ),
         },
         {
-            title: '',
+            title: 'Instrument',
             dataIndex: 'currency',
             key: 'currency',
             className: 'roboto-13',
+            render: (text, record) => (
+                record?.worldCrosses?.instrumentName
+            )
         },
         {
             title: 'Bid',
             dataIndex: 'previousBid',
             key: 'previousBid',
             render: (text, record) => (
-                <BidAmountBox applyClass={"BidCardBox"} spot={false} BidAmountValue={text} />
+                <BidAmountBox applyClass={"BidCardBox"} spot={false} BidAmountValue={record?.worldCrosses?.bid} />
             ),
         },
         {
@@ -172,7 +96,7 @@ const BankSpot = () => {
             dataIndex: 'previousOffer',
             key: 'previousOffer',
             render: (text, record) => (
-                <BidAmountBox applyClass={"OfferCardBox"} spot={false} BidAmountValue={text} />
+                <BidAmountBox applyClass={"OfferCardBox"} spot={false} BidAmountValue={record?.worldCrosses?.offer} />
             ),
         },
         {
@@ -180,8 +104,23 @@ const BankSpot = () => {
             dataIndex: 'time',
             key: 'time',
             className: 'roboto-13',
+            render: (text, record) => (
+                formatDateTimeToUTCTime(text)
+            ),
         },
     ]
+
+    useEffect(() => {
+        dispatch(getBankSpotData(bankSpotTableDummyData));
+    }, [])
+
+    useEffect(() => {
+        if (bankSpotReducer?.bankSpotData !== null && bankSpotReducer?.bankSpotData !== undefined) {
+            setBankSpotData(bankSpotReducer?.bankSpotData?.instruments)
+        } else {
+            setBankSpotData(null)
+        }
+    }, [bankSpotReducer?.bankSpotData])
 
     return (
         <div className="card-box">
@@ -193,7 +132,7 @@ const BankSpot = () => {
             <div className="box-content-wrapper px-2">
                 <GlobalTable
                     columns={columns}
-                    dataSource={tableData}
+                    dataSource={bankSpotData}
                     prefixCls={"BankSpot_Table"}
                     // bordered
                     pagination={false}

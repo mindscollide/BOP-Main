@@ -37,26 +37,24 @@ const MIS = () => {
         return (
           <>
             <span
-              className={`${
-                isExpanded ? "expanded" : ""
-              } mis-volumwise-value bg-none color-black tp-customer-hd roboto-13`}
+              className={`${isExpanded ? "expanded" : ""
+                } mis-volumwise-value bg-none color-black tp-customer-hd roboto-13`}
             >
               {text}
               <span className="view-detail cursor-pointer">
                 <IconElement
                   onClick={() => handleExpandClick(record)}
-                  iconClass={`icon-add-circle-fill fs-6 mx-1 ${
-                    index === 1 ? "color-green" : "color-blue"
-                  }`}
+                  iconClass={`icon-add-circle-fill fs-6 mx-1 ${index === 1 ? "color-green" : "color-blue"
+                    }`}
                 ></IconElement>
               </span>
             </span>
             {isExpanded ? (
               <div className="d-grid">
-                <span class="mis-volumwise-value bg-none color-black py-0 roboto-13">
+                <span className="mis-volumwise-value bg-none color-black py-0 roboto-13">
                   Import
                 </span>
-                <span class="mis-volumwise-value bg-none color-black py-0 roboto-13">
+                <span className="mis-volumwise-value bg-none color-black py-0 roboto-13">
                   Export
                 </span>
               </div>
@@ -73,9 +71,8 @@ const MIS = () => {
         const isExpanded = expandedRowKeys.includes(record.key);
         return (
           <span
-            className={`${
-              isExpanded ? "expanded" : ""
-            } roboto-13 mis-volumwise-value bg-none color-black`}
+            className={`${isExpanded ? "expanded" : ""
+              } roboto-13 mis-volumwise-value bg-none color-black`}
           >
             {text}
           </span>
@@ -92,25 +89,22 @@ const MIS = () => {
         return (
           <>
             <span
-              className={`${isExpanded ? "expanded" : ""} ${
-                index === 1 ? "mis-profitwise-value" : "mis-volumwise-value"
-              } roboto-13`}
+              className={`${isExpanded ? "expanded" : ""} ${index === 1 ? "mis-profitwise-value" : "mis-volumwise-value"
+                } roboto-13`}
             >
               {text}
             </span>
             {isExpanded ? (
               <div className="d-grid">
                 <span
-                  className={`${
-                    index === 1 ? "mis-profitwise-value" : "mis-volumwise-value"
-                  } bg-none py-0 roboto-13`}
+                  className={`${index === 1 ? "mis-profitwise-value" : "mis-volumwise-value"
+                    } bg-none py-0 roboto-13`}
                 >
                   {record.import}
                 </span>
                 <span
-                  className={`${
-                    index === 1 ? "mis-profitwise-value" : "mis-volumwise-value"
-                  } bg-none py-0 roboto-13`}
+                  className={`${index === 1 ? "mis-profitwise-value" : "mis-volumwise-value"
+                    } bg-none py-0 roboto-13`}
                 >
                   {record.export}
                 </span>
@@ -148,12 +142,12 @@ const MIS = () => {
               />
               <div className="expanded-row">
                 <div className="expanded-column first-column">
-                  <span class="color-hd border-0 roboto-13">
+                  <span className="color-hd border-0 roboto-13">
                     Total Profit (PKR)
                   </span>
                 </div>
                 <div className="expanded-column third-column">
-                  <span class="mis-totalprofit-value">10,000,000</span>
+                  <span className="mis-totalprofit-value">10,000,000</span>
                 </div>
               </div>
             </div>

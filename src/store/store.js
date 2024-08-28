@@ -1,8 +1,9 @@
 // store.js
 import { configureStore } from "@reduxjs/toolkit";
+import bankSpotSlicer from "../container/pages/mainTreasury/tabsContent/liveRates/bankSpot/slicer/bankSpotSlicer";
 
-export const store = configureStore({
-  reducer: {},
+const store = configureStore({
+  reducer: { bankSpotReducer: bankSpotSlicer },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 });
 
