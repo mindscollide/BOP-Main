@@ -1,0 +1,55 @@
+.CustomernameLabel {
+  font-weight: 600;
+  white-space: nowrap !important;
+  font-size: inherit;
+}
+
+/* IBuySell Modal Selector Starts */
+span.IBuySellModalSelector__indicator-separator.css-1u9des2-indicatorSeparator {
+  display: none;
+}
+
+.IsBuySellBodyModalClass {
+  padding: 25px 30px !important;
+}
+/* IBuySell Modal Selector Ends */
+
+.UpperMarginRow {
+  margin-top: 32px !important;
+}
+
+.ConfirmbuttonClass {
+  background: #096fed !important;
+  color: #fff !important;
+  border-radius: 4px !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  font-family: "Poppins", sans-serif;
+  cursor: pointer !important;
+  padding: 15px 20px !important;
+  border: none !important;
+}
+
+.ConfirmbuttonClass:is(:hover, :active, :focus, :focus-visible) {
+  background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
+  color: #fff !important;
+  border-radius: 4px !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  font-family: "Poppins", sans-serif;
+  cursor: pointer !important;
+  padding: 15px 20px !important;
+  border: none !important;
+}
+
+.CrossButtonBuySellModal {
+  background: #fff !important;
+  border: #fff !important;
+  color: black !important;
+}
+
+.CrossButtonBuySellModal:is(:hover, :active, :focus, :focus-visible) {
+  background: #fff !important;
+  border: #fff !important;
+  color: black !important;
+}

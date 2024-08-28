@@ -5,8 +5,14 @@ import { Draggable, DragDropContext, Droppable } from "react-beautiful-dnd";
 import BranchRateCardsOfWatchList from "../../common/branchWatchlistDroppableCard/branchWatchlistCard";
 import BidAmountBox from "../../common/bidAmountBox/BidAmountBox";
 import GlobalTable from "../../common/table/GlobalTable";
+import SellAndBuyModal from "./SellAndBuyModal/SellAndBuyModal";
+import { useModal } from "../../../context/ModalContext";
 
 const SpotBranch = () => {
+  //Modal Context State
+  const { iSellAndBuyModal } = useModal();
+
+  console.log(iSellAndBuyModal, "iSellAndBuyModal");
   //Data to be rendered in the Table
   const [dataSource, setDataSource] = useState([
     { key: "1", instrument: "USDPKR", bid: "288.00", offer: "289.00" },
@@ -307,6 +313,7 @@ const SpotBranch = () => {
           </Col>
         </Row>
       </DragDropContext>
+      {iSellAndBuyModal && <SellAndBuyModal />}
     </section>
   );
 };
