@@ -5,7 +5,6 @@ import styles from "./header.module.css";
 
 const Header = () => {
   const location = useLocation();
-  console.log(location.pathname, "locationlocationlocationlocation");
   return (
     <Navbar className={styles["top-header"]}>
       <Nav className='ms-auto'>

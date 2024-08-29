@@ -140,26 +140,63 @@ export const generateData = (columnValue) => {
  * @returns {Array} - An array of column configurations for the Ant Design table.
  */
 export const createColumns = (data, value) => {
-  // Base column that will always be present, containing the Tenor column
-  const baseColumns = [
-    {
-      title: "", // Empty title for a merged header style
-      dataIndex: "", // No data index for this parent column
-      key: "", // Key for the parent column
-      align: "", // Alignment (empty for this parent column)
-      width: 100, // Set column width
-
-      children: [
-        {
-          title: "Tenor", // Header name for the child column
-          dataIndex: "tenorName", // Data key from the dataset for Tenor
-          key: "tenor", // Unique key for the child column
-          align: "center", // Center align the content
-          width: 100, // Set column width
-        },
-      ],
-    },
-  ];
+  let baseColumns;
+  if (value === 3) {
+    baseColumns = [
+      {
+        title: "", // Empty title for a merged header style
+        dataIndex: "", // No data index for this parent column
+        key: "", // Key for the parent column
+        align: "", // Alignment (empty for this parent column)
+        width: 80, // Set column width
+        children: [
+          {
+            title: "Tenor", // Header name for the child column
+            dataIndex: "Tenor", // Data key from the dataset for Tenor
+            key: "tenor", // Unique key for the child column
+            align: "center", // Center align the content
+            width: 80, // Set column width
+          },
+        ],
+      },
+      {
+        title: "", // Empty title for a merged header style
+        dataIndex: "", // No data index for this parent column
+        key: "", // Key for the parent column
+        align: "", // Alignment (empty for this parent column)
+        width: 80, // Set column width
+        children: [
+          {
+            title: "Days", // Header name for the child column
+            dataIndex: "tenorDays", // Data key from the dataset for Tenor
+            key: "tenorDays", // Unique key for the child column
+            align: "center", // Center align the content
+            width: 80, // Set column width
+          },
+        ],
+      },
+    ];
+  } else {
+    // Base column that will always be present, containing the Tenor column
+    baseColumns = [
+      {
+        title: "", // Empty title for a merged header style
+        dataIndex: "", // No data index for this parent column
+        key: "", // Key for the parent column
+        align: "", // Alignment (empty for this parent column)
+        width: 80, // Set column width
+        children: [
+          {
+            title: "Tenor", // Header name for the child column
+            dataIndex: "Tenor", // Data key from the dataset for Tenor
+            key: "tenor", // Unique key for the child column
+            align: "center", // Center align the content
+            width: 80, // Set column width
+          },
+        ],
+      },
+    ];
+  }
 
   let instrumentColumns = [];
 
@@ -175,6 +212,7 @@ export const createColumns = (data, value) => {
           acc.push({
             title: instrument, // Title of the instrument column
             key: instrument, // Unique key for the instrument column
+            width: 100, // Set column width
 
             children: [
               {
@@ -190,7 +228,7 @@ export const createColumns = (data, value) => {
 
         return acc; // Return the accumulator with newly added column if applicable
       }, []);
-    } else {
+    } else if (value === 2 || value === 3) {
       // Create Forwards columns
       instrumentColumns = data.reduce((acc, item) => {
         const instrument = item.instrumentName;

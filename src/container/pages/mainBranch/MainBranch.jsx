@@ -30,11 +30,7 @@ const BranchDiscountingTable = shouldIncludeComponents
   : null;
 
 const MainBranch = () => {
-  const { discountRates, forwardsRates } = generateData(2);
-  if (forwardsRates.length > 0) {
-    const forwardsRatesData = createColumns(forwardsRates);
-  }
-  console.log(discountRates, forwardsRates, "forwardsRatesforwardsRates");
+
   const tabsData = [
     {
       title: "Spot",
