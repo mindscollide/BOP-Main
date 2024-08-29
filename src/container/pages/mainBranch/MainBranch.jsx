@@ -1,6 +1,9 @@
 import React, { Suspense, lazy } from "react";
 import GlobalTabs from "../../../components/common/tabs/Tabs";
-import { generateData } from "../../../components/utils/generateData";
+import {
+  createColumns,
+  generateData,
+} from "../../../components/utils/generateData";
 
 // Conditionally import CustomButton based on the environment variables
 const shouldIncludeComponents =
@@ -28,6 +31,9 @@ const BranchDiscountingTable = shouldIncludeComponents
 
 const MainBranch = () => {
   const { discountRates, forwardsRates } = generateData(2);
+  if (forwardsRates.length > 0) {
+    const forwardsRatesData = createColumns(forwardsRates);
+  }
   console.log(discountRates, forwardsRates, "forwardsRatesforwardsRates");
   const tabsData = [
     {

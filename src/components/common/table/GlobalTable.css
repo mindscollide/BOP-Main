@@ -852,6 +852,9 @@ tr.Treasury_Discounting-row.Treasury_Discounting-row-level-0.striped-design:nth-
   text-align: left;
   font-size: 1rem !important;
 }
+.branch_forwardsTable-measure-row {
+  display: none !important;
+}
 /* End Branch Forward table */
 
 /* Bank Spot Table Design */
