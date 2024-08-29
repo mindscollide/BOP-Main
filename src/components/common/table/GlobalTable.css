@@ -772,6 +772,10 @@ tr.Treasury_Discounting-row.Treasury_Discounting-row-level-0.striped-design:nth-
 /* Branch Spot Table WatchList Ends */
 
 /* Start branch forwards table */
+.branch_forwardsTable-wrapper .branch_forwardsTable.branch_forwardsTable-bordered >.branch_forwardsTable-container {
+  border-inline-start: 0px !important;
+  border-top: 0px !important;
+}
 .branch_forwardsTable-wrapper .Tresuary_Discounting {
   scrollbar-color: auto !important;
 }
