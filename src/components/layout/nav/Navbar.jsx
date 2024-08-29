@@ -6,14 +6,20 @@ import SiteLogoComponent from "./../../common/siteLogo/SiteLogo";
 import { useLocation, useNavigate } from "react-router-dom";
 import SelectDropdown from "../../common/selectDropdown/SelectDropdown";
 import IconElement from "../../common/IconElement/IconElement";
+import RFQModal from "../../../container/pages/mainCorporate/rfqModal/RFQModal";
 
 const GlobalNavbar = () => {
   const [selectedValue, setSelectedValue] = useState(1);
+  const [openRfqModal, setOpenRfqModal] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
   const handleCalculatorClick = () => {
     window.open("/calculator", "_blank");
+  };
+
+  const onClickRFQ = () => {
+    setOpenRfqModal(true);
   };
 
   // Conditionally import CustomButton based on the environment variables
@@ -27,24 +33,24 @@ const GlobalNavbar = () => {
 
   return (
     <>
-      <div className='site-header pt-1'>
+      <div className="site-header pt-1">
         {/*Container*/}
-        <div className='container-fluid page-gutter'>
+        <div className="container-fluid page-gutter">
           {/*header inner container*/}
-          <div className='header-inner d-flex align-items-center'>
+          <div className="header-inner d-flex align-items-center">
             <SiteLogoComponent />
-            <div className='ms-auto'>
-              <div className='d-flex align-items-center gap-2'>
+            <div className="ms-auto">
+              <div className="d-flex align-items-center gap-2">
                 {location.pathname !== "/calculator" ? (
                   <>
                     {shouldIncludeCorporate && (
                       <Suspense fallback={<>Loading RFQ...</>}>
                         <CustomButton
-                          applyClass='rfqBtn'
-                          value='RFQ'
-                          size='small'
+                          applyClass="rfqBtn"
+                          value="RFQ"
+                          size="small"
                           icon={<IconElement iconClass={"icon-list fs-6"} />}
-                          // onClick={handleCalculatorClick}
+                          onClick={onClickRFQ}
                         />
                       </Suspense>
                     )}
@@ -52,9 +58,9 @@ const GlobalNavbar = () => {
                       shouldIncludeBranch ||
                       (shouldIncludeCorporate && (
                         <CustomButton
-                          applyClass='calcBtn'
-                          value='Calculators'
-                          size='large'
+                          applyClass="calcBtn"
+                          value="Calculators"
+                          size="large"
                           onClick={handleCalculatorClick}
                         />
                       ))}
@@ -71,7 +77,7 @@ const GlobalNavbar = () => {
                   </>
                 ) : null}
                 {/*User Dropdown*/}
-                <ProfileDropdown userName='Michael Hawk' />
+                <ProfileDropdown userName="Michael Hawk" />
               </div>
             </div>
           </div>
@@ -79,6 +85,15 @@ const GlobalNavbar = () => {
         </div>
         {/*Container*/}
       </div>
+
+      {openRfqModal ? (
+        <>
+          <RFQModal
+            openRfqModal={openRfqModal}
+            setOpenRfqModal={setOpenRfqModal}
+          />
+        </>
+      ) : null}
     </>
   );
 };

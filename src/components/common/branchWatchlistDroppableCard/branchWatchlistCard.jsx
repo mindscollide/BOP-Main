@@ -15,7 +15,6 @@ const BranchRateCardsOfWatchList = ({
   const { setISellAndBuyModal } = useModal();
 
   const handleOpenModal = () => {
-    console.log(" ");
     // Wrap the state update in startTransition
     startTransition(() => {
       setISellAndBuyModal(true);

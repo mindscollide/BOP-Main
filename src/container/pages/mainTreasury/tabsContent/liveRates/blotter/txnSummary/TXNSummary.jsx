@@ -1,5 +1,6 @@
 import React from 'react'
 import GlobalTable from '../../../../../../../components/common/table/GlobalTable'
+import IconElement from '../../../../../../../components/common/IconElement/IconElement'
 
 const TXNSummary = () => {
 
@@ -58,7 +59,6 @@ const TXNSummary = () => {
             status: "Accepted",
             chat: 0
         }
-
     ]
 
     const columns = [
@@ -139,12 +139,29 @@ const TXNSummary = () => {
             title: "Comment",
             dataIndex: 'comment',
             className: "comment-class ",
+            render: (text, record) => (
+                <>
+                    {text !== "" ?
+                        <span className="d-inline-block cursor-pointer">
+                            <IconElement iconClass="icon-view-comment fs-5 color-blue" />
+                        </span>
+                        : null}
+                </>
+            ),
+
         },
         {
             key: "14",
             title: "Status",
             dataIndex: 'status',
             className: "ff-poppins fw-bold",
+            render: (text, record) => (
+                <>
+                    <span className={text === "Accepted" ? "color-green" : "color-red"}>
+                        {text}
+                    </span>
+                </>
+            ),
         },
         {
             key: "15",
@@ -158,9 +175,13 @@ const TXNSummary = () => {
         <>
             <div className='box-content-wrapper'>
                 <GlobalTable
-                
-                pagination={false}
-                dataSource={tableData} bordered={false} prefixCls="TXNSummary_Table" columns={columns} />
+                    pagination={false}
+                    dataSource={tableData}
+                    bordered={false}
+                    prefixCls="TXNSummary_Table"
+                    columns={columns}
+                    scroll={{ x: "max-content" }}
+                />
             </div>
         </>
     )
