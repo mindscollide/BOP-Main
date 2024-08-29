@@ -147,6 +147,8 @@ export const createColumns = (data, value) => {
       dataIndex: "", // No data index for this parent column
       key: "", // Key for the parent column
       align: "", // Alignment (empty for this parent column)
+      width: 100, // Set column width
+
       children: [
         {
           title: "Tenor", // Header name for the child column
