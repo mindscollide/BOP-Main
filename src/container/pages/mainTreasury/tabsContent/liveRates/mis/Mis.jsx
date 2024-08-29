@@ -1,31 +1,48 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import GlobalTable from "../../../../../../components/common/table/GlobalTable";
 import IconElement from "../../../../../../components/common/IconElement/IconElement";
 import "./Mis.css";
 import DatePickerCom from "../../../../../../components/common/datePicker/DatePicker";
 import CustomButton from "../../../../../../components/common/globalButton/button";
+import { getMisData, loaderInitializeMis } from "./slicer/misSlicer";
+import SectionLoader from "../../../../../../components/common/sectionLoader/SectionLoader";
 
 const MIS = () => {
+
+  const dispatch = useDispatch();
+
+  const { misReducer } = useSelector((state) => state)
+
+  const [misTableData, setMisTableData] = useState(null)
+
+  const [totalProfit, setTotalProfit] = useState(0)
+
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
 
-  const tableData = [
-    {
-      key: "1",
-      topCustomer: "Volumewise",
-      company: "Gulahmed",
-      value: "500,000",
-      import: "10,000",
-      export: "5,000",
+  const misResponseData = {
+    "volumeWiseMISData": {
+      "misData": {
+        "corporateID": 1,
+        "corporateName": "Example Corp",
+        "value": 1000.5,
+        "import": 1000.5,
+        "export": 1000.5
+      }
     },
-    {
-      key: "2",
-      topCustomer: "Profit-wise (PKR)",
-      company: "HBL",
-      value: "300,000",
-      import: "10,000",
-      export: "5,000",
+    "profiteInPKRWiseMISData": {
+      "misData": {
+        "corporateID": 2,
+        "corporateName": "Another Corp",
+        "value": 2500.75,
+        "import": 1000.5,
+        "export": 1000.5
+      }
     },
-  ];
+    "totalProfit": 3500.25,
+    "responseMessage": "Data retrieval successful",
+    "isExecuted": true
+  };
 
   const columns = [
     {
@@ -40,7 +57,7 @@ const MIS = () => {
               className={`${isExpanded ? "expanded" : ""
                 } mis-volumwise-value bg-none color-black tp-customer-hd roboto-13`}
             >
-              {text}
+              {index === 0 ? "Volumewise" : "Profit-wise (PKR)"}
               <span className="view-detail cursor-pointer">
                 <IconElement
                   onClick={() => handleExpandClick(record)}
@@ -74,7 +91,7 @@ const MIS = () => {
             className={`${isExpanded ? "expanded" : ""
               } roboto-13 mis-volumwise-value bg-none color-black`}
           >
-            {text}
+            {record?.misData?.corporateName}
           </span>
         );
       },
@@ -92,7 +109,7 @@ const MIS = () => {
               className={`${isExpanded ? "expanded" : ""} ${index === 1 ? "mis-profitwise-value" : "mis-volumwise-value"
                 } roboto-13`}
             >
-              {text}
+              {record?.misData?.value}
             </span>
             {isExpanded ? (
               <div className="d-grid">
@@ -100,13 +117,13 @@ const MIS = () => {
                   className={`${index === 1 ? "mis-profitwise-value" : "mis-volumwise-value"
                     } bg-none py-0 roboto-13`}
                 >
-                  {record.import}
+                  {record?.misData?.import}
                 </span>
                 <span
                   className={`${index === 1 ? "mis-profitwise-value" : "mis-volumwise-value"
                     } bg-none py-0 roboto-13`}
                 >
-                  {record.export}
+                  {record?.misData?.export}
                 </span>
               </div>
             ) : null}
@@ -125,6 +142,28 @@ const MIS = () => {
     setExpandedRowKeys(newExpandedRowKeys);
   };
 
+  useEffect(() => {
+    dispatch(loaderInitializeMis(true));
+    setTimeout(() => {
+      dispatch(getMisData(misResponseData));
+    }, 3000);
+  }, []);
+
+  useEffect(() => {
+    if (
+      misReducer?.misData !== null &&
+      misReducer?.misData !== undefined
+    ) {
+      setMisTableData([misReducer?.misData?.volumeWiseMISData, misReducer?.misData?.profiteInPKRWiseMISData]);
+      setTotalProfit(misReducer?.misData?.totalProfit)
+    } else {
+      setMisTableData(null);
+      setTotalProfit(0)
+    }
+  }, [misReducer?.misData]);
+
+  console.log("misReducermisReducer", misReducer, misTableData)
+
   return (
     <>
       <div className="card-box">
@@ -136,7 +175,7 @@ const MIS = () => {
             <div className="flex-fill px-3">
               <GlobalTable
                 columns={columns}
-                dataSource={tableData}
+                dataSource={misTableData}
                 prefixCls={"MIS_Table"}
                 pagination={false}
               />
@@ -147,7 +186,7 @@ const MIS = () => {
                   </span>
                 </div>
                 <div className="expanded-column third-column">
-                  <span className="mis-totalprofit-value">10,000,000</span>
+                  <span className="mis-totalprofit-value">{totalProfit}</span>
                 </div>
               </div>
             </div>
@@ -170,11 +209,27 @@ const MIS = () => {
                 />
               </div>
               <div className="filter-mis-btn mt-3 d-flex gap-1">
-                <CustomButton value="Search" applyClass="searchBtn" />
-                <CustomButton value="Reset" applyClass="resetBtn" />
+                <CustomButton onClick={
+                  () => {
+                    dispatch(loaderInitializeMis(true));
+                    setTimeout(() => {
+                      dispatch(getMisData(misResponseData));
+                    }, 1000);
+                  }
+                } value="Search" applyClass="searchBtn" />
+                <CustomButton
+                  onClick={
+                    () => {
+                      dispatch(loaderInitializeMis(true));
+                      setTimeout(() => {
+                        dispatch(getMisData(misResponseData));
+                      }, 1500);
+                    }}
+                  value="Reset" applyClass="resetBtn" />
               </div>
             </div>
           </div>
+          {misReducer?.Loader ? <SectionLoader /> : null}
         </div>
       </div>
     </>

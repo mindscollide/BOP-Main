@@ -423,6 +423,10 @@ input[type="number"] {
   color: var(--color-green);
 }
 
+.color-red {
+  color: #f21616 !important;
+}
+
 /*bootstrap tabs*/
 .dropdown,
 .dropdown-item,
@@ -2509,4 +2513,8 @@ i.close-add-user {
   position: absolute !important;
   right: 10px !important;
   top: 20px !important;
+}
+
+.ant-table {
+  scrollbar-color: "tranparent" !important;
 }
