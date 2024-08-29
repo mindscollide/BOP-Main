@@ -9,7 +9,7 @@ export const generateColumns = (data) => {
     if (key !== "key" && key !== "tenor") {
       const currency = key.substring(0, key.length - 3).toUpperCase(); // Extract currency code
       const type = key.slice(-3).toLowerCase(); // Get last three characters ('Bid' or 'Ask')
-
+      console.log(currency, type, "generateColumnsgenerateColumns")
       // Check if this currency is already added to columns
       let currencyColumn = currencyColumns.find(
         (col) => col.title === currency
