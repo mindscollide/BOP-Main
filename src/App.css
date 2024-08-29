@@ -2514,7 +2514,3 @@ i.close-add-user {
   right: 10px !important;
   top: 20px !important;
 }
-
-.ant-table {
-  scrollbar-color: "tranparent" !important;
-}
