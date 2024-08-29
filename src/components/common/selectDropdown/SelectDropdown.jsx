@@ -1,8 +1,12 @@
 import React from "react";
 import Select from "react-select";
-import "./SelectDropdown.css"
+import "./SelectDropdown.css";
+let DummyOptions = [
+  { label: "Test1", value: 1 },
+  { label: "Test2", value: 2 },
+];
 const SelectDropdown = ({
-  options,
+  options = DummyOptions,
   className,
   classNamePrefix,
   components,
@@ -16,6 +20,7 @@ const SelectDropdown = ({
   menuPlacement,
   filterOptions,
   menuIsOpen,
+  menuPosition = "fixed",
 }) => {
   return (
     <Select
@@ -33,6 +38,7 @@ const SelectDropdown = ({
       placeholder={placeholder}
       value={value}
       pageSize={0}
+      menuPosition={menuPosition}
       filterOption={filterOptions}
     />
   );

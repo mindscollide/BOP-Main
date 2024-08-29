@@ -3,14 +3,7 @@ import { Col, Row } from "react-bootstrap";
 import BidAmountBox from "../../common/bidAmountBox/BidAmountBox";
 import styles from "./spotDealerAndTreasury.module.css";
 
-const SpotDealerAndTreasury = ({
-  currentHeading,
-  currentValue,
-  bidSellHeading,
-  bidSellValue,
-  bidBuyHeading,
-  bidBuyValue,
-}) => {
+const SpotDealerAndTreasury = () => {
   const currencyData = [
     {
       code: "USD",
@@ -87,9 +80,7 @@ const SpotDealerAndTreasury = ({
                     <span className={styles["SpotCurrentHeading"]}>
                       {spotCardsData.code}
                     </span>
-                    <span className={styles["SpotCurrentValue"]}>
-                      {"PKR"}
-                    </span>
+                    <span className={styles["SpotCurrentValue"]}>{"PKR"}</span>
                   </div>
                   {/*box content*/}
                   <div className='d-flex gap-2 mt-2'>

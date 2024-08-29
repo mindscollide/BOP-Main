@@ -1,99 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import GlobalTable from "../../common/table/GlobalTable";
+import { createColumns, generateData } from "../../utils/generateData";
 
 const BranchDiscountingTable = () => {
-  const dataSource = [
-    {
-      key: "1",
-      tenor: "1 WEEK",
-      currentBid: "287.12",
-      currentAsk: "287.29",
-      lastBid: "313.74",
-      lastAsk: "313.93",
-      lastBidGBP: "367.72",
-      lastAskGBP: "367.95",
-    },
-    {
-      key: "2",
-      tenor: "1 MONTH",
-      currentBid: "287.12",
-      currentAsk: "287.29",
-      lastBid: "313.74",
-      lastAsk: "313.93",
-      lastBidGBP: "367.72",
-      lastAskGBP: "367.95",
-    },
-    {
-      key: "3",
-      tenor: "2 MONTH",
-      currentBid: "287.12",
-      currentAsk: "287.29",
-      lastBid: "313.74",
-      lastAsk: "313.93",
-      lastBidGBP: "367.72",
-      lastAskGBP: "367.95",
-    },
-    {
-      key: "4",
-      tenor: "3 MONTH",
-      currentBid: "287.12",
-      currentAsk: "287.29",
-      lastBid: "313.74",
-      lastAsk: "313.93",
-      lastBidGBP: "367.72",
-      lastAskGBP: "367.95",
-    },
-    {
-      key: "5",
-      tenor: "4 MONTH",
-      currentBid: "287.12",
-      currentAsk: "287.29",
-      lastBid: "313.74",
-      lastAsk: "313.93",
-      lastBidGBP: "367.72",
-      lastAskGBP: "367.95",
-    },
-    {
-      key: "6",
-      tenor: "5 MONTH",
-      currentBid: "287.12",
-      currentAsk: "287.29",
-      lastBid: "313.74",
-      lastAsk: "313.93",
-      lastBidGBP: "367.72",
-      lastAskGBP: "367.95",
-    },
-    {
-      key: "7",
-      tenor: "6 MONTH",
-      currentBid: "287.12",
-      currentAsk: "287.29",
-      lastBid: "313.74",
-      lastAsk: "313.93",
-      lastBidGBP: "367.72",
-      lastAskGBP: "367.95",
-    },
-    {
-      key: "8",
-      tenor: "9 MONTH",
-      currentBid: "287.12",
-      currentAsk: "287.29",
-      lastBid: "313.74",
-      lastAsk: "313.93",
-      lastBidGBP: "367.72",
-      lastAskGBP: "367.95",
-    },
-    {
-      key: "9",
-      tenor: "1 YEAR",
-      currentBid: "287.12",
-      currentAsk: "287.29",
-      lastBid: "313.74",
-      lastAsk: "313.93",
-      lastBidGBP: "367.72",
-      lastAskGBP: "367.95",
-    },
-  ];
+  const [dataSource, setDataSource] = useState([]);
+  const [columnsData, setColumnsData] = useState([])
+  
 
   const columns = [
     {
@@ -106,7 +18,7 @@ const BranchDiscountingTable = () => {
           width: 250,
           align: "center",
           render: (text) => {
-            return <span className="ms-3">{text}</span>;
+            return <span className='ms-3'>{text}</span>;
           },
         },
       ],
@@ -120,7 +32,7 @@ const BranchDiscountingTable = () => {
           key: "currentBid",
           align: "center",
           render: (text) => {
-            return <span className="ms-3">{text}</span>;
+            return <span className='ms-3'>{text}</span>;
           },
         },
       ],
@@ -134,7 +46,7 @@ const BranchDiscountingTable = () => {
           key: "lastBid",
           align: "center",
           render: (text) => {
-            return <span className="ms-3">{text}</span>;
+            return <span className='ms-3'>{text}</span>;
           },
         },
       ],
@@ -148,7 +60,7 @@ const BranchDiscountingTable = () => {
           key: "lastBidGBP",
           align: "center",
           render: (text) => {
-            return <span className="ms-3">{text}</span>;
+            return <span className='ms-3'>{text}</span>;
           },
         },
       ],
@@ -162,19 +74,35 @@ const BranchDiscountingTable = () => {
           key: "lastBidGBP",
           align: "center",
           render: (text) => {
-            return <span className="ms-3">{text}</span>;
+            return <span className='ms-3'>{text}</span>;
           },
         },
       ],
     },
   ];
+  useEffect(() => {
+    const { discountRates } = generateData(1);
+  
+      if (discountRates.length > 0) {
+        setDataSource(discountRates)
+        const forwardsColumns = createColumns(discountRates, 1);
+        setColumnsData(forwardsColumns);
+    
+      
+      }
+    }, [])
   return (
     <GlobalTable
-      columns={columns}
+      columns={columnsData}
       dataSource={dataSource}
       prefixCls={"branch_forwardsTable"}
       pagination={false}
       bordered
+      rowClassName={(record, index) =>
+        index % 2 === 0
+          ? "branch_forwardsTable-odd"
+          : "branch_forwardsTable-even"
+      }
     />
   );
 };

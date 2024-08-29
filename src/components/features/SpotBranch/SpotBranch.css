@@ -10,10 +10,9 @@
 .WatchListOuterBox {
   background: #e9e2dc !important;
   border-radius: 4px !important;
-  display: inline-block !important;
   height: 100% !important;
   max-width: 360px !important;
-  padding: 8px 7px !important;
+  padding: 13px 8px !important;
 }
 
 .FxTradingLabel {
@@ -56,6 +55,7 @@
   justify-content: flex-start;
 }
 
+/* Table Row Styles During Draggging  */
 tr[data-rbd-placeholder-context-id] {
-  height: 0px !important; /* Enforce the height */
+  height: 0px !important;
 }

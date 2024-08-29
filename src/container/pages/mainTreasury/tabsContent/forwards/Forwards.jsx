@@ -351,7 +351,7 @@ const Forwards = () => {
 
   return (
     <>
-      <div class="flex-fill mt-3 fs-4 fw-bold color-black mb-1 ff-roboto">Bank Forwards</div>
+      <div className="flex-fill mt-3 fs-4 fw-bold color-black mb-1 ff-roboto">Bank Forwards</div>
 
       <GlobalTable
         columns={columns}

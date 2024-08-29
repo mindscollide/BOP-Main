@@ -1,5 +1,6 @@
 import React from "react";
 import GlobalTable from "../../common/table/GlobalTable";
+import { generateColumns } from "../../utils/generateColumns";
 
 const CategoryForwards = () => {
   // Define the data source for the Ant Design Table
@@ -284,10 +285,11 @@ const CategoryForwards = () => {
       ],
     },
   ];
-
+  const columnsData = generateColumns(dataSource)
+  console.log(columnsData, "generateColumnsgenerateColumns")
   return (
     <GlobalTable
-      columns={columns}
+      columns={columnsData}
       prefixCls='Dealer_Forwards'
       dataSource={dataSource}
       pagination={false}

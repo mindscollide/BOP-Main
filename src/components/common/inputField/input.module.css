@@ -85,6 +85,7 @@
   border-radius: 0.375rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   /* font-weight: 600; */
+  z-index: 2;
 }
 .DatePickerField:is(:focus, :focus-visible) {
   color: #212529;
@@ -178,3 +179,53 @@
   box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
 /* End  Dealer Bit  Input Field */
+
+/* IBuySell Modal TextField Height Start*/
+
+.IBuyISellModalTextFileds {
+  height: 30px !important;
+  width: 100% !important;
+}
+/* IBuySell Modal TextField Height End*/
+
+.IBuyISellModalTextFileds {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+
+/* Start Date Picker for NOP Modal  Input Field  */
+.DatePickerField-NOP {
+  display: block;
+  width: 100%;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 400;
+  line-height: 1.1em;
+  color: #212529;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border-radius: 0.375rem;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  /* font-weight: 600; */
+}
+.DatePickerField-NOP:is(:focus, :focus-visible) {
+  color: #212529;
+  background-color: #fff;
+  border-color: #86b7fe;
+  z-index: 999 !important;
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.ep-arrow .rmdp-ep-arrow .rmdp-ep-shadow {
+  z-index: 9999999999 !important;
+}
+/* End Date Picker for NOP Modal  Input Field  */
