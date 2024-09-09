@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Nav, Navbar } from "react-bootstrap";
+import { Nav, Navbar } from "react-bootstrap";
 import { Link, useLocation } from "react-router-dom";
 import styles from "./header.module.css";
 
@@ -17,9 +17,8 @@ const Header = () => {
               </Nav.Link>
             </Nav.Item>
           </>
-        ) : null}
-        {import.meta.env.VITE_APP_INCLUDE_DEALER === "true" ||
-        import.meta.env.VITE_APP_INCLUDE_TREASURY === "true" ? (
+        ) : import.meta.env.VITE_APP_INCLUDE_DEALER === "true" ||
+          import.meta.env.VITE_APP_INCLUDE_TREASURY === "true" ? (
           <>
             <Nav.Item className={styles["nav-item"]}>
               <Nav.Link

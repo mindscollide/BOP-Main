@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
 import "./assets/globalstyles/height.css";
-import Dashboard from "./container/dashboard/Dashboard";
+import Dashboard from "@/container/dashboard/Dashboard";
 import "@fontsource/montserrat";
 import "@fontsource/montserrat/100.css";
 import "@fontsource/montserrat/200.css";
@@ -29,7 +29,7 @@ import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import "@fontsource/roboto/900.css";
-import MainCalculator from "./container/pages/mainCalculator/MainCalculator";
+import MainCalculator from "@/container/pages/mainCalculator/MainCalculator";
 
 function App() {
   const [routes, setRoutes] = useState(null); // Initially null to indicate loading state

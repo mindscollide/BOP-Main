@@ -1,12 +1,12 @@
 import React, { Suspense, useState } from "react";
-import Voltmeter from "./../../common/voltMeter/Voltmeter";
-import ProfileDropdown from "./../../common/profileDropdown/ProfileDropdown";
-import CustomButton from "./../../common/globalButton/button";
-import SiteLogoComponent from "./../../common/siteLogo/SiteLogo";
+import Voltmeter from "@/components/common/voltMeter/Voltmeter";
+import ProfileDropdown from "@/components/common/profileDropdown/ProfileDropdown";
+import CustomButton from "@/components/common/globalButton/button";
+import SiteLogoComponent from "@/components/common/siteLogo/SiteLogo";
 import { useLocation, useNavigate } from "react-router-dom";
-import SelectDropdown from "../../common/selectDropdown/SelectDropdown";
-import IconElement from "../../common/IconElement/IconElement";
-import RFQModal from "../../../container/pages/mainCorporate/rfqModal/RFQModal";
+import SelectDropdown from "@/components/common/selectDropdown/SelectDropdown";
+import IconElement from "@/components/common/IconElement/IconElement";
+import RFQModal from "@/container/pages/mainCorporate/rfqModal/RFQModal";
 
 const GlobalNavbar = () => {
   const [selectedValue, setSelectedValue] = useState(1);

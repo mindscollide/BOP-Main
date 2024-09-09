@@ -22,6 +22,7 @@
   color: #002650 !important;
   outline: none !important;
   min-width: 240px !important;
+  box-shadow: none !important;
 }
 .DealerDropDown__control--is-focused {
   outline: none !important;
