@@ -1,0 +1,7 @@
+.ModalClassNameSettings .modal-content {
+  width: 90% !important;
+}
+
+.ModalClassNameSettings .modal-body {
+  overflow: hidden !important;
+}
