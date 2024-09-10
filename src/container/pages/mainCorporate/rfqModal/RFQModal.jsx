@@ -6,6 +6,7 @@ import IconElement from "../../../../components/common/IconElement/IconElement";
 import SelectDropdown from "../../../../components/common/selectDropdown/SelectDropdown";
 import "./RFQModal.css";
 import InputFIeld from "../../../../components/common/inputField/InputField";
+import { useState } from "react";
 
 const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
   const onCloseRfq = () => {
