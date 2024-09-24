@@ -1468,6 +1468,7 @@ th.TXNSummary_Table-cell:before {
 th.TXNSummary_Table-cell.comment-class {
   font-weight: bold !important;
   font-family: "Roboto", sans-serif !important;
+  text-align: center !important;
 }
 
 td.TXNSummary_Table-cell.ff-poppins.fw-bold {
@@ -1478,4 +1479,8 @@ td.TXNSummary_Table-cell.ff-poppins.fw-bold {
   color: #212529 !important;
   text-align: center !important;
   white-space: nowrap !important;
+}
+
+tr.TXNSummary_Table-measure-row {
+  display: none !important;
 }
