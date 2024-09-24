@@ -4,31 +4,8 @@ import "./App.css";
 import "./assets/globalstyles/height.css";
 import Dashboard from "@/container/dashboard/Dashboard";
 import "@fontsource/montserrat";
-import "@fontsource/montserrat/100.css";
-import "@fontsource/montserrat/200.css";
-import "@fontsource/montserrat/300.css";
-import "@fontsource/montserrat/400.css";
-import "@fontsource/montserrat/500.css";
-import "@fontsource/montserrat/600.css";
-import "@fontsource/montserrat/700.css";
-import "@fontsource/montserrat/800.css";
-import "@fontsource/montserrat/900.css";
 import "@fontsource/poppins";
-import "@fontsource/poppins/100.css";
-import "@fontsource/poppins/200.css";
-import "@fontsource/poppins/300.css";
-import "@fontsource/poppins/400.css";
-import "@fontsource/poppins/500.css";
-import "@fontsource/poppins/600.css";
-import "@fontsource/poppins/700.css";
-import "@fontsource/poppins/800.css";
-import "@fontsource/poppins/900.css";
 import "@fontsource/roboto";
-import "@fontsource/roboto/100.css";
-import "@fontsource/roboto/300.css";
-import "@fontsource/roboto/500.css";
-import "@fontsource/roboto/700.css";
-import "@fontsource/roboto/900.css";
 import MainCalculator from "@/container/pages/mainCalculator/MainCalculator";
 import BopLogin from "./container/pages/loginScreens/Login/BopLogin";
 import ChangePassword from "./container/pages/loginScreens/ChangePassword/ChangePassword";
@@ -36,29 +13,27 @@ import ForgotPassword from "./container/pages/loginScreens/forgetPassword/Forgot
 import CreatePassword from "./container/pages/loginScreens/CreatePassword/CreatePassword";
 import TwoFaVerification from "./container/pages/loginScreens/2faVerificationScreen/TwoFaVerification";
 import ResetPassword from "./container/pages/loginScreens/ResetPassword/ResetPassword";
+import PrivateRoute from "./routes/PrivateRoutes";
 
 function App() {
-  const [routes, setRoutes] = useState(null); // Initially null to indicate loading state
+  const [routes, setRoutes] = useState([]); // Initially an empty array
 
   const loadRoutes = async () => {
-    const tempRoutes = [];
-    // Define a parent route with the Dashboard component
     const dashboardRoute = {
-      path: "/",
+      path: "/BOP",
       element: <Dashboard />,
       children: [],
     };
     const calculatorRoute = {
       path: "/calculator",
-      element: <MainCalculator />,
+      element: <PrivateRoute element={<MainCalculator />} />,
     };
-
     if (import.meta.env.VITE_APP_INCLUDE_BRANCH === "true") {
       const Branch = (await import("./container/pages/mainBranch/MainBranch"))
         .default;
       dashboardRoute.children.push({
-        path: "/",
-        element: <Branch />,
+        path: "branch", // Use relative path
+        element: <PrivateRoute element={<Branch />} />,
       });
     }
 
@@ -71,21 +46,18 @@ function App() {
       const Category = (
         await import("./container/pages/mainCategory/MainCategory")
       ).default;
+
       dashboardRoute.children.push({
-        path: "/",
-        element: <Dealer />,
+        path: "dealer", // Use relative path
+        element: <PrivateRoute element={<Dealer />} />,
       });
       dashboardRoute.children.push({
-        path: "/dealer",
-        element: <Dealer />,
+        path: "treasury", // Use relative path
+        element: <PrivateRoute element={<Treasury />} />,
       });
       dashboardRoute.children.push({
-        path: "/treasury",
-        element: <Treasury />,
-      });
-      dashboardRoute.children.push({
-        path: "/category",
-        element: <Category />,
+        path: "category", // Use relative path
+        element: <PrivateRoute element={<Category />} />,
       });
     }
 
@@ -98,21 +70,18 @@ function App() {
       const Category = (
         await import("./container/pages/mainCategory/MainCategory")
       ).default;
+
       dashboardRoute.children.push({
-        path: "/dealer",
-        element: <Dealer />,
+        path: "dealer", // Use relative path
+        element: <PrivateRoute element={<Dealer />} />,
       });
       dashboardRoute.children.push({
-        path: "/",
-        element: <Dealer />,
+        path: "treasury", // Use relative path
+        element: <PrivateRoute element={<Treasury />} />,
       });
       dashboardRoute.children.push({
-        path: "/treasury",
-        element: <Treasury />,
-      });
-      dashboardRoute.children.push({
-        path: "/category",
-        element: <Category />,
+        path: "category", // Use relative path
+        element: <PrivateRoute element={<Category />} />,
       });
     }
 
@@ -121,59 +90,34 @@ function App() {
         await import("./container/pages/mainCorporate/MainCorporate")
       ).default;
       dashboardRoute.children.push({
-        path: "",
-        element: <Corporate />,
+        path: "corporate", // Use relative path
+        element: <PrivateRoute element={<Corporate />} />,
       });
     }
-    const emailLoginRoute = {
-      path: "/login",
-      element: <BopLogin />,
-    };
-    const changePasswordRoute = {
-      path: "/changePassword",
-      element: <ChangePassword />,
-    };
-    const forgetPasswordRoute = {
-      path: "/forgetpassword",
-      element: <ForgotPassword />,
-    };
-    const createPasswordRoute = {
-      path: "/createPassword",
-      element: <CreatePassword />,
-    };
-    const twoFaVerifcationRoute = {
-      path: "/2fa",
-      element: <TwoFaVerification />,
-    };
-    const passwordResetEmail = {
-      path: "/resetPassword",
-      element: <ResetPassword />,
-    };
-    tempRoutes.push(
+
+    const tempRoutes = [
       dashboardRoute,
       calculatorRoute,
-      emailLoginRoute,
-      changePasswordRoute,
-      forgetPasswordRoute,
-      createPasswordRoute,
-      twoFaVerifcationRoute,
-      passwordResetEmail
-    ); // Add the dashboard route with its children
-    console.table(tempRoutes, "tempRoutestempRoutes")
-    setRoutes(tempRoutes); // Set the routes state with the loaded routes
+      { path: "/", element: <BopLogin /> },
+      { path: "/changePassword", element: <ChangePassword /> },
+      { path: "/forgetpassword", element: <ForgotPassword /> },
+      { path: "/createPassword", element: <CreatePassword /> },
+      { path: "/2fa", element: <TwoFaVerification /> },
+      { path: "/resetPassword", element: <ResetPassword /> },
+    ];
+
+    setRoutes(tempRoutes); // Set the routes after loading
   };
 
   useEffect(() => {
     loadRoutes();
   }, []);
 
-  if (!routes) {
-    // Return a loading state while routes are being loaded
-    return <div>Loading...</div>;
+  if (!routes.length) {
+    return <div>Loading...</div>; // Better check for array length than null
   }
 
   const router = createBrowserRouter(routes);
-
   return <RouterProvider router={router} />;
 }
 
