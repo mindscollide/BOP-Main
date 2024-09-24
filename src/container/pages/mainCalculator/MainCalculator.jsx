@@ -3,7 +3,6 @@ import { Row, Col, Container } from "react-bootstrap";
 import CalculatorFxDiscounting from "../../../components/features/calculatorFxDiscounting/CalculatorFxDiscounting";
 import CalculatorNonFxDiscounting from "../../../components/features/calculatorNonFxDiscounting/CalculatorNonFxDiscounting";
 import FwdCalculator from "../../../components/features/fwdCalculator/FwdCalculator";
-import Header from "../../../components/layout/header/Header";
 import GlobalNavbar from "../../../components/layout/nav/Navbar";
 
 const MainCalculator = () => {

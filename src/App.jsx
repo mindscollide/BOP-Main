@@ -30,20 +30,24 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import "@fontsource/roboto/900.css";
 import MainCalculator from "@/container/pages/mainCalculator/MainCalculator";
+import BopLogin from "./container/pages/loginScreens/Login/BopLogin";
+import ChangePassword from "./container/pages/loginScreens/ChangePassword/ChangePassword";
+import ForgotPassword from "./container/pages/loginScreens/forgetPassword/ForgotPassword";
+import CreatePassword from "./container/pages/loginScreens/CreatePassword/CreatePassword";
+import TwoFaVerification from "./container/pages/loginScreens/2faVerificationScreen/TwoFaVerification";
+import ResetPassword from "./container/pages/loginScreens/ResetPassword/ResetPassword";
 
 function App() {
   const [routes, setRoutes] = useState(null); // Initially null to indicate loading state
 
   const loadRoutes = async () => {
     const tempRoutes = [];
-
     // Define a parent route with the Dashboard component
     const dashboardRoute = {
       path: "/",
       element: <Dashboard />,
       children: [],
     };
-
     const calculatorRoute = {
       path: "/calculator",
       element: <MainCalculator />,
@@ -121,8 +125,41 @@ function App() {
         element: <Corporate />,
       });
     }
-
-    tempRoutes.push(dashboardRoute, calculatorRoute); // Add the dashboard route with its children
+    const emailLoginRoute = {
+      path: "/login",
+      element: <BopLogin />,
+    };
+    const changePasswordRoute = {
+      path: "/changePassword",
+      element: <ChangePassword />,
+    };
+    const forgetPasswordRoute = {
+      path: "/forgetpassword",
+      element: <ForgotPassword />,
+    };
+    const createPasswordRoute = {
+      path: "/createPassword",
+      element: <CreatePassword />,
+    };
+    const twoFaVerifcationRoute = {
+      path: "/2fa",
+      element: <TwoFaVerification />,
+    };
+    const passwordResetEmail = {
+      path: "/resetPassword",
+      element: <ResetPassword />,
+    };
+    tempRoutes.push(
+      dashboardRoute,
+      calculatorRoute,
+      emailLoginRoute,
+      changePasswordRoute,
+      forgetPasswordRoute,
+      createPasswordRoute,
+      twoFaVerifcationRoute,
+      passwordResetEmail
+    ); // Add the dashboard route with its children
+    console.table(tempRoutes, "tempRoutestempRoutes")
     setRoutes(tempRoutes); // Set the routes state with the loaded routes
   };
 

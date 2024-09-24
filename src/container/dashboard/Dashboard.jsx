@@ -1,6 +1,6 @@
 import { Layout } from "antd";
 import React from "react";
-import Header from "@/components/layout/header/Header";
+import Header from "@/components/layout/header/header";
 import GlobalNavbar from "@/components/layout/nav/Navbar";
 import { Outlet } from "react-router-dom";
 
