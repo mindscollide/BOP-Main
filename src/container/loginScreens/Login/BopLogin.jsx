@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import styles from "./BopLogin.module.css";
 import { Row, Col, InputGroup, Form } from "react-bootstrap";
 import BOPLogo from "@/assets/logo.png";
@@ -6,6 +6,9 @@ import IconElement from "@/components/common/IconElement/IconElement";
 import CustomButton from "@/components/common/globalButton/button";
 import { Link } from "react-router-dom";
 const BopLogin = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassowrd, setShowPassword] = useState(false);
   return (
     <section className={styles["sign-in"]}>
       <Row>
@@ -30,11 +33,15 @@ const BopLogin = () => {
                 <IconElement iconClass={"icon-user"} />
               </InputGroup.Text>
               <Form.Control
-                name='UserName'
+                name='email'
                 autoComplete='off'
                 className={styles["form-comtrol-textfield"]}
                 placeholder='Email ID'
-                aria-label='Username'
+                required
+                type='email'
+                pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                aria-label='email'
+                maxLength={100}
                 aria-describedby='basic-addon1'
               />
             </InputGroup>
@@ -49,25 +56,35 @@ const BopLogin = () => {
                 autoComplete='off'
                 className={styles["form-comtrol-textfield-password"]}
                 placeholder='Password'
+                
+                required
+                type={showPassowrd ? "text" : "password"}
                 aria-label='passwordText'
                 aria-describedby='basic-addon2'
               />
               <InputGroup.Text
                 id='basic-addon2'
                 className={styles["eyeIcon-Field-class-BOP-login"]}>
-                <IconElement iconClass={"icon-eye"} />
-                {/* {showPassword ? (
-                  <IconElement iconClass={"icon-eye-slash"} />
+                {showPassowrd ? (
+                  <IconElement
+                    iconClass={"icon-eye-slash"}
+                    onClick={() => setShowPassword(!showPassowrd)}
+                  />
                 ) : (
-                  <IconElement iconClass={"icon-eye"} />
-                )} */}
+                  <IconElement
+                    iconClass={"icon-eye"}
+                    onClick={() => setShowPassword(!showPassowrd)}
+                  />
+                )}
               </InputGroup.Text>
             </InputGroup>
 
             <CustomButton value={"Login"} applyClass={"authLoginBtn"} />
-            <span className="mt-2" >
-              <Link to={"/forgotpassword"} className={styles["forgotPasswordLink"]}>
-              Forgot Password?
+            <span className='mt-2'>
+              <Link
+                to={"/forgotpassword"}
+                className={styles["forgotPasswordLink"]}>
+                Forgot Password?
               </Link>
             </span>
           </section>

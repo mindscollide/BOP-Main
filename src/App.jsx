@@ -7,12 +7,12 @@ import "@fontsource/montserrat";
 import "@fontsource/poppins";
 import "@fontsource/roboto";
 import MainCalculator from "@/container/pages/mainCalculator/MainCalculator";
-import BopLogin from "./container/pages/loginScreens/Login/BopLogin";
-import ChangePassword from "./container/pages/loginScreens/ChangePassword/ChangePassword";
-import ForgotPassword from "./container/pages/loginScreens/forgetPassword/ForgotPassword";
-import CreatePassword from "./container/pages/loginScreens/CreatePassword/CreatePassword";
-import TwoFaVerification from "./container/pages/loginScreens/2faVerificationScreen/TwoFaVerification";
-import ResetPassword from "./container/pages/loginScreens/ResetPassword/ResetPassword";
+import BopLogin from "@/container/loginScreens/Login/BopLogin";
+import ChangePassword from "@/container/loginScreens/ChangePassword/ChangePassword";
+import ForgotPassword from "@/container/loginScreens/forgetPassword/ForgotPassword";
+import CreatePassword from "@/container/loginScreens/CreatePassword/CreatePassword";
+import TwoFaVerification from "@/container/loginScreens/2faVerificationScreen/TwoFaVerification";
+import ResetPassword from "@/container/loginScreens/ResetPassword/ResetPassword";
 import PrivateRoute from "./routes/PrivateRoutes";
 
 function App() {
