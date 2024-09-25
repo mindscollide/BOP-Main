@@ -40,8 +40,9 @@ html {
 body {
   background: #f4f4f4 !important;
   font-family: "Roboto", sans-serif !important;
-  font-size: 13px !important;
-  font-weight: 500 !important;
+  color: #45494d;
+  font-size: 14px !important;
+  font-weight: 400;
   overflow-x: hidden !important;
   min-height: 100%;
 }

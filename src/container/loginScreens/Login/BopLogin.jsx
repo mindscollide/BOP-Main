@@ -3,8 +3,8 @@ import styles from "./BopLogin.module.css";
 import { Row, Col, InputGroup, Form } from "react-bootstrap";
 import BOPLogo from "@/assets/logo.png";
 import IconElement from "@/components/common/IconElement/IconElement";
-import Icon from "react-multi-date-picker/components/icon";
 import CustomButton from "@/components/common/globalButton/button";
+import { Link } from "react-router-dom";
 const BopLogin = () => {
   return (
     <section className={styles["sign-in"]}>
@@ -22,7 +22,7 @@ const BopLogin = () => {
             alt='BOP Logo'
           />
         </Col>
-        <Col sm={12} md={12} lg={12} className=' mt-5'>
+        <Col sm={12} md={12} lg={12}>
           <section className={styles["LoginCard"]}>
             <h4 className={styles["Heading-js"]}>Corporate Login</h4>
             <InputGroup>
@@ -38,7 +38,7 @@ const BopLogin = () => {
                 aria-describedby='basic-addon1'
               />
             </InputGroup>
-            <InputGroup className='mt-3'>
+            <InputGroup className='my-3'>
               <InputGroup.Text
                 id='basic-addon1'
                 className={styles["Icon-Field-class"]}>
@@ -64,7 +64,12 @@ const BopLogin = () => {
               </InputGroup.Text>
             </InputGroup>
 
-            <CustomButton value={"Login"} applyClass={"publishBtn"} />
+            <CustomButton value={"Login"} applyClass={"authLoginBtn"} />
+            <span className="mt-2" >
+              <Link to={"/forgotpassword"} className={styles["forgotPasswordLink"]}>
+              Forgot Password?
+              </Link>
+            </span>
           </section>
         </Col>
       </Row>

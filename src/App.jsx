@@ -100,7 +100,7 @@ function App() {
       calculatorRoute,
       { path: "/", element: <BopLogin /> },
       { path: "/changePassword", element: <ChangePassword /> },
-      { path: "/forgetpassword", element: <ForgotPassword /> },
+      { path: "/forgotpassword", element: <ForgotPassword /> },
       { path: "/createPassword", element: <CreatePassword /> },
       { path: "/2fa", element: <TwoFaVerification /> },
       { path: "/resetPassword", element: <ResetPassword /> },
