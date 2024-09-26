@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
 import "./App.css";
 import "./assets/globalstyles/height.css";
 import Dashboard from "@/container/dashboard/Dashboard";
@@ -104,6 +108,7 @@ function App() {
       { path: "/createPassword", element: <CreatePassword /> },
       { path: "/2fa", element: <TwoFaVerification /> },
       { path: "/resetPassword", element: <ResetPassword /> },
+      { path: "*", element: <Navigate to={"/"} /> },
     ];
 
     setRoutes(tempRoutes); // Set the routes after loading

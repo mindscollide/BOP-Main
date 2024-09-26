@@ -9,7 +9,6 @@ import OtpInput from "react-otp-input";
 import { Link } from "react-router-dom";
 const TwoFaVerification = () => {
   const [otpValue, setOtpValue] = useState("");
-  console.log(otpValue, "otpValueotpValueotpValue");
   return (
     <section className={styles["sign-in"]}>
       <Row>

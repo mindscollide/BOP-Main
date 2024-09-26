@@ -2,4 +2,8 @@ const loginRequestMethod = {
   RequestMethod: "ServiceManager.Login",
 };
 
-export { loginRequestMethod };
+const corporateUserRequestMethod = {
+  RequestMethod: "ServiceManager.CorporateUserLogin",
+};
+
+export { loginRequestMethod ,corporateUserRequestMethod};

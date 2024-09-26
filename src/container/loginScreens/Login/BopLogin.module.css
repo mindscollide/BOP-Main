@@ -9,7 +9,6 @@
 
 .LoginCard {
   display: flex;
-  justify-content: center !important;
   flex-direction: column;
   margin: 0 auto !important;
   width: 400px;

@@ -2,6 +2,7 @@ import React from "react";
 import { Dropdown, Nav } from "react-bootstrap";
 import IconElement from "../IconElement/IconElement";
 import styles from "./ProfileDropdown.module.css";
+import { Link } from "react-router-dom";
 
 const ProfileDropdown = ({ userName }) => {
   return (
@@ -17,7 +18,7 @@ const ProfileDropdown = ({ userName }) => {
             <label>Setting</label>
           </Nav.Link>
         </Dropdown.Item>
-        <Dropdown.Item className="d-flex align-items-center cursor-pointer">
+        <Dropdown.Item as={Link} to={"/"} className="d-flex align-items-center cursor-pointer">
           <IconElement iconClass={"icon-logout me-1"} />
           <label>Logout</label>
         </Dropdown.Item>

@@ -26,7 +26,7 @@ const Header = () => {
                 active={true}
                 to={"dealer"}
                 className={
-                  location.pathname === "/dealer"
+                  location.pathname === "/BOP/dealer"
                     ? `${styles["nav-link_active"]} `
                     : `${styles["nav-link"]}`
                 }
@@ -40,7 +40,7 @@ const Header = () => {
                 as={Link}
                 to={"category"}
                 className={
-                  location.pathname === "/category"
+                  location.pathname === "/BOP/category"
                     ? `${styles["nav-link_active"]} `
                     : `${styles["nav-link"]}`
                 }
@@ -55,7 +55,7 @@ const Header = () => {
                 as={Link}
                 to={"treasury"}
                 className={
-                  location.pathname === "/treasury"
+                  location.pathname === "/BOP/treasury"
                     ? `${styles["nav-link_active"]}`
                     : `${styles["nav-link"]}`
                 }
