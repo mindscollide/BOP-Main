@@ -5,10 +5,35 @@ import BOPLogo from "@/assets/logo.png";
 import IconElement from "@/components/common/IconElement/IconElement";
 import CustomButton from "@/components/common/globalButton/button";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { loginInApi } from "../authActions/logInAction";
 const BopLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [crendentials, setCredentials] = useState({
+    email: "",
+    password: "",
+  });
+  const disaptch = useDispatch();
   const [showPassowrd, setShowPassword] = useState(false);
+
+  const handleChangeFields = (e) => {
+    const { name, value } = e.target;
+    if(name === "email") {
+
+    } else if(name === "password") {
+      
+    }
+  };
+  const handleSubmit = () => {
+    let Data = {
+      UserName: "talha1234",
+      Password: "0",
+      DeviceID: "ABCD1234-5678-90EF-GHIJ-KLMNOPQRSTUV",
+      Device: "iPhone 13 Pro",
+    };
+    disaptch(loginInApi({ Data }));
+  };
   return (
     <section className={styles["sign-in"]}>
       <Row>
@@ -38,8 +63,9 @@ const BopLogin = () => {
                 className={styles["form-comtrol-textfield"]}
                 placeholder='Email ID'
                 required
+                onChange={handleChangeFields}
                 type='email'
-                pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                pattern='^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
                 aria-label='email'
                 maxLength={100}
                 aria-describedby='basic-addon1'
@@ -52,14 +78,14 @@ const BopLogin = () => {
                 <IconElement iconClass={"icon-lock"} />
               </InputGroup.Text>
               <Form.Control
-                name='passwordText'
+                name='password'
                 autoComplete='off'
                 className={styles["form-comtrol-textfield-password"]}
                 placeholder='Password'
-                
                 required
+                onChange={handleChangeFields}
                 type={showPassowrd ? "text" : "password"}
-                aria-label='passwordText'
+                aria-label='password'
                 aria-describedby='basic-addon2'
               />
               <InputGroup.Text
@@ -79,7 +105,11 @@ const BopLogin = () => {
               </InputGroup.Text>
             </InputGroup>
 
-            <CustomButton value={"Login"} applyClass={"authLoginBtn"} />
+            <CustomButton
+              value={"Login"}
+              onClick={handleSubmit}
+              applyClass={"authLoginBtn"}
+            />
             <span className='mt-2'>
               <Link
                 to={"/forgotpassword"}

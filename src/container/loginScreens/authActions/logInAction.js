@@ -7,7 +7,7 @@ import axios from "axios";
 // Define the login async thunk
 export const loginInApi = createAsyncThunk(
   "auth/login", // A unique action type string
-  async ({ navigate, data }, { rejectWithValue }) => {
+  async ({ navigate, Data }, { rejectWithValue }) => {
     try {
       // Set Axios headers using your custom headers function
       const headers = setCustomHeaders();
@@ -15,7 +15,7 @@ export const loginInApi = createAsyncThunk(
       //   This is the FormData
       let form = new FormData();
       form.append("RequestMethod", loginRequestMethod.RequestMethod);
-      form.append("RequestData", JSON.stringify(data));
+      form.append("RequestData", JSON.stringify(Data));
 
       // Make the API request with custom headers
       const response = await axios({
