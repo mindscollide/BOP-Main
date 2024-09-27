@@ -1447,6 +1447,10 @@ td.Dealer_Discounting-cell {
 /* Treasury Nop Modal Table End */
 
 /* TXN Summary Start */
+
+.TXNSummary_Table-wrapper .TXNSummary_Table {
+  scrollbar-color: auto !important;
+}
 th.TXNSummary_Table-cell {
   background: var(--color-primary) !important;
   border-color: var(--color-primary) !important;

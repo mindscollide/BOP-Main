@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Nav, Navbar } from "react-bootstrap";
+import { Nav, Navbar } from "react-bootstrap";
 import { Link, useLocation } from "react-router-dom";
 import styles from "./header.module.css";
 
@@ -17,9 +17,8 @@ const Header = () => {
               </Nav.Link>
             </Nav.Item>
           </>
-        ) : null}
-        {import.meta.env.VITE_APP_INCLUDE_DEALER === "true" ||
-        import.meta.env.VITE_APP_INCLUDE_TREASURY === "true" ? (
+        ) : import.meta.env.VITE_APP_INCLUDE_DEALER === "true" ||
+          import.meta.env.VITE_APP_INCLUDE_TREASURY === "true" ? (
           <>
             <Nav.Item className={styles["nav-item"]}>
               <Nav.Link
@@ -27,7 +26,7 @@ const Header = () => {
                 active={true}
                 to={"dealer"}
                 className={
-                  location.pathname === "/dealer"
+                  location.pathname === "/BOP/dealer"
                     ? `${styles["nav-link_active"]} `
                     : `${styles["nav-link"]}`
                 }
@@ -41,7 +40,7 @@ const Header = () => {
                 as={Link}
                 to={"category"}
                 className={
-                  location.pathname === "/category"
+                  location.pathname === "/BOP/category"
                     ? `${styles["nav-link_active"]} `
                     : `${styles["nav-link"]}`
                 }
@@ -56,7 +55,7 @@ const Header = () => {
                 as={Link}
                 to={"treasury"}
                 className={
-                  location.pathname === "/treasury"
+                  location.pathname === "/BOP/treasury"
                     ? `${styles["nav-link_active"]}`
                     : `${styles["nav-link"]}`
                 }

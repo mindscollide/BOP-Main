@@ -1,0 +1,36 @@
+.Email-Sent-Page {
+  height: 100vh !important;
+  overflow: hidden !important;
+  background: url(../../../assets/images/login-bg.png) no-repeat !important;
+  background-size: cover !important;
+  background-position: fixed !important;
+  padding: 15px 0px !important;
+}
+
+.EMail-Sent-center-div {
+  display: flex;
+  justify-content: center !important;
+  margin: 0 auto !important;
+  width: 450px;
+  background: rgba(255, 255, 255, 0.5);
+  min-height: 100px;
+  max-height: auto !important;
+  padding: 18px 20px !important;
+  align-items: center !important;
+  border-radius: 12px;
+}
+
+.Email-Password-sent-heading {
+  font-size: 24px;
+  color: #000000;
+  font-weight: 600;
+  font-family: "Roboto", sans-serif !important;
+}
+
+.Email-Sent-subHeading {
+  font-size: 16px;
+  color: #505050;
+  font-weight: 500;
+  text-align: center;
+  font-family: "Roboto", sans-serif !important;
+}

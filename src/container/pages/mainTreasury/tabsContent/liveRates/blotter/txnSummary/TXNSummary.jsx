@@ -3,6 +3,62 @@ import GlobalTable from '../../../../../../../components/common/table/GlobalTabl
 import IconElement from '../../../../../../../components/common/IconElement/IconElement'
 
 const TXNSummary = () => {
+  const tableData = [
+    {
+      key: "1",
+      txnID: "27-08-2024/a2fe",
+      client: "Test",
+      side: "Buy",
+      nature: "6",
+      ccy1: "USD",
+      amount: "123",
+      rate: "288.00",
+      ccy2: "PKR",
+      amount2: "",
+      time: "12:20 pm",
+      lcNo: "2131231",
+      accountNo: "123123",
+      comment: "",
+      status: "Accepted",
+      chat: 21,
+    },
+    {
+      key: "2",
+      txnID: "27-08-2024/a2fe",
+      client: "Test",
+      side: "Buy",
+      nature: "6",
+      ccy1: "USD",
+      amount: "123",
+      rate: "288.00",
+      ccy2: "PKR",
+      amount2: "",
+      time: "12:20 pm",
+      lcNo: "2131231",
+      accountNo: "123123",
+      comment: "Test Comment",
+      status: "Rejected",
+      chat: 21,
+    },
+    {
+      key: "3",
+      txnID: "27-08-2024/9836",
+      client: "Syed Muhammad Aun Naqvi",
+      side: "Sell",
+      nature: "1",
+      ccy1: "USD",
+      amount: "999,999",
+      rate: "289.00",
+      ccy2: "PKR",
+      amount2: "",
+      time: "19:01 pm",
+      lcNo: "3142fdasfasd34214312412341234123412341234",
+      accountNo: "4124141241241241241241412412412412412",
+      comment: "",
+      status: "Accepted",
+      chat: 0,
+    },
+  ];
 
     const tableData = [
         {

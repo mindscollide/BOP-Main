@@ -1,12 +1,12 @@
 import React, { Suspense, useState } from "react";
-import Voltmeter from "./../../common/voltMeter/Voltmeter";
-import ProfileDropdown from "./../../common/profileDropdown/ProfileDropdown";
-import CustomButton from "./../../common/globalButton/button";
-import SiteLogoComponent from "./../../common/siteLogo/SiteLogo";
+import Voltmeter from "@/components/common/voltMeter/Voltmeter";
+import ProfileDropdown from "@/components/common/profileDropdown/ProfileDropdown";
+import CustomButton from "@/components/common/globalButton/button";
+import SiteLogoComponent from "@/components/common/siteLogo/SiteLogo";
 import { useLocation, useNavigate } from "react-router-dom";
-import SelectDropdown from "../../common/selectDropdown/SelectDropdown";
-import IconElement from "../../common/IconElement/IconElement";
-import RFQModal from "../../../container/pages/mainCorporate/rfqModal/RFQModal";
+import SelectDropdown from "@/components/common/selectDropdown/SelectDropdown";
+import IconElement from "@/components/common/IconElement/IconElement";
+import RFQModal from "@/container/pages/mainCorporate/rfqModal/RFQModal";
 
 const GlobalNavbar = () => {
   const [selectedValue, setSelectedValue] = useState(1);
@@ -25,7 +25,8 @@ const GlobalNavbar = () => {
   // Conditionally import CustomButton based on the environment variables
   const shouldIncludeBranch =
     import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
-
+  const shouldIncludeDealer =
+    import.meta.env.VITE_APP_INCLUDE_DEALER === "true";
   const shouldIncludeCorporate =
     import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
   const shouldIncludeTreasury =
@@ -33,37 +34,37 @@ const GlobalNavbar = () => {
 
   return (
     <>
-      <div className="site-header pt-1">
+      <div className='site-header pt-1'>
         {/*Container*/}
-        <div className="container-fluid page-gutter">
+        <div className='container-fluid page-gutter'>
           {/*header inner container*/}
-          <div className="header-inner d-flex align-items-center">
+          <div className='header-inner d-flex align-items-center'>
             <SiteLogoComponent />
-            <div className="ms-auto">
-              <div className="d-flex align-items-center gap-2">
+            <div className='ms-auto'>
+              <div className='d-flex align-items-center gap-2'>
                 {location.pathname !== "/calculator" ? (
                   <>
                     {shouldIncludeCorporate && (
                       <Suspense fallback={<>Loading RFQ...</>}>
                         <CustomButton
-                          applyClass="rfqBtn"
-                          value="RFQ"
-                          size="small"
+                          applyClass='rfqBtn'
+                          value='RFQ'
+                          size='small'
                           icon={<IconElement iconClass={"icon-list fs-6"} />}
                           onClick={onClickRFQ}
                         />
                       </Suspense>
                     )}
                     {location.pathname === "/treasury" ||
-                      shouldIncludeBranch ||
-                      (shouldIncludeCorporate && (
-                        <CustomButton
-                          applyClass="calcBtn"
-                          value="Calculators"
-                          size="large"
-                          onClick={handleCalculatorClick}
-                        />
-                      ))}
+                    shouldIncludeDealer ||
+                    shouldIncludeBranch ? (
+                      <CustomButton
+                        applyClass='calcBtn'
+                        value='Calculators'
+                        size='large'
+                        onClick={handleCalculatorClick}
+                      />
+                    ) : null}
                     {shouldIncludeTreasury &&
                     location.pathname === "/treasury" ? (
                       <Voltmeter
@@ -77,7 +78,7 @@ const GlobalNavbar = () => {
                   </>
                 ) : null}
                 {/*User Dropdown*/}
-                <ProfileDropdown userName="Michael Hawk" />
+                <ProfileDropdown userName='Michael Hawk' />
               </div>
             </div>
           </div>

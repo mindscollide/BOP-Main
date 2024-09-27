@@ -1,5 +1,6 @@
 import React, { Suspense, lazy } from "react";
 import GlobalTabs from "../../../components/common/tabs/Tabs";
+import { useSelector } from "react-redux";
 const shouldIncludeComponents =
   import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
 
@@ -23,6 +24,8 @@ const BranchDiscountingTable = shouldIncludeComponents
     )
   : null;
 const MainCorporate = () => {
+  const mainState = useSelector((state) => state);
+  console.log(mainState);
   // Conditionally import CustomButton based on the environment variables
   const tabsData = [
     {

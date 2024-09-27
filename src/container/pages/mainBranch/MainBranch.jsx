@@ -1,9 +1,6 @@
 import React, { Suspense, lazy } from "react";
 import GlobalTabs from "../../../components/common/tabs/Tabs";
-import {
-  createColumns,
-  generateData,
-} from "../../../components/utils/generateData";
+
 
 // Conditionally import CustomButton based on the environment variables
 const shouldIncludeComponents =

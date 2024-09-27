@@ -162,7 +162,6 @@ const MIS = () => {
     }
   }, [misReducer?.misData]);
 
-  console.log("misReducermisReducer", misReducer, misTableData)
 
   return (
     <>
