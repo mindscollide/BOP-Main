@@ -26,8 +26,8 @@ const BopLogin = () => {
   });
   const [showPassowrd, setShowPassword] = useState(false);
   useEffect(() => {
-    localStorage.clear()
-  }, [])
+    localStorage.clear();
+  }, []);
   /**
    * Handles input field changes for email and password.
    * Validates email format and updates the credentials state.
@@ -94,7 +94,7 @@ const BopLogin = () => {
         password &&
         !hasErrorOnEmail &&
         !hasErrorOnPassword &&
-        !hasErrorOnUserName 
+        !hasErrorOnUserName
       ) {
         Data = {
           UserName: email,
@@ -130,7 +130,9 @@ const BopLogin = () => {
         </Col>
         <Col sm={12} md={12} lg={12}>
           <section className={styles["LoginCard"]}>
-            <h4 className={styles["Heading-js"]}>Corporate Login</h4>
+            <h4 className={styles["Heading-js"]}>
+              {shouldIsCorporate === true && "Corporate Login"}
+            </h4>
             {shouldIsCorporate === true ? (
               <>
                 <InputGroup>

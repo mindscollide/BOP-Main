@@ -18,12 +18,7 @@ export const loginInApi = createAsyncThunk(
       //   This is the FormData
       let form = new FormData();
 
-      form.append(
-        "RequestMethod",
-        shouldIsCorporate
-          ? corporateUserRequestMethod.RequestMethod
-          : loginRequestMethod.RequestMethod
-      );
+      form.append("RequestMethod", loginRequestMethod.RequestMethod);
 
       form.append("RequestData", JSON.stringify(Data));
 
@@ -136,7 +131,7 @@ export const loginInApi = createAsyncThunk(
 // Define the login async thunk
 export const corporateUserLoginInApi = createAsyncThunk(
   "auth/corporateLogIn", // A unique action type string
-  async ({ navigate, Data, shouldIsCorporate }, { rejectWithValue }) => {
+  async ({ navigate, Data }, { rejectWithValue }) => {
     try {
       // Set Axios headers using your custom headers function
       const headers = setCustomHeaders();
@@ -144,12 +139,7 @@ export const corporateUserLoginInApi = createAsyncThunk(
       //   This is the FormData
       let form = new FormData();
 
-      form.append(
-        "RequestMethod",
-        shouldIsCorporate
-          ? corporateUserRequestMethod.RequestMethod
-          : loginRequestMethod.RequestMethod
-      );
+      form.append("RequestMethod", corporateUserRequestMethod.RequestMethod);
 
       form.append("RequestData", JSON.stringify(Data));
 

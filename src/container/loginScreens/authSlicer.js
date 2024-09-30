@@ -18,7 +18,6 @@ const authSlice = createSlice({
       })
       // Fulfilled state (when the API call succeeds)
       .addCase(loginInApi.fulfilled, (state, { payload }) => {
-        console.log(payload, "payloadpayload");
         state.loading = false;
         state.userDetails = payload.response;
         state.error = null;
@@ -37,7 +36,6 @@ const authSlice = createSlice({
       })
       // Fulfilled state (when the API call succeeds)
       .addCase(corporateUserLoginInApi.fulfilled, (state, { payload }) => {
-        console.log(payload, "payloadpayload");
         state.loading = false;
         state.userDetails = payload.response;
         state.error = null;

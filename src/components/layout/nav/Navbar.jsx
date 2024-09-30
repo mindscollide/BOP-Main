@@ -15,7 +15,7 @@ const GlobalNavbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const handleCalculatorClick = () => {
-    window.open("/calculator", "_blank");
+    window.open("/#/BOP/calculator", "_blank");
   };
 
   const onClickRFQ = () => {

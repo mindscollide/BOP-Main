@@ -8,7 +8,6 @@ import GlobalNavbar from "../../../components/layout/nav/Navbar";
 const MainCalculator = () => {
   return (
     <>
-      <GlobalNavbar />
       <Container fluid className="page-gutter">
         <Row>
           <Col className="ps-2 pe-2 mb-2">

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   createBrowserRouter,
+  createHashRouter,
   Navigate,
   RouterProvider,
 } from "react-router-dom";
@@ -28,10 +29,11 @@ function App() {
       element: <Dashboard />,
       children: [],
     };
-    const calculatorRoute = {
-      path: "/calculator",
+
+    dashboardRoute.children.push({
+      path: "calculator", // Use relative path
       element: <PrivateRoute element={<MainCalculator />} />,
-    };
+    });
     if (import.meta.env.VITE_APP_INCLUDE_BRANCH === "true") {
       const Branch = (await import("./container/pages/mainBranch/MainBranch"))
         .default;
@@ -101,7 +103,6 @@ function App() {
 
     const tempRoutes = [
       dashboardRoute,
-      calculatorRoute,
       { path: "/", element: <BopLogin /> },
       { path: "/changePassword", element: <ChangePassword /> },
       { path: "/forgotpassword", element: <ForgotPassword /> },
@@ -122,7 +123,7 @@ function App() {
     return <div>Loading...</div>; // Better check for array length than null
   }
 
-  const router = createBrowserRouter(routes);
+  const router = createHashRouter(routes);
   return <RouterProvider router={router} />;
 }
 
