@@ -220,13 +220,15 @@ const BopLogin = () => {
               onClick={handleSubmit}
               applyClass={"authLoginBtn"}
             />
-            <p className='mt-2'>
-              <Link
-                to={"/forgotpassword"}
-                className={styles["forgotPasswordLink"]}>
-                Forgot Password?
-              </Link>
-            </p>
+            {shouldIsCorporate && (
+              <p className='mt-2'>
+                <Link
+                  to={"/forgotpassword"}
+                  className={styles["forgotPasswordLink"]}>
+                  Forgot Password?
+                </Link>
+              </p>
+            )}
           </section>
         </Col>
       </Row>

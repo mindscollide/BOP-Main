@@ -5,5 +5,12 @@ const loginRequestMethod = {
 const corporateUserRequestMethod = {
   RequestMethod: "ServiceManager.CorporateUserLogin",
 };
+const sendEmailForResetPaswordRM = {
+  RequestMethod: "ServiceManager.SendEmailForResetPasword",
+};
 
-export { loginRequestMethod ,corporateUserRequestMethod};
+export {
+  loginRequestMethod,
+  corporateUserRequestMethod,
+  sendEmailForResetPaswordRM,
+};

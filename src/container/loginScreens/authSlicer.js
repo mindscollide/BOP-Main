@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { corporateUserLoginInApi, loginInApi } from "./Login/logInAction";
+import { resetAndForgotPassword } from "./forgetPassword/forgotPassword_Actions";
 const authSlice = createSlice({
   name: "auth",
   initialState: {
@@ -7,6 +8,7 @@ const authSlice = createSlice({
     responseMessage: "",
     loading: false,
     error: null,
+    resetPasswordResponse: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -46,6 +48,23 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
         state.user = null;
+      })
+      .addCase(resetAndForgotPassword.pending, (state, { payload }) => {
+        state.loading = true;
+      })
+      .addCase(resetAndForgotPassword.fulfilled, (state, { payload }) => {
+        console.log(payload, "payloadpayload")
+        state.loading = false;
+        state.error = null;
+        state.responseMessage = payload.message;
+        state.resetPasswordResponse = payload.response;
+      })
+      .addCase(resetAndForgotPassword.rejected, (state, { payload }) => {
+        console.log(payload, "payloadpayload")
+        state.loading = false;
+        state.error = null;
+        state.responseMessage = payload;
+        state.resetPasswordResponse = null;
       });
   },
 });
