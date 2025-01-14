@@ -7,16 +7,12 @@ import { Outlet } from "react-router-dom";
 const Dashboard = () => {
   const { Content } = Layout;
   return (
-    <Layout className="roboto-13">
-      <Header
-        DealarLink={"/dealer"}
-        CategoryLink={"/category"}
-        TreasuryLink={"/treasury"}
-      />
+    <Layout className='roboto-13'>
+      <Header />
       <GlobalNavbar />
       <Content>
-        <main className="px-3">
-        <Outlet />
+        <main className='px-3'>
+          <Outlet />
         </main>
       </Content>
     </Layout>

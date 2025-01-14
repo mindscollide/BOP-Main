@@ -77,8 +77,8 @@ const BopLogin = () => {
         Data = {
           Email: email,
           Password: password,
-          DeviceID: "ABCD1234-5678-90EF-GHIJ-KLMNOPQRSTUV",
-          Device: "iPhone 13 Pro",
+          DeviceID: "1",
+          Device: "Browser",
         };
       } else {
         alert("Please fill out all required fields.");
@@ -99,8 +99,8 @@ const BopLogin = () => {
         Data = {
           UserName: email,
           Password: password,
-          DeviceID: "ABCD1234-5678-90EF-GHIJ-KLMNOPQRSTUV",
-          Device: "iPhone 13 Pro",
+          DeviceID: "1",
+          Device: "Browser",
         };
 
         // Dispatch the login API action for non-corporate user
