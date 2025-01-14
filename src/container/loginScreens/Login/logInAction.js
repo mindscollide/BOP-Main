@@ -37,30 +37,44 @@ export const loginInApi = createAsyncThunk(
           roleID,
           userID,
           token,
+          userName,
           firstName,
           lastName,
+          refreshToken,
+          bankID,
         } = response.data.responseResult;
         if (isExecuted) {
-          localStorage.setItem("user", userID);
-          localStorage.setItem("roleID", roleID);
-          roleBasedNavigation(navigate, roleID);
+          // localStorage.setItem("user", userID);
+          // localStorage.setItem("roleID", roleID);
+          // roleBasedNavigation(navigate, roleID);
           if (
             responseMessage
               .toLowerCase()
               .includes("ERM_AuthService_AuthManager_Login_01".toLowerCase())
           ) {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
               .includes("ERM_AuthService_AuthManager_Login_02".toLowerCase())
           ) {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
               .includes("ERM_AuthService_AuthManager_Login_03".toLowerCase())
           ) {
-            localStorage.setItem("user", userID);
-            localStorage.setItem("roleID", roleID);
+            const expirationDate = new Date();
+            expirationDate.setMinutes(expirationDate.getMinutes() + 1);
+
+            document.cookie = `token=${token}; path=/; secure; samesite=strict; expires=${expirationDate.toString()}`;
+            // document.cookie = `token=${}; path=/; secure; samesite=strict; expires=${expirationDate.toUTCString()}`;
+
+            localStorage.setItem("refreshToken", refreshToken);
+            localStorage.setItem("token", token);
+            // localStorage.setItem("roleID", roleID);
             roleBasedNavigation(navigate, roleID);
             return {
               response: response.data.responseResult,
@@ -71,59 +85,84 @@ export const loginInApi = createAsyncThunk(
               .toLowerCase()
               .includes("ERM_AuthService_AuthManager_Login_04".toLowerCase())
           ) {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
               .includes("ERM_AuthService_AuthManager_Login_05".toLowerCase())
           ) {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
               .includes("ERM_AuthService_AuthManager_Login_06".toLowerCase())
           ) {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
               .includes("ERM_AuthService_AuthManager_Login_07".toLowerCase())
           ) {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
               .includes("ERM_AuthService_AuthManager_Login_08".toLowerCase())
           ) {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
               .includes("ERM_AuthService_AuthManager_Login_09".toLowerCase())
           ) {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
               .includes("ERM_AuthService_AuthManager_Login_10".toLowerCase())
           ) {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
               .includes("ERM_AuthService_AuthManager_Login_11".toLowerCase())
           ) {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
               .includes("ERM_AuthService_AuthManager_Login_12".toLowerCase())
           ) {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
               .includes("ERM_AuthService_AuthManager_Login_13".toLowerCase())
           ) {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
           } else {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
           }
         } else {
+          console.log("", response.data);
+          return rejectWithValue("Something went wrong");
         }
       }
     } catch (error) {
       // Reject with error message
-      return rejectWithValue("Something-went-wrong");
+      console.log("", error);
+      return rejectWithValue("Something went wrong");
     }
   }
 );
@@ -161,6 +200,10 @@ export const corporateUserLoginInApi = createAsyncThunk(
           firstName,
           lastName,
         } = response.data.responseResult;
+        console.log(
+          { isExecuted, responseMessage, roleID, userID },
+          "corporateUserLoginInApi"
+        );
         if (isExecuted) {
           if (
             responseMessage
@@ -169,6 +212,8 @@ export const corporateUserLoginInApi = createAsyncThunk(
                 "ERM_AuthService_AuthManager_CorporateUserLogin_01".toLowerCase()
               )
           ) {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -176,6 +221,8 @@ export const corporateUserLoginInApi = createAsyncThunk(
                 "ERM_AuthService_AuthManager_CorporateUserLogin_02".toLowerCase()
               )
           ) {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -197,6 +244,8 @@ export const corporateUserLoginInApi = createAsyncThunk(
                 "ERM_AuthService_AuthManager_CorporateUserLogin_04".toLowerCase()
               )
           ) {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -204,6 +253,8 @@ export const corporateUserLoginInApi = createAsyncThunk(
                 "ERM_AuthService_AuthManager_CorporateUserLogin_05".toLowerCase()
               )
           ) {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -211,6 +262,8 @@ export const corporateUserLoginInApi = createAsyncThunk(
                 "ERM_AuthService_AuthManager_CorporateUserLogin_06".toLowerCase()
               )
           ) {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -218,6 +271,8 @@ export const corporateUserLoginInApi = createAsyncThunk(
                 "ERM_AuthService_AuthManager_CorporateUserLogin_07".toLowerCase()
               )
           ) {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -225,6 +280,8 @@ export const corporateUserLoginInApi = createAsyncThunk(
                 "ERM_AuthService_AuthManager_CorporateUserLogin_08".toLowerCase()
               )
           ) {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -232,6 +289,8 @@ export const corporateUserLoginInApi = createAsyncThunk(
                 "ERM_AuthService_AuthManager_CorporateUserLogin_09".toLowerCase()
               )
           ) {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -239,6 +298,8 @@ export const corporateUserLoginInApi = createAsyncThunk(
                 "ERM_AuthService_AuthManager_CorporateUserLogin_10".toLowerCase()
               )
           ) {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -246,6 +307,8 @@ export const corporateUserLoginInApi = createAsyncThunk(
                 "ERM_AuthService_AuthManager_CorporateUserLogin_11".toLowerCase()
               )
           ) {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -253,6 +316,8 @@ export const corporateUserLoginInApi = createAsyncThunk(
                 "ERM_AuthService_AuthManager_CorporateUserLogin_12".toLowerCase()
               )
           ) {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -260,9 +325,15 @@ export const corporateUserLoginInApi = createAsyncThunk(
                 "ERM_AuthService_AuthManager_CorporateUserLogin_13".toLowerCase()
               )
           ) {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
           } else {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
           }
         } else {
+          console.log("", response.data);
+          return rejectWithValue("Something went wrong");
         }
       }
     } catch (error) {

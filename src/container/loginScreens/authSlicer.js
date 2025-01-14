@@ -27,6 +27,7 @@ const authSlice = createSlice({
       })
       // Rejected state (when the API call fails)
       .addCase(loginInApi.rejected, (state, action) => {
+        console.log(action, "actionaction")
         state.loading = false;
         state.error = action.payload;
         state.user = null;
@@ -45,6 +46,8 @@ const authSlice = createSlice({
       })
       // Rejected state (when the API call fails)
       .addCase(corporateUserLoginInApi.rejected, (state, action) => {
+        console.log(action, "actionaction")
+
         state.loading = false;
         state.error = action.payload;
         state.user = null;
