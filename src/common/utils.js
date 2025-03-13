@@ -5,7 +5,7 @@ const setCustomHeaders = () => {
   let token = localStorage.getItem("token");
   if (token !== null) {
     return {
-      _token: JSON.parse(token),
+      _token: token,
       "Content-Type": "multipart/form-data",
     };
   } else {

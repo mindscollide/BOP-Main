@@ -8,15 +8,15 @@ const PrivateRoute = ({ element }) => {
   let isUser = localStorage.getItem("user");
   let isRole = localStorage.getItem("roleID");
   let token = localStorage.getItem("token")
-  let getToken = getCookieValue("token");
-  console.log(getToken, "getTokengetToken");
-  if (getToken === null && getToken === "" ) {
-    const expirationDate = new Date();
-    expirationDate.setMinutes(expirationDate.getMinutes() + 1);
-    document.cookie = `token=${token}; path=/; secure; samesite=strict; expires=${expirationDate.toUTCString()}`;
-  }
+  // let getToken = getCookieValue("token");
+  // console.log(getToken, "getTokengetToken");
+  // if (getToken === null && getToken === "" ) {
+  //   const expirationDate = new Date();
+  //   expirationDate.setMinutes(expirationDate.getMinutes() + 1);
+  //   document.cookie = `token=${token}; path=/; secure; samesite=strict; expires=${expirationDate.toUTCString()}`;
+  // }
   // If authenticated, render the protected route's component
-  return getToken ? element : <Navigate to={"/"} />;
+  return token ? element : <Navigate to={"/"} />;
 };
 
 export default PrivateRoute;
