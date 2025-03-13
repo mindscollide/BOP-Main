@@ -34,6 +34,11 @@
   text-align: left;
   border-radius: 2px;
   border: 1px solid #000;
+  text-align: center;
+}
+.DealerTableBitInput:disabled {
+  background-color: rgba(239, 239, 239, 0.3) !important;
+  border-color: rgba(118, 118, 118, 0.3);
 }
 /* End Dealer Table Bit Input Field */
 

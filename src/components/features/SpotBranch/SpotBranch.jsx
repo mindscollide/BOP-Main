@@ -8,6 +8,7 @@ import GlobalTable from "../../common/table/GlobalTable";
 import SellAndBuyModal from "./SellAndBuyModal/SellAndBuyModal";
 import { useModal } from "../../../context/ModalContext";
 import ChatBox from "../chatBox/ChatBox.jsx";
+import BlotterHeader from "@/container/pages/mainTreasury/tabsContent/liveRates/blotter/blotterHeader/BlotterHeader";
 
 const SpotBranch = () => {
   //Modal Context State
@@ -306,6 +307,7 @@ const SpotBranch = () => {
       </DragDropContext>
       {/* ChatBox Component */}
       {/* <ChatBox /> */}
+      <BlotterHeader />
       {iSellAndBuyModal && <SellAndBuyModal />}
     </section>
   );

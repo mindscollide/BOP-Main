@@ -66,11 +66,7 @@ export const loginInApi = createAsyncThunk(
               .toLowerCase()
               .includes("ERM_AuthService_AuthManager_Login_03".toLowerCase())
           ) {
-            const expirationDate = new Date();
-            expirationDate.setMinutes(expirationDate.getMinutes() + 1);
 
-            document.cookie = `token=${token}; path=/; secure; samesite=strict; expires=${expirationDate.toString()}`;
-            // document.cookie = `token=${}; path=/; secure; samesite=strict; expires=${expirationDate.toUTCString()}`;
 
             localStorage.setItem("refreshToken", refreshToken);
             localStorage.setItem("token", token);

@@ -26,13 +26,16 @@ const DealeAndTreasuryDiscountingTable = () => {
       dataIndex: "currentRate",
       key: "currentRate",
       align: "center",
-      render: (value) => (
-        <InputFIeld
-          type='number'
-          applyClass='DealerTableBitInput'
-          valu={value}
-        />
-      ),
+      render: (value) => {
+        console.log(value, "valuevaluevalue");
+        return (
+          <InputFIeld
+            type='number'
+            applyClass='DealerTableBitInput'
+            value={value}
+          />
+        );
+      },
     },
     {
       title: "Previous Rate %",
@@ -42,6 +45,7 @@ const DealeAndTreasuryDiscountingTable = () => {
       render: (value) => (
         <InputFIeld
           type='number'
+          disabled={true}
           defaultValue={value}
           applyClass='DealerTableBitInput'
         />
