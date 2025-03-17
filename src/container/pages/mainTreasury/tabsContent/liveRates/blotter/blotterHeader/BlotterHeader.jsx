@@ -17,6 +17,9 @@ const BlotterHeader = () => {
   const [openExportDiv, setOpenExportDiv] = useState(false);
   const [openMailModal, setOpenMailModal] = useState(false);
   const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
+  const isCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
+  const isTreasury = import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
+
   const tabsData = [
     { title: "TXN Summary", content: <TXNSummary /> },
     { title: "Outstanding Deals", content: <OutstandingDeals /> },
@@ -33,9 +36,10 @@ const BlotterHeader = () => {
   const onClickMailModal = () => {
     setOpenMailModal(true);
   };
-  const activeTab = isBranch
-    ? tabsData.filter((data, index) => index === 0)
-    : tabsData;
+  const activeTab =
+    isBranch || isCorporate
+      ? tabsData.filter((data, index) => index === 0)
+      : tabsData;
   console.log(activeTab, "activeTabactiveTab");
   return (
     <>
@@ -49,13 +53,19 @@ const BlotterHeader = () => {
           <div className='d-flex align-items-center'>
             <div className='nop-hd-container'>
               <div className='d-flex align-items-center'>
-                <span className='hd-txt me-3'>NOP (US$)</span>
-                <span className='hd-cr me-2'>46,999</span>
-                <CustomButton
-                  applyClass={"NOP-button"}
-                  value='+'
-                  onClick={onClickNopModal}
-                />
+                {!activeTab && (
+                  <>
+                    {" "}
+                    <span className='hd-txt me-3'>NOP (US$)</span>
+                    <span className='hd-cr me-2'>46,999</span>
+                    <CustomButton
+                      applyClass={"NOP-button"}
+                      value='+'
+                      onClick={onClickNopModal}
+                    />{" "}
+                  </>
+                )}
+
                 <CustomButton
                   applyClass={"Export-button"}
                   value='Export'
