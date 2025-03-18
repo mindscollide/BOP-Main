@@ -2,11 +2,14 @@ import React from "react";
 import { Dropdown, Nav } from "react-bootstrap";
 import IconElement from "../IconElement/IconElement";
 import styles from "./ProfileDropdown.module.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-const ProfileDropdown = ({ userName, setSettingModal }) => {
-  const handleClickSettingOption = () => {
-    setSettingModal(true);
+const ProfileDropdown = ({ userName }) => {
+  const navigate = useNavigate();
+  const handleClickLogout = () => {
+    document.cookie = `path=/; secure; samesite=strict;`;
+    localStorage.clear();
+    navigate("/");
   };
   return (
     <Dropdown>
@@ -18,12 +21,17 @@ const ProfileDropdown = ({ userName, setSettingModal }) => {
       </Dropdown.Toggle>
       <Dropdown.Menu className={styles["ProfileDropdown_menu"]}>
         <Dropdown.Item className="d-flex align-items-center cursor-pointer">
-          <Nav.Link onClick={handleClickSettingOption}>
+          <Nav.Link>
             <IconElement iconClass={"icon-settings me-1"} />
             <label>Setting</label>
           </Nav.Link>
         </Dropdown.Item>
-        <Dropdown.Item as={Link} to={"/"} className="d-flex align-items-center cursor-pointer">
+        <Dropdown.Item
+          onClick={handleClickLogout}
+          as={Link}
+          to={"/"}
+          className="d-flex align-items-center cursor-pointer"
+        >
           <IconElement iconClass={"icon-logout me-1"} />
           <label>Logout</label>
         </Dropdown.Item>

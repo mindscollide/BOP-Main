@@ -17,7 +17,7 @@ const GlobalNavbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const handleCalculatorClick = () => {
-    window.open("/calculator", "_blank");
+    window.open("/#/BOP/calculator", "_blank");
   };
 
   const onClickRFQ = () => {
@@ -57,9 +57,8 @@ const GlobalNavbar = () => {
                         />
                       </Suspense>
                     )}
-                    {location.pathname === "/treasury" ||
-                    shouldIncludeDealer ||
-                    shouldIncludeBranch ? (
+                    {location.pathname.includes("treasury") &&
+                    (shouldIncludeDealer || shouldIncludeTreasury) ? (
                       <CustomButton
                         applyClass="calcBtn"
                         value="Calculators"

@@ -25,9 +25,6 @@ const BopLogin = () => {
     hasErrorOnUserName: false,
   });
   const [showPassowrd, setShowPassword] = useState(false);
-  useEffect(() => {
-    localStorage.clear();
-  }, []);
   /**
    * Handles input field changes for email and password.
    * Validates email format and updates the credentials state.
@@ -78,7 +75,7 @@ const BopLogin = () => {
           Email: email,
           Password: password,
           DeviceID: "1",
-          Device: "iPhone 13 Pro",
+          Device: "Browser",
         };
       } else {
         alert("Please fill out all required fields.");
@@ -99,8 +96,8 @@ const BopLogin = () => {
         Data = {
           UserName: email,
           Password: password,
-          DeviceID: "ABCD1234-5678-90EF-GHIJ-KLMNOPQRSTUV",
-          Device: "iPhone 13 Pro",
+          DeviceID: "1",
+          Device: "Browser",
         };
 
         // Dispatch the login API action for non-corporate user
@@ -131,7 +128,9 @@ const BopLogin = () => {
         </Col>
         <Col sm={12} md={12} lg={12}>
           <section className={styles["LoginCard"]}>
-            <h4 className={styles["Heading-js"]}>Corporate Login</h4>
+            <h4 className={styles["Heading-js"]}>
+              {shouldIsCorporate === true && "Corporate Login"}
+            </h4>
             {shouldIsCorporate === true ? (
               <>
                 <InputGroup>
@@ -221,14 +220,16 @@ const BopLogin = () => {
               onClick={handleSubmit}
               applyClass={"authLoginBtn"}
             />
-            <p className="mt-2">
-              <Link
-                to={"/forgotpassword"}
-                className={styles["forgotPasswordLink"]}
-              >
-                Forgot Password?
-              </Link>
-            </p>
+            {shouldIsCorporate && (
+              <p className="mt-2">
+                <Link
+                  to={"/forgotpassword"}
+                  className={styles["forgotPasswordLink"]}
+                >
+                  Forgot Password?
+                </Link>
+              </p>
+            )}
           </section>
         </Col>
       </Row>

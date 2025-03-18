@@ -8,6 +8,9 @@ export default defineConfig({
   define: {
     "process.env": import.meta.env,
   },
+  server: {
+    historyApiFallback: true,  // This ensures routes work on reload
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

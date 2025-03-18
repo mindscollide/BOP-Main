@@ -2,8 +2,8 @@ import axios from "axios";
 
 // Function to set custom headers
 const setCustomHeaders = () => {
-  let token = JSON.parse(localStorage.getItem("token"));
-  if (token) {
+  let token = localStorage.getItem("token");
+  if (token !== null) {
     return {
       _token: token,
       "Content-Type": "multipart/form-data",
@@ -47,3 +47,14 @@ const roleBasedNavigation = (navigate, roleID) => {
   }
 };
 export { setCustomHeaders, emailValidation, roleBasedNavigation };
+
+export const getCookieValue = (cookieName) => {
+  const cookies = document.cookie.split("; ");
+  for (const cookie of cookies) {
+    const [name, value] = cookie.split("=");
+    if (name === cookieName) {
+      return value;
+    }
+  }
+  return null; // Return null if the cookie is not found
+};

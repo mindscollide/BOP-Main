@@ -5,8 +5,6 @@ import styles from "./CreatePassword.module.css";
 import IconElement from "@/components/common/IconElement/IconElement";
 import CustomButton from "@/components/common/globalButton/button";
 const CreatePassword = () => {
-
-
   return (
     <section className={styles["sign-in"]}>
       <Row>
