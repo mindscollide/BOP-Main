@@ -7,6 +7,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import SelectDropdown from "@/components/common/selectDropdown/SelectDropdown";
 import IconElement from "@/components/common/IconElement/IconElement";
 import RFQModal from "@/container/pages/mainCorporate/rfqModal/RFQModal";
+import { useModal } from "@/context/ModalContext";
 
 const GlobalNavbar = () => {
   const { settingModal, setSettingModal } = useModal();

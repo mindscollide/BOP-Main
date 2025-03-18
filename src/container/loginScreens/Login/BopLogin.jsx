@@ -26,8 +26,8 @@ const BopLogin = () => {
   });
   const [showPassowrd, setShowPassword] = useState(false);
   useEffect(() => {
-    localStorage.clear()
-  }, [])
+    localStorage.clear();
+  }, []);
   /**
    * Handles input field changes for email and password.
    * Validates email format and updates the credentials state.
@@ -77,7 +77,7 @@ const BopLogin = () => {
         Data = {
           Email: email,
           Password: password,
-          DeviceID: "ABCD1234-5678-90EF-GHIJ-KLMNOPQRSTUV",
+          DeviceID: "1",
           Device: "iPhone 13 Pro",
         };
       } else {
@@ -94,7 +94,7 @@ const BopLogin = () => {
         password &&
         !hasErrorOnEmail &&
         !hasErrorOnPassword &&
-        !hasErrorOnUserName 
+        !hasErrorOnUserName
       ) {
         Data = {
           UserName: email,
@@ -119,13 +119,14 @@ const BopLogin = () => {
           sm={12}
           md={12}
           lg={12}
-          className='d-flex justify-content-center mt-5 '>
+          className="d-flex justify-content-center mt-5 "
+        >
           <img
             src={BOPLogo}
             style={{ maxWidth: "100%" }}
-            width='300'
-            className='img-fluid'
-            alt='BOP Logo'
+            width="300"
+            className="img-fluid"
+            alt="BOP Logo"
           />
         </Col>
         <Col sm={12} md={12} lg={12}>
@@ -138,18 +139,18 @@ const BopLogin = () => {
                     <IconElement iconClass={"icon-user"} />
                   </InputGroup.Text>
                   <Form.Control
-                    name='email'
-                    autoComplete='off'
+                    name="email"
+                    autoComplete="off"
                     className={styles["form-comtrol-textfield"]}
-                    placeholder='Email ID'
+                    placeholder="Email ID"
                     required
                     value={crendentials.email}
                     onChange={handleChangeFields}
-                    type='email'
+                    type="email"
                     // pattern='^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-                    aria-label='email'
+                    aria-label="email"
                     maxLength={100}
-                    aria-describedby='basic-addon1'
+                    aria-describedby="basic-addon1"
                   />
                 </InputGroup>
                 {crendentials.hasEmailisValid === false && (
@@ -162,43 +163,45 @@ const BopLogin = () => {
                   <IconElement iconClass={"icon-user"} />
                 </InputGroup.Text>
                 <Form.Control
-                  name='email'
-                  autoComplete='off'
+                  name="email"
+                  autoComplete="off"
                   className={styles["form-comtrol-textfield"]}
-                  placeholder='User Name'
+                  placeholder="User Name"
                   required
                   value={crendentials.email}
                   onChange={handleChangeFields}
-                  type='text'
+                  type="text"
                   // pattern='^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-                  aria-label='email'
+                  aria-label="email"
                   maxLength={100}
-                  aria-describedby='basic-addon1'
+                  aria-describedby="basic-addon1"
                 />
               </InputGroup>
             )}
 
-            <InputGroup className='my-3'>
+            <InputGroup className="my-3">
               <InputGroup.Text
-                id='basic-addon1'
-                className={styles["Icon-Field-class"]}>
+                id="basic-addon1"
+                className={styles["Icon-Field-class"]}
+              >
                 <IconElement iconClass={"icon-lock"} />
               </InputGroup.Text>
               <Form.Control
-                name='password'
-                autoComplete='off'
+                name="password"
+                autoComplete="off"
                 className={styles["form-comtrol-textfield-password"]}
-                placeholder='Password'
+                placeholder="Password"
                 required
                 value={crendentials.password}
                 onChange={handleChangeFields}
                 type={showPassowrd ? "text" : "password"}
-                aria-label='password'
-                aria-describedby='basic-addon2'
+                aria-label="password"
+                aria-describedby="basic-addon2"
               />
               <InputGroup.Text
-                id='basic-addon2'
-                className={styles["eyeIcon-Field-class-BOP-login"]}>
+                id="basic-addon2"
+                className={styles["eyeIcon-Field-class-BOP-login"]}
+              >
                 {showPassowrd ? (
                   <IconElement
                     iconClass={"icon-eye-slash"}
@@ -218,10 +221,11 @@ const BopLogin = () => {
               onClick={handleSubmit}
               applyClass={"authLoginBtn"}
             />
-            <p className='mt-2'>
+            <p className="mt-2">
               <Link
                 to={"/forgotpassword"}
-                className={styles["forgotPasswordLink"]}>
+                className={styles["forgotPasswordLink"]}
+              >
                 Forgot Password?
               </Link>
             </p>
