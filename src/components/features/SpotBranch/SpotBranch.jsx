@@ -222,7 +222,7 @@ const SpotBranch = () => {
                             watchlistData.watchlist2.currecncyLabel
                           }
                           buyHeading="I Buy"
-                          sellHeading="I Buy"
+                          sellHeading="I Sell"
                           buyValue={watchlistData.watchlist2.buyValue}
                           sellValue={watchlistData.watchlist2.sellValue}
                         />
@@ -240,7 +240,7 @@ const SpotBranch = () => {
                             watchlistData.watchlist3.currecncyLabel
                           }
                           buyHeading="I Buy"
-                          sellHeading="I Buy"
+                          sellHeading="I Sell"
                           buyValue={watchlistData.watchlist3.buyValue}
                           sellValue={watchlistData.watchlist3.sellValue}
                         />
@@ -279,7 +279,7 @@ const SpotBranch = () => {
                             watchlistData.watchlist5.currecncyLabel
                           }
                           buyHeading="I Buy"
-                          sellHeading="I Buy"
+                          sellHeading="I Sell"
                           buyValue={watchlistData.watchlist5.buyValue}
                           sellValue={watchlistData.watchlist5.sellValue}
                         />
@@ -297,7 +297,7 @@ const SpotBranch = () => {
                             watchlistData.watchlist6.currecncyLabel
                           }
                           buyHeading="I Buy"
-                          sellHeading="I Buy"
+                          sellHeading="I Sell"
                           buyValue={watchlistData.watchlist6.buyValue}
                           sellValue={watchlistData.watchlist6.sellValue}
                         />
