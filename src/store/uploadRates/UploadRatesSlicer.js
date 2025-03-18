@@ -1,9 +1,12 @@
+import {
+  PublishNewRatesAction,
+  clearRatesAction,
+  getLastPublishRatesAction,
+  marketOnOffAction,
+} from "@/container/pages/mainDealer/dealerActions";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 
-
-
-// Define other APIs similarly...
 
 const uploadRatesSlicer = createSlice({
   name: "uploadRates",
@@ -14,50 +17,67 @@ const uploadRatesSlicer = createSlice({
     error: null,
     marketOnOff: null,
     clearRates: null,
+    getLastPublishRates: null,
+    getCurrentPublishRate: null,
   },
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(marketOnOff.pending, (state) => {
+      .addCase(marketOnOffAction.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(marketOnOff.fulfilled, (state, { payload }) => {
+      .addCase(marketOnOffAction.fulfilled, (state, { payload }) => {
         state.loading = false;
         state.responseMessage = payload.message;
+        state.marketOnOff = payload.response;
         state.error = null;
       })
-      .addCase(marketOnOff.rejected, (state, action) => {
+      .addCase(marketOnOffAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+        state.marketOnOff = null;
       })
-      .addCase(clearRates.pending, (state) => {
+      .addCase(clearRatesAction.pending, (state) => {
         state.loading = true;
       })
-      .addCase(clearRates.fulfilled, (state, { payload }) => {
+      .addCase(clearRatesAction.fulfilled, (state, { payload }) => {
         state.loading = false;
-        state.clearRates = payload.message;
+        state.clearRates = payload.response;
         state.error = null;
       })
-      .addCase(clearRates.rejected, (state, action) => {
+      .addCase(clearRatesAction.rejected, (state, action) => {
         state.loading = false;
         state.clearRates = null;
         state.error = action.payload;
       })
-      .addCase(getLastAndCurrentUSDRates.pending, (state) => {
+      .addCase(getLastPublishRatesAction.pending, (state) => {
         state.loading = true;
       })
-      .addCase(getLastAndCurrentUSDRates.fulfilled, (state, { payload }) => {
+      .addCase(getLastPublishRatesAction.fulfilled, (state, { payload }) => {
         state.loading = false;
-        state.ratesData = payload.response;
+        state.getLastPublishRates = payload.response;
         state.error = null;
       })
-      .addCase(getLastAndCurrentUSDRates.rejected, (state, action) => {
+      .addCase(getLastPublishRatesAction.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+        state.getLastPublishRates = null;
+      })
+      .addCase(PublishNewRatesAction.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(PublishNewRatesAction.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.getCurrentPublishRate = payload.response;
+        state.responseMessage = payload.message;
+      })
+      .addCase(PublishNewRatesAction.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.getCurrentPublishRate = null;
+        state.responseMessage = payload;
       });
 
-    // Add other cases similarly...
   },
 });
 

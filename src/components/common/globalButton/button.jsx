@@ -29,6 +29,7 @@ const CustomButton = ({
         prefixCls={prefixCls}
         size={size}
         onClick={onClick}
+        
         iconPosition={iconPosition}>
         {value}
       </Button>
