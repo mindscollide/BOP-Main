@@ -50,6 +50,30 @@ const publishDiscountingRatesRM = {
   RequestMethod: "ServiceManager.PublishDiscountingRates",
 };
 
+const GetFXInstruments = {
+  RequestMethod: "ServiceManager.GetFXInstruments",
+};
+
+const GetMisDataByRange = {
+  RequestMethod: "ServiceManager.GetMisDataByRange",
+};
+
+const GetAllFowardsAndDiscountsRates = {
+  RequestMethod: "ServiceManager.GetAllFowardsAndDiscountsRates",
+};
+
+const GetAllCounterPartyData = {
+  RequestMethod: "ServiceManager.GetAllCounterPartyData",
+};
+
+const GetDashboardData = {
+  RequestMethod: "ServiceManager.GetDashboardData",
+};
+
+const SaveUserDashboard = {
+  RequestMethod: "ServiceManager.SaveUserDashboard",
+};
+
 export {
   clearRatesRM,
   loginRequestMethod,
@@ -64,4 +88,10 @@ export {
   publishTenorWiseForwardRatesRM,
   getDiscountingRatesRM,
   publishDiscountingRatesRM,
+  GetFXInstruments,
+  GetMisDataByRange,
+  GetAllFowardsAndDiscountsRates,
+  GetAllCounterPartyData,
+  GetDashboardData,
+  SaveUserDashboard,
 };

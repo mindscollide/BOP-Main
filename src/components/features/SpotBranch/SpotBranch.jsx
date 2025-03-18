@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./SpotBranch.css";
 import { Col, Row } from "react-bootstrap";
 import { Draggable, DragDropContext, Droppable } from "react-beautiful-dnd";
@@ -9,10 +9,55 @@ import SellAndBuyModal from "./SellAndBuyModal/SellAndBuyModal";
 import { useModal } from "../../../context/ModalContext";
 import ChatBox from "../chatBox/ChatBox.jsx";
 import BlotterHeader from "@/container/pages/mainTreasury/tabsContent/liveRates/blotter/blotterHeader/BlotterHeader";
+import { GetDashboardDataAPI, GetFXInstrumentsAPI } from "./WatchlistAction";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const SpotBranch = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   //Modal Context State
   const { iSellAndBuyModal } = useModal();
+
+  //Card Data Local State
+  const [watchlistCardData, setWatchlistCardData] = useState([]);
+
+  //Global State for Watchlist Card Data
+  const globalStateWatchlistCardData = useSelector(
+    (state) => state.WatchListReducer?.GettheDashboardData ?? null
+  );
+
+  //WatchList table Data Api Call
+  useEffect(() => {
+    try {
+      dispatch(GetFXInstrumentsAPI({}));
+      dispatch(GetDashboardDataAPI({}));
+    } catch (error) {
+      console.log(error, "error");
+    }
+  }, []);
+
+  // Extracting out the Cards Wathlist data in the state
+
+  useEffect(() => {
+    try {
+      if (
+        globalStateWatchlistCardData &&
+        globalStateWatchlistCardData !== null
+      ) {
+        setWatchlistCardData(globalStateWatchlistCardData.sections);
+        console.log(
+          globalStateWatchlistCardData,
+          "globalStateWatchlistCardData"
+        );
+      }
+    } catch (error) {
+      console.log(error, "error");
+    }
+  }, [globalStateWatchlistCardData]);
+
+  console.log(watchlistCardData, "globalStateWatchlistCardData");
 
   //Data to be rendered in the Table
   const [dataSource, setDataSource] = useState([
@@ -84,7 +129,6 @@ const SpotBranch = () => {
   const onDragEnd = (result) => {
     const { source, destination } = result;
 
-
     // If no destination, return
     if (!destination) {
       return;
@@ -142,7 +186,7 @@ const SpotBranch = () => {
     <section>
       <DragDropContext onDragEnd={onDragEnd}>
         <Row className="px-2">
-          <Col >
+          <Col>
             <span className="FxTradingOuterBox">
               <Row className="mt-2">
                 <Col lg={12} md={12} sm={12}>
@@ -307,7 +351,7 @@ const SpotBranch = () => {
       </DragDropContext>
       {/* ChatBox Component */}
       {/* <ChatBox /> */}
-      <BlotterHeader  />
+      <BlotterHeader />
       {iSellAndBuyModal && <SellAndBuyModal />}
     </section>
   );
