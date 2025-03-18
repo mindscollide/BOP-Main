@@ -5,7 +5,7 @@ import SiteLogo from "../../../assets/logo.png"; // Update the path as necessary
 const SiteLogoComponent = () => {
     return (
         <div className="site-logo">
-            <Link to="/treasury">
+            <Link to="/">
                 <img
                     src={SiteLogo}
                     width={250}

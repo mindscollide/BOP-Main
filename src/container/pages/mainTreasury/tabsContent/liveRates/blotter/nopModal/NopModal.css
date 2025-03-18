@@ -1,5 +1,6 @@
 .picker-date-range-To-Span {
-  padding: 5px 16px;
+  padding: 3.5px 16px;
   background-color: #575351 !important;
   color: #fff !important;
+  display: inline-block;
 }

@@ -772,6 +772,10 @@ tr.Treasury_Discounting-row.Treasury_Discounting-row-level-0.striped-design:nth-
 /* Branch Spot Table WatchList Ends */
 
 /* Start branch forwards table */
+.branch_forwardsTable-wrapper .branch_forwardsTable.branch_forwardsTable-bordered >.branch_forwardsTable-container {
+  border-inline-start: 0px !important;
+  border-top: 0px !important;
+}
 .branch_forwardsTable-wrapper .Tresuary_Discounting {
   scrollbar-color: auto !important;
 }
@@ -851,6 +855,9 @@ tr.Treasury_Discounting-row.Treasury_Discounting-row-level-0.striped-design:nth-
 .branch_forwardsTable-thead tr:nth-child(2) th {
   text-align: left;
   font-size: 1rem !important;
+}
+.branch_forwardsTable-measure-row {
+  display: none !important;
 }
 /* End Branch Forward table */
 
@@ -1440,6 +1447,10 @@ td.Dealer_Discounting-cell {
 /* Treasury Nop Modal Table End */
 
 /* TXN Summary Start */
+
+.TXNSummary_Table-wrapper .TXNSummary_Table {
+  scrollbar-color: auto !important;
+}
 th.TXNSummary_Table-cell {
   background: var(--color-primary) !important;
   border-color: var(--color-primary) !important;
@@ -1457,6 +1468,7 @@ th.TXNSummary_Table-cell:before {
 th.TXNSummary_Table-cell.comment-class {
   font-weight: bold !important;
   font-family: "Roboto", sans-serif !important;
+  text-align: center !important;
 }
 
 td.TXNSummary_Table-cell.ff-poppins.fw-bold {
@@ -1467,4 +1479,8 @@ td.TXNSummary_Table-cell.ff-poppins.fw-bold {
   color: #212529 !important;
   text-align: center !important;
   white-space: nowrap !important;
+}
+
+tr.TXNSummary_Table-measure-row {
+  display: none !important;
 }

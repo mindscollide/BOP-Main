@@ -1,17 +1,17 @@
 import React, { Suspense, useState } from "react";
-import Voltmeter from "./../../common/voltMeter/Voltmeter";
-import ProfileDropdown from "./../../common/profileDropdown/ProfileDropdown";
-import CustomButton from "./../../common/globalButton/button";
-import SiteLogoComponent from "./../../common/siteLogo/SiteLogo";
+import Voltmeter from "@/components/common/voltMeter/Voltmeter";
+import ProfileDropdown from "@/components/common/profileDropdown/ProfileDropdown";
+import CustomButton from "@/components/common/globalButton/button";
+import SiteLogoComponent from "@/components/common/siteLogo/SiteLogo";
 import { useLocation, useNavigate } from "react-router-dom";
-import SelectDropdown from "../../common/selectDropdown/SelectDropdown";
-import IconElement from "../../common/IconElement/IconElement";
-import { useModal } from "../../../context/ModalContext";
-import SettingModal from "../../features/settingsModal/settingModal";
+import SelectDropdown from "@/components/common/selectDropdown/SelectDropdown";
+import IconElement from "@/components/common/IconElement/IconElement";
+import RFQModal from "@/container/pages/mainCorporate/rfqModal/RFQModal";
 
 const GlobalNavbar = () => {
   const { settingModal, setSettingModal } = useModal();
   const [selectedValue, setSelectedValue] = useState(1);
+  const [openRfqModal, setOpenRfqModal] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -19,10 +19,15 @@ const GlobalNavbar = () => {
     window.open("/calculator", "_blank");
   };
 
+  const onClickRFQ = () => {
+    setOpenRfqModal(true);
+  };
+
   // Conditionally import CustomButton based on the environment variables
   const shouldIncludeBranch =
     import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
-
+  const shouldIncludeDealer =
+    import.meta.env.VITE_APP_INCLUDE_DEALER === "true";
   const shouldIncludeCorporate =
     import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
   const shouldIncludeTreasury =
@@ -47,20 +52,20 @@ const GlobalNavbar = () => {
                           value="RFQ"
                           size="small"
                           icon={<IconElement iconClass={"icon-list fs-6"} />}
-                          // onClick={handleCalculatorClick}
+                          onClick={onClickRFQ}
                         />
                       </Suspense>
                     )}
                     {location.pathname === "/treasury" ||
-                      shouldIncludeBranch ||
-                      (shouldIncludeCorporate && (
-                        <CustomButton
-                          applyClass="calcBtn"
-                          value="Calculators"
-                          size="large"
-                          onClick={handleCalculatorClick}
-                        />
-                      ))}
+                    shouldIncludeDealer ||
+                    shouldIncludeBranch ? (
+                      <CustomButton
+                        applyClass="calcBtn"
+                        value="Calculators"
+                        size="large"
+                        onClick={handleCalculatorClick}
+                      />
+                    ) : null}
                     {shouldIncludeTreasury &&
                     location.pathname === "/treasury" ? (
                       <Voltmeter
@@ -85,7 +90,15 @@ const GlobalNavbar = () => {
         </div>
         {/*Container*/}
       </div>
-      {settingModal && <SettingModal />}
+
+      {openRfqModal ? (
+        <>
+          <RFQModal
+            openRfqModal={openRfqModal}
+            setOpenRfqModal={setOpenRfqModal}
+          />
+        </>
+      ) : null}
     </>
   );
 };

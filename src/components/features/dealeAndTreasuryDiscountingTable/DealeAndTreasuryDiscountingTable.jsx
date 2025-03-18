@@ -1,22 +1,7 @@
 import React, { Suspense, lazy } from "react";
-
-// Define condition to include components
-const shouldIncludeComponents =
-  import.meta.env.VITE_APP_INCLUDE_DEALER === "true" ||
-  import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
-
-const GlobalTable = shouldIncludeComponents
-  ? lazy(() => import("../../common/table/GlobalTable"))
-  : null;
-
-// Conditionally import components based on environment variables
-const InputFIeld = shouldIncludeComponents
-  ? lazy(() => import("../../common/inputField/InputField"))
-  : null;
-
-const CustomButton = shouldIncludeComponents
-  ? lazy(() => import("../../common/globalButton/button"))
-  : null;
+import CustomButton from "../../common/globalButton/button";
+import GlobalTable from "../../common/table/GlobalTable";
+import InputFIeld from "../../common/inputField/InputField";
 
 const DealeAndTreasuryDiscountingTable = () => {
   // Data for the table
@@ -41,50 +26,43 @@ const DealeAndTreasuryDiscountingTable = () => {
       dataIndex: "currentRate",
       key: "currentRate",
       align: "center",
-      render: (value) =>
-        InputFIeld && (
-          <InputFIeld
-            type='number'
-            applyClass='DealerTableBitInput'
-            valu={value}
-          />
-        ),
+      render: (value) => (
+        <InputFIeld
+          type='number'
+          applyClass='DealerTableBitInput'
+          valu={value}
+        />
+      ),
     },
     {
       title: "Previous Rate %",
       dataIndex: "previousRate",
       key: "previousRate",
       align: "center",
-      render: (value) =>
-        InputFIeld && (
-          <InputFIeld
-            type='number'
-            defaultValue={value}
-            applyClass='DealerTableBitInput'
-          />
-        ),
+      render: (value) => (
+        <InputFIeld
+          type='number'
+          defaultValue={value}
+          applyClass='DealerTableBitInput'
+        />
+      ),
     },
   ];
   return (
     <>
-      {GlobalTable && (
-        <Suspense fallback={<div>Loading button...</div>}>
-          <GlobalTable
-            prefixCls='DealerAndTreasuryDiscountTable'
-            columns={columns}
-            dataSource={dataSource}
-            pagination={false}
-          />{" "}
-          {CustomButton && (
-            <span className='d-flex justify-content-center mt-4'>
-              <CustomButton
-                applyClass='publishForwardsBtn'
-                value={"Publish Discounting"}
-              />
-            </span>
-          )}
-        </Suspense>
-      )}
+      <GlobalTable
+        prefixCls='DealerAndTreasuryDiscountTable'
+        columns={columns}
+        dataSource={dataSource}
+        pagination={false}
+      />
+
+      <span className='d-flex justify-content-center mt-4'>
+        <CustomButton
+          applyClass='publishForwardsBtn'
+          value={"Publish Discounting"}
+        />
+      </span>
     </>
   );
 };

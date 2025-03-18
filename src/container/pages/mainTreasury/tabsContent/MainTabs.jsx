@@ -2,7 +2,6 @@ import React from "react";
 import "./MainTabs.css"
 import GlobalTabs from "../../../../components/common/tabs/Tabs";
 import Forwards from "./forwards/Forwards";
-import { Container } from "react-bootstrap";
 import Discounting from "./discounting/Discounting";
 import LiveRates from "./liveRates/LiveRates";
 

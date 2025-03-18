@@ -225,7 +225,4 @@
   box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
 
-.ep-arrow .rmdp-ep-arrow .rmdp-ep-shadow {
-  z-index: 9999999999 !important;
-}
 /* End Date Picker for NOP Modal  Input Field  */

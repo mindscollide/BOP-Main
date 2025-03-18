@@ -14,6 +14,7 @@ const CustomButton = ({
   prefixCls,
   applyClass,
   className,
+  disabled
 }) => {
   return (
     <>
@@ -21,6 +22,7 @@ const CustomButton = ({
         type={type}
         icon={icon}
         shape={shape}
+        disabled={disabled}
         rootClassName={rootClassName}
         className={`${styles[applyClass]} ${className}`}
         classNames={classNames}

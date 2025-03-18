@@ -13,7 +13,6 @@ const SpotBranch = () => {
   //Modal Context State
   const { iSellAndBuyModal } = useModal();
 
-  console.log(iSellAndBuyModal, "iSellAndBuyModal");
   //Data to be rendered in the Table
   const [dataSource, setDataSource] = useState([
     { key: "1", instrument: "USDPKR", bid: "288.00", offer: "289.00" },
@@ -84,11 +83,9 @@ const SpotBranch = () => {
   const onDragEnd = (result) => {
     const { source, destination } = result;
 
-    console.log(result, "drag result");
 
     // If no destination, return
     if (!destination) {
-      console.log("No destination");
       return;
     }
 

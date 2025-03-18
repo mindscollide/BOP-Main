@@ -1,7 +1,64 @@
 import React from 'react'
 import GlobalTable from '../../../../../../../components/common/table/GlobalTable'
+import IconElement from '../../../../../../../components/common/IconElement/IconElement'
 
 const TXNSummary = () => {
+  const tableData = [
+    {
+      key: "1",
+      txnID: "27-08-2024/a2fe",
+      client: "Test",
+      side: "Buy",
+      nature: "6",
+      ccy1: "USD",
+      amount: "123",
+      rate: "288.00",
+      ccy2: "PKR",
+      amount2: "",
+      time: "12:20 pm",
+      lcNo: "2131231",
+      accountNo: "123123",
+      comment: "",
+      status: "Accepted",
+      chat: 21,
+    },
+    {
+      key: "2",
+      txnID: "27-08-2024/a2fe",
+      client: "Test",
+      side: "Buy",
+      nature: "6",
+      ccy1: "USD",
+      amount: "123",
+      rate: "288.00",
+      ccy2: "PKR",
+      amount2: "",
+      time: "12:20 pm",
+      lcNo: "2131231",
+      accountNo: "123123",
+      comment: "Test Comment",
+      status: "Rejected",
+      chat: 21,
+    },
+    {
+      key: "3",
+      txnID: "27-08-2024/9836",
+      client: "Syed Muhammad Aun Naqvi",
+      side: "Sell",
+      nature: "1",
+      ccy1: "USD",
+      amount: "999,999",
+      rate: "289.00",
+      ccy2: "PKR",
+      amount2: "",
+      time: "19:01 pm",
+      lcNo: "3142fdasfasd34214312412341234123412341234",
+      accountNo: "4124141241241241241241412412412412412",
+      comment: "",
+      status: "Accepted",
+      chat: 0,
+    },
+  ];
 
     const tableData = [
         {
@@ -58,7 +115,6 @@ const TXNSummary = () => {
             status: "Accepted",
             chat: 0
         }
-
     ]
 
     const columns = [
@@ -139,12 +195,29 @@ const TXNSummary = () => {
             title: "Comment",
             dataIndex: 'comment',
             className: "comment-class ",
+            render: (text, record) => (
+                <>
+                    {text !== "" ?
+                        <span className="d-inline-block cursor-pointer">
+                            <IconElement iconClass="icon-view-comment fs-5 color-blue" />
+                        </span>
+                        : null}
+                </>
+            ),
+
         },
         {
             key: "14",
             title: "Status",
             dataIndex: 'status',
             className: "ff-poppins fw-bold",
+            render: (text, record) => (
+                <>
+                    <span className={text === "Accepted" ? "color-green" : "color-red"}>
+                        {text}
+                    </span>
+                </>
+            ),
         },
         {
             key: "15",
@@ -158,9 +231,13 @@ const TXNSummary = () => {
         <>
             <div className='box-content-wrapper'>
                 <GlobalTable
-                
-                pagination={false}
-                dataSource={tableData} bordered={false} prefixCls="TXNSummary_Table" columns={columns} />
+                    pagination={false}
+                    dataSource={tableData}
+                    bordered={false}
+                    prefixCls="TXNSummary_Table"
+                    columns={columns}
+                    scroll={{ x: "max-content" }}
+                />
             </div>
         </>
     )
