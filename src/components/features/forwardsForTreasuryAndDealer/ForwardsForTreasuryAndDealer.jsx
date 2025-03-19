@@ -1,9 +1,22 @@
-import React, { lazy, Suspense, startTransition } from "react";
+import React, {
+  lazy,
+  Suspense,
+  startTransition,
+  useEffect,
+  useState,
+} from "react";
 import { Row, Col } from "react-bootstrap";
 import { useModal } from "../../../context/ModalContext";
 import GlobalModal from "../../common/globalModal/Modal";
 import InputFIeld from "../../common/inputField/InputField";
-
+import {
+  createTenorAction,
+  getAllTenorsAction,
+} from "@/container/pages/mainDealer/dealerActions";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { createTenorSchema } from "@/common/validationSchemas";
 const shouldIncludeComponents =
   import.meta.env.VITE_APP_INCLUDE_DEALER === "true" ||
   import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
@@ -38,13 +51,83 @@ const DealeAndTreasuryDiscountingTable = shouldIncludeComponents
 
 const ForwardsForTreasuryAndDealer = () => {
   const { createTenorModal, setCreateTenorModal } = useModal();
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const getAllTenorsData = useSelector(
+    (state) => state.uploadRatesSlicer.getAllTenors
+  );
+  const [getAllTenorsList, setAllTenorsList] = useState([]);
+  const [createTenor, setCreateTenor] = useState({
+    tenorName: "",
+    noOfDays: 0,
+  });
+  const [error, setError] = useState({ tenorName: "", noOfDays: "" });
+  const [tenorValue, setTenorValue] = useState({
+    value: 0,
+    label: "",
+  });
+  useEffect(() => {
+    dispatch(getAllTenorsAction({}));
+  }, []);
   const handleOpenModal = () => {
     // Wrap the state update in startTransition
     startTransition(() => {
       setCreateTenorModal(true);
     });
   };
+
+  const handleChangeTenors = (value) => {
+    setTenorValue(value);
+  };
+
+  const handleChangeCreateTenor = (event) => {
+    const { name, value } = event.target;
+
+    // Restrict input length
+    if (name === "tenorName" && value.length > 10) return;
+    if (name === "noOfDays" && value.length > 4) return;
+    setCreateTenor({ ...createTenor, [name]: value });
+
+    // Live validation
+    const validationResult = createTenorSchema.safeParse({
+      ...createTenor,
+      [name]: value,
+    });
+    if (!validationResult.success) {
+      const fieldErrors = validationResult.error.format();
+      setError({
+        tenorName: fieldErrors.tenorName?._errors[0] || "",
+        noOfDays: fieldErrors.noOfDays?._errors[0] || "",
+      });
+    } else {
+      setError({ tenorName: "", noOfDays: "" });
+    }
+  };
+
+  const handleCreateTenor = () => {
+    if (createTenor.tenorName !== "" && createTenor.noOfDays !== 0) {
+      let Data = {
+        Tenor: createTenor.tenorName,
+        NoOfDays: Number(createTenor.noOfDays),
+      };
+      dispatch(createTenorAction({ Data, navigate, setCreateTenorModal }));
+    }
+  };
+
+  useEffect(() => {
+    if (getAllTenorsData !== null) {
+      try {
+        let tenorsList = getAllTenorsData.tenors.map((tenor) => {
+          return {
+            ...tenor,
+            label: tenor.tenorName,
+            value: tenor.tenorID,
+          };
+        });
+        setAllTenorsList(tenorsList);
+      } catch (error) {}
+    }
+  }, [getAllTenorsData]);
 
   return (
     <>
@@ -73,7 +156,12 @@ const ForwardsForTreasuryAndDealer = () => {
               <div className='input-group'>
                 {SelectDropdown && (
                   <Suspense fallback={<div>Loading dropdown...</div>}>
-                    <SelectDropdown classNamePrefix={"DealerDropDown"} />
+                    <SelectDropdown
+                      value={tenorValue}
+                      onChange={handleChangeTenors}
+                      options={getAllTenorsList}
+                      classNamePrefix={"DealerDropDown"}
+                    />
                   </Suspense>
                 )}
                 {IconElement && (
@@ -122,11 +210,25 @@ const ForwardsForTreasuryAndDealer = () => {
               </Col>
               <Col sm={12} md={12} lg={12} className='mb-4'>
                 <label className='mb-1'>Tenor</label>
-                <InputFIeld type='text' className={"form-control"} />
+                <InputFIeld
+                  type='text'
+                  value={createTenor.tenorName}
+                  name='tenorName'
+                  onChange={handleChangeCreateTenor}
+                  className={"form-control"}
+                />
+                {error.tenorName && <span>{error.tenorName}</span>}
               </Col>
               <Col sm={12} md={12} lg={12} className='mb-2'>
                 <label># Of Days</label>
-                <InputFIeld type='number' className={"form-control"} />
+                <InputFIeld
+                  type='number'
+                  value={createTenor.noOfDays}
+                  name='noOfDays'
+                  onChange={handleChangeCreateTenor}
+                  className={"form-control"}
+                />
+                {error.noOfDays && <span>{error.noOfDays}</span>}
               </Col>
             </Row>
           </>
@@ -144,8 +246,7 @@ const ForwardsForTreasuryAndDealer = () => {
                     <CustomButton
                       value={"Create Tenor"}
                       applyClass={"createTenorModalFooterBtn"}
-                      onClick={() => setCreateTenorModal(false)}
-
+                      onClick={handleCreateTenor}
                     />
                     <CustomButton
                       value={"Cancel"}

@@ -1,12 +1,12 @@
 import {
   PublishNewRatesAction,
   clearRatesAction,
+  createTenorAction,
+  getAllTenorsAction,
   getLastPublishRatesAction,
   marketOnOffAction,
 } from "@/container/pages/mainDealer/dealerActions";
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-
-
+import { createSlice } from "@reduxjs/toolkit";
 
 const uploadRatesSlicer = createSlice({
   name: "uploadRates",
@@ -19,6 +19,7 @@ const uploadRatesSlicer = createSlice({
     clearRates: null,
     getLastPublishRates: null,
     getCurrentPublishRate: null,
+    getAllTenors: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -76,8 +77,32 @@ const uploadRatesSlicer = createSlice({
         state.loading = false;
         state.getCurrentPublishRate = null;
         state.responseMessage = payload;
+      })
+      .addCase(getAllTenorsAction.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getAllTenorsAction.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.getAllTenors = payload.response;
+        state.responseMessage = payload.message;
+      })
+      .addCase(getAllTenorsAction.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.getAllTenors = null;
+        state.responseMessage = payload;
+      })
+      .addCase(createTenorAction.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(createTenorAction.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.getAllTenors = payload.response;
+        state.responseMessage = payload.message;
+      })
+      .addCase(createTenorAction.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.responseMessage = payload;
       });
-
   },
 });
 

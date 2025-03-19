@@ -10,6 +10,10 @@ const sendEmailForResetPaswordRM = {
   RequestMethod: "ServiceManager.SendEmailForResetPasword",
 };
 
+const refreshTokenRM = {
+  RequestMethod: "ServiceManager.RefreshToken"
+}
+
 const clearRatesRM = {
   RequestMethod: "ServiceManager.ClearRates",
 };
@@ -64,4 +68,5 @@ export {
   publishTenorWiseForwardRatesRM,
   getDiscountingRatesRM,
   publishDiscountingRatesRM,
+  refreshTokenRM
 };

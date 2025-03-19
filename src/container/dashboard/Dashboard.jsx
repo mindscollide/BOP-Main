@@ -3,6 +3,7 @@ import React from "react";
 import Header from "@/components/layout/header/header";
 import GlobalNavbar from "@/components/layout/nav/Navbar";
 import { Outlet, useLocation } from "react-router-dom";
+import ResponseMessage from "@/components/utils/ResponseMessageToast";
 
 const Dashboard = () => {
   const { Content } = Layout;
@@ -10,6 +11,7 @@ const Dashboard = () => {
   return (
     <Layout className='roboto-13'>
       {!location.pathname.includes("calculator") && <Header />}
+      {/* <ResponseMessage /> */}
 
       <GlobalNavbar />
       <Content>
