@@ -362,7 +362,7 @@ export const GetDashboardDataAPI = createAsyncThunk(
 // Define the GetAllFowardsAndDiscountsRates async thunk
 export const SaveUserDashboardAPI = createAsyncThunk(
   "watchlist/SaveUserDashboard", // A unique action type string
-  async ({ navigate, Data }, { rejectWithValue }) => {
+  async ({ Data }, { rejectWithValue }) => {
     try {
       // Set Axios headers using your custom headers function
       const headers = setCustomHeaders();

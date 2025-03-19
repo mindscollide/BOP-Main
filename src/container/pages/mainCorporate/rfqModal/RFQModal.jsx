@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import CustomButton from "../../../../components/common/globalButton/button";
 import { Row, Col } from "react-bootstrap";
 import Modal from "../../../../components/common/globalModal/Modal";
@@ -6,11 +6,26 @@ import IconElement from "../../../../components/common/IconElement/IconElement";
 import SelectDropdown from "../../../../components/common/selectDropdown/SelectDropdown";
 import "./RFQModal.css";
 import InputFIeld from "../../../../components/common/inputField/InputField";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { ViewAllNatureOfBussinessAPI } from "./RFQActions";
 
 const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const onCloseRfq = () => {
     setOpenRfqModal(false);
   };
+
+  //Calling API View Nature of Bussniess
+  useEffect(() => {
+    try {
+      let Data = { PageNumber: 1, Length: 3 };
+      dispatch(ViewAllNatureOfBussinessAPI({ Data }));
+    } catch (error) {
+      console.log(error, "error");
+    }
+  }, []);
 
   return (
     <>

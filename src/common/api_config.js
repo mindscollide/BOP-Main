@@ -74,6 +74,10 @@ const SaveUserDashboard = {
   RequestMethod: "ServiceManager.SaveUserDashboard",
 };
 
+const ViewAllNatureOfBussiness = {
+  RequestMethod: "ServiceManager.ViewAllNatureOfBussiness",
+};
+
 export {
   clearRatesRM,
   loginRequestMethod,
@@ -94,4 +98,5 @@ export {
   GetAllCounterPartyData,
   GetDashboardData,
   SaveUserDashboard,
+  ViewAllNatureOfBussiness,
 };

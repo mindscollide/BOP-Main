@@ -9,7 +9,11 @@ import SellAndBuyModal from "./SellAndBuyModal/SellAndBuyModal";
 import { useModal } from "../../../context/ModalContext";
 import ChatBox from "../chatBox/ChatBox.jsx";
 import BlotterHeader from "@/container/pages/mainTreasury/tabsContent/liveRates/blotter/blotterHeader/BlotterHeader";
-import { GetDashboardDataAPI, GetFXInstrumentsAPI } from "./WatchlistAction";
+import {
+  GetDashboardDataAPI,
+  GetFXInstrumentsAPI,
+  SaveUserDashboardAPI,
+} from "./WatchlistAction";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -39,7 +43,6 @@ const SpotBranch = () => {
   }, []);
 
   // Extracting out the Cards Wathlist data in the state
-
   useEffect(() => {
     try {
       if (
@@ -56,8 +59,6 @@ const SpotBranch = () => {
       console.log(error, "error");
     }
   }, [globalStateWatchlistCardData]);
-
-  console.log(watchlistCardData, "globalStateWatchlistCardData");
 
   useEffect(() => {
     if (watchlistCardData.length > 0) {
@@ -180,14 +181,28 @@ const SpotBranch = () => {
   const onDragEnd = (result) => {
     const { source, destination } = result;
 
+    console.log(result, "resultresultresultresult");
+
     // If there's no destination, do nothing
     if (!destination) return;
 
     // Handle dropping into BranchRateCardsOfWatchList
     if (destination.droppableId.startsWith("watchlist")) {
       const item = dataSource[source.index]; // Get dragged item
-      const { instrument, bid, offer } = item; // Extract values
-
+      const { instrument, bid, offer, key } = item; // Extract values
+      console.log(item, "resultresultresultresult");
+      //Calling the save Droppale Item API
+      // let Data = {
+      //   DashboardSections: [
+      //     {
+      //       SectionID: 1,
+      //       InstrumentID: 21,
+      //       Sell: 5,
+      //       Buy: 4,
+      //     },
+      //   ],
+      // };
+      // dispatch(SaveUserDashboardAPI({ Data }));
       setWatchlistData((prevData) => ({
         ...prevData,
         [destination.droppableId]: {
@@ -349,7 +364,7 @@ const SpotBranch = () => {
                   </Droppable>
                 </Col>
               </Row> */}
-              <Row className="mt-2">
+              <Row className="mt-3">
                 {[...Array(6)].map((_, index) => {
                   const droppableId = `watchlist${index + 1}`;
                   const data = watchlistData[droppableId] || {}; // Get data if available, else empty
