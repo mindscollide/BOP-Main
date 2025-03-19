@@ -59,6 +59,26 @@ const SpotBranch = () => {
 
   console.log(watchlistCardData, "globalStateWatchlistCardData");
 
+  useEffect(() => {
+    if (watchlistCardData.length > 0) {
+      setWatchlistData((prevData) => {
+        const updatedData = { ...prevData };
+
+        watchlistCardData.forEach((item, index) => {
+          if (index < 6) {
+            updatedData[`watchlist${index + 1}`] = {
+              currecncyLabel: item.instrumentName,
+              buyValue: item.buy,
+              sellValue: item.sell,
+            };
+          }
+        });
+
+        return updatedData;
+      });
+    }
+  }, [watchlistCardData]);
+
   //Data to be rendered in the Table
   const [dataSource, setDataSource] = useState([
     { key: "1", instrument: "USDPKR", bid: "288.00", offer: "289.00" },
@@ -126,30 +146,52 @@ const SpotBranch = () => {
   ];
 
   //Handle Draging function
+  // const onDragEnd = (result) => {
+  //   const { source, destination } = result;
+
+  //   // If no destination, return
+  //   if (!destination) {
+  //     return;
+  //   }
+
+  //   // Handle reordering within the table
+  //   if (destination.droppableId === "droppable") {
+  //     const reorderedDataSource = Array.from(dataSource);
+  //     const [movedItem] = reorderedDataSource.splice(source.index, 1);
+  //     reorderedDataSource.splice(destination.index, 0, movedItem);
+  //     setDataSource(reorderedDataSource);
+  //   } else {
+  //     // Handle dropping into BranchRateCardsOfWatchList
+  //     const item = dataSource[source.index];
+  //     const { bid, offer } = item;
+
+  //     // Update the watchlist data based on the destination droppableId
+  //     setWatchlistData((prevData) => ({
+  //       ...prevData,
+  //       [destination.droppableId]: {
+  //         currecncyLabel: item.instrument,
+  //         buyValue: bid,
+  //         sellValue: offer,
+  //       },
+  //     }));
+  //   }
+  // };
+
   const onDragEnd = (result) => {
     const { source, destination } = result;
 
-    // If no destination, return
-    if (!destination) {
-      return;
-    }
+    // If there's no destination, do nothing
+    if (!destination) return;
 
-    // Handle reordering within the table
-    if (destination.droppableId === "droppable") {
-      const reorderedDataSource = Array.from(dataSource);
-      const [movedItem] = reorderedDataSource.splice(source.index, 1);
-      reorderedDataSource.splice(destination.index, 0, movedItem);
-      setDataSource(reorderedDataSource);
-    } else {
-      // Handle dropping into BranchRateCardsOfWatchList
-      const item = dataSource[source.index];
-      const { bid, offer } = item;
+    // Handle dropping into BranchRateCardsOfWatchList
+    if (destination.droppableId.startsWith("watchlist")) {
+      const item = dataSource[source.index]; // Get dragged item
+      const { instrument, bid, offer } = item; // Extract values
 
-      // Update the watchlist data based on the destination droppableId
       setWatchlistData((prevData) => ({
         ...prevData,
         [destination.droppableId]: {
-          currecncyLabel: item.instrument,
+          currecncyLabel: instrument,
           buyValue: bid,
           sellValue: offer,
         },
@@ -194,7 +236,7 @@ const SpotBranch = () => {
                 </Col>
               </Row>
               {/* First Row of Dragger below */}
-              <Row className="mt-2">
+              {/* <Row className="mt-2">
                 <Col lg={4} md={4} sm={12}>
                   <Droppable droppableId="watchlist1">
                     {(provided) => (
@@ -249,9 +291,9 @@ const SpotBranch = () => {
                     )}
                   </Droppable>
                 </Col>
-              </Row>
+              </Row> */}
               {/* Second Row of Dragger below */}
-              <Row className="mt-2">
+              {/* <Row className="mt-2">
                 <Col lg={4} md={4} sm={12}>
                   <Droppable droppableId="watchlist4">
                     {(provided) => (
@@ -306,6 +348,34 @@ const SpotBranch = () => {
                     )}
                   </Droppable>
                 </Col>
+              </Row> */}
+              <Row className="mt-2">
+                {[...Array(6)].map((_, index) => {
+                  const droppableId = `watchlist${index + 1}`;
+                  const data = watchlistData[droppableId] || {}; // Get data if available, else empty
+                  console.log(data, "datadatadatadatadata");
+                  return (
+                    <Col key={index} lg={4} md={4} sm={12}>
+                      <Droppable droppableId={droppableId}>
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.droppableProps}
+                          >
+                            <BranchRateCardsOfWatchList
+                              currencyLabel={data.currecncyLabel || ""}
+                              buyHeading="I Buy"
+                              sellHeading="I Sell"
+                              buyValue={data.buyValue || ""}
+                              sellValue={data.sellValue || ""}
+                            />
+                            {provided.placeholder}
+                          </div>
+                        )}
+                      </Droppable>
+                    </Col>
+                  );
+                })}
               </Row>
             </span>
           </Col>
