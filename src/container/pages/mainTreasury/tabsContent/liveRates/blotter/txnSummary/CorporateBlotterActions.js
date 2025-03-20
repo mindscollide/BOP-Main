@@ -1,6 +1,7 @@
 import { CorporateBlotterData } from "@/common/api_config";
 import { BlotterApi } from "@/common/apiend_points";
 import { setCustomHeaders } from "@/common/utils";
+import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
@@ -24,8 +25,10 @@ export const CorporateBlotterDataAPI = createAsyncThunk(
         data: form,
         headers, // Use custom headers here
       });
-
-      if (response.data.responseCode === 200) {
+      const { responseCode } = response.data;
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+      } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (

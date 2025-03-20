@@ -11,7 +11,9 @@ const BranchForwardsTable = () => {
   const navigate = useNavigate();
   //local states
   const [instrumentForwards, setInstrumentForwards] = useState([]);
-  const [forwardRates, setForwardRates] = useState([]);
+  const [tenorsData, setTenorsData] = useState([]);
+  const [forwardRatesData, setForwardRatesData] = useState([]);
+  const [discountRatesData, setDiscountRatesData] = useState([]);
   const [dataSource, setDataSource] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
 
@@ -36,31 +38,47 @@ const BranchForwardsTable = () => {
         GetAllFowardsAndDiscountsRatesAPIData &&
         GetAllFowardsAndDiscountsRatesAPIData !== null
       ) {
+        setTenorsData(GetAllFowardsAndDiscountsRatesAPIData.tenors);
+        setForwardRatesData(GetAllFowardsAndDiscountsRatesAPIData.forwardRates);
+        setDiscountRatesData(
+          GetAllFowardsAndDiscountsRatesAPIData.discountRates
+        );
         setInstrumentForwards(
           GetAllFowardsAndDiscountsRatesAPIData.instruments
         );
-        setForwardRates(GetAllFowardsAndDiscountsRatesAPIData.forwardRates);
       }
     } catch (error) {
       console.log(error, "error");
     }
   }, [GetAllFowardsAndDiscountsRatesAPIData]);
 
-  console.log(instrumentForwards, "instrumentForwards");
-  console.log(forwardRates, "instrumentForwards");
-
   useEffect(() => {
-    const { forwardsRates } = generateData(2);
+    if (
+      tenorsData.length > 0 &&
+      instrumentForwards.length > 0 &&
+      forwardRatesData.length > 0 &&
+      discountRatesData.length > 0
+    ) {
+      const { forwardsRates } = generateData(
+        2,
+        tenorsData,
+        instrumentForwards,
+        forwardRatesData,
+        discountRatesData
+      );
 
-    if (forwardsRates.length > 0) {
-      setDataSource(forwardsRates);
-      const forwardsColumns = createColumns(forwardsRates, 2);
-      setColumnsData(forwardsColumns);
+      if (forwardsRates.length > 0) {
+        setDataSource(forwardsRates);
+        const forwardsColumns = createColumns(forwardsRates, 2);
+        setColumnsData(forwardsColumns);
+      }
     }
-  }, []);
+  }, [tenorsData, instrumentForwards, forwardRatesData, discountRatesData]);
 
-  console.log(dataSource, "instrumentForwards");
-  console.log(columnsData, "instrumentForwards");
+  console.log(tenorsData, "tenorstenorstenors");
+  console.log(instrumentForwards, "tenorstenorstenors");
+  console.log(forwardRatesData, "tenorstenorstenors");
+  console.log(discountRatesData, "tenorstenorstenors");
 
   return (
     <GlobalTable

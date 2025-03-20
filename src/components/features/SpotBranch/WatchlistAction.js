@@ -8,6 +8,7 @@ import {
 } from "@/common/api_config";
 import { watchListApi } from "@/common/apiend_points";
 import { setCustomHeaders } from "@/common/utils";
+import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
@@ -31,8 +32,10 @@ export const GetFXInstrumentsAPI = createAsyncThunk(
         data: form,
         headers, // Use custom headers here
       });
-
-      if (response.data.responseCode === 200) {
+      const { responseCode } = response.data;
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+      } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (responseMessage.toLowerCase().includes("Success".toLowerCase())) {
@@ -96,8 +99,10 @@ export const GetMisDataByRangeAPI = createAsyncThunk(
         data: form,
         headers, // Use custom headers here
       });
-
-      if (response.data.responseCode === 200) {
+      const { responseCode } = response.data;
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+      } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (
@@ -168,8 +173,10 @@ export const GetAllFowardsAndDiscountsRatesAPI = createAsyncThunk(
         data: form,
         headers, // Use custom headers here
       });
-
-      if (response.data.responseCode === 200) {
+      const { responseCode } = response.data;
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+      } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (
@@ -239,8 +246,10 @@ export const GetAllCounterPartyDataAPI = createAsyncThunk(
         data: form,
         headers, // Use custom headers here
       });
-
-      if (response.data.responseCode === 200) {
+      const { responseCode } = response.data;
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+      } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (
@@ -308,8 +317,10 @@ export const GetDashboardDataAPI = createAsyncThunk(
         data: form,
         headers, // Use custom headers here
       });
-
-      if (response.data.responseCode === 200) {
+      const { responseCode } = response.data;
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+      } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (
@@ -379,8 +390,10 @@ export const SaveUserDashboardAPI = createAsyncThunk(
         data: form,
         headers, // Use custom headers here
       });
-
-      if (response.data.responseCode === 200) {
+      const { responseCode } = response.data;
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+      } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (
