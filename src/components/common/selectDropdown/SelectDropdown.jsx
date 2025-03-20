@@ -26,6 +26,7 @@ const SelectDropdown = ({
   return (
     <Select
       menuIsOpen={menuIsOpen}
+      onChange={onChange}
       options={options}
       className={className}
       classNamePrefix={classNamePrefix}

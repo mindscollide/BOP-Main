@@ -10,6 +10,10 @@ const sendEmailForResetPaswordRM = {
   RequestMethod: "ServiceManager.SendEmailForResetPasword",
 };
 
+const refreshTokenRM = {
+  RequestMethod: "ServiceManager.RefreshToken",
+};
+
 const clearRatesRM = {
   RequestMethod: "ServiceManager.ClearRates",
 };
@@ -104,4 +108,5 @@ export {
   SaveUserDashboard,
   ViewAllNatureOfBussiness,
   CorporateBlotterData,
+  refreshTokenRM,
 };

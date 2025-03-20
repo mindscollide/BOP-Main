@@ -1,6 +1,10 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { corporateUserLoginInApi, loginInApi } from "./Login/logInAction";
 import { resetAndForgotPassword } from "./forgetPassword/forgotPassword_Actions";
+import { setCustomHeaders } from "@/common/utils";
+import { refreshTokenAction } from "./authActions/refreshToken";
+
+
 const authSlice = createSlice({
   name: "auth",
   initialState: {
@@ -9,6 +13,7 @@ const authSlice = createSlice({
     loading: false,
     error: null,
     resetPasswordResponse: null,
+    refreshTokenResponse: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -27,7 +32,7 @@ const authSlice = createSlice({
       })
       // Rejected state (when the API call fails)
       .addCase(loginInApi.rejected, (state, action) => {
-        console.log(action, "actionaction")
+        console.log(action, "actionaction");
         state.loading = false;
         state.error = action.payload;
         state.user = null;
@@ -46,7 +51,7 @@ const authSlice = createSlice({
       })
       // Rejected state (when the API call fails)
       .addCase(corporateUserLoginInApi.rejected, (state, action) => {
-        console.log(action, "actionaction")
+        console.log(action, "actionaction");
 
         state.loading = false;
         state.error = action.payload;
@@ -56,18 +61,31 @@ const authSlice = createSlice({
         state.loading = true;
       })
       .addCase(resetAndForgotPassword.fulfilled, (state, { payload }) => {
-        console.log(payload, "payloadpayload")
+        console.log(payload, "payloadpayload");
         state.loading = false;
         state.error = null;
         state.responseMessage = payload.message;
         state.resetPasswordResponse = payload.response;
       })
       .addCase(resetAndForgotPassword.rejected, (state, { payload }) => {
-        console.log(payload, "payloadpayload")
+        console.log(payload, "payloadpayload");
         state.loading = false;
         state.error = null;
         state.responseMessage = payload;
         state.resetPasswordResponse = null;
+      })
+      .addCase(refreshTokenAction.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(refreshTokenAction.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.refreshTokenResponse = payload.response;
+        state.responseMessage = payload.message;
+      })
+      .addCase(refreshTokenAction.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.refreshTokenResponse = null;
+        state.responseMessage = payload;
       });
   },
 });

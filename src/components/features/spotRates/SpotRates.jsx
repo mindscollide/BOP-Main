@@ -12,12 +12,16 @@ import {
   marketOnOffAction,
 } from "@/container/pages/mainDealer/dealerActions";
 import { useSelector } from "react-redux";
+import { refreshIntervalSchema } from "@/common/validationSchemas";
+import { useNavigate } from "react-router-dom";
 
 const SpotRates = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate()
   const getLastPublishRates = useSelector(
     (state) => state.uploadRatesSlicer.getLastPublishRates
   );
+
   const currentUpdatedRates = useSelector(
     (state) => state.uploadRatesSlicer.getCurrentPublishRate
   );
@@ -33,12 +37,13 @@ const SpotRates = () => {
     bidValue: "",
     dateTime: "",
   });
-  const [refreshInterval, setRefreshInterval] = useState(0);
+  const [refreshInterval, setRefreshInterval] = useState(1);
+  const [refreshIntervalError, setRefreshIntervalError] = useState("")
 
   useEffect(() => {
     let Data = { value: 1 };
 
-    dispatch(getLastPublishRatesAction({ Data }));
+    dispatch(getLastPublishRatesAction({ Data , navigate}));
   }, []);
 
   useEffect(() => {
@@ -125,7 +130,16 @@ const SpotRates = () => {
         askValue: value,
       });
     } else if (name === "refreshInterval") {
-      setRefreshInterval(value);
+      let value = parseInt(e.target.value, 10) || 1;
+      // Validate with Zod
+      const validationResult = refreshIntervalSchema.safeParse(value);
+
+      if (!validationResult.success) {
+        setRefreshIntervalError(validationResult.error.errors[0].message);
+      } else {
+        setRefreshIntervalError("");
+        setRefreshInterval(value);
+      }
     }
   };
   const handlePublishRates = () => {
