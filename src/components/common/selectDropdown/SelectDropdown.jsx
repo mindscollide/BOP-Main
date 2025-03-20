@@ -21,6 +21,7 @@ const SelectDropdown = ({
   filterOptions,
   menuIsOpen,
   menuPosition = "fixed",
+  onChange,
 }) => {
   return (
     <Select
@@ -40,6 +41,7 @@ const SelectDropdown = ({
       pageSize={0}
       menuPosition={menuPosition}
       filterOption={filterOptions}
+      onChange={onChange}
     />
   );
 };

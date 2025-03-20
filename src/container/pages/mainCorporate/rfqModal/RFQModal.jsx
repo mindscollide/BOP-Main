@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import CustomButton from "../../../../components/common/globalButton/button";
 import { Row, Col } from "react-bootstrap";
 import Modal from "../../../../components/common/globalModal/Modal";
@@ -9,10 +9,20 @@ import InputFIeld from "../../../../components/common/inputField/InputField";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { ViewAllNatureOfBussinessAPI } from "./RFQActions";
+import { useSelector } from "react-redux";
 
 const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  //Const Nature of Busniess Global State Data
+  const viewNatureOfBussniessGlobalStateData = useSelector(
+    (state) => state.RFQReducer.viewAllNatureBussniessData
+  );
+
+  //Local states
+  const [natureOfBusinessOptions, setNatureOfBusinessOptions] = useState([]);
+  const [selectedNature, setSelectedNature] = useState(null);
+
   const onCloseRfq = () => {
     setOpenRfqModal(false);
   };
@@ -26,6 +36,30 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
       console.log(error, "error");
     }
   }, []);
+
+  //Extracting out the Nature of Busniess Data
+  useEffect(() => {
+    if (
+      viewNatureOfBussniessGlobalStateData &&
+      viewNatureOfBussniessGlobalStateData.natureofBusinesses
+    ) {
+      const formattedOptions =
+        viewNatureOfBussniessGlobalStateData.natureofBusinesses.map(
+          (business) => ({
+            label: business.name,
+            value: business.pK_NatureOfBusiness,
+          })
+        );
+      setNatureOfBusinessOptions(formattedOptions);
+    }
+  }, [viewNatureOfBussniessGlobalStateData]);
+
+  //Onchange for Selecting the nature of business
+
+  const handleNatureChange = (selectedOption) => {
+    setSelectedNature(selectedOption);
+    console.log("selectedOption", selectedOption);
+  };
 
   return (
     <>
@@ -87,7 +121,12 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
                 </Col>
 
                 <Col lg={4} md={4} sm={4} className="mb-2">
-                  <SelectDropdown placeholder="Search" />
+                  <SelectDropdown
+                    placeholder="Search"
+                    options={natureOfBusinessOptions}
+                    onChange={handleNatureChange}
+                    value={selectedNature}
+                  />
                 </Col>
 
                 <Col lg={2} md={2} sm={2}>

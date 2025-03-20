@@ -1,8 +1,44 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import GlobalTable from "../../../../../../../components/common/table/GlobalTable";
 import IconElement from "../../../../../../../components/common/IconElement/IconElement";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { CorporateBlotterDataAPI } from "./CorporateBlotterActions";
+import { useSelector } from "react-redux";
 
 const TXNSummary = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  //Global State For Blotter Data
+  const GlobalStateGetBlotterData = useSelector(
+    (state) => state.CorporateBlotterReducer.getBlotterApiData
+  );
+
+  //local states
+  const [blotterdata, setBlotterdata] = useState([]);
+
+  //Calling Corporate Blotter Data API
+  useEffect(() => {
+    try {
+      dispatch(CorporateBlotterDataAPI({}));
+    } catch (error) {
+      console.log(error, "error");
+    }
+  }, []);
+
+  //Extracting Out the Blotter Data API
+  useEffect(() => {
+    try {
+      if (GlobalStateGetBlotterData && GlobalStateGetBlotterData !== null) {
+        console.log(GlobalStateGetBlotterData, "GlobalStateGetBlotterData");
+        // Now will be requiring some Clarification on it
+      }
+    } catch (error) {
+      console.log(error, "error");
+    }
+  }, [GlobalStateGetBlotterData]);
+
   const tableData = [
     {
       key: "1",
@@ -141,8 +177,8 @@ const TXNSummary = () => {
       render: (text, record) => (
         <>
           {text !== "" ? (
-            <span className='d-inline-block cursor-pointer'>
-              <IconElement iconClass='icon-view-comment fs-5 color-blue' />
+            <span className="d-inline-block cursor-pointer">
+              <IconElement iconClass="icon-view-comment fs-5 color-blue" />
             </span>
           ) : null}
         </>
@@ -171,12 +207,12 @@ const TXNSummary = () => {
 
   return (
     <>
-      <div className='box-content-wrapper'>
+      <div className="box-content-wrapper">
         <GlobalTable
           pagination={false}
           dataSource={tableData}
           bordered={false}
-          prefixCls='TXNSummary_Table'
+          prefixCls="TXNSummary_Table"
           columns={columns}
           scroll={{ x: "max-content" }}
         />

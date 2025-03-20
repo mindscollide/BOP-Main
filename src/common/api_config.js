@@ -78,6 +78,10 @@ const ViewAllNatureOfBussiness = {
   RequestMethod: "ServiceManager.ViewAllNatureOfBussiness",
 };
 
+const CorporateBlotterData = {
+  RequestMethod: "ServiceManager.GetBlotterData",
+};
+
 export {
   clearRatesRM,
   loginRequestMethod,
@@ -99,4 +103,5 @@ export {
   GetDashboardData,
   SaveUserDashboard,
   ViewAllNatureOfBussiness,
+  CorporateBlotterData,
 };

@@ -6,10 +6,14 @@ const uploadRatesPort = ":13010/UploadRate";
 
 const watchListPort = ":13011/WatchList";
 
+const BlotterPort = ":13001/Blotter";
+
 const authApi = `${baseURL}${authPort}`;
 
 const uploadRatesApi = `${baseURL}${uploadRatesPort}`;
 
 const watchListApi = `${baseURL}${watchListPort}`;
 
-export { authApi, uploadRatesApi, watchListApi };
+const BlotterApi = `${baseURL}${BlotterPort}`;
+
+export { authApi, uploadRatesApi, watchListApi, BlotterApi };

@@ -148,7 +148,7 @@ export const GetMisDataByRangeAPI = createAsyncThunk(
 // Define the GetAllFowardsAndDiscountsRates async thunk
 export const GetAllFowardsAndDiscountsRatesAPI = createAsyncThunk(
   "watchlist/GetAllFowardsAndDiscountsRates", // A unique action type string
-  async ({ navigate, Data }, { rejectWithValue }) => {
+  async ({}, { rejectWithValue }) => {
     try {
       // Set Axios headers using your custom headers function
       const headers = setCustomHeaders();
@@ -160,8 +160,6 @@ export const GetAllFowardsAndDiscountsRatesAPI = createAsyncThunk(
         "RequestMethod",
         GetAllFowardsAndDiscountsRates.RequestMethod
       );
-
-      form.append("RequestData", JSON.stringify(Data));
 
       // Make the API request with custom headers
       const response = await axios({
@@ -178,7 +176,7 @@ export const GetAllFowardsAndDiscountsRatesAPI = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "ERM_WatchlistService_GetFXInstrumentsAPI_01".toLowerCase()
+                "WatchList_WatchListServiceManager_GetAllFowardsAndDiscountsRates_01".toLowerCase()
               )
           ) {
             console.log("", response.data);
@@ -190,7 +188,7 @@ export const GetAllFowardsAndDiscountsRatesAPI = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "ERM_WatchlistService_GetFXInstrumentsAPI_02".toLowerCase()
+                "WatchList_WatchListServiceManager_GetAllFowardsAndDiscountsRates_02".toLowerCase()
               )
           ) {
             return rejectWithValue("Unsuccessfull");
@@ -198,7 +196,7 @@ export const GetAllFowardsAndDiscountsRatesAPI = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "ERM_WatchlistService_GetFXInstrumentsAPI_03".toLowerCase()
+                "WatchList_WatchListServiceManager_GetAllFowardsAndDiscountsRates_03".toLowerCase()
               )
           ) {
             return rejectWithValue("Something went wrong");

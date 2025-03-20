@@ -1,13 +1,13 @@
-import { ViewAllNatureOfBussiness } from "@/common/api_config";
-import { authApi } from "@/common/apiend_points";
+import { CorporateBlotterData } from "@/common/api_config";
+import { BlotterApi } from "@/common/apiend_points";
 import { setCustomHeaders } from "@/common/utils";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 // Define the ViewAllNatureOfBussinessAPI async thunk
-export const ViewAllNatureOfBussinessAPI = createAsyncThunk(
-  "Auth/ViewAllNatureOfBussiness", // A unique action type string
-  async ({ Data }, { rejectWithValue }) => {
+export const CorporateBlotterDataAPI = createAsyncThunk(
+  "Blotter/CorporateBlotterData", // A unique action type string
+  async ({}, { rejectWithValue }) => {
     try {
       // Set Axios headers using your custom headers function
       const headers = setCustomHeaders();
@@ -15,14 +15,12 @@ export const ViewAllNatureOfBussinessAPI = createAsyncThunk(
       //   This is the FormData
       let form = new FormData();
 
-      form.append("RequestMethod", ViewAllNatureOfBussiness.RequestMethod);
-
-      form.append("RequestData", JSON.stringify(Data));
+      form.append("RequestMethod", CorporateBlotterData.RequestMethod);
 
       // Make the API request with custom headers
       const response = await axios({
         method: "post",
-        url: authApi,
+        url: BlotterApi,
         data: form,
         headers, // Use custom headers here
       });
@@ -34,7 +32,7 @@ export const ViewAllNatureOfBussinessAPI = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "ERM_AuthService_CommonManager_ViewAllNatureOfBussiness_01".toLowerCase()
+                "Blotter_BlotterServiceManager_GetBlotterData_01".toLowerCase()
               )
           ) {
             console.log("", response.data);
@@ -46,7 +44,7 @@ export const ViewAllNatureOfBussinessAPI = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "ERM_AuthService_CommonManager_ViewAllNatureOfBussiness_02".toLowerCase()
+                "Blotter_BlotterServiceManager_GetBlotterData_02".toLowerCase()
               )
           ) {
             return rejectWithValue("Unsuccessfull");
@@ -54,7 +52,7 @@ export const ViewAllNatureOfBussinessAPI = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "ERM_AuthService_CommonManager_ViewAllNatureOfBussiness_03".toLowerCase()
+                "Blotter_BlotterServiceManager_GetBlotterData_03".toLowerCase()
               )
           ) {
             return rejectWithValue("Something went wrong");
