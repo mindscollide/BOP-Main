@@ -71,6 +71,9 @@ const SellAndBuyModal = () => {
     }
   };
 
+  //handle Confirm button
+  const handleConfirmButton = () => {};
+
   return (
     <div>
       <GlobalModal
@@ -237,6 +240,7 @@ const SellAndBuyModal = () => {
                 <CustomButton
                   value={"Confirm"}
                   className={"ConfirmbuttonClass"}
+                  onClick={handleConfirmButton}
                 />
               </Col>
             </Row>
