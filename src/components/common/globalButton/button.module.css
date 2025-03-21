@@ -31,6 +31,24 @@
   justify-content: center;
   align-items: center;
 }
+.publishBtn:disabled {
+  border-radius: 4px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  position: relative !important;
+  transition: all 0.3s ease-in !important;
+  color: #fff !important;
+  pointer-events: none;
+  filter: grayscale(1);
+  -webkit-transition: all 0.3s ease-in !important;
+  border-color: #feac78 !important;
+  font-family: "Poppins", sans-serif !important;
+  padding: 0px 10px;
+  height: 35px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .publishBtn:hover {
   background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
   border-color: #feac78 !important;

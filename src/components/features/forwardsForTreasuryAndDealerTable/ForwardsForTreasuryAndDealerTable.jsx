@@ -1,5 +1,9 @@
-import React, { lazy, Suspense } from "react";
-// import GlobalTable from "../../common/table/GlobalTable";
+import { getTenorWiseForwardsAction } from "@/container/pages/mainDealer/dealerActions";
+import { useDealerAndTreasury } from "@/context/DealerAndTreasuryContext";
+import React, { lazy, Suspense, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 // Define condition to include components
 const shouldIncludeComponents =
@@ -23,34 +27,60 @@ const GlobalTable = shouldIncludeComponents
   ? lazy(() => import("../../common/table/GlobalTable"))
   : null;
 
-const ForwardsForTreasuryAndBranchTable = () => {
-  const dataSource = [
-    { key: "1", tenor: "O N" },
-    { key: "2", tenor: "1 WEEK" },
-    { key: "3", tenor: "2 WEEK" },
-    { key: "4", tenor: "1 MONTH" },
-    { key: "5", tenor: "2 MONTH" },
-    { key: "6", tenor: "3 MONTH" },
-    { key: "7", tenor: "4 MONTH" },
-    { key: "8", tenor: "5 MONTH" },
-    { key: "9", tenor: "6 MONTH" },
-    { key: "10", tenor: "7 MONTH" },
-    { key: "11", tenor: "8 MONTH" },
-    { key: "12", tenor: "9 MONTH" },
-    { key: "13", tenor: "10 MONTH" },
-    { key: "14", tenor: "11 MONTH" },
-    { key: "15", tenor: "1 YEAR" },
-    { key: "16", tenor: "8 DAY" },
-  ];
+const ForwardsForTreasuryAndBranchTable = ({
+  newTenorRecord,
+  setNewTenorRecord,
+}) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { forwardsForTreasuryBranch, setForwardsForTreasuryBranch } =
+    useDealerAndTreasury();
 
+    console.log(forwardsForTreasuryBranch, "forwardsForTreasuryBranchforwardsForTreasuryBranch")
+  const getTenorWiseForwardsRates = useSelector(
+    (state) => state.uploadRatesSlicer.getTenorWiseForwardsRates
+  );
+  console.log(getTenorWiseForwardsRates, "forwardsForTreasuryBranchforwardsForTreasuryBranch")
+
+  useEffect(() => {
+    dispatch(getTenorWiseForwardsAction({ navigate }));
+  }, []);
+
+  useEffect(() => {
+    if (newTenorRecord !== null) {
+      setForwardsForTreasuryBranch([...forwardsForTreasuryBranch, newTenorRecord]);
+      setNewTenorRecord(null);
+    }
+  }, [newTenorRecord]);
+
+  useEffect(() => {
+    if (getTenorWiseForwardsRates !== null) {
+      try {
+        const { currentTenorWiseForwardRates, lastTenorWiseForwardRates } =
+          getTenorWiseForwardsRates.responseResult;
+
+          console.log(currentTenorWiseForwardRates, "currentTenorWiseForwardRatescurrentTenorWiseForwardRates")
+        if (currentTenorWiseForwardRates.length > 0) {
+          setForwardsForTreasuryBranch(currentTenorWiseForwardRates)
+
+        }
+        // if (lastTenorWiseForwardRates.length > 0) {
+        //   setForwardsForTreasuryBranch(lastTenorWiseForwardRates)
+
+        // }
+      } catch (error) {}
+    }
+  }, [getTenorWiseForwardsRates]);
+
+ 
   const columns = [
     {
       title: "",
       children: [
         {
           title: "Tenor",
-          dataIndex: "tenor",
-          key: "tenor",
+          dataIndex: "tenorID",
+          key: "tenorID",
           width: 250,
         },
       ],
@@ -154,7 +184,7 @@ const ForwardsForTreasuryAndBranchTable = () => {
           <Suspense fallback={<div>Loading Table...</div>}>
             <GlobalTable
               columns={columns}
-              dataSource={dataSource}
+              dataSource={forwardsForTreasuryBranch}
               prefixCls={"ForwardsForTreasuryAndBranchTable"}
               pagination={false}
             />

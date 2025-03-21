@@ -12,9 +12,7 @@ import {
   marketOnOffAction,
 } from "@/container/pages/mainDealer/dealerActions";
 import { useSelector } from "react-redux";
-import {
-  refreshIntervalSchema,
-} from "@/common/validationSchemas";
+import { refreshIntervalSchema } from "@/common/validationSchemas";
 import { useNavigate } from "react-router-dom";
 import { formatCurrencyInput } from "@/utils/formatters";
 
@@ -134,8 +132,7 @@ const SpotRates = () => {
         askValue: formatCurrencyInput(value),
       });
     } else if (name === "refreshInterval") {
-  
-        setRefreshInterval(value);
+      setRefreshInterval(value);
     }
   };
   const handlePublishRates = () => {
@@ -159,7 +156,7 @@ const SpotRates = () => {
               <div className='d-flex align-items-center'>
                 <div className='form-check form-switch me-3'>
                   <SwitchButton
-                    labelValue={"ON / OFF"}
+                    labelValue={"OFF / ON  "}
                     checked={marketStatus}
                     onChange={handleChangeMarketStatus}
                   />
@@ -193,6 +190,7 @@ const SpotRates = () => {
                       <CustomButton
                         value={"Publish"}
                         applyClass='publishBtn'
+                        disabled={marketStatus === true ? false : true}
                         onClick={handlePublishRates}
                       />
                     </div>

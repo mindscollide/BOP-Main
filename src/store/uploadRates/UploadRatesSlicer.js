@@ -4,6 +4,7 @@ import {
   createTenorAction,
   getAllTenorsAction,
   getLastPublishRatesAction,
+  getTenorWiseForwardsAction,
   marketOnOffAction,
 } from "@/container/pages/mainDealer/dealerActions";
 import { createSlice } from "@reduxjs/toolkit";
@@ -20,6 +21,7 @@ const uploadRatesSlicer = createSlice({
     getLastPublishRates: null,
     getCurrentPublishRate: null,
     getAllTenors: null,
+    getTenorWiseForwardsRates: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -84,8 +86,8 @@ const uploadRatesSlicer = createSlice({
       })
       .addCase(getAllTenorsAction.fulfilled, (state, { payload }) => {
         state.loading = false;
-        state.getAllTenors = payload.response;
-        state.responseMessage = payload.message;
+        state.getAllTenors = payload?.response;
+        state.responseMessage = payload?.message;
       })
       .addCase(getAllTenorsAction.rejected, (state, { payload }) => {
         state.loading = false;
@@ -102,6 +104,19 @@ const uploadRatesSlicer = createSlice({
       })
       .addCase(createTenorAction.rejected, (state, { payload }) => {
         state.loading = false;
+        state.responseMessage = payload;
+      })
+      .addCase(getTenorWiseForwardsAction.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getTenorWiseForwardsAction.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.getTenorWiseForwardsRates = payload.response;
+        state.responseMessage = payload.message;
+      })
+      .addCase(getTenorWiseForwardsAction.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.getTenorWiseForwardsRates = null;
         state.responseMessage = payload;
       });
   },

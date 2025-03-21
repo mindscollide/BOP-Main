@@ -19,11 +19,13 @@ const InputFIeld = ({
   max,
   min,
   className,
+  defaultValue
 }) => (
   <input
     value={value}
     type={type}
     onChange={onChange}
+    defaultValue={defaultValue}
     pattern={pattern}
     placeholder={placeholder}
     className={`${styles[applyClass]} ${className}`}
