@@ -49,7 +49,7 @@ const DealeAndTreasuryDiscountingTable = shouldIncludeComponents
     )
   : null;
 
-const ForwardsForTreasuryAndDealer = () => {
+  const ForwardsForTreasuryAndDealer = () => {
   const { createTenorModal, setCreateTenorModal } = useModal();
   const dispatch = useDispatch();
   const navigate = useNavigate();

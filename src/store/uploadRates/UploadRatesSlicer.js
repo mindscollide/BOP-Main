@@ -58,6 +58,7 @@ const uploadRatesSlicer = createSlice({
       .addCase(getLastPublishRatesAction.fulfilled, (state, { payload }) => {
         state.loading = false;
         state.getLastPublishRates = payload.response;
+        state.responseMessage = payload.message;
         state.error = null;
       })
       .addCase(getLastPublishRatesAction.rejected, (state, action) => {
