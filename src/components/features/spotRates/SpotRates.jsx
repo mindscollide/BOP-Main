@@ -12,12 +12,15 @@ import {
   marketOnOffAction,
 } from "@/container/pages/mainDealer/dealerActions";
 import { useSelector } from "react-redux";
-import { refreshIntervalSchema } from "@/common/validationSchemas";
+import {
+  refreshIntervalSchema,
+} from "@/common/validationSchemas";
 import { useNavigate } from "react-router-dom";
+import { formatCurrencyInput } from "@/utils/formatters";
 
 const SpotRates = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const getLastPublishRates = useSelector(
     (state) => state.uploadRatesSlicer.getLastPublishRates
   );
@@ -25,7 +28,6 @@ const SpotRates = () => {
   const currentUpdatedRates = useSelector(
     (state) => state.uploadRatesSlicer.getCurrentPublishRate
   );
-  console.log(getLastPublishRates, "statestate");
   const [marketStatus, setMarketStatus] = useState(false);
   const [currentRates, setCurrentRates] = useState({
     askValue: "",
@@ -37,13 +39,14 @@ const SpotRates = () => {
     bidValue: "",
     dateTime: "",
   });
+  console.log("currentRates", currentRates);
   const [refreshInterval, setRefreshInterval] = useState(1);
-  const [refreshIntervalError, setRefreshIntervalError] = useState("")
+  const [refreshIntervalError, setRefreshIntervalError] = useState("");
 
   useEffect(() => {
     let Data = { value: 1 };
 
-    dispatch(getLastPublishRatesAction({ Data , navigate}));
+    dispatch(getLastPublishRatesAction({ Data, navigate }));
   }, []);
 
   useEffect(() => {
@@ -115,6 +118,7 @@ const SpotRates = () => {
     dispatch(clearRatesAction({ Data }));
     console.log("first");
   };
+
   const handleChangeCurrentRate = (event) => {
     let name = event.target.name;
     let value = event.target.value;
@@ -122,24 +126,16 @@ const SpotRates = () => {
     if (name === "bidValue") {
       setCurrentRates({
         ...currentRates,
-        bidValue: value,
+        bidValue: formatCurrencyInput(value),
       });
     } else if (name === "askValue") {
       setCurrentRates({
         ...currentRates,
-        askValue: value,
+        askValue: formatCurrencyInput(value),
       });
     } else if (name === "refreshInterval") {
-      let value = parseInt(e.target.value, 10) || 1;
-      // Validate with Zod
-      const validationResult = refreshIntervalSchema.safeParse(value);
-
-      if (!validationResult.success) {
-        setRefreshIntervalError(validationResult.error.errors[0].message);
-      } else {
-        setRefreshIntervalError("");
+  
         setRefreshInterval(value);
-      }
     }
   };
   const handlePublishRates = () => {
@@ -150,6 +146,7 @@ const SpotRates = () => {
     };
     dispatch(PublishNewRatesAction({ Data }));
   };
+
   return (
     <Row>
       <Col sm={12} md={12} lg={12}>

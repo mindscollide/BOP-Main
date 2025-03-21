@@ -132,7 +132,7 @@ export const getLastPublishRatesAction = createAsyncThunk(
           ) {
             return {
               response: response.data.responseResult,
-              message: "",
+              message: "Successfull",
             };
           } else if (
             responseMessage
@@ -379,7 +379,7 @@ export const getAllTenorsAction = createAsyncThunk(
           ) {
             return {
               response: response.data.responseResult,
-              message: "",
+              message: "Successfull",
             };
           } else if (
             responseMessage
