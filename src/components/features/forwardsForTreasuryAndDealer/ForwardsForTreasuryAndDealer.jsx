@@ -58,10 +58,10 @@ const ForwardsForTreasuryAndDealer = () => {
   const [newTenorRecord, setNewTenorRecord] = useState(null);
   const { forwardsForTreasuryBranch } = useDealerAndTreasury();
   const getTenorWiseForwardsRates = useSelector(
-    (state) => state.uploadRatesSlicer.getTenorWiseForwardsRates
+    (state) => state.dealerReducer.getTenorWiseForwardsRates
   );
   const getAllTenorsData = useSelector(
-    (state) => state.uploadRatesSlicer.getAllTenors
+    (state) => state.dealerReducer.getAllTenors
   );
   const [getAllTenorsList, setAllTenorsList] = useState([]);
   const [createTenor, setCreateTenor] = useState({
@@ -130,7 +130,7 @@ const ForwardsForTreasuryAndDealer = () => {
 
       const tenorForwardData = {
         tenorID: tenorValue.value,
-        TenorName: tenorValue.label,
+        tenorName: tenorValue.label,
         Bid: "",
         Ask: "",
         DateTime: new Date().toISOString(),
@@ -138,7 +138,7 @@ const ForwardsForTreasuryAndDealer = () => {
 
       // Check if the tenor already exists in the current list
       const isExist = forwardsForTreasuryBranch.some(
-        (item) => item.TenorID === tenorValue.value
+        (item) => item.tenorID === tenorValue.value
       );
 
       if (isExist) {

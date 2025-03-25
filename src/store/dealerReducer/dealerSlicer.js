@@ -1,5 +1,6 @@
 import {
   PublishNewRatesAction,
+  PublishTenorWiseForwardsAction,
   clearRatesAction,
   createTenorAction,
   getAllTenorsAction,
@@ -9,7 +10,7 @@ import {
 } from "@/container/pages/mainDealer/dealerActions";
 import { createSlice } from "@reduxjs/toolkit";
 
-const uploadRatesSlicer = createSlice({
+const dealerReducer = createSlice({
   name: "uploadRates",
   initialState: {
     ratesData: null,
@@ -22,6 +23,7 @@ const uploadRatesSlicer = createSlice({
     getCurrentPublishRate: null,
     getAllTenors: null,
     getTenorWiseForwardsRates: null,
+    publishTenorwiseForwardRates: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -118,8 +120,27 @@ const uploadRatesSlicer = createSlice({
         state.loading = false;
         state.getTenorWiseForwardsRates = null;
         state.responseMessage = payload;
-      });
+      })
+      .addCase(PublishTenorWiseForwardsAction.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(
+        PublishTenorWiseForwardsAction.fulfilled,
+        (state, { payload }) => {
+          state.loading = false;
+          state.publishTenorwiseForwardRates = payload.response;
+          state.responseMessage = payload.message;
+        }
+      )
+      .addCase(
+        PublishTenorWiseForwardsAction.rejected,
+        (state, { payload }) => {
+          state.loading = false;
+          state.publishTenorwiseForwardRates = null;
+          state.responseMessage = payload;
+        }
+      );
   },
 });
 
-export default uploadRatesSlicer.reducer;
+export default dealerReducer.reducer;

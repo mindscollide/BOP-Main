@@ -41,7 +41,6 @@ export const loginInApi = createAsyncThunk(
           firstName,
           lastName,
           refreshToken,
-          loginTime,
           bankID,
         } = response.data.responseResult;
         if (isExecuted) {
@@ -70,7 +69,6 @@ export const loginInApi = createAsyncThunk(
 
 
             localStorage.setItem("refreshToken", refreshToken);
-            localStorage.setItem("loginTime", loginTime)
             localStorage.setItem("token", token);
             // localStorage.setItem("roleID", roleID);
             roleBasedNavigation(navigate, roleID);
@@ -196,7 +194,6 @@ export const corporateUserLoginInApi = createAsyncThunk(
           userID,
           token,
           firstName,
-          loginTime,
           lastName,
         } = response.data.responseResult;
         console.log(
@@ -231,7 +228,6 @@ export const corporateUserLoginInApi = createAsyncThunk(
           ) {
             localStorage.setItem("user", userID);
             localStorage.setItem("roleID", roleID);
-            localStorage.setItem("loginTime", loginTime)
 
             roleBasedNavigation(navigate, roleID);
             return {

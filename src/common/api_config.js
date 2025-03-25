@@ -54,6 +54,10 @@ const publishDiscountingRatesRM = {
   RequestMethod: "ServiceManager.PublishDiscountingRates",
 };
 
+const GetAllCounterPartyDataRM = {
+  RequestMethod: "ServiceManager.GetAllCounterPartyData",
+}
+
 export {
   clearRatesRM,
   loginRequestMethod,
@@ -68,5 +72,6 @@ export {
   publishTenorWiseForwardRatesRM,
   getDiscountingRatesRM,
   publishDiscountingRatesRM,
-  refreshTokenRM
+  refreshTokenRM,
+  GetAllCounterPartyDataRM
 };

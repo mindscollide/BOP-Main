@@ -1,9 +1,17 @@
-import React, { Suspense, lazy } from "react";
+import React, { Suspense, lazy, useEffect } from "react";
 import CustomButton from "../../common/globalButton/button";
 import GlobalTable from "../../common/table/GlobalTable";
 import InputFIeld from "../../common/inputField/InputField";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { getDiscountingRatesAction } from "@/container/pages/mainDealer/dealerActions";
 
 const DealeAndTreasuryDiscountingTable = () => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  useEffect(() => {
+    dispatch(getDiscountingRatesAction({navigate}))
+  },[])
   // Data for the table
   const dataSource = [
     { key: "1", currency: "USD", currentRate: 0, previousRate: "" },

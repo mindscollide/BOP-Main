@@ -65,13 +65,13 @@ const GlobalNavbar = () => {
                       />
                     ) : null}
                     {shouldIncludeTreasury &&
-                    location.pathname === "/treasury" ? (
+                    location.pathname.includes("treasury") ? (
                       <Voltmeter
                         activeValue={selectedValue}
                         onSelect={(value) => setSelectedValue(value)}
                       />
                     ) : null}
-                    {location.pathname === "/category" && (
+                    {location.pathname.includes("category") && (
                       <SelectDropdown classNamePrefix={"Category-Dropdown"} />
                     )}
                   </>

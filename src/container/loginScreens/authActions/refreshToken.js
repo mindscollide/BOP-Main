@@ -14,7 +14,6 @@ export const refreshTokenAction = createAsyncThunk(
       let Data = {
         RefreshToken: localStorage.getItem("refreshToken"),
         Token: localStorage.getItem("token"),
-        LastLoginDateTime: localStorage.getItem("loginTime"),
       };
       //   This is the FormData
       let form = new FormData();
@@ -30,8 +29,11 @@ export const refreshTokenAction = createAsyncThunk(
         data: form,
         headers, // Use custom headers here
       });
-
-      if (response.data.responseCode === 200) {
+      if (response.data.responseCode === 205) {
+        localStorage.clear();
+        navigate("/");
+        return rejectWithValue("Something went wrong");
+      } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage, token, refreshToken } =
           response.data.responseResult;
 
