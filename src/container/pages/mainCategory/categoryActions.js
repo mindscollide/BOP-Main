@@ -6,10 +6,10 @@ import { GetAllCounterPartyDataRM } from "@/common/api_config";
 
 export const getAllCategoryTableData = createAsyncThunk(
   "category/getAllCategoryTableData",
-  async ({ navigate }, { rejectWithValue }) => {
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       const headers = setCustomHeaders();
-   
+
       let form = new FormData();
       form.append("RequestMethod", GetAllCounterPartyDataRM.RequestMethod);
       form.append("RequestData", JSON.stringify(Data));
@@ -21,9 +21,10 @@ export const getAllCategoryTableData = createAsyncThunk(
       });
 
       const { responseCode } = response.data;
-  
+
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        dispatch(getAllCategoryTableData({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -71,7 +72,7 @@ export const getAllCategoryTableData = createAsyncThunk(
           return rejectWithValue("Something went wrong");
         }
       } else {
-        return rejectWithValue("Something went wrong")
+        return rejectWithValue("Something went wrong");
       }
     } catch (error) {
       return rejectWithValue(error.message);

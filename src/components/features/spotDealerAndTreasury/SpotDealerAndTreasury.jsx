@@ -8,43 +8,13 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const SpotDealerAndTreasury = () => {
-  const getAllCategoriesData = useSelector(
-    (state) => state.authReducer.getAllCategories
-  );
-  
-  console.log(getAllCategoriesData, "getAllCategoriesData");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [allCategories, setAllCategories] = useState([])
-  const [categoryValue, setCategoryValue] = useState({
-    value: 0,
-    label: ""
-  })
   useEffect(() => {
     dispatch(getAllCategoriesAction({ navigate }));
   }, []);
 
-  useEffect(() => {
-    if(getAllCategoriesData !== null) {
-      try {
-        const {categories
-        } = getAllCategoriesData;
-        if(categories.length > 0) {
-          let newCategoryMap = categories.map((cate, index) => {
-            return {
-              ...cate,
-              label: cate.categoryName,
-              value: cate.categoryID
-            }
-          })
-          setAllCategories(newCategoryMap)
-        }
-      } catch (error) {
-        
-      }
-    }
-  },[getAllCategoriesData])
   const currencyData = [
     {
       code: "USD",
