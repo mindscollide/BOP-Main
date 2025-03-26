@@ -275,8 +275,8 @@ const SpotBranch = () => {
                           },
                         }}
                         onRow={(record, index) => {
-                          console.log("Missing draggableId for row:", record); // Log the record
-                          console.log("Missing draggableId for row:", index); // Log the index (optional)
+                          console.log("Missing draggableId for row:", record);
+                          console.log("Missing draggableId for row:", index);
                           return {
                             index,
                             "data-row-key": record.instrumentID, // Ensure this matches your API data
