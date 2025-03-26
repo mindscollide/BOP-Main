@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { corporateUserLoginInApi, loginInApi } from "./Login/logInAction";
-import { resetAndForgotPassword } from "./forgetPassword/forgotPassword_Actions";
+import { corporateUserLoginInApi, loginInApi } from "../../container/loginScreens/Login/logInAction";
+import { resetAndForgotPassword } from "../../container/loginScreens/forgetPassword/forgotPassword_Actions";
 import { setCustomHeaders } from "@/common/utils";
-import { refreshTokenAction } from "./authActions/refreshToken";
+import { refreshTokenAction } from "../../container/loginScreens/authActions/refreshToken";
 
 
 const authSlice = createSlice({
@@ -14,6 +14,7 @@ const authSlice = createSlice({
     error: null,
     resetPasswordResponse: null,
     refreshTokenResponse: null,
+    getAllCategories: null
   },
   reducers: {},
   extraReducers: (builder) => {
