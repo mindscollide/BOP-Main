@@ -7,6 +7,10 @@ import UploadRatesSlicer from "./uploadRates/UploadRatesSlicer";
 import WatchListSlice from "../components/features/SpotBranch/WatchListSlicer";
 import RFQSlice from "../container/pages/mainCorporate/rfqModal/RFQSlicer";
 import CorporateBlotterSlicer from "../container/pages/mainTreasury/tabsContent/liveRates/blotter/txnSummary/CorporateBlotterSlicer";
+import authSlicer from "@/store/authSlicer/authSlicer";
+import DealerReducer from "./dealerReducer/dealerSlicer";
+import CategoryReducer from "./categoryReducer/categoryReducer";
+
 const store = configureStore({
   reducer: {
     bankSpotReducer: bankSpotSlicer,
@@ -16,6 +20,8 @@ const store = configureStore({
     WatchListReducer: WatchListSlice,
     RFQReducer: RFQSlice,
     CorporateBlotterReducer: CorporateBlotterSlicer,
+    dealerReducer: DealerReducer,
+    categoryReducer: CategoryReducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 });

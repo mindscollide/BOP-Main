@@ -12,11 +12,13 @@ import InputFIeld from "../../common/inputField/InputField";
 import {
   createTenorAction,
   getAllTenorsAction,
+  getTenorWiseForwardsAction,
 } from "@/container/pages/mainDealer/dealerActions";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { createTenorSchema } from "@/common/validationSchemas";
+import { useDealerAndTreasury } from "@/context/DealerAndTreasuryContext";
 const shouldIncludeComponents =
   import.meta.env.VITE_APP_INCLUDE_DEALER === "true" ||
   import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
@@ -49,12 +51,17 @@ const DealeAndTreasuryDiscountingTable = shouldIncludeComponents
     )
   : null;
 
-  const ForwardsForTreasuryAndDealer = () => {
+const ForwardsForTreasuryAndDealer = () => {
   const { createTenorModal, setCreateTenorModal } = useModal();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [newTenorRecord, setNewTenorRecord] = useState(null);
+  const { forwardsForTreasuryBranch } = useDealerAndTreasury();
+  const getTenorWiseForwardsRates = useSelector(
+    (state) => state.dealerReducer.getTenorWiseForwardsRates
+  );
   const getAllTenorsData = useSelector(
-    (state) => state.uploadRatesSlicer.getAllTenors
+    (state) => state.dealerReducer.getAllTenors
   );
   const [getAllTenorsList, setAllTenorsList] = useState([]);
   const [createTenor, setCreateTenor] = useState({
@@ -67,7 +74,7 @@ const DealeAndTreasuryDiscountingTable = shouldIncludeComponents
     label: "",
   });
   useEffect(() => {
-    dispatch(getAllTenorsAction({}));
+    dispatch(getAllTenorsAction({ navigate }));
   }, []);
   const handleOpenModal = () => {
     // Wrap the state update in startTransition
@@ -114,6 +121,38 @@ const DealeAndTreasuryDiscountingTable = shouldIncludeComponents
     }
   };
 
+  const handleAddTenor = () => {
+    try {
+      if (!tenorValue?.value || !tenorValue?.label) {
+        alert("Invalid tenor selection");
+        return;
+      }
+
+      const tenorForwardData = {
+        tenorID: tenorValue.value,
+        tenorName: tenorValue.label,
+        Bid: "",
+        Ask: "",
+        DateTime: new Date().toISOString(),
+      };
+
+      // Check if the tenor already exists in the current list
+      const isExist = forwardsForTreasuryBranch.some(
+        (item) => item.tenorID === tenorValue.value
+      );
+
+      if (isExist) {
+        alert("Already exists");
+        return;
+      }
+
+      // Add new tenor record
+      setNewTenorRecord(tenorForwardData);
+    } catch (error) {
+      console.error("Error in handleAddTenor:", error);
+    }
+  };
+
   useEffect(() => {
     if (getAllTenorsData !== null) {
       try {
@@ -123,6 +162,10 @@ const DealeAndTreasuryDiscountingTable = shouldIncludeComponents
             label: tenor.tenorName,
             value: tenor.tenorID,
           };
+        });
+        setTenorValue({
+          value: tenorsList[0].value,
+          label: tenorsList[0].label,
         });
         setAllTenorsList(tenorsList);
       } catch (error) {}
@@ -169,6 +212,7 @@ const DealeAndTreasuryDiscountingTable = shouldIncludeComponents
                     <CustomButton
                       value={"Add"}
                       iconPosition={"start"}
+                      onClick={handleAddTenor}
                       applyClass='PlusButton'
                       icon={
                         <IconElement iconClass={"icon-add-circle-fill fs-4"} />
@@ -183,7 +227,10 @@ const DealeAndTreasuryDiscountingTable = shouldIncludeComponents
         {ForwardsForTreasuryAndBranchTable && (
           <Col sm={12} md={12} lg={12} className='mt-3'>
             <Suspense fallback={<div>Loading table...</div>}>
-              <ForwardsForTreasuryAndBranchTable />
+              <ForwardsForTreasuryAndBranchTable
+                newTenorRecord={newTenorRecord}
+                setNewTenorRecord={setNewTenorRecord}
+              />
             </Suspense>
           </Col>
         )}

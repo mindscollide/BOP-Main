@@ -1,4 +1,4 @@
-import React, { Suspense, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import Voltmeter from "@/components/common/voltMeter/Voltmeter";
 import ProfileDropdown from "@/components/common/profileDropdown/ProfileDropdown";
 import CustomButton from "@/components/common/globalButton/button";
@@ -7,13 +7,20 @@ import { useLocation, useNavigate } from "react-router-dom";
 import SelectDropdown from "@/components/common/selectDropdown/SelectDropdown";
 import IconElement from "@/components/common/IconElement/IconElement";
 import RFQModal from "@/container/pages/mainCorporate/rfqModal/RFQModal";
-import { useModal } from "@/context/ModalContext";
+import { useSelector } from "react-redux";
 
 const GlobalNavbar = () => {
-  const { settingModal, setSettingModal } = useModal();
+  const getAllCategoriesData = useSelector(
+    (state) => state.authReducer.getAllCategories
+  );
+
   const [selectedValue, setSelectedValue] = useState(1);
   const [openRfqModal, setOpenRfqModal] = useState(false);
-
+  const [allCategories, setAllCategories] = useState([]);
+  const [categoryValue, setCategoryValue] = useState({
+    value: 0,
+    label: "",
+  });
   const navigate = useNavigate();
   const location = useLocation();
   const handleCalculatorClick = () => {
@@ -33,6 +40,31 @@ const GlobalNavbar = () => {
     import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
   const shouldIncludeTreasury =
     import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
+  const handleChangeCategory = (event) => {
+    console.log(event);
+    setCategoryValue({
+      value: event.value,
+      label: event.label,
+    });
+  };
+
+  useEffect(() => {
+    if (getAllCategoriesData !== null) {
+      try {
+        const { categories } = getAllCategoriesData;
+        if (categories.length > 0) {
+          let newCategoryMap = categories.map((cate, index) => {
+            return {
+              ...cate,
+              label: cate.categoryName,
+              value: cate.categoryID,
+            };
+          });
+          setAllCategories(newCategoryMap);
+        }
+      } catch (error) {}
+    }
+  }, [getAllCategoriesData]);
 
   return (
     <>
@@ -67,14 +99,20 @@ const GlobalNavbar = () => {
                       />
                     ) : null}
                     {shouldIncludeTreasury &&
-                    location.pathname === "/treasury" ? (
+                    location.pathname.includes("treasury") ? (
                       <Voltmeter
                         activeValue={selectedValue}
                         onSelect={(value) => setSelectedValue(value)}
                       />
                     ) : null}
-                    {location.pathname === "/category" && (
-                      <SelectDropdown classNamePrefix={"Category-Dropdown"} />
+                    {location.pathname.includes("category") && (
+                      <SelectDropdown
+                        options={allCategories}
+                        placeholder={"Please Select Category"}
+                        onChange={handleChangeCategory}
+                        value={categoryValue.value !== 0 ? categoryValue : null}
+                        classNamePrefix={"Category-Dropdown"}
+                      />
                     )}
                   </>
                 ) : null}

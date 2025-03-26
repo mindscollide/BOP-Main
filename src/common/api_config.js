@@ -85,8 +85,16 @@ const ViewAllNatureOfBussiness = {
 const CorporateBlotterData = {
   RequestMethod: "ServiceManager.GetBlotterData",
 };
+const GetAllCounterPartyDataRM = {
+  RequestMethod: "ServiceManager.GetAllCounterPartyData",
+};
+
+const getAllCategoriesRM = {
+  RequestMethod: "ServiceManager.GetAllCategories",
+};
 
 export {
+  getAllCategoriesRM,
   clearRatesRM,
   loginRequestMethod,
   corporateUserRequestMethod,
@@ -109,4 +117,6 @@ export {
   ViewAllNatureOfBussiness,
   CorporateBlotterData,
   refreshTokenRM,
+  refreshTokenRM,
+  GetAllCounterPartyDataRM,
 };
