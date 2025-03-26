@@ -1,9 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { corporateUserLoginInApi, loginInApi } from "../../container/loginScreens/Login/logInAction";
+import {
+  corporateUserLoginInApi,
+  loginInApi,
+} from "../../container/loginScreens/Login/logInAction";
 import { resetAndForgotPassword } from "../../container/loginScreens/forgetPassword/forgotPassword_Actions";
 import { setCustomHeaders } from "@/common/utils";
 import { refreshTokenAction } from "../../container/loginScreens/authActions/refreshToken";
-
+import { getAllCategoriesAction } from "@/components/utils/globalApis";
 
 const authSlice = createSlice({
   name: "auth",
@@ -14,7 +17,7 @@ const authSlice = createSlice({
     error: null,
     resetPasswordResponse: null,
     refreshTokenResponse: null,
-    getAllCategories: null
+    getAllCategories: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -87,6 +90,19 @@ const authSlice = createSlice({
         state.loading = false;
         state.refreshTokenResponse = null;
         state.responseMessage = payload;
+      })
+      .addCase(getAllCategoriesAction.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getAllCategoriesAction.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.getAllCategories = payload.response;
+        state.responseMessage = payload.message;
+      })
+      .addCase(getAllCategoriesAction.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.getAllCategories = null;
+        state.responseMessage = payload.message;
       });
   },
 });

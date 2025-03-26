@@ -11,8 +11,8 @@ const sendEmailForResetPaswordRM = {
 };
 
 const refreshTokenRM = {
-  RequestMethod: "ServiceManager.RefreshToken"
-}
+  RequestMethod: "ServiceManager.RefreshToken",
+};
 
 const clearRatesRM = {
   RequestMethod: "ServiceManager.ClearRates",
@@ -56,9 +56,14 @@ const publishDiscountingRatesRM = {
 
 const GetAllCounterPartyDataRM = {
   RequestMethod: "ServiceManager.GetAllCounterPartyData",
-}
+};
+
+const getAllCategoriesRM = {
+  RequestMethod: "ServiceManager.GetAllCategories",
+};
 
 export {
+  getAllCategoriesRM,
   clearRatesRM,
   loginRequestMethod,
   corporateUserRequestMethod,
@@ -73,5 +78,5 @@ export {
   getDiscountingRatesRM,
   publishDiscountingRatesRM,
   refreshTokenRM,
-  GetAllCounterPartyDataRM
+  GetAllCounterPartyDataRM,
 };
