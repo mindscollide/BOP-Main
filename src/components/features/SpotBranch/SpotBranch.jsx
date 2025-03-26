@@ -87,6 +87,7 @@ const SpotBranch = () => {
   }, [watchlistCardData]);
 
   //Watch<List>Data State
+  //By Default for having Six Tiles
   const [watchlistData, setWatchlistData] = useState({
     watchlist1: { currecncyLabel: "", buyValue: "", sellValue: "" },
     watchlist2: { currecncyLabel: "", buyValue: "", sellValue: "" },
