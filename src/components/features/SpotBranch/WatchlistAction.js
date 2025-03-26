@@ -318,8 +318,11 @@ export const GetDashboardDataAPI = createAsyncThunk(
         headers, // Use custom headers here
       });
       const { responseCode } = response.data;
+      console.log(responseCode, "responseCoderesponseCode");
       if (responseCode === 417) {
+        console.log(responseCode, "responseCoderesponseCode");
         await dispatch(refreshTokenAction({ navigate }));
+        console.log(responseCode, "responseCoderesponseCode");
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {

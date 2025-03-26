@@ -8,8 +8,11 @@ import SelectDropdown from "@/components/common/selectDropdown/SelectDropdown";
 import IconElement from "@/components/common/IconElement/IconElement";
 import RFQModal from "@/container/pages/mainCorporate/rfqModal/RFQModal";
 import { useSelector } from "react-redux";
+import { useModal } from "@/context/ModalContext";
 
 const GlobalNavbar = () => {
+  const { setSettingModal } = useModal();
+
   const getAllCategoriesData = useSelector(
     (state) => state.authReducer.getAllCategories
   );
