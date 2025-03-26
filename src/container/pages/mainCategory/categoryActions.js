@@ -3,27 +3,29 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
 import { GetAllCounterPartyDataRM } from "@/common/api_config";
+import { watchListApi } from "@/common/apiend_points";
 
 export const getAllCategoryTableData = createAsyncThunk(
   "category/getAllCategoryTableData",
-  async ({ navigate }, { rejectWithValue }) => {
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       const headers = setCustomHeaders();
-   
+
       let form = new FormData();
       form.append("RequestMethod", GetAllCounterPartyDataRM.RequestMethod);
       form.append("RequestData", JSON.stringify(Data));
       const response = await axios({
         method: "post",
-        url: categoryApi,
+        url: watchListApi,
         data: form,
         headers,
       });
 
       const { responseCode } = response.data;
-  
+
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        dispatch(getAllCategoryTableData({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -71,7 +73,7 @@ export const getAllCategoryTableData = createAsyncThunk(
           return rejectWithValue("Something went wrong");
         }
       } else {
-        return rejectWithValue("Something went wrong")
+        return rejectWithValue("Something went wrong");
       }
     } catch (error) {
       return rejectWithValue(error.message);

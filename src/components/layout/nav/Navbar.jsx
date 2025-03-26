@@ -8,15 +8,16 @@ import SelectDropdown from "@/components/common/selectDropdown/SelectDropdown";
 import IconElement from "@/components/common/IconElement/IconElement";
 import RFQModal from "@/container/pages/mainCorporate/rfqModal/RFQModal";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { getAllCategoryTableData } from "@/container/pages/mainCategory/categoryActions";
 import { useModal } from "@/context/ModalContext";
 
 const GlobalNavbar = () => {
   const { setSettingModal } = useModal();
-
   const getAllCategoriesData = useSelector(
     (state) => state.authReducer.getAllCategories
   );
-
+  const dispatch = useDispatch();
   const [selectedValue, setSelectedValue] = useState(1);
   const [openRfqModal, setOpenRfqModal] = useState(false);
   const [allCategories, setAllCategories] = useState([]);
@@ -45,6 +46,10 @@ const GlobalNavbar = () => {
     import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
   const handleChangeCategory = (event) => {
     console.log(event);
+    let Data = { CategoryID: event.value };
+    console.log(Data);
+
+    // dispatch(getAllCategoryTableData({ navigate, Data }));
     setCategoryValue({
       value: event.value,
       label: event.label,

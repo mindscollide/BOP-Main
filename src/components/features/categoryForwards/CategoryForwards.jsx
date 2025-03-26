@@ -10,7 +10,7 @@ const CategoryForwards = () => {
   // Define the data source for the Ant Design Table
 
   useEffect(() => {
-    const { forwardsRates } = generateData(2);
+    const { forwardsRates } = generateData(3);
 
     if (forwardsRates.length > 0) {
       setDataSource(forwardsRates);
