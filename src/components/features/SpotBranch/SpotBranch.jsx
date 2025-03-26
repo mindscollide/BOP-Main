@@ -9,11 +9,7 @@ import SellAndBuyModal from "./SellAndBuyModal/SellAndBuyModal";
 import { useModal } from "../../../context/ModalContext";
 import ChatBox from "../chatBox/ChatBox.jsx";
 import BlotterHeader from "@/container/pages/mainTreasury/tabsContent/liveRates/blotter/blotterHeader/BlotterHeader";
-import {
-  GetDashboardDataAPI,
-  GetFXInstrumentsAPI,
-  SaveUserDashboardAPI,
-} from "./WatchlistAction";
+import { GetDashboardDataAPI, SaveUserDashboardAPI } from "./WatchlistAction";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -37,7 +33,6 @@ const SpotBranch = () => {
   //WatchList table Data Api Call
   useEffect(() => {
     try {
-      dispatch(GetFXInstrumentsAPI({}));
       dispatch(GetDashboardDataAPI({}));
     } catch (error) {
       console.log(error, "error");

@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { ViewAllNatureOfBussinessAPI } from "./RFQActions";
 import { useSelector } from "react-redux";
+import { GetFXInstrumentsAPI } from "@/components/features/SpotBranch/WatchlistAction";
 
 const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
   const dispatch = useDispatch();
@@ -20,9 +21,21 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
     (state) => state.RFQReducer.viewAllNatureBussniessData
   );
 
+  //Global State for Currency Data
+  const GlobalStateInstrumentFX = useSelector(
+    (state) => state.WatchListReducer.WatchListData
+  );
+
+  console.log(
+    GlobalStateInstrumentFX,
+    "GlobalStateInstrumentFXGlobalStateInstrumentFX"
+  );
+
   //Local states
   const [natureOfBusinessOptions, setNatureOfBusinessOptions] = useState([]);
+  const [currencyOptions, setCurrencyOptions] = useState([]);
   const [selectedNature, setSelectedNature] = useState(null);
+  const [selectedCurrency, setSelectedCurrency] = useState(null);
   const [amountData, setAmountData] = useState("");
   const [acNumberData, setAcNumberData] = useState("");
   const [lcNumberData, setLcNumberData] = useState("");
@@ -36,6 +49,8 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
     try {
       let Data = { PageNumber: 1, Length: 3 };
       dispatch(ViewAllNatureOfBussinessAPI({ Data }));
+      //For having Currency as discussed with MS (worldCrosses)
+      dispatch(GetFXInstrumentsAPI({}));
     } catch (error) {
       console.log(error, "error");
     }
@@ -43,25 +58,55 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
 
   //Extracting out the Nature of Busniess Data
   useEffect(() => {
-    if (
-      viewNatureOfBussniessGlobalStateData &&
-      viewNatureOfBussniessGlobalStateData.natureofBusinesses
-    ) {
-      const formattedOptions =
-        viewNatureOfBussniessGlobalStateData.natureofBusinesses.map(
-          (business) => ({
-            label: business.name,
-            value: business.pK_NatureOfBusiness,
-          })
-        );
-      setNatureOfBusinessOptions(formattedOptions);
-    }
+    try {
+      if (
+        viewNatureOfBussniessGlobalStateData &&
+        viewNatureOfBussniessGlobalStateData.natureofBusinesses
+      ) {
+        const formattedOptions =
+          viewNatureOfBussniessGlobalStateData.natureofBusinesses.map(
+            (business) => ({
+              label: business.name,
+              value: business.pK_NatureOfBusiness,
+            })
+          );
+        setNatureOfBusinessOptions(formattedOptions);
+      }
+    } catch (error) {}
   }, [viewNatureOfBussniessGlobalStateData]);
+
+  //Extracting out the Currecnies Data for Dropdown
+  useEffect(() => {
+    try {
+      if (GlobalStateInstrumentFX && GlobalStateInstrumentFX.instruments) {
+        console.log(
+          GlobalStateInstrumentFX.instruments,
+          "currencyOptionscurrencyOptions"
+        );
+        const formattedCurrencyOptions =
+          GlobalStateInstrumentFX.instruments.map((Currency) => ({
+            label: Currency.instrumentName,
+            value: Currency.instrumentID,
+          }));
+        console.log(formattedCurrencyOptions, "currencyOptionscurrencyOptions");
+        setCurrencyOptions(formattedCurrencyOptions);
+      }
+    } catch (error) {}
+  }, [GlobalStateInstrumentFX]);
+
+  console.log(currencyOptions, "currencyOptionscurrencyOptions");
 
   //Onchange for Selecting the nature of business
 
   const handleNatureChange = (selectedOption) => {
     setSelectedNature(selectedOption);
+    console.log("selectedOption", selectedOption);
+  };
+
+  //Onchange for Selecting the Currency
+
+  const handleCurrencyChange = (selectedOption) => {
+    setSelectedCurrency(selectedOption);
     console.log("selectedOption", selectedOption);
   };
 
@@ -135,7 +180,12 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
                   <label>Currency*</label>
                 </Col>
                 <Col lg={4} md={4} sm={4} className="mb-2">
-                  <SelectDropdown placeholder="Search" />
+                  <SelectDropdown
+                    placeholder="Search"
+                    options={currencyOptions}
+                    onChange={handleCurrencyChange}
+                    value={selectedCurrency}
+                  />
                 </Col>
 
                 <Col lg={2} md={2} sm={2}>
