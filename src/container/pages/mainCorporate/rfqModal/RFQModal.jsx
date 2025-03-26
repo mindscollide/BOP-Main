@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CustomButton from "../../../../components/common/globalButton/button";
 import { Row, Col } from "react-bootstrap";
 import Modal from "../../../../components/common/globalModal/Modal";
@@ -6,11 +6,106 @@ import IconElement from "../../../../components/common/IconElement/IconElement";
 import SelectDropdown from "../../../../components/common/selectDropdown/SelectDropdown";
 import "./RFQModal.css";
 import InputFIeld from "../../../../components/common/inputField/InputField";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { ViewAllNatureOfBussinessAPI } from "./RFQActions";
+import { useSelector } from "react-redux";
 
 const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  //Const Nature of Busniess Global State Data
+  const viewNatureOfBussniessGlobalStateData = useSelector(
+    (state) => state.RFQReducer.viewAllNatureBussniessData
+  );
+
+  //Local states
+  const [natureOfBusinessOptions, setNatureOfBusinessOptions] = useState([]);
+  const [selectedNature, setSelectedNature] = useState(null);
+  const [amountData, setAmountData] = useState("");
+  const [acNumberData, setAcNumberData] = useState("");
+  const [lcNumberData, setLcNumberData] = useState("");
+
   const onCloseRfq = () => {
     setOpenRfqModal(false);
   };
+
+  //Calling API View Nature of Bussniess
+  useEffect(() => {
+    try {
+      let Data = { PageNumber: 1, Length: 3 };
+      dispatch(ViewAllNatureOfBussinessAPI({ Data }));
+    } catch (error) {
+      console.log(error, "error");
+    }
+  }, []);
+
+  //Extracting out the Nature of Busniess Data
+  useEffect(() => {
+    if (
+      viewNatureOfBussniessGlobalStateData &&
+      viewNatureOfBussniessGlobalStateData.natureofBusinesses
+    ) {
+      const formattedOptions =
+        viewNatureOfBussniessGlobalStateData.natureofBusinesses.map(
+          (business) => ({
+            label: business.name,
+            value: business.pK_NatureOfBusiness,
+          })
+        );
+      setNatureOfBusinessOptions(formattedOptions);
+    }
+  }, [viewNatureOfBussniessGlobalStateData]);
+
+  //Onchange for Selecting the nature of business
+
+  const handleNatureChange = (selectedOption) => {
+    setSelectedNature(selectedOption);
+    console.log("selectedOption", selectedOption);
+  };
+
+  // handle Change amount
+  const handleChangeAccount = (event) => {
+    const { name, value } = event.target;
+    if (name === "Amount") {
+      const regex = /^[0-9]*$/;
+      if (regex.test(value)) {
+        setAmountData(value);
+      }
+    } else {
+      setAmountData(value);
+    }
+  };
+
+  // handle Change A/C number
+  const handleChangeAcNumber = (event) => {
+    const { name, value } = event.target;
+    if (name === "AcNumber") {
+      const regex = /^[0-9]*$/;
+      if (regex.test(value)) {
+        setAcNumberData(value);
+      }
+    } else {
+      setAcNumberData(value);
+    }
+  };
+
+  // handle Change L/C number
+  const handleChangeLcNumber = (event) => {
+    const { name, value } = event.target;
+    if (name === "LcNumber") {
+      const regex = /^[0-9]*$/;
+      if (regex.test(value)) {
+        setLcNumberData(value);
+      }
+    } else {
+      setLcNumberData(value);
+    }
+  };
+
+  // Handle Confirm Button
+  const handleConfirmButton = () => {};
 
   return (
     <>
@@ -56,13 +151,23 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
                   <label>Amount*</label>
                 </Col>
                 <Col lg={4} md={4} sm={4} className="mb-2">
-                  <InputFIeld applyClass="CalculatorTextfield" />
+                  <InputFIeld
+                    onChange={handleChangeAccount}
+                    value={amountData}
+                    name="Amount"
+                    applyClass="CalculatorTextfield"
+                  />
                 </Col>
                 <Col lg={2} md={2} sm={2}>
                   <label>A/c No</label>
                 </Col>
                 <Col lg={4} md={4} sm={4} className="mb-2">
-                  <InputFIeld applyClass="CalculatorTextfield" />
+                  <InputFIeld
+                    onChange={handleChangeAcNumber}
+                    value={acNumberData}
+                    name="AcNumber"
+                    applyClass="CalculatorTextfield"
+                  />
                 </Col>
               </Row>
 
@@ -72,14 +177,24 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
                 </Col>
 
                 <Col lg={4} md={4} sm={4} className="mb-2">
-                  <SelectDropdown placeholder="Search" />
+                  <SelectDropdown
+                    placeholder="Search"
+                    options={natureOfBusinessOptions}
+                    onChange={handleNatureChange}
+                    value={selectedNature}
+                  />
                 </Col>
 
                 <Col lg={2} md={2} sm={2}>
                   <label>LC No</label>
                 </Col>
                 <Col lg={4} md={4} sm={4} className="mb-2">
-                  <InputFIeld applyClass="CalculatorTextfield" />
+                  <InputFIeld
+                    onChange={handleChangeLcNumber}
+                    value={lcNumberData}
+                    name="LcNumber"
+                    applyClass="CalculatorTextfield"
+                  />
                 </Col>
               </Row>
             </div>
@@ -96,7 +211,8 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
               >
                 <CustomButton
                   value="Confirm"
-                  className="btn btn-primary px-4 ms-auto"
+                  className="btn btn-primary ms-auto px-4"
+                  onClick={handleConfirmButton}
                 />
               </Col>
             </Row>

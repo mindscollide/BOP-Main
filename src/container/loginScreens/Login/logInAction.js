@@ -66,8 +66,6 @@ export const loginInApi = createAsyncThunk(
               .toLowerCase()
               .includes("ERM_AuthService_AuthManager_Login_03".toLowerCase())
           ) {
-
-
             localStorage.setItem("refreshToken", refreshToken);
             localStorage.setItem("token", token);
             // localStorage.setItem("roleID", roleID);

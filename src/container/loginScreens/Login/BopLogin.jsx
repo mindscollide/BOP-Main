@@ -25,7 +25,6 @@ const BopLogin = () => {
     hasErrorOnUserName: false,
   });
   const [showPassowrd, setShowPassword] = useState(false);
-
   /**
    * Handles input field changes for email and password.
    * Validates email format and updates the credentials state.
@@ -117,13 +116,14 @@ const BopLogin = () => {
           sm={12}
           md={12}
           lg={12}
-          className='d-flex justify-content-center mt-5 '>
+          className="d-flex justify-content-center mt-5 "
+        >
           <img
             src={BOPLogo}
             style={{ maxWidth: "100%" }}
-            width='300'
-            className='img-fluid'
-            alt='BOP Logo'
+            width="300"
+            className="img-fluid"
+            alt="BOP Logo"
           />
         </Col>
         <Col sm={12} md={12} lg={12}>
@@ -131,98 +131,101 @@ const BopLogin = () => {
             <h4 className={styles["Heading-js"]}>
               {shouldIsCorporate === true && "Corporate Login"}
             </h4>
-              {shouldIsCorporate === true ? (
-                <>
-                  <InputGroup>
-                    <InputGroup.Text className={styles["Icon-Field-class"]}>
-                      <IconElement iconClass={"icon-user"} />
-                    </InputGroup.Text>
-                    <Form.Control
-                      name='email'
-                      autoComplete='off'
-                      className={styles["form-comtrol-textfield"]}
-                      placeholder='Email ID'
-                      required
-                      value={crendentials.email}
-                      onChange={handleChangeFields}
-                      type='email'
-                      // pattern='^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-                      aria-label='email'
-                      maxLength={100}
-                      aria-describedby='basic-addon1'
-                    />
-                  </InputGroup>
-                  {crendentials.hasEmailisValid === false && (
-                    <p style={{ textAlign: "left" }}>"Email is Not Valid"</p>
-                  )}
-                </>
-              ) : (
+            {shouldIsCorporate === true ? (
+              <>
                 <InputGroup>
                   <InputGroup.Text className={styles["Icon-Field-class"]}>
                     <IconElement iconClass={"icon-user"} />
                   </InputGroup.Text>
                   <Form.Control
-                    name='email'
-                    autoComplete='off'
+                    name="email"
+                    autoComplete="off"
                     className={styles["form-comtrol-textfield"]}
-                    placeholder='User Name'
+                    placeholder="Email ID"
                     required
                     value={crendentials.email}
                     onChange={handleChangeFields}
-                    type='text'
+                    type="email"
                     // pattern='^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-                    aria-label='email'
+                    aria-label="email"
                     maxLength={100}
-                    aria-describedby='basic-addon1'
+                    aria-describedby="basic-addon1"
                   />
                 </InputGroup>
-              )}
-
-              <InputGroup className='my-3'>
-                <InputGroup.Text
-                  id='basic-addon1'
-                  className={styles["Icon-Field-class"]}>
-                  <IconElement iconClass={"icon-lock"} />
+                {crendentials.hasEmailisValid === false && (
+                  <p style={{ textAlign: "left" }}>"Email is Not Valid"</p>
+                )}
+              </>
+            ) : (
+              <InputGroup>
+                <InputGroup.Text className={styles["Icon-Field-class"]}>
+                  <IconElement iconClass={"icon-user"} />
                 </InputGroup.Text>
                 <Form.Control
-                  name='password'
-                  autoComplete='off'
-                  className={styles["form-comtrol-textfield-password"]}
-                  placeholder='Password'
+                  name="email"
+                  autoComplete="off"
+                  className={styles["form-comtrol-textfield"]}
+                  placeholder="User Name"
                   required
-                  value={crendentials.password}
+                  value={crendentials.email}
                   onChange={handleChangeFields}
-                  type={showPassowrd ? "text" : "password"}
-                  aria-label='password'
-                  aria-describedby='basic-addon2'
+                  type="text"
+                  // pattern='^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+                  aria-label="email"
+                  maxLength={100}
+                  aria-describedby="basic-addon1"
                 />
-                <InputGroup.Text
-                  id='basic-addon2'
-                  className={styles["eyeIcon-Field-class-BOP-login"]}>
-                  {showPassowrd ? (
-                    <IconElement
-                      iconClass={"icon-eye-slash"}
-                      onClick={() => setShowPassword(!showPassowrd)}
-                    />
-                  ) : (
-                    <IconElement
-                      iconClass={"icon-eye"}
-                      onClick={() => setShowPassword(!showPassowrd)}
-                    />
-                  )}
-                </InputGroup.Text>
               </InputGroup>
+            )}
 
-              <CustomButton
-                value={"Login"}
-                onClick={handleSubmit}
-                applyClass={"authLoginBtn"}
+            <InputGroup className="my-3">
+              <InputGroup.Text
+                id="basic-addon1"
+                className={styles["Icon-Field-class"]}
+              >
+                <IconElement iconClass={"icon-lock"} />
+              </InputGroup.Text>
+              <Form.Control
+                name="password"
+                autoComplete="off"
+                className={styles["form-comtrol-textfield-password"]}
+                placeholder="Password"
+                required
+                value={crendentials.password}
+                onChange={handleChangeFields}
+                type={showPassowrd ? "text" : "password"}
+                aria-label="password"
+                aria-describedby="basic-addon2"
               />
+              <InputGroup.Text
+                id="basic-addon2"
+                className={styles["eyeIcon-Field-class-BOP-login"]}
+              >
+                {showPassowrd ? (
+                  <IconElement
+                    iconClass={"icon-eye-slash"}
+                    onClick={() => setShowPassword(!showPassowrd)}
+                  />
+                ) : (
+                  <IconElement
+                    iconClass={"icon-eye"}
+                    onClick={() => setShowPassword(!showPassowrd)}
+                  />
+                )}
+              </InputGroup.Text>
+            </InputGroup>
+
+            <CustomButton
+              value={"Login"}
+              onClick={handleSubmit}
+              applyClass={"authLoginBtn"}
+            />
             {shouldIsCorporate && (
-              <p className='mt-2'>
+              <p className="mt-2">
                 <Link
                   to={"/forgotpassword"}
-                  className={styles["forgotPasswordLink"]}>
+                  className={styles["forgotPasswordLink"]}
+                >
                   Forgot Password?
                 </Link>
               </p>

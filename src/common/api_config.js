@@ -54,6 +54,37 @@ const publishDiscountingRatesRM = {
   RequestMethod: "ServiceManager.PublishDiscountingRates",
 };
 
+const GetFXInstruments = {
+  RequestMethod: "ServiceManager.GetFXInstruments",
+};
+
+const GetMisDataByRange = {
+  RequestMethod: "ServiceManager.GetMisDataByRange",
+};
+
+const GetAllFowardsAndDiscountsRates = {
+  RequestMethod: "ServiceManager.GetAllFowardsAndDiscountsRates",
+};
+
+const GetAllCounterPartyData = {
+  RequestMethod: "ServiceManager.GetAllCounterPartyData",
+};
+
+const GetDashboardData = {
+  RequestMethod: "ServiceManager.GetDashboardData",
+};
+
+const SaveUserDashboard = {
+  RequestMethod: "ServiceManager.SaveUserDashboard",
+};
+
+const ViewAllNatureOfBussiness = {
+  RequestMethod: "ServiceManager.ViewAllNatureOfBussiness",
+};
+
+const CorporateBlotterData = {
+  RequestMethod: "ServiceManager.GetBlotterData",
+};
 const GetAllCounterPartyDataRM = {
   RequestMethod: "ServiceManager.GetAllCounterPartyData",
 };
@@ -77,6 +108,15 @@ export {
   publishTenorWiseForwardRatesRM,
   getDiscountingRatesRM,
   publishDiscountingRatesRM,
+  GetFXInstruments,
+  GetMisDataByRange,
+  GetAllFowardsAndDiscountsRates,
+  GetAllCounterPartyData,
+  GetDashboardData,
+  SaveUserDashboard,
+  ViewAllNatureOfBussiness,
+  CorporateBlotterData,
+  refreshTokenRM,
   refreshTokenRM,
   GetAllCounterPartyDataRM,
 };

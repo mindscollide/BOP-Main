@@ -1,5 +1,4 @@
 import React from "react";
-import { InputNumber } from "antd";
 import styles from "./input.module.css";
 
 const InputFIeld = ({
