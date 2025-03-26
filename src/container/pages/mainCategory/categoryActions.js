@@ -3,6 +3,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
 import { GetAllCounterPartyDataRM } from "@/common/api_config";
+import { watchListApi } from "@/common/apiend_points";
 
 export const getAllCategoryTableData = createAsyncThunk(
   "category/getAllCategoryTableData",
@@ -15,7 +16,7 @@ export const getAllCategoryTableData = createAsyncThunk(
       form.append("RequestData", JSON.stringify(Data));
       const response = await axios({
         method: "post",
-        url: categoryApi,
+        url: watchListApi,
         data: form,
         headers,
       });

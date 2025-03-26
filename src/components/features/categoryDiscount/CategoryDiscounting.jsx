@@ -7,7 +7,7 @@ const CategoryDiscounting = () => {
   const [columnsData, setColumnsData] = useState([]);
 
   useEffect(() => {
-    const { discountRates } = generateData(1);
+    const { discountRates } = generateData(2);
 
     if (discountRates.length > 0) {
       setDataSource(discountRates);

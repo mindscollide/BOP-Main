@@ -10,8 +10,10 @@ import RFQModal from "@/container/pages/mainCorporate/rfqModal/RFQModal";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { getAllCategoryTableData } from "@/container/pages/mainCategory/categoryActions";
+import { useModal } from "@/context/ModalContext";
 
 const GlobalNavbar = () => {
+  const { setSettingModal } = useModal();
   const getAllCategoriesData = useSelector(
     (state) => state.authReducer.getAllCategories
   );
@@ -47,7 +49,7 @@ const GlobalNavbar = () => {
     let Data = { CategoryID: event.value };
     console.log(Data);
 
-    dispatch(getAllCategoryTableData({ navigate, Data }));
+    // dispatch(getAllCategoryTableData({ navigate, Data }));
     setCategoryValue({
       value: event.value,
       label: event.label,
@@ -74,22 +76,22 @@ const GlobalNavbar = () => {
 
   return (
     <>
-      <div className="site-header pt-1">
+      <div className='site-header pt-1'>
         {/*Container*/}
-        <div className="container-fluid page-gutter">
+        <div className='container-fluid page-gutter'>
           {/*header inner container*/}
-          <div className="header-inner d-flex align-items-center">
+          <div className='header-inner d-flex align-items-center'>
             <SiteLogoComponent />
-            <div className="ms-auto">
-              <div className="d-flex align-items-center gap-2">
+            <div className='ms-auto'>
+              <div className='d-flex align-items-center gap-2'>
                 {location.pathname !== "/calculator" ? (
                   <>
                     {shouldIncludeCorporate && (
                       <Suspense fallback={<>Loading RFQ...</>}>
                         <CustomButton
-                          applyClass="rfqBtn"
-                          value="RFQ"
-                          size="small"
+                          applyClass='rfqBtn'
+                          value='RFQ'
+                          size='small'
                           icon={<IconElement iconClass={"icon-list fs-6"} />}
                           onClick={onClickRFQ}
                         />
@@ -98,9 +100,9 @@ const GlobalNavbar = () => {
                     {location.pathname.includes("treasury") &&
                     (shouldIncludeDealer || shouldIncludeTreasury) ? (
                       <CustomButton
-                        applyClass="calcBtn"
-                        value="Calculators"
-                        size="large"
+                        applyClass='calcBtn'
+                        value='Calculators'
+                        size='large'
                         onClick={handleCalculatorClick}
                       />
                     ) : null}
@@ -124,7 +126,7 @@ const GlobalNavbar = () => {
                 ) : null}
                 {/*User Dropdown*/}
                 <ProfileDropdown
-                  userName="Michael Hawk"
+                  userName='Michael Hawk'
                   setSettingModal={setSettingModal}
                 />
               </div>
