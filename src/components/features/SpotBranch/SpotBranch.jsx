@@ -26,6 +26,9 @@ const SpotBranch = () => {
 
   //Card Data Local State
   const [watchlistCardData, setWatchlistCardData] = useState([]);
+  const [watchlistTableData, setWatchlistTableData] = useState([]);
+
+  console.log(watchlistTableData, "watchlistTableDatawatchlistTableData");
 
   //Global State for Watchlist Card Data
   const globalStateWatchlistCardData = useSelector(
@@ -49,11 +52,13 @@ const SpotBranch = () => {
         globalStateWatchlistCardData &&
         globalStateWatchlistCardData !== null
       ) {
-        setWatchlistCardData(globalStateWatchlistCardData.sections);
+        console.log(globalStateWatchlistCardData.watchLists, "watchLists");
         console.log(
-          globalStateWatchlistCardData,
-          "globalStateWatchlistCardData"
+          typeof globalStateWatchlistCardData.watchLists,
+          "watchLists"
         );
+        setWatchlistCardData(globalStateWatchlistCardData.sections);
+        setWatchlistTableData(globalStateWatchlistCardData.watchLists);
       }
     } catch (error) {
       console.log(error, "error");
@@ -80,18 +85,6 @@ const SpotBranch = () => {
     }
   }, [watchlistCardData]);
 
-  //Data to be rendered in the Table
-  const [dataSource, setDataSource] = useState([
-    { key: "1", instrument: "USDPKR", bid: "288.00", offer: "289.00" },
-    { key: "2", instrument: "EURPKR", bid: "308.60", offer: "308.85" },
-    { key: "3", instrument: "EUR", bid: "308.60", offer: "308.85" },
-    { key: "4", instrument: "GBPPKR", bid: "355.18", offer: "355.44" },
-    { key: "5", instrument: "CNYPKR", bid: "40.76", offer: "40.80" },
-    { key: "6", instrument: "JPYPKR", bid: "2.0727", offer: "2.0742" },
-    { key: "7", instrument: "AUDPKR", bid: "188.45", offer: "188.60" },
-    { key: "8", instrument: "CHFPKR", bid: "181.24", offer: "180.09" },
-  ]);
-
   //Watch<List>Data State
   const [watchlistData, setWatchlistData] = useState({
     watchlist1: { currecncyLabel: "", buyValue: "", sellValue: "" },
@@ -106,11 +99,15 @@ const SpotBranch = () => {
   const columns = [
     {
       title: "Instrument",
-      dataIndex: "instrument",
-      key: "instrument",
+      dataIndex: "instrumentName",
+      key: "instrumentName",
       width: "160px",
       align: "left",
-      render: (text) => <span className="instrument-column">{text}</span>,
+      render: (text, record) => {
+        console.log(record, "responseresponseresponse");
+        console.log(text, "responseresponseresponse");
+        <span className="instrument-column">{text}</span>;
+      },
     },
     {
       title: "Bid",
@@ -118,7 +115,7 @@ const SpotBranch = () => {
       key: "bid",
       width: "120px",
       align: "center",
-      render: (text) => (
+      render: (text, record) => (
         <div className="d-flex justify-content-center">
           <BidAmountBox
             spot={false}
@@ -134,7 +131,7 @@ const SpotBranch = () => {
       key: "offer",
       align: "center",
       width: "120px",
-      render: (text) => (
+      render: (text, record) => (
         <div className="d-flex justify-content-center">
           <BidAmountBox
             spot={false}
@@ -146,38 +143,6 @@ const SpotBranch = () => {
     },
   ];
 
-  //Handle Draging function
-  // const onDragEnd = (result) => {
-  //   const { source, destination } = result;
-
-  //   // If no destination, return
-  //   if (!destination) {
-  //     return;
-  //   }
-
-  //   // Handle reordering within the table
-  //   if (destination.droppableId === "droppable") {
-  //     const reorderedDataSource = Array.from(dataSource);
-  //     const [movedItem] = reorderedDataSource.splice(source.index, 1);
-  //     reorderedDataSource.splice(destination.index, 0, movedItem);
-  //     setDataSource(reorderedDataSource);
-  //   } else {
-  //     // Handle dropping into BranchRateCardsOfWatchList
-  //     const item = dataSource[source.index];
-  //     const { bid, offer } = item;
-
-  //     // Update the watchlist data based on the destination droppableId
-  //     setWatchlistData((prevData) => ({
-  //       ...prevData,
-  //       [destination.droppableId]: {
-  //         currecncyLabel: item.instrument,
-  //         buyValue: bid,
-  //         sellValue: offer,
-  //       },
-  //     }));
-  //   }
-  // };
-
   const onDragEnd = (result) => {
     const { source, destination } = result;
 
@@ -188,7 +153,7 @@ const SpotBranch = () => {
 
     // Handle dropping into BranchRateCardsOfWatchList
     if (destination.droppableId.startsWith("watchlist")) {
-      const item = dataSource[source.index]; // Get dragged item
+      const item = watchlistTableData[source.index]; // Get dragged item
       const { instrument, bid, offer, key } = item; // Extract values
       console.log(item, "resultresultresultresult");
       //Calling the save Droppale Item API
@@ -410,7 +375,7 @@ const SpotBranch = () => {
                     <div ref={provided.innerRef} {...provided.droppableProps}>
                       <GlobalTable
                         columns={columns}
-                        dataSource={dataSource}
+                        dataSource={watchlistTableData}
                         prefixCls={"WatchList_table"}
                         pagination={false}
                         bordered={false}
