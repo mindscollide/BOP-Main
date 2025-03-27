@@ -93,6 +93,10 @@ const getAllCategoriesRM = {
   RequestMethod: "ServiceManager.GetAllCategories",
 };
 
+const SaveTransactionRFQ = {
+  RequestMethod: "ServiceManager.SaveTransactionRFQ",
+};
+
 export {
   getAllCategoriesRM,
   clearRatesRM,
@@ -118,4 +122,5 @@ export {
   CorporateBlotterData,
   refreshTokenRM,
   GetAllCounterPartyDataRM,
+  SaveTransactionRFQ,
 };

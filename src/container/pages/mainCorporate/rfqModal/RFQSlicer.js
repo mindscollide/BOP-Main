@@ -1,5 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { ViewAllNatureOfBussinessAPI } from "./RFQActions";
+import {
+  SaveTransactionRFQAPI,
+  ViewAllNatureOfBussinessAPI,
+} from "./RFQActions";
 const RFQSlice = createSlice({
   name: "RFQSlice",
   initialState: {
@@ -7,6 +10,7 @@ const RFQSlice = createSlice({
     loading: false,
     error: null,
     viewAllNatureBussniessData: null,
+    saveRFQTransactionData: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -29,6 +33,25 @@ const RFQSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
         state.viewAllNatureBussniessData = null;
+      })
+      // Pending state (while the API call is being made SaveTransactionRFQAPI)
+      .addCase(SaveTransactionRFQAPI.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      // Fulfilled state (when the API call succeeds SaveTransactionRFQAPI)
+      .addCase(SaveTransactionRFQAPI.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.saveRFQTransactionData = payload.response;
+        state.error = null;
+        state.responseMessage = payload.message;
+      })
+      // Rejected state (when the API call fails ViewAllNatureOfBussinessAPI)
+      .addCase(SaveTransactionRFQAPI.rejected, (state, action) => {
+        console.log(action, "actionaction");
+        state.loading = false;
+        state.error = action.payload;
+        state.saveRFQTransactionData = null;
       });
   },
 });

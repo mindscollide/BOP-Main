@@ -2,13 +2,15 @@ import React, { useEffect, useState } from "react";
 import CustomButton from "../../../../components/common/globalButton/button";
 import { Row, Col } from "react-bootstrap";
 import Modal from "../../../../components/common/globalModal/Modal";
-import IconElement from "../../../../components/common/IconElement/IconElement";
 import SelectDropdown from "../../../../components/common/selectDropdown/SelectDropdown";
 import "./RFQModal.css";
 import InputFIeld from "../../../../components/common/inputField/InputField";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { ViewAllNatureOfBussinessAPI } from "./RFQActions";
+import {
+  SaveTransactionRFQAPI,
+  ViewAllNatureOfBussinessAPI,
+} from "./RFQActions";
 import { useSelector } from "react-redux";
 import { GetFXInstrumentsAPI } from "@/components/features/SpotBranch/WatchlistAction";
 
@@ -24,11 +26,6 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
   //Global State for Currency Data
   const GlobalStateInstrumentFX = useSelector(
     (state) => state.WatchListReducer.WatchListData
-  );
-
-  console.log(
-    GlobalStateInstrumentFX,
-    "GlobalStateInstrumentFXGlobalStateInstrumentFX"
   );
 
   //Local states
@@ -84,10 +81,13 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
           "currencyOptionscurrencyOptions"
         );
         const formattedCurrencyOptions =
-          GlobalStateInstrumentFX.instruments.map((Currency) => ({
-            label: Currency.instrumentName,
-            value: Currency.instrumentID,
-          }));
+          GlobalStateInstrumentFX.instruments.map((Currency) => {
+            console.log(Currency, "Current Currency Object");
+            return {
+              label: Currency.worldCrosses.instrumentName,
+              value: Currency.worldCrosses.instrumentID,
+            };
+          });
         console.log(formattedCurrencyOptions, "currencyOptionscurrencyOptions");
         setCurrencyOptions(formattedCurrencyOptions);
       }
@@ -150,7 +150,21 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
   };
 
   // Handle Confirm Button
-  const handleConfirmButton = () => {};
+  const handleConfirmButton = () => {
+    //Caliing Save RFQ Trasaction API
+    let Data = {
+      CustomerName: "John Doe",
+      CounterPartyID: "BR123456",
+      InstrumentID: "IN78910",
+      TypeID: 1,
+      Amount: 1500.75,
+      AccountNumber: "1234567890123456",
+      NatureID: 2,
+      LCNumber: "LC2024XYZ",
+    };
+
+    dispatch(SaveTransactionRFQAPI({ Data }));
+  };
 
   return (
     <>
