@@ -1450,6 +1450,10 @@ td.Dealer_Discounting-cell {
 
 /* TXN Summary Start */
 
+.TXNSummary_Table .ant-table-filter-trigger {
+  display: none !important;
+}
+
 .TXNSummary_Table-wrapper .TXNSummary_Table {
   scrollbar-color: auto !important;
 }

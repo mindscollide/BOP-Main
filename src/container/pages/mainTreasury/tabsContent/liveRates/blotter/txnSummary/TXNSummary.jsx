@@ -5,7 +5,8 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { CorporateBlotterDataAPI } from "./CorporateBlotterActions";
 import { useSelector } from "react-redux";
-
+import { Dropdown, Menu, Checkbox, Button } from "antd";
+import { DownOutlined, FilterOutlined } from "@ant-design/icons";
 const TXNSummary = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -40,12 +41,48 @@ const TXNSummary = () => {
     }
   }, [GlobalStateGetBlotterData]);
 
+  const [selectedFilters, setSelectedFilters] = useState([]);
+
+  const handleFilterChange = (checkedValues) => {
+    setSelectedFilters(checkedValues);
+  };
+
+  const handleApplyFilter = () => {
+    // Apply your filter logic
+    console.log("Applied filters:", selectedFilters);
+  };
+
+  const handleResetFilter = () => {
+    setSelectedFilters([]);
+  };
+
   const columns = [
     {
       title: "TXN ID",
       key: "txnid",
       dataIndex: "txnid",
       className: "ff-poppins fw-bold",
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => (
+        <div style={{ padding: 8, width: 250 }}>
+          <div className="d-flex justify-content-between mb-2">
+            <Button type="primary" size="small" onClick={handleApplyFilter}>
+              Apply
+            </Button>
+            <Button size="small" onClick={handleResetFilter}>
+              Reset
+            </Button>
+          </div>
+          <Checkbox.Group
+            style={{ display: "flex", flexDirection: "column" }}
+            options={["Option 1", "Option 2", "Option 3"]}
+            value={selectedFilters}
+            onChange={handleFilterChange}
+          />
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <DownOutlined style={{ color: "white", fontSize: "12px" }} />
+      ),
     },
     {
       title: "Name",
