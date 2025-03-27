@@ -780,8 +780,53 @@ export const getDiscountingRatesAction = createAsyncThunk(
                 "UploadRate_UploadRateServiceManager_GetDiscountingRates_01".toLowerCase()
               )
           ) {
+            let response = {
+              previousRates: [
+                {
+                  instumentID: 21,
+                  instrumentName: "USD",
+                  rate: 2.75,
+                  dateTime: "20240822081901",
+                },
+                {
+                  instumentID: 22,
+                  instrumentName: "EUR",
+                  rate: 3.5,
+                  dateTime: "20240822081901",
+                },
+                {
+                  instumentID: 23,
+                  instrumentName: "GBP",
+                  rate: 1.9,
+                  dateTime: "20240822081901",
+                },
+              ],
+              currentRates: [
+                {
+                  instumentID: 21,
+                  instrumentName: "USD",
+                  rate: 2.75,
+                  dateTime: "20240822081918",
+                },
+                {
+                  instumentID: 22,
+                  instrumentName: "EUR",
+                  rate: 3.5,
+                  dateTime: "20240822081918",
+                },
+                {
+                  instumentID: 23,
+                  instrumentName: "GBP",
+                  rate: 1.9,
+                  dateTime: "20240822081918",
+                },
+              ],
+              responseMessage:
+                "UploadRate_UploadRateServiceManager_GetDiscountingRates_01",
+              isExecuted: true,
+            };
             return {
-              response: response.data.responseResult,
+              response: response,
               message: "Successfull",
             };
           } else if (

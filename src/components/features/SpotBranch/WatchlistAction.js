@@ -109,7 +109,7 @@ export const GetMisDataByRangeAPI = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "ERM_WatchlistService_GetFXInstrumentsAPI_01".toLowerCase()
+                "WatchList_WatchListServiceManager_GetMisDataByRange_01".toLowerCase()
               )
           ) {
             console.log("", response.data);
@@ -121,7 +121,7 @@ export const GetMisDataByRangeAPI = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "ERM_WatchlistService_GetFXInstrumentsAPI_02".toLowerCase()
+                "WatchList_WatchListServiceManager_GetMisDataByRange_04".toLowerCase()
               )
           ) {
             return rejectWithValue("Unsuccessfull");

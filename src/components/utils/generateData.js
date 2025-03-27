@@ -113,7 +113,7 @@ export const generateData = (
 
       discountRatesResult.push(discountRateValue);
     });
-  }  if (columnValue === 2) {
+  } else if (columnValue === 2) {
     Data.discountRates.map((discValue, index) => {
       let findTenorName = Data.tenors.find(
         (tenorsData) => tenorsData.tenorID === discValue.tenorID
@@ -137,7 +137,7 @@ export const generateData = (
 
       discountRatesResult.push(discountRateValue);
     });
-  }  else if (columnValue === 3) {
+  } else if (columnValue === 3) {
     // Dummy Data
     Data.forwardRates.map((forwData, index) => {
       let findTenorName = Data.tenors.find(
@@ -164,7 +164,7 @@ export const generateData = (
 
       forwardsRatesResult.push(forwardRateData);
     });
-  } else {
+  } else if (columnValue === 4) {
     forwardRates.map((forwData, index) => {
       let findTenorName = tenors.find(
         (tenorsData) => tenorsData.tenorID === forwData.tenorID

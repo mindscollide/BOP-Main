@@ -1,17 +1,64 @@
-import React, { Suspense, lazy, useEffect } from "react";
+import React, { Suspense, lazy, useEffect, useState } from "react";
 import CustomButton from "../../common/globalButton/button";
 import GlobalTable from "../../common/table/GlobalTable";
 import InputFIeld from "../../common/inputField/InputField";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { getDiscountingRatesAction } from "@/container/pages/mainDealer/dealerActions";
+import { getDiscountingRatesAction, publishDiscountingRatesAction } from "@/container/pages/mainDealer/dealerActions";
+import { useSelector } from "react-redux";
+import { formatPercentageInput } from "@/utils/formatters";
 
 const DealeAndTreasuryDiscountingTable = () => {
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [tableData, setTableData] = useState([]);
+  const getDiscountTableData = useSelector(
+    (state) => state.dealerReducer.getDiscountingWiseRates
+  );
+  console.log(getDiscountTableData, "getDiscountTableDatagetDiscountTableData");
   useEffect(() => {
-    dispatch(getDiscountingRatesAction({navigate}))
-  },[])
+    dispatch(getDiscountingRatesAction({ navigate }));
+  }, []);
+
+  useEffect(() => {
+    if (getDiscountTableData !== null) {
+      const { currentRates, previousRates } = getDiscountTableData;
+      if (currentRates.length > 0) {
+        let newRecords = currentRates.map((item, index) => {
+          let getRecords = previousRates.find(
+            (prevItem) => prevItem.instumentID === item.instumentID
+          );
+          if (getRecords !== undefined) {
+            return {
+              key: index + 1,
+              instrumentName: item.instrumentName,
+              instrumentID: item.instumentID,
+              currentRate: item.rate,
+              previousRate: getRecords.rate,
+              dateTime: item.dateTime,
+            };
+          } else {
+            return {
+              key: index + 1,
+              instrumentName: item.instrumentName,
+              instrumentID: item.instumentID,
+              currentRate: item.rate,
+              dateTime: item.dateTime,
+
+              previousRate: "",
+            };
+          }
+        });
+        setTableData(newRecords);
+        console.log(newRecords, "newRecordsnewRecords");
+      }
+      console.log(
+        getDiscountTableData,
+        "getDiscountTableDatagetDiscountTableData"
+      );
+    }
+  }, [getDiscountTableData]);
+
   // Data for the table
   const dataSource = [
     { key: "1", currency: "USD", currentRate: 0, previousRate: "" },
@@ -21,12 +68,32 @@ const DealeAndTreasuryDiscountingTable = () => {
     { key: "5", currency: "CNY", currentRate: 0, previousRate: "" },
   ];
 
+  const handleChangeCurrent = (event, record) => {
+    const { value } = event.target;
+    console.log(record, value, "recordrecordrecord");
+    setTableData((prev) => {
+      if (prev.length > 0) {
+        let getRecords = prev.map((item) => {
+          if (item.instrumentID === record.instrumentID) {
+            return {
+              ...item,
+              currentRate: formatPercentageInput(value),
+            };
+          } else {
+            return item;
+          }
+        });
+        return getRecords;
+      }
+    });
+  };
+
   // Columns for the table
   const columns = [
     {
       title: "Currency",
-      dataIndex: "currency",
-      key: "currency",
+      dataIndex: "instrumentName",
+      key: "instrumentName",
       align: "left",
     },
     {
@@ -34,13 +101,14 @@ const DealeAndTreasuryDiscountingTable = () => {
       dataIndex: "currentRate",
       key: "currentRate",
       align: "center",
-      render: (value) => {
+      render: (value, record) => {
         console.log(value, "valuevaluevalue");
         return (
           <InputFIeld
             type='number'
             applyClass='DealerTableBitInput'
             value={value}
+            onChange={(event) => handleChangeCurrent(event, record)}
           />
         );
       },
@@ -60,12 +128,28 @@ const DealeAndTreasuryDiscountingTable = () => {
       ),
     },
   ];
+
+  const handlePublishDiscount = () => {
+    console.log("Publish Discounting");
+    let newData = {
+      CurrentRates: tableData.map((records, index) => {
+        return {
+          InstumentID: records.instrumentID,
+          InstrumentName: records.instrumentName,
+          Rate: records.currentRate,
+        };
+      }),
+    };
+    dispatch(publishDiscountingRatesAction({navigate, Data: newData}))
+
+    console.log(newData, "newDatanewDatanewData")
+  };
   return (
     <>
       <GlobalTable
         prefixCls='DealerAndTreasuryDiscountTable'
         columns={columns}
-        dataSource={dataSource}
+        dataSource={tableData}
         pagination={false}
       />
 
@@ -73,6 +157,7 @@ const DealeAndTreasuryDiscountingTable = () => {
         <CustomButton
           applyClass='publishForwardsBtn'
           value={"Publish Discounting"}
+          onClick={handlePublishDiscount}
         />
       </span>
     </>

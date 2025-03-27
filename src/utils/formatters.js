@@ -14,3 +14,15 @@ export const formatCurrencyInput = (value) => {
     return cleanVal;
   };
   
+  export const formatPercentageInput = (value) => {
+    if (!value) return ""; // Return empty string if no value
+  
+    // Remove non-numeric characters
+    let cleanVal = value.replace(/[^0-9]/g, "");
+  
+    // Convert to number and ensure it's within range
+    let numValue = Math.min(Math.max(parseInt(cleanVal, 10) || 0, 0), 100);
+  
+    return numValue;
+  };
+  

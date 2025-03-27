@@ -2,7 +2,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import bankSpotSlicer from "../container/pages/mainTreasury/tabsContent/liveRates/bankSpot/slicer/bankSpotSlicer";
 import misSlicer from "../container/pages/mainTreasury/tabsContent/liveRates/mis/slicer/misSlicer";
-import WatchListSlice from "../components/features/SpotBranch/WatchListSlicer";
+import WatchListSlice from "./watchListSlicer/WatchListSlicer";
 import RFQSlice from "../container/pages/mainCorporate/rfqModal/RFQSlicer";
 import CorporateBlotterSlicer from "../container/pages/mainTreasury/tabsContent/liveRates/blotter/txnSummary/CorporateBlotterSlicer";
 import authSlicer from "@/store/authSlicer/authSlicer";

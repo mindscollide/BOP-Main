@@ -131,8 +131,10 @@ const ForwardsForTreasuryAndDealer = () => {
       const tenorForwardData = {
         tenorID: tenorValue.value,
         tenorName: tenorValue.label,
-        Bid: "",
-        Ask: "",
+        currentBid: "",
+        currentAsk: "",
+        lastAsk: "",
+        lastBid: "",
         DateTime: new Date().toISOString(),
       };
 

@@ -192,6 +192,7 @@ const ForwardsForTreasuryAndBranchTable = ({
   };
 
   const handlePublishForwards = () => {
+    console.log(forwardsForTreasuryBranch, "forwardsForTreasuryBranch")
     let checkDoNotempty = forwardsForTreasuryBranch.every(
       (item) => item.currentAsk !== "" && item.currentBid !== ""
     );
