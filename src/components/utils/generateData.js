@@ -297,7 +297,7 @@ export const createColumns = (data, value) => {
     } else if (value === 2 || value === 3) {
       // Create Forwards columns
       instrumentColumns = data.reduce((acc, item) => {
-        const instrument = item.instrumentName;
+        const instrument = item.instrumentTitle || item.instrumentName;
 
         // Check if the instrument column already exists in acc
         if (!acc.find((col) => col.title === instrument)) {

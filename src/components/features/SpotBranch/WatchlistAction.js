@@ -38,7 +38,13 @@ export const GetFXInstrumentsAPI = createAsyncThunk(
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
-          if (responseMessage.toLowerCase().includes("Success".toLowerCase())) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetFXInstruments_01".toLowerCase()
+              )
+          ) {
             console.log("", response.data);
             return {
               response: response.data.responseResult,
@@ -48,7 +54,7 @@ export const GetFXInstrumentsAPI = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "ERM_WatchlistService_GetFXInstrumentsAPI_02".toLowerCase()
+                "WatchList_WatchListServiceManager_GetFXInstruments_02".toLowerCase()
               )
           ) {
             return rejectWithValue("Unsuccessfull");
@@ -56,7 +62,15 @@ export const GetFXInstrumentsAPI = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "ERM_WatchlistService_GetFXInstrumentsAPI_03".toLowerCase()
+                "WatchList_WatchListServiceManager_GetFXInstruments_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetFXInstruments_04".toLowerCase()
               )
           ) {
             return rejectWithValue("Something went wrong");
@@ -256,7 +270,7 @@ export const GetAllCounterPartyDataAPI = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "ERM_WatchlistService_GetFXInstrumentsAPI_01".toLowerCase()
+                "WatchList_WatchListServiceManager_GetAllCounterPartyData_01".toLowerCase()
               )
           ) {
             console.log("", response.data);
@@ -268,7 +282,7 @@ export const GetAllCounterPartyDataAPI = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "ERM_WatchlistService_GetFXInstrumentsAPI_02".toLowerCase()
+                "WatchList_WatchListServiceManager_GetAllCounterPartyData_02".toLowerCase()
               )
           ) {
             return rejectWithValue("Unsuccessfull");
@@ -276,10 +290,18 @@ export const GetAllCounterPartyDataAPI = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "ERM_WatchlistService_GetFXInstrumentsAPI_03".toLowerCase()
+                "WatchList_WatchListServiceManager_GetAllCounterPartyData_03".toLowerCase()
               )
           ) {
             return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetAllCounterPartyData_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something weng wrong");
           } else {
             console.log("", response.data);
             return rejectWithValue("Something went wrong");

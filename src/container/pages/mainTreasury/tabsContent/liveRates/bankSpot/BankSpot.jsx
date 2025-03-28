@@ -169,10 +169,7 @@ const BankSpot = () => {
   ];
 
   useEffect(() => {
-    dispatch(loaderInitialize(true));
-    setTimeout(() => {
-      dispatch(getBankSpotData(bankSpotTableDummyData));
-    }, 3000);
+    // dispatch(GetFXInstrumentsAPI({}));
   }, []);
 
   useEffect(() => {
