@@ -1,28 +1,38 @@
 export const formatCurrencyInput = (value) => {
-    if (!value) return ""; // Return empty string if no value
-  
-    // Remove non-numeric characters
-    let cleanVal = value.replace(/[^0-9]/g, "");
-  
-    // Automatically add decimal if length is greater than 3
-    if (cleanVal.length > 3) {
-      let integerPart = cleanVal.slice(0, 3); // First 3 digits
-      let decimalPart = cleanVal.slice(3, 5) || "00"; // Next 2 digits or default "00"
-      return `${integerPart}.${decimalPart}`;
-    }
-  
-    return cleanVal;
-  };
-  
-  export const formatPercentageInput = (value) => {
-    if (!value) return ""; // Return empty string if no value
-  
-    // Remove non-numeric characters
-    let cleanVal = value.replace(/[^0-9]/g, "");
-  
-    // Convert to number and ensure it's within range
-    let numValue = Math.min(Math.max(parseInt(cleanVal, 10) || 0, 0), 100);
-  
-    return numValue;
-  };
-  
+  if (!value) return ""; // Return empty string if no value
+
+  // Remove non-numeric characters
+  let cleanVal = value.replace(/[^0-9]/g, "");
+
+  // Automatically add decimal if length is greater than 3
+  if (cleanVal.length > 3) {
+    let integerPart = cleanVal.slice(0, 3); // First 3 digits
+    let decimalPart = cleanVal.slice(3, 5) || "00"; // Next 2 digits or default "00"
+    return `${integerPart}.${decimalPart}`;
+  }
+
+  return cleanVal;
+};
+
+export const formatPercentageInput = (value) => {
+  if (!value) return ""; // Return empty string if no value
+
+  // Remove non-numeric characters
+  let cleanVal = value.replace(/[^0-9]/g, "");
+
+  // Convert to number and ensure it's within range
+  let numValue = Math.min(Math.max(parseInt(cleanVal, 10) || 0, 0), 100);
+
+  return numValue;
+};
+
+export const formatDateToUTC = (date) => {
+  return (
+    date.getUTCFullYear().toString() +
+    String(date.getUTCMonth() + 1).padStart(2, "0") +
+    String(date.getUTCDate()).padStart(2, "0") +
+    String(date.getUTCHours()).padStart(2, "0") +
+    String(date.getUTCMinutes()).padStart(2, "0") +
+    String(date.getUTCSeconds()).padStart(2, "0")
+  );
+};

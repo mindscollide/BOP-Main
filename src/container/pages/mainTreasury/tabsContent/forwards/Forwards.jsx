@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from "react";
 import GlobalTable from "../../../../../components/common/table/GlobalTable";
 import InputField from "../../../../../components/common/inputField/InputField";
-import { createColumns, generateData } from "../../../../../components/utils/generateData";
+import {
+  createColumns,
+  generateData,
+} from "../../../../../components/utils/generateData";
+import { useSelector } from "react-redux";
 
 const data = [
   {
@@ -350,16 +354,38 @@ const columns = [
 const Forwards = () => {
   const [dataSource, setDataSource] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
+  const GetAllFowardsAndDiscountsRatesData = useSelector(
+    (state) => state.WatchListReducer.GetAllFowardsAndDiscountsRatesData
+  );
 
   useEffect(() => {
-    const { forwardsRates } = generateData(2);
+    if (GetAllFowardsAndDiscountsRatesData !== null) {
+      try {
+        if (
+          GetAllFowardsAndDiscountsRatesData.forwardRates.length > 0 &&
+          GetAllFowardsAndDiscountsRatesData.instruments.length > 0 &&
+          GetAllFowardsAndDiscountsRatesData.tenors.length > 0
+        ) {
+          const { forwardRates, tenors, instruments } =
+            GetAllFowardsAndDiscountsRatesData;
 
-    if (forwardsRates.length > 0) {
-      setDataSource(forwardsRates);
-      const forwardsColumns = createColumns(forwardsRates, 3);
-      setColumnsData(forwardsColumns);
+          const { forwardsRates } = generateData(
+            4,
+            tenors,
+            instruments,
+            forwardRates
+          );
+          if (forwardsRates.length > 0) {
+            setDataSource(forwardsRates);
+            const forwardsColumns = createColumns(forwardsRates, 3);
+            setColumnsData(forwardsColumns);
+          }
+        }
+      } catch (error) {
+        console.log(error)
+      }
     }
-  }, []);
+  }, [GetAllFowardsAndDiscountsRatesData]);
 
   return (
     <>
@@ -371,7 +397,7 @@ const Forwards = () => {
         columns={columnsData}
         dataSource={dataSource}
         prefixCls={"Treasury_Forwards"}
-        // bordered
+        bordered
         pagination={false}
         rowClassName={"striped-design"}
         rowHoverBg={"#000"}

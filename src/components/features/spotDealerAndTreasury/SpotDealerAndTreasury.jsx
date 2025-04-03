@@ -20,7 +20,6 @@ const SpotDealerAndTreasury = () => {
       try {
         const { spreadedFXSpots } = getAllCounterPartyData;
         if (spreadedFXSpots.length > 0) {
-          console.log(spreadedFXSpots, "spreadedFXSpots");
           setSpotsData(spreadedFXSpots);
         }
       } catch (error) {}
@@ -30,69 +29,6 @@ const SpotDealerAndTreasury = () => {
       );
     }
   }, [getAllCounterPartyData]);
-
-  const currencyData = [
-    {
-      code: "USD",
-      sellRate: 289,
-      buyRate: 288,
-    },
-    {
-      code: "EUR",
-      sellRate: 289,
-      buyRate: 288,
-    },
-    {
-      code: "GBP",
-      sellRate: 289,
-      buyRate: 288,
-    },
-    {
-      code: "JPY",
-      sellRate: 289,
-      buyRate: 288,
-    },
-    {
-      code: "CHF",
-      sellRate: 289,
-      buyRate: 288,
-    },
-    {
-      code: "CAD",
-      sellRate: 289,
-      buyRate: 288,
-    },
-    {
-      code: "CNY",
-      sellRate: 289,
-      buyRate: 288,
-    },
-    {
-      code: "CNH",
-      sellRate: 289,
-      buyRate: 288,
-    },
-    {
-      code: "AUD",
-      sellRate: 289,
-      buyRate: 288,
-    },
-    {
-      code: "SGD",
-      sellRate: 289,
-      buyRate: 288,
-    },
-    {
-      code: "DKK",
-      sellRate: 289,
-      buyRate: 288,
-    },
-    {
-      code: "SAR",
-      sellRate: 289,
-      buyRate: 288,
-    },
-  ];
 
   return (
     <>
@@ -109,7 +45,7 @@ const SpotDealerAndTreasury = () => {
                         {spotCardsData.instrumentName.split("/")[0]}
                       </span>
                       <span className={styles["SpotCurrentValue"]}>
-                      {spotCardsData.instrumentName.split("/")[1]}
+                        {spotCardsData.instrumentName.split("/")[1]}
                       </span>
                     </div>
                     {/*box content*/}

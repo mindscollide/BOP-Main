@@ -5,94 +5,19 @@ import BidAmountBox from "../../../../../../components/common/bidAmountBox/BidAm
 import { formatDateTimeToUTCTime } from "../../../../../../components/utils/timeFunction";
 import { getBankSpotData, loaderInitialize } from "./slicer/bankSpotSlicer";
 import SectionLoader from "../../../../../../components/common/sectionLoader/SectionLoader";
+import { GetFXInstrumentsAPI } from "@/components/features/SpotBranch/WatchlistAction";
 
 const BankSpot = () => {
   const { bankSpotReducer } = useSelector((state) => state);
+  const TresuaryBankSpotData = useSelector(
+    (state) => state.WatchListReducer.WatchListData
+  );
+  console.log(TresuaryBankSpotData, "watchListReducerwatchListReducer");
 
   const dispatch = useDispatch();
 
-  const [bankSpotData, setBankSpotData] = useState(null);
-
-  let bankSpotTableDummyData = {
-    instruments: [
-      {
-        worldCurrency: {
-          instrumentID: 101,
-          instrumentName: "USD/EUR",
-          bid: 1.1234,
-          offer: 1.1244,
-        },
-        worldCrosses: {
-          instrumentID: 102,
-          instrumentName: "GBP/USD",
-          bid: 1.2345,
-          offer: 1.2355,
-        },
-        time: "20240828070208",
-      },
-      {
-        worldCurrency: {
-          instrumentID: 103,
-          instrumentName: "JPY/USD",
-          bid: 0.0091,
-          offer: 0.0092,
-        },
-        worldCrosses: {
-          instrumentID: 104,
-          instrumentName: "AUD/USD",
-          bid: 0.715,
-          offer: 0.716,
-        },
-        time: "20240828070208",
-      },
-      {
-        worldCurrency: {
-          instrumentID: 105,
-          instrumentName: "USD/CHF",
-          bid: 0.9123,
-          offer: 0.9133,
-        },
-        worldCrosses: {
-          instrumentID: 106,
-          instrumentName: "EUR/GBP",
-          bid: 0.8543,
-          offer: 0.8553,
-        },
-        time: "20240828070208",
-      },
-      {
-        worldCurrency: {
-          instrumentID: 107,
-          instrumentName: "CAD/USD",
-          bid: 0.7901,
-          offer: 0.7911,
-        },
-        worldCrosses: {
-          instrumentID: 108,
-          instrumentName: "NZD/USD",
-          bid: 0.6702,
-          offer: 0.6712,
-        },
-        time: "20240828070208",
-      },
-      {
-        worldCurrency: {
-          instrumentID: 109,
-          instrumentName: "USD/SGD",
-          bid: 1.3478,
-          offer: 1.3488,
-        },
-        worldCrosses: {
-          instrumentID: 110,
-          instrumentName: "USD/HKD",
-          bid: 7.8105,
-          offer: 7.8115,
-        },
-        time: "20240828070208",
-      },
-    ],
-  };
-  
+  const [bankSpotData, setBankSpotData] = useState([]);
+  console.log(bankSpotData, "bankSpotData");
 
   const columns = [
     {
@@ -168,20 +93,14 @@ const BankSpot = () => {
     },
   ];
 
-  useEffect(() => {
-    // dispatch(GetFXInstrumentsAPI({}));
-  }, []);
 
   useEffect(() => {
-    if (
-      bankSpotReducer?.bankSpotData !== null &&
-      bankSpotReducer?.bankSpotData !== undefined
-    ) {
-      setBankSpotData(bankSpotReducer?.bankSpotData?.instruments);
+    if (TresuaryBankSpotData !== null && TresuaryBankSpotData !== undefined) {
+      setBankSpotData(TresuaryBankSpotData?.instruments);
     } else {
-      setBankSpotData(null);
+      setBankSpotData([]);
     }
-  }, [bankSpotReducer?.bankSpotData]);
+  }, [TresuaryBankSpotData]);
 
   return (
     <div className='card-box'>

@@ -826,7 +826,7 @@ export const getDiscountingRatesAction = createAsyncThunk(
               isExecuted: true,
             };
             return {
-              response: response,
+              response: response.data.responseResult,
               message: "Successfull",
             };
           } else if (

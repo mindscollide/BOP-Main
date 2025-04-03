@@ -94,30 +94,36 @@ const ForwardsForTreasuryAndDealer = () => {
     if (name === "tenorName" && value.length > 10) return;
     if (name === "noOfDays" && value.length > 4) return;
     setCreateTenor({ ...createTenor, [name]: value });
-
-    // Live validation
-    const validationResult = createTenorSchema.safeParse({
-      ...createTenor,
-      [name]: value,
-    });
-    if (!validationResult.success) {
-      const fieldErrors = validationResult.error.format();
-      setError({
-        tenorName: fieldErrors.tenorName?._errors[0] || "",
-        noOfDays: fieldErrors.noOfDays?._errors[0] || "",
-      });
-    } else {
-      setError({ tenorName: "", noOfDays: "" });
-    }
   };
 
   const handleCreateTenor = () => {
     if (createTenor.tenorName !== "" && createTenor.noOfDays !== 0) {
+      const { tenors } = getAllTenorsData;
+      if (tenors.length > 0) {
+        const isExistTenorName = tenors.some(
+          (item) => item.tenorName === createTenor.tenorName
+        );
+        const isExistTenorDays = tenors.some(
+          (item) => item.tenorDays === createTenor.noOfDays
+        );
+        if (isExistTenorName) {
+          setError({
+            ...error,
+            tenorName: "Tenor name already exists",
+          });
+        }
+        if (isExistTenorDays) {
+          setError({
+            ...error,
+            noOfDays: "No of days already exists",
+          });
+        }
+      }
       let Data = {
         Tenor: createTenor.tenorName,
         NoOfDays: Number(createTenor.noOfDays),
       };
-      dispatch(createTenorAction({ Data, navigate, setCreateTenorModal }));
+      // dispatch(createTenorAction({ Data, navigate, setCreateTenorModal }));
     }
   };
 
@@ -248,7 +254,14 @@ const ForwardsForTreasuryAndDealer = () => {
       <GlobalModal
         show={createTenorModal}
         backdrop='static'
-        onHide={() => setCreateTenorModal(false)}
+        onHide={() => {
+          setCreateTenorModal(false);
+          setError({ tenorName: "", noOfDays: "" });
+          setCreateTenor({
+            tenorName: "",
+            noOfDays: 0,
+          });
+        }}
         centered={true}
         footerClassName='d-block border-0'
         modalBody={
@@ -299,7 +312,14 @@ const ForwardsForTreasuryAndDealer = () => {
                     />
                     <CustomButton
                       value={"Cancel"}
-                      onClick={() => setCreateTenorModal(false)}
+                      onClick={() => {
+                        setCreateTenorModal(false);
+                        setError({ tenorName: "", noOfDays: "" });
+                        setCreateTenor({
+                          tenorName: "",
+                          noOfDays: 0,
+                        });
+                      }}
                       applyClass={"cancelTenorModalFooterBtn"}
                     />
                   </Suspense>

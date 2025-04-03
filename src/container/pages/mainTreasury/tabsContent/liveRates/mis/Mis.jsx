@@ -9,6 +9,7 @@ import { getMisData, loaderInitializeMis } from "./slicer/misSlicer";
 import SectionLoader from "../../../../../../components/common/sectionLoader/SectionLoader";
 import { useNavigate } from "react-router-dom";
 import { GetMisDataByRangeAPI } from "@/components/features/SpotBranch/WatchlistAction";
+import { formatDateToUTC } from "@/utils/formatters";
 
 const MIS = () => {
   const dispatch = useDispatch();
@@ -20,14 +21,16 @@ const MIS = () => {
   console.log(GetMisDataByRangeData);
 
   const [misTableData, setMisTableData] = useState(null);
+  const [MisDate, setMisDate] = useState({
+    StartDate: "",
+    EndDate: "",
+  });
 
-
-  console.log(misTableData, "misTableDatamisTableDatamisTableData")
+  console.log(MisDate, "misTableDatamisTableDatamisTableData");
 
   const [totalProfit, setTotalProfit] = useState(0);
 
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
-
 
   useEffect(() => {
     let Data = { StartDate: "20240828070208", EndDate: "20240828070208" };
@@ -131,7 +134,31 @@ const MIS = () => {
     setExpandedRowKeys(newExpandedRowKeys);
   };
 
+  const handleChangeDate = (date, key) => {
+    setMisDate((prevState) => ({
+      ...prevState,
+      [key]: new Date(date),
+    }));
+  };
 
+  const handleClickSearch = () => {
+    if (MisDate.StartDate !== "" && MisDate.EndDate !== "") {
+      let startDate = new Date(MisDate.StartDate);
+      startDate.setHours(0, 0, 0, 0); // Set time to 00:00:00
+
+      let endDate = new Date(MisDate.EndDate);
+      endDate.setHours(23, 58, 59, 999); // Set time to 23:58:59
+
+      const Data = {
+        StartDate: formatDateToUTC(startDate),
+        EndDate: formatDateToUTC(endDate),
+      };
+      console.log(Data , "Data");
+      dispatch(GetMisDataByRangeAPI({ navigate, Data }));
+    } else {
+      alert("Please select both dates.");
+    }
+  };
 
   useEffect(() => {
     if (GetMisDataByRangeData !== null) {
@@ -181,6 +208,8 @@ const MIS = () => {
                 <DatePickerCom
                   placeholder='Select Date'
                   applyClass={"DatePickerField"}
+                  value={MisDate.StartDate}
+                  onChange={(date) => handleChangeDate(date, "StartDate")}
                 />
               </div>
               <div className='form-group'>
@@ -190,19 +219,22 @@ const MIS = () => {
                 <DatePickerCom
                   placeholder='Select Date'
                   applyClass={"DatePickerField"}
+                  value={MisDate.EndDate}
+                  minDate={
+                    MisDate.StartDate !== ""
+                      ? new Date(MisDate.StartDate)
+                      : null
+                  }
+                  onChange={(date) => handleChangeDate(date, "EndDate")}
                 />
               </div>
               <div className='filter-mis-btn mt-3 d-flex gap-1'>
                 <CustomButton
-           
                   value='Search'
+                  onClick={handleClickSearch}
                   applyClass='searchBtn'
                 />
-                <CustomButton
-              
-                  value='Reset'
-                  applyClass='resetBtn'
-                />
+                <CustomButton value='Reset' applyClass='resetBtn' />
               </div>
             </div>
           </div>

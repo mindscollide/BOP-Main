@@ -1,5 +1,5 @@
 import {
-  GetAllCounterPartyData,
+  GetAllCounterPartyDataRM,
   GetAllFowardsAndDiscountsRates,
   GetDashboardData,
   GetFXInstruments,
@@ -15,7 +15,7 @@ import axios from "axios";
 // Define the GetFXInstruments async thunk
 export const GetFXInstrumentsAPI = createAsyncThunk(
   "watchlist/GetFXInstruments", // A unique action type string
-  async ({}, { rejectWithValue }) => {
+  async ({}, { dispatch, rejectWithValue }) => {
     try {
       // Set Axios headers using your custom headers function
       const headers = setCustomHeaders();
@@ -35,7 +35,8 @@ export const GetFXInstrumentsAPI = createAsyncThunk(
       const { responseCode } = response.data;
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-      } else if (response.data.responseCode === 200) {
+        dispatch(GetFXInstrumentsAPI({}));
+      } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (
@@ -94,7 +95,7 @@ export const GetFXInstrumentsAPI = createAsyncThunk(
 // Define the GetMisDataByRangeAPI async thunk
 export const GetMisDataByRangeAPI = createAsyncThunk(
   "watchlist/GetMisDataByRange", // A unique action type string
-  async ({ navigate, Data }, { rejectWithValue }) => {
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       // Set Axios headers using your custom headers function
       const headers = setCustomHeaders();
@@ -249,7 +250,7 @@ export const GetAllCounterPartyDataAPI = createAsyncThunk(
       //   This is the FormData
       let form = new FormData();
 
-      form.append("RequestMethod", GetAllCounterPartyData.RequestMethod);
+      form.append("RequestMethod", GetAllCounterPartyDataRM.RequestMethod);
 
       form.append("RequestData", JSON.stringify(Data));
 
