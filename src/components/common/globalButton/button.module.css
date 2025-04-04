@@ -526,3 +526,22 @@
   border-color: #6c757d;
   opacity: 0.65;
 }
+
+.SelectAllButton {
+  background: none !important;
+  background-color: none !important;
+  color: #000000 !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  border: none !important;
+  border-radius: 4px !important;
+}
+
+.SelectAllButton:is(:hover, :after, :focus-visible, :focus) {
+  background: #000000 !important;
+  color: #ffff !important;
+  border: 1px solid #000000 !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  border-radius: 4px !important;
+}
