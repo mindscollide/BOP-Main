@@ -5,7 +5,8 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { CorporateBlotterDataAPI } from "./CorporateBlotterActions";
 import { useSelector } from "react-redux";
-
+import { Dropdown, Menu, Checkbox, Button } from "antd";
+import { DownOutlined, FilterOutlined } from "@ant-design/icons";
 const TXNSummary = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -33,145 +34,125 @@ const TXNSummary = () => {
       if (GlobalStateGetBlotterData && GlobalStateGetBlotterData !== null) {
         console.log(GlobalStateGetBlotterData, "GlobalStateGetBlotterData");
         // Now will be requiring some Clarification on it
+        setBlotterdata([GlobalStateGetBlotterData.tnxSummary]);
       }
     } catch (error) {
       console.log(error, "error");
     }
   }, [GlobalStateGetBlotterData]);
 
-  const tableData = [
-    {
-      key: "1",
-      txnID: "27-08-2024/a2fe",
-      client: "Test",
-      side: "Buy",
-      nature: "6",
-      ccy1: "USD",
-      amount: "123",
-      rate: "288.00",
-      ccy2: "PKR",
-      amount2: "",
-      time: "12:20 pm",
-      lcNo: "2131231",
-      accountNo: "123123",
-      comment: "",
-      status: "Accepted",
-      chat: 21,
-    },
-    {
-      key: "2",
-      txnID: "27-08-2024/a2fe",
-      client: "Test",
-      side: "Buy",
-      nature: "6",
-      ccy1: "USD",
-      amount: "123",
-      rate: "288.00",
-      ccy2: "PKR",
-      amount2: "",
-      time: "12:20 pm",
-      lcNo: "2131231",
-      accountNo: "123123",
-      comment: "Test Comment",
-      status: "Rejected",
-      chat: 21,
-    },
-    {
-      key: "3",
-      txnID: "27-08-2024/9836",
-      client: "Syed Muhammad Aun Naqvi",
-      side: "Sell",
-      nature: "1",
-      ccy1: "USD",
-      amount: "999,999",
-      rate: "289.00",
-      ccy2: "PKR",
-      amount2: "",
-      time: "19:01 pm",
-      lcNo: "3142fdasfasd34214312412341234123412341234",
-      accountNo: "4124141241241241241241412412412412412",
-      comment: "",
-      status: "Accepted",
-      chat: 0,
-    },
-  ];
+  const [selectedFilters, setSelectedFilters] = useState([]);
+
+  const handleFilterChange = (checkedValues) => {
+    setSelectedFilters(checkedValues);
+  };
+
+  const handleApplyFilter = () => {
+    // Apply your filter logic
+    console.log("Applied filters:", selectedFilters);
+  };
+
+  const handleResetFilter = () => {
+    setSelectedFilters([]);
+  };
 
   const columns = [
     {
-      key: "1",
       title: "TXN ID",
-      dataIndex: "txnID",
+      key: "txnid",
+      dataIndex: "txnid",
+      className: "ff-poppins fw-bold",
+      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => (
+        <div style={{ padding: 8, width: 250 }}>
+          <div className="d-flex justify-content-between mb-2">
+            <Button type="primary" size="small" onClick={handleApplyFilter}>
+              Apply
+            </Button>
+            <Button size="small" onClick={handleResetFilter}>
+              Reset
+            </Button>
+          </div>
+          <Checkbox.Group
+            style={{ display: "flex", flexDirection: "column" }}
+            options={["Option 1", "Option 2", "Option 3"]}
+            value={selectedFilters}
+            onChange={handleFilterChange}
+          />
+        </div>
+      ),
+      filterIcon: (filtered) => (
+        <DownOutlined style={{ color: "white", fontSize: "12px" }} />
+      ),
+    },
+    {
+      title: "Name",
+      key: "counterPartyName",
+      dataIndex: "counterPartyName",
       className: "ff-poppins fw-bold",
     },
     {
-      key: "2",
-      title: "Client",
-      dataIndex: "client",
-      className: "ff-poppins fw-bold",
-    },
-    {
-      key: "3",
       title: "Side",
+      key: "side",
       dataIndex: "side",
       className: "ff-poppins fw-bold",
     },
     {
-      key: "4",
       title: "Nature",
+      key: "nature",
       dataIndex: "nature",
       className: "ff-poppins fw-bold",
     },
     {
-      key: "5",
-      title: "CCY1",
-      dataIndex: "ccy1",
+      title: "ccY1",
+      key: "ccY1",
+      dataIndex: "ccY1",
       className: "ff-poppins fw-bold",
     },
     {
-      key: "6",
       title: "Amount",
-      dataIndex: "amount",
+      key: "amount1",
+      dataIndex: "amount1",
       className: "ff-poppins fw-bold",
     },
     {
-      key: "7",
       title: "Rate",
-      dataIndex: "rate",
+      key: "rate1",
+      dataIndex: "rate1",
       className: "ff-poppins fw-bold",
     },
     {
-      key: "8",
-      title: "CCY2",
-      dataIndex: "ccy2",
+      title: "ccY2",
+      key: "ccY2",
+      dataIndex: "ccY2",
       className: "ff-poppins fw-bold",
     },
     {
-      key: "9",
       title: "Amount",
+      key: "amount2",
       dataIndex: "amount2",
       className: "ff-poppins fw-bold",
     },
     {
-      key: "10",
       title: "Time",
+      key: "time",
       dataIndex: "time",
       className: "ff-poppins fw-bold",
     },
     {
-      key: "11",
-      title: "LC No.",
-      dataIndex: "lcNo",
+      title: "lC No",
+      key: "lC_No",
+      dataIndex: "lC_No",
       className: "ff-poppins fw-bold",
     },
     {
-      key: "12",
       title: "Account No.",
-      dataIndex: "accountNo",
+      key: "accountNumber",
+      dataIndex: "accountNumber",
       className: "ff-poppins fw-bold",
     },
     {
-      key: "13",
       title: "Comment",
+      key: "comment",
       dataIndex: "comment",
       className: "comment-class ",
       render: (text, record) => (
@@ -210,7 +191,7 @@ const TXNSummary = () => {
       <div className="box-content-wrapper">
         <GlobalTable
           pagination={false}
-          dataSource={tableData}
+          dataSource={blotterdata}
           bordered={false}
           prefixCls="TXNSummary_Table"
           columns={columns}

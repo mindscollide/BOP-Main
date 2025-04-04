@@ -9,11 +9,7 @@ import SellAndBuyModal from "./SellAndBuyModal/SellAndBuyModal";
 import { useModal } from "../../../context/ModalContext";
 import ChatBox from "../chatBox/ChatBox.jsx";
 import BlotterHeader from "@/container/pages/mainTreasury/tabsContent/liveRates/blotter/blotterHeader/BlotterHeader";
-import {
-  GetDashboardDataAPI,
-  GetFXInstrumentsAPI,
-  SaveUserDashboardAPI,
-} from "./WatchlistAction";
+import { GetDashboardDataAPI, SaveUserDashboardAPI } from "./WatchlistAction";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -28,8 +24,7 @@ const SpotBranch = () => {
   const [watchlistCardData, setWatchlistCardData] = useState([]);
   const [watchlistTableData, setWatchlistTableData] = useState([]);
 
-  console.log(watchlistTableData, "watchlistTableDatawatchlistTableData");
-
+  console.log(watchlistCardData, "watchlistTableDatawatchlistTableData");
   //Global State for Watchlist Card Data
   const globalStateWatchlistCardData = useSelector(
     (state) => state.WatchListReducer?.GettheDashboardData ?? null
@@ -38,7 +33,6 @@ const SpotBranch = () => {
   //WatchList table Data Api Call
   useEffect(() => {
     try {
-      dispatch(GetFXInstrumentsAPI({}));
       dispatch(GetDashboardDataAPI({}));
     } catch (error) {
       console.log(error, "error");
@@ -73,12 +67,14 @@ const SpotBranch = () => {
         watchlistCardData.forEach((item, index) => {
           if (index < 6) {
             updatedData[`watchlist${index + 1}`] = {
-              currecncyLabel: item.instrumentName,
-              buyValue: item.buy,
-              sellValue: item.sell,
+              currecncyLabel: item.instrumentName || "Unknown", // Handle null
+              buyValue: item.buy ?? "--", // Handle null or undefined
+              sellValue: item.sell ?? "--",
             };
           }
         });
+
+        console.log(updatedData, "updated watchlistData");
 
         return updatedData;
       });
@@ -86,6 +82,7 @@ const SpotBranch = () => {
   }, [watchlistCardData]);
 
   //Watch<List>Data State
+  //By Default for having Six Tiles
   const [watchlistData, setWatchlistData] = useState({
     watchlist1: { currecncyLabel: "", buyValue: "", sellValue: "" },
     watchlist2: { currecncyLabel: "", buyValue: "", sellValue: "" },
@@ -104,9 +101,8 @@ const SpotBranch = () => {
       width: "160px",
       align: "left",
       render: (text, record) => {
-        console.log(record, "responseresponseresponse");
         console.log(text, "responseresponseresponse");
-        <span className="instrument-column">{text}</span>;
+        return <span className="instrument-column">{text}</span>;
       },
     },
     {
@@ -154,24 +150,24 @@ const SpotBranch = () => {
     // Handle dropping into BranchRateCardsOfWatchList
     if (destination.droppableId.startsWith("watchlist")) {
       const item = watchlistTableData[source.index]; // Get dragged item
-      const { instrument, bid, offer, key } = item; // Extract values
+      const { instrumentName, bid, offer, key, instrumentID } = item; // Extract values
       console.log(item, "resultresultresultresult");
-      //Calling the save Droppale Item API
-      // let Data = {
-      //   DashboardSections: [
-      //     {
-      //       SectionID: 1,
-      //       InstrumentID: 21,
-      //       Sell: 5,
-      //       Buy: 4,
-      //     },
-      //   ],
-      // };
-      // dispatch(SaveUserDashboardAPI({ Data }));
+      //   Calling the save Droppale Item API
+      let Data = {
+        DashboardSections: [
+          {
+            SectionID: Number(source.index),
+            InstrumentID: Number(instrumentID),
+            Sell: offer,
+            Buy: bid,
+          },
+        ],
+      };
+      dispatch(SaveUserDashboardAPI({ Data }));
       setWatchlistData((prevData) => ({
         ...prevData,
         [destination.droppableId]: {
-          currecncyLabel: instrument,
+          currecncyLabel: instrumentName,
           buyValue: bid,
           sellValue: offer,
         },
@@ -182,9 +178,14 @@ const SpotBranch = () => {
   // Draggable Row of the table
   const DraggableBodyRow = ({ index, className, style, ...restProps }) => {
     const { children, ...draggableProps } = restProps;
+    const draggableId = draggableProps["data-row-key"] || `row-${index}`;
+
+    if (!draggableId) {
+      console.error("Missing draggableId for row:", index, draggableProps);
+    }
 
     return (
-      <Draggable draggableId={draggableProps["data-row-key"]} index={index}>
+      <Draggable draggableId={String(draggableId)} index={index}>
         {(provided, snapshot) => (
           <tr
             ref={provided.innerRef}
@@ -192,7 +193,6 @@ const SpotBranch = () => {
             {...provided.dragHandleProps}
             style={{
               ...style,
-              height: "0px",
               ...provided.draggableProps.style,
             }}
             className={className}
@@ -203,7 +203,6 @@ const SpotBranch = () => {
       </Draggable>
     );
   };
-
   return (
     <section>
       <DragDropContext onDragEnd={onDragEnd}>
@@ -215,120 +214,7 @@ const SpotBranch = () => {
                   <span className="FxTradingLabel">FX Trading</span>
                 </Col>
               </Row>
-              {/* First Row of Dragger below */}
-              {/* <Row className="mt-2">
-                <Col lg={4} md={4} sm={12}>
-                  <Droppable droppableId="watchlist1">
-                    {(provided) => (
-                      <div ref={provided.innerRef} {...provided.droppableProps}>
-                        <BranchRateCardsOfWatchList
-                          currencyLabel={
-                            watchlistData.watchlist1.currecncyLabel
-                          }
-                          buyHeading="I Buy"
-                          sellHeading="I Sell"
-                          buyValue={watchlistData.watchlist1.buyValue}
-                          sellValue={watchlistData.watchlist1.sellValue}
-                        />
-                        {provided.placeholder}
-                      </div>
-                    )}
-                  </Droppable>
-                </Col>
-                <Col lg={4} md={4} sm={12}>
-                  <Droppable droppableId="watchlist2">
-                    {(provided) => (
-                      <div ref={provided.innerRef} {...provided.droppableProps}>
-                        <BranchRateCardsOfWatchList
-                          currencyLabel={
-                            watchlistData.watchlist2.currecncyLabel
-                          }
-                          buyHeading="I Buy"
-                          sellHeading="I Sell"
-                          buyValue={watchlistData.watchlist2.buyValue}
-                          sellValue={watchlistData.watchlist2.sellValue}
-                        />
-                        {provided.placeholder}
-                      </div>
-                    )}
-                  </Droppable>
-                </Col>
-                <Col lg={4} md={4} sm={12}>
-                  <Droppable droppableId="watchlist3">
-                    {(provided) => (
-                      <div ref={provided.innerRef} {...provided.droppableProps}>
-                        <BranchRateCardsOfWatchList
-                          currencyLabel={
-                            watchlistData.watchlist3.currecncyLabel
-                          }
-                          buyHeading="I Buy"
-                          sellHeading="I Sell"
-                          buyValue={watchlistData.watchlist3.buyValue}
-                          sellValue={watchlistData.watchlist3.sellValue}
-                        />
-                        {provided.placeholder}
-                      </div>
-                    )}
-                  </Droppable>
-                </Col>
-              </Row> */}
-              {/* Second Row of Dragger below */}
-              {/* <Row className="mt-2">
-                <Col lg={4} md={4} sm={12}>
-                  <Droppable droppableId="watchlist4">
-                    {(provided) => (
-                      <div ref={provided.innerRef} {...provided.droppableProps}>
-                        <BranchRateCardsOfWatchList
-                          currencyLabel={
-                            watchlistData.watchlist4.currecncyLabel
-                          }
-                          buyHeading="I Buy"
-                          sellHeading="I Sell"
-                          buyValue={watchlistData.watchlist4.buyValue}
-                          sellValue={watchlistData.watchlist4.sellValue}
-                        />
-                        {provided.placeholder}
-                      </div>
-                    )}
-                  </Droppable>
-                </Col>
-                <Col lg={4} md={4} sm={12}>
-                  <Droppable droppableId="watchlist5">
-                    {(provided) => (
-                      <div ref={provided.innerRef} {...provided.droppableProps}>
-                        <BranchRateCardsOfWatchList
-                          currencyLabel={
-                            watchlistData.watchlist5.currecncyLabel
-                          }
-                          buyHeading="I Buy"
-                          sellHeading="I Sell"
-                          buyValue={watchlistData.watchlist5.buyValue}
-                          sellValue={watchlistData.watchlist5.sellValue}
-                        />
-                        {provided.placeholder}
-                      </div>
-                    )}
-                  </Droppable>
-                </Col>
-                <Col lg={4} md={4} sm={12}>
-                  <Droppable droppableId="watchlist6">
-                    {(provided) => (
-                      <div ref={provided.innerRef} {...provided.droppableProps}>
-                        <BranchRateCardsOfWatchList
-                          currencyLabel={
-                            watchlistData.watchlist6.currecncyLabel
-                          }
-                          buyHeading="I Buy"
-                          sellHeading="I Sell"
-                          buyValue={watchlistData.watchlist6.buyValue}
-                          sellValue={watchlistData.watchlist6.sellValue}
-                        />
-                        {provided.placeholder}
-                      </div>
-                    )}
-                  </Droppable>
-                </Col>
-              </Row> */}
+
               <Row className="mt-3">
                 {[...Array(6)].map((_, index) => {
                   const droppableId = `watchlist${index + 1}`;
@@ -384,10 +270,14 @@ const SpotBranch = () => {
                             row: DraggableBodyRow,
                           },
                         }}
-                        onRow={(record, index) => ({
-                          index,
-                          "data-row-key": record.key,
-                        })}
+                        onRow={(record, index) => {
+                          console.log("Missing draggableId for row:", record);
+                          console.log("Missing draggableId for row:", index);
+                          return {
+                            index,
+                            "data-row-key": record.instrumentID, // Ensure this matches your API data
+                          };
+                        }}
                         scroll={{ y: 330, x: "auto" }}
                       />
                       {provided.placeholder}
