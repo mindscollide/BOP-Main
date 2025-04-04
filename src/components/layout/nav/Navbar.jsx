@@ -101,7 +101,7 @@ const GlobalNavbar = () => {
                       </Suspense>
                     )}
                     {location.pathname.includes("treasury") &&
-                    (shouldIncludeDealer || shouldIncludeTreasury) ? (
+                    (shouldIncludeDealer || shouldIncludeTreasury || shouldIncludeCorporate) ? (
                       <CustomButton
                         applyClass="calcBtn"
                         value="Calculators"
