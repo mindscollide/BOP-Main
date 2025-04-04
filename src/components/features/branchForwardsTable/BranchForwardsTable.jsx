@@ -66,7 +66,6 @@ const BranchForwardsTable = () => {
         forwardRatesData,
         discountRatesData
       );
-
       if (forwardsRates.length > 0) {
         setDataSource(forwardsRates);
         const forwardsColumns = createColumns(forwardsRates, 2);
