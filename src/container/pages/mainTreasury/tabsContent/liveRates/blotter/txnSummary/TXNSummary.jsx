@@ -29,7 +29,7 @@ const TXNSummary = () => {
   //Calling Corporate Blotter Data API
   useEffect(() => {
     try {
-      dispatch(CorporateBlotterDataAPI({navigate}));
+      dispatch(CorporateBlotterDataAPI({}));
     } catch (error) {
       console.log(error, "error");
     }
@@ -116,9 +116,9 @@ const TXNSummary = () => {
     {
       title: (
         <div className="d-flex align-items-center justify-content-center gap-1">
+          <span className="ff-poppins fw-bold">TXN ID</span>
           <Popover
             content={popoverContent}
-            title="TXN ID Filter"
             trigger="click"
             arrow={false}
             placement="bottom"
