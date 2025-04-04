@@ -11,7 +11,7 @@ import axios from "axios";
 // Define the ViewAllNatureOfBussinessAPI async thunk
 export const ViewAllNatureOfBussinessAPI = createAsyncThunk(
   "Auth/ViewAllNatureOfBussiness", // A unique action type string
-  async ({ Data }, { rejectWithValue }) => {
+  async ({ Data, navigate }, { dispatch, rejectWithValue }) => {
     try {
       // Set Axios headers using your custom headers function
       const headers = setCustomHeaders();
@@ -33,6 +33,7 @@ export const ViewAllNatureOfBussinessAPI = createAsyncThunk(
       const { responseCode } = response.data;
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        dispatch(ViewAllNatureOfBussinessAPI({ Data, navigate }));
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {

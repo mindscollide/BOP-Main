@@ -33,7 +33,7 @@ const SpotBranch = () => {
   //WatchList table Data Api Call
   useEffect(() => {
     try {
-      dispatch(GetDashboardDataAPI({}));
+      dispatch(GetDashboardDataAPI({navigate}));
     } catch (error) {
       console.log(error, "error");
     }

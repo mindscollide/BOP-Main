@@ -29,7 +29,7 @@ const TXNSummary = () => {
   //Calling Corporate Blotter Data API
   useEffect(() => {
     try {
-      dispatch(CorporateBlotterDataAPI({}));
+      dispatch(CorporateBlotterDataAPI({navigate}));
     } catch (error) {
       console.log(error, "error");
     }

@@ -8,7 +8,7 @@ import axios from "axios";
 // Define the ViewAllNatureOfBussinessAPI async thunk
 export const CorporateBlotterDataAPI = createAsyncThunk(
   "Blotter/CorporateBlotterData", // A unique action type string
-  async ({}, { rejectWithValue }) => {
+  async ({ navigate }, { dispatch, rejectWithValue }) => {
     try {
       // Set Axios headers using your custom headers function
       const headers = setCustomHeaders();
@@ -28,6 +28,7 @@ export const CorporateBlotterDataAPI = createAsyncThunk(
       const { responseCode } = response.data;
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        dispatch(CorporateBlotterDataAPI({ navigate }));
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
