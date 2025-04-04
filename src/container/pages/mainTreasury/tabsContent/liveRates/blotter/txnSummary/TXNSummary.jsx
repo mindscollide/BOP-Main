@@ -462,7 +462,7 @@ const TXNSummary = () => {
         value={selectedItemsCCY2}
         onChange={handleCheckboxChangeCCY2}
       >
-        {Rate_OPTIONS.map((item) => (
+        {CCY2_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
           </Checkbox>
@@ -524,7 +524,7 @@ const TXNSummary = () => {
   };
 
   const handleSelectAllTime = () => {
-    setSelectedItemsTime(Amount2_OPTIONS);
+    setSelectedItemsTime(Time_OPTIONS);
   };
 
   const handleDeselectAllTime = () => {
