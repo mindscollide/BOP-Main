@@ -15,7 +15,7 @@ import axios from "axios";
 // Define the GetFXInstruments async thunk
 export const GetFXInstrumentsAPI = createAsyncThunk(
   "watchlist/GetFXInstruments", // A unique action type string
-  async ({}, { dispatch, rejectWithValue }) => {
+  async ({ navigate }, { dispatch, rejectWithValue }) => {
     try {
       // Set Axios headers using your custom headers function
       const headers = setCustomHeaders();
@@ -35,7 +35,7 @@ export const GetFXInstrumentsAPI = createAsyncThunk(
       const { responseCode } = response.data;
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(GetFXInstrumentsAPI({}));
+        dispatch(GetFXInstrumentsAPI({ navigate }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -117,6 +117,7 @@ export const GetMisDataByRangeAPI = createAsyncThunk(
       const { responseCode } = response.data;
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        dispatch(GetMisDataByRangeAPI({ navigate, Data }));
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -168,7 +169,7 @@ export const GetMisDataByRangeAPI = createAsyncThunk(
 // Define the GetAllFowardsAndDiscountsRates async thunk
 export const GetAllFowardsAndDiscountsRatesAPI = createAsyncThunk(
   "watchlist/GetAllFowardsAndDiscountsRates", // A unique action type string
-  async ({}, { rejectWithValue }) => {
+  async ({}, { dispatch, rejectWithValue }) => {
     try {
       // Set Axios headers using your custom headers function
       const headers = setCustomHeaders();
@@ -323,7 +324,7 @@ export const GetAllCounterPartyDataAPI = createAsyncThunk(
 // Define the GetAllFowardsAndDiscountsRates async thunk
 export const GetDashboardDataAPI = createAsyncThunk(
   "watchlist/GetDashboardData", // A unique action type string
-  async ({}, { rejectWithValue }) => {
+  async ({ navigate }, { dispatch, rejectWithValue }) => {
     try {
       // Set Axios headers using your custom headers function
       const headers = setCustomHeaders();
@@ -345,6 +346,7 @@ export const GetDashboardDataAPI = createAsyncThunk(
       if (responseCode === 417) {
         console.log(responseCode, "responseCoderesponseCode");
         await dispatch(refreshTokenAction({ navigate }));
+        dispatch(GetDashboardDataAPI({navigate}))
         console.log(responseCode, "responseCoderesponseCode");
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -397,7 +399,7 @@ export const GetDashboardDataAPI = createAsyncThunk(
 // Define the GetAllFowardsAndDiscountsRates async thunk
 export const SaveUserDashboardAPI = createAsyncThunk(
   "watchlist/SaveUserDashboard", // A unique action type string
-  async ({ Data }, { rejectWithValue }) => {
+  async ({ Data, navigate }, { dispatch, rejectWithValue }) => {
     try {
       // Set Axios headers using your custom headers function
       const headers = setCustomHeaders();
@@ -419,6 +421,7 @@ export const SaveUserDashboardAPI = createAsyncThunk(
       const { responseCode } = response.data;
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        dispatch(SaveUserDashboardAPI({ Data, navigate }));
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
