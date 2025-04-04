@@ -2,14 +2,20 @@ import React, { useEffect, useState } from "react";
 import GlobalTable from "../../../../../../../components/common/table/GlobalTable";
 import IconElement from "../../../../../../../components/common/IconElement/IconElement";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { CorporateBlotterDataAPI } from "./CorporateBlotterActions";
 import { useSelector } from "react-redux";
-import { Button, Checkbox, Popover } from "antd";
+import { Checkbox, Popover } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import CustomButton from "@/components/common/globalButton/button";
 const TXNSummary = () => {
   const dispatch = useDispatch();
+
+  const TXN_ID_OPTIONS = [
+    "09-09-2024/0568",
+    "09-09-2024/4798",
+    "09-09-2024/bd2e",
+    "09-09-2024/d1f2",
+  ];
 
   //Global State For Blotter Data
   const GlobalStateGetBlotterData = useSelector(
@@ -19,7 +25,7 @@ const TXNSummary = () => {
   //local states
   const [blotterdata, setBlotterdata] = useState([]);
   const [open, setOpen] = useState(false);
-
+  const [selectedItems, setSelectedItems] = useState([]);
   //Calling Corporate Blotter Data API
   useEffect(() => {
     try {
@@ -58,21 +64,60 @@ const TXNSummary = () => {
   };
 
   //Pop Over for antd Col
-
   const hide = () => {
     setOpen(false);
   };
+
   const handleOpenChange = (newOpen) => {
     setOpen(newOpen);
   };
+
+  const handleSelectAll = () => {
+    setSelectedItems(TXN_ID_OPTIONS);
+  };
+
+  const handleDeselectAll = () => {
+    setSelectedItems([]);
+  };
+
+  const handleCheckboxChange = (checkedValues) => {
+    setSelectedItems(checkedValues);
+  };
+
+  const popoverContent = (
+    <div style={{ width: 220 }}>
+      <div className="d-flex justify-content-between mb-2">
+        <CustomButton
+          applyClass="SelectAllButton"
+          value={"Select All"}
+          onClick={handleSelectAll}
+        />
+        <CustomButton
+          applyClass="SelectAllButton"
+          value={"Desselect All"}
+          onClick={handleDeselectAll}
+        />
+      </div>
+      <Checkbox.Group
+        style={{ display: "flex", flexDirection: "column" }}
+        value={selectedItems}
+        onChange={handleCheckboxChange}
+      >
+        {TXN_ID_OPTIONS.map((item) => (
+          <Checkbox key={item} value={item}>
+            {item}
+          </Checkbox>
+        ))}
+      </Checkbox.Group>
+    </div>
+  );
 
   const columns = [
     {
       title: (
         <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">TXN ID</span>
           <Popover
-            content={<a onClick={hide}>Close</a>}
+            content={popoverContent}
             title="TXN ID Filter"
             trigger="click"
             arrow={false}
