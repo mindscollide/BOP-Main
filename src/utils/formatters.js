@@ -36,3 +36,19 @@ export const formatDateToUTC = (date) => {
     String(date.getUTCSeconds()).padStart(2, "0")
   );
 };
+
+export const convertDateTimeIntoGMT = (date) => {
+  let dateString =
+  date.slice(0, 4) +
+    "-" +
+    date.slice(4, 6) +
+    "-" +
+    date.slice(6, 8) +
+    " " +
+    date.slice(8, 10) +
+    ":" +
+    date.slice(10, 12) +
+    ":" +
+    date.slice(12, 14);
+  return dateString;
+};

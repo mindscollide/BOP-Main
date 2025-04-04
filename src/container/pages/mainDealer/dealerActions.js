@@ -212,7 +212,7 @@ export const PublishNewRatesAction = createAsyncThunk(
           ) {
             return {
               response: response.data.responseResult,
-              message: "",
+              message: "Rates are published",
             };
           } else if (
             responseMessage
@@ -692,7 +692,7 @@ export const PublishTenorWiseForwardsAction = createAsyncThunk(
           ) {
             return {
               response: response.data.responseResult,
-              message: "Successfully",
+              message: "Forwards Rates are Published",
             };
           } else if (
             responseMessage
@@ -827,7 +827,7 @@ export const getDiscountingRatesAction = createAsyncThunk(
             };
             return {
               response: response.data.responseResult,
-              message: "Successfull",
+              message: "Forwards Rates are Published",
             };
           } else if (
             responseMessage
