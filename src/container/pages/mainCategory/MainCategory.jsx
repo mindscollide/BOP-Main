@@ -8,10 +8,12 @@ import { getAllCategoriesAction } from "@/components/utils/globalApis";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { GetAllCounterPartyDataAPI } from "@/components/features/SpotBranch/WatchlistAction";
+import { useDealerAndTreasury } from "@/context/DealerAndTreasuryContext";
 
 const MainCategory = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { setCategoryValue } = useDealerAndTreasury();
   const getAllCategories = useSelector(
     (state) => state.authReducer.getAllCategories
   );
@@ -31,6 +33,10 @@ const MainCategory = () => {
         let Data = {
           CategoryID: categories[0].categoryID,
         };
+        setCategoryValue({
+          value: categories[0].categoryID,
+          label: categories[0].categoryName,
+        });
         dispatch(GetAllCounterPartyDataAPI({ Data, navigate }));
         console.log(categories[0], "categoriescategories");
       }
