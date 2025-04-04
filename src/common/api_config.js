@@ -66,8 +66,6 @@ const GetAllFowardsAndDiscountsRates = {
   RequestMethod: "ServiceManager.GetAllFowardsAndDiscountsRates",
 };
 
-
-
 const GetDashboardData = {
   RequestMethod: "ServiceManager.GetDashboardData",
 };
@@ -95,6 +93,10 @@ const SaveTransactionRFQ = {
   RequestMethod: "ServiceManager.SaveTransactionRFQ",
 };
 
+const DownloadFile = {
+  RequestMethod: "DownloadFile",
+};
+
 export {
   getAllCategoriesRM,
   clearRatesRM,
@@ -120,4 +122,5 @@ export {
   refreshTokenRM,
   GetAllCounterPartyDataRM,
   SaveTransactionRFQ,
+  DownloadFile,
 };

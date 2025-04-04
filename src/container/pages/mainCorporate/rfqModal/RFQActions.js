@@ -85,7 +85,7 @@ export const ViewAllNatureOfBussinessAPI = createAsyncThunk(
 // Define the ViewAllNatureOfBussinessAPI async thunk
 export const SaveTransactionRFQAPI = createAsyncThunk(
   "Blotter/SaveTransactionRFQAPI", // A unique action type string
-  async ({ Data }, { rejectWithValue }) => {
+  async ({ Data }, { dispatch, rejectWithValue }) => {
     try {
       // Set Axios headers using your custom headers function
       const headers = setCustomHeaders();

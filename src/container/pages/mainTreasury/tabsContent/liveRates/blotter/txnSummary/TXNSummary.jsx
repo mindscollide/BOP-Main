@@ -78,6 +78,9 @@ const TXNSummary = () => {
   //AccNO Filter State
   const [openAccNO, setOpenAccNO] = useState(false);
   const [selectedItemsAccNO, setSelectedItemsAccNO] = useState([]);
+  //Status Filter State
+  const [openStatus, setOpenStatus] = useState(false);
+  const [selectedItemsStatus, setSelectedItemsStatus] = useState([]);
 
   //Calling Corporate Blotter Data API
   useEffect(() => {
@@ -605,9 +608,9 @@ const TXNSummary = () => {
       </Checkbox.Group>
     </div>
   );
-  //Time PopOver Functions Ends
+  //LCno PopOver Functions Ends
 
-  //LCno PopOver Functions Starts
+  //ACCno PopOver Functions Starts
   const handleOpenChangeAccNO = (newOpen) => {
     setOpenAccNO(newOpen);
   };
@@ -651,7 +654,53 @@ const TXNSummary = () => {
       </Checkbox.Group>
     </div>
   );
-  //Time PopOver Functions Ends
+  //ACCno PopOver Functions Ends
+
+  //status PopOver Functions Starts
+  const handleOpenChangeStatus = (newOpen) => {
+    setOpenStatus(newOpen);
+  };
+
+  const handleSelectAllStatus = () => {
+    setSelectedItemsStatus(Status_OPTIONS);
+  };
+
+  const handleDeselectAllStatus = () => {
+    setSelectedItemsStatus([]);
+  };
+
+  const handleCheckboxChangeStatus = (checkedValues) => {
+    setSelectedItemsStatus(checkedValues);
+  };
+
+  const popoverContentStatus = (
+    <div style={{ width: 220 }}>
+      <div className="d-flex justify-content-between mb-2">
+        <CustomButton
+          applyClass="SelectAllButton"
+          value={"Select All"}
+          onClick={handleSelectAllStatus}
+        />
+        <CustomButton
+          applyClass="SelectAllButton"
+          value={"Desselect All"}
+          onClick={handleDeselectAllStatus}
+        />
+      </div>
+      <Checkbox.Group
+        style={{ display: "flex", flexDirection: "column" }}
+        value={selectedItemsStatus}
+        onChange={handleCheckboxChangeStatus}
+      >
+        {Status_OPTIONS.map((item) => (
+          <Checkbox key={item} value={item}>
+            {item}
+          </Checkbox>
+        ))}
+      </Checkbox.Group>
+    </div>
+  );
+  //status PopOver Functions Ends
 
   const columns = [
     {
@@ -1019,8 +1068,31 @@ const TXNSummary = () => {
       ),
     },
     {
+      title: (
+        <div className="d-flex align-items-center justify-content-center gap-1">
+          <span className="ff-poppins fw-bold">Status</span>
+          <Popover
+            content={popoverContentStatus}
+            trigger="click"
+            arrow={false}
+            placement="bottom"
+            open={openStatus}
+            onOpenChange={handleOpenChangeStatus}
+          >
+            <span
+              style={{
+                cursor: "pointer",
+                color: "white",
+                background: "#f56600",
+                borderRadius: "4px",
+              }}
+            >
+              ▼
+            </span>
+          </Popover>
+        </div>
+      ),
       key: "14",
-      title: "Status",
       dataIndex: "status",
       className: "ff-poppins fw-bold",
       render: (text, record) => (

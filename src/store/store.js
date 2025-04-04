@@ -8,7 +8,7 @@ import CorporateBlotterSlicer from "../container/pages/mainTreasury/tabsContent/
 import authSlicer from "@/store/authSlicer/authSlicer";
 import DealerReducer from "./dealerReducer/dealerSlicer";
 import CategoryReducer from "./categoryReducer/categoryReducer";
-
+import ReportSlicer from "./ReportSlicer/ReportSlicer";
 const store = configureStore({
   reducer: {
     bankSpotReducer: bankSpotSlicer,
@@ -19,6 +19,7 @@ const store = configureStore({
     CorporateBlotterReducer: CorporateBlotterSlicer,
     dealerReducer: DealerReducer,
     categoryReducer: CategoryReducer,
+    ReportReducer: ReportSlicer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 });

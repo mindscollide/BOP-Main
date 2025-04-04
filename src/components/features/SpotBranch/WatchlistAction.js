@@ -243,7 +243,7 @@ export const GetAllFowardsAndDiscountsRatesAPI = createAsyncThunk(
 // Define the GetAllFowardsAndDiscountsRates async thunk
 export const GetAllCounterPartyDataAPI = createAsyncThunk(
   "watchlist/GetAllCounterPartyData", // A unique action type string
-  async ({ navigate, Data }, { rejectWithValue }) => {
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       // Set Axios headers using your custom headers function
       const headers = setCustomHeaders();
@@ -346,7 +346,7 @@ export const GetDashboardDataAPI = createAsyncThunk(
       if (responseCode === 417) {
         console.log(responseCode, "responseCoderesponseCode");
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(GetDashboardDataAPI({navigate}))
+        dispatch(GetDashboardDataAPI({ navigate }));
         console.log(responseCode, "responseCoderesponseCode");
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;

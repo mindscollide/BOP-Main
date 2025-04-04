@@ -47,7 +47,7 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
       let Data = { PageNumber: 1, Length: 3 };
       dispatch(ViewAllNatureOfBussinessAPI({ Data, navigate }));
       //For having Currency as discussed with MS (worldCrosses)
-      dispatch(GetFXInstrumentsAPI({navigate}));
+      dispatch(GetFXInstrumentsAPI({ navigate }));
     } catch (error) {
       console.log(error, "error");
     }
@@ -191,11 +191,12 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
             <div className="modal-body" rfq-type="Forex">
               <Row className="m-0">
                 <Col lg={2} md={2} sm={2}>
-                  <label>Currency*</label>
+                  <label className="label">Currency*</label>
                 </Col>
                 <Col lg={4} md={4} sm={4} className="mb-2">
                   <SelectDropdown
                     placeholder="Search"
+                    classNamePrefix={"RFQGeneralReactSelectClass"}
                     options={currencyOptions}
                     onChange={handleCurrencyChange}
                     value={selectedCurrency}
@@ -203,16 +204,19 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
                 </Col>
 
                 <Col lg={2} md={2} sm={2}>
-                  <label>Type*</label>
+                  <label className="label">Type*</label>
                 </Col>
                 <Col lg={4} md={4} sm={4} className="mb-2">
-                  <SelectDropdown placeholder="Search" />
+                  <SelectDropdown
+                    classNamePrefix={"RFQGeneralReactSelectClass"}
+                    placeholder="Search"
+                  />
                 </Col>
               </Row>
 
               <Row className="m-0">
                 <Col lg={2} md={2} sm={2}>
-                  <label>Amount*</label>
+                  <label className="label">Amount*</label>
                 </Col>
                 <Col lg={4} md={4} sm={4} className="mb-2">
                   <InputFIeld
@@ -223,7 +227,7 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
                   />
                 </Col>
                 <Col lg={2} md={2} sm={2}>
-                  <label>A/c No</label>
+                  <label className="label">A/c No</label>
                 </Col>
                 <Col lg={4} md={4} sm={4} className="mb-2">
                   <InputFIeld
@@ -237,12 +241,13 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
 
               <Row className="m-0">
                 <Col lg={2} md={2} sm={2}>
-                  <label>Nature*</label>
+                  <label className="label">Nature*</label>
                 </Col>
 
                 <Col lg={4} md={4} sm={4} className="mb-2">
                   <SelectDropdown
                     placeholder="Search"
+                    classNamePrefix={"RFQGeneralReactSelectClass"}
                     options={natureOfBusinessOptions}
                     onChange={handleNatureChange}
                     value={selectedNature}
@@ -250,7 +255,7 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
                 </Col>
 
                 <Col lg={2} md={2} sm={2}>
-                  <label>LC No</label>
+                  <label className="label">LC No</label>
                 </Col>
                 <Col lg={4} md={4} sm={4} className="mb-2">
                   <InputFIeld
