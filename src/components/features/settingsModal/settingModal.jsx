@@ -8,25 +8,47 @@ const SettingModal = () => {
   const { settingModal, setSettingModal } = useModal();
 
   // Conditionally import CustomButton based on the environment variables
-  const shouldIncludeComponents =
+  const shouldIncludeBranchComponents =
     import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
 
-  const SettingusersComponent = shouldIncludeComponents
-    ? lazy(() =>
-        import(
-          "../../../components/features/settingsModal/userSettingComponent/SettingusersComponent"
-        )
-      )
-    : null;
+  // Conditionally import CustomButton based on the environment variables
+  const shouldIncludeTreasuryComponents =
+    import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
 
-  const PassCodeSettingComponent = shouldIncludeComponents
-    ? lazy(() =>
-        import(
-          "../../../components/features/settingsModal/PasscodeSettingComponent/PassCodeSettingComponent"
-        )
-      )
-    : null;
+  // Conditionally import CustomButton based on the environment variables
+  const shouldIncludeDealerComponents =
+    import.meta.env.VITE_APP_INCLUDE_DEALER === "true";
+  // Conditionally import CustomButton based on the environment variables
+  const shouldIncludeCorporateComponents =
+    import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
 
+  const SettingusersComponent =
+    shouldIncludeCorporateComponents ||
+    shouldIncludeBranchComponents ||
+    shouldIncludeTreasuryComponents ||
+    shouldIncludeDealerComponents
+      ? lazy(() =>
+          import(
+            "../../../components/features/settingsModal/userSettingComponent/SettingusersComponent"
+          )
+        )
+      : null;
+
+  const PassCodeSettingComponent =
+    shouldIncludeCorporateComponents ||
+    shouldIncludeBranchComponents ||
+    shouldIncludeTreasuryComponents ||
+    shouldIncludeDealerComponents
+      ? lazy(() =>
+          import(
+            "../../../components/features/settingsModal/PasscodeSettingComponent/PassCodeSettingComponent"
+          )
+        )
+      : null;
+  const MarketTimingSettingComponent =
+    shouldIncludeDealerComponents || shouldIncludeTreasuryComponents
+      ? lazy(() => import("./MarketTimingComponent/MarketTIming"))
+      : null;
   //Tabs
   const tabsData = [
     {
@@ -45,13 +67,21 @@ const SettingModal = () => {
         </Suspense>
       ),
     },
+    {
+      title: "Market Timing",
+      content: MarketTimingSettingComponent && (
+        <Suspense fallback={<>Loading... </>}>
+          <MarketTimingSettingComponent />
+        </Suspense>
+      ),
+    },
   ];
   return (
     <div>
       {" "}
       <GlobalModal
         show={settingModal}
-        backdrop="static"
+        backdrop='static'
         onHide={() => setSettingModal(false)}
         centered={true}
         className={"ModalClassNameSettings"}
@@ -65,9 +95,13 @@ const SettingModal = () => {
           <>
             <>
               <GlobalTabs
-                tabs={tabsData}
+                tabs={
+                  !MarketTimingSettingComponent
+                    ? tabsData.filter((tbData, index) => index < 2)
+                    : tabsData
+                }
                 defaultActiveKey={"0"}
-                tabClass="mb-4 d-flex justify-content-start"
+                tabClass='mb-4 d-flex justify-content-start'
               />
             </>
           </>

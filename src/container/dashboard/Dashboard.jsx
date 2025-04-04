@@ -4,6 +4,7 @@ import Header from "@/components/layout/header/header";
 import GlobalNavbar from "@/components/layout/nav/Navbar";
 import { Outlet, useLocation } from "react-router-dom";
 import { ResponseMessage } from "@/components/utils/ResponseMessageToast";
+import SettingModal from "@/components/features/settingsModal/settingModal";
 const Dashboard = () => {
   const { Content } = Layout;
   const location = useLocation();
@@ -15,6 +16,7 @@ const Dashboard = () => {
       <GlobalNavbar />
       <Content>
         <main className='px-3'>
+          <SettingModal />
           <Outlet />
         </main>
       </Content>

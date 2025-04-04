@@ -4,23 +4,24 @@ import IconElement from "../IconElement/IconElement";
 import styles from "./ProfileDropdown.module.css";
 import { Link, useNavigate } from "react-router-dom";
 
-const ProfileDropdown = ({ userName }) => {
+const ProfileDropdown = ({ userName, setSettingModal }) => {
   const navigate = useNavigate();
   const handleClickLogout = () => {
-    document.cookie = `path=/; secure; samesite=strict;`;
     localStorage.clear();
     navigate("/");
   };
   return (
     <Dropdown>
       <Dropdown.Toggle className={styles["ProfileDropdown"]}>
-        <span className="user-logdin-name fw-bold color-hd max-w-fix-100 text-truncate d-inline-block align-middle">
+        <span className='user-logdin-name fw-bold color-hd max-w-fix-100 text-truncate d-inline-block align-middle'>
           {userName}
         </span>
         <IconElement iconClass={"icon-arrow-down"} />
       </Dropdown.Toggle>
       <Dropdown.Menu className={styles["ProfileDropdown_menu"]}>
-        <Dropdown.Item className="d-flex align-items-center cursor-pointer">
+        <Dropdown.Item
+          onClick={() => setSettingModal(true)}
+          className='d-flex align-items-center cursor-pointer'>
           <Nav.Link>
             <IconElement iconClass={"icon-settings me-1"} />
             <label>Setting</label>
@@ -30,8 +31,7 @@ const ProfileDropdown = ({ userName }) => {
           onClick={handleClickLogout}
           as={Link}
           to={"/"}
-          className="d-flex align-items-center cursor-pointer"
-        >
+          className='d-flex align-items-center cursor-pointer'>
           <IconElement iconClass={"icon-logout me-1"} />
           <label>Logout</label>
         </Dropdown.Item>
