@@ -66,9 +66,7 @@ const GetAllFowardsAndDiscountsRates = {
   RequestMethod: "ServiceManager.GetAllFowardsAndDiscountsRates",
 };
 
-const GetAllCounterPartyData = {
-  RequestMethod: "ServiceManager.GetAllCounterPartyData",
-};
+
 
 const GetDashboardData = {
   RequestMethod: "ServiceManager.GetDashboardData",
@@ -115,7 +113,6 @@ export {
   GetFXInstruments,
   GetMisDataByRange,
   GetAllFowardsAndDiscountsRates,
-  GetAllCounterPartyData,
   GetDashboardData,
   SaveUserDashboard,
   ViewAllNatureOfBussiness,

@@ -4,9 +4,11 @@ import {
   clearRatesAction,
   createTenorAction,
   getAllTenorsAction,
+  getDiscountingRatesAction,
   getLastPublishRatesAction,
   getTenorWiseForwardsAction,
   marketOnOffAction,
+  publishDiscountingRatesAction,
 } from "@/container/pages/mainDealer/dealerActions";
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -24,6 +26,8 @@ const dealerReducer = createSlice({
     getAllTenors: null,
     getTenorWiseForwardsRates: null,
     publishTenorwiseForwardRates: null,
+    getDiscountingWiseRates: null,
+    publishDiscountRates: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -139,7 +143,36 @@ const dealerReducer = createSlice({
           state.publishTenorwiseForwardRates = null;
           state.responseMessage = payload;
         }
-      );
+      )
+      .addCase(getDiscountingRatesAction.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getDiscountingRatesAction.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.getDiscountingWiseRates = payload.response;
+        state.responseMessage = payload.message;
+      })
+      .addCase(getDiscountingRatesAction.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.getDiscountingWiseRates = null;
+        state.responseMessage = payload;
+      })
+      .addCase(publishDiscountingRatesAction.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(
+        publishDiscountingRatesAction.fulfilled,
+        (state, { payload }) => {
+          state.loading = false;
+          state.publishDiscountRates = payload.response;
+          state.responseMessage = payload.message;
+        }
+      )
+      .addCase(publishDiscountingRatesAction.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.publishDiscountRates = null;
+        state.responseMessage = payload;
+      });
   },
 });
 

@@ -6,7 +6,7 @@ import {
   GetFXInstrumentsAPI,
   GetMisDataByRangeAPI,
   SaveUserDashboardAPI,
-} from "./WatchlistAction";
+} from "../../components/features/SpotBranch/WatchlistAction";
 const WatchListSlice = createSlice({
   name: "WatchList",
   initialState: {

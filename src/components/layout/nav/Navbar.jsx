@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { getAllCategoryTableData } from "@/container/pages/mainCategory/categoryActions";
 import { useModal } from "@/context/ModalContext";
+import { GetAllCounterPartyDataAPI } from "@/components/features/SpotBranch/WatchlistAction";
 
 const GlobalNavbar = () => {
   const { setSettingModal } = useModal();
@@ -49,7 +50,7 @@ const GlobalNavbar = () => {
     let Data = { CategoryID: event.value };
     console.log(Data);
 
-    // dispatch(getAllCategoryTableData({ navigate, Data }));
+    dispatch(GetAllCounterPartyDataAPI({ Data, navigate }));
     setCategoryValue({
       value: event.value,
       label: event.label,

@@ -42,7 +42,6 @@ const SelectDropdown = ({
       pageSize={0}
       menuPosition={menuPosition}
       filterOption={filterOptions}
-      onChange={onChange}
     />
   );
 };
