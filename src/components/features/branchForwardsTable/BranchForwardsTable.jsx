@@ -60,7 +60,7 @@ const BranchForwardsTable = () => {
       discountRatesData.length > 0
     ) {
       const { forwardsRates } = generateData(
-        2,
+        4,
         tenorsData,
         instrumentForwards,
         forwardRatesData,
