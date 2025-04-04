@@ -14,7 +14,11 @@ import {
 import { useSelector } from "react-redux";
 import { refreshIntervalSchema } from "@/common/validationSchemas";
 import { useNavigate } from "react-router-dom";
-import { formatCurrencyInput } from "@/utils/formatters";
+import {
+  convertDateTimeIntoGMT,
+  formatCurrencyInput,
+} from "@/utils/formatters";
+import moment from "moment";
 
 const SpotRates = () => {
   const dispatch = useDispatch();
@@ -41,8 +45,7 @@ const SpotRates = () => {
   const [refreshInterval, setRefreshInterval] = useState(1);
 
   useEffect(() => {
-
-    dispatch(getLastPublishRatesAction({  navigate }));
+    dispatch(getLastPublishRatesAction({ navigate }));
   }, []);
 
   useEffect(() => {
@@ -134,12 +137,24 @@ const SpotRates = () => {
     }
   };
   const handlePublishRates = () => {
-    let Data = {
-      CurrentBid: Number(currentRates.bidValue),
-      CurrentAsk: Number(currentRates.askValue),
-      RefreshInterval: Number(refreshInterval),
-    };
-    dispatch(PublishNewRatesAction({ Data }));
+    if (
+      currentRates.bidValue !== "" &&
+      currentRates.askValue !== null &&
+      refreshInterval !== 0
+    ) {
+      if (Number(currentRates.askValue) > Number(currentRates.bidValue)) {
+        let Data = {
+          CurrentBid: Number(currentRates.bidValue),
+          CurrentAsk: Number(currentRates.askValue),
+          RefreshInterval: Number(refreshInterval),
+        };
+        dispatch(PublishNewRatesAction({ Data }));
+      } else {
+        alert("Ask value must be greater than Bid value.");
+      }
+    } else {
+      alert("Fill all the fields");
+    }
   };
 
   return (
@@ -201,8 +216,10 @@ const SpotRates = () => {
               <div className='col-md-6 col-sm-12 ps-1 pe-1 rate-box'>
                 <div className='rate box-header d-flex align-items-center px-2'>
                   <div className='fw-bold fs-6 ff-roboto'>Last Published @</div>
-                  <div className='datetime ms-auto ff-roboto'>
-                    {lastPublishRates.dateTime}
+                  <div className='datetime fw-bold  ms-auto ff-roboto'>
+                    {moment(
+                      convertDateTimeIntoGMT(lastPublishRates.dateTime)
+                    ).format("DD MMM YYYY, hh:mm:ss")}
                   </div>
                 </div>
                 <div className='rate-box-content'>
@@ -241,8 +258,10 @@ const SpotRates = () => {
               <div className='col-md-6 col-sm-12 ps-1 pe-1 rate-box'>
                 <div className='rate box-header d-flex align-items-center px-2'>
                   <div className='fw-bold fs-6 ff-roboto'>Current Value @</div>
-                  <div className='datetime ms-auto ff-roboto'>
-                    {currentRates.dateTime}
+                  <div className='datetime fw-bold ms-auto ff-roboto'>
+                    {moment(
+                      convertDateTimeIntoGMT(currentRates.dateTime)
+                    ).format("DD MMM YYYY, hh:mm:ss")}
                   </div>
                 </div>
                 <div className='rate-box-content'>
