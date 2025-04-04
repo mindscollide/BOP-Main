@@ -5,11 +5,11 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { CorporateBlotterDataAPI } from "./CorporateBlotterActions";
 import { useSelector } from "react-redux";
-import { Dropdown, Menu, Checkbox, Button } from "antd";
-import { DownOutlined, FilterOutlined } from "@ant-design/icons";
+import { Button, Checkbox, Popover } from "antd";
+import { DownOutlined } from "@ant-design/icons";
+import CustomButton from "@/components/common/globalButton/button";
 const TXNSummary = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   //Global State For Blotter Data
   const GlobalStateGetBlotterData = useSelector(
@@ -18,6 +18,7 @@ const TXNSummary = () => {
 
   //local states
   const [blotterdata, setBlotterdata] = useState([]);
+  const [open, setOpen] = useState(false);
 
   //Calling Corporate Blotter Data API
   useEffect(() => {
@@ -56,33 +57,37 @@ const TXNSummary = () => {
     setSelectedFilters([]);
   };
 
+  //Pop Over for antd Col
+
+  const hide = () => {
+    setOpen(false);
+  };
+  const handleOpenChange = (newOpen) => {
+    setOpen(newOpen);
+  };
+
   const columns = [
     {
-      title: "TXN ID",
-      key: "txnid",
-      dataIndex: "txnid",
-      className: "ff-poppins fw-bold",
-      filterDropdown: ({ setSelectedKeys, selectedKeys, confirm }) => (
-        <div style={{ padding: 8, width: 250 }}>
-          <div className="d-flex justify-content-between mb-2">
-            <Button type="primary" size="small" onClick={handleApplyFilter}>
-              Apply
-            </Button>
-            <Button size="small" onClick={handleResetFilter}>
-              Reset
-            </Button>
-          </div>
-          <Checkbox.Group
-            style={{ display: "flex", flexDirection: "column" }}
-            options={["Option 1", "Option 2", "Option 3"]}
-            value={selectedFilters}
-            onChange={handleFilterChange}
-          />
+      title: (
+        <div className="d-flex align-items-center justify-content-center gap-1">
+          <span className="ff-poppins fw-bold">TXN ID</span>
+          <Popover
+            content={<a onClick={hide}>Close</a>}
+            title="TXN ID Filter"
+            trigger="click"
+            arrow={false}
+            placement="bottom"
+            open={open}
+            onOpenChange={handleOpenChange}
+          >
+            <DownOutlined style={{ cursor: "pointer" }} />
+          </Popover>
         </div>
       ),
-      filterIcon: (filtered) => (
-        <DownOutlined style={{ color: "white", fontSize: "12px" }} />
-      ),
+      key: "txnid",
+      dataIndex: "txnid",
+      align: "center",
+      className: "ff-poppins fw-bold",
     },
     {
       title: "Name",
