@@ -60,13 +60,12 @@ const BranchForwardsTable = () => {
       discountRatesData.length > 0
     ) {
       const { forwardsRates } = generateData(
-        2,
+        4,
         tenorsData,
         instrumentForwards,
         forwardRatesData,
         discountRatesData
       );
-
       if (forwardsRates.length > 0) {
         setDataSource(forwardsRates);
         const forwardsColumns = createColumns(forwardsRates, 2);
