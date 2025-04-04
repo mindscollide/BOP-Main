@@ -12,20 +12,22 @@ import { useDispatch } from "react-redux";
 import { getAllCategoryTableData } from "@/container/pages/mainCategory/categoryActions";
 import { useModal } from "@/context/ModalContext";
 import { GetAllCounterPartyDataAPI } from "@/components/features/SpotBranch/WatchlistAction";
+import { useDealerAndTreasury } from "@/context/DealerAndTreasuryContext";
 
 const GlobalNavbar = () => {
   const { setSettingModal } = useModal();
   const getAllCategoriesData = useSelector(
     (state) => state.authReducer.getAllCategories
   );
+  const {categoryValue,setCategoryValue} = useDealerAndTreasury()
   const dispatch = useDispatch();
   const [selectedValue, setSelectedValue] = useState(1);
   const [openRfqModal, setOpenRfqModal] = useState(false);
   const [allCategories, setAllCategories] = useState([]);
-  const [categoryValue, setCategoryValue] = useState({
-    value: 0,
-    label: "",
-  });
+  // const [categoryValue, setCategoryValue] = useState({
+  //   value: 0,
+  //   label: "",
+  // });
   const navigate = useNavigate();
   const location = useLocation();
   const handleCalculatorClick = () => {
