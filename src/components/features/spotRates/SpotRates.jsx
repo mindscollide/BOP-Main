@@ -217,9 +217,11 @@ const SpotRates = () => {
                 <div className='rate box-header d-flex align-items-center px-2'>
                   <div className='fw-bold fs-6 ff-roboto'>Last Published @</div>
                   <div className='datetime fw-bold  ms-auto ff-roboto'>
-                    {moment(
-                      convertDateTimeIntoGMT(lastPublishRates.dateTime)
-                    ).format("DD MMM YYYY, hh:mm:ss")}
+                    {/* {} */}
+                    {lastPublishRates.dateTime !== "" &&
+                      moment(
+                        convertDateTimeIntoGMT(lastPublishRates.dateTime)
+                      ).format("DD MMM YYYY, hh:mm:ss")}
                   </div>
                 </div>
                 <div className='rate-box-content'>
@@ -259,9 +261,10 @@ const SpotRates = () => {
                 <div className='rate box-header d-flex align-items-center px-2'>
                   <div className='fw-bold fs-6 ff-roboto'>Current Value @</div>
                   <div className='datetime fw-bold ms-auto ff-roboto'>
-                    {moment(
-                      convertDateTimeIntoGMT(currentRates.dateTime)
-                    ).format("DD MMM YYYY, hh:mm:ss")}
+                    {currentRates.dateTime !== "" &&
+                      moment(
+                        convertDateTimeIntoGMT(currentRates.dateTime)
+                      ).format("DD MMM YYYY, hh:mm:ss")}
                   </div>
                 </div>
                 <div className='rate-box-content'>
