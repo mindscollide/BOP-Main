@@ -32,6 +32,8 @@ const CategoryForwards = () => {
       }
     }
   }, [getAllCounterPartyData]);
+
+  console.log({ columnsData, dataSource }, "Dealer_Forwards");
   return (
     <GlobalTable
       columns={columnsData}
