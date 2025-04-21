@@ -123,7 +123,7 @@ function App() {
     return <div>Loading...</div>; // Better check for array length than null
   }
 
-  const router = createHashRouter(routes);
+  const router = createBrowserRouter(routes);
   return <RouterProvider router={router} />;
 }
 
