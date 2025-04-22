@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { Checkbox, Popover } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import CustomButton from "@/components/common/globalButton/button";
+import CommentModal from "../commentModal/CommentModal";
 const TXNSummary = () => {
   const dispatch = useDispatch();
 
@@ -43,6 +44,9 @@ const TXNSummary = () => {
   //TXNID Filter State
   const [open, setOpen] = useState(false);
   const [selectedItemsTXNID, setSelectedItemsTXNID] = useState([]);
+  // Show and Hide Comment Modal and commentState
+  const [showCommentModal, setShowCommentModal] = useState(false);
+  const [comment, setComment] = useState("");
   //Customer Name Filter State
   const [openCustomername, setOpenCustomername] = useState(false);
   const [selectedItemsCustomerName, setSelectedItemsCustomerName] = useState(
@@ -123,14 +127,14 @@ const TXNSummary = () => {
 
   const popoverContentTXN = (
     <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
+      <div className='d-flex justify-content-between mb-2'>
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Select All"}
           onClick={handleSelectAll}
         />
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Desselect All"}
           onClick={handleDeselectAll}
         />
@@ -138,8 +142,7 @@ const TXNSummary = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsTXNID}
-        onChange={handleCheckboxChange}
-      >
+        onChange={handleCheckboxChange}>
         {TXN_ID_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -169,14 +172,14 @@ const TXNSummary = () => {
 
   const popoverContentCustomerName = (
     <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
+      <div className='d-flex justify-content-between mb-2'>
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Select All"}
           onClick={handleSelectAllCustomerName}
         />
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Desselect All"}
           onClick={handleDeselectAllCustomerName}
         />
@@ -184,8 +187,7 @@ const TXNSummary = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsCustomerName}
-        onChange={handleCheckboxChangeCustomerName}
-      >
+        onChange={handleCheckboxChangeCustomerName}>
         {CustomerName_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -215,14 +217,14 @@ const TXNSummary = () => {
 
   const popoverContentType = (
     <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
+      <div className='d-flex justify-content-between mb-2'>
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Select All"}
           onClick={handleSelectAllType}
         />
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Desselect All"}
           onClick={handleDeselectAllType}
         />
@@ -230,8 +232,7 @@ const TXNSummary = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsType}
-        onChange={handleCheckboxChangeType}
-      >
+        onChange={handleCheckboxChangeType}>
         {TYPE_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -261,14 +262,14 @@ const TXNSummary = () => {
 
   const popoverContentNature = (
     <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
+      <div className='d-flex justify-content-between mb-2'>
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Select All"}
           onClick={handleSelectAllNature}
         />
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Desselect All"}
           onClick={handleDeselectAllNature}
         />
@@ -276,8 +277,7 @@ const TXNSummary = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsNature}
-        onChange={handleCheckboxChangeNature}
-      >
+        onChange={handleCheckboxChangeNature}>
         {Nature_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -307,14 +307,14 @@ const TXNSummary = () => {
 
   const popoverContentCCY1 = (
     <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
+      <div className='d-flex justify-content-between mb-2'>
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Select All"}
           onClick={handleSelectAllCCY1}
         />
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Desselect All"}
           onClick={handleDeselectAllCCY1}
         />
@@ -322,8 +322,7 @@ const TXNSummary = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsCCY1}
-        onChange={handleCheckboxChangeCCY1}
-      >
+        onChange={handleCheckboxChangeCCY1}>
         {CCY1_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -353,14 +352,14 @@ const TXNSummary = () => {
 
   const popoverContentAmount1 = (
     <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
+      <div className='d-flex justify-content-between mb-2'>
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Select All"}
           onClick={handleSelectAllAmount1}
         />
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Desselect All"}
           onClick={handleDeselectAllAmount1}
         />
@@ -368,8 +367,7 @@ const TXNSummary = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsAmount1}
-        onChange={handleCheckboxChangeAmount1}
-      >
+        onChange={handleCheckboxChangeAmount1}>
         {Amount_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -399,14 +397,14 @@ const TXNSummary = () => {
 
   const popoverContentRate = (
     <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
+      <div className='d-flex justify-content-between mb-2'>
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Select All"}
           onClick={handleSelectAllRate}
         />
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Desselect All"}
           onClick={handleDeselectAllRate}
         />
@@ -414,8 +412,7 @@ const TXNSummary = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsRate}
-        onChange={handleCheckboxChangeRate}
-      >
+        onChange={handleCheckboxChangeRate}>
         {Rate_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -445,14 +442,14 @@ const TXNSummary = () => {
 
   const popoverContentCCY2 = (
     <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
+      <div className='d-flex justify-content-between mb-2'>
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Select All"}
           onClick={handleSelectAllCCY2}
         />
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Desselect All"}
           onClick={handleDeselectAllCCY2}
         />
@@ -460,8 +457,7 @@ const TXNSummary = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsCCY2}
-        onChange={handleCheckboxChangeCCY2}
-      >
+        onChange={handleCheckboxChangeCCY2}>
         {CCY2_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -491,14 +487,14 @@ const TXNSummary = () => {
 
   const popoverContentAmount2 = (
     <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
+      <div className='d-flex justify-content-between mb-2'>
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Select All"}
           onClick={handleSelectAllAmount2}
         />
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Desselect All"}
           onClick={handleDeselectAllAmount2}
         />
@@ -506,8 +502,7 @@ const TXNSummary = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsAmount2}
-        onChange={handleCheckboxChangeAmount2}
-      >
+        onChange={handleCheckboxChangeAmount2}>
         {Amount2_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -537,14 +532,14 @@ const TXNSummary = () => {
 
   const popoverContentTime = (
     <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
+      <div className='d-flex justify-content-between mb-2'>
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Select All"}
           onClick={handleSelectAllTime}
         />
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Desselect All"}
           onClick={handleDeselectAllTime}
         />
@@ -552,8 +547,7 @@ const TXNSummary = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsTime}
-        onChange={handleCheckboxChangeTime}
-      >
+        onChange={handleCheckboxChangeTime}>
         {Time_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -583,14 +577,14 @@ const TXNSummary = () => {
 
   const popoverContentLCno = (
     <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
+      <div className='d-flex justify-content-between mb-2'>
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Select All"}
           onClick={handleSelectAllLCno}
         />
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Desselect All"}
           onClick={handleDeselectAllLCno}
         />
@@ -598,8 +592,7 @@ const TXNSummary = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsLCno}
-        onChange={handleCheckboxChangeLCno}
-      >
+        onChange={handleCheckboxChangeLCno}>
         {LCno_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -629,14 +622,14 @@ const TXNSummary = () => {
 
   const popoverContentAccNO = (
     <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
+      <div className='d-flex justify-content-between mb-2'>
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Select All"}
           onClick={handleSelectAllAccNO}
         />
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Desselect All"}
           onClick={handleDeselectAllAccNO}
         />
@@ -644,8 +637,7 @@ const TXNSummary = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsAccNO}
-        onChange={handleCheckboxChangeAccNO}
-      >
+        onChange={handleCheckboxChangeAccNO}>
         {Accno_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -675,14 +667,14 @@ const TXNSummary = () => {
 
   const popoverContentStatus = (
     <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
+      <div className='d-flex justify-content-between mb-2'>
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Select All"}
           onClick={handleSelectAllStatus}
         />
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Desselect All"}
           onClick={handleDeselectAllStatus}
         />
@@ -690,8 +682,7 @@ const TXNSummary = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsStatus}
-        onChange={handleCheckboxChangeStatus}
-      >
+        onChange={handleCheckboxChangeStatus}>
         {Status_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -701,28 +692,31 @@ const TXNSummary = () => {
     </div>
   );
   //status PopOver Functions Ends
+  // Show and Hide Comment Modal and Update Comment Value
+  const handleShowCommentModal = (text) => {
+    setShowCommentModal(true);
+    setComment(text);
+  };
 
   const columns = [
     {
       title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">TXN ID</span>
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>TXN ID</span>
           <Popover
             content={popoverContentTXN}
-            trigger="click"
+            trigger='click'
             arrow={false}
-            placement="bottom"
+            placement='bottom'
             open={open}
-            onOpenChange={handleOpenChange}
-          >
+            onOpenChange={handleOpenChange}>
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}
-            >
+              }}>
               ▼
             </span>
           </Popover>
@@ -735,24 +729,22 @@ const TXNSummary = () => {
     },
     {
       title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">Name</span>
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Name</span>
           <Popover
             content={popoverContentCustomerName}
-            trigger="click"
+            trigger='click'
             arrow={false}
-            placement="bottom"
+            placement='bottom'
             open={openCustomername}
-            onOpenChange={handleOpenChangeCustomerName}
-          >
+            onOpenChange={handleOpenChangeCustomerName}>
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}
-            >
+              }}>
               ▼
             </span>
           </Popover>
@@ -764,24 +756,22 @@ const TXNSummary = () => {
     },
     {
       title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">Type</span>
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Type</span>
           <Popover
             content={popoverContentType}
-            trigger="click"
+            trigger='click'
             arrow={false}
-            placement="bottom"
+            placement='bottom'
             open={openType}
-            onOpenChange={handleOpenChangeType}
-          >
+            onOpenChange={handleOpenChangeType}>
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}
-            >
+              }}>
               ▼
             </span>
           </Popover>
@@ -793,24 +783,22 @@ const TXNSummary = () => {
     },
     {
       title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">Nature</span>
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Nature</span>
           <Popover
             content={popoverContentNature}
-            trigger="click"
+            trigger='click'
             arrow={false}
-            placement="bottom"
+            placement='bottom'
             open={openNature}
-            onOpenChange={handleOpenChangeNature}
-          >
+            onOpenChange={handleOpenChangeNature}>
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}
-            >
+              }}>
               ▼
             </span>
           </Popover>
@@ -822,24 +810,22 @@ const TXNSummary = () => {
     },
     {
       title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">CCY1</span>
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>CCY1</span>
           <Popover
             content={popoverContentCCY1}
-            trigger="click"
+            trigger='click'
             arrow={false}
-            placement="bottom"
+            placement='bottom'
             open={openCCY1}
-            onOpenChange={handleOpenChangeCCY1}
-          >
+            onOpenChange={handleOpenChangeCCY1}>
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}
-            >
+              }}>
               ▼
             </span>
           </Popover>
@@ -851,24 +837,22 @@ const TXNSummary = () => {
     },
     {
       title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">Amount</span>
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Amount</span>
           <Popover
             content={popoverContentAmount1}
-            trigger="click"
+            trigger='click'
             arrow={false}
-            placement="bottom"
+            placement='bottom'
             open={openAmount1}
-            onOpenChange={handleOpenChangeAmount1}
-          >
+            onOpenChange={handleOpenChangeAmount1}>
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}
-            >
+              }}>
               ▼
             </span>
           </Popover>
@@ -880,24 +864,22 @@ const TXNSummary = () => {
     },
     {
       title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">Rate</span>
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Rate</span>
           <Popover
             content={popoverContentRate}
-            trigger="click"
+            trigger='click'
             arrow={false}
-            placement="bottom"
+            placement='bottom'
             open={openRate}
-            onOpenChange={handleOpenChangeRate}
-          >
+            onOpenChange={handleOpenChangeRate}>
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}
-            >
+              }}>
               ▼
             </span>
           </Popover>
@@ -909,24 +891,22 @@ const TXNSummary = () => {
     },
     {
       title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">CCY2</span>
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>CCY2</span>
           <Popover
             content={popoverContentCCY2}
-            trigger="click"
+            trigger='click'
             arrow={false}
-            placement="bottom"
+            placement='bottom'
             open={openCCY2}
-            onOpenChange={handleOpenChangeCCY2}
-          >
+            onOpenChange={handleOpenChangeCCY2}>
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}
-            >
+              }}>
               ▼
             </span>
           </Popover>
@@ -938,24 +918,22 @@ const TXNSummary = () => {
     },
     {
       title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">Amount</span>
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Amount</span>
           <Popover
             content={popoverContentAmount2}
-            trigger="click"
+            trigger='click'
             arrow={false}
-            placement="bottom"
+            placement='bottom'
             open={openAmount2}
-            onOpenChange={handleOpenChangeAmount2}
-          >
+            onOpenChange={handleOpenChangeAmount2}>
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}
-            >
+              }}>
               ▼
             </span>
           </Popover>
@@ -967,24 +945,22 @@ const TXNSummary = () => {
     },
     {
       title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">Time</span>
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Time</span>
           <Popover
             content={popoverContentTime}
-            trigger="click"
+            trigger='click'
             arrow={false}
-            placement="bottom"
+            placement='bottom'
             open={openTime}
-            onOpenChange={handleOpenChangeTime}
-          >
+            onOpenChange={handleOpenChangeTime}>
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}
-            >
+              }}>
               ▼
             </span>
           </Popover>
@@ -996,24 +972,22 @@ const TXNSummary = () => {
     },
     {
       title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">LC NO.</span>
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>LC NO.</span>
           <Popover
             content={popoverContentLCno}
-            trigger="click"
+            trigger='click'
             arrow={false}
-            placement="bottom"
+            placement='bottom'
             open={openLCno}
-            onOpenChange={handleOpenChangeLCno}
-          >
+            onOpenChange={handleOpenChangeLCno}>
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}
-            >
+              }}>
               ▼
             </span>
           </Popover>
@@ -1025,24 +999,22 @@ const TXNSummary = () => {
     },
     {
       title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">Acc NO.</span>
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Acc NO.</span>
           <Popover
             content={popoverContentAccNO}
-            trigger="click"
+            trigger='click'
             arrow={false}
-            placement="bottom"
+            placement='bottom'
             open={openAccNO}
-            onOpenChange={handleOpenChangeAccNO}
-          >
+            onOpenChange={handleOpenChangeAccNO}>
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}
-            >
+              }}>
               ▼
             </span>
           </Popover>
@@ -1056,12 +1028,15 @@ const TXNSummary = () => {
       title: "Comment",
       key: "comment",
       dataIndex: "comment",
-      className: "comment-class ",
+      className: "comment-class text-center ",
       render: (text, record) => (
         <>
           {text !== "" ? (
-            <span className="d-inline-block cursor-pointer">
-              <IconElement iconClass="icon-view-comment fs-5 color-blue" />
+            <span className='d-inline-block cursor-pointer'>
+              <IconElement
+                iconClass='icon-view-comment fs-5 color-blue'
+                onClick={() => handleShowCommentModal(text)}
+              />
             </span>
           ) : null}
         </>
@@ -1069,24 +1044,22 @@ const TXNSummary = () => {
     },
     {
       title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">Status</span>
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Status</span>
           <Popover
             content={popoverContentStatus}
-            trigger="click"
+            trigger='click'
             arrow={false}
-            placement="bottom"
+            placement='bottom'
             open={openStatus}
-            onOpenChange={handleOpenChangeStatus}
-          >
+            onOpenChange={handleOpenChangeStatus}>
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}
-            >
+              }}>
               ▼
             </span>
           </Popover>
@@ -1113,14 +1086,19 @@ const TXNSummary = () => {
 
   return (
     <>
-      <div className="box-content-wrapper">
+      <div className='box-content-wrapper'>
         <GlobalTable
           pagination={false}
           dataSource={blotterdata}
           bordered={false}
-          prefixCls="TXNSummary_Table"
+          prefixCls='TXNSummary_Table'
           columns={columns}
           scroll={{ x: "max-content" }}
+        />
+        <CommentModal
+          comment={comment}
+          setShowCommentModal={setShowCommentModal}
+          showCommentModal={showCommentModal}
         />
       </div>
     </>

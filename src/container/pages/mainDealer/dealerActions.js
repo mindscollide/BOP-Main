@@ -426,7 +426,7 @@ export const getAllTenorsAction = createAsyncThunk(
 export const createTenorAction = createAsyncThunk(
   "uploadRate/createTenors", // A unique action type string
   async (
-    { navigate, Data, setCreateTenorModal },
+    { navigate, Data, setCreateTenorModal, setCreateTenor },
     { dispatch, rejectWithValue }
   ) => {
     try {
@@ -451,7 +451,9 @@ export const createTenorAction = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(createTenorAction(navigate, Data, setCreateTenorModal));
+        dispatch(
+          createTenorAction(navigate, Data, setCreateTenorModal, setCreateTenor)
+        );
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -463,6 +465,10 @@ export const createTenorAction = createAsyncThunk(
               )
           ) {
             setCreateTenorModal(false);
+            setCreateTenor({
+              noOfDays: "",
+              tenorName: "",
+            });
             return {
               response: response.data.responseResult,
               message: "Tenor has been created successfully",

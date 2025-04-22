@@ -6,6 +6,7 @@ import { CorporateBlotterDataAPI } from "../txnSummary/CorporateBlotterActions";
 import CustomButton from "@/components/common/globalButton/button";
 import { Checkbox, Popover } from "antd";
 import IconElement from "@/components/common/IconElement/IconElement";
+import CommentModal from "../commentModal/CommentModal";
 
 const OutstandingDeals = () => {
   const dispatch = useDispatch();
@@ -43,6 +44,9 @@ const OutstandingDeals = () => {
   //TXNID Filter State
   const [open, setOpen] = useState(false);
   const [selectedItemsTXNID, setSelectedItemsTXNID] = useState([]);
+  // Show and Hide Comment Modal and commentState
+  const [showCommentModal, setShowCommentModal] = useState(false);
+  const [comment, setComment] = useState("");
   //Customer Name Filter State
   const [openCustomername, setOpenCustomername] = useState(false);
   const [selectedItemsCustomerName, setSelectedItemsCustomerName] = useState(
@@ -652,6 +656,11 @@ const OutstandingDeals = () => {
     setSelectedItemsStatus(checkedValues);
   };
 
+  const handleShowCommentModal = (text) => {
+    setShowCommentModal(true);
+    setComment(text);
+  };
+
   const popoverContentStatus = (
     <div style={{ width: 220 }}>
       <div className='d-flex justify-content-between mb-2'>
@@ -801,8 +810,8 @@ const OutstandingDeals = () => {
           <span className='ff-poppins fw-bold'>Bid</span>
         </div>
       ),
-      key: "bid",
-      dataIndex: "bid",
+      key: "rate1",
+      dataIndex: "rate1",
       className: "ff-poppins fw-bold",
     },
     // Offer
@@ -812,8 +821,8 @@ const OutstandingDeals = () => {
           <span className='ff-poppins fw-bold'>Offer</span>
         </div>
       ),
-      key: "ccY1",
-      dataIndex: "",
+      key: "rate2",
+      dataIndex: "rate2",
       className: "ff-poppins fw-bold",
     },
     // CCY1
@@ -840,8 +849,8 @@ const OutstandingDeals = () => {
           </Popover>
         </div>
       ),
-      key: "amount1",
-      dataIndex: "",
+      key: "ccY1",
+      dataIndex: "ccY1",
       className: "ff-poppins fw-bold",
     },
     // Amount
@@ -868,8 +877,8 @@ const OutstandingDeals = () => {
           </Popover>
         </div>
       ),
-      key: "rate1",
-      dataIndex: "",
+      key: "amount1",
+      dataIndex: "amount1",
       className: "ff-poppins fw-bold",
     },
     // CCY2
@@ -897,7 +906,7 @@ const OutstandingDeals = () => {
         </div>
       ),
       key: "ccY2",
-      dataIndex: "",
+      dataIndex: "ccY2",
       className: "ff-poppins fw-bold",
     },
     // Amount
@@ -925,7 +934,7 @@ const OutstandingDeals = () => {
         </div>
       ),
       key: "amount2",
-      dataIndex: "",
+      dataIndex: "amount2",
       className: "ff-poppins fw-bold",
     },
     // Time
@@ -1022,7 +1031,10 @@ const OutstandingDeals = () => {
         <>
           {text !== "" ? (
             <span className='d-inline-block cursor-pointer'>
-              <IconElement iconClass='icon-view-comment fs-5 color-blue' />
+              <IconElement
+                iconClass='icon-view-comment fs-5 color-blue'
+                onClick={() => handleShowCommentModal(text)} // Show Comment Modal
+              />
             </span>
           ) : null}
         </>
@@ -1079,6 +1091,8 @@ const OutstandingDeals = () => {
     },
   ];
 
+  console.log(blotterdata, "blotterdatablotterdata");
+
   return (
     <>
       <div className='box-content-wrapper'>
@@ -1089,6 +1103,12 @@ const OutstandingDeals = () => {
           prefixCls='TXNSummary_Table'
           columns={columns}
           scroll={{ x: "max-content" }}
+        />
+
+        <CommentModal
+          comment={comment}
+          setShowCommentModal={setShowCommentModal}
+          showCommentModal={showCommentModal}
         />
       </div>
     </>

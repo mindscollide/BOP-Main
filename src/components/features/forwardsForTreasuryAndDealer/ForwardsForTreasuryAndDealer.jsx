@@ -123,7 +123,14 @@ const ForwardsForTreasuryAndDealer = () => {
         Tenor: createTenor.tenorName,
         NoOfDays: Number(createTenor.noOfDays),
       };
-      // dispatch(createTenorAction({ Data, navigate, setCreateTenorModal }));
+      dispatch(
+        createTenorAction({
+          Data,
+          navigate,
+          setCreateTenorModal,
+          setCreateTenor,
+        })
+      );
     }
   };
 
