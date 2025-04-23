@@ -32,6 +32,8 @@ const TXNSummary = () => {
   const Accno_OPTIONS = ["234234234234234234234234"];
   const Status_OPTIONS = ["Pending"];
 
+  const [statusOptions, setStatusOptions] = useState([]);
+  console.log(statusOptions, "statusOptionsstatusOptions");
   //HardCoded Filter Values Ended
 
   //Global State For Blotter Data
@@ -102,6 +104,7 @@ const TXNSummary = () => {
         console.log(GlobalStateGetBlotterData, "GlobalStateGetBlotterData");
         // Now will be requiring some Clarification on it
         setBlotterdata([GlobalStateGetBlotterData.tnxSummary]);
+        setStatusOptions(GlobalStateGetBlotterData.statuses);
       }
     } catch (error) {
       console.log(error, "error");
@@ -654,7 +657,7 @@ const TXNSummary = () => {
   };
 
   const handleSelectAllStatus = () => {
-    setSelectedItemsStatus(Status_OPTIONS);
+    setSelectedItemsStatus(statusOptions);
   };
 
   const handleDeselectAllStatus = () => {
@@ -683,9 +686,9 @@ const TXNSummary = () => {
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsStatus}
         onChange={handleCheckboxChangeStatus}>
-        {Status_OPTIONS.map((item) => (
+        {statusOptions.map((item) => (
           <Checkbox key={item} value={item}>
-            {item}
+            {item.status}
           </Checkbox>
         ))}
       </Checkbox.Group>
