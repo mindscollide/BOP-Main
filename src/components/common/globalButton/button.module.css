@@ -545,3 +545,23 @@
   font-weight: 500 !important;
   border-radius: 4px !important;
 }
+
+.blotterCheckerButton {
+  border-radius: 4px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  -webkit-transition: all 0.3s ease-in !important;
+  color: #fff !important;
+  background-color: #157347 !important;
+  border-color: #146c43 !important;
+}
+
+.blotterCheckerButton:is(:hover, :active, :focus, :focus-visible) {
+  border-radius: 4px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  -webkit-transition: all 0.3s ease-in !important;
+  color: #fff !important;
+  background-color: #157347 !important;
+  border-color: #146c43 !important;
+}

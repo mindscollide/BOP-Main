@@ -1065,23 +1065,47 @@ const TXNSummary = () => {
       className: "ff-poppins fw-bold",
     },
     {
-      title: "Comment",
-      key: "comment",
-      dataIndex: "comment",
-      className: "comment-class text-center ",
-      render: (text, record) => (
-        <>
-          {text !== "" ? (
-            <span className="d-inline-block cursor-pointer">
-              <IconElement
-                iconClass="icon-view-comment fs-5 color-blue"
-                onClick={() => handleShowCommentModal(text)}
+      title: "Checker",
+      key: "Checker",
+      dataIndex: "Checker",
+      className: "comment-class text-center",
+      render: (text, record) => {
+        return (
+          <>
+            <div className="col-action text-nowrap text-center">
+              <CustomButton
+                icon={<i class="icon-check"></i>}
+                className="btn btn-sm btn-success me-1 blotterCheckerButton"
               />
-            </span>
-          ) : null}
-        </>
-      ),
+              <CustomButton
+                icon={<i class="icon-trash"></i>}
+                className="btn btn-sm btn-danger me-1 blotterCheckerButton "
+              />
+            </div>
+          </>
+        );
+      },
     },
+
+    // Comment section commented due to change in the HTML V3
+    // {
+    //   title: "Comment",
+    //   key: "comment",
+    //   dataIndex: "comment",
+    //   className: "comment-class text-center ",
+    //   render: (text, record) => (
+    //     <>
+    //       {text !== "" ? (
+    //         <span className="d-inline-block cursor-pointer">
+    //           <IconElement
+    //             iconClass="icon-view-comment fs-5 color-blue"
+    //             onClick={() => handleShowCommentModal(text)}
+    //           />
+    //         </span>
+    //       ) : null}
+    //     </>
+    //   ),
+    // },
     {
       title: (
         <div className="d-flex align-items-center justify-content-center gap-1">
@@ -1123,6 +1147,49 @@ const TXNSummary = () => {
       title: "Chat",
       dataIndex: "chat",
       className: "comment-class ",
+      render: (text, record) => {
+        return (
+          <>
+            <div className="col-chat text-nowrap text-center">
+              <CustomButton
+                icon={<i class="icon-chat2"></i>}
+                className="btn btn-sm btn-danger chat-btn-trigger"
+              />
+              <CustomButton
+                icon={
+                  <svg
+                    id="info_Layer_1"
+                    x="0px"
+                    y="0px"
+                    width="12px"
+                    height="12px"
+                    fill="#ffffff"
+                    viewBox="0 0 55 55"
+                    enable-background="new 0 0 55 55"
+                    xml:space="preserve"
+                  >
+                    <g>
+                      <path
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        d="M41.407,45.858c0.067,0.838,0.156,1.672,0.183,2.508   c0.005,0.152-0.205,0.376-0.37,0.461c-1.347,0.687-2.679,1.416-4.069,2.005c-3.305,1.396-6.715,2.5-10.277,3.009   c-1.447,0.206-2.936,0.154-4.403,0.153c-0.477-0.001-0.968-0.178-1.424-0.345c-1.313-0.481-1.98-1.443-1.948-2.85   c0.015-0.583,0.103-1.179,0.253-1.744c1.863-7.013,3.752-14.02,5.61-21.037c0.199-0.751,0.327-1.543,0.341-2.318   c0.021-1.142-0.615-1.925-1.667-2.331c-1.605-0.618-3.258-0.468-4.89-0.161c-1.764,0.332-3.468,0.873-5.149,1.884   c-0.074-0.978-0.157-1.863-0.187-2.75c-0.005-0.127,0.234-0.307,0.396-0.388c1.334-0.67,2.648-1.389,4.021-1.968   c3.327-1.403,6.755-2.512,10.337-3.021c1.465-0.208,2.994-0.294,4.457-0.125c2.782,0.323,3.808,2.02,3.073,4.73   c-0.94,3.474-1.914,6.941-2.838,10.419c-1.049,3.953-2.087,7.912-3.077,11.879c-0.524,2.107,0.385,3.449,2.526,3.839   c2.048,0.376,4.038-0.017,5.981-0.634C39.313,46.75,40.296,46.295,41.407,45.858z"
+                      ></path>
+                      <circle
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        cx="27.5"
+                        cy="7.608"
+                        r="6.609"
+                      ></circle>
+                    </g>
+                  </svg>
+                }
+                className="btn btn-sm btn-primary info-btn-trigger ms-1"
+              />
+            </div>
+          </>
+        );
+      },
     },
   ];
 
