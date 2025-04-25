@@ -1,6 +1,7 @@
 import React, { Suspense, lazy } from "react";
 import GlobalTabs from "../../../components/common/tabs/Tabs";
 import { useSelector } from "react-redux";
+import TXNSummary from "../mainTreasury/tabsContent/liveRates/blotter/txnSummary/TXNSummary";
 const shouldIncludeComponents =
   import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
 
@@ -49,6 +50,7 @@ const MainCorporate = () => {
       content: BranchDiscountingTable && (
         <Suspense fallback={<>Loading...</>}>
           <BranchDiscountingTable />
+          <TXNSummary />
         </Suspense>
       ),
     },
@@ -56,7 +58,7 @@ const MainCorporate = () => {
 
   return (
     <>
-      <GlobalTabs tabs={tabsData} defaultActiveKey={"0"} tabClass='mb-4' />
+      <GlobalTabs tabs={tabsData} defaultActiveKey={"0"} tabClass="mb-4" />
     </>
   );
 };

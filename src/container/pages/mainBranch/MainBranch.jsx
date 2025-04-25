@@ -1,6 +1,6 @@
 import React, { Suspense, lazy } from "react";
 import GlobalTabs from "../../../components/common/tabs/Tabs";
-
+import TXNSummary from "../mainTreasury/tabsContent/liveRates/blotter/txnSummary/TXNSummary";
 
 // Conditionally import CustomButton based on the environment variables
 const shouldIncludeComponents =
@@ -27,7 +27,6 @@ const BranchDiscountingTable = shouldIncludeComponents
   : null;
 
 const MainBranch = () => {
-
   const tabsData = [
     {
       title: "Spot",
@@ -56,7 +55,7 @@ const MainBranch = () => {
   ];
   return (
     <>
-      <GlobalTabs tabs={tabsData} defaultActiveKey={"0"} tabClass='mb-4' />
+      <GlobalTabs tabs={tabsData} defaultActiveKey={"0"} tabClass="mb-4" />
     </>
   );
 };
