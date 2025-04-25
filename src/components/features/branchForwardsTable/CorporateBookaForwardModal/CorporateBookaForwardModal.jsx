@@ -8,10 +8,6 @@ const CorporateBookaForwardModal = (
   bookaForwardModalCall,
   setBookaForwardModalCall
 ) => {
-  const onCloseBookaForwardCorporate = () => {
-    setBookaForwardModalCall(true);
-  };
-
   const options = [
     { value: "chocolate", label: "Chocolate" },
     { value: "strawberry", label: "Strawberry" },
@@ -23,7 +19,7 @@ const CorporateBookaForwardModal = (
       <Modal
         show={bookaForwardModalCall}
         setShow={setBookaForwardModalCall}
-        onHide={onCloseBookaForwardCorporate}
+        onHide={() => setBookaForwardModalCall(false)}
         closeButton
         footerClassName={"BookaforwardCorporateHeaderClassname"}
         headerClassName={"BookaforwardCorporateFooterClassname"}
@@ -41,7 +37,7 @@ const CorporateBookaForwardModal = (
         modalBody={
           <>
             <Row>
-              <Col lg={9} md={9} sm={9}>
+              <Col lg={9} md={9} sm={9} className="position-relative">
                 <Row>
                   <Col lg={6} md={6} sm={6}>
                     <div className="d-flex flex-column flex-wrap">
@@ -115,7 +111,7 @@ const CorporateBookaForwardModal = (
                     </div>
                   </Col>
                   <Col lg={4} md={4} sm={4} className="position-relative">
-                    <span className="dateSpan">Fri, Apr 25, 2025</span>
+                    <span className="dateSpatwo">Fri, Apr 25, 2025</span>
                   </Col>
                 </Row>
                 <Row className="mt-2">
@@ -137,7 +133,7 @@ const CorporateBookaForwardModal = (
                   </Col>
                 </Row>
               </Col>
-              <Col lg={3} md={3} sm={3}>
+              <Col lg={3} md={3} sm={3} className="BlueboxStyles">
                 <span className="BlueBackGroundbox">287.12</span>
               </Col>
             </Row>

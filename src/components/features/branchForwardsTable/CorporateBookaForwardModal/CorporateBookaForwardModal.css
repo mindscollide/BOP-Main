@@ -94,6 +94,20 @@ span.bookaForwardCorporate__indicator-separator.css-1u9des2-indicatorSeparator {
   font-size: 10px !important;
 }
 
+.dateSpatwo {
+  height: 30px !important;
+  border: 1px solid #e1e1e1 !important;
+  background: #e9ecef !important;
+  border-top-right-radius: 4px !important;
+  border-top-left-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
+  border-bottom-right-radius: 4px !important;
+  margin-top: 20px !important;
+  padding: 7px !important;
+  position: absolute !important;
+  font-size: 10px !important;
+}
+
 .BlueBackGroundbox {
   background: #096fed !important;
   font-size: 1.5rem !important;
@@ -102,4 +116,10 @@ span.bookaForwardCorporate__indicator-separator.css-1u9des2-indicatorSeparator {
   padding-left: 0.5rem !important;
   padding: 20px 15px !important;
   color: #fff !important;
+}
+
+.BlueboxStyles {
+  position: absolute !important;
+  top: 70% !important;
+  right: 0 !important;
 }
