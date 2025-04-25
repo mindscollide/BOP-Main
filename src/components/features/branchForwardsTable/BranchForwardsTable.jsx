@@ -5,6 +5,8 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { GetAllFowardsAndDiscountsRatesAPI } from "../SpotBranch/WatchlistAction";
 import { useSelector } from "react-redux";
+import CustomButton from "@/components/common/globalButton/button";
+import { Col, Row } from "react-bootstrap";
 
 const BranchForwardsTable = () => {
   const dispatch = useDispatch();
@@ -80,19 +82,38 @@ const BranchForwardsTable = () => {
   console.log(discountRatesData, "tenorstenorstenors");
 
   return (
-    <GlobalTable
-      columns={columnsData}
-      dataSource={dataSource}
-      prefixCls={"branch_forwardsTable"}
-      pagination={false}
-      bordered
-      scroll={{ x: "max-content" }}
-      rowClassName={(record, index) =>
-        index % 2 === 0
-          ? "branch_forwardsTable-odd"
-          : "branch_forwardsTable-even"
-      }
-    />
+    <>
+      <Row>
+        <Col lg={12} md={12} sm={12}>
+          <GlobalTable
+            columns={columnsData}
+            dataSource={dataSource}
+            prefixCls={"branch_forwardsTable"}
+            pagination={false}
+            bordered
+            scroll={{ x: "max-content" }}
+            rowClassName={(record, index) =>
+              index % 2 === 0
+                ? "branch_forwardsTable-odd"
+                : "branch_forwardsTable-even"
+            }
+          />
+        </Col>
+      </Row>
+      <Row className="mt-2">
+        <Col
+          lg={12}
+          md={12}
+          sm={12}
+          className="d-flex justify-content-center align-items-center"
+        >
+          <CustomButton
+            value="Book a Forward"
+            applyClass={"FowwardBranchBookaForwardBtn"}
+          />
+        </Col>
+      </Row>
+    </>
   );
 };
 
