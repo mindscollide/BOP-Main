@@ -3,11 +3,14 @@ import { Col } from "react-bootstrap";
 
 // Conditionally import CustomButton based on the environment variables
 const shouldIncludeComponents =
-  import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
+  import.meta.env.VITE_APP_INCLUDE_BRANCH === "true" ||
+  import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
 
 const DiscountingForBranch = shouldIncludeComponents
   ? lazy(() => import("../branchDiscountingTable/BranchDiscountingTable"))
   : null;
+
+console.log(shouldIncludeComponents, "shouldIncludeComponents");
 
 const DiscountingBranchTableComponent = () => {
   return (

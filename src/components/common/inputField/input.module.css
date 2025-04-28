@@ -231,3 +231,13 @@
 }
 
 /* End Date Picker for NOP Modal  Input Field  */
+
+.BookaForwardCorporateInputFields {
+  border: 1px solid #e1e1e1 !important;
+  font-weight: 700;
+  height: 30px !important;
+  border-top-right-radius: 0px !important;
+  border-top-left-radius: 4px !important;
+  border-bottom-left-radius: 4px !important;
+  border-bottom-right-radius: 0px !important;
+}

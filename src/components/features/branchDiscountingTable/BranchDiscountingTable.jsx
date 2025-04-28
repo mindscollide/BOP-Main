@@ -5,6 +5,8 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { GetAllFowardsAndDiscountsRatesAPI } from "../SpotBranch/WatchlistAction";
 import { useSelector } from "react-redux";
+import { Col, Row } from "react-bootstrap";
+import CustomButton from "@/components/common/globalButton/button";
 
 const BranchDiscountingTable = () => {
   const dispatch = useDispatch();
@@ -140,18 +142,39 @@ const BranchDiscountingTable = () => {
     }
   }, [tenorsData, instrumentForwards, forwardRatesData, discountRatesData]);
   return (
-    <GlobalTable
-      columns={columnsData}
-      dataSource={dataSource}
-      prefixCls={"branch_forwardsTable"}
-      pagination={false}
-      bordered
-      rowClassName={(record, index) =>
-        index % 2 === 0
-          ? "branch_forwardsTable-odd"
-          : "branch_forwardsTable-even"
-      }
-    />
+    <>
+      <Row>
+        <Col lg={12} md={12} sm={12}>
+          <GlobalTable
+            columns={columnsData}
+            dataSource={dataSource}
+            prefixCls={"branch_forwardsTable"}
+            pagination={false}
+            bordered
+            rowClassName={(record, index) =>
+              index % 2 === 0
+                ? "branch_forwardsTable-odd"
+                : "branch_forwardsTable-even"
+            }
+          />
+        </Col>
+      </Row>
+
+      <Row className="mt-2">
+        <Col
+          lg={12}
+          md={12}
+          sm={12}
+          className="d-flex justify-content-center align-items-center gap-2"
+        >
+          <CustomButton value="FE Discounting" applyClass={"FEDiscounting"} />
+          <CustomButton
+            value="Non-FE Discounting"
+            applyClass={"FowwardBranchBookaForwardBtn"}
+          />
+        </Col>
+      </Row>
+    </>
   );
 };
 
