@@ -14,7 +14,8 @@ import { formatDateToUTC } from "@/utils/formatters";
 const MIS = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const shouldIncludeComponents =
+    import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
   const GetMisDataByRangeData = useSelector(
     (state) => state.WatchListReducer.GetMisDataByRange
   );
@@ -50,13 +51,15 @@ const MIS = () => {
                 isExpanded ? "expanded" : ""
               } mis-volumwise-value bg-none color-black tp-customer-hd roboto-13`}>
               {index === 0 ? "Volumewise" : "Profit-wise (PKR)"}
-              <span className='view-detail cursor-pointer'>
-                <IconElement
-                  onClick={() => handleExpandClick(record)}
-                  iconClass={`icon-add-circle-fill fs-6 mx-1 ${
-                    index === 1 ? "color-green" : "color-blue"
-                  }`}></IconElement>
-              </span>
+              {shouldIncludeComponents && (
+                <span className='view-detail cursor-pointer'>
+                  <IconElement
+                    onClick={() => handleExpandClick(record)}
+                    iconClass={`icon-add-circle-fill fs-6 mx-1 ${
+                      index === 1 ? "color-green" : "color-blue"
+                    }`}></IconElement>
+                </span>
+              )}
             </span>
             {isExpanded ? (
               <div className='d-grid'>
@@ -153,7 +156,7 @@ const MIS = () => {
         StartDate: formatDateToUTC(startDate),
         EndDate: formatDateToUTC(endDate),
       };
-      console.log(Data , "Data");
+      console.log(Data, "Data");
       dispatch(GetMisDataByRangeAPI({ navigate, Data }));
     } else {
       alert("Please select both dates.");
