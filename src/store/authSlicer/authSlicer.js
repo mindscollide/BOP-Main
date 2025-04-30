@@ -7,6 +7,10 @@ import { resetAndForgotPassword } from "../../container/loginScreens/forgetPassw
 import { setCustomHeaders } from "@/common/utils";
 import { refreshTokenAction } from "../../container/loginScreens/authActions/refreshToken";
 import { getAllCategoriesAction } from "@/components/utils/globalApis";
+import {
+  createCorporateCreatePasswordApi,
+  validateLinkForCorporateCreatePasswordApi,
+} from "@/container/loginScreens/CreatePassword/createPassword_Action";
 
 const authSlice = createSlice({
   name: "auth",
@@ -18,6 +22,8 @@ const authSlice = createSlice({
     resetPasswordResponse: null,
     refreshTokenResponse: null,
     getAllCategories: null,
+    isValidatedCreatePasswordString: null,
+    passwordCreated: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -103,7 +109,45 @@ const authSlice = createSlice({
         state.loading = false;
         state.getAllCategories = null;
         state.responseMessage = payload.message;
-      });
+      })
+      .addCase(validateLinkForCorporateCreatePasswordApi.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(
+        validateLinkForCorporateCreatePasswordApi.fulfilled,
+        (state, { payload }) => {
+          state.loading = false;
+          state.isValidatedCreatePasswordString = payload.response;
+          state.responseMessage = payload.message;
+        }
+      )
+      .addCase(
+        validateLinkForCorporateCreatePasswordApi.rejected,
+        (state, { payload }) => {
+          state.loading = false;
+          state.isValidatedCreatePasswordString = null;
+          state.responseMessage = payload.message;
+        }
+      )
+      .addCase(createCorporateCreatePasswordApi.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(
+        createCorporateCreatePasswordApi.fulfilled,
+        (state, { payload }) => {
+          state.loading = false;
+          state.passwordCreated = payload.response;
+          state.responseMessage = payload.message;
+        }
+      )
+      .addCase(
+        createCorporateCreatePasswordApi.rejected,
+        (state, { payload }) => {
+          state.loading = false;
+          state.passwordCreated = null;
+          state.responseMessage = payload.message;
+        }
+      );
   },
 });
 

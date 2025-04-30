@@ -97,7 +97,17 @@ const DownloadFile = {
   RequestMethod: "DownloadFile",
 };
 
+const validateLinkForCorporatePasswordRM = {
+  RequestMethod: "ServiceManager.ValidateLinkForCorporatePassword",
+};
+
+const createCorporateUserPasswordRM = {
+  RequestMethod: "ServiceManager.CreateCorporateUserPassword",
+};
+
 export {
+  validateLinkForCorporatePasswordRM,
+  createCorporateUserPasswordRM,
   getAllCategoriesRM,
   clearRatesRM,
   loginRequestMethod,
