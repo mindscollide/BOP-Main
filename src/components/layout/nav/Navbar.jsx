@@ -13,16 +13,21 @@ import { getAllCategoryTableData } from "@/container/pages/mainCategory/category
 import { useModal } from "@/context/ModalContext";
 import { GetAllCounterPartyDataAPI } from "@/components/features/SpotBranch/WatchlistAction";
 import { useDealerAndTreasury } from "@/context/DealerAndTreasuryContext";
+import RFQForwardCorporateModal from "@/container/pages/mainCorporate/rfqModal/RFQForwardCorporateModal/RFQForwardCorporateModal";
 
 const GlobalNavbar = () => {
   const { setSettingModal } = useModal();
   const getAllCategoriesData = useSelector(
     (state) => state.authReducer.getAllCategories
   );
-  const {categoryValue,setCategoryValue} = useDealerAndTreasury()
+  const { categoryValue, setCategoryValue } = useDealerAndTreasury();
   const dispatch = useDispatch();
   const [selectedValue, setSelectedValue] = useState(1);
   const [openRfqModal, setOpenRfqModal] = useState(false);
+  const [
+    openRfqModalForwardCorporateComponent,
+    setOpenRfqModalForwardCorporateComponent,
+  ] = useState(false);
   const [allCategories, setAllCategories] = useState([]);
   // const [categoryValue, setCategoryValue] = useState({
   //   value: 0,
@@ -32,10 +37,6 @@ const GlobalNavbar = () => {
   const location = useLocation();
   const handleCalculatorClick = () => {
     window.open("/#/BOP/calculator", "_blank");
-  };
-
-  const onClickRFQ = () => {
-    setOpenRfqModal(true);
   };
 
   // Conditionally import CustomButton based on the environment variables
@@ -57,6 +58,19 @@ const GlobalNavbar = () => {
       value: event.value,
       label: event.label,
     });
+  };
+  const activeTab = useSelector((state) => state.RFQReducer.activeTab);
+  console.log(activeTab, "activeTabactiveTab");
+  const onClickRFQ = () => {
+    if (activeTab === "Spot") {
+      console.log("Handle Spot logic");
+      setOpenRfqModal(true);
+    } else if (activeTab === "Forwards") {
+      console.log("Handle Forwards logic");
+      setOpenRfqModalForwardCorporateComponent(true);
+    } else if (activeTab === "Discounting") {
+      console.log("Handle Discounting logic");
+    }
   };
 
   useEffect(() => {
@@ -148,6 +162,17 @@ const GlobalNavbar = () => {
           />
         </>
       ) : null}
+
+      {openRfqModalForwardCorporateComponent && (
+        <RFQForwardCorporateModal
+          openRfqModalForwardCorporateComponent={
+            openRfqModalForwardCorporateComponent
+          }
+          setOpenRfqModalForwardCorporateComponent={
+            setOpenRfqModalForwardCorporateComponent
+          }
+        />
+      )}
     </>
   );
 };

@@ -1,4 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAction, createSlice } from "@reduxjs/toolkit";
+export const setActiveTab = createAction("tabs/setActiveTab");
 import {
   SaveTransactionRFQAPI,
   ViewAllNatureOfBussinessAPI,
@@ -11,6 +12,7 @@ const RFQSlice = createSlice({
     error: null,
     viewAllNatureBussniessData: null,
     saveRFQTransactionData: null,
+    activeTab: "Spot", // default Tab
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -53,6 +55,10 @@ const RFQSlice = createSlice({
         state.error = action.payload;
         state.saveRFQTransactionData = null;
       });
+
+    builder.addCase(setActiveTab, (state, action) => {
+      state.activeTab = action.payload;
+    });
   },
 });
 
