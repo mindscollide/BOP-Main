@@ -11,5 +11,18 @@
   align-items: center !important;
   padding: 12px !important;
   position: absolute !important;
+  font-family: "Roboto", sans-serif !important;
   font-size: 12px !important;
+}
+
+.BlueBackGroundboxNon_FEDiscountingModal {
+  background: #096fed !important;
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  padding-right: 0.5rem !important;
+  padding-left: 0.5rem !important;
+  display: flex !important;
+  align-items: start !important;
+  padding: 15px 20px !important;
+  color: #fff !important;
 }

@@ -141,7 +141,9 @@ const NonFEDiscountingModal = ({
                   <Col lg={5} md={5} sm={5} className="mt-4">
                     <Row className="mt-4">
                       <Col lg={12} md={12} sm={12}>
-                        <span className="BlueBackGroundbox">287.12</span>
+                        <span className="BlueBackGroundboxNon_FEDiscountingModal">
+                          287.12
+                        </span>
                       </Col>
                     </Row>
                   </Col>
