@@ -1,0 +1,15 @@
+.dateSpanNonFeDiscoutingmodal {
+  height: 30px !important;
+  border: 1px solid #e1e1e1 !important;
+  background: #e9ecef !important;
+  border-top-right-radius: 4px !important;
+  border-top-left-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
+  border-bottom-right-radius: 4px !important;
+  margin-top: 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 12px !important;
+  position: absolute !important;
+  font-size: 12px !important;
+}

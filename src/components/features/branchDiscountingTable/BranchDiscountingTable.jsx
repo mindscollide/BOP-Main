@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { Col, Row } from "react-bootstrap";
 import CustomButton from "@/components/common/globalButton/button";
 import FEDiscountingModal from "./FEDiscountingModal/FEDiscountingModal";
+import NonFEDiscountingModal from "./NonFeDiscountingModal/NonFEDiscountingModal";
 
 const BranchDiscountingTable = () => {
   const dispatch = useDispatch();
@@ -21,7 +22,9 @@ const BranchDiscountingTable = () => {
   const [discountRatesData, setDiscountRatesData] = useState([]);
   //FE Dsicounting Modal Modal State
   const [feDiscountingModalCall, setFeDiscountingModalCall] = useState(false);
-
+  //NON-FE Dsicounting Modal Modal State
+  const [nonfeDiscountingModalCall, setNonfeDiscountingModalCall] =
+    useState(false);
   //Global State for Extracting Forward and discount rate data
   const GetAllFowardsAndDiscountsRatesAPIData = useSelector(
     (state) => state.WatchListReducer.GetAllFowardsAndDiscountsRatesData
@@ -149,6 +152,10 @@ const BranchDiscountingTable = () => {
     setFeDiscountingModalCall(true);
   };
 
+  const handleNonFEDiscountingModal = () => {
+    setNonfeDiscountingModalCall(true);
+  };
+
   return (
     <>
       <Row>
@@ -183,6 +190,7 @@ const BranchDiscountingTable = () => {
           <CustomButton
             value="Non-FE Discounting"
             applyClass={"FowwardBranchBookaForwardBtn"}
+            onClick={handleNonFEDiscountingModal}
           />
         </Col>
       </Row>
@@ -190,6 +198,12 @@ const BranchDiscountingTable = () => {
         <FEDiscountingModal
           feDiscountingModalCall={feDiscountingModalCall}
           setFeDiscountingModalCall={setFeDiscountingModalCall}
+        />
+      )}
+      {nonfeDiscountingModalCall && (
+        <NonFEDiscountingModal
+          nonfeDiscountingModalCall={nonfeDiscountingModalCall}
+          setNonfeDiscountingModalCall={setNonfeDiscountingModalCall}
         />
       )}
     </>
