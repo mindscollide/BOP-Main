@@ -4,6 +4,7 @@ import Select from "react-select";
 import Modal from "@/components/common/globalModal/Modal";
 import { Col, Row } from "react-bootstrap";
 import InputFIeld from "@/components/common/inputField/InputField";
+import CustomButton from "@/components/common/globalButton/button";
 const CorporateBookaForwardModal = (
   bookaForwardModalCall,
   setBookaForwardModalCall
@@ -21,8 +22,8 @@ const CorporateBookaForwardModal = (
         setShow={setBookaForwardModalCall}
         onHide={() => setBookaForwardModalCall(false)}
         closeButton
-        footerClassName={"BookaforwardCorporateHeaderClassname"}
-        headerClassName={"BookaforwardCorporateFooterClassname"}
+        footerClassName={"BookaforwardCorporateFooterClassname"}
+        headerClassName={"BookaforwardCorporateHeaderClassname"}
         bodyClassName={"BookaforwardCorporateBodyClassname"}
         className=""
         modalHeader={
@@ -139,7 +140,23 @@ const CorporateBookaForwardModal = (
             </Row>
           </>
         }
-        modalFooter={<></>}
+        modalFooter={
+          <>
+            <Row>
+              <Col
+                lg={12}
+                md={12}
+                sm={12}
+                className="d-flex justify-content-center"
+              >
+                <CustomButton
+                  value={"Confirm"}
+                  applyClass={"ConfirmButtonBookaForward"}
+                />
+              </Col>
+            </Row>
+          </>
+        }
       />
     </div>
   );

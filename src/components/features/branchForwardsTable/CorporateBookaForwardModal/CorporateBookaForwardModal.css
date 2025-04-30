@@ -1,16 +1,17 @@
 .BookaforwardCorporateFooterClassname {
   border: none !important;
+  display: inline-block !important;
 }
 
 .BookaforwardCorporateHeaderClassname {
   margin: 0 !important;
   border: none !important;
-  padding: 10px 30px;
+  padding: 10px 15px;
   position: relative;
 }
 
 .BookaforwardCorporateBodyClassname {
-  min-height: 50vh !important;
+  min-height: 40vh !important;
 }
 
 .HeaderHeadingName {
@@ -89,9 +90,11 @@ span.bookaForwardCorporate__indicator-separator.css-1u9des2-indicatorSeparator {
   border-bottom-left-radius: 0px !important;
   border-bottom-right-radius: 4px !important;
   margin-top: 19px !important;
-  padding: 7px !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 12px !important;
   position: absolute !important;
-  font-size: 10px !important;
+  font-size: 12px !important;
 }
 
 .dateSpatwo {
@@ -101,11 +104,13 @@ span.bookaForwardCorporate__indicator-separator.css-1u9des2-indicatorSeparator {
   border-top-right-radius: 4px !important;
   border-top-left-radius: 0px !important;
   border-bottom-left-radius: 0px !important;
+  display: flex !important;
+  align-items: center !important;
   border-bottom-right-radius: 4px !important;
   margin-top: 20px !important;
-  padding: 7px !important;
+  padding: 12px !important;
   position: absolute !important;
-  font-size: 10px !important;
+  font-size: 12px !important;
 }
 
 .BlueBackGroundbox {
@@ -114,7 +119,9 @@ span.bookaForwardCorporate__indicator-separator.css-1u9des2-indicatorSeparator {
   font-weight: 700 !important;
   padding-right: 0.5rem !important;
   padding-left: 0.5rem !important;
-  padding: 20px 15px !important;
+  display: flex !important;
+  align-items: start !important;
+  padding: 20px 10px !important;
   color: #fff !important;
 }
 
