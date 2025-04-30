@@ -31,6 +31,7 @@ const SpotRates = () => {
     (state) => state.dealerReducer.getCurrentPublishRate
   );
   const [marketStatus, setMarketStatus] = useState(false);
+  console.log(marketStatus, "marketStatusmarketStatus")
   const [currentRates, setCurrentRates] = useState({
     askValue: "",
     bidValue: "",
@@ -57,6 +58,7 @@ const SpotRates = () => {
           refreshInterval,
           lastPublishDateTime,
           currentAsk,
+          isMarketON,
           currentBid,
           currentValueDateTime,
         } = getLastPublishRates;
@@ -72,11 +74,12 @@ const SpotRates = () => {
           bidValue: currentBid,
           dateTime: currentValueDateTime,
         });
+        setMarketStatus(isMarketON);
         setRefreshInterval(refreshInterval);
       } catch (error) {}
     }
   }, [getLastPublishRates]);
-
+  console.log(currentUpdatedRates,"currentUpdatedRatescurrentUpdatedRates")
   useEffect(() => {
     if (currentUpdatedRates !== null) {
       try {
@@ -85,10 +88,12 @@ const SpotRates = () => {
           lastBid,
           refreshInterval,
           lastPublishDateTime,
+          isMarketON,
           currentAsk,
           currentBid,
           currentValueDateTime,
         } = currentUpdatedRates;
+        console.log(isMarketON, "isMarketONisMarketON")
         setLastPublishRates({
           ...lastPublishRates,
           askValue: lastAsk,
@@ -101,8 +106,11 @@ const SpotRates = () => {
           bidValue: currentBid,
           dateTime: currentValueDateTime,
         });
+        setMarketStatus(isMarketON);
         setRefreshInterval(refreshInterval);
-      } catch (error) {}
+      } catch (error) {
+        console.log(error, "isMarketONisMarketONisMarketONisMarketONisMarketON");
+      }
     }
   }, [currentUpdatedRates]);
 

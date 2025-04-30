@@ -27,3 +27,7 @@ ul.nav.nav-tabs.buttonClassTab .nav-link:hover {
   margin: 0 !important;
   transform: translate(0px, 37px) !important;
 }
+.data-summary-heading  {
+  display: flex;
+  align-items: center;
+}
