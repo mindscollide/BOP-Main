@@ -189,14 +189,14 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
         modalBody={
           <>
             <div className="modal-body" rfq-type="Forex">
-              <Row className="m-0">
+              <Row className="m-0 ">
                 <Col lg={2} md={2} sm={2}>
-                  <label className="label">Currency*</label>
+                  <label className="LabelRFQTransactionModal">Currency*</label>
                 </Col>
                 <Col lg={4} md={4} sm={4} className="mb-2">
                   <SelectDropdown
-                    placeholder="Search"
-                    classNamePrefix={"RFQGeneralReactSelectClass"}
+                    classNamePrefix="bookaForwardCorporate"
+                    placeholder=""
                     options={currencyOptions}
                     onChange={handleCurrencyChange}
                     value={selectedCurrency}
@@ -204,19 +204,19 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
                 </Col>
 
                 <Col lg={2} md={2} sm={2}>
-                  <label className="label">Type*</label>
+                  <label className="LabelRFQTransactionModal">Type*</label>
                 </Col>
                 <Col lg={4} md={4} sm={4} className="mb-2">
                   <SelectDropdown
-                    classNamePrefix={"RFQGeneralReactSelectClass"}
-                    placeholder="Search"
+                    placeholder=""
+                    classNamePrefix="bookaForwardCorporate"
                   />
                 </Col>
               </Row>
 
-              <Row className="m-0">
+              <Row className="m-0 mt-2">
                 <Col lg={2} md={2} sm={2}>
-                  <label className="label">Amount*</label>
+                  <label className="LabelRFQTransactionModal">Amount*</label>
                 </Col>
                 <Col lg={4} md={4} sm={4} className="mb-2">
                   <InputFIeld
@@ -227,7 +227,7 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
                   />
                 </Col>
                 <Col lg={2} md={2} sm={2}>
-                  <label className="label">A/c No</label>
+                  <label className="LabelRFQTransactionModal">A/c No</label>
                 </Col>
                 <Col lg={4} md={4} sm={4} className="mb-2">
                   <InputFIeld
@@ -239,15 +239,15 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
                 </Col>
               </Row>
 
-              <Row className="m-0">
+              <Row className="m-0 mt-2">
                 <Col lg={2} md={2} sm={2}>
-                  <label className="label">Nature*</label>
+                  <label className="LabelRFQTransactionModal">Nature*</label>
                 </Col>
 
                 <Col lg={4} md={4} sm={4} className="mb-2">
                   <SelectDropdown
-                    placeholder="Search"
-                    classNamePrefix={"RFQGeneralReactSelectClass"}
+                    placeholder=""
+                    classNamePrefix="bookaForwardCorporate"
                     options={natureOfBusinessOptions}
                     onChange={handleNatureChange}
                     value={selectedNature}
@@ -255,7 +255,7 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
                 </Col>
 
                 <Col lg={2} md={2} sm={2}>
-                  <label className="label">LC No</label>
+                  <label className="LabelRFQTransactionModal">LC No</label>
                 </Col>
                 <Col lg={4} md={4} sm={4} className="mb-2">
                   <InputFIeld
@@ -279,7 +279,7 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
                 className="d-flex justify-content-end"
               >
                 <CustomButton
-                  value="Confirm"
+                  value="Submit"
                   className="btn btn-primary ms-auto px-4"
                   onClick={handleConfirmButton}
                 />

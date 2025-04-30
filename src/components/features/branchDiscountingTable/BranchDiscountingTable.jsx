@@ -7,6 +7,8 @@ import { GetAllFowardsAndDiscountsRatesAPI } from "../SpotBranch/WatchlistAction
 import { useSelector } from "react-redux";
 import { Col, Row } from "react-bootstrap";
 import CustomButton from "@/components/common/globalButton/button";
+import FEDiscountingModal from "./FEDiscountingModal/FEDiscountingModal";
+import NonFEDiscountingModal from "./NonFeDiscountingModal/NonFEDiscountingModal";
 
 const BranchDiscountingTable = () => {
   const dispatch = useDispatch();
@@ -18,7 +20,11 @@ const BranchDiscountingTable = () => {
   const [tenorsData, setTenorsData] = useState([]);
   const [forwardRatesData, setForwardRatesData] = useState([]);
   const [discountRatesData, setDiscountRatesData] = useState([]);
-
+  //FE Dsicounting Modal Modal State
+  const [feDiscountingModalCall, setFeDiscountingModalCall] = useState(false);
+  //NON-FE Dsicounting Modal Modal State
+  const [nonfeDiscountingModalCall, setNonfeDiscountingModalCall] =
+    useState(false);
   //Global State for Extracting Forward and discount rate data
   const GetAllFowardsAndDiscountsRatesAPIData = useSelector(
     (state) => state.WatchListReducer.GetAllFowardsAndDiscountsRatesData
@@ -141,6 +147,15 @@ const BranchDiscountingTable = () => {
       }
     }
   }, [tenorsData, instrumentForwards, forwardRatesData, discountRatesData]);
+
+  const handleFEDiscountingModal = () => {
+    setFeDiscountingModalCall(true);
+  };
+
+  const handleNonFEDiscountingModal = () => {
+    setNonfeDiscountingModalCall(true);
+  };
+
   return (
     <>
       <Row>
@@ -167,13 +182,30 @@ const BranchDiscountingTable = () => {
           sm={12}
           className="d-flex justify-content-center align-items-center gap-2"
         >
-          <CustomButton value="FE Discounting" applyClass={"FEDiscounting"} />
+          <CustomButton
+            value="FE Discounting"
+            applyClass={"FEDiscounting"}
+            onClick={handleFEDiscountingModal}
+          />
           <CustomButton
             value="Non-FE Discounting"
             applyClass={"FowwardBranchBookaForwardBtn"}
+            onClick={handleNonFEDiscountingModal}
           />
         </Col>
       </Row>
+      {feDiscountingModalCall && (
+        <FEDiscountingModal
+          feDiscountingModalCall={feDiscountingModalCall}
+          setFeDiscountingModalCall={setFeDiscountingModalCall}
+        />
+      )}
+      {nonfeDiscountingModalCall && (
+        <NonFEDiscountingModal
+          nonfeDiscountingModalCall={nonfeDiscountingModalCall}
+          setNonfeDiscountingModalCall={setNonfeDiscountingModalCall}
+        />
+      )}
     </>
   );
 };

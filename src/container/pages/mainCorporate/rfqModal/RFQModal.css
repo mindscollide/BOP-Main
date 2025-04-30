@@ -13,15 +13,15 @@
 }
 
 .heading-RfqModal {
-  font-size: 20px;
-  font-weight: 500;
-  color: #f26522;
+  font-size: 1.25rem !important;
+  font-weight: 800 !important;
+  color: #f26522 !important;
 }
 
-.label {
-  font-weight: 600 !important;
-  color: #5a5a5a !important;
-  font-size: inherit !important;
+.LabelRFQTransactionModal {
+  font-weight: 800 !important;
+  font-size: 13px !important;
+  font-family: "Roboto", sans-serif !important;
 }
 
 span.RFQGeneralReactSelectClass__indicator-separator.css-1u9des2-indicatorSeparator {

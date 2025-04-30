@@ -614,15 +614,10 @@
   cursor: pointer !important;
 }
 
-/* .CrossButtonBookaForwardModal {
-  border: none !important;
-  background-color: none !important;
-  background: none !important;
-  font-size: 8px !important;
+.ConfirmButtonBookaForward {
+  border-radius: 4px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  display: flex !important;
+  align-items: center !important;
 }
-
-.crossbuttonbookaforwardmodal:is(:hover, :focus, :active, :focus-visible) {
-  border: none !important;
-  background-color: none !important;
-  background: none !important;
-} */

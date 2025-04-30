@@ -234,8 +234,19 @@
 
 .BookaForwardCorporateInputFields {
   border: 1px solid #e1e1e1 !important;
-  font-weight: 700;
+  font-weight: 700 !important;
   height: 30px !important;
+  border-top-right-radius: 0px !important;
+  border-top-left-radius: 4px !important;
+  border-bottom-left-radius: 4px !important;
+  border-bottom-right-radius: 0px !important;
+}
+
+.BookaForwardCorporateInputFieldsTenorNonFEmodal {
+  border: 1px solid #e1e1e1 !important;
+  font-weight: 700 !important;
+  height: 30px !important;
+  width: 104px !important;
   border-top-right-radius: 0px !important;
   border-top-left-radius: 4px !important;
   border-bottom-left-radius: 4px !important;

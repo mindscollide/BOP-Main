@@ -1,0 +1,40 @@
+.BookaforwardCorporateFooterClassname {
+  border: none !important;
+  display: inline-block !important;
+}
+
+.BookaforwardCorporateHeaderClassname {
+  margin: 0 !important;
+  border: none !important;
+  padding: 10px 15px;
+  position: relative;
+}
+
+.BookaforwardCorporateBodyClassname {
+  min-height: 40vh !important;
+}
+
+.BlueBackGroundboxFEDiscountingModal {
+  background: #096fed !important;
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  padding-right: 0.5rem !important;
+  padding-left: 0.5rem !important;
+  display: flex !important;
+  align-items: start !important;
+  padding: 15px 20px !important;
+  color: #fff !important;
+}
+
+.SofrPercentSignBox {
+  border: 1px solid #e1e1e1 !important;
+  background: #e9ecef !important;
+  padding: 0px 12px !important;
+  height: 30px !important;
+  display: flex !important;
+  align-items: center !important;
+  position: absolute !important;
+  left: 79% !important;
+  bottom: 0% !important;
+  border-radius: 0.375rem !important;
+}
