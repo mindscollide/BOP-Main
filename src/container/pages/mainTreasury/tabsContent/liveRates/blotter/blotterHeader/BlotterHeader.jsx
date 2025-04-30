@@ -40,7 +40,6 @@ const BlotterHeader = () => {
     isBranch || isCorporate
       ? tabsData.filter((data, index) => index === 0)
       : tabsData;
-  console.log(activeTab, "activeTabactiveTab");
   return (
     <>
       <div className='box-header position-relative'>
@@ -51,13 +50,7 @@ const BlotterHeader = () => {
             defaultActiveKey={"0"}
           />
         )}
-        {isCorporate && (
-          <div class='fs-6 fw-bold color-hd mb-2'>
-            <div class='fs-6 fw-bold color-hd data-summary-heading'>
-              TXN Summary
-            </div>
-          </div>
-        )}
+
         {isCorporate && <TXNSummary />}
 
         <div className='filter-export-wrapper ms-auto'>
@@ -74,14 +67,13 @@ const BlotterHeader = () => {
                       value='+'
                       onClick={onClickNopModal}
                     />{" "}
+                    <CustomButton
+                      applyClass={"Export-button"}
+                      value='Export'
+                      onClick={onClickOpenExport}
+                    />
                   </>
                 )}
-
-                <CustomButton
-                  applyClass={"Export-button"}
-                  value='Export'
-                  onClick={onClickOpenExport}
-                />
 
                 {openExportDiv ? (
                   <>
