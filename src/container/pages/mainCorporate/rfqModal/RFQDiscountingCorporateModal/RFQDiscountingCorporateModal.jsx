@@ -1,21 +1,20 @@
 import React from "react";
-import "./RFQForwardCorporateModal.css";
+import "./RFQDiscountingCorporateModal.css";
 import Modal from "@/components/common/globalModal/Modal";
 import { Col, Row } from "react-bootstrap";
 import SelectDropdown from "@/components/common/selectDropdown/SelectDropdown";
 import InputFIeld from "@/components/common/inputField/InputField";
 import CustomButton from "@/components/common/globalButton/button";
-const RFQForwardCorporateModal = ({
-  openRfqModalForwardCorporateComponent,
-  setOpenRfqModalForwardCorporateComponent,
+const RFQDiscountingCorporateModal = ({
+  openRfqModalDiscountingCorporateComponent,
+  setOpenRfqModalDiscountingCorporateComponent,
 }) => {
   return (
     <div>
-      {" "}
       <Modal
-        show={openRfqModalForwardCorporateComponent}
-        setShow={openRfqModalForwardCorporateComponent}
-        onHide={() => setOpenRfqModalForwardCorporateComponent(false)}
+        show={openRfqModalDiscountingCorporateComponent}
+        setShow={openRfqModalDiscountingCorporateComponent}
+        onHide={() => setOpenRfqModalDiscountingCorporateComponent(false)}
         closeButton
         headerClassName="RFQModalHeaderForwardTabCorporate"
         footerClassName="RFQModalFooterForwardTabCorporate"
@@ -34,7 +33,7 @@ const RFQForwardCorporateModal = ({
           <>
             <div>
               <Row>
-                <Col lg={6} md={6} sm={6}>
+                <Col lg={12} md={12} sm={12}>
                   <div className="d-flex flex-column flex-wrap">
                     <label className="LabelRFQTransactionModal">
                       Currency*
@@ -42,16 +41,6 @@ const RFQForwardCorporateModal = ({
                     <SelectDropdown
                       classNamePrefix="bookaForwardCorporate"
                       placeholder=""
-                    />
-                  </div>
-                </Col>
-
-                <Col lg={6} md={6} sm={6}>
-                  <div className="d-flex flex-column flex-wrap">
-                    <label className="LabelRFQTransactionModal">Type*</label>
-                    <SelectDropdown
-                      placeholder=""
-                      classNamePrefix="bookaForwardCorporate"
                     />
                   </div>
                 </Col>
@@ -94,20 +83,6 @@ const RFQForwardCorporateModal = ({
                   </span>
                 </Col>
               </Row>
-
-              <Row className="mt-2 position-relative">
-                <Col lg={9} md={9} sm={9}>
-                  <div className="d-flex flex-column flex-wrap">
-                    <label className="LabelRFQTransactionModal">Options</label>
-                    <InputFIeld applyClass="CalculatorTextfield" />
-                  </div>
-                </Col>
-                <Col lg={3} md={3} sm={3}>
-                  <span className="DateColumnTenorForwardTabRFQModal">
-                    Wed, Apr 30, 2025
-                  </span>
-                </Col>
-              </Row>
             </div>
           </>
         }
@@ -133,4 +108,4 @@ const RFQForwardCorporateModal = ({
   );
 };
 
-export default RFQForwardCorporateModal;
+export default RFQDiscountingCorporateModal;
