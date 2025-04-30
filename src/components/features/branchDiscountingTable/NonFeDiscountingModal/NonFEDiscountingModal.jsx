@@ -124,7 +124,7 @@ const NonFEDiscountingModal = ({
                         </div>
                       </Col>
                       <Col lg={1} md={1} sm={1}>
-                        <span className="SofrPercentSignBox">%</span>
+                        <span className="SofrPercentSignBoxNonFE">%</span>
                       </Col>
                     </Row>
                     <Row>

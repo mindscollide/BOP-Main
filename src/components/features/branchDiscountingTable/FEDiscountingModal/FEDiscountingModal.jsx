@@ -124,7 +124,9 @@ const FEDiscountingModal = ({
                   <Col lg={5} md={5} sm={5}>
                     <Row className="mt-4">
                       <Col lg={12} md={12} sm={12}>
-                        <span className="BlueBackGroundbox">287.12</span>
+                        <span className="BlueBackGroundboxFEDiscountingModal">
+                          287.12
+                        </span>
                       </Col>
                     </Row>
                   </Col>

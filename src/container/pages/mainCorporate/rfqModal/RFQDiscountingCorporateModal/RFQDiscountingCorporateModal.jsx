@@ -24,7 +24,9 @@ const RFQDiscountingCorporateModal = ({
           <>
             <Row>
               <Col lg={12} md={12} sm={12}>
-                <span className="heading-RfqModal">Gul Ahmed </span>
+                <span className="DiscountingRFQModalHeadingCorporate">
+                  Gul Ahmed
+                </span>
               </Col>
             </Row>
           </>

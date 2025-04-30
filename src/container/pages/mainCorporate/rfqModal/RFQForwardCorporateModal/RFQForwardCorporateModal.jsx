@@ -25,7 +25,9 @@ const RFQForwardCorporateModal = ({
           <>
             <Row>
               <Col lg={12} md={12} sm={12}>
-                <span className="heading-RfqModal">Gul Ahmed </span>
+                <span className="ForwardRFQModalHeadingCorporate">
+                  Gul Ahmed{" "}
+                </span>
               </Col>
             </Row>
           </>
