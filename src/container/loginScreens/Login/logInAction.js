@@ -66,8 +66,12 @@ export const loginInApi = createAsyncThunk(
               .toLowerCase()
               .includes("ERM_AuthService_AuthManager_Login_03".toLowerCase())
           ) {
-            localStorage.setItem("refreshToken", refreshToken);
             localStorage.setItem("token", token);
+            localStorage.setItem("refreshToken", refreshToken);
+            localStorage.setItem("name", firstName);
+            localStorage.setItem("email", userName);
+            localStorage.setItem("roleId", roleID);
+            localStorage.setItem("userID", userID);
             // localStorage.setItem("roleID", roleID);
             roleBasedNavigation(navigate, roleID);
             return {
@@ -188,6 +192,7 @@ export const corporateUserLoginInApi = createAsyncThunk(
         const {
           isExecuted,
           responseMessage,
+          corporateID,
           roleID,
           userID,
           token,
@@ -226,6 +231,11 @@ export const corporateUserLoginInApi = createAsyncThunk(
           ) {
             localStorage.setItem("refreshToken", refreshToken);
             localStorage.setItem("token", token);
+            localStorage.setItem("name", firstName);
+            localStorage.setItem("email", userName);
+            localStorage.setItem("roleId", roleID);
+            localStorage.setItem("corporateID", corporateID);
+            localStorage.setItem("userID", userID);
             roleBasedNavigation(navigate, roleID);
             return {
               response: response.data.responseResult,

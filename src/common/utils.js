@@ -3,16 +3,24 @@ import axios from "axios";
 // Function to set custom headers
 const setCustomHeaders = () => {
   let token = localStorage.getItem("token");
-  if (token !== null) {
+  try {
     return {
       _token: token,
       "Content-Type": "multipart/form-data",
     };
-  } else {
-    return {
-      "Content-Type": "multipart/form-data",
-    };
+  } catch (error) {
+    console.error("Error setting headers:", error);
   }
+  // if (token !== null) {
+  //   return {
+  //     _token: token,
+  //     "Content-Type": "multipart/form-data",
+  //   };
+  // } else {
+  //   return {
+  //     "Content-Type": "multipart/form-data",
+  //   };
+  // }
 };
 
 const emailValidation = (text) => {

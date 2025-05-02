@@ -9,6 +9,8 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { GetAllCounterPartyDataAPI } from "@/components/features/SpotBranch/WatchlistAction";
 import { useDealerAndTreasury } from "@/context/DealerAndTreasuryContext";
+import { setActiveTab } from "../mainCorporate/rfqModal/RFQSlicer";
+import Forwards from "../mainTreasury/tabsContent/forwards/Forwards";
 
 const MainCategory = () => {
   const navigate = useNavigate();
@@ -25,6 +27,12 @@ const MainCategory = () => {
   useEffect(() => {
     dispatch(getAllCategoriesAction({ navigate }));
   }, []);
+
+  const activeTab = useSelector((state) => state.RFQReducer.activeTab);
+  const handleTabChange = (tabTitle) => {
+    dispatch(setActiveTab(tabTitle));
+  };
+
   // GetAllCounterPartyDataAPI
   useEffect(() => {
     if (getAllCategories !== null) {
@@ -44,10 +52,18 @@ const MainCategory = () => {
   }, [getAllCategories]);
   const tabsData = [
     { title: "Spot", content: <SpotDealerAndTreasury /> },
-    { title: "Forwards", content: <CategoryForwards /> },
+    { title: "Forwards", content: <Forwards /> },
     { title: "Discounting", content: <CategoryDiscounting /> },
   ];
-  return <GlobalTabs tabs={tabsData} defaultActiveKey='0' tabClass='mb-4' />;
+  return (
+    <GlobalTabs
+      tabs={tabsData}
+      activeKey={activeTab}
+      onTabChange={handleTabChange}
+      defaultActiveKey='0'
+      tabClass='mb-4'
+    />
+  );
 };
 
 export default MainCategory;

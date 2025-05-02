@@ -1,6 +1,9 @@
 import React, { Suspense, lazy } from "react";
 import GlobalTabs from "../../../components/common/tabs/Tabs";
 import TXNSummary from "../mainTreasury/tabsContent/liveRates/blotter/txnSummary/TXNSummary";
+import { useSelector } from "react-redux";
+import { setActiveTab } from "../mainCorporate/rfqModal/RFQSlicer";
+import { useDispatch } from "react-redux";
 
 // Conditionally import CustomButton based on the environment variables
 const shouldIncludeComponents =
@@ -27,6 +30,12 @@ const BranchDiscountingTable = shouldIncludeComponents
   : null;
 
 const MainBranch = () => {
+  const dispatch = useDispatch();
+  const activeTab = useSelector((state) => state.RFQReducer.activeTab);
+
+  const handleTabChange = (tabTitle) => {
+    dispatch(setActiveTab(tabTitle));
+  };
   const tabsData = [
     {
       title: "Spot",
@@ -55,7 +64,13 @@ const MainBranch = () => {
   ];
   return (
     <>
-      <GlobalTabs tabs={tabsData} defaultActiveKey={"0"} tabClass="mb-4" />
+      onTabChange={handleTabChange}
+      <GlobalTabs
+        tabs={tabsData}
+        activeKey={activeTab}
+        defaultActiveKey={"0"}
+        tabClass='mb-4'
+      />
     </>
   );
 };

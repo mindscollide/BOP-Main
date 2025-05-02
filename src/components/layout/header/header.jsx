@@ -13,7 +13,7 @@ const Header = () => {
           <>
             <Nav.Item className={styles["nav-item"]}>
               <Nav.Link className={styles["nav-link_active"]}>
-                Gul Ahmed
+                {localStorage.getItem("name")}
               </Nav.Link>
             </Nav.Item>
           </>
