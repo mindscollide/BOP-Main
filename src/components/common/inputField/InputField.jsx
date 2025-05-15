@@ -1,5 +1,4 @@
 import React from "react";
-import { InputNumber } from "antd";
 import styles from "./input.module.css";
 
 const InputFIeld = ({
@@ -19,11 +18,13 @@ const InputFIeld = ({
   max,
   min,
   className,
+  defaultValue
 }) => (
   <input
     value={value}
     type={type}
     onChange={onChange}
+    defaultValue={defaultValue}
     pattern={pattern}
     placeholder={placeholder}
     className={`${styles[applyClass]} ${className}`}

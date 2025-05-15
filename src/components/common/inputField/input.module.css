@@ -34,6 +34,11 @@
   text-align: left;
   border-radius: 2px;
   border: 1px solid #000;
+  text-align: center;
+}
+.DealerTableBitInput:disabled {
+  background-color: rgba(239, 239, 239, 0.3) !important;
+  border-color: rgba(118, 118, 118, 0.3);
 }
 /* End Dealer Table Bit Input Field */
 
@@ -226,3 +231,24 @@
 }
 
 /* End Date Picker for NOP Modal  Input Field  */
+
+.BookaForwardCorporateInputFields {
+  border: 1px solid #e1e1e1 !important;
+  font-weight: 700 !important;
+  height: 30px !important;
+  border-top-right-radius: 0px !important;
+  border-top-left-radius: 4px !important;
+  border-bottom-left-radius: 4px !important;
+  border-bottom-right-radius: 0px !important;
+}
+
+.BookaForwardCorporateInputFieldsTenorNonFEmodal {
+  border: 1px solid #e1e1e1 !important;
+  font-weight: 700 !important;
+  height: 30px !important;
+  width: 104px !important;
+  border-top-right-radius: 0px !important;
+  border-top-left-radius: 4px !important;
+  border-bottom-left-radius: 4px !important;
+  border-bottom-right-radius: 0px !important;
+}

@@ -8,12 +8,16 @@ const DatePickerCom = ({
   onChange,
   applyClass,
   zIndex,
+  minDate,
+  maxDate
 }) => {
   return (
     <DatePicker
       value={value}
       onChange={onChange}
       portal={true}
+      minDate={minDate}
+      maxDate={maxDate}
       zIndex={zIndex}
       render={<InputField placeholder={placeholder} applyClass={applyClass} />}
     />

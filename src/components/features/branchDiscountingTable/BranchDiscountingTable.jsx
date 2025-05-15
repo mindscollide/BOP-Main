@@ -1,11 +1,55 @@
 import React, { useEffect, useState } from "react";
 import GlobalTable from "../../common/table/GlobalTable";
 import { createColumns, generateData } from "../../utils/generateData";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { GetAllFowardsAndDiscountsRatesAPI } from "../SpotBranch/WatchlistAction";
+import { useSelector } from "react-redux";
+import { Col, Row } from "react-bootstrap";
+import CustomButton from "@/components/common/globalButton/button";
+import FEDiscountingModal from "./FEDiscountingModal/FEDiscountingModal";
+import NonFEDiscountingModal from "./NonFeDiscountingModal/NonFEDiscountingModal";
 
 const BranchDiscountingTable = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  //local states
   const [dataSource, setDataSource] = useState([]);
-  const [columnsData, setColumnsData] = useState([])
-  
+  const [columnsData, setColumnsData] = useState([]);
+  const [instrumentForwards, setInstrumentForwards] = useState([]);
+  const [tenorsData, setTenorsData] = useState([]);
+  const [forwardRatesData, setForwardRatesData] = useState([]);
+  const [discountRatesData, setDiscountRatesData] = useState([]);
+  //FE Dsicounting Modal Modal State
+  const [feDiscountingModalCall, setFeDiscountingModalCall] = useState(false);
+  //NON-FE Dsicounting Modal Modal State
+  const [nonfeDiscountingModalCall, setNonfeDiscountingModalCall] =
+    useState(false);
+  //Global State for Extracting Forward and discount rate data
+  const GetAllFowardsAndDiscountsRatesAPIData = useSelector(
+    (state) => state.WatchListReducer.GetAllFowardsAndDiscountsRatesData
+  );
+
+  //Extracting forward and Discounting Api Data
+  useEffect(() => {
+    try {
+      if (
+        GetAllFowardsAndDiscountsRatesAPIData &&
+        GetAllFowardsAndDiscountsRatesAPIData !== null
+      ) {
+        setTenorsData(GetAllFowardsAndDiscountsRatesAPIData.tenors);
+        setForwardRatesData(GetAllFowardsAndDiscountsRatesAPIData.forwardRates);
+        setDiscountRatesData(
+          GetAllFowardsAndDiscountsRatesAPIData.discountRates
+        );
+        setInstrumentForwards(
+          GetAllFowardsAndDiscountsRatesAPIData.instruments
+        );
+      }
+    } catch (error) {
+      console.log(error, "error");
+    }
+  }, [GetAllFowardsAndDiscountsRatesAPIData]);
 
   const columns = [
     {
@@ -18,7 +62,7 @@ const BranchDiscountingTable = () => {
           width: 250,
           align: "center",
           render: (text) => {
-            return <span className='ms-3'>{text}</span>;
+            return <span className="ms-3">{text}</span>;
           },
         },
       ],
@@ -32,7 +76,7 @@ const BranchDiscountingTable = () => {
           key: "currentBid",
           align: "center",
           render: (text) => {
-            return <span className='ms-3'>{text}</span>;
+            return <span className="ms-3">{text}</span>;
           },
         },
       ],
@@ -46,7 +90,7 @@ const BranchDiscountingTable = () => {
           key: "lastBid",
           align: "center",
           render: (text) => {
-            return <span className='ms-3'>{text}</span>;
+            return <span className="ms-3">{text}</span>;
           },
         },
       ],
@@ -60,7 +104,7 @@ const BranchDiscountingTable = () => {
           key: "lastBidGBP",
           align: "center",
           render: (text) => {
-            return <span className='ms-3'>{text}</span>;
+            return <span className="ms-3">{text}</span>;
           },
         },
       ],
@@ -74,36 +118,95 @@ const BranchDiscountingTable = () => {
           key: "lastBidGBP",
           align: "center",
           render: (text) => {
-            return <span className='ms-3'>{text}</span>;
+            return <span className="ms-3">{text}</span>;
           },
         },
       ],
     },
   ];
+
   useEffect(() => {
-    const { discountRates } = generateData(1);
-  
+    if (
+      tenorsData.length > 0 &&
+      instrumentForwards.length > 0 &&
+      forwardRatesData.length > 0 &&
+      discountRatesData.length > 0
+    ) {
+      const { discountRates } = generateData(
+        1,
+        tenorsData,
+        instrumentForwards,
+        forwardRatesData,
+        discountRatesData
+      );
+
       if (discountRates.length > 0) {
-        setDataSource(discountRates)
+        setDataSource(discountRates);
         const forwardsColumns = createColumns(discountRates, 1);
         setColumnsData(forwardsColumns);
-    
-      
       }
-    }, [])
+    }
+  }, [tenorsData, instrumentForwards, forwardRatesData, discountRatesData]);
+
+  const handleFEDiscountingModal = () => {
+    setFeDiscountingModalCall(true);
+  };
+
+  const handleNonFEDiscountingModal = () => {
+    setNonfeDiscountingModalCall(true);
+  };
+
   return (
-    <GlobalTable
-      columns={columnsData}
-      dataSource={dataSource}
-      prefixCls={"branch_forwardsTable"}
-      pagination={false}
-      bordered
-      rowClassName={(record, index) =>
-        index % 2 === 0
-          ? "branch_forwardsTable-odd"
-          : "branch_forwardsTable-even"
-      }
-    />
+    <>
+      <Row>
+        <Col lg={12} md={12} sm={12}>
+          <GlobalTable
+            columns={columnsData}
+            dataSource={dataSource}
+            prefixCls={"branch_forwardsTable"}
+            pagination={false}
+            bordered
+            rowClassName={(record, index) =>
+              index % 2 === 0
+                ? "branch_forwardsTable-odd"
+                : "branch_forwardsTable-even"
+            }
+          />
+        </Col>
+      </Row>
+
+      <Row className="mt-2">
+        <Col
+          lg={12}
+          md={12}
+          sm={12}
+          className="d-flex justify-content-center align-items-center gap-2"
+        >
+          <CustomButton
+            value="FE Discounting"
+            applyClass={"FEDiscounting"}
+            onClick={handleFEDiscountingModal}
+          />
+          <CustomButton
+            value="Non-FE Discounting"
+            applyClass={"FowwardBranchBookaForwardBtn"}
+            onClick={handleNonFEDiscountingModal}
+          />
+        </Col>
+      </Row>
+      {feDiscountingModalCall && (
+        <FEDiscountingModal
+          feDiscountingModalCall={feDiscountingModalCall}
+          setFeDiscountingModalCall={setFeDiscountingModalCall}
+        />
+      )}
+      {nonfeDiscountingModalCall && (
+        <NonFEDiscountingModal
+          nonfeDiscountingModalCall={nonfeDiscountingModalCall}
+          setNonfeDiscountingModalCall={setNonfeDiscountingModalCall}
+        />
+      )}
+    </>
   );
 };
 

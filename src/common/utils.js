@@ -2,17 +2,25 @@ import axios from "axios";
 
 // Function to set custom headers
 const setCustomHeaders = () => {
-  let token = JSON.parse(localStorage.getItem("token"));
-  if (token) {
+  let token = localStorage.getItem("token");
+  try {
     return {
       _token: token,
       "Content-Type": "multipart/form-data",
     };
-  } else {
-    return {
-      "Content-Type": "multipart/form-data",
-    };
+  } catch (error) {
+    console.error("Error setting headers:", error);
   }
+  // if (token !== null) {
+  //   return {
+  //     _token: token,
+  //     "Content-Type": "multipart/form-data",
+  //   };
+  // } else {
+  //   return {
+  //     "Content-Type": "multipart/form-data",
+  //   };
+  // }
 };
 
 const emailValidation = (text) => {
@@ -47,3 +55,24 @@ const roleBasedNavigation = (navigate, roleID) => {
   }
 };
 export { setCustomHeaders, emailValidation, roleBasedNavigation };
+
+export const getCookieValue = (cookieName) => {
+  const cookies = document.cookie.split("; ");
+  for (const cookie of cookies) {
+    const [name, value] = cookie.split("=");
+    if (name === cookieName) {
+      return value;
+    }
+  }
+  return null; // Return null if the cookie is not found
+};
+
+// Utility to format date as "Wed, May 31, 2023"
+export const formatDate = (date) => {
+  return date.toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+};

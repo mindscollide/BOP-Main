@@ -13,7 +13,7 @@ const Header = () => {
           <>
             <Nav.Item className={styles["nav-item"]}>
               <Nav.Link className={styles["nav-link_active"]}>
-                Gul Ahmed
+                {localStorage.getItem("name")}
               </Nav.Link>
             </Nav.Item>
           </>
@@ -30,7 +30,6 @@ const Header = () => {
                     ? `${styles["nav-link_active"]} `
                     : `${styles["nav-link"]}`
                 }
-                // onClick={handleCLickDealer}
               >
                 Dealer
               </Nav.Link>
@@ -44,14 +43,12 @@ const Header = () => {
                     ? `${styles["nav-link_active"]} `
                     : `${styles["nav-link"]}`
                 }
-                // onClick={handleCLickCategory}
               >
                 Category
               </Nav.Link>
             </Nav.Item>
             <Nav.Item className={styles["nav-item"]}>
               <Nav.Link
-                // href={TreasuryLink || "/"}
                 as={Link}
                 to={"treasury"}
                 className={
@@ -59,7 +56,6 @@ const Header = () => {
                     ? `${styles["nav-link_active"]}`
                     : `${styles["nav-link"]}`
                 }
-                // onClick={handleCLickTreasury}
               >
                 Treasury
               </Nav.Link>

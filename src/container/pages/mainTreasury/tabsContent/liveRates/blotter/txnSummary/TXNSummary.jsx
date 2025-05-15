@@ -1,246 +1,1247 @@
-import React from 'react'
-import GlobalTable from '../../../../../../../components/common/table/GlobalTable'
-import IconElement from '../../../../../../../components/common/IconElement/IconElement'
-
+import React, { useEffect, useState } from "react";
+import GlobalTable from "../../../../../../../components/common/table/GlobalTable";
+import IconElement from "../../../../../../../components/common/IconElement/IconElement";
+import { useDispatch } from "react-redux";
+import { CorporateBlotterDataAPI } from "./CorporateBlotterActions";
+import { useSelector } from "react-redux";
+import { Checkbox, Popover } from "antd";
+import { DownOutlined } from "@ant-design/icons";
+import CustomButton from "@/components/common/globalButton/button";
+import CommentModal from "../commentModal/CommentModal";
+import MailModal from "../mailModal/MailModal";
+import pdfImage from "@/assets/icons/pdf.png";
+import emailImage from "@/assets/icons/email.png";
+import excelImage from "@/assets/icons/excel.png";
+import printImage from "@/assets/icons/print.png";
+import { Col, Row } from "react-bootstrap";
 const TXNSummary = () => {
-  const tableData = [
+  const dispatch = useDispatch();
+
+  //HardCoded Filter Values start
+  const TXN_ID_OPTIONS = [
+    "09-09-2024/0568",
+    "09-09-2024/4798",
+    "09-09-2024/bd2e",
+    "09-09-2024/d1f2",
+  ];
+
+  const CustomerName_OPTIONS = ["Gul Ahmed"];
+  const TYPE_OPTIONS = ["Buy", "Sell"];
+  const Nature_OPTIONS = ["1", "6"];
+  const CCY1_OPTIONS = ["USD"];
+  const Amount_OPTIONS = ["098,098", "234,234"];
+  const Rate_OPTIONS = ["288.00", "289.00"];
+  const CCY2_OPTIONS = ["PKR"];
+  const Amount2_OPTIONS = ["NaN"];
+  const Time_OPTIONS = ["16:33 pm", "16:47 pm", "16:48 pm", "16:50 pm"];
+  const LCno_OPTIONS = ["098098", "234234"];
+  const Accno_OPTIONS = ["234234234234234234234234"];
+  const Status_OPTIONS = ["Pending"];
+
+  const [statusOptions, setStatusOptions] = useState([]);
+  console.log(statusOptions, "statusOptionsstatusOptions");
+  //HardCoded Filter Values Ended
+
+  //Global State For Blotter Data
+  const GlobalStateGetBlotterData = useSelector(
+    (state) => state.CorporateBlotterReducer.getBlotterApiData
+  );
+
+  //local states
+  const [blotterdata, setBlotterdata] = useState([]);
+  //TXNID Filter State
+  const [open, setOpen] = useState(false);
+  const [selectedItemsTXNID, setSelectedItemsTXNID] = useState([]);
+  // Show and Hide Comment Modal and commentState
+  const [showCommentModal, setShowCommentModal] = useState(false);
+  const [comment, setComment] = useState("");
+  //Customer Name Filter State
+  const [openCustomername, setOpenCustomername] = useState(false);
+  const [selectedItemsCustomerName, setSelectedItemsCustomerName] = useState(
+    []
+  );
+  //Type Filter State
+  const [openType, setOpenType] = useState(false);
+  const [selectedItemsType, setSelectedItemsType] = useState([]);
+  //Nature Filter State
+  const [openNature, setOpenNature] = useState(false);
+  const [selectedItemsNature, setSelectedItemsNature] = useState([]);
+  //CCY1 Filter State
+  const [openCCY1, setOpenCCY1] = useState(false);
+  const [selectedItemsCCY1, setSelectedItemsCCY1] = useState([]);
+  //Amount1 Filter State
+  const [openAmount1, setOpenAmount1] = useState(false);
+  const [selectedItemsAmount1, setSelectedItemsAmount1] = useState([]);
+  //Rate Filter State
+  const [openRate, setOpenRate] = useState(false);
+  const [selectedItemsRate, setSelectedItemsRate] = useState([]);
+  //CCY2 Filter State
+  const [openCCY2, setOpenCCY2] = useState(false);
+  const [selectedItemsCCY2, setSelectedItemsCCY2] = useState([]);
+  //Amount2 Filter State
+  const [openAmount2, setOpenAmount2] = useState(false);
+  const [selectedItemsAmount2, setSelectedItemsAmount2] = useState([]);
+  //Time Filter State
+  const [openTime, setOpenTime] = useState(false);
+  const [selectedItemsTime, setSelectedItemsTime] = useState([]);
+  //LCno Filter State
+  const [openLCno, setOpenLCno] = useState(false);
+  const [selectedItemsLCno, setSelectedItemsLCno] = useState([]);
+  //AccNO Filter State
+  const [openAccNO, setOpenAccNO] = useState(false);
+  const [selectedItemsAccNO, setSelectedItemsAccNO] = useState([]);
+  //Status Filter State
+  const [openStatus, setOpenStatus] = useState(false);
+  const [selectedItemsStatus, setSelectedItemsStatus] = useState([]);
+
+  const [openExportDiv, setOpenExportDiv] = useState(false);
+
+  //Calling Corporate Blotter Data API
+  useEffect(() => {
+    try {
+      dispatch(CorporateBlotterDataAPI({}));
+    } catch (error) {
+      console.log(error, "error");
+    }
+  }, []);
+
+  //Extracting Out the Blotter Data API
+  useEffect(() => {
+    try {
+      if (GlobalStateGetBlotterData && GlobalStateGetBlotterData !== null) {
+        console.log(GlobalStateGetBlotterData, "GlobalStateGetBlotterData");
+        // Now will be requiring some Clarification on it
+        setBlotterdata([GlobalStateGetBlotterData.tnxSummary]);
+        setStatusOptions(GlobalStateGetBlotterData.statuses);
+      }
+    } catch (error) {
+      console.log(error, "error");
+    }
+  }, [GlobalStateGetBlotterData]);
+
+  //TXN ID PopOver Functions Starts
+  const handleOpenChange = (newOpen) => {
+    setOpen(newOpen);
+  };
+
+  const handleSelectAll = () => {
+    setSelectedItemsTXNID(TXN_ID_OPTIONS);
+  };
+
+  const handleDeselectAll = () => {
+    setSelectedItemsTXNID([]);
+  };
+
+  const handleCheckboxChange = (checkedValues) => {
+    setSelectedItemsTXNID(checkedValues);
+  };
+
+  const popoverContentTXN = (
+    <div style={{ width: 220 }}>
+      <div className='d-flex justify-content-between mb-2'>
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Select All"}
+          onClick={handleSelectAll}
+        />
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Desselect All"}
+          onClick={handleDeselectAll}
+        />
+      </div>
+      <Checkbox.Group
+        style={{ display: "flex", flexDirection: "column" }}
+        value={selectedItemsTXNID}
+        onChange={handleCheckboxChange}>
+        {TXN_ID_OPTIONS.map((item) => (
+          <Checkbox key={item} value={item}>
+            {item}
+          </Checkbox>
+        ))}
+      </Checkbox.Group>
+    </div>
+  );
+  //TXN ID PopOver Functions Ends
+
+  //Customer Name PopOver Functions Starts
+  const handleOpenChangeCustomerName = (newOpen) => {
+    setOpenCustomername(newOpen);
+  };
+
+  const handleSelectAllCustomerName = () => {
+    setSelectedItemsCustomerName(CustomerName_OPTIONS);
+  };
+
+  const handleDeselectAllCustomerName = () => {
+    setSelectedItemsCustomerName([]);
+  };
+
+  const handleCheckboxChangeCustomerName = (checkedValues) => {
+    setSelectedItemsCustomerName(checkedValues);
+  };
+
+  const popoverContentCustomerName = (
+    <div style={{ width: 220 }}>
+      <div className='d-flex justify-content-between mb-2'>
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Select All"}
+          onClick={handleSelectAllCustomerName}
+        />
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Desselect All"}
+          onClick={handleDeselectAllCustomerName}
+        />
+      </div>
+      <Checkbox.Group
+        style={{ display: "flex", flexDirection: "column" }}
+        value={selectedItemsCustomerName}
+        onChange={handleCheckboxChangeCustomerName}>
+        {CustomerName_OPTIONS.map((item) => (
+          <Checkbox key={item} value={item}>
+            {item}
+          </Checkbox>
+        ))}
+      </Checkbox.Group>
+    </div>
+  );
+  //Customer Name PopOver Functions Ends
+
+  //Type PopOver Functions Starts
+  const handleOpenChangeType = (newOpen) => {
+    setOpenType(newOpen);
+  };
+
+  const handleSelectAllType = () => {
+    setSelectedItemsType(TYPE_OPTIONS);
+  };
+
+  const handleDeselectAllType = () => {
+    setSelectedItemsType([]);
+  };
+
+  const handleCheckboxChangeType = (checkedValues) => {
+    setSelectedItemsType(checkedValues);
+  };
+
+  const popoverContentType = (
+    <div style={{ width: 220 }}>
+      <div className='d-flex justify-content-between mb-2'>
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Select All"}
+          onClick={handleSelectAllType}
+        />
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Desselect All"}
+          onClick={handleDeselectAllType}
+        />
+      </div>
+      <Checkbox.Group
+        style={{ display: "flex", flexDirection: "column" }}
+        value={selectedItemsType}
+        onChange={handleCheckboxChangeType}>
+        {TYPE_OPTIONS.map((item) => (
+          <Checkbox key={item} value={item}>
+            {item}
+          </Checkbox>
+        ))}
+      </Checkbox.Group>
+    </div>
+  );
+  //Type PopOver Functions Ends
+
+  //Nature PopOver Functions Starts
+  const handleOpenChangeNature = (newOpen) => {
+    setOpenNature(newOpen);
+  };
+
+  const handleSelectAllNature = () => {
+    setSelectedItemsNature(Nature_OPTIONS);
+  };
+
+  const handleDeselectAllNature = () => {
+    setSelectedItemsNature([]);
+  };
+
+  const handleCheckboxChangeNature = (checkedValues) => {
+    setSelectedItemsNature(checkedValues);
+  };
+
+  const popoverContentNature = (
+    <div style={{ width: 220 }}>
+      <div className='d-flex justify-content-between mb-2'>
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Select All"}
+          onClick={handleSelectAllNature}
+        />
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Desselect All"}
+          onClick={handleDeselectAllNature}
+        />
+      </div>
+      <Checkbox.Group
+        style={{ display: "flex", flexDirection: "column" }}
+        value={selectedItemsNature}
+        onChange={handleCheckboxChangeNature}>
+        {Nature_OPTIONS.map((item) => (
+          <Checkbox key={item} value={item}>
+            {item}
+          </Checkbox>
+        ))}
+      </Checkbox.Group>
+    </div>
+  );
+  //Nature PopOver Functions Ends
+
+  //CCY1 PopOver Functions Starts
+  const handleOpenChangeCCY1 = (newOpen) => {
+    setOpenCCY1(newOpen);
+  };
+
+  const handleSelectAllCCY1 = () => {
+    setSelectedItemsCCY1(CCY1_OPTIONS);
+  };
+
+  const handleDeselectAllCCY1 = () => {
+    setSelectedItemsCCY1([]);
+  };
+
+  const handleCheckboxChangeCCY1 = (checkedValues) => {
+    setSelectedItemsCCY1(checkedValues);
+  };
+
+  const popoverContentCCY1 = (
+    <div style={{ width: 220 }}>
+      <div className='d-flex justify-content-between mb-2'>
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Select All"}
+          onClick={handleSelectAllCCY1}
+        />
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Desselect All"}
+          onClick={handleDeselectAllCCY1}
+        />
+      </div>
+      <Checkbox.Group
+        style={{ display: "flex", flexDirection: "column" }}
+        value={selectedItemsCCY1}
+        onChange={handleCheckboxChangeCCY1}>
+        {CCY1_OPTIONS.map((item) => (
+          <Checkbox key={item} value={item}>
+            {item}
+          </Checkbox>
+        ))}
+      </Checkbox.Group>
+    </div>
+  );
+  //CCY1 PopOver Functions Ends
+
+  //Amount1 PopOver Functions Starts
+  const handleOpenChangeAmount1 = (newOpen) => {
+    setOpenAmount1(newOpen);
+  };
+
+  const handleSelectAllAmount1 = () => {
+    setSelectedItemsAmount1(Amount_OPTIONS);
+  };
+
+  const handleDeselectAllAmount1 = () => {
+    setSelectedItemsAmount1([]);
+  };
+
+  const handleCheckboxChangeAmount1 = (checkedValues) => {
+    setSelectedItemsAmount1(checkedValues);
+  };
+
+  const popoverContentAmount1 = (
+    <div style={{ width: 220 }}>
+      <div className='d-flex justify-content-between mb-2'>
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Select All"}
+          onClick={handleSelectAllAmount1}
+        />
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Desselect All"}
+          onClick={handleDeselectAllAmount1}
+        />
+      </div>
+      <Checkbox.Group
+        style={{ display: "flex", flexDirection: "column" }}
+        value={selectedItemsAmount1}
+        onChange={handleCheckboxChangeAmount1}>
+        {Amount_OPTIONS.map((item) => (
+          <Checkbox key={item} value={item}>
+            {item}
+          </Checkbox>
+        ))}
+      </Checkbox.Group>
+    </div>
+  );
+  //CCY1 PopOver Functions Ends
+
+  //Rate PopOver Functions Starts
+  const handleOpenChangeRate = (newOpen) => {
+    setOpenRate(newOpen);
+  };
+
+  const handleSelectAllRate = () => {
+    setSelectedItemsRate(Rate_OPTIONS);
+  };
+
+  const handleDeselectAllRate = () => {
+    setSelectedItemsRate([]);
+  };
+
+  const handleCheckboxChangeRate = (checkedValues) => {
+    setSelectedItemsRate(checkedValues);
+  };
+
+  const popoverContentRate = (
+    <div style={{ width: 220 }}>
+      <div className='d-flex justify-content-between mb-2'>
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Select All"}
+          onClick={handleSelectAllRate}
+        />
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Desselect All"}
+          onClick={handleDeselectAllRate}
+        />
+      </div>
+      <Checkbox.Group
+        style={{ display: "flex", flexDirection: "column" }}
+        value={selectedItemsRate}
+        onChange={handleCheckboxChangeRate}>
+        {Rate_OPTIONS.map((item) => (
+          <Checkbox key={item} value={item}>
+            {item}
+          </Checkbox>
+        ))}
+      </Checkbox.Group>
+    </div>
+  );
+  //Rate PopOver Functions Ends
+
+  //CCY2 PopOver Functions Starts
+  const handleOpenChangeCCY2 = (newOpen) => {
+    setOpenCCY2(newOpen);
+  };
+
+  const handleSelectAllCCY2 = () => {
+    setSelectedItemsCCY2(CCY2_OPTIONS);
+  };
+
+  const handleDeselectAllCCY2 = () => {
+    setSelectedItemsCCY2([]);
+  };
+
+  const handleCheckboxChangeCCY2 = (checkedValues) => {
+    setSelectedItemsCCY2(checkedValues);
+  };
+
+  const popoverContentCCY2 = (
+    <div style={{ width: 220 }}>
+      <div className='d-flex justify-content-between mb-2'>
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Select All"}
+          onClick={handleSelectAllCCY2}
+        />
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Desselect All"}
+          onClick={handleDeselectAllCCY2}
+        />
+      </div>
+      <Checkbox.Group
+        style={{ display: "flex", flexDirection: "column" }}
+        value={selectedItemsCCY2}
+        onChange={handleCheckboxChangeCCY2}>
+        {CCY2_OPTIONS.map((item) => (
+          <Checkbox key={item} value={item}>
+            {item}
+          </Checkbox>
+        ))}
+      </Checkbox.Group>
+    </div>
+  );
+  //CCY2 PopOver Functions Ends
+
+  //Amount2 PopOver Functions Starts
+  const handleOpenChangeAmount2 = (newOpen) => {
+    setOpenAmount2(newOpen);
+  };
+
+  const handleSelectAllAmount2 = () => {
+    setSelectedItemsAmount2(Amount2_OPTIONS);
+  };
+
+  const handleDeselectAllAmount2 = () => {
+    setSelectedItemsAmount2([]);
+  };
+
+  const handleCheckboxChangeAmount2 = (checkedValues) => {
+    setSelectedItemsAmount2(checkedValues);
+  };
+
+  const popoverContentAmount2 = (
+    <div style={{ width: 220 }}>
+      <div className='d-flex justify-content-between mb-2'>
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Select All"}
+          onClick={handleSelectAllAmount2}
+        />
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Desselect All"}
+          onClick={handleDeselectAllAmount2}
+        />
+      </div>
+      <Checkbox.Group
+        style={{ display: "flex", flexDirection: "column" }}
+        value={selectedItemsAmount2}
+        onChange={handleCheckboxChangeAmount2}>
+        {Amount2_OPTIONS.map((item) => (
+          <Checkbox key={item} value={item}>
+            {item}
+          </Checkbox>
+        ))}
+      </Checkbox.Group>
+    </div>
+  );
+  //Amount2 PopOver Functions Ends
+
+  //Time PopOver Functions Starts
+  const handleOpenChangeTime = (newOpen) => {
+    setOpenTime(newOpen);
+  };
+
+  const handleSelectAllTime = () => {
+    setSelectedItemsTime(Time_OPTIONS);
+  };
+
+  const handleDeselectAllTime = () => {
+    setSelectedItemsTime([]);
+  };
+
+  const handleCheckboxChangeTime = (checkedValues) => {
+    setSelectedItemsTime(checkedValues);
+  };
+
+  const popoverContentTime = (
+    <div style={{ width: 220 }}>
+      <div className='d-flex justify-content-between mb-2'>
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Select All"}
+          onClick={handleSelectAllTime}
+        />
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Desselect All"}
+          onClick={handleDeselectAllTime}
+        />
+      </div>
+      <Checkbox.Group
+        style={{ display: "flex", flexDirection: "column" }}
+        value={selectedItemsTime}
+        onChange={handleCheckboxChangeTime}>
+        {Time_OPTIONS.map((item) => (
+          <Checkbox key={item} value={item}>
+            {item}
+          </Checkbox>
+        ))}
+      </Checkbox.Group>
+    </div>
+  );
+  //Time PopOver Functions Ends
+
+  //LCno PopOver Functions Starts
+  const handleOpenChangeLCno = (newOpen) => {
+    setOpenLCno(newOpen);
+  };
+
+  const handleSelectAllLCno = () => {
+    setSelectedItemsLCno(LCno_OPTIONS);
+  };
+
+  const handleDeselectAllLCno = () => {
+    setSelectedItemsLCno([]);
+  };
+
+  const handleCheckboxChangeLCno = (checkedValues) => {
+    setSelectedItemsLCno(checkedValues);
+  };
+
+  const popoverContentLCno = (
+    <div style={{ width: 220 }}>
+      <div className='d-flex justify-content-between mb-2'>
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Select All"}
+          onClick={handleSelectAllLCno}
+        />
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Desselect All"}
+          onClick={handleDeselectAllLCno}
+        />
+      </div>
+      <Checkbox.Group
+        style={{ display: "flex", flexDirection: "column" }}
+        value={selectedItemsLCno}
+        onChange={handleCheckboxChangeLCno}>
+        {LCno_OPTIONS.map((item) => (
+          <Checkbox key={item} value={item}>
+            {item}
+          </Checkbox>
+        ))}
+      </Checkbox.Group>
+    </div>
+  );
+  //LCno PopOver Functions Ends
+
+  //ACCno PopOver Functions Starts
+  const handleOpenChangeAccNO = (newOpen) => {
+    setOpenAccNO(newOpen);
+  };
+
+  const handleSelectAllAccNO = () => {
+    setSelectedItemsAccNO(Accno_OPTIONS);
+  };
+
+  const handleDeselectAllAccNO = () => {
+    setSelectedItemsAccNO([]);
+  };
+
+  const handleCheckboxChangeAccNO = (checkedValues) => {
+    setSelectedItemsAccNO(checkedValues);
+  };
+
+  const popoverContentAccNO = (
+    <div style={{ width: 220 }}>
+      <div className='d-flex justify-content-between mb-2'>
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Select All"}
+          onClick={handleSelectAllAccNO}
+        />
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Desselect All"}
+          onClick={handleDeselectAllAccNO}
+        />
+      </div>
+      <Checkbox.Group
+        style={{ display: "flex", flexDirection: "column" }}
+        value={selectedItemsAccNO}
+        onChange={handleCheckboxChangeAccNO}>
+        {Accno_OPTIONS.map((item) => (
+          <Checkbox key={item} value={item}>
+            {item}
+          </Checkbox>
+        ))}
+      </Checkbox.Group>
+    </div>
+  );
+  //ACCno PopOver Functions Ends
+
+  //status PopOver Functions Starts
+  const handleOpenChangeStatus = (newOpen) => {
+    setOpenStatus(newOpen);
+  };
+
+  const handleSelectAllStatus = () => {
+    setSelectedItemsStatus(statusOptions);
+  };
+
+  const handleDeselectAllStatus = () => {
+    setSelectedItemsStatus([]);
+  };
+
+  const handleCheckboxChangeStatus = (checkedValues) => {
+    setSelectedItemsStatus(checkedValues);
+  };
+
+  const popoverContentStatus = (
+    <div style={{ width: 220 }}>
+      <div className='d-flex justify-content-between mb-2'>
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Select All"}
+          onClick={handleSelectAllStatus}
+        />
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Desselect All"}
+          onClick={handleDeselectAllStatus}
+        />
+      </div>
+      <Checkbox.Group
+        style={{ display: "flex", flexDirection: "column" }}
+        value={selectedItemsStatus}
+        onChange={handleCheckboxChangeStatus}>
+        {statusOptions.map((item) => (
+          <Checkbox key={item} value={item}>
+            {item.status}
+          </Checkbox>
+        ))}
+      </Checkbox.Group>
+    </div>
+  );
+  //status PopOver Functions Ends
+  // Show and Hide Comment Modal and Update Comment Value
+  const handleShowCommentModal = (text) => {
+    setShowCommentModal(true);
+    setComment(text);
+  };
+
+  const onClickOpenExport = () => {
+    setOpenExportDiv(!openExportDiv);
+  };
+  const columns = [
     {
-      key: "1",
-      txnID: "27-08-2024/a2fe",
-      client: "Test",
-      side: "Buy",
-      nature: "6",
-      ccy1: "USD",
-      amount: "123",
-      rate: "288.00",
-      ccy2: "PKR",
-      amount2: "",
-      time: "12:20 pm",
-      lcNo: "2131231",
-      accountNo: "123123",
-      comment: "",
-      status: "Accepted",
-      chat: 21,
+      title: (
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>TXN ID</span>
+          <Popover
+            content={popoverContentTXN}
+            trigger='click'
+            arrow={false}
+            placement='bottom'
+            open={open}
+            onOpenChange={handleOpenChange}>
+            <span
+              style={{
+                cursor: "pointer",
+                color: "white",
+                background: "#f56600",
+                borderRadius: "4px",
+              }}>
+              ▼
+            </span>
+          </Popover>
+        </div>
+      ),
+      key: "txnid",
+      dataIndex: "txnid",
+      align: "center",
+      className: "ff-poppins fw-bold",
     },
     {
-      key: "2",
-      txnID: "27-08-2024/a2fe",
-      client: "Test",
-      side: "Buy",
-      nature: "6",
-      ccy1: "USD",
-      amount: "123",
-      rate: "288.00",
-      ccy2: "PKR",
-      amount2: "",
-      time: "12:20 pm",
-      lcNo: "2131231",
-      accountNo: "123123",
-      comment: "Test Comment",
-      status: "Rejected",
-      chat: 21,
+      title: (
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Name</span>
+          <Popover
+            content={popoverContentCustomerName}
+            trigger='click'
+            arrow={false}
+            placement='bottom'
+            open={openCustomername}
+            onOpenChange={handleOpenChangeCustomerName}>
+            <span
+              style={{
+                cursor: "pointer",
+                color: "white",
+                background: "#f56600",
+                borderRadius: "4px",
+              }}>
+              ▼
+            </span>
+          </Popover>
+        </div>
+      ),
+      key: "counterPartyName",
+      dataIndex: "counterPartyName",
+      className: "ff-poppins fw-bold",
     },
     {
-      key: "3",
-      txnID: "27-08-2024/9836",
-      client: "Syed Muhammad Aun Naqvi",
-      side: "Sell",
-      nature: "1",
-      ccy1: "USD",
-      amount: "999,999",
-      rate: "289.00",
-      ccy2: "PKR",
-      amount2: "",
-      time: "19:01 pm",
-      lcNo: "3142fdasfasd34214312412341234123412341234",
-      accountNo: "4124141241241241241241412412412412412",
-      comment: "",
-      status: "Accepted",
-      chat: 0,
+      title: (
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Type</span>
+          <Popover
+            content={popoverContentType}
+            trigger='click'
+            arrow={false}
+            placement='bottom'
+            open={openType}
+            onOpenChange={handleOpenChangeType}>
+            <span
+              style={{
+                cursor: "pointer",
+                color: "white",
+                background: "#f56600",
+                borderRadius: "4px",
+              }}>
+              ▼
+            </span>
+          </Popover>
+        </div>
+      ),
+      key: "side",
+      dataIndex: "side",
+      className: "ff-poppins fw-bold",
+    },
+    {
+      title: (
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Nature</span>
+          <Popover
+            content={popoverContentNature}
+            trigger='click'
+            arrow={false}
+            placement='bottom'
+            open={openNature}
+            onOpenChange={handleOpenChangeNature}>
+            <span
+              style={{
+                cursor: "pointer",
+                color: "white",
+                background: "#f56600",
+                borderRadius: "4px",
+              }}>
+              ▼
+            </span>
+          </Popover>
+        </div>
+      ),
+      key: "nature",
+      dataIndex: "nature",
+      className: "ff-poppins fw-bold",
+    },
+    {
+      title: (
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>CCY1</span>
+          <Popover
+            content={popoverContentCCY1}
+            trigger='click'
+            arrow={false}
+            placement='bottom'
+            open={openCCY1}
+            onOpenChange={handleOpenChangeCCY1}>
+            <span
+              style={{
+                cursor: "pointer",
+                color: "white",
+                background: "#f56600",
+                borderRadius: "4px",
+              }}>
+              ▼
+            </span>
+          </Popover>
+        </div>
+      ),
+      key: "ccY1",
+      dataIndex: "ccY1",
+      className: "ff-poppins fw-bold",
+    },
+    {
+      title: (
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Amount</span>
+          <Popover
+            content={popoverContentAmount1}
+            trigger='click'
+            arrow={false}
+            placement='bottom'
+            open={openAmount1}
+            onOpenChange={handleOpenChangeAmount1}>
+            <span
+              style={{
+                cursor: "pointer",
+                color: "white",
+                background: "#f56600",
+                borderRadius: "4px",
+              }}>
+              ▼
+            </span>
+          </Popover>
+        </div>
+      ),
+      key: "amount1",
+      dataIndex: "amount1",
+      className: "ff-poppins fw-bold",
+    },
+    {
+      title: (
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Rate</span>
+          <Popover
+            content={popoverContentRate}
+            trigger='click'
+            arrow={false}
+            placement='bottom'
+            open={openRate}
+            onOpenChange={handleOpenChangeRate}>
+            <span
+              style={{
+                cursor: "pointer",
+                color: "white",
+                background: "#f56600",
+                borderRadius: "4px",
+              }}>
+              ▼
+            </span>
+          </Popover>
+        </div>
+      ),
+      key: "rate1",
+      dataIndex: "rate1",
+      className: "ff-poppins fw-bold",
+    },
+    {
+      title: (
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>CCY2</span>
+          <Popover
+            content={popoverContentCCY2}
+            trigger='click'
+            arrow={false}
+            placement='bottom'
+            open={openCCY2}
+            onOpenChange={handleOpenChangeCCY2}>
+            <span
+              style={{
+                cursor: "pointer",
+                color: "white",
+                background: "#f56600",
+                borderRadius: "4px",
+              }}>
+              ▼
+            </span>
+          </Popover>
+        </div>
+      ),
+      key: "ccY2",
+      dataIndex: "ccY2",
+      className: "ff-poppins fw-bold",
+    },
+    {
+      title: (
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Amount</span>
+          <Popover
+            content={popoverContentAmount2}
+            trigger='click'
+            arrow={false}
+            placement='bottom'
+            open={openAmount2}
+            onOpenChange={handleOpenChangeAmount2}>
+            <span
+              style={{
+                cursor: "pointer",
+                color: "white",
+                background: "#f56600",
+                borderRadius: "4px",
+              }}>
+              ▼
+            </span>
+          </Popover>
+        </div>
+      ),
+      key: "amount2",
+      dataIndex: "amount2",
+      className: "ff-poppins fw-bold",
+    },
+    {
+      title: (
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Time</span>
+          <Popover
+            content={popoverContentTime}
+            trigger='click'
+            arrow={false}
+            placement='bottom'
+            open={openTime}
+            onOpenChange={handleOpenChangeTime}>
+            <span
+              style={{
+                cursor: "pointer",
+                color: "white",
+                background: "#f56600",
+                borderRadius: "4px",
+              }}>
+              ▼
+            </span>
+          </Popover>
+        </div>
+      ),
+      key: "time",
+      dataIndex: "time",
+      className: "ff-poppins fw-bold",
+    },
+    {
+      title: (
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>LC NO.</span>
+          <Popover
+            content={popoverContentLCno}
+            trigger='click'
+            arrow={false}
+            placement='bottom'
+            open={openLCno}
+            onOpenChange={handleOpenChangeLCno}>
+            <span
+              style={{
+                cursor: "pointer",
+                color: "white",
+                background: "#f56600",
+                borderRadius: "4px",
+              }}>
+              ▼
+            </span>
+          </Popover>
+        </div>
+      ),
+      key: "lC_No",
+      dataIndex: "lC_No",
+      className: "ff-poppins fw-bold",
+    },
+    {
+      title: (
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Acc NO.</span>
+          <Popover
+            content={popoverContentAccNO}
+            trigger='click'
+            arrow={false}
+            placement='bottom'
+            open={openAccNO}
+            onOpenChange={handleOpenChangeAccNO}>
+            <span
+              style={{
+                cursor: "pointer",
+                color: "white",
+                background: "#f56600",
+                borderRadius: "4px",
+              }}>
+              ▼
+            </span>
+          </Popover>
+        </div>
+      ),
+      key: "accountNumber",
+      dataIndex: "accountNumber",
+      className: "ff-poppins fw-bold",
+    },
+    {
+      title: "Checker",
+      key: "Checker",
+      dataIndex: "Checker",
+      className: "comment-class text-center",
+      render: (text, record) => {
+        return (
+          <>
+            <div className='col-action text-nowrap text-center'>
+              <CustomButton
+                icon={<i class='icon-check'></i>}
+                className='btn btn-sm btn-success me-1 blotterCheckerButton'
+              />
+              <CustomButton
+                icon={<i class='icon-trash'></i>}
+                className='btn btn-sm btn-danger me-1 blotterCheckerButton '
+              />
+            </div>
+          </>
+        );
+      },
+    },
+
+    // Comment section commented due to change in the HTML V3
+    // {
+    //   title: "Comment",
+    //   key: "comment",
+    //   dataIndex: "comment",
+    //   className: "comment-class text-center ",
+    //   render: (text, record) => (
+    //     <>
+    //       {text !== "" ? (
+    //         <span className="d-inline-block cursor-pointer">
+    //           <IconElement
+    //             iconClass="icon-view-comment fs-5 color-blue"
+    //             onClick={() => handleShowCommentModal(text)}
+    //           />
+    //         </span>
+    //       ) : null}
+    //     </>
+    //   ),
+    // },
+    {
+      title: (
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Status</span>
+          <Popover
+            content={popoverContentStatus}
+            trigger='click'
+            arrow={false}
+            placement='bottom'
+            open={openStatus}
+            onOpenChange={handleOpenChangeStatus}>
+            <span
+              style={{
+                cursor: "pointer",
+                color: "white",
+                background: "#f56600",
+                borderRadius: "4px",
+              }}>
+              ▼
+            </span>
+          </Popover>
+        </div>
+      ),
+      key: "14",
+      dataIndex: "status",
+      className: "ff-poppins fw-bold",
+      render: (text, record) => (
+        <>
+          <span className={text === "Accepted" ? "color-green" : "color-red"}>
+            {text}
+          </span>
+        </>
+      ),
+    },
+    {
+      key: "15",
+      title: "Chat",
+      dataIndex: "chat",
+      className: "comment-class ",
+      render: (text, record) => {
+        return (
+          <>
+            <div className='col-chat text-nowrap text-center'>
+              <CustomButton
+                icon={<i class='icon-chat2'></i>}
+                className='btn btn-sm btn-danger chat-btn-trigger'
+              />
+              <CustomButton
+                icon={
+                  <svg
+                    id='info_Layer_1'
+                    x='0px'
+                    y='0px'
+                    width='12px'
+                    height='12px'
+                    fill='#ffffff'
+                    viewBox='0 0 55 55'
+                    enable-background='new 0 0 55 55'
+                    xml:space='preserve'>
+                    <g>
+                      <path
+                        fill-rule='evenodd'
+                        clip-rule='evenodd'
+                        d='M41.407,45.858c0.067,0.838,0.156,1.672,0.183,2.508   c0.005,0.152-0.205,0.376-0.37,0.461c-1.347,0.687-2.679,1.416-4.069,2.005c-3.305,1.396-6.715,2.5-10.277,3.009   c-1.447,0.206-2.936,0.154-4.403,0.153c-0.477-0.001-0.968-0.178-1.424-0.345c-1.313-0.481-1.98-1.443-1.948-2.85   c0.015-0.583,0.103-1.179,0.253-1.744c1.863-7.013,3.752-14.02,5.61-21.037c0.199-0.751,0.327-1.543,0.341-2.318   c0.021-1.142-0.615-1.925-1.667-2.331c-1.605-0.618-3.258-0.468-4.89-0.161c-1.764,0.332-3.468,0.873-5.149,1.884   c-0.074-0.978-0.157-1.863-0.187-2.75c-0.005-0.127,0.234-0.307,0.396-0.388c1.334-0.67,2.648-1.389,4.021-1.968   c3.327-1.403,6.755-2.512,10.337-3.021c1.465-0.208,2.994-0.294,4.457-0.125c2.782,0.323,3.808,2.02,3.073,4.73   c-0.94,3.474-1.914,6.941-2.838,10.419c-1.049,3.953-2.087,7.912-3.077,11.879c-0.524,2.107,0.385,3.449,2.526,3.839   c2.048,0.376,4.038-0.017,5.981-0.634C39.313,46.75,40.296,46.295,41.407,45.858z'></path>
+                      <circle
+                        fill-rule='evenodd'
+                        clip-rule='evenodd'
+                        cx='27.5'
+                        cy='7.608'
+                        r='6.609'></circle>
+                    </g>
+                  </svg>
+                }
+                className='btn btn-sm btn-primary info-btn-trigger ms-1'
+              />
+            </div>
+          </>
+        );
+      },
     },
   ];
 
-    const tableData = [
-        {
-            key: '1',
-            txnID: '27-08-2024/a2fe',
-            client: 'Test',
-            side: 'Buy',
-            nature: '6',
-            ccy1: 'USD',
-            amount: '123',
-            rate: '288.00',
-            ccy2: 'PKR',
-            amount2: '',
-            time: '12:20 pm',
-            lcNo: '2131231',
-            accountNo: '123123',
-            comment: '',
-            status: 'Accepted',
-            chat: 21
-        },
-        {
-            key: '2',
-            txnID: '27-08-2024/a2fe',
-            client: 'Test',
-            side: 'Buy',
-            nature: '6',
-            ccy1: 'USD',
-            amount: '123',
-            rate: '288.00',
-            ccy2: 'PKR',
-            amount2: '',
-            time: '12:20 pm',
-            lcNo: '2131231',
-            accountNo: '123123',
-            comment: 'Test Comment',
-            status: 'Rejected',
-            chat: 21
-        },
-        {
-            key: "3",
-            txnID: "27-08-2024/9836",
-            client: "Syed Muhammad Aun Naqvi",
-            side: "Sell",
-            nature: "1",
-            ccy1: "USD",
-            amount: "999,999",
-            rate: "289.00",
-            ccy2: "PKR",
-            amount2: "",
-            time: "19:01 pm",
-            lcNo: "3142fdasfasd34214312412341234123412341234",
-            accountNo: "4124141241241241241241412412412412412",
-            comment: "",
-            status: "Accepted",
-            chat: 0
-        }
-    ]
-
-    const columns = [
-        {
-            key: "1",
-            title: "TXN ID",
-            dataIndex: 'txnID',
-            className: "ff-poppins fw-bold",
-        },
-        {
-            key: "2",
-            title: "Client",
-            dataIndex: 'client',
-            className: "ff-poppins fw-bold",
-        },
-        {
-            key: "3",
-            title: "Side",
-            dataIndex: 'side',
-            className: "ff-poppins fw-bold",
-        },
-        {
-            key: "4",
-            title: "Nature",
-            dataIndex: 'nature',
-            className: "ff-poppins fw-bold",
-        },
-        {
-            key: "5",
-            title: "CCY1",
-            dataIndex: 'ccy1',
-            className: "ff-poppins fw-bold",
-        },
-        {
-            key: "6",
-            title: "Amount",
-            dataIndex: 'amount',
-            className: "ff-poppins fw-bold",
-        },
-        {
-            key: "7",
-            title: "Rate",
-            dataIndex: 'rate',
-            className: "ff-poppins fw-bold",
-        },
-        {
-            key: "8",
-            title: "CCY2",
-            dataIndex: 'ccy2',
-            className: "ff-poppins fw-bold",
-        },
-        {
-            key: "9",
-            title: "Amount",
-            dataIndex: 'amount2',
-            className: "ff-poppins fw-bold",
-        },
-        {
-            key: "10",
-            title: "Time",
-            dataIndex: 'time',
-            className: "ff-poppins fw-bold",
-        },
-        {
-            key: "11",
-            title: "LC No.",
-            dataIndex: 'lcNo',
-            className: "ff-poppins fw-bold",
-        },
-        {
-            key: "12",
-            title: "Account No.",
-            dataIndex: 'accountNo',
-            className: "ff-poppins fw-bold",
-        },
-        {
-            key: "13",
-            title: "Comment",
-            dataIndex: 'comment',
-            className: "comment-class ",
-            render: (text, record) => (
-                <>
-                    {text !== "" ?
-                        <span className="d-inline-block cursor-pointer">
-                            <IconElement iconClass="icon-view-comment fs-5 color-blue" />
-                        </span>
-                        : null}
-                </>
-            ),
-
-        },
-        {
-            key: "14",
-            title: "Status",
-            dataIndex: 'status',
-            className: "ff-poppins fw-bold",
-            render: (text, record) => (
-                <>
-                    <span className={text === "Accepted" ? "color-green" : "color-red"}>
-                        {text}
-                    </span>
-                </>
-            ),
-        },
-        {
-            key: "15",
-            title: "Chat",
-            dataIndex: 'chat',
-            className: "comment-class ",
-        },
-    ]
-
-    return (
-        <>
-            <div className='box-content-wrapper'>
-                <GlobalTable
-                    pagination={false}
-                    dataSource={tableData}
-                    bordered={false}
-                    prefixCls="TXNSummary_Table"
-                    columns={columns}
-                    scroll={{ x: "max-content" }}
+  return (
+    <>
+      <section className='bg-white mt-2 p-2'>
+        <div className='box-content-wrapper'>
+          <div className='box-header mb-3'>
+            <div className='d-flex align-items-center'>
+              <div className='fs-6 fw-bold color-hd '>
+                <div className='fs-6 fw-bold color-hd data-summary-heading'>
+                  TXN Summary
+                </div>
+              </div>
+              <div className=' ms-auto'>
+                <CustomButton
+                  applyClass={"Export-button"}
+                  value='Export'
+                  onClick={onClickOpenExport}
                 />
-            </div>
-        </>
-    )
-}
 
-export default TXNSummary
+                {openExportDiv ? (
+                  <>
+                    <div className='dropdown-menu dropdown-ex-doc border show export-class'>
+                      <Row>
+                        <Col className='export-to-doc cursor-pointer'>
+                          <img
+                            src={pdfImage}
+                            width={30}
+                            height={30}
+                            alt='pdf'
+                          />
+                        </Col>
+                        <Col className='export-to-doc cursor-pointer'>
+                          <img
+                            src={excelImage}
+                            width={30}
+                            height={30}
+                            alt='excel'
+                          />
+                        </Col>
+                        <Col>
+                          <img
+                            src={emailImage}
+                            width={30}
+                            height={30}
+                            alt='email'
+                            // onClick={onClickMailModal}
+                          />
+                        </Col>
+                        <Col>
+                          <img
+                            src={printImage}
+                            width={30}
+                            height={30}
+                            alt='print'
+                          />
+                        </Col>
+                      </Row>
+                    </div>
+                  </>
+                ) : null}
+              </div>
+            </div>
+          </div>
+
+          <GlobalTable
+            pagination={false}
+            dataSource={blotterdata}
+            bordered={false}
+            prefixCls='TXNSummary_Table'
+            columns={columns}
+            scroll={{ x: "max-content" }}
+          />
+          <CommentModal
+            comment={comment}
+            setShowCommentModal={setShowCommentModal}
+            showCommentModal={showCommentModal}
+          />
+        </div>
+      </section>
+    </>
+  );
+};
+
+export default TXNSummary;

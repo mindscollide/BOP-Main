@@ -7,14 +7,17 @@ import { Provider } from "react-redux";
 import { DragDropContext } from "react-beautiful-dnd";
 import store from "./store/store.js";
 import { GloballyModalProvider } from "./context/ModalContext.jsx";
+import { DealerAndTreasuryProvider } from "./context/DealerAndTreasuryContext.jsx";
 GloballyModalProvider;
 // import { CreateDemoProvider } from "./Context.jsx";
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>
     <GloballyModalProvider>
-      <DragDropContext>
-        <App />
-      </DragDropContext>
+      <DealerAndTreasuryProvider>
+        <DragDropContext>
+          <App />
+        </DragDropContext>
+      </DealerAndTreasuryProvider>
     </GloballyModalProvider>
   </Provider>
 );

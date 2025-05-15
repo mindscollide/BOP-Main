@@ -1,0 +1,127 @@
+.BookaforwardCorporateFooterClassname {
+  border: none !important;
+  display: inline-block !important;
+}
+
+.BookaforwardCorporateHeaderClassname {
+  margin: 0 !important;
+  border: none !important;
+  padding: 10px 15px;
+  position: relative;
+}
+
+.BookaforwardCorporateBodyClassname {
+  min-height: 40vh !important;
+}
+
+.HeaderHeadingName {
+  font-weight: 700 !important;
+  color: #f26522 !important;
+  font-size: 1.25rem !important;
+  font-family: "Roboto", sans-serif !important;
+}
+
+.SubHeadings {
+  font-weight: 600 !important;
+  font-size: 13px !important;
+}
+
+span.bookaForwardCorporate__indicator-separator.css-1u9des2-indicatorSeparator {
+  display: none !important;
+}
+
+/* Control container (already applied) */
+.bookaForwardCorporate__control {
+  min-height: 28px !important;
+  height: 28px !important;
+  padding: 0 !important; /* Remove any inner control padding */
+}
+
+/* Value container (where the selected value appears) */
+.bookaForwardCorporate__value-container {
+  padding: 0 10px !important;
+  height: 28px !important;
+  font-weight: 800 !important;
+  display: flex;
+  align-items: center;
+}
+
+/* Input field inside the select (for typing/searching) */
+.bookaForwardCorporate__input {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Placeholder text (if shown) */
+.bookaForwardCorporate__placeholder {
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 12px; /* optional: match the tighter layout */
+  line-height: 1;
+}
+
+/* Single selected value */
+.bookaForwardCorporate__single-value {
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 14px;
+  line-height: 1;
+}
+
+/* Indicators (dropdown arrow, clear button) */
+.bookaForwardCorporate__indicators {
+  height: 24px;
+}
+
+.bookaForwardCorporate__indicator {
+  padding: 0 6px !important;
+}
+
+.bookaForwardCorporate__option {
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.dateSpan {
+  height: 30px !important;
+  border: 1px solid #e1e1e1 !important;
+  background: #e9ecef !important;
+  border-radius: 0.375rem !important;
+  margin-top: 19px !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 12px !important;
+  position: absolute !important;
+  font-size: 12px !important;
+}
+
+.dateSpatwo {
+  height: 30px !important;
+  border: 1px solid #e1e1e1 !important;
+  background: #e9ecef !important;
+  border-radius: 0.375rem !important;
+  display: flex !important;
+  align-items: center !important;
+  margin-top: 20px !important;
+  padding: 12px !important;
+  position: absolute !important;
+  font-size: 12px !important;
+}
+
+.BlueBackGroundbox {
+  background: #096fed !important;
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  padding-right: 0.5rem !important;
+  padding-left: 0.5rem !important;
+  display: flex !important;
+  align-items: start !important;
+  padding: 20px 10px !important;
+  color: #fff !important;
+}
+
+.BlueboxStyles {
+  position: absolute !important;
+  top: 70% !important;
+  right: 0 !important;
+}

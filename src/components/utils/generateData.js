@@ -73,10 +73,47 @@ let Data = {
     },
   ],
 };
-export const generateData = (columnValue) => {
-  let discountRates = [];
-  let forwardsRates = [];
+
+export const generateData = (
+  columnValue,
+  tenors = [],
+  instruments = [],
+  forwardRates = [],
+  discountRates = []
+) => {
+  let discountRatesResult = [];
+  let forwardsRatesResult = [];
+
+  console.log(tenors, "tenorstenorstenors");
+  console.log(instruments, "tenorstenorstenors");
+  console.log(forwardRates, "tenorstenorstenors");
+  console.log(discountRates, "tenorstenorstenors");
+
   if (columnValue === 1) {
+    discountRates.map((discValue, index) => {
+      let findTenorName = tenors.find(
+        (tenorsData) => tenorsData.tenorID === discValue.tenorID
+      );
+      let findInstrumentName = instruments.find(
+        (insturmentData) =>
+          insturmentData.instrumentID === discValue.instrumentID
+      );
+
+      const discountRateValue = {
+        key: `index ${index + 1}`,
+        Tenor: findTenorName ? findTenorName.tenorName : "",
+        TenorID: findTenorName ? findTenorName.tenorID : 0,
+        tenorDays: findTenorName ? findTenorName.tenorDays : "",
+        instrumentTitle: findInstrumentName
+          ? findInstrumentName.instrumentName
+          : "",
+        InstrumentID: findInstrumentName ? findInstrumentName.instrumentID : 0,
+        value: discValue.rate,
+      };
+
+      discountRatesResult.push(discountRateValue);
+    });
+  } else if (columnValue === 2) {
     Data.discountRates.map((discValue, index) => {
       let findTenorName = Data.tenors.find(
         (tenorsData) => tenorsData.tenorID === discValue.tenorID
@@ -98,9 +135,10 @@ export const generateData = (columnValue) => {
         value: discValue.rate,
       };
 
-      discountRates.push(discountRateValue);
+      discountRatesResult.push(discountRateValue);
     });
-  } else {
+  } else if (columnValue === 3) {
+    // Dummy Data
     Data.forwardRates.map((forwData, index) => {
       let findTenorName = Data.tenors.find(
         (tenorsData) => tenorsData.tenorID === forwData.tenorID
@@ -124,12 +162,40 @@ export const generateData = (columnValue) => {
         bid: forwData.bid,
       };
 
-      forwardsRates.push(forwardRateData);
+      forwardsRatesResult.push(forwardRateData);
+    });
+  } else if (columnValue === 4) {
+    forwardRates.map((forwData, index) => {
+      let findTenorName = tenors.find(
+        (tenorsData) => tenorsData.tenorID === forwData.tenorID
+      );
+      let findInstrumentName = instruments.find(
+        (insturmentData) =>
+          insturmentData.instrumentID === forwData.instrumentID
+      );
+
+      const forwardRateData = {
+        key: `index ${index + 1}`,
+        Tenor: findTenorName ? findTenorName.tenorName : "",
+        TenorID: findTenorName ? findTenorName.tenorID : 0,
+        tenorDays: findTenorName ? findTenorName.tenorDays : "",
+        instrumentName: findInstrumentName
+          ? findInstrumentName.instrumentName
+          : "",
+        InstrumentID: findInstrumentName ? findInstrumentName.instrumentID : 0,
+
+        ask: forwData.ask,
+        bid: forwData.bid,
+      };
+
+      forwardsRatesResult.push(forwardRateData);
     });
   }
 
-  // Return the result as an object or array if needed
-  return { discountRates, forwardsRates };
+  return {
+    discountRates: discountRatesResult,
+    forwardsRates: forwardsRatesResult,
+  };
 };
 
 /**
@@ -231,7 +297,7 @@ export const createColumns = (data, value) => {
     } else if (value === 2 || value === 3) {
       // Create Forwards columns
       instrumentColumns = data.reduce((acc, item) => {
-        const instrument = item.instrumentName;
+        const instrument = item.instrumentTitle || item.instrumentName;
 
         // Check if the instrument column already exists in acc
         if (!acc.find((col) => col.title === instrument)) {

@@ -1,5 +1,13 @@
-import React, { lazy, Suspense } from "react";
-// import GlobalTable from "../../common/table/GlobalTable";
+import {
+  getTenorWiseForwardsAction,
+  PublishTenorWiseForwardsAction,
+} from "@/container/pages/mainDealer/dealerActions";
+import { useDealerAndTreasury } from "@/context/DealerAndTreasuryContext";
+import { formatCurrencyInput } from "@/utils/formatters";
+import React, { lazy, Suspense, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 // Define condition to include components
 const shouldIncludeComponents =
@@ -23,25 +31,189 @@ const GlobalTable = shouldIncludeComponents
   ? lazy(() => import("../../common/table/GlobalTable"))
   : null;
 
-const ForwardsForTreasuryAndBranchTable = () => {
-  const dataSource = [
-    { key: "1", tenor: "O N" },
-    { key: "2", tenor: "1 WEEK" },
-    { key: "3", tenor: "2 WEEK" },
-    { key: "4", tenor: "1 MONTH" },
-    { key: "5", tenor: "2 MONTH" },
-    { key: "6", tenor: "3 MONTH" },
-    { key: "7", tenor: "4 MONTH" },
-    { key: "8", tenor: "5 MONTH" },
-    { key: "9", tenor: "6 MONTH" },
-    { key: "10", tenor: "7 MONTH" },
-    { key: "11", tenor: "8 MONTH" },
-    { key: "12", tenor: "9 MONTH" },
-    { key: "13", tenor: "10 MONTH" },
-    { key: "14", tenor: "11 MONTH" },
-    { key: "15", tenor: "1 YEAR" },
-    { key: "16", tenor: "8 DAY" },
-  ];
+const ForwardsForTreasuryAndBranchTable = ({
+  newTenorRecord,
+  setNewTenorRecord,
+}) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { forwardsForTreasuryBranch, setForwardsForTreasuryBranch } =
+    useDealerAndTreasury();
+
+  console.log(
+    forwardsForTreasuryBranch,
+    "forwardsForTreasuryBranchforwardsForTreasuryBranch"
+  );
+  const getTenorWiseForwardsRates = useSelector(
+    (state) => state.dealerReducer.getTenorWiseForwardsRates
+  );
+
+  const publishTenorwiseForwardRates = useSelector(
+    (state) => state.dealerReducer.publishTenorwiseForwardRates
+  );
+
+  useEffect(() => {
+    dispatch(getTenorWiseForwardsAction({ navigate }));
+  }, []);
+
+  useEffect(() => {
+    if (newTenorRecord !== null) {
+      setForwardsForTreasuryBranch([
+        ...forwardsForTreasuryBranch,
+        newTenorRecord,
+      ]);
+      setNewTenorRecord(null);
+    }
+  }, [newTenorRecord]);
+
+  useEffect(() => {
+    if (publishTenorwiseForwardRates !== null) {
+      try {
+        const { currentTenorWiseForwardRates, lastTenorWiseForwardRates } =
+          publishTenorwiseForwardRates;
+
+        let newDataMap = currentTenorWiseForwardRates.map((item) => {
+          let findData = lastTenorWiseForwardRates.find(
+            (data) => data.tenorID === item.tenorID
+          );
+          if (findData !== undefined) {
+            return {
+              tenorID: item.tenorID,
+              tenorName: item.tenorName,
+              currentBid: item.bid,
+              currentAsk: item.ask,
+              lastBid: findData.bid,
+              lastAsk: findData.ask,
+              dateTime: item.dateTime,
+            };
+          } else {
+            return {
+              tenorID: item.tenorID,
+              tenorName: item.tenorName,
+              currentBid: item.bid,
+              currentAsk: item.ask,
+              lastBid: "",
+              lastAsk: "",
+              dateTime: item.dateTime,
+            };
+          }
+        });
+        setForwardsForTreasuryBranch(newDataMap);
+      } catch (error) {
+        console.log(error, "errorerrorerrorerror");
+      }
+    }
+  }, [publishTenorwiseForwardRates]);
+
+  useEffect(() => {
+    if (getTenorWiseForwardsRates !== null) {
+      try {
+        console.log(
+          getTenorWiseForwardsRates,
+          "getTenorWiseForwardsRatesgetTenorWiseForwardsRates"
+        );
+        const { currentTenorWiseForwardRates, lastTenorWiseForwardRates } =
+          getTenorWiseForwardsRates;
+
+        let newDataMap = currentTenorWiseForwardRates.map((item) => {
+          let findData = lastTenorWiseForwardRates.find(
+            (data) => data.tenorID === item.tenorID
+          );
+          if (findData !== undefined) {
+            return {
+              tenorID: item.tenorID,
+              tenorName: item.tenorName,
+              currentBid: item.bid,
+              currentAsk: item.ask,
+              lastBid: findData.bid,
+              lastAsk: findData.ask,
+              dateTime: item.dateTime,
+            };
+          } else {
+            return {
+              tenorID: item.tenorID,
+              tenorName: item.tenorName,
+              currentBid: item.bid,
+              currentAsk: item.ask,
+              lastBid: "",
+              lastAsk: "",
+              dateTime: item.dateTime,
+            };
+          }
+        });
+        setForwardsForTreasuryBranch(newDataMap);
+      } catch (error) {
+        console.log(error, "errorerrorerrorerror");
+      }
+    }
+  }, [getTenorWiseForwardsRates]);
+
+  const handleDeleteTenorRecord = (record) => {
+    console.log(record, "recordrecordrecordrecord");
+    const filteredRecords = forwardsForTreasuryBranch.filter(
+      (item) => item.tenorID !== record.tenorID
+    );
+    console.log(filteredRecords, "recordrecordrecordrecord");
+
+    setForwardsForTreasuryBranch(filteredRecords);
+  };
+  const handleChangeCurrentForwards = (record, view, event) => {
+    console.log(record, view, "handleChangeCurrentForwards");
+    const { value } = event.target;
+    try {
+      setForwardsForTreasuryBranch((prev) => {
+        return prev.map((item) => {
+          if (item.tenorID === record.tenorID) {
+            return {
+              ...item,
+              currentBid:
+                view === "bid" ? formatCurrencyInput(value) : item.currentBid,
+              currentAsk:
+                view === "ask" ? formatCurrencyInput(value) : item.currentAsk,
+            };
+          }
+          return item;
+        });
+      });
+    } catch (error) {
+      console.log(
+        error,
+        forwardsForTreasuryBranch.find(
+          (item) => item.tenorID === record.tenorID
+        ),
+        "handleChangeCurrentForwards"
+      );
+    }
+
+    console.log(
+      forwardsForTreasuryBranch.find((item) => item.tenorID === record.tenorID),
+      "handleChangeCurrentForwards"
+    );
+  };
+
+  const handlePublishForwards = () => {
+    console.log(forwardsForTreasuryBranch, "forwardsForTreasuryBranch")
+    let checkDoNotempty = forwardsForTreasuryBranch.every(
+      (item) => item.currentAsk !== "" && item.currentBid !== ""
+    );
+    if (checkDoNotempty) {
+      let Data = {
+        CurrentTenorWiseForwardRates: forwardsForTreasuryBranch.map((item) => {
+          return {
+            TenorID: item.tenorID,
+            Bid: Number(item.currentBid),
+            Ask: Number(item.currentAsk),
+            DateTime: item.dateTime,
+          };
+        }),
+      };
+      console.log(Data, "DataDataDataData");
+      dispatch(PublishTenorWiseForwardsAction({ Data, navigate }));
+    } else {
+      alert("Please fill all the fields");
+    }
+    console.log(checkDoNotempty, "checkDoNotemptycheckDoNotempty");
+  };
 
   const columns = [
     {
@@ -49,8 +221,8 @@ const ForwardsForTreasuryAndBranchTable = () => {
       children: [
         {
           title: "Tenor",
-          dataIndex: "tenor",
-          key: "tenor",
+          dataIndex: "tenorName",
+          key: "tenorName",
           width: 250,
         },
       ],
@@ -63,10 +235,17 @@ const ForwardsForTreasuryAndBranchTable = () => {
           dataIndex: "currentBid",
           key: "currentBid",
           align: "center",
-          render: () =>
+          render: (text, record) =>
             InputFIeld ? (
               <Suspense fallback={<div>Loading input...</div>}>
-                <InputFIeld type='number' applyClass={"DealerTableBitInput"} />
+                <InputFIeld
+                  type='number'
+                  value={record.currentBid}
+                  onChange={(event) =>
+                    handleChangeCurrentForwards(record, "bid", event)
+                  }
+                  applyClass={"DealerTableBitInput"}
+                />
               </Suspense>
             ) : null,
         },
@@ -75,10 +254,17 @@ const ForwardsForTreasuryAndBranchTable = () => {
           dataIndex: "currentAsk",
           key: "currentAsk",
           align: "center",
-          render: () =>
+          render: (text, record) =>
             InputFIeld ? (
               <Suspense fallback={<div>Loading input...</div>}>
-                <InputFIeld type='number' applyClass={"DealerTableBitInput"} />
+                <InputFIeld
+                  type='number'
+                  value={record.currentAsk}
+                  onChange={(event) =>
+                    handleChangeCurrentForwards(record, "ask", event)
+                  }
+                  applyClass={"DealerTableBitInput"}
+                />
               </Suspense>
             ) : null,
         },
@@ -92,10 +278,15 @@ const ForwardsForTreasuryAndBranchTable = () => {
           dataIndex: "lastBid",
           key: "lastBid",
           align: "center",
-          render: () =>
+          render: (text, record) =>
             InputFIeld ? (
               <Suspense fallback={<div>Loading input...</div>}>
-                <InputFIeld type='number' applyClass={"DealerTableBitInput"} />
+                <InputFIeld
+                  type='number'
+                  value={record.lastBid}
+                  disabled={true}
+                  applyClass={"DealerTableBitInput"}
+                />
               </Suspense>
             ) : null,
         },
@@ -104,10 +295,15 @@ const ForwardsForTreasuryAndBranchTable = () => {
           dataIndex: "lastAsk",
           key: "lastAsk",
           align: "center",
-          render: () =>
+          render: (text, record) =>
             InputFIeld ? (
               <Suspense fallback={<div>Loading input...</div>}>
-                <InputFIeld type='number' applyClass={"DealerTableBitInput"} />
+                <InputFIeld
+                  type='number'
+                  value={record.lastAsk}
+                  disabled={true}
+                  applyClass={"DealerTableBitInput"}
+                />
               </Suspense>
             ) : null,
         },
@@ -123,7 +319,7 @@ const ForwardsForTreasuryAndBranchTable = () => {
           key: "",
           width: 80,
           align: "center",
-          render: () => {
+          render: (record) => {
             return (
               CustomButton &&
               IconElement && (
@@ -134,6 +330,7 @@ const ForwardsForTreasuryAndBranchTable = () => {
                       <Suspense fallback={<div>Loading icon...</div>}>
                         <IconElement
                           iconClass={"icon-trash color-red fs-6 cursor-pointer"}
+                          onClick={() => handleDeleteTenorRecord(record)}
                         />
                       </Suspense>
                     }
@@ -154,7 +351,7 @@ const ForwardsForTreasuryAndBranchTable = () => {
           <Suspense fallback={<div>Loading Table...</div>}>
             <GlobalTable
               columns={columns}
-              dataSource={dataSource}
+              dataSource={forwardsForTreasuryBranch}
               prefixCls={"ForwardsForTreasuryAndBranchTable"}
               pagination={false}
             />
@@ -163,6 +360,7 @@ const ForwardsForTreasuryAndBranchTable = () => {
                 <CustomButton
                   applyClass='publishForwardsBtn'
                   value={"Publish Forwards"}
+                  onClick={handlePublishForwards}
                 />
               </span>
             )}

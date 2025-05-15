@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./SellAndBuyModal.css";
 import GlobalModal from "../../../common/globalModal/Modal";
 import { useModal } from "../../../../context/ModalContext";
@@ -6,8 +6,74 @@ import { Col, Row } from "react-bootstrap";
 import InputFIeld from "../../../common/inputField/InputField";
 import SelectDropdown from "../../../common/selectDropdown/SelectDropdown";
 import CustomButton from "../../../common/globalButton/button";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 const SellAndBuyModal = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { iSellAndBuyModal, setISellAndBuyModal } = useModal();
+
+  //Local State
+  const [customerName, setCustomerName] = useState("");
+  const [amountData, setAmountData] = useState("");
+  const [acNumberData, setAcNumberData] = useState("");
+  const [lcNumberData, setLcNumberData] = useState("");
+
+  // handle Change A/C number
+  const handleChangeCustomerName = (event) => {
+    const { name, value } = event.target;
+    if (name === "customerName") {
+      const regex = /^[A-Za-z]*$/;
+      if (regex.test(value)) {
+        setCustomerName(value);
+      }
+    } else {
+      setCustomerName(value);
+    }
+  };
+
+  // handle Change amount
+  const handleChangeAccount = (event) => {
+    const { name, value } = event.target;
+    if (name === "Amount") {
+      const regex = /^[0-9]*$/;
+      if (regex.test(value)) {
+        setAmountData(value);
+      }
+    } else {
+      setAmountData(value);
+    }
+  };
+
+  // handle Change A/C number
+  const handleChangeAcNumber = (event) => {
+    const { name, value } = event.target;
+    if (name === "AcNumber") {
+      const regex = /^[0-9]*$/;
+      if (regex.test(value)) {
+        setAcNumberData(value);
+      }
+    } else {
+      setAcNumberData(value);
+    }
+  };
+
+  // handle Change L/C number
+  const handleChangeLcNumber = (event) => {
+    const { name, value } = event.target;
+    if (name === "LcNumber") {
+      const regex = /^[0-9]*$/;
+      if (regex.test(value)) {
+        setLcNumberData(value);
+      }
+    } else {
+      setLcNumberData(value);
+    }
+  };
+
+  //handle Confirm button
+  const handleConfirmButton = () => {};
+
   return (
     <div>
       <GlobalModal
@@ -38,6 +104,9 @@ const SellAndBuyModal = () => {
                   <Col lg={8} md={8} sm={12}>
                     <InputFIeld
                       className={"form-control"}
+                      name={"customerName"}
+                      value={customerName}
+                      onChange={handleChangeCustomerName}
                       applyClass={"IBuyISellModalTextFileds"}
                     />
                   </Col>
@@ -72,6 +141,9 @@ const SellAndBuyModal = () => {
                   <Col lg={8} md={8} sm={12}>
                     <InputFIeld
                       className={"form-control"}
+                      name={"Amount"}
+                      value={amountData}
+                      onChange={handleChangeAccount}
                       applyClass={"IBuyISellModalTextFileds"}
                     />
                   </Col>
@@ -126,6 +198,9 @@ const SellAndBuyModal = () => {
                   <Col lg={9} md={9} sm={12}>
                     <InputFIeld
                       className={"form-control"}
+                      name={"acNumber"}
+                      value={acNumberData}
+                      onChange={handleChangeAcNumber}
                       applyClass={"IBuyISellModalTextFileds"}
                     />
                   </Col>
@@ -142,6 +217,9 @@ const SellAndBuyModal = () => {
                   <Col lg={9} md={9} sm={12}>
                     <InputFIeld
                       className={"form-control"}
+                      name={"lcNumber"}
+                      value={lcNumberData}
+                      onChange={handleChangeLcNumber}
                       applyClass={"IBuyISellModalTextFileds"}
                     />
                   </Col>
@@ -162,6 +240,7 @@ const SellAndBuyModal = () => {
                 <CustomButton
                   value={"Confirm"}
                   className={"ConfirmbuttonClass"}
+                  onClick={handleConfirmButton}
                 />
               </Col>
             </Row>

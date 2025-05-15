@@ -5,12 +5,15 @@ const ModalContext = createContext();
 export const GloballyModalProvider = ({ children }) => {
   const [createTenorModal, setCreateTenorModal] = useState(false);
   const [iSellAndBuyModal, setISellAndBuyModal] = useState(false);
+  const [settingModal, setSettingModal] = useState(false);
 
   const value = {
     createTenorModal,
     setCreateTenorModal,
     iSellAndBuyModal,
     setISellAndBuyModal,
+    settingModal,
+    setSettingModal,
   };
   return (
     <ModalContext.Provider value={value}>{children}</ModalContext.Provider>

@@ -1,6 +1,9 @@
 import React, { Suspense, lazy } from "react";
 import GlobalTabs from "../../../components/common/tabs/Tabs";
 import { useSelector } from "react-redux";
+import TXNSummary from "../mainTreasury/tabsContent/liveRates/blotter/txnSummary/TXNSummary";
+import { setActiveTab } from "./rfqModal/RFQSlicer";
+import { useDispatch } from "react-redux";
 const shouldIncludeComponents =
   import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
 
@@ -24,9 +27,13 @@ const BranchDiscountingTable = shouldIncludeComponents
     )
   : null;
 const MainCorporate = () => {
-  const mainState = useSelector((state) => state);
-  console.log(mainState);
-  // Conditionally import CustomButton based on the environment variables
+  const dispatch = useDispatch();
+  const activeTab = useSelector((state) => state.RFQReducer.activeTab);
+
+  const handleTabChange = (tabTitle) => {
+    dispatch(setActiveTab(tabTitle));
+  };
+
   const tabsData = [
     {
       title: "Spot",
@@ -39,7 +46,7 @@ const MainCorporate = () => {
     {
       title: "Forwards",
       content: ForwardTableBranchComponent && (
-        <Suspense fallback={<>Loading... </>}>
+        <Suspense fallback={<>Loading Forwards...</>}>
           <ForwardTableBranchComponent />
         </Suspense>
       ),
@@ -47,17 +54,21 @@ const MainCorporate = () => {
     {
       title: "Discounting",
       content: BranchDiscountingTable && (
-        <Suspense fallback={<>Loading...</>}>
+        <Suspense fallback={<>Loading Discounting...</>}>
           <BranchDiscountingTable />
+          <TXNSummary />
         </Suspense>
       ),
     },
   ];
 
   return (
-    <>
-      <GlobalTabs tabs={tabsData} defaultActiveKey={"0"} tabClass='mb-4' />
-    </>
+    <GlobalTabs
+      tabs={tabsData}
+      activeKey={activeTab}
+      onTabChange={handleTabChange}
+      tabClass="mb-4"
+    />
   );
 };
 

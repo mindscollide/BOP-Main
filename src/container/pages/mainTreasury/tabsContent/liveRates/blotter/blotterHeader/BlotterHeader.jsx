@@ -16,6 +16,9 @@ const BlotterHeader = () => {
   const [openNopModal, setOpenNopModal] = useState(false);
   const [openExportDiv, setOpenExportDiv] = useState(false);
   const [openMailModal, setOpenMailModal] = useState(false);
+  const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
+  const isCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
+  const isTreasury = import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
 
   const tabsData = [
     { title: "TXN Summary", content: <TXNSummary /> },
@@ -33,50 +36,63 @@ const BlotterHeader = () => {
   const onClickMailModal = () => {
     setOpenMailModal(true);
   };
-
+  const activeTab =
+    isBranch || isCorporate
+      ? tabsData.filter((data, index) => index === 0)
+      : tabsData;
   return (
     <>
-      <div className="box-header">
-        <GlobalTabs
-          tabClass="buttonClassTab"
-          tabs={tabsData}
-          defaultActiveKey={"0"}
-        />
-        <div className="filter-export-wrapper ms-auto">
-          <div className="d-flex align-items-center">
-            <div className="nop-hd-container">
-              <div className="d-flex align-items-center">
-                <span className="hd-txt me-3">NOP (US$)</span>
-                <span className="hd-cr me-2">46,999</span>
-                <CustomButton
-                  applyClass={"NOP-button"}
-                  value="+"
-                  onClick={onClickNopModal}
-                />
-                <CustomButton
-                  applyClass={"Export-button"}
-                  value="Export"
-                  onClick={onClickOpenExport}
-                />
+      <div className='box-header position-relative'>
+        {isTreasury && (
+          <GlobalTabs
+            tabClass='buttonClassTab'
+            tabs={activeTab}
+            defaultActiveKey={"0"}
+          />
+        )}
+
+        {activeTab && <TXNSummary />}
+
+        <div className='filter-export-wrapper ms-auto'>
+          <div className='d-flex align-items-center'>
+            <div className='nop-hd-container'>
+              <div className='d-flex align-items-center'>
+                {isTreasury && (
+                  <>
+                    {" "}
+                    <span className='hd-txt me-3'>NOP (US$)</span>
+                    <span className='hd-cr me-2'>46,999</span>
+                    <CustomButton
+                      applyClass={"NOP-button"}
+                      value='+'
+                      onClick={onClickNopModal}
+                    />{" "}
+                    <CustomButton
+                      applyClass={"Export-button"}
+                      value='Export'
+                      onClick={onClickOpenExport}
+                    />
+                  </>
+                )}
 
                 {openExportDiv ? (
                   <>
-                    <div className="dropdown-menu dropdown-ex-doc border show export-class">
-                      <Row align="middle">
-                        <Col className="export-to-doc cursor-pointer">
+                    <div className='dropdown-menu dropdown-ex-doc border show export-class'>
+                      <Row align='middle'>
+                        <Col className='export-to-doc cursor-pointer'>
                           <img
                             src={pdfImage}
                             width={30}
                             height={30}
-                            alt="pdf"
+                            alt='pdf'
                           />
                         </Col>
-                        <Col className="export-to-doc cursor-pointer">
+                        <Col className='export-to-doc cursor-pointer'>
                           <img
                             src={excelImage}
                             width={30}
                             height={30}
-                            alt="excel"
+                            alt='excel'
                           />
                         </Col>
                         <Col>
@@ -84,7 +100,7 @@ const BlotterHeader = () => {
                             src={emailImage}
                             width={30}
                             height={30}
-                            alt="email"
+                            alt='email'
                             onClick={onClickMailModal}
                           />
                         </Col>
@@ -93,7 +109,7 @@ const BlotterHeader = () => {
                             src={printImage}
                             width={30}
                             height={30}
-                            alt="print"
+                            alt='print'
                           />
                         </Col>
                       </Row>
