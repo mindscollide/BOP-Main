@@ -64,9 +64,9 @@ const MainBranch = () => {
   ];
   return (
     <>
-      onTabChange={handleTabChange}
       <GlobalTabs
         tabs={tabsData}
+        onTabChange={handleTabChange}
         activeKey={activeTab}
         defaultActiveKey={"0"}
         tabClass='mb-4'

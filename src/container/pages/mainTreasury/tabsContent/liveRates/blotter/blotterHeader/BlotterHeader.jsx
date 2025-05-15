@@ -51,7 +51,7 @@ const BlotterHeader = () => {
           />
         )}
 
-        {isCorporate && <TXNSummary />}
+        {activeTab && <TXNSummary />}
 
         <div className='filter-export-wrapper ms-auto'>
           <div className='d-flex align-items-center'>
