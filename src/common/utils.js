@@ -66,3 +66,13 @@ export const getCookieValue = (cookieName) => {
   }
   return null; // Return null if the cookie is not found
 };
+
+// Utility to format date as "Wed, May 31, 2023"
+export const formatDate = (date) => {
+  return date.toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+};

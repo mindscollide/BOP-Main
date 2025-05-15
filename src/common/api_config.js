@@ -105,6 +105,26 @@ const createCorporateUserPasswordRM = {
   RequestMethod: "ServiceManager.CreateCorporateUserPassword",
 };
 
+// Calculator Data
+const getAllCalculatorData = {
+  RequestMethod: "ServiceManager.GetCalculatorData",
+};
+
+// Calculator Fx Discounting
+const calculateFxDiscountingData = {
+  RequestMethod: "ServiceManager.CalculateFxDiscounting",
+};
+
+// Calculator NonFx Discounting
+const calculateNonFxDiscountingData = {
+  RequestMethod: "ServiceManager.CalculateNonFxDiscounting",
+};
+
+// Calculator Forwards
+const calculateForwardsData = {
+  RequestMethod: "ServiceManager.CalculateForward",
+};
+
 export {
   validateLinkForCorporatePasswordRM,
   createCorporateUserPasswordRM,
@@ -133,4 +153,8 @@ export {
   GetAllCounterPartyDataRM,
   SaveTransactionRFQ,
   DownloadFile,
+  getAllCalculatorData,
+  calculateFxDiscountingData,
+  calculateNonFxDiscountingData,
+  calculateForwardsData,
 };

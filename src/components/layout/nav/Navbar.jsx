@@ -40,7 +40,7 @@ const GlobalNavbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const handleCalculatorClick = () => {
-    window.open("/#/BOP/calculator", "_blank");
+    window.open("/BOP/calculator", "_blank");
   };
 
   // Conditionally import CustomButton based on the environment variables
@@ -52,6 +52,8 @@ const GlobalNavbar = () => {
     import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
   const shouldIncludeTreasury =
     import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
+
+  console.log(shouldIncludeCorporate, "shouldIncludeDealer");
   const handleChangeCategory = (event) => {
     console.log(event);
     let Data = { CategoryID: event.value };
@@ -98,33 +100,35 @@ const GlobalNavbar = () => {
 
   return (
     <>
-      <div className='site-header pt-1'>
+      <div className="site-header pt-1">
         {/*Container*/}
-        <div className='container-fluid page-gutter'>
+        <div className="container-fluid page-gutter">
           {/*header inner container*/}
-          <div className='header-inner d-flex align-items-center'>
+          <div className="header-inner d-flex align-items-center">
             <SiteLogoComponent />
-            <div className='ms-auto'>
-              <div className='d-flex align-items-center gap-2'>
+            <div className="ms-auto">
+              <div className="d-flex align-items-center gap-2">
                 {location.pathname !== "/calculator" ? (
                   <>
                     {shouldIncludeCorporate && (
                       <Suspense fallback={<>Loading RFQ...</>}>
                         <CustomButton
-                          applyClass='rfqBtn'
-                          value='RFQ'
-                          size='small'
+                          applyClass="rfqBtn"
+                          value="RFQ"
+                          size="small"
                           icon={<IconElement iconClass={"icon-list fs-6"} />}
                           onClick={onClickRFQ}
                         />
                       </Suspense>
                     )}
-                    {location.pathname.includes("treasury") &&
-                    (shouldIncludeDealer || shouldIncludeTreasury) ? (
+                    {location.pathname.includes("corporate") &&
+                    (shouldIncludeDealer ||
+                      shouldIncludeTreasury ||
+                      shouldIncludeCorporate) ? (
                       <CustomButton
-                        applyClass='calcBtn'
-                        value='Calculators'
-                        size='large'
+                        applyClass="calcBtn"
+                        value="Calculators"
+                        size="large"
                         onClick={handleCalculatorClick}
                       />
                     ) : null}

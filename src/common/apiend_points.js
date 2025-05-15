@@ -10,6 +10,8 @@ const BlotterPort = ":13001/Blotter";
 
 const ReportPort = ":13006/ExcelReport";
 
+const CalculatorPort = ":13003/Calculator";
+
 const authApi = `${baseURL}${authPort}`;
 
 const uploadRatesApi = `${baseURL}${uploadRatesPort}`;
@@ -20,4 +22,13 @@ const BlotterApi = `${baseURL}${BlotterPort}`;
 
 const reportApi = `${baseURL}${ReportPort}`;
 
-export { authApi, uploadRatesApi, watchListApi, BlotterApi, reportApi };
+const CalculatorApi = `${baseURL}${CalculatorPort}`;
+
+export {
+  authApi,
+  uploadRatesApi,
+  watchListApi,
+  BlotterApi,
+  reportApi,
+  CalculatorApi,
+};
