@@ -8,13 +8,21 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { formatDate } from "@/common/utils";
+import { CalculateNonFxDiscountingAPI } from "@/container/pages/mainCalculator/CalculatorActions";
 
 const CalculatorNonFxDiscounting = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  //Drop down Currency Data
   const CurrencyData = useSelector(
     (state) => state.CalculatorReducer.calculatorData
+  );
+
+  // //Resulting Calculated value of NonFX Discounting
+  const CalculatedNonFxDiscounting = useSelector(
+    (state) =>
+      state?.CalculatorReducer?.calculateNonFXDiscountingData?.nonFXRate || null
   );
 
   //Local States
@@ -25,6 +33,8 @@ const CalculatorNonFxDiscounting = () => {
   const [kiborValue, setKiborValue] = useState(0);
   const [swapValue, setSwapValue] = useState(0);
   const [tagText, setTagText] = useState(formatDate(new Date()));
+
+  console.log(selectedOption, "currencyOptionscurrencyOptions");
 
   //Extracting the currecny Data
   useEffect(() => {
@@ -96,7 +106,17 @@ const CalculatorNonFxDiscounting = () => {
     }
   };
 
-  const handleNonFxDiscounting = () => {};
+  //Calculate Non Fx Discounting API Call
+  const handleNonFxDiscounting = () => {
+    let Data = {
+      Ready: Number(price),
+      Tenor: Number(inputValue),
+      Swap: Number(swapValue),
+      Kibor: Number(kiborValue),
+      Currency: selectedOption.label,
+    };
+    dispatch(CalculateNonFxDiscountingAPI({ Data, navigate }));
+  };
 
   return (
     <>
@@ -179,7 +199,7 @@ const CalculatorNonFxDiscounting = () => {
             </div>
             <div className="px-2 text-center">
               <div className="clc-amount fs-4 fw-bold px-4 py-3 bg-primary color-white">
-                285.26
+                {CalculatedNonFxDiscounting}
               </div>
             </div>
           </div>

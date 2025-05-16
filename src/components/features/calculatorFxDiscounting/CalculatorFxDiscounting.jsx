@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col } from "react-bootstrap";
 import CustomButton from "../../common/globalButton/button";
 import InputFIeld from "../../common/inputField/InputField";
 import InputFieldWithTag from "../../common/inputFieldWithTag/InputFieldWithTag";
@@ -7,16 +6,14 @@ import SelectDropdown from "../../common/selectDropdown/SelectDropdown";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import {
-  CalculateFxDiscountingAPI,
-  GetAllCalculatorData,
-} from "@/container/pages/mainCalculator/CalculatorActions";
+import { CalculateFxDiscountingAPI } from "@/container/pages/mainCalculator/CalculatorActions";
 import { formatDate } from "@/common/utils";
 
 const CalculatorFxDiscounting = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  //Drop down Currency Data
   const CurrencyData = useSelector(
     (state) => state.CalculatorReducer.calculatorData
   );
