@@ -19,6 +19,12 @@ const FwdCalculator = () => {
     (state) => state.CalculatorReducer.calculatorData
   );
 
+  // //Resulting Calculated value of Forwads
+  const CalculatedForwards = useSelector(
+    (state) =>
+      state?.CalculatorReducer?.calculateForwardsData?.forwardRate || null
+  );
+
   //Local States
   const [selectedOption, setSelectedOption] = useState(null);
   const [selectedOptionImportExport, setSelectedOptionImportExport] =
@@ -70,7 +76,7 @@ const FwdCalculator = () => {
   //Handle onChange Currency
   const handleChangeCurrencyCalculator = (selected) => {
     setSelectedOption(selected);
-    setPrice(selected.value);
+    setPrice(selected.value); // Default fallback (can still use `ready`)
     console.log("Selected", selected.label);
     console.log("Selected", selected.value);
   };
@@ -78,9 +84,32 @@ const FwdCalculator = () => {
   //Handle onChange Import Export
   const handleChangeCurrencyImportExport = (selected) => {
     setSelectedOptionImportExport(selected);
-    console.log("Selected", selected.label);
-    console.log("Selected", selected.value);
+
+    if (!selectedOption) {
+      return;
+    }
+
+    const selectedCurrencyCode = selectedOption.label;
+    const matchedCurrency = CurrencyData?.currency?.find(
+      (item) => item.currency === selectedCurrencyCode
+    );
+
+    if (matchedCurrency) {
+      let price = 0;
+
+      if (selected.label === "Import") {
+        price = matchedCurrency.readyBID;
+      } else if (selected.label === "Export") {
+        price = matchedCurrency.readyASK;
+      } else {
+        price = matchedCurrency.ready;
+      }
+
+      setPrice(price);
+    }
   };
+
+  console.log(CurrencyData, "currencyOptions");
 
   // Only allow numeric or decimal values handle change Ready
   const handleInputChange = (e) => {
@@ -193,7 +222,7 @@ const FwdCalculator = () => {
             </div>
             <div className="px-2 text-center">
               <div className="clc-amount fs-4 fw-bold px-4 py-3 bg-dark-gray color-white">
-                285.26
+                {CalculatedForwards}
               </div>
             </div>
           </div>
