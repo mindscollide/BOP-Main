@@ -94,6 +94,7 @@ const FwdCalculator = () => {
       (item) => item.currency === selectedCurrencyCode
     );
 
+    //Placing the BID Ask Value rates according to the currency
     if (matchedCurrency) {
       let price = 0;
 
