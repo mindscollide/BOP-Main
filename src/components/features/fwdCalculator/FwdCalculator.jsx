@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { formatDate } from "@/common/utils";
+import { CalculateForwardsAPI } from "@/container/pages/mainCalculator/CalculatorActions";
 
 const FwdCalculator = () => {
   const dispatch = useDispatch();
@@ -20,11 +21,25 @@ const FwdCalculator = () => {
 
   //Local States
   const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOptionImportExport, setSelectedOptionImportExport] =
+    useState(null);
+  const [swapValue, setSwapValue] = useState(0);
   const [currencyOptions, setCurrencyOptions] = useState([]);
   const [price, setPrice] = useState(285.2635);
   const [inputValue, setInputValue] = useState("0");
-  const [liborValue, setLiborValue] = useState(0);
   const [tagText, setTagText] = useState(formatDate(new Date()));
+
+  // Import Export Options
+  const options = [
+    {
+      label: "Export",
+      value: 1,
+    },
+    {
+      label: "Import",
+      value: 2,
+    },
+  ];
 
   //Extracting the currecny Data
   useEffect(() => {
@@ -60,6 +75,13 @@ const FwdCalculator = () => {
     console.log("Selected", selected.value);
   };
 
+  //Handle onChange Import Export
+  const handleChangeCurrencyImportExport = (selected) => {
+    setSelectedOptionImportExport(selected);
+    console.log("Selected", selected.label);
+    console.log("Selected", selected.value);
+  };
+
   // Only allow numeric or decimal values handle change Ready
   const handleInputChange = (e) => {
     const val = e.target.value;
@@ -68,6 +90,36 @@ const FwdCalculator = () => {
       setPrice(val);
     }
   };
+
+  // Only allow numeric input
+  const handleInputChangeTenor = (e) => {
+    const value = e.target.value;
+    // Only allow digits, optional negative sign at start
+    if (/^-?\d*$/.test(value)) {
+      setInputValue(value);
+    }
+  };
+
+  // Only allow numeric input Swap
+  const handleInputChangeSwap = (e) => {
+    const value = e.target.value;
+    // Only allow digits, optional negative sign at start
+    if (/^-?\d*$/.test(value)) {
+      setSwapValue(value);
+    }
+  };
+
+  const handleCalculateForwardsRate = () => {
+    let Data = {
+      Export_Import: Number(selectedOptionImportExport.value),
+      Ready: Number(price),
+      Tenor: Number(inputValue),
+      Swap: Number(swapValue),
+    };
+
+    dispatch(CalculateForwardsAPI({ Data, navigate }));
+  };
+
   return (
     <>
       <div className="card-box h-auto">
@@ -78,20 +130,34 @@ const FwdCalculator = () => {
               <CustomButton
                 value="Calculate Rate"
                 applyClass="calculatorButton"
+                onClick={handleCalculateForwardsRate}
               />
             </div>
           </div>
         </div>
         <div className="box-content-wrapper h-auto">
-          <div className="d-flex align-items-center">
+          <div className="d-flex align-items-center w-100">
             <div className="flex-fill px-2 p-2">
-              <label className="mt-1">Currency</label>
-              <SelectDropdown
-                options={currencyOptions}
-                value={selectedOption}
-                onChange={handleChangeCurrencyCalculator}
-                placeholder="Select a currency"
-              />
+              <div className="d-flex flex-row gap-4  w-100">
+                <div className="d-flex flex-column flex-fill">
+                  <label className="mt-1">Currency</label>
+                  <SelectDropdown
+                    options={currencyOptions}
+                    value={selectedOption}
+                    onChange={handleChangeCurrencyCalculator}
+                    placeholder="Select a currency"
+                  />
+                </div>
+
+                <div className="d-flex flex-column flex-fill justify-content-center mt-4">
+                  <SelectDropdown
+                    options={options}
+                    value={selectedOptionImportExport}
+                    onChange={handleChangeCurrencyImportExport}
+                    placeholder="Import"
+                  />
+                </div>
+              </div>
 
               <label className="mt-1">Ready</label>
               <InputFIeld
@@ -106,29 +172,23 @@ const FwdCalculator = () => {
               <label className="mt-1">Tenor</label>
               <InputFieldWithTag
                 type="text"
-                value={"0"}
+                value={inputValue}
+                onChange={handleInputChangeTenor}
                 placeholder="Enter value"
                 applyClass="inputField-calculator"
                 applyClassTag="tag-for-calculator"
                 width="100%" // width of the entire container
                 inputWidth="60%" // width of the input field
-                tagText="Wed, May 31, 2023"
+                tagText={tagText}
                 tagWidth="40%" // width of the span
                 tagClassName="yourTagClass"
               />
 
-              <label className="mt-1">Libor</label>
-              <InputFieldWithTag
-                type="text"
-                value={"0"}
-                placeholder="Enter value"
-                applyClass="inputField-calculator"
-                applyClassTag="tag-for-calculator"
-                width="100%" // width of the entire container
-                inputWidth="90%" // width of the input field
-                tagText="%"
-                tagWidth="10%" // width of the span
-                tagClassName="yourTagClass"
+              <label className="mt-1">swap</label>
+              <InputFIeld
+                value={swapValue}
+                onChange={handleInputChangeSwap}
+                applyClass="CalculatorTextfield-withTagInputfield"
               />
             </div>
             <div className="px-2 text-center">

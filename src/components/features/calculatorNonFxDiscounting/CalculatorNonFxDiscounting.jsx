@@ -97,7 +97,7 @@ const CalculatorNonFxDiscounting = () => {
     }
   };
 
-  // Only allow numeric input Kibor
+  // Only allow numeric input Swap
   const handleInputChangeSwap = (e) => {
     const value = e.target.value;
     // Only allow digits, optional negative sign at start
