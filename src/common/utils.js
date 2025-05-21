@@ -1,4 +1,6 @@
 import axios from "axios";
+// utils/secureFormData.js
+import CryptoJS from "crypto-js";
 
 // Function to set custom headers
 const setCustomHeaders = () => {
@@ -75,4 +77,77 @@ export const formatDate = (date) => {
     day: "numeric",
     year: "numeric",
   });
+};
+
+// utils/crypto.js
+export const xorEncryptDecrypt = (input, key) => {
+  let out = "";
+  for (let i = 0; i < input.length; i++) {
+    out += String.fromCharCode(
+      input.charCodeAt(i) ^ key.charCodeAt(i % key.length)
+    );
+  }
+  return out;
+};
+export const encrypt = (data, key) => {
+  try {
+    const encrypted = xorEncryptDecrypt(data, key);
+    return btoa(encrypted); // base64 encode
+  } catch (e) {
+    console.log("Encrypt Error:", e);
+    return null;
+  }
+};
+
+export const decrypt = (data, key) => {
+  try {
+    const decoded = atob(data); // base64 decode
+    return xorEncryptDecrypt(decoded, key);
+  } catch (e) {
+    console.log("Decrypt Error:", e);
+    return null;
+  }
+};
+
+
+/**
+ * Converts FormData to a plain object
+ */
+const formDataToObject = (formData) => {
+  const obj = {};
+  for (const [key, value] of formData.entries()) {
+    obj[key] = value;
+  }
+  return obj;
+};
+
+/**
+ * Converts plain object back to FormData
+ */
+const objectToFormData = (obj) => {
+  const form = new FormData();
+  for (const key in obj) {
+    form.append(key, obj[key]);
+  }
+  return form;
+};
+
+/**
+ * Encrypt FormData using AES
+ */
+export const encryptFormData = (formData, key) => {
+  const plainObj = formDataToObject(formData);
+  const jsonString = JSON.stringify(plainObj);
+  const encrypted = CryptoJS.AES.encrypt(jsonString, key).toString();
+  return encrypted;
+};
+
+/**
+ * Decrypt AES-encrypted FormData
+ */
+export const decryptFormData = (encrypted, key) => {
+  const bytes = CryptoJS.AES.decrypt(encrypted, key);
+  const decryptedText = bytes.toString(CryptoJS.enc.Utf8);
+  const parsed = JSON.parse(decryptedText);
+  return objectToFormData(parsed);
 };

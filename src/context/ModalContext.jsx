@@ -6,7 +6,11 @@ export const GloballyModalProvider = ({ children }) => {
   const [createTenorModal, setCreateTenorModal] = useState(false);
   const [iSellAndBuyModal, setISellAndBuyModal] = useState(false);
   const [settingModal, setSettingModal] = useState(false);
-
+  const [settingsRecord, setSettingRecords] = useState({
+    BD_Enable2FA: false,
+    BD_SoundOnEveryMessage: false,
+    BD_EmailOnEveryMessage: false,
+  });
   const value = {
     createTenorModal,
     setCreateTenorModal,
@@ -14,6 +18,8 @@ export const GloballyModalProvider = ({ children }) => {
     setISellAndBuyModal,
     settingModal,
     setSettingModal,
+    settingsRecord,
+    setSettingRecords
   };
   return (
     <ModalContext.Provider value={value}>{children}</ModalContext.Provider>

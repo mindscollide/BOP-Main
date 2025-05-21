@@ -125,7 +125,26 @@ const calculateForwardsData = {
   RequestMethod: "ServiceManager.CalculateForward",
 };
 
+const getUserSettingsRM = {
+  RequestMethod: "ServiceManager.GetUserSettings",
+};
+
+const updateUserSettingsRM = {
+  RequestMethod: "ServiceManager.UpdateUserSettings",
+};
+
+const getMarketingTimingRM = {
+  RequestMethod: "ServiceManager.GetMarketTimeSettings",
+};
+
+const LogoutRM = {
+  RequestMethod: "ServiceManager.LogOut",
+};
 export {
+  LogoutRM,
+  getUserSettingsRM,
+  updateUserSettingsRM,
+  getMarketingTimingRM,
   validateLinkForCorporatePasswordRM,
   createCorporateUserPasswordRM,
   getAllCategoriesRM,

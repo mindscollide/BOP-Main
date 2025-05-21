@@ -2,7 +2,7 @@ import React from "react";
 import "../settingModal.css";
 const PassCodeSettingComponent = () => {
   return (
-    <div className='setting-body-content px-3 py-3 h-screen-65'>
+    <div className='setting-body-content px-2 py-3 h-screen-65'>
       <div className='d-flex border-bottom pb-3 pt-2 mb-2 fs-normal'>
         <div>Two Factor Authentication</div>
         <label className='form-check form-switch ms-auto'>
@@ -14,7 +14,6 @@ const PassCodeSettingComponent = () => {
         </label>
       </div>
       <div className='pb-3 pt-2 mb-2 fs-normal collapsible'>
-        {/*<button class="btn btn-primary text-nowrap active collapsible-header" value="Change password" data-bs-toggle="collapse" data-bs-target="#ChangepasswordUserSetitng">Change password</button>*/}
         <label className='fs-6 fw-bold mb-1 color-primary'>
           Change Password
         </label>

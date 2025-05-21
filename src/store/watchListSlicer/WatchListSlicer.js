@@ -51,7 +51,7 @@ const WatchListSlice = createSlice({
       // Fulfilled state (while the API call is being made GetMisDataByRange)
       .addCase(GetMisDataByRangeAPI.fulfilled, (state, { payload }) => {
         state.loading = false;
-        state.GetMisDataByRange = payload.response;
+        state.GetMisDataByRange = payload?.response;
         state.error = null;
         state.responseMessage = payload.message;
       })

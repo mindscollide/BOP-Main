@@ -4,7 +4,10 @@ import GlobalTable from "../../common/table/GlobalTable";
 import InputFIeld from "../../common/inputField/InputField";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { getDiscountingRatesAction, publishDiscountingRatesAction } from "@/container/pages/mainDealer/dealerActions";
+import {
+  getDiscountingRatesAction,
+  publishDiscountingRatesAction,
+} from "@/container/pages/mainDealer/dealerActions";
 import { useSelector } from "react-redux";
 import { formatPercentageInput } from "@/utils/formatters";
 
@@ -22,36 +25,39 @@ const DealeAndTreasuryDiscountingTable = () => {
 
   useEffect(() => {
     if (getDiscountTableData !== null) {
-      const { currentRates, previousRates } = getDiscountTableData;
-      if (currentRates.length > 0) {
-        let newRecords = currentRates.map((item, index) => {
-          let getRecords = previousRates.find(
-            (prevItem) => prevItem.instumentID === item.instumentID
-          );
-          if (getRecords !== undefined) {
-            return {
-              key: index + 1,
-              instrumentName: item.instrumentName,
-              instrumentID: item.instumentID,
-              currentRate: item.rate,
-              previousRate: getRecords.rate,
-              dateTime: item.dateTime,
-            };
-          } else {
-            return {
-              key: index + 1,
-              instrumentName: item.instrumentName,
-              instrumentID: item.instumentID,
-              currentRate: item.rate,
-              dateTime: item.dateTime,
+      try {
+        const { currentRates, previousRates } = getDiscountTableData;
+        if (currentRates.length > 0) {
+          let newRecords = currentRates.map((item, index) => {
+            let getRecords = previousRates.find(
+              (prevItem) => prevItem.instumentID === item.instumentID
+            );
+            if (getRecords !== undefined) {
+              return {
+                key: index + 1,
+                instrumentName: item.instrumentName,
+                instrumentID: item.instumentID,
+                currentRate: item.rate,
+                previousRate: getRecords.rate,
+                dateTime: item.dateTime,
+              };
+            } else {
+              return {
+                key: index + 1,
+                instrumentName: item.instrumentName,
+                instrumentID: item.instumentID,
+                currentRate: item.rate,
+                dateTime: item.dateTime,
 
-              previousRate: "",
-            };
-          }
-        });
-        setTableData(newRecords);
-        console.log(newRecords, "newRecordsnewRecords");
-      }
+                previousRate: "",
+              };
+            }
+          });
+          setTableData(newRecords);
+          console.log(newRecords, "newRecordsnewRecords");
+        }
+      } catch (error) {}
+
       console.log(
         getDiscountTableData,
         "getDiscountTableDatagetDiscountTableData"
@@ -140,9 +146,9 @@ const DealeAndTreasuryDiscountingTable = () => {
         };
       }),
     };
-    dispatch(publishDiscountingRatesAction({navigate, Data: newData}))
+    dispatch(publishDiscountingRatesAction({ navigate, Data: newData }));
 
-    console.log(newData, "newDatanewDatanewData")
+    console.log(newData, "newDatanewDatanewData");
   };
   return (
     <>

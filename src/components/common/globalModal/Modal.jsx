@@ -45,4 +45,4 @@ const GlobalModal = ({
   );
 };
 
-export default memo(GlobalModal);
+export default GlobalModal;

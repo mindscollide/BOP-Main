@@ -2515,3 +2515,17 @@ i.close-add-user {
   right: 10px !important;
   top: 20px !important;
 }
+
+.markettimePicker {
+  width: 100%;
+  border: 1px solid #e1e1e1 !important;
+  padding: 5px;
+  border-radius: 4px !important;
+  outline: none;
+}
+.markettimePicker:is(:focus, :focus-visible, :active, :hover) {
+  width: 100% !important;
+  border: 1px solid #e1e1e1 !important;
+  padding: 5px !important;
+  border-radius: 4px !important;
+}

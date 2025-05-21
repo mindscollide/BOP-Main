@@ -30,7 +30,7 @@ const BranchForwardsTable = () => {
   //Excecuting forward and Discounting Api
   useEffect(() => {
     try {
-      dispatch(GetAllFowardsAndDiscountsRatesAPI({}));
+      dispatch(GetAllFowardsAndDiscountsRatesAPI({ navigate }));
     } catch (error) {
       console.log(error, "error");
     }
@@ -102,15 +102,14 @@ const BranchForwardsTable = () => {
           />
         </Col>
       </Row>
-      <Row className="mt-2">
+      <Row className='mt-2'>
         <Col
           lg={12}
           md={12}
           sm={12}
-          className="d-flex justify-content-center align-items-center"
-        >
+          className='d-flex justify-content-center align-items-center'>
           <CustomButton
-            value="Book a Forward"
+            value='Book a Forward'
             applyClass={"FowwardBranchBookaForwardBtn"}
             onClick={handleBookaForwardCorporate}
           />

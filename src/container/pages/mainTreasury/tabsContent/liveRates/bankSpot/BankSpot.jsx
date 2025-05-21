@@ -8,7 +8,7 @@ import SectionLoader from "../../../../../../components/common/sectionLoader/Sec
 import { GetFXInstrumentsAPI } from "@/components/features/SpotBranch/WatchlistAction";
 
 const BankSpot = () => {
-  const { bankSpotReducer } = useSelector((state) => state);
+  const bankSportLoader = useSelector((state) => state.bankSpotReducer.Loader);
   const TresuaryBankSpotData = useSelector(
     (state) => state.WatchListReducer.WatchListData
   );
@@ -93,7 +93,6 @@ const BankSpot = () => {
     },
   ];
 
-
   useEffect(() => {
     if (TresuaryBankSpotData !== null && TresuaryBankSpotData !== undefined) {
       setBankSpotData(TresuaryBankSpotData?.instruments);
@@ -115,7 +114,7 @@ const BankSpot = () => {
           prefixCls={"BankSpot_Table"}
           pagination={false}
         />
-        {bankSpotReducer?.Loader ? <SectionLoader /> : null}
+        {bankSportLoader ? <SectionLoader /> : null}
       </div>
     </div>
   );

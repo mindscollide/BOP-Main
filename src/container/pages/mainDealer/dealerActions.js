@@ -646,7 +646,7 @@ export const getTenorWiseForwardsAction = createAsyncThunk(
           return rejectWithValue("Something went wrong");
         }
       } else {
-        return rejectWithValue(error.response.data);
+        return rejectWithValue("Something went wrong");
       }
     } catch (error) {
       console.log(error);
@@ -832,7 +832,7 @@ export const getDiscountingRatesAction = createAsyncThunk(
               isExecuted: true,
             };
             return {
-              response: response.data.responseResult,
+              response: response.data?.responseResult,
               message: "Forwards Rates are Published",
             };
           } else if (

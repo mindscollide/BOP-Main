@@ -19,6 +19,7 @@ import CreatePassword from "@/container/loginScreens/CreatePassword/CreatePasswo
 import TwoFaVerification from "@/container/loginScreens/2faVerificationScreen/TwoFaVerification";
 import ResetPassword from "@/container/loginScreens/ResetPassword/ResetPassword";
 import PrivateRoute from "./routes/PrivateRoutes";
+import { useMqtt } from "./context/MqttContext";
 
 function App() {
   const [routes, setRoutes] = useState([]); // Initially an empty array
@@ -124,6 +125,8 @@ function App() {
   }
 
   const router = createBrowserRouter(routes);
+  const {isConnected} = useMqtt()
+  console.log(isConnected, "isConnectedisConnected")
   return <RouterProvider router={router} />;
 }
 

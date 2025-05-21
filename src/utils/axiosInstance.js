@@ -1,67 +1,38 @@
+// src/utils/apiCaller.js
+import {
+  decrypt,
+  decryptFormData,
+  encrypt,
+  encryptFormData,
+  setCustomHeaders,
+} from "@/common/utils";
 import axios from "axios";
 
-const baseURL = "http://192.168.18.241";
-
-// Define API endpoints
-const endpoints = {
-  auth: `${baseURL}:13000/ERM_Auth`,
-  uploadRates: `${baseURL}:13010/UploadRate`,
-};
-
-// Create Axios instance
-const apiClient = axios.create({
-  baseURL,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-// Store all cancel tokens globally
-const cancelTokens = new Map();
-
-// Function to generate and store cancel tokens
-const createCancelToken = (url) => {
-  if (cancelTokens.has(url)) {
-    cancelTokens
-      .get(url)
-      .cancel("Request canceled due to a new request or unmount.");
-  }
-  const source = axios.CancelToken.source();
-  cancelTokens.set(url, source);
-  return source.token;
-};
-
-// Function to make requests with cancel token
-export const makeRequest = async (endpoint, method = "POST", data ) => {
+/**
+ * Higher-order function for making POST API calls
+ * @param {string} url - The endpoint URL
+ * @returns {function} - A function that takes bodyData and makes a POST request
+ */
+const createPostAPI = (url, requestMethod) => async (bodyData) => {
   try {
-    const url = endpoints[endpoint]; // Get full API URL
-    const response = await apiClient({
-      method,
-      url,
-      data: JSON.parse(data),
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
-        "Content-Type": "application/json",
-      },
-      cancelToken: createCancelToken(url), // Automatically attach cancel token
-    });
+    const headers = setCustomHeaders();
+    const form = new FormData();
+    form.append("RequestMethod", requestMethod);
+    if (bodyData) {
+      form.append("RequestData", JSON.stringify(bodyData));
+    }
 
+    const response = await axios({
+      method: "post",
+      url: url,
+      data: form,
+      headers, // Use custom headers here
+    });
     return response.data;
   } catch (error) {
-    if (axios.isCancel(error)) {
-      console.warn(`Request to ${endpoint} was canceled.`);
-      return null; // Return null to indicate request was canceled
-    }
-    throw error; // Throw other errors
+    console.error(`Error calling ${url}:`, error);
+    throw error.response?.data || error;
   }
 };
 
-// Function to cancel all active requests globally
-export const cancelAllRequests = () => {
-  cancelTokens.forEach((source, url) => {
-    source.cancel(`Request to ${url} was manually canceled.`);
-  });
-  cancelTokens.clear();
-};
-
-export { apiClient, endpoints };
+export default createPostAPI;

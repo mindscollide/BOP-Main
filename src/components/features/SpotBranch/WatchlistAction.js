@@ -83,6 +83,8 @@ export const GetFXInstrumentsAPI = createAsyncThunk(
           console.log("", response.data);
           return rejectWithValue("Something went wrong");
         }
+      } else {
+        return rejectWithValue("Something went wrong");
       }
     } catch (error) {
       // Reject with error message
@@ -157,6 +159,8 @@ export const GetMisDataByRangeAPI = createAsyncThunk(
           console.log("", response.data);
           return rejectWithValue("Something went wrong");
         }
+      } else {
+        return rejectWithValue("Something went wrong");
       }
     } catch (error) {
       // Reject with error message
@@ -169,7 +173,7 @@ export const GetMisDataByRangeAPI = createAsyncThunk(
 // Define the GetAllFowardsAndDiscountsRates async thunk
 export const GetAllFowardsAndDiscountsRatesAPI = createAsyncThunk(
   "watchlist/GetAllFowardsAndDiscountsRates", // A unique action type string
-  async ({}, { dispatch, rejectWithValue }) => {
+  async ({ navigate }, { dispatch, rejectWithValue }) => {
     try {
       // Set Axios headers using your custom headers function
       const headers = setCustomHeaders();
@@ -231,6 +235,8 @@ export const GetAllFowardsAndDiscountsRatesAPI = createAsyncThunk(
           console.log("", response.data);
           return rejectWithValue("Something went wrong");
         }
+      } else {
+        return rejectWithValue("Something went wrong");
       }
     } catch (error) {
       // Reject with error message
@@ -312,6 +318,8 @@ export const GetAllCounterPartyDataAPI = createAsyncThunk(
           console.log("", response.data);
           return rejectWithValue("Something went wrong");
         }
+      } else {
+        return rejectWithValue("Something went wrong");
       }
     } catch (error) {
       // Reject with error message
@@ -387,6 +395,9 @@ export const GetDashboardDataAPI = createAsyncThunk(
           console.log("", response.data);
           return rejectWithValue("Something went wrong");
         }
+      } else {
+        console.log("", response.data);
+        return rejectWithValue("Something went wrong");
       }
     } catch (error) {
       // Reject with error message
@@ -461,6 +472,9 @@ export const SaveUserDashboardAPI = createAsyncThunk(
           console.log("", response.data);
           return rejectWithValue("Something went wrong");
         }
+      } else {
+        console.log("", response.data);
+        return rejectWithValue("Something went wrong");
       }
     } catch (error) {
       // Reject with error message

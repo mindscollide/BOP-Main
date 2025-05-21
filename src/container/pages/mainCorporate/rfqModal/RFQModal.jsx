@@ -163,7 +163,7 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
       LCNumber: "LC2024XYZ",
     };
 
-    dispatch(SaveTransactionRFQAPI({ Data }));
+    dispatch(SaveTransactionRFQAPI({navigate,  Data }));
   };
 
   return (

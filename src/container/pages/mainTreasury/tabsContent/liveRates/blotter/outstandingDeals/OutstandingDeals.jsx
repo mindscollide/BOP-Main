@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import GlobalTable from "../../../../../../../components/common/table/GlobalTable";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { CorporateBlotterDataAPI } from "../txnSummary/CorporateBlotterActions";
 import CustomButton from "@/components/common/globalButton/button";
 import { Checkbox, Popover } from "antd";
 import IconElement from "@/components/common/IconElement/IconElement";
@@ -86,14 +85,6 @@ const OutstandingDeals = () => {
   const [openStatus, setOpenStatus] = useState(false);
   const [selectedItemsStatus, setSelectedItemsStatus] = useState([]);
 
-  //Calling Corporate Blotter Data API
-  useEffect(() => {
-    try {
-      dispatch(CorporateBlotterDataAPI({}));
-    } catch (error) {
-      console.log(error, "error");
-    }
-  }, []);
 
   //Extracting Out the Blotter Data API
   useEffect(() => {

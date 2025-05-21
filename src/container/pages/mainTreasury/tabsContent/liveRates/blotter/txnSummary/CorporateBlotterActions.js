@@ -68,6 +68,9 @@ export const CorporateBlotterDataAPI = createAsyncThunk(
           console.log("", response.data);
           return rejectWithValue("Something went wrong");
         }
+      } else {
+        console.log("", response.data);
+        return rejectWithValue("Something went wrong");
       }
     } catch (error) {
       // Reject with error message

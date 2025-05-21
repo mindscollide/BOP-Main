@@ -163,7 +163,7 @@ const SpotBranch = () => {
           },
         ],
       };
-      dispatch(SaveUserDashboardAPI({ Data }));
+      dispatch(SaveUserDashboardAPI({navigate , Data }));
       setWatchlistData((prevData) => ({
         ...prevData,
         [destination.droppableId]: {
