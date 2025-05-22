@@ -1,4 +1,7 @@
-import { getAllChatByTransactionId } from "@/components/features/chatBox/ChatActions";
+import {
+  getAllChatByTransactionId,
+  saveChatApi,
+} from "@/components/features/chatBox/ChatActions";
 import { createSlice } from "@reduxjs/toolkit";
 
 const chatSlicer = createSlice({
@@ -24,6 +27,19 @@ const chatSlicer = createSlice({
         state.responseMessage = payload.message;
       })
       .addCase(getAllChatByTransactionId.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.responseMessage = payload.message;
+      })
+      .addCase(saveChatApi.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(saveChatApi.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.saveChatResponse = payload.response;
+        state.responseMessage = payload.message;
+        state.error = null;
+      })
+      .addCase(saveChatApi.rejected, (state, { payload }) => {
         state.loading = false;
         state.responseMessage = payload.message;
       });

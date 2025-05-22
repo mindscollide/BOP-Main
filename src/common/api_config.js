@@ -144,7 +144,12 @@ const LogoutRM = {
 const getChatByTransactionIdRM = {
   RequestMethod: "ServiceManager.GetAllChatByTransactionID",
 };
+
+const saveChatRM = {
+  RequestMethod: "ServiceManager.SaveChat",
+};
 export {
+  saveChatRM,
   getChatByTransactionIdRM,
   LogoutRM,
   getUserSettingsRM,
