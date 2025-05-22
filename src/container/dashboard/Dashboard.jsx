@@ -6,10 +6,11 @@ import { Outlet, useLocation } from "react-router-dom";
 import { ResponseMessage } from "@/components/utils/ResponseMessageToast";
 import SettingModal from "@/components/features/settingsModal/settingModal";
 import { useModal } from "@/context/ModalContext";
+import ChatBox from "@/components/features/chatBox/ChatBox";
 const Dashboard = () => {
   const { Content } = Layout;
   const location = useLocation();
-  const { settingModal } = useModal();
+  const { chatModal, chatModalTransactionId } = useModal();
 
   return (
     <Layout className='roboto-13'>
@@ -20,6 +21,7 @@ const Dashboard = () => {
       <Content>
         <main className='px-3'>
           <Outlet />
+          {chatModal && <ChatBox />}
         </main>
       </Content>
     </Layout>

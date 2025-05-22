@@ -14,6 +14,8 @@ const CalculatorPort = ":13003/Calculator";
 
 const SettingPort = ":13008/Setting";
 
+const ChatPort = ":13004/Chat"
+
 const authApi = `${baseURL}${authPort}`;
 
 const uploadRatesApi = `${baseURL}${uploadRatesPort}`;
@@ -28,6 +30,8 @@ const CalculatorApi = `${baseURL}${CalculatorPort}`;
 
 const settingApi = `${baseURL}${SettingPort}`;
 
+const chatApi = `${baseURL}${ChatPort}`
+
 export {
   authApi,
   uploadRatesApi,
@@ -35,5 +39,6 @@ export {
   BlotterApi,
   reportApi,
   CalculatorApi,
-  settingApi
+  settingApi,
+  chatApi
 };

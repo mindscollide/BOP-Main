@@ -140,7 +140,12 @@ const getMarketingTimingRM = {
 const LogoutRM = {
   RequestMethod: "ServiceManager.LogOut",
 };
+
+const getChatByTransactionIdRM = {
+  RequestMethod: "ServiceManager.GetAllChatByTransactionID",
+};
 export {
+  getChatByTransactionIdRM,
   LogoutRM,
   getUserSettingsRM,
   updateUserSettingsRM,
