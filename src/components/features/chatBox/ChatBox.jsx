@@ -43,7 +43,6 @@ const ChatBox = () => {
           <div className='d-flex align-items-center'>
             <span
               className='user-chat text-center'
-              tabIndex={0}
               id='chat-user-img'>
               <img src='../img/profile.png' className='' alt='user' />
             </span>
@@ -54,10 +53,7 @@ const ChatBox = () => {
                 applyClass={"icon-close cursor-pointer"}
                 onClick={handleClickClose}
               />
-              {/* <i
-                className='icon-close cursor-pointer'
-          onClick={handle}
-              /> */}
+          
             </span>
           </div>
         </div>
