@@ -52,7 +52,7 @@ export const convertDateTimeIntoGMT = (date) => {
     date.slice(10, 12) +
     ":" +
     date.slice(12, 14);
-  return dateString;
+  return new Date(dateString);
 };
 
 

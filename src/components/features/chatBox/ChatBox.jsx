@@ -2,11 +2,18 @@ import IconElement from "@/components/common/IconElement/IconElement";
 import InputFIeld from "@/components/common/inputField/InputField";
 import { useModal } from "@/context/ModalContext";
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+import { saveChatApi } from "./ChatActions";
+import { useNavigate } from "react-router-dom";
+import { convertDateTimeIntoGMT } from "@/utils/formatters";
+import moment from "moment";
 // import styles from "./ChatBranch.css";
 const ChatBox = () => {
-  const { setChatModal } = useModal();
+  const { setChatModal ,chatModalTransactionId} = useModal();
   const [message, setMessage] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   console.log(message, "messagemessage");
   let userName = localStorage.getItem("name");
@@ -47,17 +54,21 @@ const ChatBox = () => {
     setChatModal(false);
   };
 
-  const handleClickSaveChat = () => {
+  const handleClickSaveChat = (e) => {
+    e.preventDefault()
     if (message !== "") {
       let Data = {
-        TranscationID: transactionChat.transactionID,
-        ReceiverID: 149,
-        SenderID: 1,
-        Message: message,
-        Attachments: [],
+        TranscationID: chatModalTransactionId, // This is the transaction ID for the chat
+        ReceiverID: 1, // He is the user who is receiving a message
+        SenderID: 149, // He is the user who is sending a message
+        Message: message, // This is the message content
+        Attachments: [], // This is an array of attachments (if any)
       };
+      dispatch(saveChatApi({ navigate, Data, setTransactionChat, setMessage }));
     }
   };
+
+  console.log(transactionChat, "transactionChattransactionChat");
   return (
     <div className='user-chat-box active-chat' id='chat-len1'>
       <div className='chat-box-inner'>
@@ -98,7 +109,7 @@ const ChatBox = () => {
                             <div className='message-status' />
                             <div className='ms-auto'>
                               <span className='chat-datetime'>
-                                Jul 18, 24 - 05:18:39 PM
+                              {moment(convertDateTimeIntoGMT(data.creationDateTime)).format("MMM DD, YYYY - HH:mm:ss A")}
                               </span>
                             </div>
                           </div>
@@ -130,7 +141,7 @@ const ChatBox = () => {
                             <div className='message-status' />
                             <div className='ms-auto'>
                               <span className='chat-datetime'>
-                                Jul 18, 24 - 05:14:39 PM
+                              {moment(convertDateTimeIntoGMT(data.creationDateTime)).format("MMM DD, YYYY - HH:mm:ss A")}
                               </span>
                             </div>
                           </div>
@@ -143,32 +154,33 @@ const ChatBox = () => {
             : null}
         </div>
         <div className='chat-box-footer'>
-          <div className='d-flex align-items-center'>
-            <div className='' />
-            <div className='textarea-block col pe-1'>
-              <InputFIeld
-                type={"text"}
-                applyClass={"chatSenderInput"}
-                value={message}
-                onChange={(e) => setMessage(e.target.value.trimStart())}
-              />
-            </div>
-            <div className=''>
-              <IconElement
-                applyClass={"icon-send cursor-pointer"}
-                onClick={handleClickSaveChat}
-              />
-              <span className='fw-bold cursor-pointer upload-file-wrapper'>
-                <IconElement
-                  applyClass={"icon-attachment "}
-                  isFile={true}
-                  onFileChange={(e) => {
-                    console.log("File selected:", e.target.files[0]);
-                  }}
+          <form onSubmit={handleClickSaveChat}>
+            <div className='d-flex align-items-center'>
+              <div className='textarea-block col pe-1'>
+                <InputFIeld
+                  type={"text"}
+                  applyClass={"chatSenderInput"}
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value.trimStart())}
                 />
-              </span>
+              </div>
+              <div className=''>
+                <IconElement
+                  applyClass={"icon-send cursor-pointer"}
+                  onClick={handleClickSaveChat}
+                />
+                <span className='fw-bold cursor-pointer upload-file-wrapper'>
+                  <IconElement
+                    applyClass={"icon-attachment "}
+                    isFile={true}
+                    onFileChange={(e) => {
+                      console.log("File selected:", e.target.files[0]);
+                    }}
+                  />
+                </span>
+              </div>
             </div>
-          </div>
+          </form>
         </div>
       </div>
     </div>

@@ -28,7 +28,7 @@ const createPostAPI = (url, requestMethod) => async (bodyData) => {
       data: form,
       headers, // Use custom headers here
     });
-    return response.data;
+    return response;
   } catch (error) {
     console.error(`Error calling ${url}:`, error);
     throw error.response?.data || error;

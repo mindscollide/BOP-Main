@@ -1,11 +1,11 @@
 import { roleBasedNavigation, setCustomHeaders } from "@/common/utils";
 import { authApi } from "@/common/apiend_points";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 import {
   validateLinkForCorporatePasswordRM,
   createCorporateUserPasswordRM,
 } from "@/common/api_config";
+import createPostAPI from "@/utils/axiosInstance";
 
 // Define the login async thunk
 export const validateLinkForCorporateCreatePasswordApi = createAsyncThunk(
@@ -15,26 +15,12 @@ export const validateLinkForCorporateCreatePasswordApi = createAsyncThunk(
       EncryptedString: validateValue,
     };
     try {
-      // Set Axios headers using your custom headers function
-      const headers = setCustomHeaders();
-
-      //   This is the FormData
-      let form = new FormData();
-
-      form.append(
-        "RequestMethod",
+      let validateLinkForCorporateCreatePassword = createPostAPI(
+        authApi,
         validateLinkForCorporatePasswordRM.RequestMethod
       );
 
-      form.append("RequestData", JSON.stringify(Data));
-
-      // Make the API request with custom headers
-      const response = await axios({
-        method: "post",
-        url: authApi,
-        data: form,
-        headers, // Use custom headers here
-      });
+      const response = await validateLinkForCorporateCreatePassword(Data);
 
       if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -85,24 +71,12 @@ export const createCorporateCreatePasswordApi = createAsyncThunk(
   "auth/createPasswordCorporate", // A unique action type string
   async ({ navigate, Data }, { rejectWithValue }) => {
     try {
-      // Set Axios headers using your custom headers function
-      const headers = setCustomHeaders();
+      let createCorporateCreatePassword = createPostAPI(
+        authApi,
+        createCorporateUserPasswordRM.RequestMethod
+      );
 
-      //   This is the FormData
-      let form = new FormData();
-
-      form.append("RequestMethod", createCorporateUserPasswordRM.RequestMethod);
-
-      form.append("RequestData", JSON.stringify(Data));
-
-      // Make the API request with custom headers
-      const response = await axios({
-        method: "post",
-        url: authApi,
-        data: form,
-        headers, // Use custom headers here
-      });
-
+      const response = await createCorporateCreatePassword(Data);
       if (response.data.responseCode === 200) {
         const {
           isExecuted,

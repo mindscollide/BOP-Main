@@ -4,32 +4,20 @@ import {
 } from "@/common/api_config";
 import { authApi } from "@/common/apiend_points";
 import { roleBasedNavigation, setCustomHeaders } from "@/common/utils";
+import createPostAPI from "@/utils/axiosInstance";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 
 // Define the login async thunk
 export const loginInApi = createAsyncThunk(
   "auth/login", // A unique action type string
   async ({ navigate, Data, shouldIsCorporate }, { rejectWithValue }) => {
     try {
-      // Set Axios headers using your custom headers function
-      const headers = setCustomHeaders();
+      let getBlotterData = createPostAPI(
+        authApi,
+        loginRequestMethod.RequestMethod
+      );
 
-      //   This is the FormData
-      let form = new FormData();
-
-      form.append("RequestMethod", loginRequestMethod.RequestMethod);
-
-      form.append("RequestData", JSON.stringify(Data));
-
-      // Make the API request with custom headers
-      const response = await axios({
-        method: "post",
-        url: authApi,
-        data: form,
-        headers, // Use custom headers here
-      });
-
+      const response = await getBlotterData(Data);
       if (response.data.responseCode === 200) {
         const {
           isExecuted,
@@ -170,24 +158,12 @@ export const corporateUserLoginInApi = createAsyncThunk(
   "auth/corporateLogIn", // A unique action type string
   async ({ navigate, Data }, { rejectWithValue }) => {
     try {
-      // Set Axios headers using your custom headers function
-      const headers = setCustomHeaders();
+      let corporateUserLoginIn = createPostAPI(
+        authApi,
+        corporateUserRequestMethod.RequestMethod
+      );
 
-      //   This is the FormData
-      let form = new FormData();
-
-      form.append("RequestMethod", corporateUserRequestMethod.RequestMethod);
-
-      form.append("RequestData", JSON.stringify(Data));
-
-      // Make the API request with custom headers
-      const response = await axios({
-        method: "post",
-        url: authApi,
-        data: form,
-        headers, // Use custom headers here
-      });
-
+      const response = await corporateUserLoginIn(Data);
       if (response.data.responseCode === 200) {
         const {
           isExecuted,

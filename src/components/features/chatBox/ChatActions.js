@@ -2,6 +2,7 @@ import { getChatByTransactionIdRM, saveChatRM } from "@/common/api_config";
 import { chatApi } from "@/common/apiend_points";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
 import createPostAPI from "@/utils/axiosInstance";
+import { formatDateToUTC } from "@/utils/formatters";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 export const getAllChatByTransactionId = createAsyncThunk(
@@ -15,9 +16,11 @@ export const getAllChatByTransactionId = createAsyncThunk(
         chatApi,
         getChatByTransactionIdRM.RequestMethod
       );
-      const result = await getUserChat(Data);
-      console.log(result, "result");
-      const { responseCode } = result;
+      const response = await getUserChat(Data);
+      console.log(response, "result");
+      const { responseCode } = response.data;
+      console.log(responseCode, "result");
+
       if (responseCode === 417) {
         console.log(result, "result");
 
@@ -31,15 +34,10 @@ export const getAllChatByTransactionId = createAsyncThunk(
           })
         );
       } else if (responseCode === 200) {
-        console.log(result, "result");
-
-        const { isExecuted, responseMessage } = result.responseResult;
+        const { isExecuted, responseMessage } = response.data.responseResult;
         if (!isExecuted) {
-          console.log(result, "result");
-
           return rejectWithValue(responseMessage);
         }
-        console.log(result, "result");
 
         if (
           responseMessage
@@ -51,7 +49,7 @@ export const getAllChatByTransactionId = createAsyncThunk(
           setChatModal(true);
           setChatModalTransactionId(Data.TranscationID);
           return {
-            response: result.responseResult,
+            response: response.data.responseResult,
             message: "Data Found",
           };
         } else if (
@@ -61,6 +59,8 @@ export const getAllChatByTransactionId = createAsyncThunk(
               "Chat_ChatServiceManager_GetAllChatByTransactionID_02".toLowerCase()
             )
         ) {
+          setChatModal(true);
+          setChatModalTransactionId(Data.TranscationID);
           return rejectWithValue("No Found");
         } else if (
           responseMessage
@@ -86,18 +86,22 @@ export const getAllChatByTransactionId = createAsyncThunk(
       } else {
         return rejectWithValue("Something went wrong");
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   }
 );
 
 export const saveChatApi = createAsyncThunk(
   "chat/saveChatApi",
-  async ({ navigate, Data }, { rejectWithValue, dispatch }) => {
+  async (
+    { navigate, Data, setTransactionChat, setMessage },
+    { rejectWithValue, dispatch }
+  ) => {
     try {
       let getUserChat = createPostAPI(chatApi, saveChatRM.RequestMethod);
-      const result = await getUserChat(Data);
-      console.log(result, "result");
-      const { responseCode } = result;
+      const response = await getUserChat(Data);
+      const { responseCode } = response.data;
       if (responseCode === 417) {
         console.log(result, "result");
 
@@ -106,26 +110,36 @@ export const saveChatApi = createAsyncThunk(
           saveChatApi({
             navigate,
             Data,
+            setTransactionChat,
+            setMessage,
           })
         );
       } else if (responseCode === 200) {
-        console.log(result, "result");
-
-        const { isExecuted, responseMessage } = result.responseResult;
+        const { isExecuted, responseMessage } = response.data.responseResult;
         if (!isExecuted) {
-          console.log(result, "result");
-
           return rejectWithValue(responseMessage);
         }
-        console.log(result, "result");
 
         if (
           responseMessage
             .toLowerCase()
             .includes("Chat_ChatServiceManager_SaveChat_01".toLowerCase())
         ) {
+          let Data2 = {
+            chatMessageID: response.data.responseResult.chatMessageID,
+            receiverID: 1,
+            senderID: 149,
+            message: Data.Message,
+            attachments: Data.Attachments,
+            creationDateTime: formatDateToUTC(new Date())
+          };
+          setTransactionChat((prev) => ({
+            ...prev,
+            getAllChat: [...prev.getAllChat, Data2],
+          }));
+          setMessage("");
           return {
-            response: result.responseResult,
+            response: response.data.responseResult,
             message: "Data Found",
           };
         } else if (
@@ -166,6 +180,8 @@ export const saveChatApi = createAsyncThunk(
       } else {
         return rejectWithValue("Something went wrong");
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   }
 );

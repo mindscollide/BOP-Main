@@ -2,29 +2,20 @@ import { getAllCategoriesRM } from "@/common/api_config";
 import { authApi } from "@/common/apiend_points";
 import { setCustomHeaders } from "@/common/utils";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
+import createPostAPI from "@/utils/axiosInstance";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 
 // Define the login async thunk
 export const getAllCategoriesAction = createAsyncThunk(
   "auth/getAllCategories", // A unique action type string
   async ({ navigate }, { dispatch, rejectWithValue }) => {
     try {
-      // Set Axios headers using your custom headers function
-      const headers = setCustomHeaders();
+      let getBlotterData = createPostAPI(
+        authApi,
+        getAllCategoriesRM.RequestMethod
+      );
 
-      //   This is the FormData
-      let form = new FormData();
-
-      form.append("RequestMethod", getAllCategoriesRM.RequestMethod);
-
-      // Make the API request with custom headers
-      const response = await axios({
-        method: "post",
-        url: authApi,
-        data: form,
-        headers, // Use custom headers here
-      });
+      const response = await getBlotterData();
       if (response.data.responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(getAllCategoriesAction({ navigate }));

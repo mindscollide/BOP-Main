@@ -16,6 +16,7 @@ const shouldIsCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
 const BopLogin = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  useEffect(() => {}, [])
   const [crendentials, setCredentials] = useState({
     email: "",
     password: "",
@@ -31,6 +32,10 @@ const BopLogin = () => {
    *
    * @param {object} e - Event object from the input field change.
    */
+
+  useEffect(() => {
+    localStorage.clear()
+  }, [])
   const handleChangeFields = (e) => {
     const { name, value } = e.target;
     // Update the email field and handle validation

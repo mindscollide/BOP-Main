@@ -12,7 +12,7 @@ import { MqttProvider } from "./context/MqttContext.jsx";
 GloballyModalProvider;
 // import { CreateDemoProvider } from "./Context.jsx";
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <MqttProvider subscribeID={"BOP_TREASURY"}>
+  <MqttProvider>
     <Provider store={store}>
       <DealerAndTreasuryProvider>
         <GloballyModalProvider>

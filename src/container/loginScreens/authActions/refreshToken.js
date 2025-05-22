@@ -2,7 +2,6 @@ import { refreshTokenRM } from "@/common/api_config";
 import { authApi } from "@/common/apiend_points";
 import { setCustomHeaders } from "@/common/utils";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 
 // Define the login async thunk
 export const refreshTokenAction = createAsyncThunk(
@@ -10,25 +9,14 @@ export const refreshTokenAction = createAsyncThunk(
   async ({ navigate }, { rejectWithValue }) => {
     try {
       // Set Axios headers using your custom headers function
-      const headers = setCustomHeaders();
       let Data = {
         RefreshToken: localStorage.getItem("refreshToken"),
         Token: localStorage.getItem("token"),
       };
-      //   This is the FormData
-      let form = new FormData();
 
-      form.append("RequestMethod", refreshTokenRM.RequestMethod);
+      let refreshToken = createPostAPI(authApi, refreshTokenRM.RequestMethod);
 
-      form.append("RequestData", JSON.stringify(Data));
-
-      // Make the API request with custom headers
-      const response = await axios({
-        method: "post",
-        url: authApi,
-        data: form,
-        headers, // Use custom headers here
-      });
+      const response = await refreshToken(Data);
       if (response.data.responseCode === 205) {
         localStorage.clear();
         navigate("/");

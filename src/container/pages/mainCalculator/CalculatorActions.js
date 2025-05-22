@@ -7,28 +7,18 @@ import {
 import { CalculatorApi } from "@/common/apiend_points";
 import { setCustomHeaders } from "@/common/utils";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 
 // Define the GetAllCalculatorData async thunk
 export const GetAllCalculatorData = createAsyncThunk(
   "Calculator/GetAllCalculatorData", // A unique action type string
   async ({ navigate }, { dispatch, rejectWithValue }) => {
     try {
-      // Set Axios headers using your custom headers function
-      const headers = setCustomHeaders();
+      let GetAllCalculator = createPostAPI(
+        CalculatorApi,
+        getAllCalculatorData.RequestMethod
+      );
 
-      //   This is the FormData
-      let form = new FormData();
-
-      form.append("RequestMethod", getAllCalculatorData.RequestMethod);
-
-      // Make the API request with custom headers
-      const response = await axios({
-        method: "post",
-        url: CalculatorApi,
-        data: form,
-        headers, // Use custom headers here
-      });
+      const response = await GetAllCalculator(Data);
       const { responseCode } = response.data;
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -78,23 +68,12 @@ export const CalculateFxDiscountingAPI = createAsyncThunk(
   "Calculator/CalculateFxDiscountingAPI", // A unique action type string
   async ({ Data, navigate }, { dispatch, rejectWithValue }) => {
     try {
-      // Set Axios headers using your custom headers function
-      const headers = setCustomHeaders();
+      let CalculateFxDiscounting = createPostAPI(
+        CalculatorApi,
+        calculateFxDiscountingData.RequestMethod
+      );
 
-      //   This is the FormData
-      let form = new FormData();
-
-      form.append("RequestMethod", calculateFxDiscountingData.RequestMethod);
-
-      form.append("RequestData", JSON.stringify(Data));
-
-      // Make the API request with custom headers
-      const response = await axios({
-        method: "post",
-        url: CalculatorApi,
-        data: form,
-        headers, // Use custom headers here
-      });
+      const response = await CalculateFxDiscounting(Data);
       const { responseCode } = response.data;
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -144,23 +123,12 @@ export const CalculateNonFxDiscountingAPI = createAsyncThunk(
   "Calculator/CalculateNonFxDiscountingAPI", // A unique action type string
   async ({ Data, navigate }, { dispatch, rejectWithValue }) => {
     try {
-      // Set Axios headers using your custom headers function
-      const headers = setCustomHeaders();
+      let CalculateNonFxDiscounting = createPostAPI(
+        CalculatorApi,
+        calculateNonFxDiscountingData.RequestMethod
+      );
 
-      //   This is the FormData
-      let form = new FormData();
-
-      form.append("RequestMethod", calculateNonFxDiscountingData.RequestMethod);
-
-      form.append("RequestData", JSON.stringify(Data));
-
-      // Make the API request with custom headers
-      const response = await axios({
-        method: "post",
-        url: CalculatorApi,
-        data: form,
-        headers, // Use custom headers here
-      });
+      const response = await CalculateNonFxDiscounting(Data);
       const { responseCode } = response.data;
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -210,23 +178,12 @@ export const CalculateForwardsAPI = createAsyncThunk(
   "Calculator/CalculateForwardsAPI", // A unique action type string
   async ({ Data, navigate }, { dispatch, rejectWithValue }) => {
     try {
-      // Set Axios headers using your custom headers function
-      const headers = setCustomHeaders();
+      let CalculateForwards = createPostAPI(
+        CalculatorApi,
+        calculateForwardsData.RequestMethod
+      );
 
-      //   This is the FormData
-      let form = new FormData();
-
-      form.append("RequestMethod", calculateForwardsData.RequestMethod);
-
-      form.append("RequestData", JSON.stringify(Data));
-
-      // Make the API request with custom headers
-      const response = await axios({
-        method: "post",
-        url: CalculatorApi,
-        data: form,
-        headers, // Use custom headers here
-      });
+      const response = await CalculateForwards(Data);
       const { responseCode } = response.data;
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));

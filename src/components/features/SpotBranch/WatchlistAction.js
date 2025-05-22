@@ -9,29 +9,20 @@ import {
 import { watchListApi } from "@/common/apiend_points";
 import { setCustomHeaders } from "@/common/utils";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
+import createPostAPI from "@/utils/axiosInstance";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 
 // Define the GetFXInstruments async thunk
 export const GetFXInstrumentsAPI = createAsyncThunk(
   "watchlist/GetFXInstruments", // A unique action type string
   async ({ navigate }, { dispatch, rejectWithValue }) => {
     try {
-      // Set Axios headers using your custom headers function
-      const headers = setCustomHeaders();
+      let GetFXInstrumentsAction = createPostAPI(
+        watchListApi,
+        GetFXInstruments.RequestMethod
+      );
 
-      //   This is the FormData
-      let form = new FormData();
-
-      form.append("RequestMethod", GetFXInstruments.RequestMethod);
-
-      // Make the API request with custom headers
-      const response = await axios({
-        method: "post",
-        url: watchListApi,
-        data: form,
-        headers, // Use custom headers here
-      });
+      const response = await GetFXInstrumentsAction();
       const { responseCode } = response.data;
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -99,23 +90,12 @@ export const GetMisDataByRangeAPI = createAsyncThunk(
   "watchlist/GetMisDataByRange", // A unique action type string
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
-      // Set Axios headers using your custom headers function
-      const headers = setCustomHeaders();
+      let GetFXInstruGetMisDataByRange = createPostAPI(
+        watchListApi,
+        GetMisDataByRange.RequestMethod
+      );
 
-      //   This is the FormData
-      let form = new FormData();
-
-      form.append("RequestMethod", GetMisDataByRange.RequestMethod);
-
-      form.append("RequestData", JSON.stringify(Data));
-
-      // Make the API request with custom headers
-      const response = await axios({
-        method: "post",
-        url: watchListApi,
-        data: form,
-        headers, // Use custom headers here
-      });
+      const response = await GetFXInstruGetMisDataByRange(Data);
       const { responseCode } = response.data;
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -175,24 +155,12 @@ export const GetAllFowardsAndDiscountsRatesAPI = createAsyncThunk(
   "watchlist/GetAllFowardsAndDiscountsRates", // A unique action type string
   async ({ navigate }, { dispatch, rejectWithValue }) => {
     try {
-      // Set Axios headers using your custom headers function
-      const headers = setCustomHeaders();
-
-      //   This is the FormData
-      let form = new FormData();
-
-      form.append(
-        "RequestMethod",
+      let GetAllFowardsAndDiscountsRatesAction = createPostAPI(
+        watchListApi,
         GetAllFowardsAndDiscountsRates.RequestMethod
       );
 
-      // Make the API request with custom headers
-      const response = await axios({
-        method: "post",
-        url: watchListApi,
-        data: form,
-        headers, // Use custom headers here
-      });
+      const response = await GetAllFowardsAndDiscountsRatesAction();
       const { responseCode } = response.data;
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -251,23 +219,12 @@ export const GetAllCounterPartyDataAPI = createAsyncThunk(
   "watchlist/GetAllCounterPartyData", // A unique action type string
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
-      // Set Axios headers using your custom headers function
-      const headers = setCustomHeaders();
+      let GetAllCounterPartyData = createPostAPI(
+        watchListApi,
+        GetAllCounterPartyDataRM.RequestMethod
+      );
 
-      //   This is the FormData
-      let form = new FormData();
-
-      form.append("RequestMethod", GetAllCounterPartyDataRM.RequestMethod);
-
-      form.append("RequestData", JSON.stringify(Data));
-
-      // Make the API request with custom headers
-      const response = await axios({
-        method: "post",
-        url: watchListApi,
-        data: form,
-        headers, // Use custom headers here
-      });
+      const response = await GetAllCounterPartyData(Data);
       const { responseCode } = response.data;
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -334,21 +291,12 @@ export const GetDashboardDataAPI = createAsyncThunk(
   "watchlist/GetDashboardData", // A unique action type string
   async ({ navigate }, { dispatch, rejectWithValue }) => {
     try {
-      // Set Axios headers using your custom headers function
-      const headers = setCustomHeaders();
+      let GetDashboardData = createPostAPI(
+        watchListApi,
+        GetDashboardData.RequestMethod
+      );
 
-      //   This is the FormData
-      let form = new FormData();
-
-      form.append("RequestMethod", GetDashboardData.RequestMethod);
-
-      // Make the API request with custom headers
-      const response = await axios({
-        method: "post",
-        url: watchListApi,
-        data: form,
-        headers, // Use custom headers here
-      });
+      const response = await GetDashboardData(Data);
       const { responseCode } = response.data;
       console.log(responseCode, "responseCoderesponseCode");
       if (responseCode === 417) {
@@ -412,23 +360,12 @@ export const SaveUserDashboardAPI = createAsyncThunk(
   "watchlist/SaveUserDashboard", // A unique action type string
   async ({ Data, navigate }, { dispatch, rejectWithValue }) => {
     try {
-      // Set Axios headers using your custom headers function
-      const headers = setCustomHeaders();
+      let SaveUserDashboard = createPostAPI(
+        watchListApi,
+        SaveUserDashboard.RequestMethod
+      );
 
-      //   This is the FormData
-      let form = new FormData();
-
-      form.append("RequestMethod", SaveUserDashboard.RequestMethod);
-
-      form.append("RequestData", JSON.stringify(Data));
-
-      // Make the API request with custom headers
-      const response = await axios({
-        method: "post",
-        url: watchListApi,
-        data: form,
-        headers, // Use custom headers here
-      });
+      const response = await SaveUserDashboard(Data);
       const { responseCode } = response.data;
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));

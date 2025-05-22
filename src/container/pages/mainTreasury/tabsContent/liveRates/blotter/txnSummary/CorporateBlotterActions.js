@@ -2,29 +2,20 @@ import { CorporateBlotterData } from "@/common/api_config";
 import { BlotterApi } from "@/common/apiend_points";
 import { setCustomHeaders } from "@/common/utils";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
+import createPostAPI from "@/utils/axiosInstance";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 
 // Define the ViewAllNatureOfBussinessAPI async thunk
 export const CorporateBlotterDataAPI = createAsyncThunk(
   "Blotter/CorporateBlotterData", // A unique action type string
   async ({ navigate }, { dispatch, rejectWithValue }) => {
     try {
-      // Set Axios headers using your custom headers function
-      const headers = setCustomHeaders();
+      let getBlotterData = createPostAPI(
+        BlotterApi,
+        CorporateBlotterData.RequestMethod
+      );
 
-      //   This is the FormData
-      let form = new FormData();
-
-      form.append("RequestMethod", CorporateBlotterData.RequestMethod);
-
-      // Make the API request with custom headers
-      const response = await axios({
-        method: "post",
-        url: BlotterApi,
-        data: form,
-        headers, // Use custom headers here
-      });
+      const response = await getBlotterData();
       const { responseCode } = response.data;
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));

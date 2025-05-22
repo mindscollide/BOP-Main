@@ -13,30 +13,20 @@ import {
   getDiscountingRatesRM,
   publishDiscountingRatesRM,
 } from "@/common/api_config";
-import axios from "axios";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
+import createPostAPI from "@/utils/axiosInstance";
 
 // Define the login async thunk
 export const clearRatesAction = createAsyncThunk(
   "uploadRate/clearRate", // A unique action type string
   async ({ navigate, Data }, { rejectWithValue }) => {
     try {
-      // Set Axios headers using your custom headers function
-      const headers = setCustomHeaders();
+      let clearRates = createPostAPI(
+        uploadRatesApi,
+        clearRatesRM.RequestMethod
+      );
 
-      //   This is the FormData
-      let form = new FormData();
-
-      form.append("RequestMethod", clearRatesRM.RequestMethod);
-
-      // Make the API request with custom headers
-      const response = await axios({
-        method: "post",
-        url: uploadRatesApi,
-        data: form,
-        headers, // Use custom headers here
-      });
-
+      const response = await clearRates(Data);
       const { responseCode } = response.data;
 
       const { isExecuted, responseMessage } = response.data.responseResult;
@@ -100,21 +90,12 @@ export const getLastPublishRatesAction = createAsyncThunk(
   "uploadRate/getLastPublishRates", // A unique action type string
   async ({ navigate }, { dispatch, rejectWithValue }) => {
     try {
-      // Set Axios headers using your custom headers function
-      const headers = setCustomHeaders();
+      let getLastPublishRates = createPostAPI(
+        uploadRatesApi,
+        getLastAndCurrentUSDRatesRM.RequestMethod
+      );
 
-      //   This is the FormData
-      let form = new FormData();
-
-      form.append("RequestMethod", getLastAndCurrentUSDRatesRM.RequestMethod);
-
-      // Make the API request with custom headers
-      const response = await axios({
-        method: "post",
-        url: uploadRatesApi,
-        data: form,
-        headers, // Use custom headers here
-      });
+      const response = await getLastPublishRates();
 
       const { responseCode } = response.data;
 
@@ -178,29 +159,21 @@ export const getLastPublishRatesAction = createAsyncThunk(
 // Define the login async thunk
 export const PublishNewRatesAction = createAsyncThunk(
   "uploadRate/PublishNewRates", // A unique action type string
-  async ({ navigate, Data }, { rejectWithValue }) => {
+  async ({ navigate, Data }, { rejectWithValue, dispatch }) => {
     try {
-      // Set Axios headers using your custom headers function
-      const headers = setCustomHeaders();
+      let PublishNewRates = createPostAPI(
+        uploadRatesApi,
+        publishCurrentUSDRatesRM.RequestMethod
+      );
 
-      //   This is the FormData
-      let form = new FormData();
-
-      form.append("RequestMethod", publishCurrentUSDRatesRM.RequestMethod);
-      form.append("RequestData", JSON.stringify(Data));
-
-      // Make the API request with custom headers
-      const response = await axios({
-        method: "post",
-        url: uploadRatesApi,
-        data: form,
-        headers, // Use custom headers here
-      });
+      const response = await PublishNewRates(Data);
 
       const { responseCode } = response.data;
 
       const { isExecuted, responseMessage } = response.data.responseResult;
       if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(PublishNewRatesAction({ navigate, Data }));
       } else if (response.data.responseCode === 200) {
         if (isExecuted) {
           if (
@@ -266,29 +239,19 @@ export const PublishNewRatesAction = createAsyncThunk(
 // Define the login async thunk
 export const marketOnOffAction = createAsyncThunk(
   "uploadRate/marketOnOff", // A unique action type string
-  async ({ navigate, Data }, { rejectWithValue }) => {
+  async ({ navigate, Data }, { rejectWithValue, dispatch }) => {
     try {
-      // Set Axios headers using your custom headers function
-      const headers = setCustomHeaders();
+      let marketOnOff = createPostAPI(
+        uploadRatesApi,
+        marketOnOffRM.RequestMethod
+      );
 
-      //   This is the FormData
-      let form = new FormData();
-
-      form.append("RequestMethod", marketOnOffRM.RequestMethod);
-      form.append("RequestData", JSON.stringify(Data));
-
-      // Make the API request with custom headers
-      const response = await axios({
-        method: "post",
-        url: uploadRatesApi,
-        data: form,
-        headers, // Use custom headers here
-      });
-
+      const response = await marketOnOff(Data);
       const { responseCode } = response.data;
 
       const { isExecuted, responseMessage } = response.data.responseResult;
       if (responseCode === 417) {
+        dispatch(refreshTokenAction({ navigate }));
       } else if (response.data.responseCode === 200) {
         if (isExecuted) {
           if (
@@ -348,21 +311,12 @@ export const getAllTenorsAction = createAsyncThunk(
   "uploadRate/getAllTenors", // A unique action type string
   async ({}, { rejectWithValue }) => {
     try {
-      // Set Axios headers using your custom headers function
-      const headers = setCustomHeaders();
+      let getAllTenors = createPostAPI(
+        uploadRatesApi,
+        getAllTenorsRM.RequestMethod
+      );
 
-      //   This is the FormData
-      let form = new FormData();
-
-      form.append("RequestMethod", getAllTenorsRM.RequestMethod);
-
-      // Make the API request with custom headers
-      const response = await axios({
-        method: "post",
-        url: uploadRatesApi,
-        data: form,
-        headers, // Use custom headers here
-      });
+      const response = await getAllTenors();
 
       const { responseCode } = response.data;
 
@@ -430,22 +384,12 @@ export const createTenorAction = createAsyncThunk(
     { dispatch, rejectWithValue }
   ) => {
     try {
-      // Set Axios headers using your custom headers function
-      const headers = setCustomHeaders();
+      let createTenor = createPostAPI(
+        uploadRatesApi,
+        createTenorRM.RequestMethod
+      );
 
-      //   This is the FormData
-      let form = new FormData();
-
-      form.append("RequestMethod", createTenorRM.RequestMethod);
-      form.append("RequestData", JSON.stringify(Data));
-
-      // Make the API request with custom headers
-      const response = await axios({
-        method: "post",
-        url: uploadRatesApi,
-        data: form,
-        headers, // Use custom headers here
-      });
+      const response = await createTenor(Data);
 
       const { responseCode } = response.data;
 
@@ -529,24 +473,12 @@ export const getTenorWiseForwardsAction = createAsyncThunk(
   "uploadRate/getTenorWiseForward", // A unique action type string
   async ({ navigate }, { dispatch, rejectWithValue }) => {
     try {
-      // Set Axios headers using your custom headers function
-      const headers = setCustomHeaders();
-      console.log("Checking");
-      //   This is the FormData
-      let form = new FormData();
+      let getTenorWiseForwards = createPostAPI(
+        uploadRatesApi,
+        getTenorWiseForwardRatesRM.RequestMethod
+      );
 
-      form.append("RequestMethod", getTenorWiseForwardRatesRM.RequestMethod);
-      // form.append("RequestData", JSON.stringify(Data));
-      console.log("Checking", form);
-
-      // Make the API request with custom headers
-      const response = await axios({
-        method: "post",
-        url: uploadRatesApi,
-        data: form,
-        headers, // Use custom headers here
-      });
-
+      const response = await getTenorWiseForwards();
       const { responseCode } = response.data;
 
       if (responseCode === 417) {
@@ -660,26 +592,12 @@ export const PublishTenorWiseForwardsAction = createAsyncThunk(
   "uploadRate/publishTenorWiseForward", // A unique action type string
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
-      // Set Axios headers using your custom headers function
-      const headers = setCustomHeaders();
-      console.log("Checking");
-      //   This is the FormData
-      let form = new FormData();
-
-      form.append(
-        "RequestMethod",
+      let PublishTenorWiseForwards = createPostAPI(
+        uploadRatesApi,
         publishTenorWiseForwardRatesRM.RequestMethod
       );
-      form.append("RequestData", JSON.stringify(Data));
-      console.log("Checking", form);
 
-      // Make the API request with custom headers
-      const response = await axios({
-        method: "post",
-        url: uploadRatesApi,
-        data: form,
-        headers, // Use custom headers here
-      });
+      const response = await PublishTenorWiseForwards(Data);
 
       const { responseCode } = response.data;
 
@@ -755,22 +673,12 @@ export const getDiscountingRatesAction = createAsyncThunk(
   "uploadRate/getDiscountingRates",
   async ({ navigate }, { dispatch, rejectWithValue }) => {
     try {
-      // Set Axios headers using your custom headers function
-      const headers = setCustomHeaders();
+      let getDiscountingRates = createPostAPI(
+        uploadRatesApi,
+        getDiscountingRatesRM.RequestMethod
+      );
 
-      //   This is the FormData
-      let form = new FormData();
-
-      form.append("RequestMethod", getDiscountingRatesRM.RequestMethod);
-
-      // Make the API request with custom headers
-      const response = await axios({
-        method: "post",
-        url: uploadRatesApi,
-        data: form,
-        headers, // Use custom headers here
-      });
-
+      const response = await getDiscountingRates();
       const { responseCode } = response.data;
 
       if (responseCode === 417) {
@@ -881,27 +789,7 @@ export const publishDiscountingRatesAction = createAsyncThunk(
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       try {
-        // Set Axios headers using your custom headers function
-        const headers = setCustomHeaders();
-        console.log("Checking");
-        //   This is the FormData
-        let form = new FormData();
-
-        form.append(
-          "RequestMethod",
-          publishTenorWiseForwardRatesRM.RequestMethod
-        );
-        form.append("RequestData", JSON.stringify(Data));
-        console.log("Checking", form);
-
-        // Make the API request with custom headers
-        const response = await axios({
-          method: "post",
-          url: uploadRatesApi,
-          data: form,
-          headers, // Use custom headers here
-        });
-
+        const response = await publishDiscountingRates(Data);
         const { responseCode } = response.data;
 
         if (responseCode === 417) {
