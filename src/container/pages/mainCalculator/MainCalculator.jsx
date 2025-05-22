@@ -1,11 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Row, Col, Container } from "react-bootstrap";
 import CalculatorFxDiscounting from "../../../components/features/calculatorFxDiscounting/CalculatorFxDiscounting";
 import CalculatorNonFxDiscounting from "../../../components/features/calculatorNonFxDiscounting/CalculatorNonFxDiscounting";
 import FwdCalculator from "../../../components/features/fwdCalculator/FwdCalculator";
-import GlobalNavbar from "../../../components/layout/nav/Navbar";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { GetAllCalculatorData } from "./CalculatorActions";
 
 const MainCalculator = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  //Calling the api for getting Currency
+  useEffect(() => {
+    try {
+      dispatch(GetAllCalculatorData({ navigate }));
+    } catch (error) {
+      console.log(error, "error");
+    }
+  }, []);
   return (
     <>
       <Container fluid className="page-gutter">
@@ -25,9 +37,6 @@ const MainCalculator = () => {
           </Col>
         </Row>
       </Container>
-      {/* <div className="p-2 pe-2"> */}
-
-      {/* </div> */}
     </>
   );
 };

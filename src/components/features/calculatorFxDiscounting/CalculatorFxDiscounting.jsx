@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col } from "react-bootstrap";
 import CustomButton from "../../common/globalButton/button";
 import InputFIeld from "../../common/inputField/InputField";
 import InputFieldWithTag from "../../common/inputFieldWithTag/InputFieldWithTag";
@@ -7,22 +6,22 @@ import SelectDropdown from "../../common/selectDropdown/SelectDropdown";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import {
-  CalculateFxDiscountingAPI,
-  GetAllCalculatorData,
-} from "@/container/pages/mainCalculator/CalculatorActions";
+import { CalculateFxDiscountingAPI } from "@/container/pages/mainCalculator/CalculatorActions";
 import { formatDate } from "@/common/utils";
 
 const CalculatorFxDiscounting = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  //Drop down Currency Data
   const CurrencyData = useSelector(
     (state) => state.CalculatorReducer.calculatorData
   );
 
+  //Resulting Calculated value of FX Discounting
   const CalculatedFxDiscounting = useSelector(
-    (state) => state.CalculatorReducer.calculateFXDiscountingData.fxRate
+    (state) =>
+      state?.CalculatorReducer?.calculateFXDiscountingData?.fxRate || null
   );
 
   //Local States
@@ -32,14 +31,6 @@ const CalculatorFxDiscounting = () => {
   const [inputValue, setInputValue] = useState("0");
   const [liborValue, setLiborValue] = useState(0);
   const [tagText, setTagText] = useState(formatDate(new Date()));
-  //Calling the api for getting Currency
-  useEffect(() => {
-    try {
-      dispatch(GetAllCalculatorData({ navigate }));
-    } catch (error) {
-      console.log(error, "error");
-    }
-  }, []);
 
   //Extracting the currecny Data
   useEffect(() => {
