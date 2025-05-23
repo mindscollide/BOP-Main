@@ -131,11 +131,11 @@ export const saveChatApi = createAsyncThunk(
             senderID: 149,
             message: Data.Message,
             attachments: Data.Attachments,
-            creationDateTime: formatDateToUTC(new Date())
+            creationDateTime: formatDateToUTC(new Date()),
           };
           setTransactionChat((prev) => ({
             ...prev,
-            getAllChat: [...prev.getAllChat, Data2],
+            getAllChat: [Data2, ...prev.getAllChat],
           }));
           setMessage("");
           return {

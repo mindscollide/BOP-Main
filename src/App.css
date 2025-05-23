@@ -1943,9 +1943,11 @@ thead .dropdown-menu-filter .dropdown-item label span {
 
 .chat-box-content {
   background: #f3fbff;
-  height: 180px;
-  overflow: auto;
+  max-height: 180px;
+  overflow-y: auto;
   padding: 10px;
+  display: flex;
+  flex-direction: column-reverse;
 }
 
 .chat-fullview .chat-box-content {
