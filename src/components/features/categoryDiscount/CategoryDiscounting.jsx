@@ -20,7 +20,6 @@ const CategoryDiscounting = () => {
         tenors,
       } = getAllCounterPartyData;
       if (spreadedDiscountRates.length > 0) {
-        console.log("spreadedDiscountRates", spreadedDiscountRates);
         const { discountRates } = generateData(
           1,
           tenors,
@@ -30,7 +29,6 @@ const CategoryDiscounting = () => {
         );
         if (discountRates.length > 0) {
           setDataSource(discountRates);
-        console.log("discountRatesdiscountRates", discountRates);
 
           const forwardsColumns = createColumns(discountRates, 1);
           setColumnsData(forwardsColumns);

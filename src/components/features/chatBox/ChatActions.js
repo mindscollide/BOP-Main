@@ -1,4 +1,9 @@
-import { getChatByTransactionIdRM, saveChatRM } from "@/common/api_config";
+import {
+  DownloadFileRM,
+  UploadDocumentRM,
+  getChatByTransactionIdRM,
+  saveChatRM,
+} from "@/common/api_config";
 import { chatApi } from "@/common/apiend_points";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
 import createPostAPI from "@/utils/axiosInstance";
@@ -17,13 +22,9 @@ export const getAllChatByTransactionId = createAsyncThunk(
         getChatByTransactionIdRM.RequestMethod
       );
       const response = await getUserChat(Data);
-      console.log(response, "result");
       const { responseCode } = response.data;
-      console.log(responseCode, "result");
 
       if (responseCode === 417) {
-        console.log(result, "result");
-
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(
           getAllChatByTransactionId({
@@ -103,8 +104,6 @@ export const saveChatApi = createAsyncThunk(
       const response = await getUserChat(Data);
       const { responseCode } = response.data;
       if (responseCode === 417) {
-        console.log(result, "result");
-
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(
           saveChatApi({
@@ -177,6 +176,107 @@ export const saveChatApi = createAsyncThunk(
         }
       } else if (responseCode === 400) {
         return rejectWithValue("Something went wrong");
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+export const uploadDocumentApi = createAsyncThunk(
+  "chat/uploadDocumentApi",
+  async ({ Data, navigate }, { rejectWithValue, dispatch }) => {
+    try {
+      let uploadDocument = createPostAPI(
+        chatApi,
+        UploadDocumentRM.RequestMethod
+      );
+      const response = await uploadDocument(Data);
+      const { responseCode } = response.data;
+
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(uploadDocumentApi({ Data, navigate }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (!isExecuted) {
+          return rejectWithValue(responseMessage);
+        }
+
+        if (
+          responseMessage
+            .toLowerCase()
+            .includes(
+              "Chat_ChatServiceManager_UploadDocuments_01".toLowerCase()
+            )
+        ) {
+          return {
+            response: response.data.responseResult,
+            message: "File Uploaded Successfully",
+          };
+        } else if (
+          responseMessage
+            .toLowerCase()
+            .includes(
+              "Chat_ChatServiceManager_UploadDocuments_02".toLowerCase()
+            )
+        ) {
+          return rejectWithValue("File Not Found");
+        } else if (
+          responseMessage
+            .toLowerCase()
+            .includes(
+              "Chat_ChatServiceManager_UploadDocuments_03".toLowerCase()
+            )
+        ) {
+          return rejectWithValue("Something went wrong");
+        } else if (
+          responseMessage
+            .toLowerCase()
+            .includes(
+              "Chat_ChatServiceManager_UploadDocuments_04".toLowerCase()
+            )
+        ) {
+          return rejectWithValue("File extension is not allowed");
+        } else if (
+          responseMessage
+            .toLowerCase()
+            .includes(
+              "Chat_ChatServiceManager_UploadDocuments_05".toLowerCase()
+            )
+        ) {
+          return rejectWithValue("File exceeds the 100MB Limit");
+        } else {
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+);
+
+export const DownloadFileApi = createAsyncThunk(
+  "chat/DownloadFile",
+  async ({ Data }, { rejectWithValue }) => {
+    try {
+      let downloadFile = createPostAPI(chatApi, DownloadFileRM.RequestMethod);
+      const response = await downloadFile(Data);
+      const { responseCode } = response.data;
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(uploadDocumentApi({ Data, navigate }));
+      } else if (responseCode === 200) {
+        return {
+          response: response.data.responseResult,
+          message: "File Downloaded Successfully",
+        };
+      } else if (responseCode === 400) {
+        return rejectWithValue("File Not Found");
       } else {
         return rejectWithValue("Something went wrong");
       }

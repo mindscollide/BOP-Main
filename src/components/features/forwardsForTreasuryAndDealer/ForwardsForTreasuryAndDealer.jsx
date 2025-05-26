@@ -164,7 +164,6 @@ const ForwardsForTreasuryAndDealer = () => {
       // Add new tenor record
       setNewTenorRecord(tenorForwardData);
     } catch (error) {
-      console.error("Error in handleAddTenor:", error);
     }
   };
 

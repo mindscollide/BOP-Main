@@ -1,6 +1,8 @@
 import {
+  DownloadFileApi,
   getAllChatByTransactionId,
   saveChatApi,
+  uploadDocumentApi,
 } from "@/components/features/chatBox/ChatActions";
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -40,6 +42,32 @@ const chatSlicer = createSlice({
         state.error = null;
       })
       .addCase(saveChatApi.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.responseMessage = payload.message;
+      })
+      .addCase(uploadDocumentApi.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(uploadDocumentApi.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.uploadDocument = payload.response;
+        state.responseMessage = payload.message;
+        state.error = null;
+      })
+      .addCase(uploadDocumentApi.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.responseMessage = payload.message;
+      })
+      .addCase(DownloadFileApi.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(DownloadFileApi.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.DownloadFile = payload.response;
+        state.responseMessage = payload.message;
+        state.error = null;
+      })
+      .addCase(DownloadFileApi.rejected, (state, { payload }) => {
         state.loading = false;
         state.responseMessage = payload.message;
       });

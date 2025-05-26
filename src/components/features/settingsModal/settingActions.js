@@ -13,11 +13,7 @@ export const getUserSettingDataAPI = createAsyncThunk(
   "setting/getUserSetting",
   async (payload, { rejectWithValue, dispatch }) => {
     const { navigate, setSettingModal } = payload;
-    console.log(
-      navigate,
-      setSettingModal,
-      "getUserSettingDataAPIgetUserSettingDataAPI"
-    );
+ 
     try {
       let getUserSetting = createPostAPI(
         settingApi,

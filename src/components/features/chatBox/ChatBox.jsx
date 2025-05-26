@@ -15,7 +15,6 @@ const ChatBox = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  console.log(message, "messagemessage");
   let userName = localStorage.getItem("name");
   const [transactionChat, setTransactionChat] = useState({
     chatID: 0,
@@ -27,7 +26,6 @@ const ChatBox = () => {
     (state) => state.chatSlicer.getAllChatByTransactions
   );
 
-  console.log(getAllUserData, "getAllUserDatagetAllUserData");
 
   useEffect(() => {
     if (getAllUserData !== null) {
@@ -68,7 +66,6 @@ const ChatBox = () => {
     }
   };
 
-  console.log(transactionChat, "transactionChattransactionChat");
   return (
     <div className='user-chat-box active-chat' id='chat-len1'>
       <div className='chat-box-inner'>

@@ -18,7 +18,6 @@ const DealeAndTreasuryDiscountingTable = () => {
   const getDiscountTableData = useSelector(
     (state) => state.dealerReducer.getDiscountingWiseRates
   );
-  console.log(getDiscountTableData, "getDiscountTableDatagetDiscountTableData");
   useEffect(() => {
     dispatch(getDiscountingRatesAction({ navigate }));
   }, []);
@@ -54,14 +53,10 @@ const DealeAndTreasuryDiscountingTable = () => {
             }
           });
           setTableData(newRecords);
-          console.log(newRecords, "newRecordsnewRecords");
         }
       } catch (error) {}
 
-      console.log(
-        getDiscountTableData,
-        "getDiscountTableDatagetDiscountTableData"
-      );
+   
     }
   }, [getDiscountTableData]);
 
@@ -76,7 +71,6 @@ const DealeAndTreasuryDiscountingTable = () => {
 
   const handleChangeCurrent = (event, record) => {
     const { value } = event.target;
-    console.log(record, value, "recordrecordrecord");
     setTableData((prev) => {
       if (prev.length > 0) {
         let getRecords = prev.map((item) => {
@@ -108,7 +102,6 @@ const DealeAndTreasuryDiscountingTable = () => {
       key: "currentRate",
       align: "center",
       render: (value, record) => {
-        console.log(value, "valuevaluevalue");
         return (
           <InputFIeld
             type='number'
@@ -136,7 +129,6 @@ const DealeAndTreasuryDiscountingTable = () => {
   ];
 
   const handlePublishDiscount = () => {
-    console.log("Publish Discounting");
     let newData = {
       CurrentRates: tableData.map((records, index) => {
         return {
@@ -148,7 +140,6 @@ const DealeAndTreasuryDiscountingTable = () => {
     };
     dispatch(publishDiscountingRatesAction({ navigate, Data: newData }));
 
-    console.log(newData, "newDatanewDatanewData");
   };
   return (
     <>

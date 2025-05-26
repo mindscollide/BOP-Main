@@ -148,7 +148,16 @@ const getChatByTransactionIdRM = {
 const saveChatRM = {
   RequestMethod: "ServiceManager.SaveChat",
 };
+
+const UploadDocumentRM = {
+  RequestMethod: "ServiceManager.UploadDocuments",
+};
+const DownloadFileRM = {
+  RequestMethod: "ServiceManager.DownloadFile",
+}
 export {
+  DownloadFileRM,
+  UploadDocumentRM,
   saveChatRM,
   getChatByTransactionIdRM,
   LogoutRM,

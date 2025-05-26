@@ -3,26 +3,39 @@ import axios from "axios";
 import CryptoJS from "crypto-js";
 
 // Function to set custom headers
-const setCustomHeaders = () => {
-  let token = localStorage.getItem("token");
+// Function to set custom headers
+const setCustomHeaders = (isDoc, ext) => {
+  const token = localStorage.getItem("token");
+
+  const extensionToContentType = {
+    doc: "application/msword",
+    docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    xls: "application/vnd.ms-excel",
+    xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    pdf: "application/pdf",
+    png: "image/png",
+    jpg: "image/jpeg",
+    jpeg: "image/jpeg",
+    txt: "text/plain",
+  };
+
   try {
-    return {
-      _token: token,
-      "Content-Type": "multipart/form-data",
+    const headers = {
+      ...(token && { _token: token }),
     };
+
+    if (isDoc && ext && extensionToContentType[ext]) {
+      headers["Content-Type"] = extensionToContentType[ext];
+      headers["Content-Disposition"] = `attachment; filename=template.${ext}`;
+    } else {
+      headers["Content-Type"] = "multipart/form-data";
+    }
+
+    return headers;
   } catch (error) {
     console.error("Error setting headers:", error);
+    return {};
   }
-  // if (token !== null) {
-  //   return {
-  //     _token: token,
-  //     "Content-Type": "multipart/form-data",
-  //   };
-  // } else {
-  //   return {
-  //     "Content-Type": "multipart/form-data",
-  //   };
-  // }
 };
 
 const emailValidation = (text) => {
@@ -108,7 +121,6 @@ export const decrypt = (data, key) => {
     return null;
   }
 };
-
 
 /**
  * Converts FormData to a plain object

@@ -9,12 +9,14 @@ export const LogoutApi = createAsyncThunk(
     try {
       const logoutUser = createPostAPI(authApi, LogoutRM.RequestMethod);
       const response = await logoutUser();
-      const { responseCode } = response;
+      const { responseCode } = response.data;
+
+      console.log(responseCode,response, "responseCoderesponseCode")
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(LogoutApi({ navigate }));
       } else if (responseCode === 200) {
-        const { isExecuted, responseMessage } = response.responseResult;
+        const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (
             responseMessage
