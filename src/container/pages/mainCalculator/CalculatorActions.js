@@ -20,6 +20,9 @@ export const GetAllCalculatorData = createAsyncThunk(
 
       const response = await GetAllCalculator(Data);
       const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+      }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(GetAllCalculatorData({ Data, navigate }));
@@ -75,6 +78,9 @@ export const CalculateFxDiscountingAPI = createAsyncThunk(
 
       const response = await CalculateFxDiscounting(Data);
       const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+      }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(CalculateFxDiscountingAPI({ Data, navigate }));
@@ -130,6 +136,9 @@ export const CalculateNonFxDiscountingAPI = createAsyncThunk(
 
       const response = await CalculateNonFxDiscounting(Data);
       const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+      }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(CalculateNonFxDiscountingAPI({ Data, navigate }));
@@ -185,6 +194,9 @@ export const CalculateForwardsAPI = createAsyncThunk(
 
       const response = await CalculateForwards(Data);
       const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+      }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(CalculateForwardsAPI({ Data, navigate }));

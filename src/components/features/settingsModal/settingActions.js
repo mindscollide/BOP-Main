@@ -24,7 +24,9 @@ export const getUserSettingDataAPI = createAsyncThunk(
       console.log(result, "result");
       const { responseCode } = result;
       console.log(responseCode, "result");
-
+      if (responseCode === 401) {
+        navigate("/");
+      }
       if (responseCode === 417) {
         console.log(result, "result");
 
@@ -95,7 +97,9 @@ export const updateUserSettingDataAPI = createAsyncThunk(
       console.log(result, "result");
       const { responseCode } = result;
       console.log(responseCode, "result");
-
+      if (responseCode === 401) {
+        navigate("/");
+      }
       if (responseCode === 417) {
         console.log(result, "result");
 
@@ -161,7 +165,9 @@ export const getMarkingTimingApi = createAsyncThunk(
       console.log(result, "result");
       const { responseCode } = result;
       console.log(responseCode, "result");
-
+      if (responseCode === 401) {
+        navigate("/");
+      }
       if (responseCode === 417) {
         console.log(result, "result");
 

@@ -38,6 +38,7 @@ const setCustomHeaders = (isDoc, ext) => {
   }
 };
 
+
 const emailValidation = (text) => {
   // Correct regex pattern for email validation
   let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;

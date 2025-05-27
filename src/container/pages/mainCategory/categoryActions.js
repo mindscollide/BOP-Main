@@ -15,7 +15,9 @@ export const getAllCategoryTableData = createAsyncThunk(
 
       const response = await getAllCategoryTable(Data);
       const { responseCode } = response.data;
-
+      if (responseCode === 401) {
+        navigate("/");
+      }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(getAllCategoryTableData({ navigate, Data }));

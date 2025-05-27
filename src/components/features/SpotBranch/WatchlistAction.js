@@ -24,6 +24,9 @@ export const GetFXInstrumentsAPI = createAsyncThunk(
 
       const response = await GetFXInstrumentsAction();
       const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+      }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(GetFXInstrumentsAPI({ navigate }));
@@ -97,6 +100,9 @@ export const GetMisDataByRangeAPI = createAsyncThunk(
 
       const response = await GetFXInstruGetMisDataByRange(Data);
       const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+      }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(GetMisDataByRangeAPI({ navigate, Data }));
@@ -226,6 +232,9 @@ export const GetAllCounterPartyDataAPI = createAsyncThunk(
 
       const response = await GetAllCounterPartyData(Data);
       const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+      }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
       } else if (response.data.responseCode === 200) {
@@ -291,14 +300,17 @@ export const GetDashboardDataAPI = createAsyncThunk(
   "watchlist/GetDashboardData", // A unique action type string
   async ({ navigate }, { dispatch, rejectWithValue }) => {
     try {
-      let GetDashboardData = createPostAPI(
+      let GetDashboardDataAction = createPostAPI(
         watchListApi,
         GetDashboardData.RequestMethod
       );
 
-      const response = await GetDashboardData(Data);
+      const response = await GetDashboardDataAction();
       const { responseCode } = response.data;
       console.log(responseCode, "responseCoderesponseCode");
+      if (responseCode === 401) {
+        navigate("/");
+      }
       if (responseCode === 417) {
         console.log(responseCode, "responseCoderesponseCode");
         await dispatch(refreshTokenAction({ navigate }));
@@ -367,6 +379,9 @@ export const SaveUserDashboardAPI = createAsyncThunk(
 
       const response = await SaveUserDashboard(Data);
       const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+      }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(SaveUserDashboardAPI({ Data, navigate }));

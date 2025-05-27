@@ -16,10 +16,12 @@ import { Col, Row } from "react-bootstrap";
 import { useModal } from "@/context/ModalContext";
 import { getAllChatByTransactionId } from "@/components/features/chatBox/ChatActions";
 import { useNavigate } from "react-router-dom";
+import InfoTransaction from "../infoTransaction/InfoTransaction";
 const TXNSummary = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate()
-  const { setChatModal, setChatModalTransactionId } = useModal();
+  const navigate = useNavigate();
+  const { setChatModal, setChatModalTransactionId, setTransactionInfoModal } =
+    useModal();
 
   //HardCoded Filter Values start
   const TXN_ID_OPTIONS = [
@@ -99,6 +101,8 @@ const TXNSummary = () => {
   const [selectedItemsStatus, setSelectedItemsStatus] = useState([]);
 
   const [openExportDiv, setOpenExportDiv] = useState(false);
+
+  const [InfoRecord, setInfoRecord] = useState(null);
 
   const isTreasury = import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
   //Extracting Out the Blotter Data API
@@ -725,6 +729,11 @@ const TXNSummary = () => {
     // setChatModal(true);
     // setChatModalTransactionId(record);
   };
+
+  const handleClickInfo = (record) => {
+    setInfoRecord(record);
+    setTransactionInfoModal(true);
+  };
   const columns = [
     {
       title: (
@@ -1142,6 +1151,7 @@ const TXNSummary = () => {
                 onClick={() => handleClickChat(record.txnid)}
               />
               <CustomButton
+                onClick={() => handleClickInfo(record)}
                 icon={
                   <svg
                     id='info_Layer_1'
@@ -1168,7 +1178,7 @@ const TXNSummary = () => {
 
   return (
     <>
-      <section className='bg-white mt-2 p-2'>
+      <section className='bg-white '>
         <div className='box-content-wrapper'>
           {!isTreasury && (
             <div className='box-header mb-3'>
@@ -1243,6 +1253,10 @@ const TXNSummary = () => {
             comment={comment}
             setShowCommentModal={setShowCommentModal}
             showCommentModal={showCommentModal}
+          />
+          <InfoTransaction
+            InfoRecord={InfoRecord}
+            setInfoRecord={setInfoRecord}
           />
         </div>
       </section>

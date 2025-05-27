@@ -31,6 +31,7 @@ const GlobalModal = ({
       fullscreen={fullscreen}
       size={size}
       scrollable={scrollable}
+      
       style={style}>
       {modalHeader && (
         <Modal.Header className={headerClassName} closeButton={closeButton}>

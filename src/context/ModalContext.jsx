@@ -13,6 +13,7 @@ export const GloballyModalProvider = ({ children }) => {
     BD_SoundOnEveryMessage: false,
     BD_EmailOnEveryMessage: false,
   });
+  const [transactionInfoModal, setTransactionInfoModal] = useState(false);
   const value = {
     createTenorModal,
     setCreateTenorModal,
@@ -25,7 +26,9 @@ export const GloballyModalProvider = ({ children }) => {
     setChatModal,
     chatModal,
     setChatModalTransactionId,
-    chatModalTransactionId
+    chatModalTransactionId,
+    setTransactionInfoModal,
+    transactionInfoModal,
   };
   return (
     <ModalContext.Provider value={value}>{children}</ModalContext.Provider>

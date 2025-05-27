@@ -98,6 +98,9 @@ export const getLastPublishRatesAction = createAsyncThunk(
       const response = await getLastPublishRates();
 
       const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+      }
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -169,6 +172,9 @@ export const PublishNewRatesAction = createAsyncThunk(
       const response = await PublishNewRates(Data);
 
       const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+      }
 
       const { isExecuted, responseMessage } = response.data.responseResult;
       if (responseCode === 417) {
@@ -248,10 +254,14 @@ export const marketOnOffAction = createAsyncThunk(
 
       const response = await marketOnOff(Data);
       const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+      }
 
       const { isExecuted, responseMessage } = response.data.responseResult;
       if (responseCode === 417) {
-        dispatch(refreshTokenAction({ navigate }));
+       await dispatch(refreshTokenAction({ navigate }));
+       dispatch(marketOnOffAction({navigate, Data}))
       } else if (response.data.responseCode === 200) {
         if (isExecuted) {
           if (
@@ -392,6 +402,9 @@ export const createTenorAction = createAsyncThunk(
       const response = await createTenor(Data);
 
       const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+      }
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -480,6 +493,9 @@ export const getTenorWiseForwardsAction = createAsyncThunk(
 
       const response = await getTenorWiseForwards();
       const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+      }
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -600,6 +616,9 @@ export const PublishTenorWiseForwardsAction = createAsyncThunk(
       const response = await PublishTenorWiseForwards(Data);
 
       const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+      }
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -680,6 +699,9 @@ export const getDiscountingRatesAction = createAsyncThunk(
 
       const response = await getDiscountingRates();
       const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+      }
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -792,6 +814,9 @@ export const publishDiscountingRatesAction = createAsyncThunk(
         const response = await publishDiscountingRates(Data);
         const { responseCode } = response.data;
 
+        if (responseCode === 401) {
+          navigate("/");
+        }
         if (responseCode === 417) {
           await dispatch(refreshTokenAction({ navigate }));
           dispatch(createTenorAction({ navigate }));

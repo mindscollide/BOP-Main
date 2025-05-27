@@ -17,6 +17,9 @@ export const CorporateBlotterDataAPI = createAsyncThunk(
 
       const response = await getBlotterData();
       const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+      }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(CorporateBlotterDataAPI({ navigate }));

@@ -19,6 +19,9 @@ export const ViewAllNatureOfBussinessAPI = createAsyncThunk(
 
       const response = await ViewAllNatureOfBussiness(Data);
       const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+      }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(ViewAllNatureOfBussinessAPI({ Data, navigate }));
@@ -77,6 +80,9 @@ export const SaveTransactionRFQAPI = createAsyncThunk(
     try {
       const response = await SaveTransactionRFQ(Data);
       const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+      }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
       } else if (response.data.responseCode === 200) {

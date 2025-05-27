@@ -1,3 +1,5 @@
+// src/context/MqttContext.js
+
 import React, {
   createContext,
   useContext,
@@ -6,13 +8,14 @@ import React, {
   useState,
 } from "react";
 import Paho from "paho-mqtt";
-import { secureRandomString } from "@/utils/formatters";
+import { formatDateToUTC, secureRandomString } from "@/utils/formatters";
 
 const MqttContext = createContext();
 
 export const MqttProvider = ({ dispatch, children }) => {
   const token = localStorage.getItem("token");
   const userID = localStorage.getItem("userID");
+
   const IsBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
   const IsCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
   const isTreasury = import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
@@ -30,34 +33,33 @@ export const MqttProvider = ({ dispatch, children }) => {
 
   const [isConnected, setIsConnected] = useState(false);
   const [marketTimingsUpdated, setMarketTimingsUpdated] = useState(null);
+  const [IncomingChat, setIncomingChat] = useState([]);
   const [subscribedTopics, setSubscribedTopics] = useState([]);
   const clientRef = useRef(null);
   const randomString = secureRandomString();
-
+  console.log(IncomingChat, "IncomingChatIncomingChatIncomingChat");
   const subscribeToTopics = (topics) => {
-    if (!clientRef.current || !isConnected) return;
+    console.log(`Subscribing to topics: ${topics}`);
 
-    const newSubscriptions = [];
+    if (!clientRef.current || !isConnected) return;
+    console.log(`Subscribing to topics: ${topics}`);
 
     topics.forEach((topic) => {
-      if (!subscribedTopics.includes(topic)) {
-        clientRef.current.subscribe(topic, {
-          qos: 0,
-          onSuccess: () => {
-            console.log(`Successfully subscribed to ${topic}`);
-            newSubscriptions.push(topic);
-          },
-          onFailure: (error) => {
-            console.error(
-              `Failed to subscribe to ${topic}:`,
-              error.errorMessage
-            );
-          },
-        });
-      }
-    });
+      console.log(`Subscribed to topic: ${topic}`);
 
-    setSubscribedTopics((prev) => [...prev, ...newSubscriptions]);
+      // if (!subscribedTopics.includes(topic)) {
+      clientRef.current.subscribe(topic, {
+        qos: 0,
+        onSuccess: () => {
+          console.log(`Subscribed to topic: ${topic}`);
+          setSubscribedTopics((prev) => Array.from(new Set([...prev, topic])));
+        },
+        onFailure: (error) => {
+          console.error(`Failed to subscribe to ${topic}`, error.errorMessage);
+        },
+      });
+      // }
+    });
   };
 
   const unsubscribeFromTopics = (topics) => {
@@ -66,12 +68,12 @@ export const MqttProvider = ({ dispatch, children }) => {
     topics.forEach((topic) => {
       clientRef.current.unsubscribe(topic, {
         onSuccess: () => {
-          console.log(`Successfully unsubscribed from ${topic}`);
+          console.log(`Unsubscribed from topic: ${topic}`);
           setSubscribedTopics((prev) => prev.filter((t) => t !== topic));
         },
         onFailure: (error) => {
           console.error(
-            `Failed to unsubscribe from ${topic}:`,
+            `Failed to unsubscribe from ${topic}`,
             error.errorMessage
           );
         },
@@ -80,8 +82,8 @@ export const MqttProvider = ({ dispatch, children }) => {
   };
 
   const connectToMqtt = () => {
-    if (subscribeID === null) {
-      console.error("No subscribeID provided for MQTT connection.");
+    if (!subscribeID || clientRef.current?.isConnected()) {
+      console.warn("MQTT: Already connected or missing subscribeID");
       return;
     }
 
@@ -89,7 +91,7 @@ export const MqttProvider = ({ dispatch, children }) => {
     clientRef.current = new Paho.Client("192.168.18.241", 8228, newClientID);
 
     clientRef.current.onConnectionLost = (responseObject) => {
-      console.error("MQTT Connection lost:", responseObject.errorMessage);
+      console.warn("MQTT connection lost:", responseObject?.errorMessage);
       setIsConnected(false);
       setSubscribedTopics([]);
       setTimeout(connectToMqtt, 6000);
@@ -98,42 +100,51 @@ export const MqttProvider = ({ dispatch, children }) => {
     clientRef.current.onMessageArrived = (message) => {
       try {
         const data = JSON.parse(message.payloadString);
-        console.log(`Message arrived on ${message.destinationName}:`, data);
+        console.log(`MQTT Message on `, data);
 
         switch (data.payload.message) {
           case "MARKET_TIME_UPDATED":
             setMarketTimingsUpdated(data.payload);
             break;
+          case "INCOMING_CHAT":
+            let chatObj = {
+              ...data.payload.chat,
+              creationDateTime: formatDateToUTC(new Date()),
+            };
+            console.log(chatObj, "chatObjchatObjchatObj")
+            setIncomingChat((prev) => [...prev, chatObj]);
+
           default:
-            break;
+            console.log("Unhandled MQTT message type:", data.payload.message);
         }
       } catch (error) {
-        console.error("Error parsing MQTT message:", error);
+        console.error("Failed to parse MQTT message:", error);
       }
     };
 
+    clientRef.current.onConnected = () => {
+      console.log("MQTT successfully connected");
+      setIsConnected(true);
+
+      const topics = [subscribeID, `BOP_${userID}`];
+      console.log("topicsList", topics);
+
+      subscribeToTopics(topics);
+    };
+
     const options = {
-      onSuccess: () => {
-        console.log("Connected to MQTT broker");
-        setIsConnected(true);
-
-        // Subscribe to both required topics
-        const topicsToSubscribe = [subscribeID, `BOP_${userID}`].filter(
-          Boolean
-        );
-
-        console.log(topicsToSubscribe, "topicsToSubscribetopicsToSubscribe");
-        subscribeToTopics(topicsToSubscribe);
-      },
+      onSuccess: () => console.log("MQTT onSuccess: waiting for onConnected"),
       onFailure: (error) => {
         console.error("MQTT connection failed:", error.errorMessage);
         setIsConnected(false);
         setTimeout(connectToMqtt, 6000);
       },
-      keepAliveInterval: 30,
+      keepAliveInterval: 300,
       reconnect: true,
       userName: "user1",
       password: "password1",
+      cleanSession: true,
+      useSSL: false,
     };
 
     clientRef.current.connect(options);
@@ -146,17 +157,23 @@ export const MqttProvider = ({ dispatch, children }) => {
 
     return () => {
       if (clientRef.current?.isConnected()) {
-        // Unsubscribe from all topics before disconnecting
         unsubscribeFromTopics([...subscribedTopics]);
         clientRef.current.disconnect();
+        console.log("Disconnected from MQTT");
       }
     };
   }, [token]);
 
-  // Resubscribe if userID changes
+  console.group("===== MQTT DEBUG STATUS =====");
+  console.log("Client Connected:", clientRef.current?.isConnected());
+  console.log("Client ID:", clientRef.current?.clientId);
+  console.log("Subscribed Topics:", subscribedTopics);
+  console.log("Total Topics Subscribed:", subscribedTopics.length);
+  console.groupEnd("================================");
+
   useEffect(() => {
-    if (isConnected && userID && !subscribedTopics.includes(userID)) {
-      subscribeToTopics([userID]);
+    if (isConnected && userID && !subscribedTopics.includes(`BOP_${userID}`)) {
+      subscribeToTopics([subscribeID, `BOP_${userID}`]);
     }
   }, [userID, isConnected]);
 
@@ -170,6 +187,8 @@ export const MqttProvider = ({ dispatch, children }) => {
         unsubscribeFromTopics,
         marketTimingsUpdated,
         setMarketTimingsUpdated,
+        setIncomingChat,
+        IncomingChat,
       }}>
       {children}
     </MqttContext.Provider>

@@ -12,6 +12,9 @@ export const LogoutApi = createAsyncThunk(
       const { responseCode } = response.data;
 
       console.log(responseCode,response, "responseCoderesponseCode")
+      if (responseCode === 401) {
+        navigate("/");
+      }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(LogoutApi({ navigate }));
