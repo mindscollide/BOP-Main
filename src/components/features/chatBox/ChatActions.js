@@ -106,7 +106,7 @@ export const saveChatApi = createAsyncThunk(
       setTransactionChat,
       setMessage,
       setFile,
-      attachmentsData,
+      newRecords,
       file,
     },
     { rejectWithValue, dispatch }
@@ -127,7 +127,7 @@ export const saveChatApi = createAsyncThunk(
             setTransactionChat,
             setMessage,
             setFile,
-            attachmentsData,
+            newRecords,
             file,
           })
         );
@@ -152,8 +152,8 @@ export const saveChatApi = createAsyncThunk(
               message: Data.Message,
               senderID: Number(localStorage.getItem("userID")),
               attachments:
-                Array.isArray(attachmentsData) && attachmentsData.length > 0
-                  ? attachmentsData.map(async (item) => {
+                Array.isArray(newRecords) && newRecords.length > 0
+                  ? newRecords.map((item) => {
                       return {
                         chatAttachmentID: 0,
                         chatMessageID:
@@ -167,6 +167,9 @@ export const saveChatApi = createAsyncThunk(
                   : [],
               creationDateTime: formatDateToUTC(new Date()),
             };
+
+            console.log("Base64 String:", await Data2);
+
             setTransactionChat((prev) => ({
               ...prev,
               getAllChat: [Data2, ...prev.getAllChat],

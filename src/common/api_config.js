@@ -154,8 +154,25 @@ const UploadDocumentRM = {
 };
 const DownloadFileRM = {
   RequestMethod: "ServiceManager.DownloadFile",
-}
+};
+
+const GetFeDiscountingRM = {
+  RequestMethod: "ServiceManager.GetFEDiscountingRates",
+};
+const PublishFeDiscountingRM = {
+  RequestMethod: "ServiceManager.PublishFEDiscountingRates",
+};
+const GetNonFeDiscountingRatesRM = {
+  RequestMethod: "ServiceManager.GetNonFEDiscountingRates",
+};
+const PublishNonFeDiscountingRatesRM = {
+  RequestMethod: "ServiceManager.PublishNonFEDiscountingRates",
+};
 export {
+  GetFeDiscountingRM,
+  PublishFeDiscountingRM,
+  GetNonFeDiscountingRatesRM,
+  PublishNonFeDiscountingRatesRM,
   DownloadFileRM,
   UploadDocumentRM,
   saveChatRM,

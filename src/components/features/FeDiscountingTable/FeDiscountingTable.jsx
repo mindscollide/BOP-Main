@@ -9,8 +9,9 @@ import {
 } from "@/container/pages/mainDealer/dealerActions";
 import { useSelector } from "react-redux";
 import { formatPercentageInput } from "@/utils/formatters";
+import { GetFEDiscountingTableApi } from "./FeDiscountTableAction";
 
-const DealeAndTreasuryDiscountingTable = () => {
+const FeDiscountingTable = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [tableData, setTableData] = useState([]);
@@ -18,6 +19,7 @@ const DealeAndTreasuryDiscountingTable = () => {
     (state) => state.dealerReducer.getDiscountingWiseRates
   );
   useEffect(() => {
+    dispatch(GetFEDiscountingTableApi({ navigate }));
   }, []);
 
   useEffect(() => {
@@ -45,7 +47,6 @@ const DealeAndTreasuryDiscountingTable = () => {
                 instrumentID: item.instumentID,
                 currentRate: item.rate,
                 dateTime: item.dateTime,
-
                 previousRate: "",
               };
             }
@@ -53,19 +54,8 @@ const DealeAndTreasuryDiscountingTable = () => {
           setTableData(newRecords);
         }
       } catch (error) {}
-
-   
     }
   }, [getDiscountTableData]);
-
-  // Data for the table
-  const dataSource = [
-    { key: "1", currency: "USD", currentRate: 0, previousRate: "" },
-    { key: "2", currency: "EUR", currentRate: 0, previousRate: "" },
-    { key: "3", currency: "GBP", currentRate: 0, previousRate: "" },
-    { key: "4", currency: "JPY", currentRate: 0, previousRate: "" },
-    { key: "5", currency: "CNY", currentRate: 0, previousRate: "" },
-  ];
 
   const handleChangeCurrent = (event, record) => {
     const { value } = event.target;
@@ -89,7 +79,7 @@ const DealeAndTreasuryDiscountingTable = () => {
   // Columns for the table
   const columns = [
     {
-      title: "Currency",
+      title: "Tenor",
       dataIndex: "instrumentName",
       key: "instrumentName",
       align: "left",
@@ -137,7 +127,6 @@ const DealeAndTreasuryDiscountingTable = () => {
       }),
     };
     dispatch(publishDiscountingRatesAction({ navigate, Data: newData }));
-
   };
   return (
     <>
@@ -151,7 +140,7 @@ const DealeAndTreasuryDiscountingTable = () => {
       <span className='d-flex justify-content-center mt-4'>
         <CustomButton
           applyClass='publishForwardsBtn'
-          value={"Publish Discounting"}
+          value={"Publish FE Discounting"}
           onClick={handlePublishDiscount}
         />
       </span>
@@ -159,4 +148,4 @@ const DealeAndTreasuryDiscountingTable = () => {
   );
 };
 
-export default DealeAndTreasuryDiscountingTable;
+export default FeDiscountingTable;

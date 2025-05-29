@@ -51,6 +51,20 @@ const DealeAndTreasuryDiscountingTable = shouldIncludeComponents
     )
   : null;
 
+const DealeAndTreasuryFeDiscountingTable = shouldIncludeComponents
+  ? lazy(() =>
+      import("@/components/features/FeDiscountingTable/FeDiscountingTable")
+    )
+  : null;
+
+const DealeAndTreasuryNonFeDiscountingTable = shouldIncludeComponents
+  ? lazy(() =>
+      import(
+        "@/components/features/NonFeDiscountingTable/NonFeDiscountingTable"
+      )
+    )
+  : null;
+
 const ForwardsForTreasuryAndDealer = () => {
   const { createTenorModal, setCreateTenorModal } = useModal();
   const dispatch = useDispatch();
@@ -163,10 +177,9 @@ const ForwardsForTreasuryAndDealer = () => {
 
       // Add new tenor record
       setNewTenorRecord(tenorForwardData);
-    } catch (error) {
-    }
+    } catch (error) {}
   };
-
+  console.log(getAllTenorsData, "getAllTenorsDatagetAllTenorsData")
   useEffect(() => {
     if (getAllTenorsData !== null) {
       try {
@@ -248,11 +261,21 @@ const ForwardsForTreasuryAndDealer = () => {
             </Suspense>
           </Col>
         )}
-        {DealeAndTreasuryDiscountingTable && (
+        {DealeAndTreasuryFeDiscountingTable && (
           <Col sm={12} md={12} lg={12} className='mt-3'>
             <Suspense fallback={<div>Loading table...</div>}>
-              <h6 className='fs-4 fw-bold color-primary'>Discounting</h6>
-              <DealeAndTreasuryDiscountingTable />
+              <h6 className='fs-4 fw-bold color-primary'>FE Discounting</h6>
+              <DealeAndTreasuryFeDiscountingTable />
+            </Suspense>
+          </Col>
+        )}
+        {DealeAndTreasuryNonFeDiscountingTable && (
+          <Col sm={12} md={12} lg={12} className='mt-3'>
+            <Suspense fallback={<div>Loading table...</div>}>
+              <h6 className='fs-4 fw-bold color-primary'>
+                Non-FE Discounting
+              </h6>
+              <DealeAndTreasuryNonFeDiscountingTable />
             </Suspense>
           </Col>
         )}

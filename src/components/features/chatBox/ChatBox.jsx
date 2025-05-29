@@ -111,6 +111,7 @@ const ChatBox = () => {
         if (uploadDocumentApi.fulfilled.match(result)) {
           console.log("Success:", result.payload);
           const { response } = result.payload;
+          let newRecords = [...response.attachments];
           let Data = {
             TranscationID: chatModalTransactionId, // This is the transaction ID for the chat
             ReceiverID: isTreasury ? 201 : 211, // He is the user who is receiving a message
@@ -122,6 +123,7 @@ const ChatBox = () => {
               };
             }), // This is an array of attachments (if any)
           };
+          console.log(newRecords, "attachmentsattachments");
           dispatch(
             saveChatApi({
               navigate,
@@ -129,7 +131,7 @@ const ChatBox = () => {
               setTransactionChat,
               setMessage,
               setFile,
-              attachmentsData: response.attachments,
+              newRecords,
               file,
             })
           );

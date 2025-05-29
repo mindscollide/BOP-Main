@@ -34,6 +34,7 @@ export const MqttProvider = ({ dispatch, children }) => {
   const [isConnected, setIsConnected] = useState(false);
   const [marketTimingsUpdated, setMarketTimingsUpdated] = useState(null);
   const [IncomingChat, setIncomingChat] = useState([]);
+  const [tenorsCreated, setTenorsCreated] = useState([]);
   const [subscribedTopics, setSubscribedTopics] = useState([]);
   const clientRef = useRef(null);
   const randomString = secureRandomString();
@@ -111,9 +112,11 @@ export const MqttProvider = ({ dispatch, children }) => {
               ...data.payload.chat,
               creationDateTime: formatDateToUTC(new Date()),
             };
-            console.log(chatObj, "chatObjchatObjchatObj")
+            console.log(chatObj, "chatObjchatObjchatObj");
             setIncomingChat((prev) => [...prev, chatObj]);
-
+          case "TENOR_CREATED":
+            setTenorsCreated(data.payload);
+            break;
           default:
             console.log("Unhandled MQTT message type:", data.payload.message);
         }
@@ -189,6 +192,8 @@ export const MqttProvider = ({ dispatch, children }) => {
         setMarketTimingsUpdated,
         setIncomingChat,
         IncomingChat,
+        tenorsCreated,
+        setTenorsCreated,
       }}>
       {children}
     </MqttContext.Provider>

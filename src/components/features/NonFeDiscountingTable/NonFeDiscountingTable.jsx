@@ -10,7 +10,7 @@ import {
 import { useSelector } from "react-redux";
 import { formatPercentageInput } from "@/utils/formatters";
 
-const DealeAndTreasuryDiscountingTable = () => {
+const NonFeDiscountingTable = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [tableData, setTableData] = useState([]);
@@ -18,6 +18,7 @@ const DealeAndTreasuryDiscountingTable = () => {
     (state) => state.dealerReducer.getDiscountingWiseRates
   );
   useEffect(() => {
+    // dispatch(getDiscountingRatesAction({ navigate }));
   }, []);
 
   useEffect(() => {
@@ -53,8 +54,6 @@ const DealeAndTreasuryDiscountingTable = () => {
           setTableData(newRecords);
         }
       } catch (error) {}
-
-   
     }
   }, [getDiscountTableData]);
 
@@ -89,7 +88,7 @@ const DealeAndTreasuryDiscountingTable = () => {
   // Columns for the table
   const columns = [
     {
-      title: "Currency",
+      title: "Tenor",
       dataIndex: "instrumentName",
       key: "instrumentName",
       align: "left",
@@ -137,7 +136,6 @@ const DealeAndTreasuryDiscountingTable = () => {
       }),
     };
     dispatch(publishDiscountingRatesAction({ navigate, Data: newData }));
-
   };
   return (
     <>
@@ -151,7 +149,7 @@ const DealeAndTreasuryDiscountingTable = () => {
       <span className='d-flex justify-content-center mt-4'>
         <CustomButton
           applyClass='publishForwardsBtn'
-          value={"Publish Discounting"}
+          value={"Publish Non FE Discounting"}
           onClick={handlePublishDiscount}
         />
       </span>
@@ -159,4 +157,4 @@ const DealeAndTreasuryDiscountingTable = () => {
   );
 };
 
-export default DealeAndTreasuryDiscountingTable;
+export default NonFeDiscountingTable;

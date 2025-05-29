@@ -22,7 +22,7 @@ export const getUserSettingDataAPI = createAsyncThunk(
 
       const result = await getUserSetting();
       console.log(result, "result");
-      const { responseCode } = result;
+      const { responseCode } = result.data;
       console.log(responseCode, "result");
       if (responseCode === 401) {
         navigate("/");
@@ -36,7 +36,7 @@ export const getUserSettingDataAPI = createAsyncThunk(
         console.log(result, "result");
 
         const { isExecuted, responseMessage, userSettingsList } =
-          result.responseResult;
+          result.data.responseResult;
         if (!isExecuted) {
           console.log(result, "result");
 
