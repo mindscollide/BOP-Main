@@ -24,6 +24,8 @@ import Loader from "./components/common/loader/Loader";
 
 function App() {
   const [routes, setRoutes] = useState([]); // Initially an empty array
+  const { isConnected } = useMqtt();
+  console.log(isConnected, "isConnectedisConnected");
 
   useEffect(() => {
     document.title =
@@ -139,8 +141,7 @@ function App() {
   }
 
   const router = createBrowserRouter(routes);
-  const { isConnected } = useMqtt();
-  console.log(isConnected, "isConnectedisConnected");
+
 
   return (
     <>

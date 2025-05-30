@@ -9,6 +9,7 @@ import {
 } from "@/container/pages/mainDealer/dealerActions";
 import { useSelector } from "react-redux";
 import { formatPercentageInput } from "@/utils/formatters";
+import { GetNonFEDiscountingTableApi } from "./NonFeDiscountingAction";
 
 const NonFeDiscountingTable = () => {
   const dispatch = useDispatch();
@@ -18,7 +19,7 @@ const NonFeDiscountingTable = () => {
     (state) => state.dealerReducer.getDiscountingWiseRates
   );
   useEffect(() => {
-    // dispatch(getDiscountingRatesAction({ navigate }));
+    dispatch(GetNonFEDiscountingTableApi({ navigate }));
   }, []);
 
   useEffect(() => {

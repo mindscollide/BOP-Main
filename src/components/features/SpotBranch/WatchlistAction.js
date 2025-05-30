@@ -26,6 +26,7 @@ export const GetFXInstrumentsAPI = createAsyncThunk(
       const { responseCode } = response.data;
       if (responseCode === 401) {
         navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
       }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -100,8 +101,9 @@ export const GetMisDataByRangeAPI = createAsyncThunk(
 
       const response = await GetFXInstruGetMisDataByRange(Data);
       const { responseCode } = response.data;
-      if (responseCode === 401) {
+     if (responseCode === 401) {
         navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
       }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -232,8 +234,9 @@ export const GetAllCounterPartyDataAPI = createAsyncThunk(
 
       const response = await GetAllCounterPartyData(Data);
       const { responseCode } = response.data;
-      if (responseCode === 401) {
+     if (responseCode === 401) {
         navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
       }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -308,8 +311,9 @@ export const GetDashboardDataAPI = createAsyncThunk(
       const response = await GetDashboardDataAction();
       const { responseCode } = response.data;
       console.log(responseCode, "responseCoderesponseCode");
-      if (responseCode === 401) {
+     if (responseCode === 401) {
         navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
       }
       if (responseCode === 417) {
         console.log(responseCode, "responseCoderesponseCode");
@@ -379,8 +383,9 @@ export const SaveUserDashboardAPI = createAsyncThunk(
 
       const response = await SaveUserDashboard(Data);
       const { responseCode } = response.data;
-      if (responseCode === 401) {
+     if (responseCode === 401) {
         navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
       }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));

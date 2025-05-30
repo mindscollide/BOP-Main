@@ -20,7 +20,7 @@ const chatSlicer = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getAllChatByTransactionId.pending, (state) => {
-        state.Loader = true;
+        state.Loader = false;
       })
       .addCase(getAllChatByTransactionId.fulfilled, (state, { payload }) => {
         state.Loader = false;
@@ -33,7 +33,7 @@ const chatSlicer = createSlice({
         state.responseMessage = payload.message;
       })
       .addCase(saveChatApi.pending, (state) => {
-        state.Loader = true;
+        state.Loader = false;
       })
       .addCase(saveChatApi.fulfilled, (state, { payload }) => {
         state.Loader = false;
@@ -46,7 +46,7 @@ const chatSlicer = createSlice({
         state.responseMessage = payload.message;
       })
       .addCase(uploadDocumentApi.pending, (state) => {
-        state.Loader = true;
+        state.Loader = false;
       })
       .addCase(uploadDocumentApi.fulfilled, (state, { payload }) => {
         state.Loader = false;

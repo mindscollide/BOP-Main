@@ -1,4 +1,7 @@
-import { GetFeDiscountingRM } from "@/common/api_config";
+import {
+  GetFeDiscountingRM,
+  PublishFeDiscountingRM,
+} from "@/common/api_config";
 import { uploadRatesApi } from "@/common/apiend_points";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
 import createPostAPI from "@/utils/axiosInstance";
@@ -18,6 +21,7 @@ export const GetFEDiscountingTableApi = createAsyncThunk(
       console.log(responseCode, "result");
       if (responseCode === 401) {
         navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
       }
       if (responseCode === 417) {
         console.log(response, "result");
@@ -73,6 +77,87 @@ export const GetFEDiscountingTableApi = createAsyncThunk(
       }
     } catch (error) {
       console.error("Error fetching FE discounting data:", error);
+      return rejectWithValue("Something went wrong");
+    }
+  }
+);
+
+export const PublishFEDiscountingTableApi = createAsyncThunk(
+  "uploadRates/PublishFeDiscounting",
+  async ({ Data, navigate }, { rejectWithValue, dispatch }) => {
+    try {
+      const publishFeDiscounting = createPostAPI(
+        uploadRatesApi,
+        PublishFeDiscountingRM.RequestMethod
+      );
+      const response = await publishFeDiscounting(Data);
+      console.log(response, "result");
+      const { responseCode } = response;
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
+      }
+      if (responseCode === 417) {
+        console.log(response, "result");
+
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(PublishFEDiscountingTableApi({ Data, navigate }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.responseResult;
+        if (!isExecuted) {
+          return rejectWithValue(responseMessage);
+        }
+        if (
+          responseMessage
+            .toLowerCase()
+            .includes(
+              "UploadRate_UploadRateServiceManager_PublishFEDiscountingRates_01".toLowerCase()
+            )
+        ) {
+          return {
+            response: response.data.responseResult,
+            message: "FE Discounting Rates Published Successfully",
+          };
+        } else if (
+          responseMessage
+            .toLowerCase()
+            .includes(
+              "UploadRate_UploadRateServiceManager_PublishFEDiscountingRates_02".toLowerCase()
+            )
+        ) {
+          return rejectWithValue("No Found");
+        } else if (
+          responseMessage
+            .toLowerCase()
+            .includes(
+              "UploadRate_UploadRateServiceManager_PublishFEDiscountingRates_03".toLowerCase()
+            )
+        ) {
+          return rejectWithValue("Someting went wrong");
+        } else if (
+          responseMessage
+            .toLowerCase()
+            .includes(
+              "UploadRate_UploadRateServiceManager_PublishFEDiscountingRates_04".toLowerCase()
+            )
+        ) {
+          return rejectWithValue("Someting went wrong");
+        } else if (
+          responseMessage
+            .toLowerCase()
+            .includes(
+              "UploadRate_UploadRateServiceManager_PublishFEDiscountingRates_05".toLowerCase()
+            )
+        ) {
+          return rejectWithValue("Someting went wrong");
+        } else {
+          return rejectWithValue("Someting went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      console.log("Error publishing FE discounting data:", error);
       return rejectWithValue("Something went wrong");
     }
   }

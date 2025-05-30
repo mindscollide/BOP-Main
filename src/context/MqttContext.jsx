@@ -55,7 +55,7 @@ export const MqttProvider = ({ dispatch, children }) => {
             );
           },
           onFailure: (error) => {
-            console.error(
+            console.log(
               `Failed to subscribe to ${topic}`,
               error.errorMessage
             );
@@ -120,7 +120,7 @@ export const MqttProvider = ({ dispatch, children }) => {
             console.log("Unhandled MQTT message type:", data.payload.message);
         }
       } catch (error) {
-        console.error("Failed to parse MQTT message:", error);
+        console.log("Failed to parse MQTT message:", error);
       }
     };
 
@@ -134,7 +134,7 @@ export const MqttProvider = ({ dispatch, children }) => {
     const options = {
       onSuccess: () => console.log("MQTT onSuccess: waiting for onConnected"),
       onFailure: (error) => {
-        console.error("MQTT connection failed:", error.errorMessage);
+        console.log("MQTT connection failed:", error.errorMessage);
         setIsConnected(false);
         setTimeout(connectToMqtt, 6000);
       },

@@ -26,6 +26,7 @@ export const getUserSettingDataAPI = createAsyncThunk(
       console.log(responseCode, "result");
       if (responseCode === 401) {
         navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
       }
       if (responseCode === 417) {
         console.log(result, "result");
@@ -99,6 +100,7 @@ export const updateUserSettingDataAPI = createAsyncThunk(
       console.log(responseCode, "result");
       if (responseCode === 401) {
         navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
       }
       if (responseCode === 417) {
         console.log(result, "result");
@@ -165,8 +167,9 @@ export const getMarkingTimingApi = createAsyncThunk(
       console.log(result, "result");
       const { responseCode } = result;
       console.log(responseCode, "result");
-      if (responseCode === 401) {
+     if (responseCode === 401) {
         navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
       }
       if (responseCode === 417) {
         console.log(result, "result");

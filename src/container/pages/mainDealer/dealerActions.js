@@ -100,6 +100,7 @@ export const getLastPublishRatesAction = createAsyncThunk(
       const { responseCode } = response.data;
       if (responseCode === 401) {
         navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
       }
 
       if (responseCode === 417) {
@@ -172,8 +173,10 @@ export const PublishNewRatesAction = createAsyncThunk(
       const response = await PublishNewRates(Data);
 
       const { responseCode } = response.data;
+      console.log(responseCode, "responseCoderesponseCode")
       if (responseCode === 401) {
         navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
       }
 
       const { isExecuted, responseMessage } = response.data.responseResult;
@@ -256,6 +259,7 @@ export const marketOnOffAction = createAsyncThunk(
       const { responseCode } = response.data;
       if (responseCode === 401) {
         navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
       }
 
       const { isExecuted, responseMessage } = response.data.responseResult;
@@ -404,6 +408,7 @@ export const createTenorAction = createAsyncThunk(
       const { responseCode } = response.data;
       if (responseCode === 401) {
         navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
       }
 
       if (responseCode === 417) {
@@ -500,6 +505,7 @@ export const getTenorWiseForwardsAction = createAsyncThunk(
       const { responseCode } = response.data;
       if (responseCode === 401) {
         navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
       }
 
       if (responseCode === 417) {
@@ -623,6 +629,7 @@ export const PublishTenorWiseForwardsAction = createAsyncThunk(
       const { responseCode } = response.data;
       if (responseCode === 401) {
         navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
       }
 
       if (responseCode === 417) {
@@ -706,6 +713,7 @@ export const getDiscountingRatesAction = createAsyncThunk(
       const { responseCode } = response.data;
       if (responseCode === 401) {
         navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
       }
 
       if (responseCode === 417) {
@@ -818,9 +826,9 @@ export const publishDiscountingRatesAction = createAsyncThunk(
       try {
         const response = await publishDiscountingRates(Data);
         const { responseCode } = response.data;
-
         if (responseCode === 401) {
           navigate("/");
+          return rejectWithValue("Unauthorized access, please login again");
         }
         if (responseCode === 417) {
           await dispatch(refreshTokenAction({ navigate }));

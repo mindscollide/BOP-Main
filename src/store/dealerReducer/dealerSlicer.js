@@ -1,4 +1,11 @@
-import { GetFEDiscountingTableApi } from "@/components/features/FeDiscountingTable/FeDiscountTableAction";
+import {
+  GetFEDiscountingTableApi,
+  PublishFEDiscountingTableApi,
+} from "@/components/features/FeDiscountingTable/FeDiscountTableAction";
+import {
+  GetNonFEDiscountingTableApi,
+  PublishNonFEDiscountingTableApi,
+} from "@/components/features/NonFeDiscountingTable/NonFeDiscountingAction";
 import {
   PublishNewRatesAction,
   PublishTenorWiseForwardsAction,
@@ -70,8 +77,9 @@ const dealerReducer = createSlice({
         state.Loader = true;
       })
       .addCase(getLastPublishRatesAction.fulfilled, (state, { payload }) => {
+        console.log(payload, "getLastPublishRatesAction payload");
         state.Loader = false;
-        state.getLastPublishRates = payload.response;
+        state.getLastPublishRates = payload?.response;
         state.responseMessage = payload.message;
         state.error = null;
       })
@@ -193,7 +201,55 @@ const dealerReducer = createSlice({
         state.getFeDiscounting = null;
         state.error = payload;
         state.responseMessage = payload;
-      });
+      })
+      .addCase(PublishFEDiscountingTableApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(PublishFEDiscountingTableApi.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.publishFeDiscounting = payload.response;
+        state.responseMessage = payload.message;
+      })
+      .addCase(PublishFEDiscountingTableApi.rejected, (state, { payload }) => {
+        state.Loader = false;
+        state.publishFeDiscounting = null;
+        state.error = payload;
+        state.responseMessage = payload;
+      })
+      .addCase(GetNonFEDiscountingTableApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(GetNonFEDiscountingTableApi.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.getNonFeDiscounting = payload.response;
+        state.responseMessage = payload.message;
+      })
+      .addCase(GetNonFEDiscountingTableApi.rejected, (state, { payload }) => {
+        state.Loader = false;
+        state.getNonFeDiscounting = null;
+        state.error = payload;
+        state.responseMessage = payload;
+      })
+      .addCase(PublishNonFEDiscountingTableApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(
+        PublishNonFEDiscountingTableApi.fulfilled,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.publishNonFeDiscounting = payload.response;
+          state.responseMessage = payload.message;
+        }
+      )
+      .addCase(
+        PublishNonFEDiscountingTableApi.rejected,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.publishNonFeDiscounting = null;
+          state.error = payload;
+          state.responseMessage = payload;
+        }
+      );
   },
 });
 

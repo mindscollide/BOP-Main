@@ -168,6 +168,7 @@ const GetNonFeDiscountingRatesRM = {
 const PublishNonFeDiscountingRatesRM = {
   RequestMethod: "ServiceManager.PublishNonFEDiscountingRates",
 };
+
 export {
   GetFeDiscountingRM,
   PublishFeDiscountingRM,

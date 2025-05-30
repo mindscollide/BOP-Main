@@ -104,7 +104,7 @@ const authSlice = createSlice({
       })
       .addCase(getAllCategoriesAction.fulfilled, (state, { payload }) => {
         state.Loader = false;
-        state.getAllCategories = payload.response;
+        state.getAllCategories = payload?.response;
         state.responseMessage = payload.message;
       })
       .addCase(getAllCategoriesAction.rejected, (state, { payload }) => {

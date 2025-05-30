@@ -16,6 +16,10 @@ export const getAllCategoriesAction = createAsyncThunk(
       );
 
       const response = await getBlotterData();
+      if(response.data.responseCode === 401) { 
+        navigate("/")
+        return rejectWithValue("Unauthorized access, please log in again.");
+      }
       if (response.data.responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(getAllCategoriesAction({ navigate }));

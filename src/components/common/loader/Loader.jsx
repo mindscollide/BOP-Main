@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import LoaderImage from "@/assets/logo-hd.png";
 import styles from "./Loader.module.css";
 
 const Loader = () => {
+  const [isLoader, setIsLoading] = useState(false);
   const bankSpotReducerLoader = useSelector(
     (state) => state.bankSpotReducer.Loader
   );
@@ -32,24 +33,38 @@ const Loader = () => {
   const dealerSliceLoader = useSelector((state) => state.dealerReducer.Loader);
 
   const chatSlicerLoader = useSelector((state) => state.chatSlicer.Loader);
+  const isLoading = [
+    bankSpotReducerLoader,
+    misReducerLoader,
+    WatchListReducerLoader,
+    AuthLoader,
+    RFQReducerLoader,
+    CorporateBlotterReducerLoader,
+    categoryReducerLoader,
+    ReportReducerLoader,
+    CalculatorReducerLoader,
+    settingSlicerLoader,
+    chatSlicerLoader,
+    dealerSliceLoader,
+  ].some((loading) => loading);
 
-  const isLoading =
-    bankSpotReducerLoader ||
-    misReducerLoader ||
-    WatchListReducerLoader ||
-    AuthLoader ||
-    RFQReducerLoader ||
-    CorporateBlotterReducerLoader ||
-    categoryReducerLoader ||
-    ReportReducerLoader ||
-    CalculatorReducerLoader ||
-    settingSlicerLoader ||
-    chatSlicerLoader ||
-    dealerSliceLoader;
+  useEffect(() => {
+    let timeout;
 
-  console.log(isLoading, "Loader isLoading value");
+    if (isLoading) {
+      setIsLoading(true); // Show loader
+    } else {
+      // Hide loader after a short delay when loading completes
+      timeout = setTimeout(() => {
+        setIsLoading(false);
+      }, 500);
+    }
+
+    return () => clearTimeout(timeout);
+  }, [isLoading]);
+
   return (
-    isLoading && (
+    isLoader && (
       <div className={styles["MainLoader"]}>
         <div className='d-flex align-items-center flex-column justify-content-center h-clc-100'>
           <img
