@@ -8,10 +8,16 @@ import SettingModal from "@/components/features/settingsModal/settingModal";
 import { useModal } from "@/context/ModalContext";
 import ChatBox from "@/components/features/chatBox/ChatBox";
 import { useSelector } from "react-redux";
+import { connectToMqttExternally } from "@/context/MqttContext";
 const Dashboard = () => {
   const { Content } = Layout;
+  let token = localStorage.getItem("token")
   const location = useLocation();
   const { chatModal, chatModalTransactionId } = useModal();
+
+  useEffect(() => {
+    connectToMqttExternally()
+  }, [])
   return (
     <Layout className='roboto-13'>
       {!location.pathname.includes("calculator") && <Header />}

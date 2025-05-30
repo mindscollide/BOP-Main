@@ -260,8 +260,8 @@ export const marketOnOffAction = createAsyncThunk(
 
       const { isExecuted, responseMessage } = response.data.responseResult;
       if (responseCode === 417) {
-       await dispatch(refreshTokenAction({ navigate }));
-       dispatch(marketOnOffAction({navigate, Data}))
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(marketOnOffAction({ navigate, Data }));
       } else if (response.data.responseCode === 200) {
         if (isExecuted) {
           if (
@@ -409,7 +409,12 @@ export const createTenorAction = createAsyncThunk(
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(
-          createTenorAction(navigate, Data, setCreateTenorModal, setCreateTenor)
+          createTenorAction({
+            navigate,
+            Data,
+            setCreateTenorModal,
+            setCreateTenor,
+          })
         );
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -622,7 +627,7 @@ export const PublishTenorWiseForwardsAction = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(createTenorAction({ navigate }));
+        dispatch(PublishTenorWiseForwardsAction({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -819,7 +824,7 @@ export const publishDiscountingRatesAction = createAsyncThunk(
         }
         if (responseCode === 417) {
           await dispatch(refreshTokenAction({ navigate }));
-          dispatch(createTenorAction({ navigate }));
+          dispatch(publishDiscountingRatesAction({ navigate, Data }));
         } else if (responseCode === 200) {
           const { isExecuted, responseMessage } = response.data.responseResult;
           if (isExecuted) {

@@ -57,7 +57,6 @@ const BopLogin = () => {
    * Validates the credentials and dispatches the login action if valid.
    */
   const handleSubmit = (e) => {
-    e.preventDefault();
     const {
       email,
       password,
@@ -235,7 +234,7 @@ const BopLogin = () => {
                 </p>
               )}
             </section>
-          </Form>
+          </Form>z
         </Col>
       </Row>
     </section>

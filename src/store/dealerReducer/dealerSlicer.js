@@ -25,6 +25,7 @@ const dealerReducer = createSlice({
     getLastPublishRates: null,
     getCurrentPublishRate: null,
     getAllTenors: null,
+    createTenor: null,
     getTenorWiseForwardsRates: null,
     publishTenorwiseForwardRates: null,
     getDiscountingWiseRates: null,
@@ -110,11 +111,12 @@ const dealerReducer = createSlice({
       })
       .addCase(createTenorAction.fulfilled, (state, { payload }) => {
         state.loading = false;
-        state.getAllTenors = payload.response;
+        state.createTenor = payload.response;
         state.responseMessage = payload.message;
       })
       .addCase(createTenorAction.rejected, (state, { payload }) => {
         state.loading = false;
+        state.createTenor = null;
         state.responseMessage = payload;
       })
       .addCase(getTenorWiseForwardsAction.pending, (state) => {

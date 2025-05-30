@@ -1,6 +1,7 @@
 import { refreshTokenRM } from "@/common/api_config";
 import { authApi } from "@/common/apiend_points";
 import { setCustomHeaders } from "@/common/utils";
+import createPostAPI from "@/utils/axiosInstance";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 // Define the login async thunk

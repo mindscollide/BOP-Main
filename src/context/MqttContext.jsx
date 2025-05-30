@@ -1,5 +1,4 @@
 // src/context/MqttContext.js
-
 import React, {
   createContext,
   useContext,
@@ -11,11 +10,11 @@ import Paho from "paho-mqtt";
 import { formatDateToUTC, secureRandomString } from "@/utils/formatters";
 
 const MqttContext = createContext();
+let externalConnectFn = null; // 👈 This will hold the function reference
 
 export const MqttProvider = ({ dispatch, children }) => {
   const token = localStorage.getItem("token");
   const userID = localStorage.getItem("userID");
-
   const IsBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
   const IsCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
   const isTreasury = import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
@@ -34,38 +33,40 @@ export const MqttProvider = ({ dispatch, children }) => {
   const [isConnected, setIsConnected] = useState(false);
   const [marketTimingsUpdated, setMarketTimingsUpdated] = useState(null);
   const [IncomingChat, setIncomingChat] = useState([]);
-  const [tenorsCreated, setTenorsCreated] = useState([]);
+  const [tenorsCreated, setTenorsCreated] = useState(null);
   const [subscribedTopics, setSubscribedTopics] = useState([]);
   const clientRef = useRef(null);
   const randomString = secureRandomString();
-  console.log(IncomingChat, "IncomingChatIncomingChatIncomingChat");
-  const subscribeToTopics = (topics) => {
-    console.log(`Subscribing to topics: ${topics}`);
 
-    if (!clientRef.current || !isConnected) return;
-    console.log(`Subscribing to topics: ${topics}`);
+  const subscribeToTopics = (topics) => {
+    if (!clientRef.current || !clientRef.current.isConnected()) {
+      console.warn("MQTT client not connected. Subscription skipped.");
+      return;
+    }
 
     topics.forEach((topic) => {
-      console.log(`Subscribed to topic: ${topic}`);
-
-      // if (!subscribedTopics.includes(topic)) {
-      clientRef.current.subscribe(topic, {
-        qos: 0,
-        onSuccess: () => {
-          console.log(`Subscribed to topic: ${topic}`);
-          setSubscribedTopics((prev) => Array.from(new Set([...prev, topic])));
-        },
-        onFailure: (error) => {
-          console.error(`Failed to subscribe to ${topic}`, error.errorMessage);
-        },
-      });
-      // }
+      if (!subscribedTopics.includes(topic)) {
+        clientRef.current.subscribe(topic, {
+          qos: 0,
+          onSuccess: () => {
+            console.log(`Subscribed to topic: ${topic}`);
+            setSubscribedTopics((prev) =>
+              Array.from(new Set([...prev, topic]))
+            );
+          },
+          onFailure: (error) => {
+            console.error(
+              `Failed to subscribe to ${topic}`,
+              error.errorMessage
+            );
+          },
+        });
+      }
     });
   };
 
   const unsubscribeFromTopics = (topics) => {
     if (!clientRef.current || !isConnected) return;
-
     topics.forEach((topic) => {
       clientRef.current.unsubscribe(topic, {
         onSuccess: () => {
@@ -101,19 +102,17 @@ export const MqttProvider = ({ dispatch, children }) => {
     clientRef.current.onMessageArrived = (message) => {
       try {
         const data = JSON.parse(message.payloadString);
-        console.log(`MQTT Message on `, data);
-
         switch (data.payload.message) {
           case "MARKET_TIME_UPDATED":
             setMarketTimingsUpdated(data.payload);
             break;
           case "INCOMING_CHAT":
-            let chatObj = {
+            const chatObj = {
               ...data.payload.chat,
               creationDateTime: formatDateToUTC(new Date()),
             };
-            console.log(chatObj, "chatObjchatObjchatObj");
             setIncomingChat((prev) => [...prev, chatObj]);
+            break;
           case "TENOR_CREATED":
             setTenorsCreated(data.payload);
             break;
@@ -128,10 +127,7 @@ export const MqttProvider = ({ dispatch, children }) => {
     clientRef.current.onConnected = () => {
       console.log("MQTT successfully connected");
       setIsConnected(true);
-
       const topics = [subscribeID, `BOP_${userID}`];
-      console.log("topicsList", topics);
-
       subscribeToTopics(topics);
     };
 
@@ -153,11 +149,11 @@ export const MqttProvider = ({ dispatch, children }) => {
     clientRef.current.connect(options);
   };
 
-  useEffect(() => {
-    if (token) {
-      connectToMqtt();
-    }
+  // Make connectToMqtt available outside the component
+  externalConnectFn = connectToMqtt;
 
+  useEffect(() => {
+    if (token) connectToMqtt();
     return () => {
       if (clientRef.current?.isConnected()) {
         unsubscribeFromTopics([...subscribedTopics]);
@@ -166,13 +162,6 @@ export const MqttProvider = ({ dispatch, children }) => {
       }
     };
   }, [token]);
-
-  console.group("===== MQTT DEBUG STATUS =====");
-  console.log("Client Connected:", clientRef.current?.isConnected());
-  console.log("Client ID:", clientRef.current?.clientId);
-  console.log("Subscribed Topics:", subscribedTopics);
-  console.log("Total Topics Subscribed:", subscribedTopics.length);
-  console.groupEnd("================================");
 
   useEffect(() => {
     if (isConnected && userID && !subscribedTopics.includes(`BOP_${userID}`)) {
@@ -194,10 +183,20 @@ export const MqttProvider = ({ dispatch, children }) => {
         IncomingChat,
         tenorsCreated,
         setTenorsCreated,
+        connectToMqtt, // Optional: available in children components
       }}>
       {children}
     </MqttContext.Provider>
   );
+};
+
+// 👇 This is your single exported connection function
+export const connectToMqttExternally = () => {
+  if (typeof externalConnectFn === "function") {
+    externalConnectFn();
+  } else {
+    console.warn("MQTT connection function not initialized yet.");
+  }
 };
 
 export const useMqtt = () => useContext(MqttContext);
