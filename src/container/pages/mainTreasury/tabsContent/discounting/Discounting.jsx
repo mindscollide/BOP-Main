@@ -48,7 +48,7 @@ const Discounting = () => {
         columns={discounttingColumns}
         dataSource={discountingData}
         prefixCls={"Treasury_Discounting"}
-        // bordered
+        bordered
         pagination={false}
         rowClassName={"striped-design"}
         rowHoverBg={"#000"}
