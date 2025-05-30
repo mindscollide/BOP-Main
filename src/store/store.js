@@ -10,6 +10,9 @@ import DealerReducer from "./dealerReducer/dealerSlicer";
 import CategoryReducer from "./categoryReducer/categoryReducer";
 import ReportSlicer from "./ReportSlicer/ReportSlicer";
 import CalculatorSlice from "../container/pages/mainCalculator/CalculatorSlicer";
+import SettingSlicer from "./settingSlicer/SettingSlicer";
+import chatSlicer from "./chatSlicer/chatSlicer";
+
 const store = configureStore({
   reducer: {
     bankSpotReducer: bankSpotSlicer,
@@ -22,6 +25,10 @@ const store = configureStore({
     categoryReducer: CategoryReducer,
     ReportReducer: ReportSlicer,
     CalculatorReducer: CalculatorSlice,
+    settingSlicer: SettingSlicer,
+    chatSlicer: chatSlicer,
+
+
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 });

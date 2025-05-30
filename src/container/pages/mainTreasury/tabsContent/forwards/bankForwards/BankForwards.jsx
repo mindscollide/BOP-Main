@@ -1,4 +1,5 @@
 import GlobalTable from "@/components/common/table/GlobalTable";
+import { createColumns, generateData } from "@/components/utils/generateData";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
@@ -8,7 +9,7 @@ const BankForwards = () => {
   const GetAllFowardsAndDiscountsRatesData = useSelector(
     (state) => state.WatchListReducer.GetAllFowardsAndDiscountsRatesData
   );
-
+  console.log(GetAllFowardsAndDiscountsRatesData, "GetAllFowardsAndDiscountsRatesData")
   useEffect(() => {
     if (GetAllFowardsAndDiscountsRatesData !== null) {
       try {

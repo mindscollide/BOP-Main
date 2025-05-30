@@ -4,7 +4,9 @@ import GlobalTable from "../../common/table/GlobalTable";
 import InputFIeld from "../../common/inputField/InputField";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { getDiscountingRatesAction, publishDiscountingRatesAction } from "@/container/pages/mainDealer/dealerActions";
+import {
+  publishDiscountingRatesAction,
+} from "@/container/pages/mainDealer/dealerActions";
 import { useSelector } from "react-redux";
 import { formatPercentageInput } from "@/utils/formatters";
 
@@ -15,47 +17,44 @@ const DealeAndTreasuryDiscountingTable = () => {
   const getDiscountTableData = useSelector(
     (state) => state.dealerReducer.getDiscountingWiseRates
   );
-  console.log(getDiscountTableData, "getDiscountTableDatagetDiscountTableData");
   useEffect(() => {
-    dispatch(getDiscountingRatesAction({ navigate }));
   }, []);
 
   useEffect(() => {
     if (getDiscountTableData !== null) {
-      const { currentRates, previousRates } = getDiscountTableData;
-      if (currentRates.length > 0) {
-        let newRecords = currentRates.map((item, index) => {
-          let getRecords = previousRates.find(
-            (prevItem) => prevItem.instumentID === item.instumentID
-          );
-          if (getRecords !== undefined) {
-            return {
-              key: index + 1,
-              instrumentName: item.instrumentName,
-              instrumentID: item.instumentID,
-              currentRate: item.rate,
-              previousRate: getRecords.rate,
-              dateTime: item.dateTime,
-            };
-          } else {
-            return {
-              key: index + 1,
-              instrumentName: item.instrumentName,
-              instrumentID: item.instumentID,
-              currentRate: item.rate,
-              dateTime: item.dateTime,
+      try {
+        const { currentRates, previousRates } = getDiscountTableData;
+        if (currentRates.length > 0) {
+          let newRecords = currentRates.map((item, index) => {
+            let getRecords = previousRates.find(
+              (prevItem) => prevItem.instumentID === item.instumentID
+            );
+            if (getRecords !== undefined) {
+              return {
+                key: index + 1,
+                instrumentName: item.instrumentName,
+                instrumentID: item.instumentID,
+                currentRate: item.rate,
+                previousRate: getRecords.rate,
+                dateTime: item.dateTime,
+              };
+            } else {
+              return {
+                key: index + 1,
+                instrumentName: item.instrumentName,
+                instrumentID: item.instumentID,
+                currentRate: item.rate,
+                dateTime: item.dateTime,
 
-              previousRate: "",
-            };
-          }
-        });
-        setTableData(newRecords);
-        console.log(newRecords, "newRecordsnewRecords");
-      }
-      console.log(
-        getDiscountTableData,
-        "getDiscountTableDatagetDiscountTableData"
-      );
+                previousRate: "",
+              };
+            }
+          });
+          setTableData(newRecords);
+        }
+      } catch (error) {}
+
+   
     }
   }, [getDiscountTableData]);
 
@@ -70,7 +69,6 @@ const DealeAndTreasuryDiscountingTable = () => {
 
   const handleChangeCurrent = (event, record) => {
     const { value } = event.target;
-    console.log(record, value, "recordrecordrecord");
     setTableData((prev) => {
       if (prev.length > 0) {
         let getRecords = prev.map((item) => {
@@ -102,7 +100,6 @@ const DealeAndTreasuryDiscountingTable = () => {
       key: "currentRate",
       align: "center",
       render: (value, record) => {
-        console.log(value, "valuevaluevalue");
         return (
           <InputFIeld
             type='number'
@@ -130,7 +127,6 @@ const DealeAndTreasuryDiscountingTable = () => {
   ];
 
   const handlePublishDiscount = () => {
-    console.log("Publish Discounting");
     let newData = {
       CurrentRates: tableData.map((records, index) => {
         return {
@@ -140,9 +136,8 @@ const DealeAndTreasuryDiscountingTable = () => {
         };
       }),
     };
-    dispatch(publishDiscountingRatesAction({navigate, Data: newData}))
+    dispatch(publishDiscountingRatesAction({ navigate, Data: newData }));
 
-    console.log(newData, "newDatanewDatanewData")
   };
   return (
     <>

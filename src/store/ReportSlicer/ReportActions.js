@@ -2,7 +2,6 @@ import { DownloadFile } from "@/common/api_config";
 import { reportApi } from "@/common/apiend_points";
 import { setCustomHeaders } from "@/common/utils";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 
 // Define the DownloadFileAPI async thunk
 export const DownloadFileAPI = createAsyncThunk(

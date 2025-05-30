@@ -19,6 +19,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { createTenorSchema } from "@/common/validationSchemas";
 import { useDealerAndTreasury } from "@/context/DealerAndTreasuryContext";
+import { useMqtt } from "@/context/MqttContext";
 const shouldIncludeComponents =
   import.meta.env.VITE_APP_INCLUDE_DEALER === "true" ||
   import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
@@ -51,11 +52,26 @@ const DealeAndTreasuryDiscountingTable = shouldIncludeComponents
     )
   : null;
 
+const DealeAndTreasuryFeDiscountingTable = shouldIncludeComponents
+  ? lazy(() =>
+      import("@/components/features/FeDiscountingTable/FeDiscountingTable")
+    )
+  : null;
+
+const DealeAndTreasuryNonFeDiscountingTable = shouldIncludeComponents
+  ? lazy(() =>
+      import(
+        "@/components/features/NonFeDiscountingTable/NonFeDiscountingTable"
+      )
+    )
+  : null;
+
 const ForwardsForTreasuryAndDealer = () => {
   const { createTenorModal, setCreateTenorModal } = useModal();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [newTenorRecord, setNewTenorRecord] = useState(null);
+  const { tenorsCreated, setTenorsCreated } = useMqtt();
   const { forwardsForTreasuryBranch } = useDealerAndTreasury();
   const getTenorWiseForwardsRates = useSelector(
     (state) => state.dealerReducer.getTenorWiseForwardsRates
@@ -163,11 +179,9 @@ const ForwardsForTreasuryAndDealer = () => {
 
       // Add new tenor record
       setNewTenorRecord(tenorForwardData);
-    } catch (error) {
-      console.error("Error in handleAddTenor:", error);
-    }
+    } catch (error) {}
   };
-
+  console.log(getAllTenorsData, "getAllTenorsDatagetAllTenorsData");
   useEffect(() => {
     if (getAllTenorsData !== null) {
       try {
@@ -186,6 +200,29 @@ const ForwardsForTreasuryAndDealer = () => {
       } catch (error) {}
     }
   }, [getAllTenorsData]);
+
+  useEffect(() => {
+    if (tenorsCreated !== null) {
+      try {
+        console.log(tenorsCreated, "tenorsCreatedtenorsCreated")
+        const { tenor } = tenorsCreated;
+        let findIsExist = getAllTenorsList.find(
+          (data2, index) => data2.tenorID === tenor.tenorID
+        );
+        if (findIsExist === undefined) {
+          let newObj = {
+            ...tenor,
+            value: tenor.tenorID,
+            label: tenor.tenorName,
+          };
+          setAllTenorsList([...getAllTenorsList, newObj]);
+          setTenorsCreated(null);
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }, [tenorsCreated]);
 
   return (
     <>
@@ -249,11 +286,19 @@ const ForwardsForTreasuryAndDealer = () => {
             </Suspense>
           </Col>
         )}
-        {DealeAndTreasuryDiscountingTable && (
+        {DealeAndTreasuryFeDiscountingTable && (
           <Col sm={12} md={12} lg={12} className='mt-3'>
             <Suspense fallback={<div>Loading table...</div>}>
-              <h6 className='fs-4 fw-bold color-primary'>Discounting</h6>
-              <DealeAndTreasuryDiscountingTable />
+              <h6 className='fs-4 fw-bold color-primary'>FE Discounting</h6>
+              <DealeAndTreasuryFeDiscountingTable />
+            </Suspense>
+          </Col>
+        )}
+        {DealeAndTreasuryNonFeDiscountingTable && (
+          <Col sm={12} md={12} lg={12} className='mt-3'>
+            <Suspense fallback={<div>Loading table...</div>}>
+              <h6 className='fs-4 fw-bold color-primary'>Non-FE Discounting</h6>
+              <DealeAndTreasuryNonFeDiscountingTable />
             </Suspense>
           </Col>
         )}

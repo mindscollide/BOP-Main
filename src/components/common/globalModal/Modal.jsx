@@ -31,6 +31,7 @@ const GlobalModal = ({
       fullscreen={fullscreen}
       size={size}
       scrollable={scrollable}
+      
       style={style}>
       {modalHeader && (
         <Modal.Header className={headerClassName} closeButton={closeButton}>
@@ -45,4 +46,4 @@ const GlobalModal = ({
   );
 };
 
-export default memo(GlobalModal);
+export default GlobalModal;

@@ -1943,9 +1943,13 @@ thead .dropdown-menu-filter .dropdown-item label span {
 
 .chat-box-content {
   background: #f3fbff;
-  height: 180px;
-  overflow: auto;
+  min-height: 180px;
+  max-height: 180px;
+
+  overflow-y: auto;
   padding: 10px;
+  display: flex;
+  flex-direction: column-reverse;
 }
 
 .chat-fullview .chat-box-content {
@@ -2514,4 +2518,18 @@ i.close-add-user {
   position: absolute !important;
   right: 10px !important;
   top: 20px !important;
+}
+
+.markettimePicker {
+  width: 100%;
+  border: 1px solid #e1e1e1 !important;
+  padding: 5px;
+  border-radius: 4px !important;
+  outline: none;
+}
+.markettimePicker:is(:focus, :focus-visible, :active, :hover) {
+  width: 100% !important;
+  border: 1px solid #e1e1e1 !important;
+  padding: 5px !important;
+  border-radius: 4px !important;
 }

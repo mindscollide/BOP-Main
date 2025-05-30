@@ -125,7 +125,62 @@ const calculateForwardsData = {
   RequestMethod: "ServiceManager.CalculateForward",
 };
 
+const getUserSettingsRM = {
+  RequestMethod: "ServiceManager.GetUserSettings",
+};
+
+const updateUserSettingsRM = {
+  RequestMethod: "ServiceManager.UpdateUserSettings",
+};
+
+const getMarketingTimingRM = {
+  RequestMethod: "ServiceManager.GetMarketTimeSettings",
+};
+
+const LogoutRM = {
+  RequestMethod: "ServiceManager.LogOut",
+};
+
+const getChatByTransactionIdRM = {
+  RequestMethod: "ServiceManager.GetAllChatByTransactionID",
+};
+
+const saveChatRM = {
+  RequestMethod: "ServiceManager.SaveChat",
+};
+
+const UploadDocumentRM = {
+  RequestMethod: "ServiceManager.UploadDocuments",
+};
+const DownloadFileRM = {
+  RequestMethod: "ServiceManager.DownloadFile",
+};
+
+const GetFeDiscountingRM = {
+  RequestMethod: "ServiceManager.GetFEDiscountingRates",
+};
+const PublishFeDiscountingRM = {
+  RequestMethod: "ServiceManager.PublishFEDiscountingRates",
+};
+const GetNonFeDiscountingRatesRM = {
+  RequestMethod: "ServiceManager.GetNonFEDiscountingRates",
+};
+const PublishNonFeDiscountingRatesRM = {
+  RequestMethod: "ServiceManager.PublishNonFEDiscountingRates",
+};
 export {
+  GetFeDiscountingRM,
+  PublishFeDiscountingRM,
+  GetNonFeDiscountingRatesRM,
+  PublishNonFeDiscountingRatesRM,
+  DownloadFileRM,
+  UploadDocumentRM,
+  saveChatRM,
+  getChatByTransactionIdRM,
+  LogoutRM,
+  getUserSettingsRM,
+  updateUserSettingsRM,
+  getMarketingTimingRM,
   validateLinkForCorporatePasswordRM,
   createCorporateUserPasswordRM,
   getAllCategoriesRM,

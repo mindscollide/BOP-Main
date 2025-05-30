@@ -1,11 +1,29 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useEffect, useState } from "react";
 import GlobalModal from "../../common/globalModal/Modal";
 import "./settingModal.css";
-import { Col, Row } from "react-bootstrap";
+import { Button, Col, Row } from "react-bootstrap";
 import { useModal } from "../../../context/ModalContext";
-import GlobalTabs from "../../common/tabs/Tabs";
+import UserSetting from "@/components/features/settingsModal/userSettingComponent/SettingusersComponent";
+import PassCode from "@/components/features/settingsModal/PasscodeSettingComponent/PassCodeSettingComponent";
+import Markettiming from "@/components/features/settingsModal/MarketTimingComponent/MarketTIming";
+import CustomButton from "@/components/common/globalButton/button";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import {
+  getMarkingTimingApi,
+  updateUserSettingDataAPI,
+} from "./settingActions";
+import IconElement from "@/components/common/IconElement/IconElement";
+
 const SettingModal = () => {
-  const { settingModal, setSettingModal } = useModal();
+  const { settingModal, setSettingModal, settingsRecord } = useModal();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [tabActive, setTabActive] = useState(1);
+
+  useEffect(() => {
+    dispatch(getMarkingTimingApi({ navigate }));
+  }, []);
 
   // Conditionally import CustomButton based on the environment variables
   const shouldIncludeBranchComponents =
@@ -22,94 +40,124 @@ const SettingModal = () => {
   const shouldIncludeCorporateComponents =
     import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
 
-  const SettingusersComponent =
-    shouldIncludeCorporateComponents ||
-    shouldIncludeBranchComponents ||
-    shouldIncludeTreasuryComponents ||
-    shouldIncludeDealerComponents
-      ? lazy(() =>
-          import(
-            "../../../components/features/settingsModal/userSettingComponent/SettingusersComponent"
-          )
-        )
-      : null;
+  const HandleOnHideModal = () => {
+    setSettingModal(false);
+  };
 
-  const PassCodeSettingComponent =
-    shouldIncludeCorporateComponents ||
-    shouldIncludeBranchComponents ||
-    shouldIncludeTreasuryComponents ||
-    shouldIncludeDealerComponents
-      ? lazy(() =>
-          import(
-            "../../../components/features/settingsModal/PasscodeSettingComponent/PassCodeSettingComponent"
-          )
-        )
-      : null;
-  const MarketTimingSettingComponent =
-    shouldIncludeDealerComponents || shouldIncludeTreasuryComponents
-      ? lazy(() => import("./MarketTimingComponent/MarketTIming"))
-      : null;
-  //Tabs
-  const tabsData = [
-    {
-      title: "User Settings",
-      content: SettingusersComponent && (
-        <Suspense fallback={<>Loading Spot...</>}>
-          <SettingusersComponent />
-        </Suspense>
-      ),
-    },
-    {
-      title: "Passcode Setting",
-      content: PassCodeSettingComponent && (
-        <Suspense fallback={<>Loading... </>}>
-          <PassCodeSettingComponent />
-        </Suspense>
-      ),
-    },
-    {
-      title: "Market Timing",
-      content: MarketTimingSettingComponent && (
-        <Suspense fallback={<>Loading... </>}>
-          <MarketTimingSettingComponent />
-        </Suspense>
-      ),
-    },
-  ];
+  const handeClickSave = () => {
+    console.log(settingsRecord, "settingsRecordsettingsRecord");
+    let Data = {
+      Settings: [
+        {
+          Key: "BD_EmailOnEveryMessage",
+          Value: String(settingsRecord?.BD_EmailOnEveryMessage),
+        },
+        {
+          Key: "BD_SoundOnEveryMessage",
+          Value: String(settingsRecord?.BD_SoundOnEveryMessage),
+        },
+        {
+          Key: "BD_Enable2FA",
+          Value: String(settingsRecord?.BD_Enable2FA),
+        },
+      ],
+    };
+    dispatch(updateUserSettingDataAPI({ navigate, Data }));
+
+    console.log(Data, "Data2Data2");
+  };
+
   return (
     <div>
       {" "}
       <GlobalModal
         show={settingModal}
         backdrop='static'
-        onHide={() => setSettingModal(false)}
+        onHide={HandleOnHideModal}
         centered={true}
         className={"ModalClassNameSettings"}
         bodyClassName={"ModalClassNameSettings"}
         headerClassName={"border-0"}
-        footerClassName={"border-0"}
+        footerClassName={"border-0 d-block"}
         size={"md"}
-        closeButton={true}
-        modalHeader={true}
+        modalHeader={false}
         modalBody={
           <>
             <>
-              <GlobalTabs
-                tabs={
-                  !MarketTimingSettingComponent
-                    ? tabsData.filter((tbData, index) => index < 2)
-                    : tabsData
-                }
-                defaultActiveKey={"0"}
+              <>
+                <Row>
+                  <Col
+                    sm={8}
+                    md={8}
+                    lg={8}
+                    className='d-flex justify-content-start gap-1'>
+                    <CustomButton
+                      applyClass={
+                        tabActive === 1 ? "tabsButton_active" : "tabsButton"
+                      }
+                      value={"User Settings"}
+                      onClick={() => setTabActive(1)}
+                    />
+                    {shouldIncludeCorporateComponents && (
+                      <CustomButton
+                        applyClass={
+                          tabActive === 2 ? "tabsButton_active" : "tabsButton"
+                        }
+                        onClick={() => setTabActive(2)}
+                        value={"PassCode Setting"}
+                      />
+                    )}
+
+                    <CustomButton
+                      applyClass={
+                        tabActive === 3 ? "tabsButton_active" : "tabsButton"
+                      }
+                      value={"Market Timing"}
+                      onClick={() => setTabActive(3)}
+                    />
+                  </Col>
+                  <Col
+                    sm={4}
+                    md={4}
+                    lg={4}
+                    className='d-flex justify-content-end align-items-center '>
+                    <IconElement applyClass={"icon-close"} iconClass={"cursor-pointer"} onClick={HandleOnHideModal} />
+                  </Col>
+                </Row>
+                <Row className='mt-3 d-flex justify-content-start'>
+                  <Col sm={12} md={12} lg={12}>
+                    {tabActive === 1 ? (
+                      <UserSetting />
+                    ) : tabActive === 2 ? (
+                      <PassCode />
+                    ) : (
+                      <Markettiming />
+                    )}
+                  </Col>
+                </Row>
+              </>
+
+              {/* <GlobalTabs
+                tabs={tabsContent}
                 tabClass='mb-4 d-flex justify-content-start'
-              />
+              /> */}
             </>
           </>
         }
         modalFooter={
           <>
             <Row>
-              <Col lg={12} md={12} sm={12}></Col>
+              <Col
+                sm={12}
+                md={12}
+                lg={12}
+                className='d-flex justify-content-center'>
+                <CustomButton
+                  applyClass={"saveSettingBtn"}
+                  value={"Save"}
+                  onClick={handeClickSave}
+                />
+              </Col>
             </Row>
           </>
         }

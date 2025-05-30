@@ -9,13 +9,15 @@ import {
   GetAllFowardsAndDiscountsRatesAPI,
   GetFXInstrumentsAPI,
 } from "@/components/features/SpotBranch/WatchlistAction";
+import { useNavigate } from "react-router-dom";
 
 const MainTabs = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(GetFXInstrumentsAPI({}));
-    dispatch(GetAllFowardsAndDiscountsRatesAPI({}));
+    dispatch(GetFXInstrumentsAPI({ navigate }));
+    dispatch(GetAllFowardsAndDiscountsRatesAPI({ navigate }));
   }, []);
   const tabsData = [
     { title: "Live Rates", content: <LiveRates /> },

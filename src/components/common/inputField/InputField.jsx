@@ -18,7 +18,8 @@ const InputFIeld = ({
   max,
   min,
   className,
-  defaultValue
+  defaultValue,
+  accept,
 }) => (
   <input
     value={value}
@@ -37,6 +38,7 @@ const InputFIeld = ({
     name={name}
     required={required}
     onFocus={onFocus}
+    accept={accept}
   />
 );
 export default InputFIeld;

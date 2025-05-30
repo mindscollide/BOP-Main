@@ -15,9 +15,10 @@ import { GetAllCounterPartyDataAPI } from "@/components/features/SpotBranch/Watc
 import { useDealerAndTreasury } from "@/context/DealerAndTreasuryContext";
 import RFQForwardCorporateModal from "@/container/pages/mainCorporate/rfqModal/RFQForwardCorporateModal/RFQForwardCorporateModal";
 import RFQDiscountingCorporateModal from "@/container/pages/mainCorporate/rfqModal/RFQDiscountingCorporateModal/RFQDiscountingCorporateModal";
+import SettingModal from "@/components/features/settingsModal/settingModal";
 
 const GlobalNavbar = () => {
-  const { setSettingModal } = useModal();
+  const { settingModal } = useModal();
   const getAllCategoriesData = useSelector(
     (state) => state.authReducer.getAllCategories
   );
@@ -100,22 +101,20 @@ const GlobalNavbar = () => {
 
   return (
     <>
-      <div className="site-header pt-1">
-        {/*Container*/}
-        <div className="container-fluid page-gutter">
-          {/*header inner container*/}
-          <div className="header-inner d-flex align-items-center">
+      <div className='site-header pt-1'>
+        <div className='container-fluid page-gutter'>
+          <div className='header-inner d-flex align-items-center'>
             <SiteLogoComponent />
-            <div className="ms-auto">
-              <div className="d-flex align-items-center gap-2">
+            <div className='ms-auto'>
+              <div className='d-flex align-items-center gap-2'>
                 {location.pathname !== "/calculator" ? (
                   <>
                     {shouldIncludeCorporate && (
                       <Suspense fallback={<>Loading RFQ...</>}>
                         <CustomButton
-                          applyClass="rfqBtn"
-                          value="RFQ"
-                          size="small"
+                          applyClass='rfqBtn'
+                          value='RFQ'
+                          size='small'
                           icon={<IconElement iconClass={"icon-list fs-6"} />}
                           onClick={onClickRFQ}
                         />
@@ -124,9 +123,9 @@ const GlobalNavbar = () => {
                     {location.pathname.includes("treasury") &&
                     (shouldIncludeDealer || shouldIncludeTreasury) ? (
                       <CustomButton
-                        applyClass="calcBtn"
-                        value="Calculators"
-                        size="large"
+                        applyClass='calcBtn'
+                        value='Calculators'
+                        size='large'
                         onClick={handleCalculatorClick}
                       />
                     ) : null}
@@ -148,17 +147,11 @@ const GlobalNavbar = () => {
                     )}
                   </>
                 ) : null}
-                {/*User Dropdown*/}
-                <ProfileDropdown
-                  userName={localStorage.getItem("name")}
-                  setSettingModal={setSettingModal}
-                />
+                <ProfileDropdown />
               </div>
             </div>
           </div>
-          {/*header inner container*/}
         </div>
-        {/*Container*/}
       </div>
 
       {/* Spot RFQ Modal  */}
@@ -182,7 +175,7 @@ const GlobalNavbar = () => {
           }
         />
       )}
-
+      {settingModal && <SettingModal />}
       {/* Discounting RFQ Modal  */}
       {openRfqModalDiscountingCorporateComponent && (
         <RFQDiscountingCorporateModal

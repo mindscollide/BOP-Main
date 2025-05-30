@@ -1,35 +1,23 @@
 import { setCustomHeaders } from "@/common/utils";
 import { authApi } from "@/common/apiend_points";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 import { sendEmailForResetPaswordRM } from "@/common/api_config";
+import createPostAPI from "@/utils/axiosInstance";
 
 // Define the login async thunk
 export const resetAndForgotPassword = createAsyncThunk(
   "auth/resetPassword", // A unique action type string
   async ({ navigate, Data }, { rejectWithValue }) => {
     try {
-      // Set Axios headers using your custom headers function
-      const headers = setCustomHeaders();
+      let resetAndForgotPasswordAction = createPostAPI(
+        authApi,
+        sendEmailForResetPaswordRM.RequestMethod
+      );
 
-      //   This is the FormData
-      let form = new FormData();
-
-      form.append("RequestMethod", sendEmailForResetPaswordRM.RequestMethod);
-
-      form.append("RequestData", JSON.stringify(Data));
-
-      // Make the API request with custom headers
-      const response = await axios({
-        method: "post",
-        url: authApi,
-        data: form,
-        headers, // Use custom headers here
-      });
-
+      const response = await resetAndForgotPasswordAction(Data);
       if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
-        console.log(responseMessage, "responseMessageresponseMessage")
+        console.log(responseMessage, "responseMessageresponseMessage");
         if (isExecuted) {
           if (
             responseMessage

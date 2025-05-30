@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
   createBrowserRouter,
   createHashRouter,
@@ -19,9 +19,23 @@ import CreatePassword from "@/container/loginScreens/CreatePassword/CreatePasswo
 import TwoFaVerification from "@/container/loginScreens/2faVerificationScreen/TwoFaVerification";
 import ResetPassword from "@/container/loginScreens/ResetPassword/ResetPassword";
 import PrivateRoute from "./routes/PrivateRoutes";
+import { useMqtt } from "./context/MqttContext";
 
 function App() {
   const [routes, setRoutes] = useState([]); // Initially an empty array
+
+  useEffect(() => {
+    document.title =
+      import.meta.env.VITE_APP_INCLUDE_BRANCH === "true"
+        ? "BOP - Branch"
+        : import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true"
+        ? "BOP - Corporate"
+        : import.meta.env.VITE_APP_INCLUDE_TREASURY === "true"
+        ? "BOP - Treasury"
+        : import.meta.env.VITE_APP_INCLUDE_DEALER === "true"
+        ? "BOP - Dealer"
+        : "BOP"; // Set the document title
+  }, []); // empty dependency array means this runs once on mount
 
   const loadRoutes = async () => {
     const dashboardRoute = {
@@ -124,6 +138,9 @@ function App() {
   }
 
   const router = createBrowserRouter(routes);
+  const { isConnected } = useMqtt();
+  console.log(isConnected, "isConnectedisConnected");
+
   return <RouterProvider router={router} />;
 }
 

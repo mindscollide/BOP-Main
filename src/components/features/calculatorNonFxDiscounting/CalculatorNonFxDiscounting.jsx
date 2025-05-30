@@ -34,7 +34,6 @@ const CalculatorNonFxDiscounting = () => {
   const [swapValue, setSwapValue] = useState(0);
   const [tagText, setTagText] = useState(formatDate(new Date()));
 
-  console.log(selectedOption, "currencyOptionscurrencyOptions");
 
   //Extracting the currecny Data
   useEffect(() => {
@@ -66,8 +65,6 @@ const CalculatorNonFxDiscounting = () => {
   const handleChangeCurrencyCalculator = (selected) => {
     setSelectedOption(selected);
     setPrice(selected.value);
-    console.log("Selected", selected.label);
-    console.log("Selected", selected.value);
   };
 
   // Only allow numeric or decimal values handle change Ready

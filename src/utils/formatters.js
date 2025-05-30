@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export const formatCurrencyInput = (value) => {
   if (!value) return ""; // Return empty string if no value
 
@@ -50,5 +52,19 @@ export const convertDateTimeIntoGMT = (date) => {
     date.slice(10, 12) +
     ":" +
     date.slice(12, 14);
-  return dateString;
+  return new Date(dateString);
+};
+
+
+export const ConvertDateTimrStringIntoGTM = (date, pattern) => {
+  let ConvertIntoISO = moment(date, pattern).toISOString();
+  console.log(ConvertIntoISO, "ConvertIntoISOConvertIntoISO");
+  return new Date(ConvertIntoISO);
+};
+
+export const secureRandomString = (length = 16) => {
+  return [...crypto.getRandomValues(new Uint8Array(length))]
+    .map((b) => b.toString(36))
+    .join("")
+    .slice(0, length);
 };

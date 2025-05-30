@@ -1,18 +1,31 @@
-import React from 'react'
-import BlotterHeader from './blotterHeader/BlotterHeader'
+import React, { useEffect } from "react";
+import BlotterHeader from "./blotterHeader/BlotterHeader";
+import { CorporateBlotterDataAPI } from "./txnSummary/CorporateBlotterActions";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Blotter = () => {
-    return (
-        <>
-            <div className="row m-0 mt-3">
-                <div className="col-12 ps-1 pe-1 mb-2 col-blotter-table">
-                    <div className="card-box p-2 h-410">
-                        <BlotterHeader />
-                    </div>
-                </div>
-            </div>
-        </>
-    )
-}
+  const dispatch = useDispatch();
+  const navigate = useNavigate()
+  //Calling Corporate Blotter Data API
+  useEffect(() => {
+    try {
+      dispatch(CorporateBlotterDataAPI({ navigate }));
+    } catch (error) {
+      console.log(error, "error");
+    }
+  }, []);
+  return (
+    <>
+      <div className='row m-0 mt-3'>
+        <div className='col-12 ps-1 pe-1 mb-2 col-blotter-table'>
+          <div className='card-box p-2 h-410'>
+            <BlotterHeader />
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
 
-export default Blotter
+export default Blotter;

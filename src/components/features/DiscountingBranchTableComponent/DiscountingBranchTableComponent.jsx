@@ -10,7 +10,6 @@ const DiscountingForBranch = shouldIncludeComponents
   ? lazy(() => import("../branchDiscountingTable/BranchDiscountingTable"))
   : null;
 
-console.log(shouldIncludeComponents, "shouldIncludeComponents");
 
 const DiscountingBranchTableComponent = () => {
   return (

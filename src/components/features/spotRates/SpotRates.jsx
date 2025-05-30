@@ -121,11 +121,11 @@ const SpotRates = () => {
     console.log(checked);
     setMarketStatus(checked);
     let Data = { IsOn: checked };
-    dispatch(marketOnOffAction({ Data }));
+    dispatch(marketOnOffAction({ Data, navigate }));
   };
   const handleClearRates = () => {
     let Data = { value: 1 };
-    dispatch(clearRatesAction({ Data }));
+    dispatch(clearRatesAction({ Data, navigate }));
     console.log("first");
   };
 
@@ -159,7 +159,7 @@ const SpotRates = () => {
           CurrentAsk: Number(currentRates.askValue),
           RefreshInterval: Number(refreshInterval),
         };
-        dispatch(PublishNewRatesAction({ Data }));
+        dispatch(PublishNewRatesAction({ Data, navigate }));
       } else {
         alert("Ask value must be greater than Bid value.");
       }

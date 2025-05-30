@@ -40,10 +40,6 @@ const ForwardsForTreasuryAndBranchTable = ({
   const { forwardsForTreasuryBranch, setForwardsForTreasuryBranch } =
     useDealerAndTreasury();
 
-  console.log(
-    forwardsForTreasuryBranch,
-    "forwardsForTreasuryBranchforwardsForTreasuryBranch"
-  );
   const getTenorWiseForwardsRates = useSelector(
     (state) => state.dealerReducer.getTenorWiseForwardsRates
   );
@@ -108,10 +104,6 @@ const ForwardsForTreasuryAndBranchTable = ({
   useEffect(() => {
     if (getTenorWiseForwardsRates !== null) {
       try {
-        console.log(
-          getTenorWiseForwardsRates,
-          "getTenorWiseForwardsRatesgetTenorWiseForwardsRates"
-        );
         const { currentTenorWiseForwardRates, lastTenorWiseForwardRates } =
           getTenorWiseForwardsRates;
 
@@ -149,16 +141,13 @@ const ForwardsForTreasuryAndBranchTable = ({
   }, [getTenorWiseForwardsRates]);
 
   const handleDeleteTenorRecord = (record) => {
-    console.log(record, "recordrecordrecordrecord");
     const filteredRecords = forwardsForTreasuryBranch.filter(
       (item) => item.tenorID !== record.tenorID
     );
-    console.log(filteredRecords, "recordrecordrecordrecord");
 
     setForwardsForTreasuryBranch(filteredRecords);
   };
   const handleChangeCurrentForwards = (record, view, event) => {
-    console.log(record, view, "handleChangeCurrentForwards");
     const { value } = event.target;
     try {
       setForwardsForTreasuryBranch((prev) => {
@@ -176,23 +165,13 @@ const ForwardsForTreasuryAndBranchTable = ({
         });
       });
     } catch (error) {
-      console.log(
-        error,
-        forwardsForTreasuryBranch.find(
-          (item) => item.tenorID === record.tenorID
-        ),
-        "handleChangeCurrentForwards"
-      );
+      console.log(error);
     }
 
-    console.log(
-      forwardsForTreasuryBranch.find((item) => item.tenorID === record.tenorID),
-      "handleChangeCurrentForwards"
-    );
+
   };
 
   const handlePublishForwards = () => {
-    console.log(forwardsForTreasuryBranch, "forwardsForTreasuryBranch")
     let checkDoNotempty = forwardsForTreasuryBranch.every(
       (item) => item.currentAsk !== "" && item.currentBid !== ""
     );
@@ -207,12 +186,10 @@ const ForwardsForTreasuryAndBranchTable = ({
           };
         }),
       };
-      console.log(Data, "DataDataDataData");
       dispatch(PublishTenorWiseForwardsAction({ Data, navigate }));
     } else {
       alert("Please fill all the fields");
     }
-    console.log(checkDoNotempty, "checkDoNotemptycheckDoNotempty");
   };
 
   const columns = [

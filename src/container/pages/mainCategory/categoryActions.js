@@ -1,6 +1,5 @@
 import { setCustomHeaders } from "@/common/utils";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
 import { GetAllCounterPartyDataRM } from "@/common/api_config";
 import { watchListApi } from "@/common/apiend_points";
@@ -9,20 +8,16 @@ export const getAllCategoryTableData = createAsyncThunk(
   "category/getAllCategoryTableData",
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
-      const headers = setCustomHeaders();
+      let getAllCategoryTable = createPostAPI(
+        watchListApi,
+        GetAllCounterPartyDataRM.RequestMethod
+      );
 
-      let form = new FormData();
-      form.append("RequestMethod", GetAllCounterPartyDataRM.RequestMethod);
-      form.append("RequestData", JSON.stringify(Data));
-      const response = await axios({
-        method: "post",
-        url: watchListApi,
-        data: form,
-        headers,
-      });
-
+      const response = await getAllCategoryTable(Data);
       const { responseCode } = response.data;
-
+      if (responseCode === 401) {
+        navigate("/");
+      }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(getAllCategoryTableData({ navigate, Data }));

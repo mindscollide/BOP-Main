@@ -62,8 +62,6 @@ const CalculatorFxDiscounting = () => {
   const handleChangeCurrencyCalculator = (selected) => {
     setSelectedOption(selected);
     setPrice(selected.value);
-    console.log("Selected", selected.label);
-    console.log("Selected", selected.value);
   };
 
   // Only allow numeric or decimal values handle change Ready

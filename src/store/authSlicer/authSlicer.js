@@ -11,6 +11,7 @@ import {
   createCorporateCreatePasswordApi,
   validateLinkForCorporateCreatePasswordApi,
 } from "@/container/loginScreens/CreatePassword/createPassword_Action";
+import { LogoutApi } from "@/container/loginScreens/authActions/logoutAction";
 
 const authSlice = createSlice({
   name: "auth",
@@ -24,6 +25,7 @@ const authSlice = createSlice({
     getAllCategories: null,
     isValidatedCreatePasswordString: null,
     passwordCreated: null,
+    logout: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -147,7 +149,20 @@ const authSlice = createSlice({
           state.passwordCreated = null;
           state.responseMessage = payload.message;
         }
-      );
+      )
+      .addCase(LogoutApi.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(LogoutApi.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.logout = payload.response;
+        state.responseMessage = payload.message;
+      })
+      .addCase(LogoutApi.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.logout = null;
+        state.responseMessage = payload.message;
+      });
   },
 });
 

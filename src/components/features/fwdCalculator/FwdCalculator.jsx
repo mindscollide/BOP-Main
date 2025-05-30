@@ -76,9 +76,7 @@ const FwdCalculator = () => {
   //Handle onChange Currency
   const handleChangeCurrencyCalculator = (selected) => {
     setSelectedOption(selected);
-    setPrice(selected.value); // Default fallback (can still use `ready`)
-    console.log("Selected", selected.label);
-    console.log("Selected", selected.value);
+    setPrice(selected.value); 
   };
 
   //Handle onChange Import Export
@@ -110,7 +108,6 @@ const FwdCalculator = () => {
     }
   };
 
-  console.log(CurrencyData, "currencyOptions");
 
   // Only allow numeric or decimal values handle change Ready
   const handleInputChange = (e) => {

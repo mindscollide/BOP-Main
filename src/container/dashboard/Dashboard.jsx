@@ -1,13 +1,23 @@
 import { Layout } from "antd";
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "@/components/layout/header/header";
 import GlobalNavbar from "@/components/layout/nav/Navbar";
 import { Outlet, useLocation } from "react-router-dom";
 import { ResponseMessage } from "@/components/utils/ResponseMessageToast";
 import SettingModal from "@/components/features/settingsModal/settingModal";
+import { useModal } from "@/context/ModalContext";
+import ChatBox from "@/components/features/chatBox/ChatBox";
+import { useSelector } from "react-redux";
+import { connectToMqttExternally } from "@/context/MqttContext";
 const Dashboard = () => {
   const { Content } = Layout;
+  let token = localStorage.getItem("token")
   const location = useLocation();
+  const { chatModal, chatModalTransactionId } = useModal();
+
+  useEffect(() => {
+    connectToMqttExternally()
+  }, [])
   return (
     <Layout className='roboto-13'>
       {!location.pathname.includes("calculator") && <Header />}
@@ -16,8 +26,8 @@ const Dashboard = () => {
       <GlobalNavbar />
       <Content>
         <main className='px-3'>
-          <SettingModal />
           <Outlet />
+          {chatModal && <ChatBox />}
         </main>
       </Content>
     </Layout>

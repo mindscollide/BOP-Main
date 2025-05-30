@@ -9,30 +9,24 @@ import {
 import { watchListApi } from "@/common/apiend_points";
 import { setCustomHeaders } from "@/common/utils";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
+import createPostAPI from "@/utils/axiosInstance";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 
 // Define the GetFXInstruments async thunk
 export const GetFXInstrumentsAPI = createAsyncThunk(
   "watchlist/GetFXInstruments", // A unique action type string
   async ({ navigate }, { dispatch, rejectWithValue }) => {
     try {
-      // Set Axios headers using your custom headers function
-      const headers = setCustomHeaders();
+      let GetFXInstrumentsAction = createPostAPI(
+        watchListApi,
+        GetFXInstruments.RequestMethod
+      );
 
-      //   This is the FormData
-      let form = new FormData();
-
-      form.append("RequestMethod", GetFXInstruments.RequestMethod);
-
-      // Make the API request with custom headers
-      const response = await axios({
-        method: "post",
-        url: watchListApi,
-        data: form,
-        headers, // Use custom headers here
-      });
+      const response = await GetFXInstrumentsAction();
       const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+      }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(GetFXInstrumentsAPI({ navigate }));
@@ -83,6 +77,8 @@ export const GetFXInstrumentsAPI = createAsyncThunk(
           console.log("", response.data);
           return rejectWithValue("Something went wrong");
         }
+      } else {
+        return rejectWithValue("Something went wrong");
       }
     } catch (error) {
       // Reject with error message
@@ -97,24 +93,16 @@ export const GetMisDataByRangeAPI = createAsyncThunk(
   "watchlist/GetMisDataByRange", // A unique action type string
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
-      // Set Axios headers using your custom headers function
-      const headers = setCustomHeaders();
+      let GetFXInstruGetMisDataByRange = createPostAPI(
+        watchListApi,
+        GetMisDataByRange.RequestMethod
+      );
 
-      //   This is the FormData
-      let form = new FormData();
-
-      form.append("RequestMethod", GetMisDataByRange.RequestMethod);
-
-      form.append("RequestData", JSON.stringify(Data));
-
-      // Make the API request with custom headers
-      const response = await axios({
-        method: "post",
-        url: watchListApi,
-        data: form,
-        headers, // Use custom headers here
-      });
+      const response = await GetFXInstruGetMisDataByRange(Data);
       const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+      }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(GetMisDataByRangeAPI({ navigate, Data }));
@@ -157,6 +145,8 @@ export const GetMisDataByRangeAPI = createAsyncThunk(
           console.log("", response.data);
           return rejectWithValue("Something went wrong");
         }
+      } else {
+        return rejectWithValue("Something went wrong");
       }
     } catch (error) {
       // Reject with error message
@@ -169,26 +159,14 @@ export const GetMisDataByRangeAPI = createAsyncThunk(
 // Define the GetAllFowardsAndDiscountsRates async thunk
 export const GetAllFowardsAndDiscountsRatesAPI = createAsyncThunk(
   "watchlist/GetAllFowardsAndDiscountsRates", // A unique action type string
-  async ({}, { dispatch, rejectWithValue }) => {
+  async ({ navigate }, { dispatch, rejectWithValue }) => {
     try {
-      // Set Axios headers using your custom headers function
-      const headers = setCustomHeaders();
-
-      //   This is the FormData
-      let form = new FormData();
-
-      form.append(
-        "RequestMethod",
+      let GetAllFowardsAndDiscountsRatesAction = createPostAPI(
+        watchListApi,
         GetAllFowardsAndDiscountsRates.RequestMethod
       );
 
-      // Make the API request with custom headers
-      const response = await axios({
-        method: "post",
-        url: watchListApi,
-        data: form,
-        headers, // Use custom headers here
-      });
+      const response = await GetAllFowardsAndDiscountsRatesAction();
       const { responseCode } = response.data;
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -231,6 +209,8 @@ export const GetAllFowardsAndDiscountsRatesAPI = createAsyncThunk(
           console.log("", response.data);
           return rejectWithValue("Something went wrong");
         }
+      } else {
+        return rejectWithValue("Something went wrong");
       }
     } catch (error) {
       // Reject with error message
@@ -245,24 +225,16 @@ export const GetAllCounterPartyDataAPI = createAsyncThunk(
   "watchlist/GetAllCounterPartyData", // A unique action type string
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
-      // Set Axios headers using your custom headers function
-      const headers = setCustomHeaders();
+      let GetAllCounterPartyData = createPostAPI(
+        watchListApi,
+        GetAllCounterPartyDataRM.RequestMethod
+      );
 
-      //   This is the FormData
-      let form = new FormData();
-
-      form.append("RequestMethod", GetAllCounterPartyDataRM.RequestMethod);
-
-      form.append("RequestData", JSON.stringify(Data));
-
-      // Make the API request with custom headers
-      const response = await axios({
-        method: "post",
-        url: watchListApi,
-        data: form,
-        headers, // Use custom headers here
-      });
+      const response = await GetAllCounterPartyData(Data);
       const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+      }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
       } else if (response.data.responseCode === 200) {
@@ -312,6 +284,8 @@ export const GetAllCounterPartyDataAPI = createAsyncThunk(
           console.log("", response.data);
           return rejectWithValue("Something went wrong");
         }
+      } else {
+        return rejectWithValue("Something went wrong");
       }
     } catch (error) {
       // Reject with error message
@@ -326,23 +300,17 @@ export const GetDashboardDataAPI = createAsyncThunk(
   "watchlist/GetDashboardData", // A unique action type string
   async ({ navigate }, { dispatch, rejectWithValue }) => {
     try {
-      // Set Axios headers using your custom headers function
-      const headers = setCustomHeaders();
+      let GetDashboardDataAction = createPostAPI(
+        watchListApi,
+        GetDashboardData.RequestMethod
+      );
 
-      //   This is the FormData
-      let form = new FormData();
-
-      form.append("RequestMethod", GetDashboardData.RequestMethod);
-
-      // Make the API request with custom headers
-      const response = await axios({
-        method: "post",
-        url: watchListApi,
-        data: form,
-        headers, // Use custom headers here
-      });
+      const response = await GetDashboardDataAction();
       const { responseCode } = response.data;
       console.log(responseCode, "responseCoderesponseCode");
+      if (responseCode === 401) {
+        navigate("/");
+      }
       if (responseCode === 417) {
         console.log(responseCode, "responseCoderesponseCode");
         await dispatch(refreshTokenAction({ navigate }));
@@ -387,6 +355,9 @@ export const GetDashboardDataAPI = createAsyncThunk(
           console.log("", response.data);
           return rejectWithValue("Something went wrong");
         }
+      } else {
+        console.log("", response.data);
+        return rejectWithValue("Something went wrong");
       }
     } catch (error) {
       // Reject with error message
@@ -401,24 +372,16 @@ export const SaveUserDashboardAPI = createAsyncThunk(
   "watchlist/SaveUserDashboard", // A unique action type string
   async ({ Data, navigate }, { dispatch, rejectWithValue }) => {
     try {
-      // Set Axios headers using your custom headers function
-      const headers = setCustomHeaders();
+      let SaveUserDashboard = createPostAPI(
+        watchListApi,
+        SaveUserDashboard.RequestMethod
+      );
 
-      //   This is the FormData
-      let form = new FormData();
-
-      form.append("RequestMethod", SaveUserDashboard.RequestMethod);
-
-      form.append("RequestData", JSON.stringify(Data));
-
-      // Make the API request with custom headers
-      const response = await axios({
-        method: "post",
-        url: watchListApi,
-        data: form,
-        headers, // Use custom headers here
-      });
+      const response = await SaveUserDashboard(Data);
       const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+      }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(SaveUserDashboardAPI({ Data, navigate }));
@@ -461,6 +424,9 @@ export const SaveUserDashboardAPI = createAsyncThunk(
           console.log("", response.data);
           return rejectWithValue("Something went wrong");
         }
+      } else {
+        console.log("", response.data);
+        return rejectWithValue("Something went wrong");
       }
     } catch (error) {
       // Reject with error message

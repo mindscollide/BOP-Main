@@ -13,6 +13,7 @@ import { GetDashboardDataAPI, SaveUserDashboardAPI } from "./WatchlistAction";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import Blotter from "@/container/pages/mainTreasury/tabsContent/liveRates/blotter/Blotter";
 
 const SpotBranch = () => {
   const dispatch = useDispatch();
@@ -34,6 +35,7 @@ const SpotBranch = () => {
   useEffect(() => {
     try {
       dispatch(GetDashboardDataAPI({navigate}));
+      // dispatch(GetDashboardDataAPI({navigate})); // Fetching the Dashboard Data
     } catch (error) {
       console.log(error, "error");
     }
@@ -163,7 +165,7 @@ const SpotBranch = () => {
           },
         ],
       };
-      dispatch(SaveUserDashboardAPI({ Data }));
+      dispatch(SaveUserDashboardAPI({navigate , Data }));
       setWatchlistData((prevData) => ({
         ...prevData,
         [destination.droppableId]: {
@@ -291,7 +293,7 @@ const SpotBranch = () => {
       </DragDropContext>
       {/* ChatBox Component */}
       {/* <ChatBox /> */}
-      <BlotterHeader />
+      <Blotter />
       {iSellAndBuyModal && <SellAndBuyModal />}
     </section>
   );

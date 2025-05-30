@@ -6,31 +6,22 @@ import { authApi } from "@/common/apiend_points";
 import { setCustomHeaders } from "@/common/utils";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 
 // Define the ViewAllNatureOfBussinessAPI async thunk
 export const ViewAllNatureOfBussinessAPI = createAsyncThunk(
   "Auth/ViewAllNatureOfBussiness", // A unique action type string
   async ({ Data, navigate }, { dispatch, rejectWithValue }) => {
     try {
-      // Set Axios headers using your custom headers function
-      const headers = setCustomHeaders();
+      let ViewAllNatureOfBussiness = createPostAPI(
+        authApi,
+        ViewAllNatureOfBussiness.RequestMethod
+      );
 
-      //   This is the FormData
-      let form = new FormData();
-
-      form.append("RequestMethod", ViewAllNatureOfBussiness.RequestMethod);
-
-      form.append("RequestData", JSON.stringify(Data));
-
-      // Make the API request with custom headers
-      const response = await axios({
-        method: "post",
-        url: authApi,
-        data: form,
-        headers, // Use custom headers here
-      });
+      const response = await ViewAllNatureOfBussiness(Data);
       const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+      }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(ViewAllNatureOfBussinessAPI({ Data, navigate }));
@@ -87,24 +78,11 @@ export const SaveTransactionRFQAPI = createAsyncThunk(
   "Blotter/SaveTransactionRFQAPI", // A unique action type string
   async ({ Data }, { dispatch, rejectWithValue }) => {
     try {
-      // Set Axios headers using your custom headers function
-      const headers = setCustomHeaders();
-
-      //   This is the FormData
-      let form = new FormData();
-
-      form.append("RequestMethod", SaveTransactionRFQ.RequestMethod);
-
-      form.append("RequestData", JSON.stringify(Data));
-
-      // Make the API request with custom headers
-      const response = await axios({
-        method: "post",
-        url: authApi,
-        data: form,
-        headers, // Use custom headers here
-      });
+      const response = await SaveTransactionRFQ(Data);
       const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+      }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
       } else if (response.data.responseCode === 200) {

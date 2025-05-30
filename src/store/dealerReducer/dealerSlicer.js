@@ -1,3 +1,4 @@
+import { GetFEDiscountingTableApi } from "@/components/features/FeDiscountingTable/FeDiscountTableAction";
 import {
   PublishNewRatesAction,
   PublishTenorWiseForwardsAction,
@@ -24,10 +25,15 @@ const dealerReducer = createSlice({
     getLastPublishRates: null,
     getCurrentPublishRate: null,
     getAllTenors: null,
+    createTenor: null,
     getTenorWiseForwardsRates: null,
     publishTenorwiseForwardRates: null,
     getDiscountingWiseRates: null,
     publishDiscountRates: null,
+    getFeDiscounting: null,
+    publishFeDiscounting: null,
+    getNonFeDiscounting: null,
+    publishNonFeDiscounting: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -105,11 +111,12 @@ const dealerReducer = createSlice({
       })
       .addCase(createTenorAction.fulfilled, (state, { payload }) => {
         state.loading = false;
-        state.getAllTenors = payload.response;
+        state.createTenor = payload.response;
         state.responseMessage = payload.message;
       })
       .addCase(createTenorAction.rejected, (state, { payload }) => {
         state.loading = false;
+        state.createTenor = null;
         state.responseMessage = payload;
       })
       .addCase(getTenorWiseForwardsAction.pending, (state) => {
@@ -149,8 +156,8 @@ const dealerReducer = createSlice({
       })
       .addCase(getDiscountingRatesAction.fulfilled, (state, { payload }) => {
         state.loading = false;
-        state.getDiscountingWiseRates = payload.response;
-        state.responseMessage = payload.message;
+        state.getDiscountingWiseRates = payload?.response;
+        state.responseMessage = payload?.message;
       })
       .addCase(getDiscountingRatesAction.rejected, (state, { payload }) => {
         state.loading = false;
@@ -164,13 +171,27 @@ const dealerReducer = createSlice({
         publishDiscountingRatesAction.fulfilled,
         (state, { payload }) => {
           state.loading = false;
-          state.publishDiscountRates = payload.response;
-          state.responseMessage = payload.message;
+          state.publishDiscountRates = payload?.response;
+          state.responseMessage = payload?.message;
         }
       )
       .addCase(publishDiscountingRatesAction.rejected, (state, { payload }) => {
         state.loading = false;
         state.publishDiscountRates = null;
+        state.responseMessage = payload;
+      })
+      .addCase(GetFEDiscountingTableApi.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(GetFEDiscountingTableApi.fulfilled, (state, { payload }) => {
+        state.loading = false;
+        state.getFeDiscounting = payload.response;
+        state.responseMessage = payload.message;
+      })
+      .addCase(GetFEDiscountingTableApi.rejected, (state, { payload }) => {
+        state.loading = false;
+        state.getFeDiscounting = null;
+        state.error = payload;
         state.responseMessage = payload;
       });
   },

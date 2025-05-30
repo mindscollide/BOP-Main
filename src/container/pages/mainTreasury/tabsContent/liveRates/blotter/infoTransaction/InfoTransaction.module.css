@@ -1,0 +1,39 @@
+.transactionModal__body {
+  min-height: 80vh !important;
+  padding: 15px 1rem;
+}
+.company-name-hd {
+  color: var(--color-primary);
+  font-weight: 700;
+  font-size: 1.5rem;
+  display: inline;
+  margin: 0;
+}
+
+.dealstatus {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-primary);
+  padding: 5px 10px;
+  border-radius: 30px;
+  background: var(--color-green);
+  color: #ffffff;
+}
+.txn_id {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-black);
+}
+
+.span_underline {
+  width: 96%;
+  background: #dee2e6 !important;
+  height: 1px;
+  margin: 5px auto;
+  /* margin-top: 10px 0 !important; */
+}
+.transactionInfolabel {
+  margin: 0 !important;
+  font-size: 13px !important;
+  font-weight: 700;
+}
