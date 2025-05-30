@@ -52,7 +52,7 @@ const MainCategory = () => {
   }, [getAllCategories]);
   const tabsData = [
     { title: "Spot", content: <SpotDealerAndTreasury /> },
-    { title: "Forwards", content: <Forwards /> },
+    { title: "Forwards", content: <CategoryForwards /> },
     { title: "Discounting", content: <CategoryDiscounting /> },
   ];
   return (

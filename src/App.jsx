@@ -20,6 +20,7 @@ import TwoFaVerification from "@/container/loginScreens/2faVerificationScreen/Tw
 import ResetPassword from "@/container/loginScreens/ResetPassword/ResetPassword";
 import PrivateRoute from "./routes/PrivateRoutes";
 import { useMqtt } from "./context/MqttContext";
+import Loader from "./components/common/loader/Loader";
 
 function App() {
   const [routes, setRoutes] = useState([]); // Initially an empty array
@@ -126,7 +127,7 @@ function App() {
       { path: "*", element: <Navigate to={"/"} /> },
     ];
 
-    setRoutes(tempRoutes); // Set the routes after loading
+    setRoutes(tempRoutes); // Set the routes after Loader
   };
 
   useEffect(() => {
@@ -141,7 +142,12 @@ function App() {
   const { isConnected } = useMqtt();
   console.log(isConnected, "isConnectedisConnected");
 
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <RouterProvider router={router} />
+      <Loader />
+    </>
+  );
 }
 
 export default App;

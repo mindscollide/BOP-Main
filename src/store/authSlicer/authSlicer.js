@@ -18,7 +18,7 @@ const authSlice = createSlice({
   initialState: {
     userDetails: null,
     responseMessage: "",
-    loading: false,
+    Loader: false,
     error: null,
     resetPasswordResponse: null,
     refreshTokenResponse: null,
@@ -32,12 +32,12 @@ const authSlice = createSlice({
     builder
       // Pending state (while the API call is being made)
       .addCase(loginInApi.pending, (state) => {
-        state.loading = true;
+        state.Loader = true;
         state.error = null;
       })
       // Fulfilled state (when the API call succeeds)
       .addCase(loginInApi.fulfilled, (state, { payload }) => {
-        state.loading = false;
+        state.Loader = false;
         state.userDetails = payload.response;
         state.error = null;
         state.responseMessage = payload.message;
@@ -45,18 +45,18 @@ const authSlice = createSlice({
       // Rejected state (when the API call fails)
       .addCase(loginInApi.rejected, (state, action) => {
         console.log(action, "actionaction");
-        state.loading = false;
+        state.Loader = false;
         state.error = action.payload;
         state.user = null;
       })
       // Pending state (while the API call is being made)
       .addCase(corporateUserLoginInApi.pending, (state) => {
-        state.loading = true;
+        state.Loader = true;
         state.error = null;
       })
       // Fulfilled state (when the API call succeeds)
       .addCase(corporateUserLoginInApi.fulfilled, (state, { payload }) => {
-        state.loading = false;
+        state.Loader = false;
         state.userDetails = payload.response;
         state.error = null;
         state.responseMessage = payload.message;
@@ -65,60 +65,60 @@ const authSlice = createSlice({
       .addCase(corporateUserLoginInApi.rejected, (state, action) => {
         console.log(action, "actionaction");
 
-        state.loading = false;
+        state.Loader = false;
         state.error = action.payload;
         state.user = null;
       })
       .addCase(resetAndForgotPassword.pending, (state, { payload }) => {
-        state.loading = true;
+        state.Loader = true;
       })
       .addCase(resetAndForgotPassword.fulfilled, (state, { payload }) => {
         console.log(payload, "payloadpayload");
-        state.loading = false;
+        state.Loader = false;
         state.error = null;
         state.responseMessage = payload.message;
         state.resetPasswordResponse = payload.response;
       })
       .addCase(resetAndForgotPassword.rejected, (state, { payload }) => {
         console.log(payload, "payloadpayload");
-        state.loading = false;
+        state.Loader = false;
         state.error = null;
         state.responseMessage = payload;
         state.resetPasswordResponse = null;
       })
       .addCase(refreshTokenAction.pending, (state) => {
-        state.loading = true;
+        state.Loader = true;
       })
       .addCase(refreshTokenAction.fulfilled, (state, { payload }) => {
-        state.loading = false;
+        state.Loader = false;
         state.refreshTokenResponse = payload.response;
         state.responseMessage = payload.message;
       })
       .addCase(refreshTokenAction.rejected, (state, { payload }) => {
-        state.loading = false;
+        state.Loader = false;
         state.refreshTokenResponse = null;
         state.responseMessage = payload;
       })
       .addCase(getAllCategoriesAction.pending, (state) => {
-        state.loading = true;
+        state.Loader = true;
       })
       .addCase(getAllCategoriesAction.fulfilled, (state, { payload }) => {
-        state.loading = false;
+        state.Loader = false;
         state.getAllCategories = payload.response;
         state.responseMessage = payload.message;
       })
       .addCase(getAllCategoriesAction.rejected, (state, { payload }) => {
-        state.loading = false;
+        state.Loader = false;
         state.getAllCategories = null;
         state.responseMessage = payload.message;
       })
       .addCase(validateLinkForCorporateCreatePasswordApi.pending, (state) => {
-        state.loading = true;
+        state.Loader = true;
       })
       .addCase(
         validateLinkForCorporateCreatePasswordApi.fulfilled,
         (state, { payload }) => {
-          state.loading = false;
+          state.Loader = false;
           state.isValidatedCreatePasswordString = payload.response;
           state.responseMessage = payload.message;
         }
@@ -126,18 +126,18 @@ const authSlice = createSlice({
       .addCase(
         validateLinkForCorporateCreatePasswordApi.rejected,
         (state, { payload }) => {
-          state.loading = false;
+          state.Loader = false;
           state.isValidatedCreatePasswordString = null;
           state.responseMessage = payload.message;
         }
       )
       .addCase(createCorporateCreatePasswordApi.pending, (state) => {
-        state.loading = true;
+        state.Loader = true;
       })
       .addCase(
         createCorporateCreatePasswordApi.fulfilled,
         (state, { payload }) => {
-          state.loading = false;
+          state.Loader = false;
           state.passwordCreated = payload.response;
           state.responseMessage = payload.message;
         }
@@ -145,21 +145,21 @@ const authSlice = createSlice({
       .addCase(
         createCorporateCreatePasswordApi.rejected,
         (state, { payload }) => {
-          state.loading = false;
+          state.Loader = false;
           state.passwordCreated = null;
           state.responseMessage = payload.message;
         }
       )
       .addCase(LogoutApi.pending, (state) => {
-        state.loading = true;
+        state.Loader = true;
       })
       .addCase(LogoutApi.fulfilled, (state, { payload }) => {
-        state.loading = false;
+        state.Loader = false;
         state.logout = payload.response;
         state.responseMessage = payload.message;
       })
       .addCase(LogoutApi.rejected, (state, { payload }) => {
-        state.loading = false;
+        state.Loader = false;
         state.logout = null;
         state.responseMessage = payload.message;
       });

@@ -38,7 +38,9 @@ const Discounting = () => {
             setDiscounttingColumns(forwardsColumns);
           }
         }
-      } catch (error) {}
+      } catch (error) {
+        console.log(error, "Error in Discounting component useEffect");
+      }
     }
   }, [GetAllFowardsAndDiscountsRatesData]);
 

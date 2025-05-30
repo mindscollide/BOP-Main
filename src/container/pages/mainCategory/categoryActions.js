@@ -28,7 +28,7 @@ export const getAllCategoryTableData = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "UploadRate_UploadRateServiceManager_GetTheLastAndCurrentPublishUSDRates_01".toLowerCase()
+                "WatchList_WatchListServiceManager_GetAllCounterPartyData_01".toLowerCase()
               )
           ) {
             return {
@@ -39,7 +39,7 @@ export const getAllCategoryTableData = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "UploadRate_UploadRateServiceManager_GetTheLastAndCurrentPublishUSDRates_02".toLowerCase()
+                "WatchList_WatchListServiceManager_GetAllCounterPartyData_02".toLowerCase()
               )
           ) {
             return rejectWithValue("Something went wrong");
@@ -47,7 +47,7 @@ export const getAllCategoryTableData = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "UploadRate_UploadRateServiceManager_GetTheLastAndCurrentPublishUSDRates_03".toLowerCase()
+                "WatchList_WatchListServiceManager_GetAllCounterPartyData_03".toLowerCase()
               )
           ) {
             return rejectWithValue("Something went wrong");
@@ -55,7 +55,7 @@ export const getAllCategoryTableData = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "UploadRate_UploadRateServiceManager_GetTheLastAndCurrentPublishUSDRates_04".toLowerCase()
+                "WatchList_WatchListServiceManager_GetAllCounterPartyData_04".toLowerCase()
               )
           ) {
             return rejectWithValue("Something went wrong");
