@@ -4,59 +4,59 @@ import GlobalTable from "../../common/table/GlobalTable";
 import InputFIeld from "../../common/inputField/InputField";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import {
-  publishDiscountingRatesAction,
-} from "@/container/pages/mainDealer/dealerActions";
+import { publishDiscountingRatesAction } from "@/container/pages/mainDealer/dealerActions";
 import { useSelector } from "react-redux";
 import { formatPercentageInput } from "@/utils/formatters";
 import { GetNonFEDiscountingTableApi } from "./NonFeDiscountingAction";
+import { createColumns, generateData } from "@/components/utils/generateData";
 
 const NonFeDiscountingTable = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [tableData, setTableData] = useState([]);
-  const getDiscountTableData = useSelector(
-    (state) => state.dealerReducer.getDiscountingWiseRates
+  const [columnsData, setColumnsData] = useState([]);
+  const getDashboardForwards = useSelector(
+    (state) => state.dealerReducer.getDealerDashboardData
+  );
+  const getNonFeDiscountTableData = useSelector(
+    (state) => state.dealerReducer.getNonFeDiscounting
+  );
+  // useEffect(() => {
+  //   dispatch(GetNonFEDiscountingTableApi({ navigate }));
+  // }, []);
+
+  const getAllTenorsData = useSelector(
+    (state) => state.dealerReducer.getAllTenors
   );
   useEffect(() => {
-    dispatch(GetNonFEDiscountingTableApi({ navigate }));
-  }, []);
-
-  useEffect(() => {
-    if (getDiscountTableData !== null) {
-      try {
-        const { currentRates, previousRates } = getDiscountTableData;
-        if (currentRates.length > 0) {
-          let newRecords = currentRates.map((item, index) => {
-            let getRecords = previousRates.find(
-              (prevItem) => prevItem.instumentID === item.instumentID
-            );
-            if (getRecords !== undefined) {
-              return {
-                key: index + 1,
-                instrumentName: item.instrumentName,
-                instrumentID: item.instumentID,
-                currentRate: item.rate,
-                previousRate: getRecords.rate,
-                dateTime: item.dateTime,
-              };
-            } else {
-              return {
-                key: index + 1,
-                instrumentName: item.instrumentName,
-                instrumentID: item.instumentID,
-                currentRate: item.rate,
-                dateTime: item.dateTime,
-
-                previousRate: "",
-              };
-            }
-          });
-          setTableData(newRecords);
-        }
-      } catch (error) {}
+    if (getDashboardForwards !== null && getAllTenorsData !== null) {
+      const { nonFEDiscountingRates } = getDashboardForwards;
+      const { tenors } = getAllTenorsData;
+      console.log(nonFEDiscountingRates, "ratesrates");
+      const { discountRates } = generateData(
+        1,
+        tenors,
+        null,
+        null,
+        nonFEDiscountingRates
+      );
+      if (discountRates && discountRates.length > 0) {
+        setTableData(discountRates);
+        const ColumnData = createColumns(
+          discountRates,
+          5,
+          InputFIeld,
+          onInputChange,
+          "amountValue"
+        );
+        setColumnsData(ColumnData);
+      }
     }
-  }, [getDiscountTableData]);
+  }, [getDashboardForwards, getAllTenorsData]);
+
+  const onInputChange = (key, record, value) => {
+    console.log(key, record, value, "onInputChangeonInputChange");
+  };
 
   // Data for the table
   const dataSource = [
@@ -142,7 +142,7 @@ const NonFeDiscountingTable = () => {
     <>
       <GlobalTable
         prefixCls='DealerAndTreasuryDiscountTable'
-        columns={columns}
+        columns={columnsData}
         dataSource={tableData}
         pagination={false}
       />

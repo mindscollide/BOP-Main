@@ -16,8 +16,8 @@ export const GetFEDiscountingTableApi = createAsyncThunk(
         GetFeDiscountingRM.RequestMethod
       );
       const response = await getFeDiscounting();
-      console.log(response, "result");
-      const { responseCode } = response;
+      console.log(response.data.responseCode, "result");
+      const { responseCode } = response.data;
       console.log(responseCode, "result");
       if (responseCode === 401) {
         navigate("/");
@@ -31,7 +31,7 @@ export const GetFEDiscountingTableApi = createAsyncThunk(
       } else if (responseCode === 200) {
         console.log(response, "result");
 
-        const { isExecuted, responseMessage } = response.responseResult;
+        const { isExecuted, responseMessage } = response.data.responseResult;
         if (!isExecuted) {
           console.log(response, "result");
 
@@ -44,7 +44,10 @@ export const GetFEDiscountingTableApi = createAsyncThunk(
               "UploadRate_UploadRateServiceManager_GetFEDiscountingRates_01".toLowerCase()
             )
         ) {
-          return response.data.responseResult;
+          return {
+            response: response.data.responseResult,
+            message: "Fe Discounting Published Data Successfully",
+          };
         } else if (
           responseMessage
             .toLowerCase()

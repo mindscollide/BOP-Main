@@ -260,3 +260,10 @@
   outline: none;
   border: 1px solid #e1e1e1;
 }
+
+.amountValue  {
+  max-width: 70px;
+
+  margin: 0 auto;
+  text-align: center;
+}

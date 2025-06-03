@@ -12,6 +12,7 @@ import {
   publishTenorWiseForwardRatesRM,
   getDiscountingRatesRM,
   publishDiscountingRatesRM,
+  getDealerDasboardDataRM,
 } from "@/common/api_config";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
 import createPostAPI from "@/utils/axiosInstance";
@@ -173,7 +174,7 @@ export const PublishNewRatesAction = createAsyncThunk(
       const response = await PublishNewRates(Data);
 
       const { responseCode } = response.data;
-      console.log(responseCode, "responseCoderesponseCode")
+      console.log(responseCode, "responseCoderesponseCode");
       if (responseCode === 401) {
         navigate("/");
         return rejectWithValue("Unauthorized access, please login again");
@@ -823,76 +824,156 @@ export const publishDiscountingRatesAction = createAsyncThunk(
   "uploadRate/publishDiscountingRates",
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
-      try {
-        const response = await publishDiscountingRates(Data);
-        const { responseCode } = response.data;
-        if (responseCode === 401) {
-          navigate("/");
-          return rejectWithValue("Unauthorized access, please login again");
-        }
-        if (responseCode === 417) {
-          await dispatch(refreshTokenAction({ navigate }));
-          dispatch(publishDiscountingRatesAction({ navigate, Data }));
-        } else if (responseCode === 200) {
-          const { isExecuted, responseMessage } = response.data.responseResult;
-          if (isExecuted) {
-            if (
-              responseMessage
-                .toLowerCase()
-                .includes(
-                  "UploadRate_UploadRateServiceManager_PublishDiscountingRates_01".toLowerCase()
-                )
-            ) {
-              return {
-                response: response.data.responseResult,
-                message: "Successfully",
-              };
-            } else if (
-              responseMessage
-                .toLowerCase()
-                .includes(
-                  "UploadRate_UploadRateServiceManager_PublishDiscountingRates_02".toLowerCase()
-                )
-            ) {
-              return rejectWithValue("Something went wrong");
-            } else if (
-              responseMessage
-                .toLowerCase()
-                .includes(
-                  "UploadRate_UploadRateServiceManager_PublishDiscountingRates_03".toLowerCase()
-                )
-            ) {
-              return rejectWithValue("Something went wrong");
-            } else if (
-              responseMessage
-                .toLowerCase()
-                .includes(
-                  "UploadRate_UploadRateServiceManager_PublishDiscountingRates_04".toLowerCase()
-                )
-            ) {
-              return rejectWithValue("Something went wrong");
-            } else if (
-              responseMessage
-                .toLowerCase()
-                .includes(
-                  "UploadRate_UploadRateServiceManager_PublishDiscountingRates_05".toLowerCase()
-                )
-            ) {
-              return rejectWithValue("Something went wrong");
-            } else {
-              console.log("", response.data);
-              return rejectWithValue("Something went wrong");
-            }
+      let publishDiscountingRates = createPostAPI(
+        uploadRatesApi,
+        getDiscountingRatesRM.RequestMethod
+      );
+      const response = await publishDiscountingRates(Data);
+      const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
+      }
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(publishDiscountingRatesAction({ navigate, Data }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_PublishDiscountingRates_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message: "Successfully",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_PublishDiscountingRates_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_PublishDiscountingRates_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_PublishDiscountingRates_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_PublishDiscountingRates_05".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
           } else {
             console.log("", response.data);
             return rejectWithValue("Something went wrong");
           }
         } else {
-          return rejectWithValue(error.response.data);
+          console.log("", response.data);
+          return rejectWithValue("Something went wrong");
         }
-      } catch (error) {
-        console.log(error);
-        // Reject with error message
+      } else {
+        return rejectWithValue(error.response.data);
+      }
+    } catch (error) {
+      console.log(error);
+      // Reject with error message
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const getDealerDashboardApi = createAsyncThunk(
+  "uploadRates/getDashboardApi",
+  async ({ navigate }, { rejectWithValue, dispatch }) => {
+    try {
+      let DealerDashboardApi = createPostAPI(
+        uploadRatesApi,
+        getDealerDasboardDataRM.RequestMethod
+      );
+      const response = await DealerDashboardApi();
+      const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
+      }
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(getDealerDashboardApi({ navigate, Data }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_GetDealerDashboardData_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message: "Successfully",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_GetDealerDashboardData_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_GetDealerDashboardData_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_GetDealerDashboardData_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_GetDealerDashboardData_05".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          console.log("", response.data);
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
         return rejectWithValue(error.response.data);
       }
     } catch (error) {

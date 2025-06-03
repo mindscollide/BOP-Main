@@ -12,6 +12,7 @@ import {
   clearRatesAction,
   createTenorAction,
   getAllTenorsAction,
+  getDealerDashboardApi,
   getDiscountingRatesAction,
   getLastPublishRatesAction,
   getTenorWiseForwardsAction,
@@ -41,6 +42,7 @@ const dealerReducer = createSlice({
     publishFeDiscounting: null,
     getNonFeDiscounting: null,
     publishNonFeDiscounting: null,
+    getDealerDashboardData: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -249,7 +251,21 @@ const dealerReducer = createSlice({
           state.error = payload;
           state.responseMessage = payload;
         }
-      );
+      )
+      .addCase(getDealerDashboardApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(getDealerDashboardApi.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.getDealerDashboardData = payload.response;
+        state.responseMessage = payload.message;
+      })
+      .addCase(getDealerDashboardApi.rejected, (state, { payload }) => {
+        state.Loader = false;
+        state.getDealerDashboardData = null;
+        state.error = payload;
+        state.responseMessage = payload;
+      });
   },
 });
 

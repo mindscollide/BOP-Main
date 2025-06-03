@@ -12,6 +12,7 @@ import InputFIeld from "../../common/inputField/InputField";
 import {
   createTenorAction,
   getAllTenorsAction,
+  getDealerDashboardApi,
   getTenorWiseForwardsAction,
 } from "@/container/pages/mainDealer/dealerActions";
 import { useSelector } from "react-redux";
@@ -91,6 +92,7 @@ const ForwardsForTreasuryAndDealer = () => {
   });
   useEffect(() => {
     dispatch(getAllTenorsAction({ navigate }));
+    dispatch(getDealerDashboardApi({navigate}))
   }, []);
   const handleOpenModal = () => {
     // Wrap the state update in startTransition

@@ -39,7 +39,10 @@ const ForwardsForTreasuryAndBranchTable = ({
   const navigate = useNavigate();
   const { forwardsForTreasuryBranch, setForwardsForTreasuryBranch } =
     useDealerAndTreasury();
-
+  const getDashboardForwards = useSelector(
+    (state) => state.dealerReducer.getDealerDashboardData
+  );
+  console.log(getDashboardForwards, "getDashboardForwardsgetDashboardForwards");
   const getTenorWiseForwardsRates = useSelector(
     (state) => state.dealerReducer.getTenorWiseForwardsRates
   );
@@ -49,7 +52,7 @@ const ForwardsForTreasuryAndBranchTable = ({
   );
 
   useEffect(() => {
-    dispatch(getTenorWiseForwardsAction({ navigate }));
+    // dispatch(getTenorWiseForwardsAction({ navigate }));
   }, []);
 
   useEffect(() => {
@@ -63,10 +66,10 @@ const ForwardsForTreasuryAndBranchTable = ({
   }, [newTenorRecord]);
 
   useEffect(() => {
-    if (publishTenorwiseForwardRates !== null) {
+    if (getDashboardForwards !== null) {
       try {
         const { currentTenorWiseForwardRates, lastTenorWiseForwardRates } =
-          publishTenorwiseForwardRates;
+        getDashboardForwards;
 
         let newDataMap = currentTenorWiseForwardRates.map((item) => {
           let findData = lastTenorWiseForwardRates.find(
@@ -99,46 +102,7 @@ const ForwardsForTreasuryAndBranchTable = ({
         console.log(error, "errorerrorerrorerror");
       }
     }
-  }, [publishTenorwiseForwardRates]);
-
-  useEffect(() => {
-    if (getTenorWiseForwardsRates !== null) {
-      try {
-        const { currentTenorWiseForwardRates, lastTenorWiseForwardRates } =
-          getTenorWiseForwardsRates;
-
-        let newDataMap = currentTenorWiseForwardRates.map((item) => {
-          let findData = lastTenorWiseForwardRates.find(
-            (data) => data.tenorID === item.tenorID
-          );
-          if (findData !== undefined) {
-            return {
-              tenorID: item.tenorID,
-              tenorName: item.tenorName,
-              currentBid: item.bid,
-              currentAsk: item.ask,
-              lastBid: findData.bid,
-              lastAsk: findData.ask,
-              dateTime: item.dateTime,
-            };
-          } else {
-            return {
-              tenorID: item.tenorID,
-              tenorName: item.tenorName,
-              currentBid: item.bid,
-              currentAsk: item.ask,
-              lastBid: "",
-              lastAsk: "",
-              dateTime: item.dateTime,
-            };
-          }
-        });
-        setForwardsForTreasuryBranch(newDataMap);
-      } catch (error) {
-        console.log(error, "errorerrorerrorerror");
-      }
-    }
-  }, [getTenorWiseForwardsRates]);
+  }, [getDashboardForwards]);
 
   const handleDeleteTenorRecord = (record) => {
     const filteredRecords = forwardsForTreasuryBranch.filter(
@@ -167,8 +131,6 @@ const ForwardsForTreasuryAndBranchTable = ({
     } catch (error) {
       console.log(error);
     }
-
-
   };
 
   const handlePublishForwards = () => {

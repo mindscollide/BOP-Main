@@ -169,7 +169,12 @@ const PublishNonFeDiscountingRatesRM = {
   RequestMethod: "ServiceManager.PublishNonFEDiscountingRates",
 };
 
+const getDealerDasboardDataRM = {
+  RequestMethod: "ServiceManager.GetDealerDashboardData",
+};
+
 export {
+  getDealerDasboardDataRM,
   GetFeDiscountingRM,
   PublishFeDiscountingRM,
   GetNonFeDiscountingRatesRM,
