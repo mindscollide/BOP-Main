@@ -152,6 +152,7 @@ const saveChatRM = {
 const UploadDocumentRM = {
   RequestMethod: "ServiceManager.UploadDocuments",
 };
+
 const DownloadFileRM = {
   RequestMethod: "ServiceManager.DownloadFile",
 };
@@ -159,12 +160,15 @@ const DownloadFileRM = {
 const GetFeDiscountingRM = {
   RequestMethod: "ServiceManager.GetFEDiscountingRates",
 };
+
 const PublishFeDiscountingRM = {
   RequestMethod: "ServiceManager.PublishFEDiscountingRates",
 };
+
 const GetNonFeDiscountingRatesRM = {
   RequestMethod: "ServiceManager.GetNonFEDiscountingRates",
 };
+
 const PublishNonFeDiscountingRatesRM = {
   RequestMethod: "ServiceManager.PublishNonFEDiscountingRates",
 };
@@ -173,7 +177,11 @@ const getDealerDasboardDataRM = {
   RequestMethod: "ServiceManager.GetDealerDashboardData",
 };
 
+const GetAllInstrumentsRM = {
+  RequestMethod: "ServiceManager.GetAllInstruments",
+}
 export {
+  GetAllInstrumentsRM,
   getDealerDasboardDataRM,
   GetFeDiscountingRM,
   PublishFeDiscountingRM,

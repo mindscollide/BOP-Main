@@ -15,6 +15,8 @@ const FeDiscountingTable = () => {
   const navigate = useNavigate();
   const [columnsData, setColumnsData] = useState([]);
   const [rowData, setRowData] = useState([]);
+  const getAllInstrument = useSelector((state) => state)
+  console.log(getAllInstrument, "getAllInstrumentgetAllInstrument")
   const getDashboardForwards = useSelector(
     (state) => state.dealerReducer.getDealerDashboardData
   );
@@ -24,41 +26,82 @@ const FeDiscountingTable = () => {
   const getAllTenorsData = useSelector(
     (state) => state.dealerReducer.getAllTenors
   );
-  // useEffect(() => {
-  //   dispatch(GetFEDiscountingTableApi({ navigate }));
-  // }, []);
-  console.log({ getFeDiscountingData, getAllTenorsData }, "ratesrates");
+  console.log(getAllTenorsData, "getAllTenorsDatagetAllTenorsData")
 
   useEffect(() => {
     if (getDashboardForwards !== null && getAllTenorsData !== null) {
       try {
         const { feDiscountingRates } = getDashboardForwards;
         const { tenors } = getAllTenorsData;
-        console.log(feDiscountingRates, "ratesrates");
-        const { discountRates } = generateData(1, tenors, null, null, feDiscountingRates);
-        if (discountRates && discountRates.length > 0) {
-          setRowData(discountRates);
+        const tenorMap = {};
+        let discountRatesResult = []
+
+        feDiscountingRates.forEach((discValue) => {
+          console.log(discValue, "discValuediscValue");
+          const tenor = tenors.find((t) => t.tenorID === discValue.tenorID);
+  
+          const tenorID = tenor ? tenor.tenorID : discValue.tenorID;
+          const instrumentName =
+            discValue?.instrumentName || discValue.instrumentName || "";
+          const instrumentID = discValue?.instumentID;
+  
+          if (!tenorMap[tenorID]) {
+            tenorMap[tenorID] = {
+              TenorID: tenorID,
+              tenorDays: tenor?.tenorDays || "",
+              Tenor: tenor?.tenorName || "",
+            };
+          }
+  
+          tenorMap[tenorID][`instrumentTitle_${instrumentName}`] = instrumentName;
+          tenorMap[tenorID][`instumentID_${instrumentName}`] = instrumentID;
+          tenorMap[tenorID][`${instrumentName}_rate`] = discValue.rate;
+        });
+  
+        discountRatesResult = Object.values(tenorMap);
+        console.log(discountRatesResult, "discountRatesResultdiscountRatesResult")
+        // const { discountRates } = generateData(
+        //   5,
+        //   tenors,
+        //   null,
+        //   null,
+        //   feDiscountingRates
+        // );
+
+        if (discountRatesResult && discountRatesResult.length > 0) {
+          setRowData(discountRatesResult);
 
           const ColumnData = createColumns(
-            discountRates,
+            discountRatesResult,
             5,
             InputFIeld,
             onInputChange,
             "amountValue"
           );
-          console.log(ColumnData, "ColumnDataColumnDataColumnData");
           setColumnsData(ColumnData);
         }
-        // console.log()
-        console.log(discountRates, "discountRatesResultdiscountRatesResult");
       } catch (error) {
         console.log(error, "ratesrates");
       }
     }
   }, [getDashboardForwards, getAllTenorsData]);
 
-  const onInputChange = (key, record, value) => {
-    console.log(key, record, value, "onInputChangeonInputChange");
+  const onInputChange = (record, value) => {
+    console.log({ record, value }, "onInputChangeonInputChange");
+    setRowData((prevState) => {
+      return prevState.map((stateData, index) => {
+        if (
+          stateData.InstrumentID === record.InstrumentID &&
+          stateData.TenorID === record.TenorID
+        ) {
+          return {
+            ...stateData,
+            value: formatPercentageInput(value),
+          };
+        }
+        return stateData;
+      });
+    });
   };
 
   const handlePublishDiscount = () => {};

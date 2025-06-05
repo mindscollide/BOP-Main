@@ -32,18 +32,36 @@ const NonFeDiscountingTable = () => {
     if (getDashboardForwards !== null && getAllTenorsData !== null) {
       const { nonFEDiscountingRates } = getDashboardForwards;
       const { tenors } = getAllTenorsData;
-      console.log(nonFEDiscountingRates, "ratesrates");
-      const { discountRates } = generateData(
-        1,
-        tenors,
-        null,
-        null,
-        nonFEDiscountingRates
-      );
-      if (discountRates && discountRates.length > 0) {
-        setTableData(discountRates);
+      const tenorMap = {};
+      let discountRatesResult = [];
+
+      nonFEDiscountingRates.forEach((discValue) => {
+        console.log(discValue, "discValuediscValue");
+        const tenor = tenors.find((t) => t.tenorID === discValue.tenorID);
+
+        const tenorID = tenor ? tenor.tenorID : discValue.tenorID;
+        const instrumentName =
+          discValue?.instrumentName || discValue.instrumentName || "";
+        const instrumentID = discValue?.instumentID;
+
+        if (!tenorMap[tenorID]) {
+          tenorMap[tenorID] = {
+            TenorID: tenorID,
+            tenorDays: tenor?.tenorDays || "",
+            Tenor: tenor?.tenorName || "",
+          };
+        }
+
+        tenorMap[tenorID][`instrumentTitle_${instrumentName}`] = instrumentName;
+        tenorMap[tenorID][`instumentID_${instrumentName}`] = instrumentID;
+        tenorMap[tenorID][`${instrumentName}_rate`] = discValue.rate;
+      });
+
+      discountRatesResult = Object.values(tenorMap);
+      if (discountRatesResult && discountRatesResult.length > 0) {
+        setTableData(discountRatesResult);
         const ColumnData = createColumns(
-          discountRates,
+          discountRatesResult,
           5,
           InputFIeld,
           onInputChange,

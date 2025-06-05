@@ -6,7 +6,7 @@ import {
 import { resetAndForgotPassword } from "../../container/loginScreens/forgetPassword/forgotPassword_Actions";
 import { setCustomHeaders } from "@/common/utils";
 import { refreshTokenAction } from "../../container/loginScreens/authActions/refreshToken";
-import { getAllCategoriesAction } from "@/components/utils/globalApis";
+import { getAllCategoriesAction, getAllInstrumentsApi } from "@/components/utils/globalApis";
 import {
   createCorporateCreatePasswordApi,
   validateLinkForCorporateCreatePasswordApi,
@@ -26,6 +26,7 @@ const authSlice = createSlice({
     isValidatedCreatePasswordString: null,
     passwordCreated: null,
     logout: null,
+    getAllInstruments: null
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -128,7 +129,7 @@ const authSlice = createSlice({
         (state, { payload }) => {
           state.Loader = false;
           state.isValidatedCreatePasswordString = null;
-          state.responseMessage = payload.message;
+          state.responseMessage = payload;
         }
       )
       .addCase(createCorporateCreatePasswordApi.pending, (state) => {
@@ -147,7 +148,7 @@ const authSlice = createSlice({
         (state, { payload }) => {
           state.Loader = false;
           state.passwordCreated = null;
-          state.responseMessage = payload.message;
+          state.responseMessage = payload;
         }
       )
       .addCase(LogoutApi.pending, (state) => {
@@ -161,7 +162,17 @@ const authSlice = createSlice({
       .addCase(LogoutApi.rejected, (state, { payload }) => {
         state.Loader = false;
         state.logout = null;
+        state.responseMessage = payload;
+      }).addCase(getAllInstrumentsApi.pending, (state) => {
+        state.Loader = true;
+      }).addCase(getAllInstrumentsApi.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.getAllInstruments = payload.response;
         state.responseMessage = payload.message;
+      }).addCase(getAllInstrumentsApi.rejected, (state, { payload }) => {
+        state.Loader = false;
+        state.getAllInstruments = null;
+        state.responseMessage = payload;
       });
   },
 });

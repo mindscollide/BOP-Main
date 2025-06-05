@@ -20,7 +20,7 @@ import createPostAPI from "@/utils/axiosInstance";
 // Define the login async thunk
 export const clearRatesAction = createAsyncThunk(
   "uploadRate/clearRate", // A unique action type string
-  async ({ navigate, Data }, { rejectWithValue }) => {
+  async ({ navigate, Data }, { rejectWithValue, dispatch }) => {
     try {
       let clearRates = createPostAPI(
         uploadRatesApi,
@@ -30,9 +30,16 @@ export const clearRatesAction = createAsyncThunk(
       const response = await clearRates(Data);
       const { responseCode } = response.data;
 
-      const { isExecuted, responseMessage } = response.data.responseResult;
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
+      }
+
       if (responseCode === 417) {
-      } else if (response.data.responseCode === 200) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(clearRatesAction({ navigate, Data }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (
             responseMessage
@@ -77,6 +84,8 @@ export const clearRatesAction = createAsyncThunk(
           console.log("", response.data);
           return rejectWithValue("Something went wrong");
         }
+      } else {
+        return rejectWithValue("Something went wrong");
       }
     } catch (error) {
       console.log(error);
@@ -106,6 +115,7 @@ export const getLastPublishRatesAction = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        dispatch(getLastPublishRatesAction({ navigate }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -180,11 +190,11 @@ export const PublishNewRatesAction = createAsyncThunk(
         return rejectWithValue("Unauthorized access, please login again");
       }
 
-      const { isExecuted, responseMessage } = response.data.responseResult;
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(PublishNewRatesAction({ navigate, Data }));
-      } else if (response.data.responseCode === 200) {
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (
             responseMessage
@@ -263,11 +273,11 @@ export const marketOnOffAction = createAsyncThunk(
         return rejectWithValue("Unauthorized access, please login again");
       }
 
-      const { isExecuted, responseMessage } = response.data.responseResult;
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(marketOnOffAction({ navigate, Data }));
-      } else if (response.data.responseCode === 200) {
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (
             responseMessage
@@ -312,6 +322,8 @@ export const marketOnOffAction = createAsyncThunk(
           console.log("", response.data);
           return rejectWithValue("Something went wrong");
         }
+      } else {
+        return rejectWithValue("Something went wrong");
       }
     } catch (error) {
       console.log(error);
@@ -324,7 +336,7 @@ export const marketOnOffAction = createAsyncThunk(
 // Define the login async thunk
 export const getAllTenorsAction = createAsyncThunk(
   "uploadRate/getAllTenors", // A unique action type string
-  async ({}, { rejectWithValue }) => {
+  async ({ navigate }, { rejectWithValue, dispatch }) => {
     try {
       let getAllTenors = createPostAPI(
         uploadRatesApi,
@@ -335,7 +347,15 @@ export const getAllTenorsAction = createAsyncThunk(
 
       const { responseCode } = response.data;
 
+      if (responseCode === 401) {
+        navigate("/");
+
+        return rejectWithValue("Something-went-wrong");
+      }
+
       if (responseCode === 417) {
+        dispatch(refreshTokenAction({ navigate }));
+        dispatch(getAllTenorsAction({ navigate }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -918,7 +938,7 @@ export const getDealerDashboardApi = createAsyncThunk(
       }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(getDealerDashboardApi({ navigate, Data }));
+        dispatch(getDealerDashboardApi({ navigate }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {

@@ -23,7 +23,6 @@ export const generateData = (
           (insturmentData) =>
             insturmentData.instrumentID === discValue.instrumentID
         );
-
         const discountRateValue = {
           key: `index ${index + 1}`,
           Tenor: findTenorName ? findTenorName.tenorName : "",
@@ -65,7 +64,8 @@ export const generateData = (
           InstrumentID: findInstrumentName
             ? findInstrumentName.instrumentID
             : 0,
-          value: discValue.rate,
+          [`${findInstrumentName.instrumentName.toLowerCase()}-rate`]:
+            discValue.rate,
         };
 
         discountRatesResult.push(discountRateValue);
@@ -127,6 +127,31 @@ export const generateData = (
 
         forwardsRatesResult.push(forwardRateData);
       });
+    } else if (columnValue === 5) {
+      const tenorMap = {};
+
+      discountRates.forEach((discValue) => {
+        const tenor = tenors.find((t) => t.tenorID === discValue.tenorID);
+
+        const tenorID = tenor ? tenor.tenorID : discValue.tenorID;
+        const instrumentName =
+          discValue?.instrumentName || discValue.instrumentName || "";
+        const instrumentID = discValue?.instumentID;
+
+        if (!tenorMap[tenorID]) {
+          tenorMap[tenorID] = {
+            TenorID: tenorID,
+            tenorDays: tenor?.tenorDays || "",
+            Tenor: tenor?.tenorName || "",
+          };
+        }
+
+        tenorMap[tenorID][`instrumentTitle_${instrumentName}`] = instrumentName;
+        tenorMap[tenorID][`instumentID_${instrumentName}`] = instrumentID;
+        tenorMap[tenorID][`${instrumentName}_rate`] = discValue.rate;
+      });
+
+      discountRatesResult = Object.values(tenorMap);
     }
   } catch (error) {
     console.log(error, "generateDatagenerateData");
@@ -146,7 +171,13 @@ export const generateData = (
  * @param {number} value - Determines the type of columns to create (1 for Discount, others for Forwards).
  * @returns {Array} - An array of column configurations for the Ant Design table.
  */
-export const createColumns = (data, value, InputFIeld, onInputChange, InputClassName) => {
+export const createColumns = (
+  data,
+  value,
+  InputFIeld,
+  onInputChange,
+  InputClassName
+) => {
   let baseColumns;
   if (value === 3) {
     baseColumns = [
@@ -268,42 +299,45 @@ export const createColumns = (data, value, InputFIeld, onInputChange, InputClass
         return acc; // Return the accumulator with newly added column if applicable
       }, []);
     } else if (value === 5) {
-      // Base column that will always be present, containing the Tenor column
       baseColumns = [
         {
-          title: "Tenor", // Empty title for a merged header style
-          dataIndex: "Tenor", // No data index for this parent column
-          key: "tenor", // Key for the parent column
-          align: "center", // Alignment (empty for this parent column)
-          width: 80, // Set column width
+          title: "Tenor",
+          dataIndex: "Tenor",
+          key: "tenor",
+          align: "center",
+          width: 80,
         },
       ];
-      // Create Discount columns
-      instrumentColumns = data.reduce((acc, item) => {
-        const instrument = item.instrumentTitle;
 
-        // Check if the instrument column already exists in acc
-        if (!acc.find((col) => col.title === instrument)) {
-          acc.push({
-            title: instrument, // Title of the instrument column
-            key: instrument, // Unique key for the instrument column
-            width: 100, // Set column width
-            dataIndex: "value",
-            align: "center",
-            render: (text, record) => {
-              return (
-                <InputFIeld
-                  value={text}
-                  onChange={(e) => onInputChange(text, record, e.target.value)}
-                  applyClass={InputClassName} // Apply custom class for styling
-                />
-              );
-            },
-          });
-        }
+      // Extract unique instruments from data keys
+      const instrumentSet = new Set();
 
-        return acc; // Return the accumulator with newly added column if applicable
-      }, []);
+      data.forEach((item) => {
+        Object.keys(item).forEach((key) => {
+          if (key.endsWith("_rate")) {
+            const instrumentName = key.replace("_rate", "");
+            instrumentSet.add(instrumentName);
+          }
+        });
+      });
+
+      // Create columns based on instruments
+      instrumentColumns = Array.from(instrumentSet).map((instrument) => ({
+        title: instrument.toUpperCase(), // Human-readable title
+        key: instrument,
+        dataIndex: `${instrument}_rate`,
+        width: 100,
+        align: "center",
+        render: (text, record) => (
+          <InputFIeld
+            value={record[`${instrument}_rate`]}
+            onChange={(e) =>
+              onInputChange(record.TenorID, instrument, e.target.value)
+            }
+            applyClass={InputClassName}
+          />
+        ),
+      }));
     }
   } catch (error) {
     console.error("Error creating columns:", error);
@@ -314,4 +348,26 @@ export const createColumns = (data, value, InputFIeld, onInputChange, InputClass
 
   // Combine base columns and dynamically generated instrument columns
   return [...baseColumns, ...instrumentColumns];
+};
+
+export const transformRatesByTenor = (data = []) => {
+  const grouped = {};
+
+  data.forEach((item) => {
+    const { tenorID, instumentID, instrumentName, rate, dateTime } = item;
+    const upperName = instrumentName?.toUpperCase();
+
+    if (!grouped[tenorID]) {
+      grouped[tenorID] = {
+        tenorID,
+        dateTime,
+      };
+    }
+
+    grouped[tenorID][`instumentID_${upperName}`] = instumentID;
+    grouped[tenorID][`instrumentName_${upperName}`] = instrumentName;
+    grouped[tenorID][`${upperName}-rate`] = rate;
+  });
+
+  return Object.values(grouped);
 };
