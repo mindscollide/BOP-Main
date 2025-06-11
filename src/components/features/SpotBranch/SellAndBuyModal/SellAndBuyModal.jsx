@@ -1,18 +1,20 @@
 import React, { useState } from "react";
 import "./SellAndBuyModal.css";
 import GlobalModal from "../../../common/globalModal/Modal";
-import { useModal } from "../../../../context/ModalContext";
 import { Col, Row } from "react-bootstrap";
 import InputFIeld from "../../../common/inputField/InputField";
 import SelectDropdown from "../../../common/selectDropdown/SelectDropdown";
 import CustomButton from "../../../common/globalButton/button";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { setISellAndBuyModal } from "@/store/modalSlice/modalSlicer";
 const SellAndBuyModal = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { iSellAndBuyModal, setISellAndBuyModal } = useModal();
-
+  const iSellAndBuyModal = useSelector(
+    (state) => state.modalReducer.iSellAndBuyModal
+  );
   //Local State
   const [customerName, setCustomerName] = useState("");
   const [amountData, setAmountData] = useState("");
@@ -78,8 +80,8 @@ const SellAndBuyModal = () => {
     <div>
       <GlobalModal
         show={iSellAndBuyModal}
-        backdrop="static"
-        onHide={() => setISellAndBuyModal(false)}
+        backdrop='static'
+        onHide={() => dispatch(setISellAndBuyModal(false))}
         centered={true}
         className={"ModalClassNameIsBuySell"}
         bodyClassName={"IsBuySellBodyModalClass"}
@@ -97,9 +99,8 @@ const SellAndBuyModal = () => {
                     lg={4}
                     md={4}
                     sm={12}
-                    className="d-flex align-items-center"
-                  >
-                    <span className="CustomernameLabel">Customer Name*</span>
+                    className='d-flex align-items-center'>
+                    <span className='CustomernameLabel'>Customer Name*</span>
                   </Col>
                   <Col lg={8} md={8} sm={12}>
                     <InputFIeld
@@ -111,14 +112,13 @@ const SellAndBuyModal = () => {
                     />
                   </Col>
                 </Row>
-                <Row className="mt-4">
+                <Row className='mt-4'>
                   <Col
                     lg={4}
                     md={4}
                     sm={12}
-                    className="d-flex align-items-center"
-                  >
-                    <span className="CustomernameLabel">Currency*</span>
+                    className='d-flex align-items-center'>
+                    <span className='CustomernameLabel'>Currency*</span>
                   </Col>
                   <Col lg={8} md={8} sm={12}>
                     <InputFIeld
@@ -129,14 +129,13 @@ const SellAndBuyModal = () => {
                     />
                   </Col>
                 </Row>
-                <Row className="mt-4">
+                <Row className='mt-4'>
                   <Col
                     lg={4}
                     md={4}
                     sm={12}
-                    className="d-flex align-items-center"
-                  >
-                    <span className="CustomernameLabel">Amount*</span>
+                    className='d-flex align-items-center'>
+                    <span className='CustomernameLabel'>Amount*</span>
                   </Col>
                   <Col lg={8} md={8} sm={12}>
                     <InputFIeld
@@ -148,14 +147,13 @@ const SellAndBuyModal = () => {
                     />
                   </Col>
                 </Row>
-                <Row className="mt-4">
+                <Row className='mt-4'>
                   <Col
                     lg={4}
                     md={4}
                     sm={12}
-                    className="d-flex align-items-center"
-                  >
-                    <span className="CustomernameLabel">Nature*</span>
+                    className='d-flex align-items-center'>
+                    <span className='CustomernameLabel'>Nature*</span>
                   </Col>
                   <Col lg={8} md={8} sm={12}>
                     <SelectDropdown
@@ -167,15 +165,14 @@ const SellAndBuyModal = () => {
               </Col>
               {/* Second Half Modal  */}
               <Col lg={6} md={6} sm={12}>
-                <Row className="UpperMarginRow"></Row>
-                <Row className="mt-4">
+                <Row className='UpperMarginRow'></Row>
+                <Row className='mt-4'>
                   <Col
                     lg={3}
                     md={3}
                     sm={12}
-                    className="d-flex align-items-center"
-                  >
-                    <span className="CustomernameLabel">Type*</span>
+                    className='d-flex align-items-center'>
+                    <span className='CustomernameLabel'>Type*</span>
                   </Col>
                   <Col lg={9} md={9} sm={12}>
                     <InputFIeld
@@ -186,14 +183,13 @@ const SellAndBuyModal = () => {
                     />
                   </Col>
                 </Row>
-                <Row className="mt-4">
+                <Row className='mt-4'>
                   <Col
                     lg={3}
                     md={3}
                     sm={12}
-                    className="d-flex align-items-center"
-                  >
-                    <span className="CustomernameLabel">A/c No</span>
+                    className='d-flex align-items-center'>
+                    <span className='CustomernameLabel'>A/c No</span>
                   </Col>
                   <Col lg={9} md={9} sm={12}>
                     <InputFIeld
@@ -205,14 +201,13 @@ const SellAndBuyModal = () => {
                     />
                   </Col>
                 </Row>
-                <Row className="mt-4">
+                <Row className='mt-4'>
                   <Col
                     lg={3}
                     md={3}
                     sm={12}
-                    className="d-flex align-items-center"
-                  >
-                    <span className="CustomernameLabel">LC No</span>
+                    className='d-flex align-items-center'>
+                    <span className='CustomernameLabel'>LC No</span>
                   </Col>
                   <Col lg={9} md={9} sm={12}>
                     <InputFIeld
@@ -235,8 +230,7 @@ const SellAndBuyModal = () => {
                 lg={12}
                 md={12}
                 sm={12}
-                className="d-flex justify-content-end"
-              >
+                className='d-flex justify-content-end'>
                 <CustomButton
                   value={"Confirm"}
                   className={"ConfirmbuttonClass"}

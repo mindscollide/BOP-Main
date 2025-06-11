@@ -1,6 +1,5 @@
 import IconElement from "@/components/common/IconElement/IconElement";
 import InputFIeld from "@/components/common/inputField/InputField";
-import { useModal } from "@/context/ModalContext";
 import styles from "./ChatBox.module.css";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -12,11 +11,19 @@ import moment from "moment";
 import { Col, Row } from "react-bootstrap";
 import { fileToBase64 } from "@/utils/converts";
 import { useMqtt } from "@/context/MqttContext";
+import { setChatModal } from "@/store/modalSlice/modalSlicer";
+// import { setIncomingChat } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 // import styles from "./ChatBranch.css";
+
 const ChatBox = () => {
-  const { setChatModal, chatModalTransactionId } = useModal();
+  const chatModalTransactionId = useSelector(
+    (state) => state.modalReducer.chatModalTransactionId
+  );
   const [receiverId, setReceiverId] = useState(0);
   const { setIncomingChat, IncomingChat } = useMqtt();
+  // const IncomingChat = useSelector(
+  //   (state) => state.RealtimeActionsSlice.IncomingChat
+  // );
   console.log(IncomingChat, "IncomingChatIncomingChat");
   const [message, setMessage] = useState("");
   const [file, setFile] = useState(null);
@@ -66,6 +73,10 @@ const ChatBox = () => {
               (newChat) => newChat.chatMessageID === existingChat.chatMessageID
             );
             if (updatedChat) {
+              // let IncomingChatData = [...IncomingChat].filter(
+              //   (chat, index) =>
+              //     chat.chatMessageID !== updatedChat.chatMessageID
+              // );
               setIncomingChat((prevIncoming) => {
                 return prevIncoming.filter(
                   (chat, index) =>
@@ -100,7 +111,7 @@ const ChatBox = () => {
   }, [IncomingChat]); // Add all dependencies
 
   const handleClickClose = () => {
-    setChatModal(false);
+    dispatch(setChatModal(false));
   };
 
   const handleClickSaveChat = async (e) => {

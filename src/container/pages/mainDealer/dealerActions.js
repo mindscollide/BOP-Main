@@ -90,7 +90,7 @@ export const clearRatesAction = createAsyncThunk(
     } catch (error) {
       console.log(error);
       // Reject with error message
-      return rejectWithValue(error.response.data);
+      return rejectWithValue("Something went wrong");
     }
   }
 );
@@ -166,7 +166,7 @@ export const getLastPublishRatesAction = createAsyncThunk(
     } catch (error) {
       console.log(error);
       // Reject with error message
-      return rejectWithValue(error.response.data);
+      return rejectWithValue("Something went wrong");
     }
   }
 );
@@ -186,13 +186,14 @@ export const PublishNewRatesAction = createAsyncThunk(
       const { responseCode } = response.data;
       console.log(responseCode, "responseCoderesponseCode");
       if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
+        return rejectWithValue("401");
       }
 
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
-        dispatch(PublishNewRatesAction({ navigate, Data }));
+        // Inside your thunk
+        return rejectWithValue("417", {
+          originalAction: PublishNewRatesAction({ navigate, Data }),
+        });
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -251,7 +252,7 @@ export const PublishNewRatesAction = createAsyncThunk(
     } catch (error) {
       console.log(error);
       // Reject with error message
-      return rejectWithValue(error.response.data);
+      return rejectWithValue("Something went wrong");
     }
   }
 );
@@ -328,7 +329,7 @@ export const marketOnOffAction = createAsyncThunk(
     } catch (error) {
       console.log(error);
       // Reject with error message
-      return rejectWithValue(error.response.data);
+      return rejectWithValue("Something went wrong");
     }
   }
 );
@@ -406,7 +407,7 @@ export const getAllTenorsAction = createAsyncThunk(
     } catch (error) {
       console.log(error);
       // Reject with error message
-      return rejectWithValue(error.response.data);
+      return rejectWithValue("Something went wrong");
     }
   }
 );
@@ -415,7 +416,7 @@ export const getAllTenorsAction = createAsyncThunk(
 export const createTenorAction = createAsyncThunk(
   "uploadRate/createTenors", // A unique action type string
   async (
-    { navigate, Data, setCreateTenorModal, setCreateTenor },
+    { navigate, Data, setCreateTenor },
     { dispatch, rejectWithValue }
   ) => {
     try {
@@ -438,7 +439,6 @@ export const createTenorAction = createAsyncThunk(
           createTenorAction({
             navigate,
             Data,
-            setCreateTenorModal,
             setCreateTenor,
           })
         );
@@ -452,7 +452,7 @@ export const createTenorAction = createAsyncThunk(
                 "UploadRate_UploadRateServiceManager_CreateTenor_01".toLowerCase()
               )
           ) {
-            setCreateTenorModal(false);
+            dispatch(setCreateTenorModal(false))
             setCreateTenor({
               noOfDays: "",
               tenorName: "",
@@ -502,12 +502,12 @@ export const createTenorAction = createAsyncThunk(
           return rejectWithValue("Something went wrong");
         }
       } else {
-        return rejectWithValue(error.response.data);
+        return rejectWithValue("Something went wrong");
       }
     } catch (error) {
       console.log(error);
       // Reject with error message
-      return rejectWithValue(error.response.data);
+      return rejectWithValue("Something went wrong");
     }
   }
 );
@@ -542,53 +542,6 @@ export const getTenorWiseForwardsAction = createAsyncThunk(
                 "UploadRate_UploadRateServiceManager_GetTenorWiseForwardRates_01".toLowerCase()
               )
           ) {
-            let newData = {
-              responseResult: {
-                currentTenorWiseForwardRates: [
-                  {
-                    tenorID: 1,
-                    bid: 1.25,
-                    ask: 1.3,
-                    dateTime: "20240808143452",
-                  },
-                  {
-                    tenorID: 2,
-                    bid: 1.35,
-                    ask: 1.4,
-                    dateTime: "20240808143452",
-                  },
-                  {
-                    tenorID: 3,
-                    bid: 1.45,
-                    ask: 1.5,
-                    dateTime: "20240808143452",
-                  },
-                ],
-                lastTenorWiseForwardRates: [
-                  {
-                    tenorID: 1,
-                    bid: 1.2,
-                    ask: 1.25,
-                    dateTime: "20240808143452",
-                  },
-                  {
-                    tenorID: 2,
-                    bid: 1.3,
-                    ask: 1.35,
-                    dateTime: "20240808143452",
-                  },
-                  {
-                    tenorID: 3,
-                    bid: 1.4,
-                    ask: 1.45,
-                    dateTime: "20240808143452",
-                  },
-                ],
-                responseMessage:
-                  "UploadRate_UploadRateServiceManager_GetTenorWiseForwardRates_01",
-                isExecuted: true,
-              },
-            };
             return {
               response: response.data.responseResult,
               message: "Successfully",
@@ -631,7 +584,7 @@ export const getTenorWiseForwardsAction = createAsyncThunk(
     } catch (error) {
       console.log(error);
       // Reject with error message
-      return rejectWithValue(error.response.data);
+      return rejectWithValue("Something went wrong");
     }
   }
 );
@@ -711,12 +664,12 @@ export const PublishTenorWiseForwardsAction = createAsyncThunk(
           return rejectWithValue("Something went wrong");
         }
       } else {
-        return rejectWithValue(error.response.data);
+        return rejectWithValue("Something went wrong");
       }
     } catch (error) {
       console.log(error);
       // Reject with error message
-      return rejectWithValue(error.response.data);
+      return rejectWithValue("Something went wrong");
     }
   }
 );
@@ -835,7 +788,7 @@ export const getDiscountingRatesAction = createAsyncThunk(
     } catch (error) {
       console.log(error);
       // Reject with error message
-      return rejectWithValue(error.response.data);
+      return rejectWithValue("Something went wrong");
     }
   }
 );
@@ -912,12 +865,12 @@ export const publishDiscountingRatesAction = createAsyncThunk(
           return rejectWithValue("Something went wrong");
         }
       } else {
-        return rejectWithValue(error.response.data);
+        return rejectWithValue("Something went wrong");
       }
     } catch (error) {
       console.log(error);
       // Reject with error message
-      return rejectWithValue(error.response.data);
+      return rejectWithValue("Something went wrong");
     }
   }
 );
@@ -994,12 +947,12 @@ export const getDealerDashboardApi = createAsyncThunk(
           return rejectWithValue("Something went wrong");
         }
       } else {
-        return rejectWithValue(error.response.data);
+        return rejectWithValue("Something went wrong");
       }
     } catch (error) {
       console.log(error);
       // Reject with error message
-      return rejectWithValue(error.response.data);
+      return rejectWithValue("Something went wrong");
     }
   }
 );

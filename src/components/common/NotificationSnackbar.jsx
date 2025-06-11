@@ -1,18 +1,21 @@
 import React, { useEffect } from "react";
-import { SmileOutlined } from "@ant-design/icons";
-import { Button, notification } from "antd";
+import { notification } from "antd";
+import IconElement from "./IconElement/IconElement";
 const NotificationSnackBar = ({ message, description }) => {
   const [api, contextHolder] = notification.useNotification();
+
+
   useEffect(() => {
     if (message !== "") {
       api.open({
+        key: "notification-snackbar",
         message: message,
         description: description,
-        // duration: 200,
-        icon: <SmileOutlined style={{ color: "#108ee9" }} />,
+        closeIcon: <IconElement iconClass={"icon-close"} />,
+        className: "custom-notification-snackbar",
       });
     }
-  }, [message, Math.random()]);
+  }, [message]);
 
   return <>{contextHolder}</>;
 };

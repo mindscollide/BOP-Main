@@ -80,21 +80,21 @@ export const createCorporateCreatePasswordApi = createAsyncThunk(
       if (response.data.responseCode === 200) {
         const {
           isExecuted,
+          user: {
+            corporate,
+            employeeID,
+            ldapAccount,
+            userID,
+            firstName,
+            email,
+            contactNumber,
+            userRoleID,
+            userStatusID,
+          },
           responseMessage,
-          roleID,
-          userID,
           token,
-          userName,
-          firstName,
-          lastName,
           refreshToken,
-          corporateID,
         } = response.data.responseResult;
-        console.log(
-          responseMessage,
-          isExecuted,
-          "responseMessageresponseMessage"
-        );
         if (isExecuted) {
           if (
             responseMessage
@@ -103,9 +103,18 @@ export const createCorporateCreatePasswordApi = createAsyncThunk(
                 "ERM_AuthService_AuthManager_CreateCorporateUserPassword_01".toLowerCase()
               )
           ) {
-            localStorage.setItem("refreshToken", refreshToken);
             localStorage.setItem("token", token);
-            roleBasedNavigation(navigate, roleID);
+            localStorage.setItem("refreshToken", refreshToken);
+            localStorage.setItem("name", firstName);
+            localStorage.setItem("email", email);
+            localStorage.setItem("roleId", userRoleID);
+            localStorage.setItem("userID", userID);
+            localStorage.setItem("corporate", JSON.stringify(corporate));
+            localStorage.setItem("employeeID", employeeID);
+            localStorage.setItem("ldapAccount", ldapAccount);
+            localStorage.setItem("contactNumber", contactNumber);
+            localStorage.setItem("userStatusID", userStatusID);
+            roleBasedNavigation(navigate, userRoleID);
             return {
               response: response.data.responseResult,
               message: "Successfully Created",
@@ -150,6 +159,22 @@ export const createCorporateCreatePasswordApi = createAsyncThunk(
               )
           ) {
             return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "ERM_AuthService_AuthManager_CreateCorporateUserPassword_07".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Password Created but is InActive");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "ERM_AuthService_AuthManager_CreateCorporateUserPassword_08".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something-went-wrong");
           } else {
             return rejectWithValue("Something-went-wrong");
           }

@@ -95,7 +95,7 @@ export const getAllInstrumentsApi = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "SystemAdmin_SystemAdminManager_GetAllInstruments_01".toLowerCase()
+                "ERM_AuthService_CommonManager_GetAllInstruments_01".toLowerCase()
               )
           ) {
             return {
@@ -106,7 +106,7 @@ export const getAllInstrumentsApi = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "SystemAdmin_SystemAdminManager_GetAllInstruments_02".toLowerCase()
+                "ERM_AuthService_CommonManager_GetAllInstruments_02".toLowerCase()
               )
           ) {
             return rejectWithValue("No Data available");
@@ -114,7 +114,7 @@ export const getAllInstrumentsApi = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "SystemAdmin_SystemAdminManager_GetAllInstruments_03".toLowerCase()
+                "ERM_AuthService_CommonManager_GetAllInstruments_03".toLowerCase()
               )
           ) {
             return rejectWithValue("Something went wrong");

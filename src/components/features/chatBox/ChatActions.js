@@ -6,6 +6,7 @@ import {
 } from "@/common/api_config";
 import { chatApi } from "@/common/apiend_points";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
+import { setChatModal, setChatModalTransactionId } from "@/store/modalSlice/modalSlicer";
 import createPostAPI from "@/utils/axiosInstance";
 import { fileToBase64 } from "@/utils/converts";
 import { formatDateToUTC } from "@/utils/formatters";
@@ -14,7 +15,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 export const getAllChatByTransactionId = createAsyncThunk(
   "chat/getAllUserChatByTransactionId",
   async (
-    { navigate, Data, setChatModal, setChatModalTransactionId },
+    { navigate, Data },
     { rejectWithValue, dispatch }
   ) => {
     try {
@@ -35,8 +36,7 @@ export const getAllChatByTransactionId = createAsyncThunk(
           getAllChatByTransactionId({
             navigate,
             Data,
-            setChatModal,
-            setChatModalTransactionId,
+            
           })
         );
       } else if (responseCode === 200) {
@@ -52,8 +52,8 @@ export const getAllChatByTransactionId = createAsyncThunk(
               "Chat_ChatServiceManager_GetAllChatByTransactionID_01".toLowerCase()
             )
         ) {
-          setChatModal(true);
-          setChatModalTransactionId(Data.TranscationID);
+          dispatch(setChatModal(true));
+          dispatch(setChatModalTransactionId(Data.TranscationID));
           return {
             response: response.data.responseResult,
             message: "Data Found",
@@ -65,7 +65,7 @@ export const getAllChatByTransactionId = createAsyncThunk(
               "Chat_ChatServiceManager_GetAllChatByTransactionID_02".toLowerCase()
             )
         ) {
-          setChatModal(true);
+          dispatch(setChatModal(true));
           setChatModalTransactionId(Data.TranscationID);
           return rejectWithValue("No Found");
         } else if (

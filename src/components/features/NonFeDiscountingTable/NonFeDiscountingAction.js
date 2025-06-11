@@ -11,11 +11,11 @@ export const GetNonFEDiscountingTableApi = createAsyncThunk(
   "uploadRates/GetNonFeDiscounting",
   async ({ navigate }, { rejectWithValue, dispatch }) => {
     try {
-      const getFeDiscounting = createPostAPI(
+      const getNonFeDiscounting = createPostAPI(
         uploadRatesApi,
         GetNonFeDiscountingRatesRM.RequestMethod
       );
-      const response = await getFeDiscounting();
+      const response = await getNonFeDiscounting();
       console.log(response, "result");
       const { responseCode } = response.data;
       console.log(responseCode, "result");
@@ -89,11 +89,11 @@ export const PublishNonFEDiscountingTableApi = createAsyncThunk(
   "uploadRates/PublishNonFeDiscounting",
   async ({ Data, navigate }, { rejectWithValue, dispatch }) => {
     try {
-      const publishFeDiscounting = createPostAPI(
+      const publishNonFeDiscounting = createPostAPI(
         uploadRatesApi,
         PublishNonFeDiscountingRatesRM.RequestMethod
       );
-      const response = await publishFeDiscounting(Data);
+      const response = await publishNonFeDiscounting(Data);
       console.log(response, "result");
       const { responseCode } = response.data;
       if (responseCode === 401) {
@@ -106,7 +106,7 @@ export const PublishNonFEDiscountingTableApi = createAsyncThunk(
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(PublishNonFEDiscountingTableApi({ Data, navigate }));
       } else if (responseCode === 200) {
-        const { isExecuted, responseMessage } = response.responseResult;
+        const { isExecuted, responseMessage } = response.data.responseResult;
         if (!isExecuted) {
           return rejectWithValue(responseMessage);
         }

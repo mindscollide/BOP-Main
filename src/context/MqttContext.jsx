@@ -8,12 +8,29 @@ import React, {
 } from "react";
 import Paho from "paho-mqtt";
 import { formatDateToUTC, secureRandomString } from "@/utils/formatters";
+import { useDispatch } from "react-redux";
+import {
+  FeDiscountingPublishedAction,
+  NonFeDiscountingPublishedAction,
+  currentRatePublishedAction,
+  marketStatusUpdated,
+  setMarketTimingsUpdated,
+  tenorWiseFowardsRatesPublishedActions,
+} from "@/store/realtimeActionsSlicer/realtimeActionSlice";
+import { useNavigate } from "react-router-dom";
+import { LogoutApi } from "@/container/loginScreens/authActions/logoutAction";
 
 const MqttContext = createContext();
 let externalConnectFn = null; // 👈 This will hold the function reference
+let mqttReadyResolve;
 
-export const MqttProvider = ({ dispatch, children }) => {
+export const mqttReady = new Promise((resolve) => {
+  mqttReadyResolve = resolve;
+});
+
+export const MqttProvider = ({ children }) => {
   const token = localStorage.getItem("token");
+  const dispatch = useDispatch();
   const userID = localStorage.getItem("userID");
   const IsBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
   const IsCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
@@ -31,9 +48,9 @@ export const MqttProvider = ({ dispatch, children }) => {
     : null;
 
   const [isConnected, setIsConnected] = useState(false);
-  const [marketTimingsUpdated, setMarketTimingsUpdated] = useState(null);
   const [IncomingChat, setIncomingChat] = useState([]);
   const [tenorsCreated, setTenorsCreated] = useState(null);
+
   const [subscribedTopics, setSubscribedTopics] = useState([]);
   const clientRef = useRef(null);
   const randomString = secureRandomString();
@@ -55,10 +72,7 @@ export const MqttProvider = ({ dispatch, children }) => {
             );
           },
           onFailure: (error) => {
-            console.log(
-              `Failed to subscribe to ${topic}`,
-              error.errorMessage
-            );
+            console.log(`Failed to subscribe to ${topic}`, error.errorMessage);
           },
         });
       }
@@ -102,9 +116,10 @@ export const MqttProvider = ({ dispatch, children }) => {
     clientRef.current.onMessageArrived = (message) => {
       try {
         const data = JSON.parse(message.payloadString);
+        console.log("MQTT message arrived:", data);
         switch (data.payload.message) {
           case "MARKET_TIME_UPDATED":
-            setMarketTimingsUpdated(data.payload);
+            dispatch(setMarketTimingsUpdated(data.payload));
             break;
           case "INCOMING_CHAT":
             const chatObj = {
@@ -112,10 +127,33 @@ export const MqttProvider = ({ dispatch, children }) => {
               creationDateTime: formatDateToUTC(new Date()),
             };
             setIncomingChat((prev) => [...prev, chatObj]);
+            // dispatch(setIncomingChat(chatObj));
             break;
           case "TENOR_CREATED":
             setTenorsCreated(data.payload);
+            // dispatch(setTenorsCreated(data.payload));
             break;
+
+          case "CURRENT_USD_RATES_PUBLISHED":
+            dispatch(currentRatePublishedAction(data.payload));
+            break;
+          case "FE_DISCOUNTING_RATES_PUBLISHED":
+            dispatch(FeDiscountingPublishedAction(data.payload));
+            break;
+          case "TENOR_WISE_FORWARD_RATES_PUBLISHED":
+            dispatch(tenorWiseFowardsRatesPublishedActions(data.payload));
+            break;
+          case "NONFE_DISCOUNTING_RATES_PUBLISHED":
+            dispatch(NonFeDiscountingPublishedAction(data.payload));
+            break;
+          case "MARKET_STATUS_UPDATED":
+            dispatch(marketStatusUpdated(data.payload));
+            break;
+          case "BRANCH_STATUS_INACTIVE":
+            console.log(
+              "Branch status is inactive, disconnecting MQTT client."
+            );
+            // dispatch(LogoutApi({ navigate }));
           default:
             console.log("Unhandled MQTT message type:", data.payload.message);
         }
@@ -153,7 +191,10 @@ export const MqttProvider = ({ dispatch, children }) => {
   externalConnectFn = connectToMqtt;
 
   useEffect(() => {
-    if (token) connectToMqtt();
+    if (token) {
+      connectToMqtt();
+      mqttReadyResolve();
+    } // ✅ Now it's safe to call connectToMqttExternally
     return () => {
       if (clientRef.current?.isConnected()) {
         unsubscribeFromTopics([...subscribedTopics]);
@@ -177,11 +218,8 @@ export const MqttProvider = ({ dispatch, children }) => {
         subscribedTopics,
         subscribeToTopics,
         unsubscribeFromTopics,
-        marketTimingsUpdated,
-        setMarketTimingsUpdated,
         setIncomingChat,
         IncomingChat,
-        tenorsCreated,
         setTenorsCreated,
         connectToMqtt, // Optional: available in children components
       }}>

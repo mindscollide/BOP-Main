@@ -95,7 +95,7 @@ export const PublishFEDiscountingTableApi = createAsyncThunk(
       );
       const response = await publishFeDiscounting(Data);
       console.log(response, "result");
-      const { responseCode } = response;
+      const { responseCode } = response.data;
       if (responseCode === 401) {
         navigate("/");
         return rejectWithValue("Unauthorized access, please login again");
@@ -106,7 +106,7 @@ export const PublishFEDiscountingTableApi = createAsyncThunk(
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(PublishFEDiscountingTableApi({ Data, navigate }));
       } else if (responseCode === 200) {
-        const { isExecuted, responseMessage } = response.responseResult;
+        const { isExecuted, responseMessage } = response.data.responseResult;
         if (!isExecuted) {
           return rejectWithValue(responseMessage);
         }
@@ -118,7 +118,7 @@ export const PublishFEDiscountingTableApi = createAsyncThunk(
             )
         ) {
           return {
-            response: response.data.responseResult,
+            response: null,
             message: "FE Discounting Rates Published Successfully",
           };
         } else if (

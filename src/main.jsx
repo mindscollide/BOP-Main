@@ -10,8 +10,8 @@ import { GloballyModalProvider } from "./context/ModalContext.jsx";
 import { DealerAndTreasuryProvider } from "./context/DealerAndTreasuryContext.jsx";
 import { MqttProvider } from "./context/MqttContext.jsx";
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <MqttProvider>
-    <Provider store={store}>
+  <Provider store={store}>
+    <MqttProvider>
       <DealerAndTreasuryProvider>
         <GloballyModalProvider>
           <DragDropContext>
@@ -19,6 +19,6 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           </DragDropContext>
         </GloballyModalProvider>
       </DealerAndTreasuryProvider>
-    </Provider>
-  </MqttProvider>
+    </MqttProvider>
+  </Provider>
 );

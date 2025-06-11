@@ -19,6 +19,7 @@ import {
   marketOnOffAction,
   publishDiscountingRatesAction,
 } from "@/container/pages/mainDealer/dealerActions";
+import { formatCurrencyInput } from "@/utils/formatters";
 import { createSlice } from "@reduxjs/toolkit";
 
 const dealerReducer = createSlice({
@@ -43,8 +44,40 @@ const dealerReducer = createSlice({
     getNonFeDiscounting: null,
     publishNonFeDiscounting: null,
     getDealerDashboardData: null,
+    forwardsForTreasuryBranch: [],
+    categoryValue: {
+      value: 0,
+      label: "",
+    },
   },
-  reducers: {},
+  reducers: {
+    clearDealerResponseMessage: (state) => {
+      state.responseMessage = "";
+    },
+    setForwardsForTreasuryBranch: (state, action) => {
+      state.forwardsForTreasuryBranch = action.payload;
+    },
+    setCategoryValue: (state, action) => {
+      state.categoryValue = action.payload;
+    },
+    updateForwardItem: (state, action) => {
+      const { tenorID, view, value } = action.payload;
+      state.forwardsForTreasuryBranch = state.forwardsForTreasuryBranch.map(
+        (item) => {
+          if (item.tenorID === tenorID) {
+            return {
+              ...item,
+              currentBid:
+                view === "bid" ? formatCurrencyInput(value) : item.currentBid,
+              currentAsk:
+                view === "ask" ? formatCurrencyInput(value) : item.currentAsk,
+            };
+          }
+          return item;
+        }
+      );
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(marketOnOffAction.pending, (state) => {
@@ -268,5 +301,10 @@ const dealerReducer = createSlice({
       });
   },
 });
-
+export const {
+  clearDealerResponseMessage,
+  setForwardsForTreasuryBranch,
+  setCategoryValue,
+  updateForwardItem
+} = dealerReducer.actions;
 export default dealerReducer.reducer;

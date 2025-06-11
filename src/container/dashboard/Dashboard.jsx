@@ -3,30 +3,28 @@ import React, { useEffect } from "react";
 import Header from "@/components/layout/header/header";
 import GlobalNavbar from "@/components/layout/nav/Navbar";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { ResponseMessage } from "@/components/utils/ResponseMessageToast";
-import SettingModal from "@/components/features/settingsModal/settingModal";
-import { useModal } from "@/context/ModalContext";
 import ChatBox from "@/components/features/chatBox/ChatBox";
 import { useSelector } from "react-redux";
-import { connectToMqttExternally } from "@/context/MqttContext";
+import { connectToMqttExternally, mqttReady } from "@/context/MqttContext";
 import { useDispatch } from "react-redux";
 import { getAllInstrumentsApi } from "@/components/utils/globalApis";
 const Dashboard = () => {
   const { Content } = Layout;
   const dispatch = useDispatch();
+ 
   const navigate = useNavigate();
-  let token = localStorage.getItem("token");
   const location = useLocation();
-  const { chatModal, chatModalTransactionId } = useModal();
+  const chatModal = useSelector((state) => state.modalReducer.chatModal);
 
   useEffect(() => {
-    connectToMqttExternally();
+    setTimeout(() => {
+      connectToMqttExternally();
+    }, 0);
     dispatch(getAllInstrumentsApi({ navigate }));
   }, []);
   return (
     <Layout className='roboto-13'>
       {!location.pathname.includes("calculator") && <Header />}
-      <ResponseMessage />
 
       <GlobalNavbar />
       <Content>

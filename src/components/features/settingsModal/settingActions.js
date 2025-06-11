@@ -8,12 +8,13 @@ import { settingApi } from "@/common/apiend_points";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import createPostAPI from "@/utils/axiosInstance";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
+import { setSettingModal } from "@/store/modalSlice/modalSlicer";
 
 export const getUserSettingDataAPI = createAsyncThunk(
   "setting/getUserSetting",
   async (payload, { rejectWithValue, dispatch }) => {
-    const { navigate, setSettingModal } = payload;
- 
+    const { navigate } = payload;
+
     try {
       let getUserSetting = createPostAPI(
         settingApi,
@@ -32,7 +33,7 @@ export const getUserSettingDataAPI = createAsyncThunk(
         console.log(result, "result");
 
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(getUserSettingDataAPI({ navigate, setSettingModal }));
+        dispatch(getUserSettingDataAPI({ navigate }));
       } else if (responseCode === 200) {
         console.log(result, "result");
 
@@ -50,7 +51,7 @@ export const getUserSettingDataAPI = createAsyncThunk(
               "Setting_SettingServiceManager_GetUserSettings_01".toLowerCase()
             )
         ) {
-          setSettingModal(true);
+          dispatch(setSettingModal(true));
           return userSettingsList;
         } else if (
           responseMessage
@@ -82,38 +83,33 @@ export const getUserSettingDataAPI = createAsyncThunk(
 export const updateUserSettingDataAPI = createAsyncThunk(
   "setting/updateUserSetting",
   async (payload, { rejectWithValue, dispatch }) => {
-    const { navigate, setSettingModal, Data } = payload;
-    console.log(
-      navigate,
-      setSettingModal,
-      "getUserSettingDataAPIgetUserSettingDataAPI"
-    );
+    const { navigate, Data } = payload;
+
     try {
       let getUserSetting = createPostAPI(
         settingApi,
         updateUserSettingsRM.RequestMethod
       );
 
-      const result = await getUserSetting(Data);
-      console.log(result, "result");
-      const { responseCode } = result;
+      const response = await getUserSetting(Data);
+      console.log(response, "result");
+      const { responseCode } = response.data;
       console.log(responseCode, "result");
       if (responseCode === 401) {
         navigate("/");
         return rejectWithValue("Unauthorized access, please login again");
       }
       if (responseCode === 417) {
-        console.log(result, "result");
+        console.log(response, "result");
 
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(getUserSettingDataAPI({ navigate, setSettingModal }));
+        dispatch(getUserSettingDataAPI({ navigate }));
       } else if (responseCode === 200) {
-        console.log(result, "result");
+        console.log(response, "result");
 
-        const { isExecuted, responseMessage } =
-          result.responseResult;
+        const { isExecuted, responseMessage } = response.data.responseResult;
         if (!isExecuted) {
-          console.log(result, "result");
+          console.log(response, "result");
 
           return rejectWithValue(responseMessage);
         }
@@ -163,43 +159,30 @@ export const getMarkingTimingApi = createAsyncThunk(
         getMarketingTimingRM.RequestMethod
       );
 
-      const result = await getMarketTiming();
-      console.log(result, "result");
-      const { responseCode } = result;
+      const response = await getMarketTiming();
+      console.log(response, "result");
+      const { responseCode } = response.data;
       console.log(responseCode, "result");
-     if (responseCode === 401) {
+      if (responseCode === 401) {
         navigate("/");
         return rejectWithValue("Unauthorized access, please login again");
       }
       if (responseCode === 417) {
-        console.log(result, "result");
+        console.log(response, "result");
 
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(getMarkingTimingApi({ navigate }));
       } else if (responseCode === 200) {
-        console.log(result, "result");
+        console.log(response, "result");
 
         const {
           responseResult: { isExecuted, responseMessage },
-        } = result;
+        } = response.data;
         console.log(isExecuted, "result");
 
         if (!isExecuted) {
-          console.log(result, "result");
-
           return rejectWithValue(responseMessage);
         }
-        console.log(
-          responseMessage,
-          responseMessage
-            .toLowerCase()
-            .includes(
-              "Setting_SettingServiceManager_GetMarketTimeSettings_01".toLowerCase()
-            ),
-          result.responseResult,
-
-          "result"
-        );
 
         if (
           responseMessage
@@ -208,7 +191,7 @@ export const getMarkingTimingApi = createAsyncThunk(
               "Setting_SettingServiceManager_GetMarketTimeSettings_01".toLowerCase()
             )
         ) {
-          return result.responseResult;
+          return response.data.responseResult;
         } else if (
           responseMessage
             .toLowerCase()
@@ -216,8 +199,6 @@ export const getMarkingTimingApi = createAsyncThunk(
               "Setting_SettingServiceManager_GetMarketTimeSettings_02".toLowerCase()
             )
         ) {
-          console.log(responseResult, "result");
-
           return rejectWithValue("No Found");
         } else if (
           responseMessage
@@ -226,17 +207,11 @@ export const getMarkingTimingApi = createAsyncThunk(
               "Setting_SettingServiceManager_GetMarketTimeSettings_03".toLowerCase()
             )
         ) {
-          console.log(responseResult, "result");
-
           return rejectWithValue("Someting went wrong");
         } else {
-          console.log(responseResult, "result");
-
           return rejectWithValue("Someting went wrong");
         }
       } else {
-        console.log(responseResult, "result");
-
         return rejectWithValue("Something went wrong");
       }
     } catch (error) {

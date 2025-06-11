@@ -17,15 +17,37 @@ export const formatCurrencyInput = (value) => {
 };
 
 export const formatPercentageInput = (value) => {
-  if (!value) return ""; // Return empty string if no value
+  const num = parseFloat(value);
 
-  // Remove non-numeric characters
-  let cleanVal = value.replace(/[^0-9]/g, "");
+  if (!isNaN(num) && num >= 1 && num <= 100) {
+    return num.toString();
+  }
 
-  // Convert to number and ensure it's within range
-  let numValue = Math.min(Math.max(parseInt(cleanVal, 10) || 0, 0), 100);
+  return "0.1";
+};
 
-  return numValue;
+
+
+export const formatPercentageInput2 = (value) => {
+  if (!value) return "";
+
+  // Remove non-numeric and non-dot characters
+  let cleanVal = value.replace(/[^\d]/g, "");
+
+  // Insert decimal point after 3 digits, if more digits exist
+  if (cleanVal.length > 3) {
+    cleanVal = cleanVal.slice(0, 3) + "." + cleanVal.slice(3, 5); // Only 2 digits after decimal
+  }
+
+  // Trim to 3 before + 2 after decimal
+  const match = cleanVal.match(/^(\d{1,3})(?:\.(\d{0,2}))?/);
+
+  if (!match) return "";
+
+  const beforeDecimal = match[1] || "0";
+  const afterDecimal = match[2] || "";
+
+  return afterDecimal ? `${beforeDecimal}.${afterDecimal}` : beforeDecimal;
 };
 
 export const formatDateToUTC = (date) => {
@@ -41,7 +63,7 @@ export const formatDateToUTC = (date) => {
 
 export const convertDateTimeIntoGMT = (date) => {
   let dateString =
-  date.slice(0, 4) +
+    date.slice(0, 4) +
     "-" +
     date.slice(4, 6) +
     "-" +
@@ -54,7 +76,6 @@ export const convertDateTimeIntoGMT = (date) => {
     date.slice(12, 14);
   return new Date(dateString);
 };
-
 
 export const ConvertDateTimrStringIntoGTM = (date, pattern) => {
   let ConvertIntoISO = moment(date, pattern).toISOString();

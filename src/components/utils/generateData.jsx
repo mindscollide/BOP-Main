@@ -299,45 +299,52 @@ export const createColumns = (
         return acc; // Return the accumulator with newly added column if applicable
       }, []);
     } else if (value === 5) {
-      baseColumns = [
+      const baseColumns = [
         {
           title: "Tenor",
-          dataIndex: "Tenor",
-          key: "tenor",
+          dataIndex: "tenorName",
+          key: "tenorName",
           align: "center",
           width: 80,
         },
       ];
 
-      // Extract unique instruments from data keys
+      // Dynamically extract instruments from data keys
       const instrumentSet = new Set();
 
       data.forEach((item) => {
         Object.keys(item).forEach((key) => {
-          if (key.endsWith("_rate")) {
-            const instrumentName = key.replace("_rate", "");
+          if (key.startsWith("rate_")) {
+            const instrumentName = key.replace("rate_", "");
             instrumentSet.add(instrumentName);
           }
         });
       });
 
-      // Create columns based on instruments
-      instrumentColumns = Array.from(instrumentSet).map((instrument) => ({
+      // Create dynamic columns
+      const instrumentColumns = Array.from(instrumentSet).map((instrument) => ({
         title: instrument.toUpperCase(), // Human-readable title
         key: instrument,
-        dataIndex: `${instrument}_rate`,
+        dataIndex: `rate_${instrument}`,
         width: 100,
         align: "center",
         render: (text, record) => (
           <InputFIeld
-            value={record[`${instrument}_rate`]}
+            value={record[`rate_${instrument}`]}
             onChange={(e) =>
-              onInputChange(record.TenorID, instrument, e.target.value)
+              onInputChange(
+                record.tenorID || record.TenorID,
+                instrument,
+                e.target.value
+              )
             }
             applyClass={InputClassName}
           />
         ),
       }));
+
+      // Combine columns
+      const allColumns = [...baseColumns, ...instrumentColumns];
     }
   } catch (error) {
     console.error("Error creating columns:", error);

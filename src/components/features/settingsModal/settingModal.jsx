@@ -2,7 +2,6 @@ import React, { lazy, Suspense, useEffect, useState } from "react";
 import GlobalModal from "../../common/globalModal/Modal";
 import "./settingModal.css";
 import { Button, Col, Row } from "react-bootstrap";
-import { useModal } from "../../../context/ModalContext";
 import UserSetting from "@/components/features/settingsModal/userSettingComponent/SettingusersComponent";
 import PassCode from "@/components/features/settingsModal/PasscodeSettingComponent/PassCodeSettingComponent";
 import Markettiming from "@/components/features/settingsModal/MarketTimingComponent/MarketTIming";
@@ -14,9 +13,15 @@ import {
   updateUserSettingDataAPI,
 } from "./settingActions";
 import IconElement from "@/components/common/IconElement/IconElement";
+import { setSettingModal } from "@/store/modalSlice/modalSlicer";
+import { useSelector } from "react-redux";
 
 const SettingModal = () => {
-  const { settingModal, setSettingModal, settingsRecord } = useModal();
+  const settingsRecordData = useSelector(
+    (state) => state.modalReducer.settingsRecord
+  );
+  const settingModal = useSelector((state) => state.modalReducer.settingModal);
+  console.log(settingModal, "settingModalsettingModalsettingModal")
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [tabActive, setTabActive] = useState(1);
@@ -41,24 +46,24 @@ const SettingModal = () => {
     import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
 
   const HandleOnHideModal = () => {
-    setSettingModal(false);
+    dispatch(setSettingModal(false));
   };
 
   const handeClickSave = () => {
-    console.log(settingsRecord, "settingsRecordsettingsRecord");
+    console.log(settingsRecordData, "settingsRecordsettingsRecord");
     let Data = {
       Settings: [
         {
           Key: "BD_EmailOnEveryMessage",
-          Value: String(settingsRecord?.BD_EmailOnEveryMessage),
+          Value: String(settingsRecordData?.BD_EmailOnEveryMessage),
         },
         {
           Key: "BD_SoundOnEveryMessage",
-          Value: String(settingsRecord?.BD_SoundOnEveryMessage),
+          Value: String(settingsRecordData?.BD_SoundOnEveryMessage),
         },
         {
           Key: "BD_Enable2FA",
-          Value: String(settingsRecord?.BD_Enable2FA),
+          Value: String(settingsRecordData?.BD_Enable2FA),
         },
       ],
     };
@@ -121,7 +126,11 @@ const SettingModal = () => {
                     md={4}
                     lg={4}
                     className='d-flex justify-content-end align-items-center '>
-                    <IconElement applyClass={"icon-close"} iconClass={"cursor-pointer"} onClick={HandleOnHideModal} />
+                    <IconElement
+                      applyClass={"icon-close"}
+                      iconClass={"cursor-pointer"}
+                      onClick={HandleOnHideModal}
+                    />
                   </Col>
                 </Row>
                 <Row className='mt-3 d-flex justify-content-start'>

@@ -10,22 +10,24 @@ import RFQModal from "@/container/pages/mainCorporate/rfqModal/RFQModal";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { getAllCategoryTableData } from "@/container/pages/mainCategory/categoryActions";
-import { useModal } from "@/context/ModalContext";
 import { GetAllCounterPartyDataAPI } from "@/components/features/SpotBranch/WatchlistAction";
-import { useDealerAndTreasury } from "@/context/DealerAndTreasuryContext";
 import RFQForwardCorporateModal from "@/container/pages/mainCorporate/rfqModal/RFQForwardCorporateModal/RFQForwardCorporateModal";
 import RFQDiscountingCorporateModal from "@/container/pages/mainCorporate/rfqModal/RFQDiscountingCorporateModal/RFQDiscountingCorporateModal";
 import SettingModal from "@/components/features/settingsModal/settingModal";
+import { setCategoryValue } from "@/store/dealerReducer/dealerSlicer";
 
 const GlobalNavbar = () => {
-  const { settingModal } = useModal();
   const getAllCategoriesData = useSelector(
     (state) => state.authReducer.getAllCategories
   );
-  //Global State of Active tab
+  const settingModalState = useSelector(
+    (state) => state.modalReducer.settingModal
+  );
   const activeTab = useSelector((state) => state.RFQReducer.activeTab);
 
-  const { categoryValue, setCategoryValue } = useDealerAndTreasury();
+  const categoryValue = useSelector(
+    (state) => state.dealerReducer.categoryValue
+  );
   const dispatch = useDispatch();
   const [selectedValue, setSelectedValue] = useState(1);
   const [openRfqModal, setOpenRfqModal] = useState(false);
@@ -61,10 +63,11 @@ const GlobalNavbar = () => {
     console.log(Data);
 
     dispatch(GetAllCounterPartyDataAPI({ Data, navigate }));
-    setCategoryValue({
+    let obj = {
       value: event.value,
       label: event.label,
-    });
+    };
+    dispatch(setCategoryValue(obj));
   };
 
   //handle RFQ Condition Under Certain tabs
@@ -175,7 +178,7 @@ const GlobalNavbar = () => {
           }
         />
       )}
-      {settingModal && <SettingModal />}
+      {settingModalState && <SettingModal />}
       {/* Discounting RFQ Modal  */}
       {openRfqModalDiscountingCorporateComponent && (
         <RFQDiscountingCorporateModal

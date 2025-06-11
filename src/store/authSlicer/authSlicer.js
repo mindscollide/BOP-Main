@@ -6,7 +6,10 @@ import {
 import { resetAndForgotPassword } from "../../container/loginScreens/forgetPassword/forgotPassword_Actions";
 import { setCustomHeaders } from "@/common/utils";
 import { refreshTokenAction } from "../../container/loginScreens/authActions/refreshToken";
-import { getAllCategoriesAction, getAllInstrumentsApi } from "@/components/utils/globalApis";
+import {
+  getAllCategoriesAction,
+  getAllInstrumentsApi,
+} from "@/components/utils/globalApis";
 import {
   createCorporateCreatePasswordApi,
   validateLinkForCorporateCreatePasswordApi,
@@ -26,9 +29,13 @@ const authSlice = createSlice({
     isValidatedCreatePasswordString: null,
     passwordCreated: null,
     logout: null,
-    getAllInstruments: null
+    getAllInstruments: null,
   },
-  reducers: {},
+  reducers: {
+    clearAuthResponseMessage: (state) => {
+      state.responseMessage = "";
+    },
+  },
   extraReducers: (builder) => {
     builder
       // Pending state (while the API call is being made)
@@ -47,7 +54,7 @@ const authSlice = createSlice({
       .addCase(loginInApi.rejected, (state, action) => {
         console.log(action, "actionaction");
         state.Loader = false;
-        state.error = action.payload;
+        state.responseMessage = action.payload;
         state.user = null;
       })
       // Pending state (while the API call is being made)
@@ -163,18 +170,21 @@ const authSlice = createSlice({
         state.Loader = false;
         state.logout = null;
         state.responseMessage = payload;
-      }).addCase(getAllInstrumentsApi.pending, (state) => {
+      })
+      .addCase(getAllInstrumentsApi.pending, (state) => {
         state.Loader = true;
-      }).addCase(getAllInstrumentsApi.fulfilled, (state, { payload }) => {
+      })
+      .addCase(getAllInstrumentsApi.fulfilled, (state, { payload }) => {
         state.Loader = false;
         state.getAllInstruments = payload.response;
         state.responseMessage = payload.message;
-      }).addCase(getAllInstrumentsApi.rejected, (state, { payload }) => {
+      })
+      .addCase(getAllInstrumentsApi.rejected, (state, { payload }) => {
         state.Loader = false;
         state.getAllInstruments = null;
         state.responseMessage = payload;
       });
   },
 });
-
+export const { clearAuthResponseMessage } = authSlice.actions;
 export default authSlice.reducer;

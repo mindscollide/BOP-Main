@@ -5,6 +5,11 @@ import styles from "./header.module.css";
 
 const Header = () => {
   const location = useLocation();
+  let branchDetails =
+    localStorage.getItem("branch") !== null &&
+    JSON.parse(localStorage.getItem("branch"));
+
+  console.log(branchDetails, "branchNamebranchName");
   return (
     <Navbar className={styles["top-header"]}>
       <Nav className='ms-auto'>
@@ -13,7 +18,7 @@ const Header = () => {
           <>
             <Nav.Item className={styles["nav-item"]}>
               <Nav.Link className={styles["nav-link_active"]}>
-                {localStorage.getItem("name")}
+                {branchDetails?.branchName}
               </Nav.Link>
             </Nav.Item>
           </>
@@ -29,8 +34,7 @@ const Header = () => {
                   location.pathname === "/BOP/dealer"
                     ? `${styles["nav-link_active"]} `
                     : `${styles["nav-link"]}`
-                }
-              >
+                }>
                 Dealer
               </Nav.Link>
             </Nav.Item>
@@ -42,8 +46,7 @@ const Header = () => {
                   location.pathname === "/BOP/category"
                     ? `${styles["nav-link_active"]} `
                     : `${styles["nav-link"]}`
-                }
-              >
+                }>
                 Category
               </Nav.Link>
             </Nav.Item>
@@ -55,8 +58,7 @@ const Header = () => {
                   location.pathname === "/BOP/treasury"
                     ? `${styles["nav-link_active"]}`
                     : `${styles["nav-link"]}`
-                }
-              >
+                }>
                 Treasury
               </Nav.Link>
             </Nav.Item>

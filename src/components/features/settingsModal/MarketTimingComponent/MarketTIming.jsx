@@ -5,12 +5,17 @@ import DatePicker from "react-multi-date-picker";
 import TimePicker from "react-multi-date-picker/plugins/time_picker";
 import { ConvertDateTimrStringIntoGTM } from "@/utils/formatters";
 import { useMqtt } from "@/context/MqttContext";
+import { useDispatch } from "react-redux";
+import { setMarketTimingsUpdated } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 
 const MarketTiming = () => {
   const getMarketTimingData = useSelector(
     (state) => state.settingSlicer.getMarketTimingData
   );
-  const { marketTimingsUpdated, setMarketTimingsUpdated } = useMqtt();
+  const dispatch = useDispatch();
+  const getMarketTiming = useSelector(
+    (state) => state.RealtimeActionsSlice.marketTimingsUpdated
+  );
 
   const [monToThruStartTime, setMonToThruStartTime] = useState(null);
   const [monToThruEndTime, setMonToThruEndTime] = useState(null);
@@ -31,7 +36,7 @@ const MarketTiming = () => {
         );
         setFridayEndTime(ConvertDateTimrStringIntoGTM(fridayEnd, "hh:mm A"));
 
-        setMarketTimingsUpdated(null)
+        dispatch(setMarketTimingsUpdated(null));
       } catch (error) {
         console.log(error);
       }
@@ -39,9 +44,9 @@ const MarketTiming = () => {
   }, [getMarketTimingData]);
 
   useEffect(() => {
-    if (marketTimingsUpdated !== null) {
+    if (getMarketTiming !== null) {
       try {
-        const { marketTimings } = marketTimingsUpdated;
+        const { marketTimings } = getMarketTiming;
         if (marketTimings !== null && marketTimings !== undefined) {
           const {
             monThuStartTime,
@@ -64,9 +69,9 @@ const MarketTiming = () => {
         }
       } catch (error) {}
 
-      console.log(marketTimingsUpdated, "marketTimingsmarketTimings");
+      console.log(getMarketTiming, "marketTimingsmarketTimings");
     }
-  }, [marketTimingsUpdated]);
+  }, [getMarketTiming]);
   return (
     <div className='setting-body-content px-2 py-3 h-screen-65'>
       <div className='fs-6 fw-bold mb-1 color-primary'>Mon - Thur</div>
@@ -99,7 +104,6 @@ const MarketTiming = () => {
             />
           </div>
         </div>
-   
       </div>
       <div className='fs-6 fw-bold mb-1 mt-3 color-primary'>Friday</div>
       <div className='d-flex flex-wrap align-items-end'>
