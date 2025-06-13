@@ -1,11 +1,11 @@
-export function buildDiscountingTable(
+export const buildDiscountingTable = (
   value,
   Data,
   getAllTenorsData,
   getAllInstrument,
   InputFIeld,
   onInputChange
-) {
+) => {
   if (!Data || !getAllTenorsData || !getAllInstrument) {
     return { rowData: [], columnsData: [] };
   }
@@ -16,9 +16,13 @@ export function buildDiscountingTable(
 
     // Step 1: Filter applicable instruments and tenors
     const applicableInstruments =
-      instruments?.filter((inst) => inst.discountingApplicable) || [];
+      value === 1
+        ? instruments?.filter((inst) => inst.discountingApplicable) || []
+        : instruments;
     const applicableTenors =
-      tenors?.filter((tenor) => tenor.isDiscountingApplicable) || [];
+      value === 1
+        ? tenors?.filter((tenor) => tenor.isDiscountingApplicable) || []
+        : tenors;
 
     // Step 2: Create a map using composite key (instrumentID-tenorID)
     const rateMap = {};
@@ -91,12 +95,7 @@ export function buildDiscountingTable(
               title: "value",
               dataIndex: `rate_${inst.instrumentName}`,
               render: (text, record) => (
-                <InputFIeld
-                  value={text}
-                  record={record}
-                  // instrumentName={inst.instrumentName}
-                  // onInputChange={onInputChange}
-                />
+                <InputFIeld value={text} record={record} />
               ),
             },
           ],
@@ -111,7 +110,152 @@ export function buildDiscountingTable(
     console.error("Error while building discounting table:", error);
     return { rowData: [], columnsData: [] };
   }
-}
+};
+
+export const buildForwardsTable = (
+  value,
+  Data,
+  getAllTenorsData,
+  getAllInstrument,
+  InputFIeld,
+  onInputChange
+) => {
+  if (!Data || !getAllTenorsData || !getAllInstrument) {
+    return { rowData: [], columnsData: [] };
+  }
+
+  try {
+    const { tenors } = getAllTenorsData;
+    const { instruments } = getAllInstrument;
+
+    const applicableInstruments =
+      value === 1
+        ? instruments?.filter((inst) => inst.discountingApplicable) || []
+        : instruments;
+
+    const applicableTenors =
+      value === 1
+        ? tenors?.filter((tenor) => tenor.isDiscountingApplicable) || []
+        : tenors;
+
+    // Step 1: Create rateMap with bid/ask
+    const rateMap = {};
+    Data.forEach((entry) => {
+      const key = `${entry.instrumentID}-${entry.tenorID}`;
+      rateMap[key] = {
+        bid: entry.bid ?? 0,
+        ask: entry.ask ?? 0,
+      };
+    });
+
+    // Step 2: Create rows
+    const rowData = applicableTenors.map((tenor) => {
+      const row = {
+        tenorID: tenor.tenorID,
+        tenorName: tenor.tenorName,
+        tenorDays: tenor.tenorDays,
+      };
+
+      applicableInstruments.forEach((instrument) => {
+        const key = `${instrument.instrumentID}-${tenor.tenorID}`;
+        const rates = rateMap[key] || { bid: 0, ask: 0 };
+
+        row[`bid_${instrument.instrumentName}`] = rates.bid;
+        row[`ask_${instrument.instrumentName}`] = rates.ask;
+        row[`InstrumentID_${instrument.instrumentName}`] =
+          instrument.instrumentID;
+        row[`InstrumentName_${instrument.instrumentName}`] =
+          instrument.instrumentName;
+      });
+
+      return row;
+    });
+
+    // Step 3: Create columns
+    let columnsData = [];
+
+    if (value === 1) {
+      // Discounting layout
+      columnsData = [
+        {
+          title: "Tenor",
+          dataIndex: "tenorName",
+          key: "tenorName",
+          width: 80,
+        },
+        ...applicableInstruments.map((inst) => ({
+          title: inst.instrumentName,
+          dataIndex: `bid_${inst.instrumentName}`, // fallback
+          key: `rate_${inst.instrumentName}`,
+          align: "center",
+          width: 60,
+          render: (text, record) => (
+            <InputFIeld
+              value={text}
+              record={record}
+              instrumentName={inst.instrumentName}
+              onInputChange={onInputChange}
+            />
+          ),
+        })),
+      ];
+    } else {
+      // Forwards layout
+      columnsData = [
+        {
+          title: "",
+          key: "tenorName",
+          width: 120,
+          children: [
+            {
+              title: "Tenor",
+              dataIndex: `tenorName`,
+              key: "tenorName",
+              align: "center"
+            },
+          ],
+        },
+        ...applicableInstruments.map((inst) => ({
+          title: inst.instrumentName,
+          key: `group_${inst.instrumentName}`,
+          align: "center",
+          width: 180,
+          children: [
+            {
+              title: "Bid",
+              dataIndex: `bid_${inst.instrumentName}`,
+              key: `bid_${inst.instrumentName}`,
+              align: "center",
+              render: (text, record) => (
+                <InputFIeld
+                  value={text}
+                  record={record}
+                />
+              ),
+            },
+            {
+              title: "Ask",
+              dataIndex: `ask_${inst.instrumentName}`,
+              key: `ask_${inst.instrumentName}`,
+              align: "center",
+              render: (text, record) => (
+                <InputFIeld
+                  value={text}
+                  record={record}
+                />
+              ),
+            },
+          ],
+        })),
+      ];
+    }
+
+    return { rowData, columnsData };
+  } catch (error) {
+    console.error("Error while building forwards table:", error);
+    return { rowData: [], columnsData: [] };
+  }
+};
 
 export const buildCurrentRatesPayload = (rowData) => {
   const currentRates = [];

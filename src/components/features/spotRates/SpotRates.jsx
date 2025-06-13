@@ -20,7 +20,6 @@ import {
 } from "@/utils/formatters";
 import moment from "moment";
 import { currentRatePublishedAction, marketStatusUpdated } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
-import { useMqtt } from "@/context/MqttContext";
 const SpotRates = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();

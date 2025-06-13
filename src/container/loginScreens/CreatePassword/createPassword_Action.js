@@ -80,111 +80,73 @@ export const createCorporateCreatePasswordApi = createAsyncThunk(
       if (response.data.responseCode === 200) {
         const {
           isExecuted,
-          user: {
-            corporate,
-            employeeID,
-            ldapAccount,
-            userID,
-            firstName,
-            email,
-            contactNumber,
-            userRoleID,
-            userStatusID,
-          },
           responseMessage,
           token,
           refreshToken,
         } = response.data.responseResult;
+
         if (isExecuted) {
-          if (
-            responseMessage
-              .toLowerCase()
-              .includes(
-                "ERM_AuthService_AuthManager_CreateCorporateUserPassword_01".toLowerCase()
-              )
-          ) {
-            localStorage.setItem("token", token);
-            localStorage.setItem("refreshToken", refreshToken);
-            localStorage.setItem("name", firstName);
-            localStorage.setItem("email", email);
-            localStorage.setItem("roleId", userRoleID);
-            localStorage.setItem("userID", userID);
-            localStorage.setItem("corporate", JSON.stringify(corporate));
-            localStorage.setItem("employeeID", employeeID);
-            localStorage.setItem("ldapAccount", ldapAccount);
-            localStorage.setItem("contactNumber", contactNumber);
-            localStorage.setItem("userStatusID", userStatusID);
-            roleBasedNavigation(navigate, userRoleID);
-            return {
-              response: response.data.responseResult,
-              message: "Successfully Created",
-            };
-          } else if (
-            responseMessage
-              .toLowerCase()
-              .includes(
-                "ERM_AuthService_AuthManager_CreateCorporateUserPassword_02".toLowerCase()
-              )
-          ) {
-            return rejectWithValue("Invalid Email");
-          } else if (
-            responseMessage
-              .toLowerCase()
-              .includes(
-                "ERM_AuthService_AuthManager_CreateCorporateUserPassword_03".toLowerCase()
-              )
-          ) {
-            return rejectWithValue("Invalid Corporate User");
-          } else if (
-            responseMessage
-              .toLowerCase()
-              .includes(
-                "ERM_AuthService_AuthManager_CreateCorporateUserPassword_04".toLowerCase()
-              )
-          ) {
-            return rejectWithValue("User is InActive");
-          } else if (
-            responseMessage
-              .toLowerCase()
-              .includes(
-                "ERM_AuthService_AuthManager_CreateCorporateUserPassword_05".toLowerCase()
-              )
-          ) {
-            return rejectWithValue("Error while creating password");
-          } else if (
-            responseMessage
-              .toLowerCase()
-              .includes(
-                "ERM_AuthService_AuthManager_CreateCorporateUserPassword_06".toLowerCase()
-              )
-          ) {
-            return rejectWithValue("Something went wrong");
-          } else if (
-            responseMessage
-              .toLowerCase()
-              .includes(
-                "ERM_AuthService_AuthManager_CreateCorporateUserPassword_07".toLowerCase()
-              )
-          ) {
-            return rejectWithValue("Password Created but is InActive");
-          } else if (
-            responseMessage
-              .toLowerCase()
-              .includes(
-                "ERM_AuthService_AuthManager_CreateCorporateUserPassword_08".toLowerCase()
-              )
-          ) {
-            return rejectWithValue("Something-went-wrong");
-          } else {
-            return rejectWithValue("Something-went-wrong");
+          const msg = responseMessage.toLowerCase();
+
+          switch (msg) {
+            case "ERM_AuthService_AuthManager_CreateCorporateUserPassword_01".toLowerCase():
+              const {
+                user: {
+                  corporate,
+                  userID,
+                  firstName,
+                  email,
+                  contactNumber,
+                  userRoleID,
+                  userStatusID,
+                },
+              } = response.data.responseResult.user;
+              localStorage.setItem("token", token);
+              localStorage.setItem("refreshToken", refreshToken);
+              localStorage.setItem("name", firstName);
+              localStorage.setItem("email", email);
+              localStorage.setItem("roleId", userRoleID);
+              localStorage.setItem("userID", userID);
+              localStorage.setItem("corporate", JSON.stringify(corporate));
+              localStorage.setItem("contactNumber", contactNumber);
+              localStorage.setItem("userStatusID", userStatusID);
+              roleBasedNavigation(navigate, userRoleID);
+              return {
+                response: response.data.responseResult,
+                message: "Successfully Created",
+              };
+
+            case "ERM_AuthService_AuthManager_CreateCorporateUserPassword_02".toLowerCase():
+              return rejectWithValue("Invalid Email");
+
+            case "ERM_AuthService_AuthManager_CreateCorporateUserPassword_03".toLowerCase():
+              return rejectWithValue("Invalid Corporate User");
+
+            case "ERM_AuthService_AuthManager_CreateCorporateUserPassword_04".toLowerCase():
+              return rejectWithValue("User is InActive");
+
+            case "ERM_AuthService_AuthManager_CreateCorporateUserPassword_05".toLowerCase():
+              return rejectWithValue("Error while creating password");
+
+            case "ERM_AuthService_AuthManager_CreateCorporateUserPassword_06".toLowerCase():
+              return rejectWithValue("Something went wrong");
+
+            case "ERM_AuthService_AuthManager_CreateCorporateUserPassword_07".toLowerCase():
+              return rejectWithValue("Password Created but is InActive");
+
+            case "ERM_AuthService_AuthManager_CreateCorporateUserPassword_08".toLowerCase():
+              return rejectWithValue("Something went wrong");
+
+            default:
+              return rejectWithValue("Something went wrong");
           }
         } else {
-          return rejectWithValue("Something-went-wrong");
+          return rejectWithValue("Something went wrong");
         }
       }
     } catch (error) {
       // Reject with error message
-      return rejectWithValue("Something-went-wrong");
+      return rejectWithValue("Something went wrong");
     }
   }
 );

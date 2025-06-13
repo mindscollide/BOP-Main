@@ -48,7 +48,7 @@ const MainBranch = () => {
     {
       title: "Forwards",
       content: ForwardTableBranchComponent && (
-        <Suspense fallback={<>Loading... </>}>
+        <Suspense fallback={<>Loading Forwards.... </>}>
           <ForwardTableBranchComponent />
         </Suspense>
       ),
@@ -56,8 +56,9 @@ const MainBranch = () => {
     {
       title: "Discounting",
       content: BranchDiscountingTable && (
-        <Suspense fallback={<>Loading...</>}>
+        <Suspense fallback={<>Loading Discounting...</>}>
           <BranchDiscountingTable />
+          <TXNSummary />
         </Suspense>
       ),
     },

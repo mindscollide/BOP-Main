@@ -72,9 +72,8 @@ const authSlice = createSlice({
       // Rejected state (when the API call fails)
       .addCase(corporateUserLoginInApi.rejected, (state, action) => {
         console.log(action, "actionaction");
-
         state.Loader = false;
-        state.error = action.payload;
+        state.responseMessage = action.payload;
         state.user = null;
       })
       .addCase(resetAndForgotPassword.pending, (state, { payload }) => {
@@ -153,6 +152,7 @@ const authSlice = createSlice({
       .addCase(
         createCorporateCreatePasswordApi.rejected,
         (state, { payload }) => {
+          console.log(payload);
           state.Loader = false;
           state.passwordCreated = null;
           state.responseMessage = payload;

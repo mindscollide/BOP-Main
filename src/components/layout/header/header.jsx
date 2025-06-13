@@ -6,8 +6,13 @@ import styles from "./header.module.css";
 const Header = () => {
   const location = useLocation();
   let branchDetails =
-    localStorage.getItem("branch") !== null &&
-    JSON.parse(localStorage.getItem("branch"));
+    localStorage.getItem("branch") !== null
+      ? JSON.parse(localStorage.getItem("branch"))
+      : null;
+  let corporateDetails =
+    localStorage.getItem("corporate") !== null
+      ? JSON.parse(localStorage.getItem("corporate"))
+      : null;
 
   console.log(branchDetails, "branchNamebranchName");
   return (
@@ -18,7 +23,9 @@ const Header = () => {
           <>
             <Nav.Item className={styles["nav-item"]}>
               <Nav.Link className={styles["nav-link_active"]}>
-                {branchDetails?.branchName}
+                {corporateDetails !== null
+                  ? corporateDetails.corporateName
+                  : branchDetails !== null && branchDetails?.branchName}
               </Nav.Link>
             </Nav.Item>
           </>

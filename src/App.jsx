@@ -19,13 +19,11 @@ import CreatePassword from "@/container/loginScreens/CreatePassword/CreatePasswo
 import TwoFaVerification from "@/container/loginScreens/2faVerificationScreen/TwoFaVerification";
 import ResetPassword from "@/container/loginScreens/ResetPassword/ResetPassword";
 import PrivateRoute from "./routes/PrivateRoutes";
-import { useMqtt } from "./context/MqttContext";
 import Loader from "./components/common/loader/Loader";
+import { ResponseMessage } from "./components/utils/ResponseMessageToast";
 
 function App() {
   const [routes, setRoutes] = useState([]); // Initially an empty array
-  const { isConnected } = useMqtt();
-  console.log(isConnected, "isConnectedisConnected");
 
   useEffect(() => {
     document.title =
@@ -142,11 +140,11 @@ function App() {
 
   const router = createBrowserRouter(routes);
 
-
   return (
     <>
       <RouterProvider router={router} />
       <Loader />
+      <ResponseMessage />
     </>
   );
 }
