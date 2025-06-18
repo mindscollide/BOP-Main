@@ -10,6 +10,7 @@ import {
   GetFXInstrumentsAPI,
 } from "@/components/features/SpotBranch/WatchlistAction";
 import { useNavigate } from "react-router-dom";
+import { GetFEDiscountingTableApi } from "@/components/features/FeDiscountingTable/FeDiscountTableAction";
 
 const MainTabs = () => {
   const dispatch = useDispatch();
@@ -18,6 +19,7 @@ const MainTabs = () => {
   useEffect(() => {
     dispatch(GetFXInstrumentsAPI({ navigate }));
     dispatch(GetAllFowardsAndDiscountsRatesAPI({ navigate }));
+    // dispatch(GetFEDiscountingTableApi({navigate}))/
   }, []);
   const tabsData = [
     { title: "Live Rates", content: <LiveRates /> },

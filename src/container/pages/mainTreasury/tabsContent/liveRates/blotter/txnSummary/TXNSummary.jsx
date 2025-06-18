@@ -13,15 +13,13 @@ import emailImage from "@/assets/icons/email.png";
 import excelImage from "@/assets/icons/excel.png";
 import printImage from "@/assets/icons/print.png";
 import { Col, Row } from "react-bootstrap";
-import { useModal } from "@/context/ModalContext";
 import { getAllChatByTransactionId } from "@/components/features/chatBox/ChatActions";
 import { useNavigate } from "react-router-dom";
 import InfoTransaction from "../infoTransaction/InfoTransaction";
+import { setTransactionInfoModal } from "@/store/modalSlice/modalSlicer";
 const TXNSummary = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { setChatModal, setChatModalTransactionId, setTransactionInfoModal } =
-    useModal();
 
   //HardCoded Filter Values start
   const TXN_ID_OPTIONS = [
@@ -722,17 +720,14 @@ const TXNSummary = () => {
       getAllChatByTransactionId({
         navigate,
         Data,
-        setChatModal,
-        setChatModalTransactionId,
       })
     );
-    // setChatModal(true);
     // setChatModalTransactionId(record);
   };
 
   const handleClickInfo = (record) => {
     setInfoRecord(record);
-    setTransactionInfoModal(true);
+    dispatch(setTransactionInfoModal(true));
   };
   const columns = [
     {

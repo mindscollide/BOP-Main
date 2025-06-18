@@ -65,7 +65,7 @@ export const refreshTokenAction = createAsyncThunk(
     } catch (error) {
       console.log(error);
       // Reject with error message
-      return rejectWithValue(error.response.data);
+      return rejectWithValue("Something went wrong");
     }
   }
 );

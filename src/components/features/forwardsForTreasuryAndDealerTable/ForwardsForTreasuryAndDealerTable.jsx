@@ -2,7 +2,11 @@ import {
   getTenorWiseForwardsAction,
   PublishTenorWiseForwardsAction,
 } from "@/container/pages/mainDealer/dealerActions";
-import { useDealerAndTreasury } from "@/context/DealerAndTreasuryContext";
+import {
+  setForwardsForTreasuryBranch,
+  updateForwardItem,
+} from "@/store/dealerReducer/dealerSlicer";
+import { tenorWiseFowardsRatesPublishedActions } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { formatCurrencyInput } from "@/utils/formatters";
 import React, { lazy, Suspense, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -37,36 +41,32 @@ const ForwardsForTreasuryAndBranchTable = ({
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { forwardsForTreasuryBranch, setForwardsForTreasuryBranch } =
-    useDealerAndTreasury();
 
+  const forwardsForTreasuryBranch = useSelector(
+    (state) => state.dealerReducer.forwardsForTreasuryBranch
+  );
+
+  const getDashboardForwards = useSelector(
+    (state) => state.dealerReducer.getDealerDashboardData
+  );
   const getTenorWiseForwardsRates = useSelector(
-    (state) => state.dealerReducer.getTenorWiseForwardsRates
+    (state) => state.RealtimeActionsSlice.tenorWiseForwardsRates
   );
-
-  const publishTenorwiseForwardRates = useSelector(
-    (state) => state.dealerReducer.publishTenorwiseForwardRates
-  );
-
-  useEffect(() => {
-    dispatch(getTenorWiseForwardsAction({ navigate }));
-  }, []);
 
   useEffect(() => {
     if (newTenorRecord !== null) {
-      setForwardsForTreasuryBranch([
-        ...forwardsForTreasuryBranch,
-        newTenorRecord,
-      ]);
+      let newData = [...forwardsForTreasuryBranch, newTenorRecord];
+      dispatch(setForwardsForTreasuryBranch(newData));
+
       setNewTenorRecord(null);
     }
   }, [newTenorRecord]);
 
   useEffect(() => {
-    if (publishTenorwiseForwardRates !== null) {
+    if (getDashboardForwards !== null) {
       try {
         const { currentTenorWiseForwardRates, lastTenorWiseForwardRates } =
-          publishTenorwiseForwardRates;
+          getDashboardForwards;
 
         let newDataMap = currentTenorWiseForwardRates.map((item) => {
           let findData = lastTenorWiseForwardRates.find(
@@ -94,19 +94,18 @@ const ForwardsForTreasuryAndBranchTable = ({
             };
           }
         });
-        setForwardsForTreasuryBranch(newDataMap);
+        dispatch(setForwardsForTreasuryBranch(newDataMap));
       } catch (error) {
         console.log(error, "errorerrorerrorerror");
       }
     }
-  }, [publishTenorwiseForwardRates]);
+  }, [getDashboardForwards]);
 
   useEffect(() => {
     if (getTenorWiseForwardsRates !== null) {
       try {
         const { currentTenorWiseForwardRates, lastTenorWiseForwardRates } =
-          getTenorWiseForwardsRates;
-
+          getTenorWiseForwardsRates.tenorWiseForwardRates;
         let newDataMap = currentTenorWiseForwardRates.map((item) => {
           let findData = lastTenorWiseForwardRates.find(
             (data) => data.tenorID === item.tenorID
@@ -133,9 +132,11 @@ const ForwardsForTreasuryAndBranchTable = ({
             };
           }
         });
-        setForwardsForTreasuryBranch(newDataMap);
+        dispatch(setForwardsForTreasuryBranch(newDataMap));
+
+        dispatch(tenorWiseFowardsRatesPublishedActions(null));
       } catch (error) {
-        console.log(error, "errorerrorerrorerror");
+        console.log(error);
       }
     }
   }, [getTenorWiseForwardsRates]);
@@ -145,30 +146,21 @@ const ForwardsForTreasuryAndBranchTable = ({
       (item) => item.tenorID !== record.tenorID
     );
 
-    setForwardsForTreasuryBranch(filteredRecords);
+    dispatch(setForwardsForTreasuryBranch(filteredRecords));
   };
   const handleChangeCurrentForwards = (record, view, event) => {
     const { value } = event.target;
     try {
-      setForwardsForTreasuryBranch((prev) => {
-        return prev.map((item) => {
-          if (item.tenorID === record.tenorID) {
-            return {
-              ...item,
-              currentBid:
-                view === "bid" ? formatCurrencyInput(value) : item.currentBid,
-              currentAsk:
-                view === "ask" ? formatCurrencyInput(value) : item.currentAsk,
-            };
-          }
-          return item;
-        });
-      });
+      dispatch(
+        updateForwardItem({
+          tenorID: record.tenorID,
+          view,
+          value,
+        })
+      );
     } catch (error) {
       console.log(error);
     }
-
-
   };
 
   const handlePublishForwards = () => {

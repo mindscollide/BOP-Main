@@ -8,19 +8,14 @@ import { DragDropContext } from "react-beautiful-dnd";
 import store from "./store/store.js";
 import { GloballyModalProvider } from "./context/ModalContext.jsx";
 import { DealerAndTreasuryProvider } from "./context/DealerAndTreasuryContext.jsx";
-import { MqttProvider } from "./context/MqttContext.jsx";
-GloballyModalProvider;
-// import { CreateDemoProvider } from "./Context.jsx";
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <MqttProvider>
-    <Provider store={store}>
-      <DealerAndTreasuryProvider>
-        <GloballyModalProvider>
-          <DragDropContext>
-            <App />
-          </DragDropContext>
-        </GloballyModalProvider>
-      </DealerAndTreasuryProvider>
-    </Provider>
-  </MqttProvider>
+  <Provider store={store}>
+    <DealerAndTreasuryProvider>
+      <GloballyModalProvider>
+        <DragDropContext>
+          <App />
+        </DragDropContext>
+      </GloballyModalProvider>
+    </DealerAndTreasuryProvider>
+  </Provider>
 );

@@ -6,20 +6,20 @@ import React, {
   useState,
 } from "react";
 import { Row, Col } from "react-bootstrap";
-import { useModal } from "../../../context/ModalContext";
 import GlobalModal from "../../common/globalModal/Modal";
 import InputFIeld from "../../common/inputField/InputField";
 import {
   createTenorAction,
   getAllTenorsAction,
+  getDealerDashboardApi,
   getTenorWiseForwardsAction,
 } from "@/container/pages/mainDealer/dealerActions";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { createTenorSchema } from "@/common/validationSchemas";
-import { useDealerAndTreasury } from "@/context/DealerAndTreasuryContext";
-import { useMqtt } from "@/context/MqttContext";
+import { setCreateTenorModal } from "@/store/modalSlice/modalSlicer";
+import { setTenorsCreated } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 const shouldIncludeComponents =
   import.meta.env.VITE_APP_INCLUDE_DEALER === "true" ||
   import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
@@ -67,12 +67,19 @@ const DealeAndTreasuryNonFeDiscountingTable = shouldIncludeComponents
   : null;
 
 const ForwardsForTreasuryAndDealer = () => {
-  const { createTenorModal, setCreateTenorModal } = useModal();
+  const createTenorModal = useSelector(
+    (state) => state.modalReducer.createTenorModal
+  );
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [newTenorRecord, setNewTenorRecord] = useState(null);
-  const { tenorsCreated, setTenorsCreated } = useMqtt();
-  const { forwardsForTreasuryBranch } = useDealerAndTreasury();
+  const tenorsCreated = useSelector(
+    (state) => state.RealtimeActionsSlice.tenorsCreated
+  );
+  const forwardsForTreasuryBranch = useSelector(
+    (state) => state.dealerReducer.forwardsForTreasuryBranch
+  );
   const getTenorWiseForwardsRates = useSelector(
     (state) => state.dealerReducer.getTenorWiseForwardsRates
   );
@@ -91,11 +98,12 @@ const ForwardsForTreasuryAndDealer = () => {
   });
   useEffect(() => {
     dispatch(getAllTenorsAction({ navigate }));
+    dispatch(getDealerDashboardApi({ navigate }));
   }, []);
   const handleOpenModal = () => {
     // Wrap the state update in startTransition
     startTransition(() => {
-      setCreateTenorModal(true);
+      dispatch(setCreateTenorModal(true));
     });
   };
 
@@ -143,7 +151,6 @@ const ForwardsForTreasuryAndDealer = () => {
         createTenorAction({
           Data,
           navigate,
-          setCreateTenorModal,
           setCreateTenor,
         })
       );
@@ -204,7 +211,7 @@ const ForwardsForTreasuryAndDealer = () => {
   useEffect(() => {
     if (tenorsCreated !== null) {
       try {
-        console.log(tenorsCreated, "tenorsCreatedtenorsCreated")
+        console.log(tenorsCreated, "tenorsCreatedtenorsCreated");
         const { tenor } = tenorsCreated;
         let findIsExist = getAllTenorsList.find(
           (data2, index) => data2.tenorID === tenor.tenorID
@@ -216,10 +223,10 @@ const ForwardsForTreasuryAndDealer = () => {
             label: tenor.tenorName,
           };
           setAllTenorsList([...getAllTenorsList, newObj]);
-          setTenorsCreated(null);
+          dispatch(setTenorsCreated(null));
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     }
   }, [tenorsCreated]);
@@ -307,7 +314,7 @@ const ForwardsForTreasuryAndDealer = () => {
         show={createTenorModal}
         backdrop='static'
         onHide={() => {
-          setCreateTenorModal(false);
+          dispatch(setCreateTenorModal(false));
           setError({ tenorName: "", noOfDays: "" });
           setCreateTenor({
             tenorName: "",
@@ -365,7 +372,7 @@ const ForwardsForTreasuryAndDealer = () => {
                     <CustomButton
                       value={"Cancel"}
                       onClick={() => {
-                        setCreateTenorModal(false);
+                        dispatch(setCreateTenorModal(false));
                         setError({ tenorName: "", noOfDays: "" });
                         setCreateTenor({
                           tenorName: "",

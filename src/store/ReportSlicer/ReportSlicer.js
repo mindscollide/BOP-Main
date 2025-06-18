@@ -4,7 +4,7 @@ import { DownloadFileAPI } from "./ReportActions";
 const ReportSlicer = createSlice({
   name: "ReportSlicer",
   initialState: {
-    loading: false,
+    Loader: false,
     error: null,
     responseMessage: "",
   },
@@ -13,19 +13,19 @@ const ReportSlicer = createSlice({
     builder
       // Pending state
       .addCase(DownloadFileAPI.pending, (state) => {
-        state.loading = true;
+        state.Loader = true;
         state.error = null;
         state.responseMessage = "";
       })
       // Fulfilled state
       .addCase(DownloadFileAPI.fulfilled, (state, { payload }) => {
-        state.loading = false;
+        state.Loader = false;
         state.error = null;
         state.responseMessage = payload?.message || "Download successful";
       })
       // Rejected state
       .addCase(DownloadFileAPI.rejected, (state, action) => {
-        state.loading = false;
+        state.Loader = false;
         state.error = action.payload || "Download failed";
         state.responseMessage = "";
       });

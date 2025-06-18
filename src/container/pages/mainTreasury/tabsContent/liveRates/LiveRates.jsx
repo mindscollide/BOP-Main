@@ -6,6 +6,8 @@ import MIS from "./mis/Mis";
 const shouldIncludeComponents =
   import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
 
+const shouldIsDealer = import.meta.env.VITE_APP_INCLUDE_DEALER === "true";
+
 const Blotter = lazy(() => import("./blotter/Blotter"));
 
 // if (import.meta.env.VITE_APP_INCLUDE_BRANCH === "true") {
@@ -23,11 +25,11 @@ const LiveRates = () => {
           <MIS />
         </Col>
       </Row>
-      {Blotter && (
+      {Blotter && !shouldIsDealer ? (
         <Suspense fallback={<>Loading Blotter...</>}>
           <Blotter />
         </Suspense>
-      )}
+      ) : null}
     </>
   );
 };

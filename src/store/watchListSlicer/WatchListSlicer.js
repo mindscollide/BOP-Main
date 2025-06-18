@@ -11,7 +11,7 @@ const WatchListSlice = createSlice({
   name: "WatchList",
   initialState: {
     responseMessage: "",
-    loading: false,
+    Loader: false,
     error: null,
     WatchListData: null,
     GetMisDataByRange: null,
@@ -25,12 +25,12 @@ const WatchListSlice = createSlice({
     builder
       // Pending state (while the API call is being made)
       .addCase(GetFXInstrumentsAPI.pending, (state) => {
-        state.loading = true;
+        state.Loader = true;
         state.error = null;
       })
       // Fulfilled state (when the API call succeeds)
       .addCase(GetFXInstrumentsAPI.fulfilled, (state, { payload }) => {
-        state.loading = false;
+        state.Loader = false;
         state.WatchListData = payload.response;
         state.error = null;
         state.responseMessage = payload.message;
@@ -38,19 +38,19 @@ const WatchListSlice = createSlice({
       // Rejected state (when the API call fails)
       .addCase(GetFXInstrumentsAPI.rejected, (state, action) => {
         console.log(action, "actionaction");
-        state.loading = false;
+        state.Loader = false;
         state.error = action.payload;
         state.WatchListData = null;
       })
 
       // Pending state (while the API call is in Pending State GetMisDataByRange)
       .addCase(GetMisDataByRangeAPI.pending, (state) => {
-        state.loading = true;
+        state.Loader = true;
         state.error = null;
       })
       // Fulfilled state (while the API call is being made GetMisDataByRange)
       .addCase(GetMisDataByRangeAPI.fulfilled, (state, { payload }) => {
-        state.loading = false;
+        state.Loader = false;
         state.GetMisDataByRange = payload?.response;
         state.error = null;
         state.responseMessage = payload.message;
@@ -58,21 +58,21 @@ const WatchListSlice = createSlice({
       // Rejected state (while the API call is fail GetMisDataByRange)
       .addCase(GetMisDataByRangeAPI.rejected, (state, action) => {
         console.log(action, "actionaction");
-        state.loading = false;
+        state.Loader = false;
         state.error = action.payload;
         state.GetMisDataByRange = null;
       })
 
       // Pending state (while the API call is in Pending State GetAllFowardsAndDiscountsRates)
       .addCase(GetAllFowardsAndDiscountsRatesAPI.pending, (state) => {
-        state.loading = true;
+        state.Loader = true;
         state.error = null;
       })
       // Fulfilled state (while the API call is being made GetAllFowardsAndDiscountsRates)
       .addCase(
         GetAllFowardsAndDiscountsRatesAPI.fulfilled,
         (state, { payload }) => {
-          state.loading = false;
+          state.Loader = false;
           state.GetAllFowardsAndDiscountsRatesData = payload.response;
           state.error = null;
           state.responseMessage = payload.message;
@@ -81,19 +81,19 @@ const WatchListSlice = createSlice({
       // Rejected state (while the API call is fail GetAllFowardsAndDiscountsRates)
       .addCase(GetAllFowardsAndDiscountsRatesAPI.rejected, (state, action) => {
         console.log(action, "actionaction");
-        state.loading = false;
+        state.Loader = false;
         state.error = action.payload;
         state.GetAllFowardsAndDiscountsRatesData = null;
       })
 
       // Pending state (while the API call is in Pending State GetAllCounterPartyDataAPI)
       .addCase(GetAllCounterPartyDataAPI.pending, (state) => {
-        state.loading = true;
+        state.Loader = true;
         state.error = null;
       })
       // Fulfilled state (while the API call is being made GetAllCounterPartyDataAPI)
       .addCase(GetAllCounterPartyDataAPI.fulfilled, (state, { payload }) => {
-        state.loading = false;
+        state.Loader = false;
         state.GetAllCounterPartyData = payload.response;
         state.error = null;
         state.responseMessage = payload.message;
@@ -101,20 +101,20 @@ const WatchListSlice = createSlice({
       // Rejected state (while the API call is fail GetAllCounterPartyDataAPI)
       .addCase(GetAllCounterPartyDataAPI.rejected, (state, action) => {
         console.log(action, "actionaction");
-        state.loading = false;
+        state.Loader = false;
         state.error = action.payload;
         state.GetAllCounterPartyData = null;
       })
 
       // Pending state (while the API call is in Pending State GetDashboardData)
       .addCase(GetDashboardDataAPI.pending, (state) => {
-        state.loading = true;
+        state.Loader = true;
         state.error = null;
       })
       // Fulfilled state (while the API call is being made GetDashboardData)
       .addCase(GetDashboardDataAPI.fulfilled, (state, { payload }) => {
         console.log(payload.response, "globalStateWatchlistCardData");
-        state.loading = false;
+        state.Loader = false;
         state.GettheDashboardData = payload.response;
         state.error = null;
         state.responseMessage = payload.message;
@@ -122,19 +122,19 @@ const WatchListSlice = createSlice({
       // Rejected state (while the API call is fail GetDashboardData)
       .addCase(GetDashboardDataAPI.rejected, (state, action) => {
         console.log(action, "actionaction");
-        state.loading = false;
+        state.Loader = false;
         state.error = action.payload;
         state.GettheDashboardData = null;
       })
 
       // Pending state (while the API call is in Pending State SaveUserDashboard)
       .addCase(SaveUserDashboardAPI.pending, (state) => {
-        state.loading = true;
+        state.Loader = true;
         state.error = null;
       })
       // Fulfilled state (while the API call is being made SaveUserDashboard)
       .addCase(SaveUserDashboardAPI.fulfilled, (state, { payload }) => {
-        state.loading = false;
+        state.Loader = false;
         state.SaveUserDashboardData = payload.response;
         state.error = null;
         state.responseMessage = payload.message;
@@ -142,7 +142,7 @@ const WatchListSlice = createSlice({
       // Rejected state (while the API call is fail SaveUserDashboard)
       .addCase(SaveUserDashboardAPI.rejected, (state, action) => {
         console.log(action, "actionaction");
-        state.loading = false;
+        state.Loader = false;
         state.error = action.payload;
         state.SaveUserDashboardData = null;
       });

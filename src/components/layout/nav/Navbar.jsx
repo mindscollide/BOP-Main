@@ -10,22 +10,39 @@ import RFQModal from "@/container/pages/mainCorporate/rfqModal/RFQModal";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { getAllCategoryTableData } from "@/container/pages/mainCategory/categoryActions";
-import { useModal } from "@/context/ModalContext";
 import { GetAllCounterPartyDataAPI } from "@/components/features/SpotBranch/WatchlistAction";
-import { useDealerAndTreasury } from "@/context/DealerAndTreasuryContext";
 import RFQForwardCorporateModal from "@/container/pages/mainCorporate/rfqModal/RFQForwardCorporateModal/RFQForwardCorporateModal";
 import RFQDiscountingCorporateModal from "@/container/pages/mainCorporate/rfqModal/RFQDiscountingCorporateModal/RFQDiscountingCorporateModal";
 import SettingModal from "@/components/features/settingsModal/settingModal";
+import { setCategoryValue } from "@/store/dealerReducer/dealerSlicer";
+import {
+  categoryisAdded,
+  categoryisDeleted,
+  categoryisUpdated,
+} from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 
 const GlobalNavbar = () => {
-  const { settingModal } = useModal();
   const getAllCategoriesData = useSelector(
     (state) => state.authReducer.getAllCategories
   );
-  //Global State of Active tab
+  const settingModalState = useSelector(
+    (state) => state.modalReducer.settingModal
+  );
   const activeTab = useSelector((state) => state.RFQReducer.activeTab);
 
-  const { categoryValue, setCategoryValue } = useDealerAndTreasury();
+  const categoryValue = useSelector(
+    (state) => state.dealerReducer.categoryValue
+  );
+
+  const isCategoryAdded = useSelector(
+    (state) => state.RealtimeActionsSlice.categoryisAdded
+  );
+  const isCategoryUpdated = useSelector(
+    (state) => state.RealtimeActionsSlice.categoryisUpdated
+  );
+  const isCategoryDeleted = useSelector(
+    (state) => state.RealtimeActionsSlice.categoryisDeleted
+  );
   const dispatch = useDispatch();
   const [selectedValue, setSelectedValue] = useState(1);
   const [openRfqModal, setOpenRfqModal] = useState(false);
@@ -43,7 +60,7 @@ const GlobalNavbar = () => {
   const handleCalculatorClick = () => {
     window.open("/BOP/calculator", "_blank");
   };
-
+  console.log(allCategories, "allCategoriesallCategories");
   // Conditionally import CustomButton based on the environment variables
   const shouldIncludeBranch =
     import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
@@ -61,10 +78,11 @@ const GlobalNavbar = () => {
     console.log(Data);
 
     dispatch(GetAllCounterPartyDataAPI({ Data, navigate }));
-    setCategoryValue({
+    let obj = {
       value: event.value,
       label: event.label,
-    });
+    };
+    dispatch(setCategoryValue(obj));
   };
 
   //handle RFQ Condition Under Certain tabs
@@ -98,6 +116,105 @@ const GlobalNavbar = () => {
       } catch (error) {}
     }
   }, [getAllCategoriesData]);
+  useEffect(() => {
+    if (isCategoryAdded !== null) {
+      try {
+        const {
+          category: { categoryId, offerSpread, bidSpread, category },
+        } = isCategoryAdded;
+        console.log(isCategoryAdded, "isCategoryAddedisCategoryAdded");
+        let isCategoryFind = allCategories.find(
+          (categoryObj, index) => categoryObj.value === categoryId
+        );
+
+        if (isCategoryFind === undefined) {
+          let newCategory = {
+            categoryID: categoryId,
+            categoryName: category,
+            bidSpread: bidSpread,
+            offerSpread: offerSpread,
+            fK_AssetTypeID: 0,
+            fK_UserID: 0,
+            fK_BankID: 1,
+            label: category,
+            value: categoryId,
+          };
+          setAllCategories((prevCategories) => [
+            ...prevCategories,
+            newCategory,
+          ]);
+          dispatch(categoryisAdded(null));
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }, [isCategoryAdded]);
+  useEffect(() => {
+    if (isCategoryUpdated !== null && categoryValue.value !== 0) {
+      const {
+        category: { categoryId, offerSpread, bidSpread, category },
+      } = isCategoryUpdated;
+
+      // Update selected category if it matches the updated one
+      if (categoryValue.value === categoryId) {
+        const updatedCategoryValue = {
+          value: categoryId,
+          label: category,
+        };
+        dispatch(setCategoryValue(updatedCategoryValue));
+      }
+
+      // Update the allCategories list
+      setAllCategories((prevCategories) =>
+        prevCategories.map((categoryObj) => {
+          if (categoryObj.value === categoryId) {
+            return {
+              ...categoryObj,
+              categoryID: categoryId,
+              categoryName: category,
+              bidSpread,
+              offerSpread,
+              label: category,
+              value: categoryId,
+            };
+          }
+          return categoryObj;
+        })
+      );
+
+      // Reset the updated state
+      dispatch(categoryisUpdated(null));
+    }
+  }, [isCategoryUpdated, categoryValue]);
+
+  useEffect(() => {
+    if (isCategoryDeleted !== null && categoryValue.value !== 0) {
+      const { categoryID } = isCategoryDeleted;
+
+      setAllCategories((prevCategories) => {
+        const updatedCategories = prevCategories.filter(
+          (categoryObj) => categoryObj.value !== categoryID
+        );
+
+        // If the deleted category is the currently selected one, update selection
+        if (
+          categoryValue.value === categoryID &&
+          updatedCategories.length > 0
+        ) {
+          const defaultCategory = {
+            value: updatedCategories[0].value,
+            label: updatedCategories[0].label,
+          };
+          dispatch(setCategoryValue(defaultCategory));
+        }
+
+        return updatedCategories;
+      });
+
+      dispatch(categoryisDeleted(null));
+    }
+  }, [isCategoryDeleted, categoryValue]);
 
   return (
     <>
@@ -175,7 +292,7 @@ const GlobalNavbar = () => {
           }
         />
       )}
-      {settingModal && <SettingModal />}
+      {settingModalState && <SettingModal />}
       {/* Discounting RFQ Modal  */}
       {openRfqModalDiscountingCorporateComponent && (
         <RFQDiscountingCorporateModal

@@ -17,8 +17,9 @@ export const CorporateBlotterDataAPI = createAsyncThunk(
 
       const response = await getBlotterData();
       const { responseCode } = response.data;
-      if (responseCode === 401) {
+     if (responseCode === 401) {
         navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
       }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));

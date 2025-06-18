@@ -1,16 +1,20 @@
 import GlobalModal from "@/components/common/globalModal/Modal";
-import { useModal } from "@/context/ModalContext";
 import React from "react";
 import styles from "./InfoTransaction.module.css";
 import { Col, Row } from "react-bootstrap";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { setTransactionInfoModal } from "@/store/modalSlice/modalSlicer";
 
 const InfoTransaction = ({ InfoRecord, setInfoRecord }) => {
-  const { transactionInfoModal, setTransactionInfoModal } = useModal();
-  console.log(InfoRecord, "transactionRecordtransactionRecord")
+  const dispatch = useDispatch();
+  const transactionInfoModal = useSelector(
+    (state) => state.modalReducer.transactionInfoModal
+  );
 
   const handleclose = () => {
     setInfoRecord(null);
-    setTransactionInfoModal(false);
+    dispatch(setTransactionInfoModal(false));
   };
   return (
     <GlobalModal
@@ -44,7 +48,9 @@ const InfoTransaction = ({ InfoRecord, setInfoRecord }) => {
               <p className={styles["transactionInfolabel"]}>Branch Name</p>
             </Col>
             <Col sm={6} md={6} lg={6}>
-              <p className={styles["transactionInfolabel"]}>{InfoRecord?.counterPartyName}</p>
+              <p className={styles["transactionInfolabel"]}>
+                {InfoRecord?.counterPartyName}
+              </p>
             </Col>
           </Row>
           <Row>

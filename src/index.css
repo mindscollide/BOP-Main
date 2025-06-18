@@ -1,0 +1,14 @@
+.custom-notification-snackbar {
+    padding: 20px 12px !important;
+    background-color: #fff;
+    border-radius: 4px;
+}
+ .custom-notification-snackbar .ant-notification-notice-message  {
+    color: #5a5a5a !important;
+    margin: 0 !important;
+    font-weight: 600;
+    font-size: 14px !important;
+ }
+ .custom-notification-snackbar .ant-notification-notice-close {
+    text-decoration: none !important;
+ }

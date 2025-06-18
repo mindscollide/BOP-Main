@@ -4,144 +4,122 @@ import GlobalTable from "../../common/table/GlobalTable";
 import InputFIeld from "../../common/inputField/InputField";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import {
-  publishDiscountingRatesAction,
-} from "@/container/pages/mainDealer/dealerActions";
+import { publishDiscountingRatesAction } from "@/container/pages/mainDealer/dealerActions";
 import { useSelector } from "react-redux";
 import { formatPercentageInput } from "@/utils/formatters";
+import {
+  GetNonFEDiscountingTableApi,
+  PublishNonFEDiscountingTableApi,
+} from "./NonFeDiscountingAction";
+import {
+  buildCurrentRatesPayload,
+  buildDiscountingTable,
+} from "@/components/utils/generateColumnsData";
+import { NonFeDiscountingPublishedAction } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
+import { InputCell } from "@/components/common/inputField/InputCell";
 
 const NonFeDiscountingTable = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [tableData, setTableData] = useState([]);
-  const getDiscountTableData = useSelector(
-    (state) => state.dealerReducer.getDiscountingWiseRates
+  const [columnsData, setColumnsData] = useState([]);
+  const getDashboardForwards = useSelector(
+    (state) => state.dealerReducer.getDealerDashboardData
   );
-  useEffect(() => {
-    // dispatch(getDiscountingRatesAction({ navigate }));
-  }, []);
+  const getAllInstrument = useSelector(
+    (state) => state.authReducer.getAllInstruments
+  );
+  const NonFeDiscountingPublishedData = useSelector(
+    (state) => state.RealtimeActionsSlice.NonFeDiscountingPublished
+  );
+  const getAllTenorsData = useSelector(
+    (state) => state.dealerReducer.getAllTenors
+  );
 
   useEffect(() => {
-    if (getDiscountTableData !== null) {
+    if (getDashboardForwards !== null) {
       try {
-        const { currentRates, previousRates } = getDiscountTableData;
-        if (currentRates.length > 0) {
-          let newRecords = currentRates.map((item, index) => {
-            let getRecords = previousRates.find(
-              (prevItem) => prevItem.instumentID === item.instumentID
-            );
-            if (getRecords !== undefined) {
-              return {
-                key: index + 1,
-                instrumentName: item.instrumentName,
-                instrumentID: item.instumentID,
-                currentRate: item.rate,
-                previousRate: getRecords.rate,
-                dateTime: item.dateTime,
-              };
-            } else {
-              return {
-                key: index + 1,
-                instrumentName: item.instrumentName,
-                instrumentID: item.instumentID,
-                currentRate: item.rate,
-                dateTime: item.dateTime,
-
-                previousRate: "",
-              };
-            }
-          });
-          setTableData(newRecords);
+        const { nonFEDiscountingRates } = getDashboardForwards;
+        const { rowData, columnsData } = buildDiscountingTable(
+          1,
+          nonFEDiscountingRates,
+          getAllTenorsData,
+          getAllInstrument,
+          InputCell,
+          onInputChange
+        );
+        console.log(
+          { rowData, columnsData },
+          " columnsDatacolumnsDatacolumnsData"
+        );
+        if (rowData.length > 0) {
+          setTableData(rowData);
+          setColumnsData(columnsData);
         }
       } catch (error) {}
     }
-  }, [getDiscountTableData]);
+  }, [getDashboardForwards, getAllTenorsData, getAllInstrument]);
 
-  // Data for the table
-  const dataSource = [
-    { key: "1", currency: "USD", currentRate: 0, previousRate: "" },
-    { key: "2", currency: "EUR", currentRate: 0, previousRate: "" },
-    { key: "3", currency: "GBP", currentRate: 0, previousRate: "" },
-    { key: "4", currency: "JPY", currentRate: 0, previousRate: "" },
-    { key: "5", currency: "CNY", currentRate: 0, previousRate: "" },
-  ];
-
-  const handleChangeCurrent = (event, record) => {
-    const { value } = event.target;
-    setTableData((prev) => {
-      if (prev.length > 0) {
-        let getRecords = prev.map((item) => {
-          if (item.instrumentID === record.instrumentID) {
-            return {
-              ...item,
-              currentRate: formatPercentageInput(value),
-            };
-          } else {
-            return item;
-          }
-        });
-        return getRecords;
+  useEffect(() => {
+    if (NonFeDiscountingPublishedData !== null) {
+      try {
+        const { rates } = NonFeDiscountingPublishedData;
+        const { rowData, columnsData } = buildDiscountingTable(
+          1,
+          rates,
+          getAllTenorsData,
+          getAllInstrument,
+          InputCell,
+          onInputChange
+        );
+        console.log(
+          rowData,
+          columnsData,
+          rates,
+          "getFeDiscountingDatagetFeDiscountingData"
+        );
+        if (rowData.length > 0) {
+          setTableData(rowData);
+          setColumnsData(columnsData);
+          dispatch(NonFeDiscountingPublishedAction(null));
+        }
+      } catch (error) {
+        console.log(error, "Error while building discounting table");
       }
-    });
+    }
+    return () => {
+      dispatch(NonFeDiscountingPublishedAction(null));
+    };
+  }, [NonFeDiscountingPublishedData, getAllTenorsData, getAllInstrument]);
+
+  const onInputChange = (record, instrumentName, value) => {
+    setTableData((prevState) =>
+      prevState.map((stateData) => {
+        // Match by TenorID only, since each row contains all instruments
+        if (
+          stateData.TenorID === record.TenorID &&
+          stateData.instrumentName === record.instrumentName
+        ) {
+          return {
+            ...stateData,
+            [`${instrumentName}`]: formatPercentageInput(value),
+          };
+        }
+        return stateData;
+      })
+    );
   };
 
-  // Columns for the table
-  const columns = [
-    {
-      title: "Tenor",
-      dataIndex: "instrumentName",
-      key: "instrumentName",
-      align: "left",
-    },
-    {
-      title: "Current Rate %",
-      dataIndex: "currentRate",
-      key: "currentRate",
-      align: "center",
-      render: (value, record) => {
-        return (
-          <InputFIeld
-            type='number'
-            applyClass='DealerTableBitInput'
-            value={value}
-            onChange={(event) => handleChangeCurrent(event, record)}
-          />
-        );
-      },
-    },
-    {
-      title: "Previous Rate %",
-      dataIndex: "previousRate",
-      key: "previousRate",
-      align: "center",
-      render: (value) => (
-        <InputFIeld
-          type='number'
-          disabled={true}
-          defaultValue={value}
-          applyClass='DealerTableBitInput'
-        />
-      ),
-    },
-  ];
-
   const handlePublishDiscount = () => {
-    let newData = {
-      CurrentRates: tableData.map((records, index) => {
-        return {
-          InstumentID: records.instrumentID,
-          InstrumentName: records.instrumentName,
-          Rate: records.currentRate,
-        };
-      }),
-    };
-    dispatch(publishDiscountingRatesAction({ navigate, Data: newData }));
+    const payloadData = buildCurrentRatesPayload(tableData);
+    let Data = { CurrentRates: payloadData };
+    dispatch(PublishNonFEDiscountingTableApi({ navigate, Data }));
   };
   return (
     <>
       <GlobalTable
         prefixCls='DealerAndTreasuryDiscountTable'
-        columns={columns}
+        columns={columnsData}
         dataSource={tableData}
         pagination={false}
       />

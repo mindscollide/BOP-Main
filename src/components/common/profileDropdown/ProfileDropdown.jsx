@@ -5,18 +5,16 @@ import styles from "./ProfileDropdown.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { LogoutApi } from "@/container/loginScreens/authActions/logoutAction";
-import { useModal } from "@/context/ModalContext";
 import { getUserSettingDataAPI } from "@/components/features/settingsModal/settingActions";
 
 const ProfileDropdown = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { setSettingModal } = useModal();
   const handleClickLogout = () => {
     dispatch(LogoutApi({ navigate }));
   };
   const handleOpenSettingModal = () => {
-    dispatch(getUserSettingDataAPI({ navigate, setSettingModal }));
+    dispatch(getUserSettingDataAPI({ navigate }));
   };
   return (
     <Dropdown>

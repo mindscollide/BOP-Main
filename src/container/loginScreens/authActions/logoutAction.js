@@ -12,8 +12,9 @@ export const LogoutApi = createAsyncThunk(
       const { responseCode } = response.data;
 
       console.log(responseCode,response, "responseCoderesponseCode")
-      if (responseCode === 401) {
+     if (responseCode === 401) {
         navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
       }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));

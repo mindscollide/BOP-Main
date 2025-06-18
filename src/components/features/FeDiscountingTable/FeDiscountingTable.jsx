@@ -4,136 +4,131 @@ import GlobalTable from "../../common/table/GlobalTable";
 import InputFIeld from "../../common/inputField/InputField";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import {
-  publishDiscountingRatesAction,
-} from "@/container/pages/mainDealer/dealerActions";
+import { publishDiscountingRatesAction } from "@/container/pages/mainDealer/dealerActions";
 import { useSelector } from "react-redux";
-import { formatPercentageInput } from "@/utils/formatters";
-import { GetFEDiscountingTableApi } from "./FeDiscountTableAction";
+import {
+  formatPercentageInput,
+  formatPercentageInput2,
+} from "@/utils/formatters";
+import {
+  GetFEDiscountingTableApi,
+  PublishFEDiscountingTableApi,
+} from "./FeDiscountTableAction";
+import { createColumns, generateData } from "@/components/utils/generateData";
+import {
+  buildCurrentRatesPayload,
+  buildDiscountingTable,
+} from "@/components/utils/generateColumnsData";
+import { FeDiscountingPublishedAction } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
+import { InputCell } from "@/components/common/inputField/InputCell";
 
 const FeDiscountingTable = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [tableData, setTableData] = useState([]);
-  const getDiscountTableData = useSelector(
-    (state) => state.dealerReducer.getDiscountingWiseRates
+  const [columnsData, setColumnsData] = useState([]);
+  const [rowData, setRowData] = useState([]);
+  const getAllInstrument = useSelector(
+    (state) => state.authReducer.getAllInstruments
   );
-  useEffect(() => {
-    dispatch(GetFEDiscountingTableApi({ navigate }));
-  }, []);
+  const getDashboardForwards = useSelector(
+    (state) => state.dealerReducer.getDealerDashboardData
+  );
+  const getFeDiscountingData = useSelector(
+    (state) => state.RealtimeActionsSlice.FeDiscountingPublished
+  );
+
+  console.log(getFeDiscountingData, "getFeDiscountingDatagetFeDiscountingData");
+  const getAllTenorsData = useSelector(
+    (state) => state.dealerReducer.getAllTenors
+  );
+  console.log(getAllTenorsData, "getAllTenorsDatagetAllTenorsData");
 
   useEffect(() => {
-    if (getDiscountTableData !== null) {
+    if (getDashboardForwards !== null) {
       try {
-        const { currentRates, previousRates } = getDiscountTableData;
-        if (currentRates.length > 0) {
-          let newRecords = currentRates.map((item, index) => {
-            let getRecords = previousRates.find(
-              (prevItem) => prevItem.instumentID === item.instumentID
-            );
-            if (getRecords !== undefined) {
-              return {
-                key: index + 1,
-                instrumentName: item.instrumentName,
-                instrumentID: item.instumentID,
-                currentRate: item.rate,
-                previousRate: getRecords.rate,
-                dateTime: item.dateTime,
-              };
-            } else {
-              return {
-                key: index + 1,
-                instrumentName: item.instrumentName,
-                instrumentID: item.instumentID,
-                currentRate: item.rate,
-                dateTime: item.dateTime,
-                previousRate: "",
-              };
-            }
-          });
-          setTableData(newRecords);
-        }
-      } catch (error) {}
-    }
-  }, [getDiscountTableData]);
+        const { feDiscountingRates } = getDashboardForwards;
+        const { rowData, columnsData } = buildDiscountingTable(
+          1,
+          feDiscountingRates,
+          getAllTenorsData,
+          getAllInstrument,
+          InputCell,
+          onInputChange
+        );
 
-  const handleChangeCurrent = (event, record) => {
-    const { value } = event.target;
-    setTableData((prev) => {
-      if (prev.length > 0) {
-        let getRecords = prev.map((item) => {
-          if (item.instrumentID === record.instrumentID) {
-            return {
-              ...item,
-              currentRate: formatPercentageInput(value),
-            };
-          } else {
-            return item;
-          }
-        });
-        return getRecords;
+        if (rowData.length > 0) {
+          setRowData(rowData);
+          setColumnsData(columnsData);
+        }
+      } catch (error) {
+        console.log(error, "Error while building discounting table");
       }
-    });
+    }
+  }, [getDashboardForwards, getAllTenorsData, getAllInstrument]);
+
+  useEffect(() => {
+    if (getFeDiscountingData !== null) {
+      try {
+        const { rates } = getFeDiscountingData;
+        const { rowData, columnsData } = buildDiscountingTable(
+          1,
+          rates,
+          getAllTenorsData,
+          getAllInstrument,
+          InputCell,
+          onInputChange
+        );
+        console.log(
+          rowData,
+          columnsData,
+          rates,
+          "getFeDiscountingDatagetFeDiscountingData"
+        );
+        if (rowData.length > 0) {
+          setRowData(rowData);
+          setColumnsData(columnsData);
+          dispatch(FeDiscountingPublishedAction(null));
+        }
+      } catch (error) {
+        console.log(error, "Error while building discounting table");
+      }
+    }
+    return () => {
+      dispatch(FeDiscountingPublishedAction(null));
+    };
+  }, [getFeDiscountingData, getAllTenorsData, getAllInstrument]);
+
+  const onInputChange = (record, instrumentName, value) => {
+    setRowData((prevState) =>
+      prevState.map((stateData) => {
+        // Match by TenorID only, since each row contains all instruments
+        if (
+          stateData.TenorID === record.TenorID &&
+          stateData.instrumentName === record.instrumentName
+        ) {
+          return {
+            ...stateData,
+            [`${instrumentName}`]: formatPercentageInput(value),
+          };
+        }
+        return stateData;
+      })
+    );
   };
 
-  // Columns for the table
-  const columns = [
-    {
-      title: "Tenor",
-      dataIndex: "instrumentName",
-      key: "instrumentName",
-      align: "left",
-    },
-    {
-      title: "Current Rate %",
-      dataIndex: "currentRate",
-      key: "currentRate",
-      align: "center",
-      render: (value, record) => {
-        return (
-          <InputFIeld
-            type='number'
-            applyClass='DealerTableBitInput'
-            value={value}
-            onChange={(event) => handleChangeCurrent(event, record)}
-          />
-        );
-      },
-    },
-    {
-      title: "Previous Rate %",
-      dataIndex: "previousRate",
-      key: "previousRate",
-      align: "center",
-      render: (value) => (
-        <InputFIeld
-          type='number'
-          disabled={true}
-          defaultValue={value}
-          applyClass='DealerTableBitInput'
-        />
-      ),
-    },
-  ];
-
   const handlePublishDiscount = () => {
-    let newData = {
-      CurrentRates: tableData.map((records, index) => {
-        return {
-          InstumentID: records.instrumentID,
-          InstrumentName: records.instrumentName,
-          Rate: records.currentRate,
-        };
-      }),
-    };
-    dispatch(publishDiscountingRatesAction({ navigate, Data: newData }));
+    const payloadData = buildCurrentRatesPayload(rowData);
+    let Data = { CurrentRates: payloadData };
+
+    console.log(payloadData, "payloadDatapayloadDatapayloadData");
+    dispatch(PublishFEDiscountingTableApi({ navigate, Data }));
   };
   return (
     <>
       <GlobalTable
         prefixCls='DealerAndTreasuryDiscountTable'
-        columns={columns}
-        dataSource={tableData}
+        columns={columnsData}
+        dataSource={rowData}
         pagination={false}
       />
 

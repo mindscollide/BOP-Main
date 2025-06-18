@@ -8,21 +8,19 @@ import { getAllCategoriesAction } from "@/components/utils/globalApis";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { GetAllCounterPartyDataAPI } from "@/components/features/SpotBranch/WatchlistAction";
-import { useDealerAndTreasury } from "@/context/DealerAndTreasuryContext";
 import { setActiveTab } from "../mainCorporate/rfqModal/RFQSlicer";
 import Forwards from "../mainTreasury/tabsContent/forwards/Forwards";
+import { setCategoryValue } from "@/store/dealerReducer/dealerSlicer";
 
 const MainCategory = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { setCategoryValue } = useDealerAndTreasury();
   const getAllCategories = useSelector(
     (state) => state.authReducer.getAllCategories
   );
   const getAllCounterPartyData = useSelector(
     (state) => state.WatchListReducer.GetAllCounterPartyData
   );
-  console.log(getAllCounterPartyData, "getAllCategoriesgetAllCategories");
 
   useEffect(() => {
     dispatch(getAllCategoriesAction({ navigate }));
@@ -41,18 +39,20 @@ const MainCategory = () => {
         let Data = {
           CategoryID: categories[0].categoryID,
         };
-        setCategoryValue({
+        let obj = {
           value: categories[0].categoryID,
           label: categories[0].categoryName,
-        });
+        };
+        dispatch(setCategoryValue(obj));
         dispatch(GetAllCounterPartyDataAPI({ Data, navigate }));
         console.log(categories[0], "categoriescategories");
       }
     }
   }, [getAllCategories]);
+
   const tabsData = [
     { title: "Spot", content: <SpotDealerAndTreasury /> },
-    { title: "Forwards", content: <Forwards /> },
+    { title: "Forwards", content: <CategoryForwards /> },
     { title: "Discounting", content: <CategoryDiscounting /> },
   ];
   return (

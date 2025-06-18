@@ -19,8 +19,9 @@ export const ViewAllNatureOfBussinessAPI = createAsyncThunk(
 
       const response = await ViewAllNatureOfBussiness(Data);
       const { responseCode } = response.data;
-      if (responseCode === 401) {
+     if (responseCode === 401) {
         navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
       }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -80,8 +81,9 @@ export const SaveTransactionRFQAPI = createAsyncThunk(
     try {
       const response = await SaveTransactionRFQ(Data);
       const { responseCode } = response.data;
-      if (responseCode === 401) {
+     if (responseCode === 401) {
         navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
       }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));

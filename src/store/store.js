@@ -12,6 +12,9 @@ import ReportSlicer from "./ReportSlicer/ReportSlicer";
 import CalculatorSlice from "../container/pages/mainCalculator/CalculatorSlicer";
 import SettingSlicer from "./settingSlicer/SettingSlicer";
 import chatSlicer from "./chatSlicer/chatSlicer";
+import RealtimeActionsSlice from "./realtimeActionsSlicer/realtimeActionSlice";
+import { errorInterceptor } from "./middleware/errorInterceptor";
+import modalSlicer from "./modalSlice/modalSlicer";
 
 const store = configureStore({
   reducer: {
@@ -27,8 +30,8 @@ const store = configureStore({
     CalculatorReducer: CalculatorSlice,
     settingSlicer: SettingSlicer,
     chatSlicer: chatSlicer,
-
-
+    RealtimeActionsSlice: RealtimeActionsSlice,
+    modalReducer: modalSlicer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 });

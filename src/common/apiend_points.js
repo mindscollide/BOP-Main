@@ -14,7 +14,9 @@ const CalculatorPort = ":13003/Calculator";
 
 const SettingPort = ":13008/Setting";
 
-const ChatPort = ":13004/Chat"
+const ChatPort = ":13004/Chat";
+
+const SystemAdminPort = ":13009/SystemAdmin";
 
 const authApi = `${baseURL}${authPort}`;
 
@@ -30,7 +32,9 @@ const CalculatorApi = `${baseURL}${CalculatorPort}`;
 
 const settingApi = `${baseURL}${SettingPort}`;
 
-const chatApi = `${baseURL}${ChatPort}`
+const chatApi = `${baseURL}${ChatPort}`;
+
+const SystemAdminApi = `${baseURL}${SystemAdminPort}`;
 
 export {
   authApi,
@@ -40,5 +44,6 @@ export {
   reportApi,
   CalculatorApi,
   settingApi,
-  chatApi
+  chatApi,
+  SystemAdminApi,
 };
