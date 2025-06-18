@@ -19,20 +19,22 @@ import {
   formatCurrencyInput,
 } from "@/utils/formatters";
 import moment from "moment";
-import { currentRatePublishedAction, marketStatusUpdated } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
+import {
+  currentRatePublishedAction,
+  marketStatusUpdated,
+} from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 const SpotRates = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [isMarketOn, setIsMarketOn] = useState(false);
   const getLastPublishRates = useSelector(
     (state) => state.dealerReducer.getLastPublishRates
   );
   const currentUpdatedRates = useSelector(
     (state) => state.RealtimeActionsSlice.currentRatesPublished
   );
-  console.log(currentUpdatedRates, "currentUpdatedRatescurrentUpdatedRates");
-  const marketStatusData = useSelector(
-    (state) => state.RealtimeActionsSlice.marketStatus
-  );
+  console.log(isMarketOn, "isMarketOnisMarketOnisMarketOn");
+
   const marketStatus = useSelector(
     (state) => state.RealtimeActionsSlice.marketStatus
   );
@@ -118,6 +120,17 @@ const SpotRates = () => {
     }
   }, [currentUpdatedRates]);
 
+  useEffect(() => {
+    if (marketStatus !== null) {
+      try {
+        console.log(marketStatus, "marketStatusmarketStatusmarketStatus");
+        setIsMarketOn(marketStatus);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }, [marketStatus]);
+
   const handleChangeMarketStatus = (checked) => {
     dispatch(marketStatusUpdated(checked));
 
@@ -182,14 +195,14 @@ const SpotRates = () => {
                 <div className='form-check form-switch me-3'>
                   <SwitchButton
                     labelValue={"OFF / ON  "}
-                    checked={marketStatus}
+                    checked={isMarketOn}
                     onChange={handleChangeMarketStatus}
                   />
                 </div>
                 <CustomButton
                   value={"Clear Rates"}
                   applyClass='clearRates'
-                  disabled={marketStatus === false ? true : false}
+                  disabled={isMarketOn === true ? false : true}
                   onClick={handleClearRates}
                 />
               </div>
@@ -208,8 +221,8 @@ const SpotRates = () => {
                         min={1}
                         onChange={handleChangeCurrentRate}
                         name='refreshInterval'
-                        value={marketStatus === false ? 0 : refreshInterval}
-                        disabled={marketStatus === false ? true : false}
+                        value={refreshInterval}
+                        disabled={isMarketOn === true ? false : true}
                         type='number'
                         applyClass='RefreshInterval'
                       />
@@ -217,7 +230,7 @@ const SpotRates = () => {
                       <CustomButton
                         value={"Publish"}
                         applyClass='publishBtn'
-                        disabled={marketStatus === true ? false : true}
+                        disabled={isMarketOn === true ? false : true}
                         onClick={handlePublishRates}
                       />
                     </div>
@@ -255,16 +268,12 @@ const SpotRates = () => {
                         <tr>
                           <td className='border-0'>
                             <span className='bid-val mt-4 d-block fs-5  ff-roboto fw-bold'>
-                              {marketStatus === false
-                                ? 0
-                                : lastPublishRates.bidValue}
+                              {lastPublishRates.bidValue}
                             </span>
                           </td>
                           <td className='border-0'>
                             <span className='ask-val  mt-4 d-block fs-5 ff-roboto fw-bold'>
-                              {marketStatus === false
-                                ? 0
-                                : lastPublishRates.askValue}
+                              {lastPublishRates.askValue}
                             </span>
                           </td>
                         </tr>
@@ -299,12 +308,8 @@ const SpotRates = () => {
                           <td className='border-0'>
                             <InputFIeld
                               min={1}
-                              disabled={marketStatus === false ? true : false}
-                              value={
-                                marketStatus === false
-                                  ? 0
-                                  : currentRates.bidValue
-                              }
+                              disabled={isMarketOn === true ? false : true}
+                              value={currentRates.bidValue}
                               onChange={handleChangeCurrentRate}
                               name='bidValue'
                               type='number'
@@ -316,13 +321,9 @@ const SpotRates = () => {
                           <td className='border-0'>
                             <InputFIeld
                               min={1}
-                              disabled={marketStatus === false ? true : false}
+                              disabled={isMarketOn === true ? false : true}
                               type='number'
-                              value={
-                                marketStatus === false
-                                  ? 0
-                                  : currentRates.askValue
-                              }
+                              value={currentRates.askValue}
                               onChange={handleChangeCurrentRate}
                               name='askValue'
                               className={

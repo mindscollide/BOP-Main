@@ -17,15 +17,27 @@ export const formatCurrencyInput = (value) => {
 };
 
 export const formatPercentageInput = (value) => {
-  const num = parseFloat(value);
+  if (value === "") return ""; // Allow user to clear input
 
-  if (!isNaN(num) && num >= 1 && num <= 100) {
-    return num.toString();
+  // Remove all characters except digits and dot
+  const cleanVal = value.replace(/[^0-9.]/g, "");
+
+  // Prevent multiple decimal points
+  const parts = cleanVal.split(".");
+  if (parts.length > 2) return "0.1";
+
+  const numValue = parseFloat(cleanVal);
+
+  if (isNaN(numValue)) return "0.1";
+
+  // Allow user to type any value from 0 to 100, but only accept 1-100 as valid
+  if (numValue >= 0 && numValue <= 100) {
+    return cleanVal; // Let the user keep entering up to 100
   }
 
+  // If value is outside allowed range, return default
   return "0.1";
 };
-
 
 
 export const formatPercentageInput2 = (value) => {

@@ -11,6 +11,9 @@ import { useMqttClient } from "@/components/utils/mqttConnection";
 import {
   FeDiscountingPublishedAction,
   NonFeDiscountingPublishedAction,
+  categoryisAdded,
+  categoryisDeleted,
+  categoryisUpdated,
   currentRatePublishedAction,
   marketStatusUpdated,
   setIncomingChat,
@@ -76,11 +79,21 @@ const Dashboard = () => {
           dispatch(NonFeDiscountingPublishedAction(data.payload));
           break;
         case "MARKET_STATUS_UPDATED":
-          dispatch(marketStatusUpdated(data.payload));
+          dispatch(marketStatusUpdated(data.payload.marketStatus.isMarketOn));
           break;
         case "BRANCH_STATUS_INACTIVE":
         case "CORPORATE_STATUS_INACTIVE":
           dispatch(LogoutApi({ navigate }));
+          break;
+        case "CATEGORY_ADDED":
+          dispatch(categoryisAdded(data.payload));
+          break;
+        case "CATEGORY_UPDATED":
+          dispatch(categoryisUpdated(data.payload));
+          break;
+        case "CATEGORY_DELETED":
+          dispatch(categoryisDeleted(data.payload));
+          break;
         default:
           console.warn("No specific handler for this message type");
           break;

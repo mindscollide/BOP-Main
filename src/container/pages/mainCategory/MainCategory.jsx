@@ -21,7 +21,6 @@ const MainCategory = () => {
   const getAllCounterPartyData = useSelector(
     (state) => state.WatchListReducer.GetAllCounterPartyData
   );
-  console.log(getAllCounterPartyData, "getAllCategoriesgetAllCategories");
 
   useEffect(() => {
     dispatch(getAllCategoriesAction({ navigate }));
@@ -50,6 +49,7 @@ const MainCategory = () => {
       }
     }
   }, [getAllCategories]);
+
   const tabsData = [
     { title: "Spot", content: <SpotDealerAndTreasury /> },
     { title: "Forwards", content: <CategoryForwards /> },

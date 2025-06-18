@@ -11,6 +11,9 @@ const RealtimeActionsSlice = createSlice({
     FeDiscountingPublished: null,
     tenorWiseForwardsRates: null,
     NonFeDiscountingPublished: null,
+    categoryisAdded: null,
+    categoryisUpdated: null,
+    categoryisDeleted: null,
   },
   reducers: {
     setMarketTimingsUpdated(state, { payload }) {
@@ -34,13 +37,25 @@ const RealtimeActionsSlice = createSlice({
     NonFeDiscountingPublishedAction(state, { payload }) {
       state.NonFeDiscountingPublished = payload;
     },
-    marketStatusUpdated(state, {payload}) {
-      state.marketStatus = payload
-    }
+    marketStatusUpdated(state, { payload }) {
+      state.marketStatus = payload;
+    },
+    categoryisAdded(state, { payload }) {
+      state.categoryisAdded = payload;
+    },
+    categoryisUpdated(state, { payload }) {
+      state.categoryisUpdated = payload;
+    },
+    categoryisDeleted(state, { payload }) {
+      state.categoryisDeleted = payload;
+    },
   },
 });
 
 export const {
+  categoryisAdded,
+  categoryisUpdated,
+  categoryisDeleted,
   setIncomingChat,
   setMarketTimingsUpdated,
   setTenorsCreated,
@@ -48,7 +63,7 @@ export const {
   FeDiscountingPublishedAction,
   tenorWiseFowardsRatesPublishedActions,
   NonFeDiscountingPublishedAction,
-  marketStatusUpdated
+  marketStatusUpdated,
 } = RealtimeActionsSlice.actions;
 
 export default RealtimeActionsSlice.reducer;
