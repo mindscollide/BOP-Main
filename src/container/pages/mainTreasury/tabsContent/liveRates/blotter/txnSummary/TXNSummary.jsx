@@ -1173,7 +1173,7 @@ const TXNSummary = () => {
 
   return (
     <>
-      <section className='bg-white '>
+      <section className='bg-white px-2 '>
         <div className='box-content-wrapper'>
           {!isTreasury && (
             <div className='box-header mb-3'>

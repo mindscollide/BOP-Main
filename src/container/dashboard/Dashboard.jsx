@@ -23,6 +23,8 @@ import {
 } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { formatDateToUTC } from "@/utils/formatters";
 import { LogoutApi } from "../loginScreens/authActions/logoutAction";
+import DealBox from "@/components/features/dealbox/DealBox";
+import DealViewModal from "../pages/mainCorporate/rfqModal/DealViewModal/DealViewModal";
 const Dashboard = () => {
   const { Content } = Layout;
   const dispatch = useDispatch();
@@ -118,6 +120,8 @@ const Dashboard = () => {
       <Content>
         <main className='px-3'>
           <Outlet />
+          <DealBox />
+          <DealViewModal />
           {chatModal && <ChatBox />}
         </main>
       </Content>
