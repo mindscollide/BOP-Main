@@ -116,9 +116,13 @@ const Dashboard = () => {
 
   useEffect(() => {
     connectToMqtt({ subscribeID, userID });
-    setTimeout(() => {
-      dispatch(setDealModalRequest(true));
-    }, 5000);
+
+    if (isTreasury === "true") {
+      setTimeout(() => {
+        dispatch(setDealModalRequest(true));
+      }, 5000);
+    }
+
     dispatch(getAllInstrumentsApi({ navigate }));
   }, []);
   return (
