@@ -5,11 +5,22 @@ import styles from "./DealViewModal.module.css";
 import IconElement from "@/components/common/IconElement/IconElement";
 import InputFIeld from "@/components/common/inputField/InputField";
 import CustomButton from "@/components/common/globalButton/button";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { setViewDealModal } from "@/store/modalSlice/modalSlicer";
 
 const DealViewModal = () => {
+  const dispatch = useDispatch()
+  const viewDealModal = useSelector(
+    (state) => state.modalReducer.viewDealModal
+  );
+
+  const closeModal = () => {
+    dispatch(setViewDealModal(false));
+  }
   return (
     <GlobalModal
-      show={true}
+      show={viewDealModal}
       size={"md"}
       bodyClassName={"py-0 px-0 overflow-hidden"}
       modalBody={
@@ -80,7 +91,7 @@ const DealViewModal = () => {
                   md={2}
                   lg={2}
                   className='d-flex justify-content-center'>
-                  <IconElement iconClass={"icon-close fs-4"} />
+                  <IconElement onClick={closeModal} iconClass={"icon-close fs-4 cursor-pointer"} />
                 </Col>
               </Row>
               <Row className='mt-5'>
@@ -107,7 +118,11 @@ const DealViewModal = () => {
                 </Col>
               </Row>
               <Row>
-                <Col sm={12} md={12} lg={12} className="d-flex justify-content-center gap-3 mt-5">
+                <Col
+                  sm={12}
+                  md={12}
+                  lg={12}
+                  className='d-flex justify-content-center gap-3 mt-5'>
                   <CustomButton
                     icon={<IconElement iconClass={"icon-check fs-5"} />}
                     iconPosition={"left"}

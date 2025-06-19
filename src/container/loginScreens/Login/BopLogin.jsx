@@ -158,7 +158,7 @@ const BopLogin = () => {
                     />
                   </InputGroup>
                   {crendentials.hasEmailisValid === false && (
-                    <p style={{ textAlign: "left" }}>"Email is Not Valid"</p>
+                    <p className="color-red fs-sm d-flex justify-content-start m-0" >Enter a valid email address</p>
                   )}
                 </>
               ) : (

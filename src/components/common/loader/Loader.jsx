@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import LoaderImage from "@/assets/logo-hd.png";
-import styles from "./Loader.module.css";
+import "./Loader.css";
 
 const Loader = () => {
   const [isLoader, setIsLoading] = useState(false);
@@ -65,16 +65,16 @@ const Loader = () => {
 
   return (
     isLoader && (
-      <div className={styles["MainLoader"]}>
-        <div className='d-flex align-items-center flex-column justify-content-center h-clc-100'>
-          <img
-            className='img-fluid'
-            src={LoaderImage}
-            alt='Section-Loader'
-            width={200}
-          />
-          <div className={styles["progress-bar"]}>
-            <div className={styles["progress-bar-value"]}></div>
+      <div className='body-loader'>
+        <div className='body-loader-inner'>
+          <div className='logo-loader-wrapper'>
+            <img
+              className='img-fluid'
+              src={LoaderImage}
+              alt='Section-Loader'
+              width={200}
+            />
+            <div className='loader-line-highlight' />
           </div>
         </div>
       </div>

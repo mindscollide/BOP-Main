@@ -3,8 +3,8 @@ import {
   ViewAllNatureOfBussiness,
 } from "@/common/api_config";
 import { authApi } from "@/common/apiend_points";
-import { setCustomHeaders } from "@/common/utils";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
+import createPostAPI from "@/utils/axiosInstance";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 // Define the ViewAllNatureOfBussinessAPI async thunk

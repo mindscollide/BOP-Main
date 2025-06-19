@@ -47,7 +47,7 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
       let Data = { PageNumber: 1, Length: 3 };
       dispatch(ViewAllNatureOfBussinessAPI({ Data, navigate }));
       //For having Currency as discussed with MS (worldCrosses)
-      dispatch(GetFXInstrumentsAPI({ navigate }));
+      // dispatch(GetFXInstrumentsAPI({ navigate }));
     } catch (error) {
       console.log(error, "error");
     }

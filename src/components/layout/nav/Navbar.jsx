@@ -226,7 +226,7 @@ const GlobalNavbar = () => {
               <div className='d-flex align-items-center gap-2'>
                 {location.pathname !== "/calculator" ? (
                   <>
-                    {shouldIncludeCorporate && (
+                    {(shouldIncludeCorporate || shouldIncludeBranch) && (
                       <Suspense fallback={<>Loading RFQ...</>}>
                         <CustomButton
                           applyClass='rfqBtn'

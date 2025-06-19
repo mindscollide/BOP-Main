@@ -6,6 +6,8 @@ const initialState = {
   iSellAndBuyModal: false,
   settingModal: false,
   chatModal: false,
+  dealModalRequest: false,
+  viewDealModal: false,
   chatModalTransactionId: "",
   settingsRecord: {
     BD_Enable2FA: false,
@@ -35,14 +37,20 @@ const modalSlice = createSlice({
       state.chatModalTransactionId = action.payload;
     },
     setSettingRecords: (state, action) => {
-        state.settingsRecord = {
-          ...state.settingsRecord,
-          ...action.payload,
-        };
-      },
-      
+      state.settingsRecord = {
+        ...state.settingsRecord,
+        ...action.payload,
+      };
+    },
+
     setTransactionInfoModal(state, action) {
       state.transactionInfoModal = action.payload;
+    },
+    setDealModalRequest(state, { payload }) {
+      state.dealModalRequest = payload;
+    },
+    setViewDealModal(state, { payload }) {
+      state.viewDealModal = payload;
     },
     resetModalState() {
       return initialState;
@@ -51,6 +59,8 @@ const modalSlice = createSlice({
 });
 
 export const {
+  setDealModalRequest,
+  setViewDealModal,
   setCreateTenorModal,
   setISellAndBuyModal,
   setSettingModal,

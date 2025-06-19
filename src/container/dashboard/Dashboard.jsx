@@ -25,6 +25,8 @@ import { formatDateToUTC } from "@/utils/formatters";
 import { LogoutApi } from "../loginScreens/authActions/logoutAction";
 import DealBox from "@/components/features/dealbox/DealBox";
 import DealViewModal from "../pages/mainCorporate/rfqModal/DealViewModal/DealViewModal";
+import { setDealModalRequest } from "@/store/modalSlice/modalSlicer";
+import { AnimatePresence } from "framer-motion";
 const Dashboard = () => {
   const { Content } = Layout;
   const dispatch = useDispatch();
@@ -32,6 +34,10 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const chatModal = useSelector((state) => state.modalReducer.chatModal);
+  const dealMoalRequest = useSelector(
+    (state) => state.modalReducer.dealModalRequest
+  );
+  console.log(dealMoalRequest, "dealMoalRequestdealMoalRequest");
   const IsBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
   const IsCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
   const isTreasury = import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
@@ -110,6 +116,9 @@ const Dashboard = () => {
 
   useEffect(() => {
     connectToMqtt({ subscribeID, userID });
+    setTimeout(() => {
+      dispatch(setDealModalRequest(true));
+    }, 5000);
     dispatch(getAllInstrumentsApi({ navigate }));
   }, []);
   return (
@@ -120,7 +129,8 @@ const Dashboard = () => {
       <Content>
         <main className='px-3'>
           <Outlet />
-          <DealBox />
+          <AnimatePresence>{dealMoalRequest && <DealBox />}</AnimatePresence>
+
           <DealViewModal />
           {chatModal && <ChatBox />}
         </main>

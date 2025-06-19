@@ -500,6 +500,7 @@
   height: auto !important;
   font-weight: 700;
   font-family: "POPPINS";
+  margin: 0 auto;
 }
 
 .authLoginBtn:hover {
