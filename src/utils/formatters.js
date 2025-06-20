@@ -39,7 +39,6 @@ export const formatPercentageInput = (value) => {
   return "0.1";
 };
 
-
 export const formatPercentageInput2 = (value) => {
   if (!value) return "";
 
@@ -101,3 +100,23 @@ export const secureRandomString = (length = 16) => {
     .join("")
     .slice(0, length);
 };
+
+export function isValidNumberUnderMax(value, previousValue = "", max = 100) {
+  if (/\s/.test(value)) return false; // Block spaces
+  if (value === "" || value === null) return true;
+  if (value === ".") return true;
+
+  // Replace "05" style with "5"
+  if (previousValue === "0" && /^[1-9]$/.test(value)) {
+    return value;
+  }
+
+  // Allow numbers with up to 2 decimal places
+  const regex = /^\d{1,3}(\.\d{0,2})?$/;
+  if (!regex.test(value)) return false;
+
+  const num = parseFloat(value);
+  return !isNaN(num) && num >= 0 && num <= max;
+}
+
+
