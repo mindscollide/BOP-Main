@@ -11,6 +11,7 @@ import { SaveTransactionRFQAPI } from "./RFQActions";
 import { useSelector } from "react-redux";
 import { GetFXInstrumentsAPI } from "@/components/features/SpotBranch/WatchlistAction";
 import { set } from "zod";
+import { SaveSpotTransactionAPI } from "../../mainTreasury/tabsContent/liveRates/blotter/BlotterActions";
 
 const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
   const dispatch = useDispatch();
@@ -32,8 +33,14 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
   //Local states
   const [natureOfBusinessOptions, setNatureOfBusinessOptions] = useState([]);
   const [currencyOptions, setCurrencyOptions] = useState([]);
-  const [selectedNature, setSelectedNature] = useState(null);
-  const [selectedCurrency, setSelectedCurrency] = useState(null);
+  const [selectedNature, setSelectedNature] = useState({
+    value: 0,
+    label: "",
+  });
+  const [selectedCurrency, setSelectedCurrency] = useState({
+    value: 0,
+    label: "",
+  });
   const [amountData, setAmountData] = useState("");
   const [acNumberData, setAcNumberData] = useState("");
   const [lcNumberData, setLcNumberData] = useState("");
@@ -86,8 +93,6 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
       }
     }
   }, [natureOfBusinessList]);
-
-
 
   console.log(currencyOptions, "currencyOptionscurrencyOptions");
 
@@ -146,23 +151,33 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
 
   const handleChangeType = (selectType) => {
     setTypeOptionSelected(selectType);
-  }
+  };
 
   // Handle Confirm Button
   const handleConfirmButton = () => {
-    //Caliing Save RFQ Trasaction API
-    let Data = {
-      CustomerName: "John Doe",
-      CounterPartyID: "BR123456",
-      InstrumentID: "IN78910",
-      TypeID: 1,
-      Amount: 1500.75,
-      AccountNumber: "1234567890123456",
-      NatureID: 2,
-      LCNumber: "LC2024XYZ",
-    };
+    if (
+      typeOptionSelected.value !== 0 &&
+      selectedNature.value !== 0 &&
+      selectedCurrency.value === 0 &&
+      lcNumberData !== "" &&
+      amountData !== ""
+    ) {
+      let corporate = JSON.parse(localStorage.getItem("corporate"));
+      //Caliing Save RFQ Trasaction API
+      let Data = {
+        CorporateID: corporate.corporateID,
+        InstrumentID: 21,
+        // InstrumentID: selectedCurrency.value,
+        SecondaryInstrumentID: 0,
+        IsBuySide: typeOptionSelected.value === 1 ? true : false,
+        Quantity: Number(amountData),
+        AccountNumber: acNumberData,
+        NatureOfTransactionID: selectedNature.value,
+        LCNumber: lcNumberData,
+      };
 
-    dispatch(SaveTransactionRFQAPI({ navigate, Data }));
+      dispatch(SaveSpotTransactionAPI({ navigate, Data }));
+    }
   };
 
   return (
@@ -252,17 +267,15 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
                   <SelectDropdown
                     placeholder=''
                     classNamePrefix='bookaForwardCorporate'
-                    options={
-                      natureOfBusinessOptions.filter((option) => {
-                        if (typeOptionSelected?.value === 1 && option.isForSpot) {
-                          return option.isForBuy;
-                        }
-                        if (typeOptionSelected?.value === 2 && option.isForSpot) {
-                          return option.isForSell;
-                        }
-                        return false; // if value is neither 1 nor 2, show no options
-                      })
-                    }
+                    options={natureOfBusinessOptions.filter((option) => {
+                      if (typeOptionSelected?.value === 1 && option.isForSpot) {
+                        return option.isForBuy;
+                      }
+                      if (typeOptionSelected?.value === 2 && option.isForSpot) {
+                        return option.isForSell;
+                      }
+                      return false; // if value is neither 1 nor 2, show no options
+                    })}
                     onChange={handleNatureChange}
                     value={selectedNature}
                   />

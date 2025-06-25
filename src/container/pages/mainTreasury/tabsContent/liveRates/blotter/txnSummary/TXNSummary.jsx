@@ -17,6 +17,9 @@ import { getAllChatByTransactionId } from "@/components/features/chatBox/ChatAct
 import { useNavigate } from "react-router-dom";
 import InfoTransaction from "../infoTransaction/InfoTransaction";
 import { setTransactionInfoModal } from "@/store/modalSlice/modalSlicer";
+import { formatDateTimeToUTCTime } from "@/components/utils/timeFunction";
+import { useTableScrollBottom } from "@/utils/useTableScrollBottom";
+import { BlotterDataAPI } from "../BlotterActions";
 const TXNSummary = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -53,6 +56,9 @@ const TXNSummary = () => {
 
   //local states
   const [blotterdata, setBlotterdata] = useState([]);
+  const [totalRecord, setTotalRecords] = useState(0);
+  const [sRow, setRow] = useState(0);
+  const [hasReachedBottom, setHasReachedBottom] = useState(false);
   //TXNID Filter State
   const [open, setOpen] = useState(false);
   const [selectedItemsTXNID, setSelectedItemsTXNID] = useState([]);
@@ -107,14 +113,45 @@ const TXNSummary = () => {
 
   const isCorproate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
 
+  useTableScrollBottom(
+    () => {
+      if (totalRecord !== blotterdata.length) {
+        setHasReachedBottom(true);
+        let Data = { sRow: sRow, Length: 10 };
+        dispatch(BlotterDataAPI({ navigate, Data }));
+      }
+    },
+    0,
+    "TXNSummary_Table"
+  );
+
   //Extracting Out the Blotter Data API
   useEffect(() => {
     try {
       if (GlobalStateGetBlotterData && GlobalStateGetBlotterData !== null) {
-        console.log(GlobalStateGetBlotterData, "GlobalStateGetBlotterData");
-        // Now will be requiring some Clarification on it
-        setBlotterdata(GlobalStateGetBlotterData.tnxSummary);
-        // setStatusOptions(GlobalStateGetBlotterData.statuses);
+        if (hasReachedBottom) {
+          setHasReachedBottom(false);
+          setBlotterdata((prevData) => [
+            ...prevData,
+            ...GlobalStateGetBlotterData.tnxSummary,
+          ]);
+          setTotalRecords(GlobalStateGetBlotterData.totalCount);
+          setRow(
+            (prevRow) => prevRow + GlobalStateGetBlotterData.tnxSummary.length
+          );
+        } else {
+          setHasReachedBottom(false);
+          setBlotterdata(GlobalStateGetBlotterData.tnxSummary);
+          setTotalRecords(GlobalStateGetBlotterData.totalCount);
+          setRow(GlobalStateGetBlotterData.tnxSummary.length);
+        }
+      } else if (GlobalStateGetBlotterData === null) {
+        if (!hasReachedBottom) {
+          setHasReachedBottom(false);
+          setBlotterdata([]);
+          setTotalRecords(0);
+          setRow(0);
+        }
       }
     } catch (error) {
       console.log(error, "error");
@@ -790,7 +827,7 @@ const TXNSummary = () => {
         </div>
       ),
       key: "counterPartyName",
-      dataIndex: "counterPartyName",
+      dataIndex: "corporateName",
       className: "ff-poppins fw-bold",
       width: 120,
       ellipsis: {
@@ -821,7 +858,7 @@ const TXNSummary = () => {
         </div>
       ),
       key: "counterPartyName",
-      dataIndex: "counterPartyName",
+      dataIndex: "branchCode",
       className: "ff-poppins fw-bold",
       width: 120,
     },
@@ -964,6 +1001,9 @@ const TXNSummary = () => {
       dataIndex: "rate",
       className: "ff-poppins fw-bold",
       width: 120,
+      render: (text, record) => {
+        return text.toFixed(2);
+      },
     },
     {
       title: (
@@ -1020,6 +1060,9 @@ const TXNSummary = () => {
       dataIndex: "amount",
       className: "ff-poppins fw-bold",
       width: 120,
+      render: (text, record) => {
+        return text.toFixed(2);
+      },
     },
     {
       title: (
@@ -1045,9 +1088,12 @@ const TXNSummary = () => {
         </div>
       ),
       key: "time",
-      dataIndex: "time",
+      dataIndex: "tradeDateTime",
       className: "ff-poppins fw-bold",
-      width: 120,
+      width: 80,
+      render: (text, record) => {
+        return text !== "" && formatDateTimeToUTCTime(text);
+      },
     },
     {
       title: (
@@ -1147,18 +1193,42 @@ const TXNSummary = () => {
       dataIndex: "",
       className: "comment-class text-center",
       width: 80,
+      align: "center",
       render: (text, record) => {
+        console.log(record, "record in action column");
         return (
           <>
-            <div className='col-action text-nowrap text-center'>
-              <CustomButton
-                icon={<i className='icon-check'></i>}
-                className='btn btn-sm btn-success me-1 blotterCheckerButton'
+            <div className='col-action text-nowrap text-center d-flex gap-1 justify-content-center'>
+              {/* Check  */}
+              {record.statusID === 1 ? (
+                <CustomButton
+                  icon={<i className='icon-close blotterTableIconSize '></i>}
+                  className='btn btn-danger '
+                />
+              ) : null}
+              {/* <CustomButton
+                icon={<i className='icon-check blotterTableIconSize'></i>}
+                className='btn btn-success '
               />
               <CustomButton
-                icon={<i className='icon-trash'></i>}
-                className='btn btn-sm btn-danger me-1 blotterCheckerButton '
+                icon={<i className='icon-trash blotterTableIconSize '></i>}
+                className='btn  btn-danger  '
               />
+
+              <CustomButton
+                icon={<i className='icon-user-check blotterTableIconSize '></i>}
+                className='btn  btn-primary  '
+              />
+              <CustomButton
+                icon={<i className='icon-open  blotterTableIconSize'></i>}
+                className='btn  btn-primary  '
+              />
+              <CustomButton
+                icon={
+                  <i className='icon-view-comment blotterTableIconSize'></i>
+                }
+                className='btn  btn-primary'
+              /> */}
             </div>
           </>
         );
@@ -1170,12 +1240,23 @@ const TXNSummary = () => {
       dataIndex: "chat",
       className: "comment-class ",
       width: 80,
+      align: "center",
       render: (text, record) => {
         return (
           <>
-            <div className='col-chat text-nowrap text-center'>
+            <div className='d-flex gap-1 justify-content-start'>
+              {record.statusID === 3 ? (
+                <CustomButton
+                  icon={
+                    <i className='icon-view-comment blotterTableIconSize '></i>
+                  }
+                  className='btn  btn-primary'
+                />
+              ) : (
+                <span className='w-30'></span>
+              )}
               <CustomButton
-                icon={<i className='icon-chat2'></i>}
+                icon={<i className='icon-chat2 '></i>}
                 className='btn btn-sm btn-danger chat-btn-trigger'
                 onClick={() => handleClickChat(record.txnid)}
               />
@@ -2007,48 +2088,6 @@ const TXNSummary = () => {
       className: "ff-poppins fw-bold",
       width: 120,
     },
-    // {
-    //   title: "Checker",
-    //   key: "Checker",
-    //   dataIndex: "Checker",
-    //   className: "comment-class text-center",
-    //   render: (text, record) => {
-    //     return (
-    //       <>
-    //         <div className='col-action text-nowrap text-center'>
-    //           <CustomButton
-    //             icon={<i className='icon-check'></i>}
-    //             className='btn btn-sm btn-success me-1 blotterCheckerButton'
-    //           />
-    //           <CustomButton
-    //             icon={<i className='icon-trash'></i>}
-    //             className='btn btn-sm btn-danger me-1 blotterCheckerButton '
-    //           />
-    //         </div>
-    //       </>
-    //     );
-    //   },
-    // },
-
-    // Comment section commented due to change in the HTML V3
-    // {
-    //   title: "Comment",
-    //   key: "comment",
-    //   dataIndex: "comment",
-    //   className: "comment-class text-center ",
-    //   render: (text, record) => (
-    //     <>
-    //       {text !== "" ? (
-    //         <span className="d-inline-block cursor-pointer">
-    //           <IconElement
-    //             iconClass="icon-view-comment fs-5 color-blue"
-    //             onClick={() => handleShowCommentModal(text)}
-    //           />
-    //         </span>
-    //       ) : null}
-    //     </>
-    //   ),
-    // },
     {
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
@@ -2124,6 +2163,14 @@ const TXNSummary = () => {
       },
     },
   ];
+  //Custome hook for Scrolling (1)
+  // const { hasReachedBottom, setHasReachedBottom } = useTableScrollBottom(() => {
+  //   console.log("🚀 Table reached bottom", totalRecord, blotterdata.length,hasReachedBottom);
+  //   if (totalRecord !== blotterdata.length) {
+  //     let Data = { sRow: sRow, Length: 10 };
+  //     dispatch(BlotterDataAPI({ navigate, Data }));
+  //   }
+  // });
 
   return (
     <>

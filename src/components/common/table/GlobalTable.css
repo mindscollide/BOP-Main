@@ -1493,3 +1493,47 @@ tr.TXNSummary_Table-cell-scrollbar {
 .TXNSummary_Table-measure-row {
   visibility: collapse !important;
 }
+
+.OutStanding_Table .ant-table-filter-trigger {
+  display: none !important;
+}
+
+.OutStanding_Table-wrapper .OutStanding_Table {
+  scrollbar-color: auto !important;
+}
+th.OutStanding_Table-cell {
+  background: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  color: #ffffff !important;
+  padding: 10px 5px !important;
+  border-radius: 0 !important;
+  text-align: center !important;
+  font-size: 14px !important;
+}
+
+th.OutStanding_Table-cell:before {
+  content: none !important;
+}
+
+th.OutStanding_Table-cell.comment-class {
+  font-weight: bold !important;
+  font-family: "Roboto", sans-serif !important;
+  text-align: center !important;
+}
+
+td.OutStanding_Table-cell.ff-poppins.fw-bold {
+  padding: 8px 10px !important;
+  font-family: "Roboto", sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: #212529 !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+}
+
+tr.OutStanding_Table-cell-scrollbar {
+  display: none !important;
+}
+.OutStanding_Table-measure-row {
+  visibility: collapse !important;
+}

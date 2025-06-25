@@ -65,7 +65,7 @@ const Loader = () => {
 
   return (
     isLoader && (
-      <div className='body-loader'>
+      <div className='body-loader overflow-hidden'>
         <div className='body-loader-inner'>
           <div className='logo-loader-wrapper'>
             <img
