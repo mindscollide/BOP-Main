@@ -1104,7 +1104,7 @@ const OutstandingDeals = () => {
             className={
               text === "Accepted"
                 ? "color-green"
-                : record.statusID === 5 
+                : record.statusID === 5
                 ? "InProgress_outstanding"
                 : record.statusID === 2
                 ? "pending_outstanding"
@@ -1142,7 +1142,7 @@ const OutstandingDeals = () => {
           bordered={false}
           prefixCls='TXNSummary_Table'
           columns={columns}
-          scroll={{ x: "max-content" }}
+          scroll={{ x: "max-content", y: 400 }}
         />
 
         <CommentModal

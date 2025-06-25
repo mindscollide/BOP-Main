@@ -44,7 +44,128 @@ const BlotterHeader = () => {
       : tabsData;
   return (
     <>
-      <div className='box-header position-relative'>
+      <section className='position-relative'>
+        {isTreasury ? (
+          <>
+            <GlobalTabs
+              tabClass=' d-flex justify-content-start gap-2 mb-3 align-items-center'
+              tabs={tabsData}
+              defaultActiveKey={"0"}
+            />
+            <div className='moreOptionsNOPExport'>
+              <div className='nop-hd-container'>
+                <div className='d-flex align-items-center'>
+                  <>
+                    {" "}
+                    <span className='hd-txt me-3'>NOP (US$)</span>
+                    <span className='hd-cr me-2'>46,999</span>
+                    <CustomButton
+                      applyClass={"NOP-button"}
+                      value='+'
+                      onClick={onClickNopModal}
+                    />{" "}
+                    <CustomButton
+                      applyClass={"Export-button"}
+                      value='Export'
+                      onClick={onClickOpenExport}
+                    />
+                  </>
+
+                  {openExportDiv ? (
+                    <>
+                      <div className='exportOptions'>
+                        <div className='exportOptionsBox'>
+                          <img
+                            src={pdfImage}
+                            width={30}
+                            height={30}
+                            alt='pdf'
+                          />
+                          <img
+                            src={excelImage}
+                            width={30}
+                            height={30}
+                            alt='excel'
+                          />
+                          <img
+                            src={emailImage}
+                            width={30}
+                            height={30}
+                            alt='email'
+                            onClick={onClickMailModal}
+                          />
+                          <img
+                            src={printImage}
+                            width={30}
+                            height={30}
+                            alt='print'
+                          />
+                        </div>
+                      </div>
+                    </>
+                  ) : null}
+                </div>
+              </div>
+            </div>
+          </>
+        ) : isBranch || isCorporate ? (
+          <>
+            <div className='fs-6 fw-bold color-hd data-summary-heading mb-4'>
+              TXN Summary
+            </div>
+            <div className='moreOptionsNOPExport'>
+              <div className='nop-hd-container'>
+                <div className='d-flex align-items-center'>
+                  <>
+                    {" "}
+                    <CustomButton
+                      applyClass={"Export-button"}
+                      value='Export'
+                      onClick={onClickOpenExport}
+                    />
+                  </>
+
+                  {openExportDiv ? (
+                    <>
+                      <div className='exportOptions'>
+                        <div className='exportOptionsBox'>
+                          <img
+                            src={pdfImage}
+                            width={30}
+                            height={30}
+                            alt='pdf'
+                          />
+                          <img
+                            src={excelImage}
+                            width={30}
+                            height={30}
+                            alt='excel'
+                          />
+                          <img
+                            src={emailImage}
+                            width={30}
+                            height={30}
+                            alt='email'
+                            onClick={onClickMailModal}
+                          />
+                          <img
+                            src={printImage}
+                            width={30}
+                            height={30}
+                            alt='print'
+                          />
+                        </div>
+                      </div>
+                    </>
+                  ) : null}
+                </div>
+              </div>
+            </div>
+            <TXNSummary />
+          </>
+        ) : null}
+      </section>
+      {/* <div className='box-header position-relative'>
         {isTreasury ? (
           <>
             {" "}
@@ -52,7 +173,7 @@ const BlotterHeader = () => {
               <div className='d-flex align-items-center'>
                 <div className='nop-hd-container'>
                   <div className='d-flex align-items-center'>
-                    {isTreasury && (
+                
                       <>
                         {" "}
                         <span className='hd-txt me-3'>NOP (US$)</span>
@@ -68,7 +189,7 @@ const BlotterHeader = () => {
                           onClick={onClickOpenExport}
                         />
                       </>
-                    )}
+            
 
                     {openExportDiv ? (
                       <>
@@ -124,7 +245,7 @@ const BlotterHeader = () => {
         ) : isBranch || isCorporate ? (
           <TXNSummary />
         ) : null}
-      </div>
+      </div> */}
       {openNopModal ? (
         <NopModal
           openNopModal={openNopModal}

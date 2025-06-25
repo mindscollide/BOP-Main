@@ -42,6 +42,7 @@ const GlobalTable = ({
       locale={locale}
       scroll={scroll}
       onScroll={onScroll}
+      tableLayout="auto"
       rowHoverBg={rowHoverBg}
       components={components} // Pass the components prop to Table
       onRow={onRow} // Pass the onRow prop to Table
