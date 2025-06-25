@@ -2534,11 +2534,20 @@ i.close-add-user {
   border-radius: 4px !important;
 }
 
-
 .DealBox_CrossIcon {
   position: absolute;
   right: 0;
   padding: 5px;
   color: #fff;
   cursor: pointer;
+}
+
+.pending_outstanding {
+  color: #616366;
+
+}
+
+.InProgress_outstanding {
+  color: #096fed;
+  font-weight: 500;
 }

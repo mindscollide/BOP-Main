@@ -48,7 +48,7 @@ const TXNSummary = () => {
 
   //Global State For Blotter Data
   const GlobalStateGetBlotterData = useSelector(
-    (state) => state.CorporateBlotterReducer.getBlotterApiData
+    (state) => state.BlotterSlicer.getBlotterApiData
   );
 
   //local states
@@ -109,8 +109,8 @@ const TXNSummary = () => {
       if (GlobalStateGetBlotterData && GlobalStateGetBlotterData !== null) {
         console.log(GlobalStateGetBlotterData, "GlobalStateGetBlotterData");
         // Now will be requiring some Clarification on it
-        setBlotterdata([GlobalStateGetBlotterData.tnxSummary]);
-        setStatusOptions(GlobalStateGetBlotterData.statuses);
+        setBlotterdata(GlobalStateGetBlotterData.tnxSummary);
+        // setStatusOptions(GlobalStateGetBlotterData.statuses);
       }
     } catch (error) {
       console.log(error, "error");
@@ -890,7 +890,7 @@ const TXNSummary = () => {
         </div>
       ),
       key: "amount1",
-      dataIndex: "amount1",
+      dataIndex: "quantity",
       className: "ff-poppins fw-bold",
     },
     {
@@ -917,7 +917,7 @@ const TXNSummary = () => {
         </div>
       ),
       key: "rate1",
-      dataIndex: "rate1",
+      dataIndex: "rate",
       className: "ff-poppins fw-bold",
     },
     {
@@ -971,7 +971,7 @@ const TXNSummary = () => {
         </div>
       ),
       key: "amount2",
-      dataIndex: "amount2",
+      dataIndex: "amount",
       className: "ff-poppins fw-bold",
     },
     {
@@ -1025,7 +1025,7 @@ const TXNSummary = () => {
         </div>
       ),
       key: "lC_No",
-      dataIndex: "lC_No",
+      dataIndex: "lcNumber",
       className: "ff-poppins fw-bold",
     },
     {

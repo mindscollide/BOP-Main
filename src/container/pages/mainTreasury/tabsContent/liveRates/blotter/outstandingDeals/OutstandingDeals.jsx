@@ -6,9 +6,13 @@ import CustomButton from "@/components/common/globalButton/button";
 import { Checkbox, Popover } from "antd";
 import IconElement from "@/components/common/IconElement/IconElement";
 import CommentModal from "../commentModal/CommentModal";
+import { useNavigate } from "react-router-dom";
+import { GetBlotterOutstandingDealsDataAPI } from "../BlotterActions";
+import { formatDateTimeToUTCTime } from "@/components/utils/timeFunction";
 
 const OutstandingDeals = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   //HardCoded Filter Values start
   const TXN_ID_OPTIONS = [
@@ -34,8 +38,8 @@ const OutstandingDeals = () => {
   //HardCoded Filter Values Ended
 
   //Global State For Blotter Data
-  const GlobalStateGetBlotterData = useSelector(
-    (state) => state.CorporateBlotterReducer.getBlotterApiData
+  const getBlotterOutstandingData = useSelector(
+    (state) => state.BlotterSlicer.getBlotterOutstandingData
   );
 
   //local states
@@ -85,19 +89,24 @@ const OutstandingDeals = () => {
   const [openStatus, setOpenStatus] = useState(false);
   const [selectedItemsStatus, setSelectedItemsStatus] = useState([]);
 
+  useEffect(() => {
+    try {
+      let Data = { sRow: 0, Length: 10 };
+      dispatch(GetBlotterOutstandingDealsDataAPI({ Data, navigate }));
+    } catch (error) {}
+  }, []);
 
   //Extracting Out the Blotter Data API
   useEffect(() => {
     try {
-      if (GlobalStateGetBlotterData && GlobalStateGetBlotterData !== null) {
-        console.log(GlobalStateGetBlotterData, "GlobalStateGetBlotterData");
+      if (getBlotterOutstandingData && getBlotterOutstandingData !== null) {
         // Now will be requiring some Clarification on it
-        setBlotterdata([GlobalStateGetBlotterData.tnxSummary]);
+        setBlotterdata(getBlotterOutstandingData.outstandingDeals);
       }
     } catch (error) {
       console.log(error, "error");
     }
-  }, [GlobalStateGetBlotterData]);
+  }, [getBlotterOutstandingData]);
 
   //TXN ID PopOver Functions Starts
   const handleOpenChange = (newOpen) => {
@@ -738,11 +747,39 @@ const OutstandingDeals = () => {
       dataIndex: "counterPartyName",
       className: "ff-poppins fw-bold",
     },
+    // Branch Code
+    {
+      title: (
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Branch Code</span>
+          <Popover
+            content={popoverContentType}
+            trigger='click'
+            arrow={false}
+            placement='bottom'
+            open={openType}
+            onOpenChange={handleOpenChangeType}>
+            <span
+              style={{
+                cursor: "pointer",
+                color: "white",
+                background: "#f56600",
+                borderRadius: "4px",
+              }}>
+              ▼
+            </span>
+          </Popover>
+        </div>
+      ),
+      key: "side",
+      dataIndex: "branchName",
+      className: "ff-poppins fw-bold",
+    },
     // Side
     {
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Side</span>
+          <span className='ff-poppins fw-bold'>Type</span>
           <Popover
             content={popoverContentType}
             trigger='click'
@@ -802,7 +839,7 @@ const OutstandingDeals = () => {
         </div>
       ),
       key: "rate1",
-      dataIndex: "rate1",
+      dataIndex: "bid",
       className: "ff-poppins fw-bold",
     },
     // Offer
@@ -813,7 +850,7 @@ const OutstandingDeals = () => {
         </div>
       ),
       key: "rate2",
-      dataIndex: "rate2",
+      dataIndex: "offer",
       className: "ff-poppins fw-bold",
     },
     // CCY1
@@ -869,7 +906,7 @@ const OutstandingDeals = () => {
         </div>
       ),
       key: "amount1",
-      dataIndex: "amount1",
+      dataIndex: "quantity",
       className: "ff-poppins fw-bold",
     },
     // CCY2
@@ -925,7 +962,7 @@ const OutstandingDeals = () => {
         </div>
       ),
       key: "amount2",
-      dataIndex: "amount2",
+      dataIndex: "amount",
       className: "ff-poppins fw-bold",
     },
     // Time
@@ -953,8 +990,11 @@ const OutstandingDeals = () => {
         </div>
       ),
       key: "time",
-      dataIndex: "time",
+      dataIndex: "tradeDateTime",
       className: "ff-poppins fw-bold",
+      render: (text, record) => {
+        return formatDateTimeToUTCTime(text);
+      },
     },
     // LC No.
     {
@@ -981,7 +1021,7 @@ const OutstandingDeals = () => {
         </div>
       ),
       key: "lC_No",
-      dataIndex: "lC_No",
+      dataIndex: "lcNumber",
       className: "ff-poppins fw-bold",
     },
     // Account No
@@ -1013,24 +1053,24 @@ const OutstandingDeals = () => {
       className: "ff-poppins fw-bold",
     },
     // Comment
-    {
-      title: "Comment",
-      key: "comment",
-      dataIndex: "comment",
-      className: "comment-class text-center ",
-      render: (text, record) => (
-        <>
-          {text !== "" ? (
-            <span className='d-inline-block cursor-pointer'>
-              <IconElement
-                iconClass='icon-view-comment fs-5 color-blue'
-                onClick={() => handleShowCommentModal(text)} // Show Comment Modal
-              />
-            </span>
-          ) : null}
-        </>
-      ),
-    },
+    // {
+    //   title: "Comment",
+    //   key: "comment",
+    //   dataIndex: "comment",
+    //   className: "comment-class text-center ",
+    //   render: (text, record) => (
+    //     <>
+    //       {text !== "" ? (
+    //         <span className='d-inline-block cursor-pointer'>
+    //           <IconElement
+    //             iconClass='icon-view-comment fs-5 color-blue'
+    //             onClick={() => handleShowCommentModal(text)} // Show Comment Modal
+    //           />
+    //         </span>
+    //       ) : null}
+    //     </>
+    //   ),
+    // },
     // Status
     {
       title: (
@@ -1060,7 +1100,16 @@ const OutstandingDeals = () => {
       className: "ff-poppins fw-bold",
       render: (text, record) => (
         <>
-          <span className={text === "Accepted" ? "color-green" : "color-red"}>
+          <span
+            className={
+              text === "Accepted"
+                ? "color-green"
+                : record.statusID === 5 
+                ? "InProgress_outstanding"
+                : record.statusID === 2
+                ? "pending_outstanding"
+                : "color-red"
+            }>
             {text}
           </span>
         </>
@@ -1069,17 +1118,17 @@ const OutstandingDeals = () => {
     // Action
     {
       key: "15",
-      title: "Chat",
+      title: "Action",
       dataIndex: "chat",
       className: "comment-class ",
     },
     // Chat
-    {
-      key: "15",
-      title: "Action",
-      dataIndex: "action",
-      className: "comment-class ",
-    },
+    // {
+    //   key: "15",
+    //   title: "Action",
+    //   dataIndex: "action",
+    //   className: "comment-class ",
+    // },
   ];
 
   console.log(blotterdata, "blotterdatablotterdata");

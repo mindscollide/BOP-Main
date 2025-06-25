@@ -8,6 +8,7 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { getAllInstrumentsApi } from "@/components/utils/globalApis";
 import { useMqttClient } from "@/components/utils/mqttConnection";
+
 import {
   FeDiscountingPublishedAction,
   NonFeDiscountingPublishedAction,
@@ -27,6 +28,7 @@ import DealBox from "@/components/features/dealbox/DealBox";
 import DealViewModal from "../pages/mainCorporate/rfqModal/DealViewModal/DealViewModal";
 import { setDealModalRequest } from "@/store/modalSlice/modalSlicer";
 import { AnimatePresence } from "framer-motion";
+import { GetAllNatureOfTransactionsApi } from "../pages/mainCorporate/rfqModal/RFQActions";
 const Dashboard = () => {
   const { Content } = Layout;
   const dispatch = useDispatch();
@@ -121,6 +123,9 @@ const Dashboard = () => {
       setTimeout(() => {
         dispatch(setDealModalRequest(true));
       }, 5000);
+    }
+    if (IsCorporate || IsBranch) {
+      dispatch(GetAllNatureOfTransactionsApi({ navigate }));
     }
 
     dispatch(getAllInstrumentsApi({ navigate }));

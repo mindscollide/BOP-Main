@@ -1,32 +1,28 @@
-import {
-  getAllCategoriesRM,
-  GetAllInstrumentsRM,
-  GetAllNatureOfTransactionsRM,
-} from "@/common/api_config";
-import { authApi, SystemAdminApi } from "@/common/apiend_points";
-import { setCustomHeaders } from "@/common/utils";
+import { BlotterDataRM,GetBlotterOutstandingDealsDataRM } from "@/common/api_config";
+import { BlotterApi } from "@/common/apiend_points";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
 import createPostAPI from "@/utils/axiosInstance";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
-// Define the login async thunk
-export const getAllCategoriesAction = createAsyncThunk(
-  "auth/getAllCategories", // A unique action type string
-  async ({ navigate }, { dispatch, rejectWithValue }) => {
+// Define the ViewAllNatureOfBussinessAPI async thunk
+export const BlotterDataAPI = createAsyncThunk(
+  "Blotter/BlotterData", // A unique action type string
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       let getBlotterData = createPostAPI(
-        authApi,
-        getAllCategoriesRM.RequestMethod
+        BlotterApi,
+        BlotterDataRM.RequestMethod
       );
 
-      const response = await getBlotterData();
-      if (response.data.responseCode === 401) {
+      const response = await getBlotterData(Data);
+      const { responseCode } = response.data;
+      if (responseCode === 401) {
         navigate("/");
-        return rejectWithValue("Unauthorized access, please log in again.");
+        return rejectWithValue("Unauthorized access, please login again");
       }
-      if (response.data.responseCode === 417) {
+      if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(getAllCategoriesAction({ navigate }));
+        dispatch(BlotterDataAPI({ navigate, Data }));
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -34,30 +30,31 @@ export const getAllCategoriesAction = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "ERM_AuthService_CommonManager_GetAllCategories_01".toLowerCase()
+                "Blotter_BlotterServiceManager_GetBlotterData_01".toLowerCase()
               )
           ) {
             return {
               response: response.data.responseResult,
-              message: "Data available",
+              message: "Successfully Rerieved Data",
             };
           } else if (
             responseMessage
               .toLowerCase()
               .includes(
-                "ERM_AuthService_CommonManager_GetAllCategories_02".toLowerCase()
+                "Blotter_BlotterServiceManager_GetBlotterData_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("No Data available");
+            return rejectWithValue("Unsuccessfull");
           } else if (
             responseMessage
               .toLowerCase()
               .includes(
-                "ERM_AuthService_CommonManager_GetAllCategories_03".toLowerCase()
+                "Blotter_BlotterServiceManager_GetBlotterData_03".toLowerCase()
               )
           ) {
             return rejectWithValue("Something went wrong");
           } else {
+            console.log("", response.data);
             return rejectWithValue("Something went wrong");
           }
         } else {
@@ -65,6 +62,7 @@ export const getAllCategoriesAction = createAsyncThunk(
           return rejectWithValue("Something went wrong");
         }
       } else {
+        console.log("", response.data);
         return rejectWithValue("Something went wrong");
       }
     } catch (error) {
@@ -75,23 +73,25 @@ export const getAllCategoriesAction = createAsyncThunk(
   }
 );
 
-export const getAllInstrumentsApi = createAsyncThunk(
-  "auth/getAllInstruments",
-  async ({ navigate }, { dispatch, rejectWithValue }) => {
+// Define the ViewAllNatureOfBussinessAPI async thunk
+export const GetBlotterOutstandingDealsDataAPI = createAsyncThunk(
+  "Blotter/GetOutStandingData", // A unique action type string
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
-      let getInstruments = createPostAPI(
-        authApi,
-        GetAllInstrumentsRM.RequestMethod
+      let getBlotterOutStandingData = createPostAPI(
+        BlotterApi,
+        GetBlotterOutstandingDealsDataRM.RequestMethod
       );
 
-      const response = await getInstruments();
-      if (response.data.responseCode === 401) {
+      const response = await getBlotterOutStandingData(Data);
+      const { responseCode } = response.data;
+      if (responseCode === 401) {
         navigate("/");
-        return rejectWithValue("Unauthorized access, please log in again.");
+        return rejectWithValue("Unauthorized access, please login again");
       }
-      if (response.data.responseCode === 417) {
+      if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(getAllInstrumentsApi({ navigate }));
+        dispatch(GetBlotterOutstandingDealsDataAPI({ navigate, Data }));
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -99,30 +99,31 @@ export const getAllInstrumentsApi = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "ERM_AuthService_CommonManager_GetAllInstruments_01".toLowerCase()
+                "Blotter_BlotterServiceManager_GetBlotterOutstandingDealsData_01".toLowerCase()
               )
           ) {
             return {
               response: response.data.responseResult,
-              message: "Data available",
+              message: "Successfully Rerieved Data",
             };
           } else if (
             responseMessage
               .toLowerCase()
               .includes(
-                "ERM_AuthService_CommonManager_GetAllInstruments_02".toLowerCase()
+                "Blotter_BlotterServiceManager_GetBlotterOutstandingDealsData_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("No Data available");
+            return rejectWithValue("Unsuccessfull");
           } else if (
             responseMessage
               .toLowerCase()
               .includes(
-                "ERM_AuthService_CommonManager_GetAllInstruments_03".toLowerCase()
+                "Blotter_BlotterServiceManager_GetBlotterOutstandingDealsData_03".toLowerCase()
               )
           ) {
             return rejectWithValue("Something went wrong");
           } else {
+            console.log("", response.data);
             return rejectWithValue("Something went wrong");
           }
         } else {
@@ -130,6 +131,7 @@ export const getAllInstrumentsApi = createAsyncThunk(
           return rejectWithValue("Something went wrong");
         }
       } else {
+        console.log("", response.data);
         return rejectWithValue("Something went wrong");
       }
     } catch (error) {
@@ -139,5 +141,3 @@ export const getAllInstrumentsApi = createAsyncThunk(
     }
   }
 );
-
-

@@ -16,27 +16,7 @@ const RFQSlice = createSlice({
   },
   reducers: {},
   extraReducers: (builder) => {
-    builder
-      // Pending state (while the API call is being made ViewAllNatureOfBussinessAPI)
-      .addCase(ViewAllNatureOfBussinessAPI.pending, (state) => {
-        state.Loader = true;
-        state.error = null;
-      })
-      // Fulfilled state (when the API call succeeds ViewAllNatureOfBussinessAPI)
-      .addCase(ViewAllNatureOfBussinessAPI.fulfilled, (state, { payload }) => {
-        state.Loader = false;
-        state.viewAllNatureBussniessData = payload.response;
-        state.error = null;
-        state.responseMessage = payload.message;
-      })
-      // Rejected state (when the API call fails ViewAllNatureOfBussinessAPI)
-      .addCase(ViewAllNatureOfBussinessAPI.rejected, (state, action) => {
-        console.log(action, "actionaction");
-        state.Loader = false;
-        state.error = action.payload;
-        state.viewAllNatureBussniessData = null;
-      })
-      // Pending state (while the API call is being made SaveTransactionRFQAPI)
+    builder      // Pending state (while the API call is being made SaveTransactionRFQAPI)
       .addCase(SaveTransactionRFQAPI.pending, (state) => {
         state.Loader = true;
         state.error = null;

@@ -1,16 +1,17 @@
 import React, { useEffect } from "react";
 import BlotterHeader from "./blotterHeader/BlotterHeader";
-import { CorporateBlotterDataAPI } from "./txnSummary/CorporateBlotterActions";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { BlotterDataAPI } from "./BlotterActions";
 
 const Blotter = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   //Calling Corporate Blotter Data API
   useEffect(() => {
     try {
-      dispatch(CorporateBlotterDataAPI({ navigate }));
+      let Data = { sRow: 0, Length: 10 };
+      dispatch(BlotterDataAPI({ navigate, Data }));
     } catch (error) {
       console.log(error, "error");
     }

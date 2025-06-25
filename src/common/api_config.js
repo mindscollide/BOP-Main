@@ -78,9 +78,13 @@ const ViewAllNatureOfBussiness = {
   RequestMethod: "ServiceManager.ViewAllNatureOfBussiness",
 };
 
-const CorporateBlotterData = {
+const BlotterDataRM = {
   RequestMethod: "ServiceManager.GetBlotterData",
 };
+
+const GetBlotterOutstandingDealsDataRM = {
+  RequestMethod: "ServiceManager.GetBlotterOutstandingDealsData",
+}
 const GetAllCounterPartyDataRM = {
   RequestMethod: "ServiceManager.GetAllCounterPartyData",
 };
@@ -180,7 +184,13 @@ const getDealerDasboardDataRM = {
 const GetAllInstrumentsRM = {
   RequestMethod: "ServiceManager.GetAllInstruments",
 }
+
+const GetAllNatureOfTransactionsRM = {
+  RequestMethod: "ServiceManager.GetAllNatureOfTransactions",
+}
 export {
+  GetBlotterOutstandingDealsDataRM,
+  GetAllNatureOfTransactionsRM,
   GetAllInstrumentsRM,
   getDealerDasboardDataRM,
   GetFeDiscountingRM,
@@ -217,7 +227,7 @@ export {
   GetDashboardData,
   SaveUserDashboard,
   ViewAllNatureOfBussiness,
-  CorporateBlotterData,
+  BlotterDataRM,
   refreshTokenRM,
   GetAllCounterPartyDataRM,
   SaveTransactionRFQ,

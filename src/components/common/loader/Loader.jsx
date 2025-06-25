@@ -15,7 +15,7 @@ const Loader = () => {
   const AuthLoader = useSelector((state) => state.authReducer.Loader);
   const RFQReducerLoader = useSelector((state) => state.RFQReducer.Loader);
   const CorporateBlotterReducerLoader = useSelector(
-    (state) => state.CorporateBlotterReducer.Loader
+    (state) => state.BlotterSlicer.Loader
   );
   const categoryReducerLoader = useSelector(
     (state) => state.categoryReducer.Loader
