@@ -110,58 +110,58 @@ const BlotterHeader = () => {
           </>
         ) : isBranch || isCorporate ? (
           <>
-            <div className='fs-6 fw-bold color-hd data-summary-heading mb-4'>
-              TXN Summary
-            </div>
-            <div className='moreOptionsNOPExport'>
-              <div className='nop-hd-container'>
-                <div className='d-flex align-items-center'>
-                  <>
-                    {" "}
-                    <CustomButton
-                      applyClass={"Export-button"}
-                      value='Export'
-                      onClick={onClickOpenExport}
-                    />
-                  </>
-
-                  {openExportDiv ? (
+              <div className='fs-6 fw-bold color-hd data-summary-heading mb-4'>
+                TXN Summary
+              </div>
+              <div className='moreOptionsNOPExport'>
+                <div className='nop-hd-container'>
+                  <div className='d-flex align-items-center'>
                     <>
-                      <div className='exportOptions'>
-                        <div className='exportOptionsBox'>
-                          <img
-                            src={pdfImage}
-                            width={30}
-                            height={30}
-                            alt='pdf'
-                          />
-                          <img
-                            src={excelImage}
-                            width={30}
-                            height={30}
-                            alt='excel'
-                          />
-                          <img
-                            src={emailImage}
-                            width={30}
-                            height={30}
-                            alt='email'
-                            onClick={onClickMailModal}
-                          />
-                          <img
-                            src={printImage}
-                            width={30}
-                            height={30}
-                            alt='print'
-                          />
-                        </div>
-                      </div>
+                      {" "}
+                      <CustomButton
+                        applyClass={"Export-button"}
+                        value='Export'
+                        onClick={onClickOpenExport}
+                      />
                     </>
-                  ) : null}
+
+                    {openExportDiv ? (
+                      <>
+                        <div className='exportOptions'>
+                          <div className='exportOptionsBox'>
+                            <img
+                              src={pdfImage}
+                              width={30}
+                              height={30}
+                              alt='pdf'
+                            />
+                            <img
+                              src={excelImage}
+                              width={30}
+                              height={30}
+                              alt='excel'
+                            />
+                            <img
+                              src={emailImage}
+                              width={30}
+                              height={30}
+                              alt='email'
+                              onClick={onClickMailModal}
+                            />
+                            <img
+                              src={printImage}
+                              width={30}
+                              height={30}
+                              alt='print'
+                            />
+                          </div>
+                        </div>
+                      </>
+                    ) : null}
+                  </div>
                 </div>
               </div>
-            </div>
-            <TXNSummary />
+              <TXNSummary />
           </>
         ) : null}
       </section>

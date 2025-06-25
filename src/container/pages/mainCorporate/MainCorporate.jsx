@@ -1,9 +1,9 @@
 import React, { Suspense, lazy } from "react";
 import GlobalTabs from "../../../components/common/tabs/Tabs";
 import { useSelector } from "react-redux";
-import TXNSummary from "../mainTreasury/tabsContent/liveRates/blotter/txnSummary/TXNSummary";
 import { setActiveTab } from "./rfqModal/RFQSlicer";
 import { useDispatch } from "react-redux";
+import BlotterHeader from "../mainTreasury/tabsContent/liveRates/blotter/blotterHeader/BlotterHeader";
 const shouldIncludeComponents =
   import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
 
@@ -48,6 +48,9 @@ const MainCorporate = () => {
       content: ForwardTableBranchComponent && (
         <Suspense fallback={<>Loading Forwards...</>}>
           <ForwardTableBranchComponent />
+          <section className='bg-white p-2'>
+            <BlotterHeader />
+          </section>
         </Suspense>
       ),
     },
@@ -56,7 +59,9 @@ const MainCorporate = () => {
       content: BranchDiscountingTable && (
         <Suspense fallback={<>Loading Discounting...</>}>
           <BranchDiscountingTable />
-          <TXNSummary />
+          <section className='bg-white p-2'>
+            <BlotterHeader />
+          </section>
         </Suspense>
       ),
     },
@@ -67,7 +72,7 @@ const MainCorporate = () => {
       tabs={tabsData}
       activeKey={activeTab}
       onTabChange={handleTabChange}
-      tabClass="mb-4"
+      tabClass='mb-4'
     />
   );
 };

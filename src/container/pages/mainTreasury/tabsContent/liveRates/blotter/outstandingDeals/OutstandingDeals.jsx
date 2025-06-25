@@ -718,6 +718,7 @@ const OutstandingDeals = () => {
       dataIndex: "txnid",
       align: "center",
       className: "ff-poppins fw-bold",
+      width: 120,
     },
     // Client Name
     {
@@ -746,6 +747,7 @@ const OutstandingDeals = () => {
       key: "counterPartyName",
       dataIndex: "counterPartyName",
       className: "ff-poppins fw-bold",
+      width: 120,
     },
     // Branch Code
     {
@@ -774,6 +776,7 @@ const OutstandingDeals = () => {
       key: "side",
       dataIndex: "branchName",
       className: "ff-poppins fw-bold",
+      width: 120,
     },
     // Side
     {
@@ -802,6 +805,7 @@ const OutstandingDeals = () => {
       key: "side",
       dataIndex: "side",
       className: "ff-poppins fw-bold",
+      width: 60,
     },
     // Nature
     {
@@ -830,6 +834,7 @@ const OutstandingDeals = () => {
       key: "nature",
       dataIndex: "nature",
       className: "ff-poppins fw-bold",
+      width: 120,
     },
     // Bid
     {
@@ -841,6 +846,7 @@ const OutstandingDeals = () => {
       key: "rate1",
       dataIndex: "bid",
       className: "ff-poppins fw-bold",
+      width: 60,
     },
     // Offer
     {
@@ -852,6 +858,7 @@ const OutstandingDeals = () => {
       key: "rate2",
       dataIndex: "offer",
       className: "ff-poppins fw-bold",
+      width: 60,
     },
     // CCY1
     {
@@ -880,6 +887,7 @@ const OutstandingDeals = () => {
       key: "ccY1",
       dataIndex: "ccY1",
       className: "ff-poppins fw-bold",
+      width: 60,
     },
     // Amount
     {
@@ -908,6 +916,7 @@ const OutstandingDeals = () => {
       key: "amount1",
       dataIndex: "quantity",
       className: "ff-poppins fw-bold",
+      width: 60,
     },
     // CCY2
     {
@@ -936,6 +945,7 @@ const OutstandingDeals = () => {
       key: "ccY2",
       dataIndex: "ccY2",
       className: "ff-poppins fw-bold",
+      width: 60,
     },
     // Amount
     {
@@ -964,6 +974,7 @@ const OutstandingDeals = () => {
       key: "amount2",
       dataIndex: "amount",
       className: "ff-poppins fw-bold",
+      width: 60,
     },
     // Time
     {
@@ -992,6 +1003,7 @@ const OutstandingDeals = () => {
       key: "time",
       dataIndex: "tradeDateTime",
       className: "ff-poppins fw-bold",
+      width: 60,
       render: (text, record) => {
         return formatDateTimeToUTCTime(text);
       },
@@ -1023,6 +1035,7 @@ const OutstandingDeals = () => {
       key: "lC_No",
       dataIndex: "lcNumber",
       className: "ff-poppins fw-bold",
+      width: 120,
     },
     // Account No
     {
@@ -1051,26 +1064,9 @@ const OutstandingDeals = () => {
       key: "accountNumber",
       dataIndex: "accountNumber",
       className: "ff-poppins fw-bold",
+      width: 120,
     },
-    // Comment
-    // {
-    //   title: "Comment",
-    //   key: "comment",
-    //   dataIndex: "comment",
-    //   className: "comment-class text-center ",
-    //   render: (text, record) => (
-    //     <>
-    //       {text !== "" ? (
-    //         <span className='d-inline-block cursor-pointer'>
-    //           <IconElement
-    //             iconClass='icon-view-comment fs-5 color-blue'
-    //             onClick={() => handleShowCommentModal(text)} // Show Comment Modal
-    //           />
-    //         </span>
-    //       ) : null}
-    //     </>
-    //   ),
-    // },
+
     // Status
     {
       title: (
@@ -1098,6 +1094,7 @@ const OutstandingDeals = () => {
       key: "14",
       dataIndex: "status",
       className: "ff-poppins fw-bold",
+      width: 80,
       render: (text, record) => (
         <>
           <span
@@ -1121,14 +1118,8 @@ const OutstandingDeals = () => {
       title: "Action",
       dataIndex: "chat",
       className: "comment-class ",
+      width: 120,
     },
-    // Chat
-    // {
-    //   key: "15",
-    //   title: "Action",
-    //   dataIndex: "action",
-    //   className: "comment-class ",
-    // },
   ];
 
   console.log(blotterdata, "blotterdatablotterdata");

@@ -43,7 +43,7 @@ const BranchForwardsTable = () => {
   useEffect(() => {
     if (GetAllFowardsAndDiscountsRatesAPIData !== null) {
       try {
-        const { tenors, forwardRates, discountRates, instruments } =
+        const { tenors, forwardRates,  instruments } =
           GetAllFowardsAndDiscountsRatesAPIData;
         let getAllTenorsData = { tenors };
         let getAllInstrument = { instruments };
@@ -90,7 +90,7 @@ const BranchForwardsTable = () => {
           />
         </Col>
       </Row>
-      <Row className='mt-2'>
+      <Row className='my-2'>
         <Col
           lg={12}
           md={12}

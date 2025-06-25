@@ -823,7 +823,7 @@ const TXNSummary = () => {
       key: "counterPartyName",
       dataIndex: "counterPartyName",
       className: "ff-poppins fw-bold",
-      width: 120
+      width: 120,
     },
     {
       title: (
@@ -879,7 +879,7 @@ const TXNSummary = () => {
       key: "nature",
       dataIndex: "nature",
       className: "ff-poppins fw-bold",
-      width: 120
+      width: 120,
     },
     {
       title: (
@@ -907,7 +907,7 @@ const TXNSummary = () => {
       key: "ccY1",
       dataIndex: "ccY1",
       className: "ff-poppins fw-bold",
-      width: 80
+      width: 80,
     },
     {
       title: (
@@ -935,7 +935,7 @@ const TXNSummary = () => {
       key: "amount1",
       dataIndex: "quantity",
       className: "ff-poppins fw-bold",
-      width: 60
+      width: 60,
     },
     {
       title: (
@@ -963,7 +963,7 @@ const TXNSummary = () => {
       key: "rate1",
       dataIndex: "rate",
       className: "ff-poppins fw-bold",
-      width: 120
+      width: 120,
     },
     {
       title: (
@@ -991,7 +991,7 @@ const TXNSummary = () => {
       key: "ccY2",
       dataIndex: "ccY2",
       className: "ff-poppins fw-bold",
-      width: 60
+      width: 60,
     },
     {
       title: (
@@ -1019,7 +1019,7 @@ const TXNSummary = () => {
       key: "amount2",
       dataIndex: "amount",
       className: "ff-poppins fw-bold",
-      width: 120
+      width: 120,
     },
     {
       title: (
@@ -1047,7 +1047,7 @@ const TXNSummary = () => {
       key: "time",
       dataIndex: "time",
       className: "ff-poppins fw-bold",
-      width: 120
+      width: 120,
     },
     {
       title: (
@@ -1075,7 +1075,7 @@ const TXNSummary = () => {
       key: "lC_No",
       dataIndex: "lcNumber",
       className: "ff-poppins fw-bold",
-      width: 120
+      width: 120,
     },
     {
       title: (
@@ -1103,28 +1103,9 @@ const TXNSummary = () => {
       key: "accountNumber",
       dataIndex: "accountNumber",
       className: "ff-poppins fw-bold",
-      width: 120
+      width: 120,
     },
 
-    // Comment section commented due to change in the HTML V3
-    // {
-    //   title: "Comment",
-    //   key: "comment",
-    //   dataIndex: "comment",
-    //   className: "comment-class text-center ",
-    //   render: (text, record) => (
-    //     <>
-    //       {text !== "" ? (
-    //         <span className="d-inline-block cursor-pointer">
-    //           <IconElement
-    //             iconClass="icon-view-comment fs-5 color-blue"
-    //             onClick={() => handleShowCommentModal(text)}
-    //           />
-    //         </span>
-    //       ) : null}
-    //     </>
-    //   ),
-    // },
     {
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
@@ -1252,6 +1233,7 @@ const TXNSummary = () => {
       dataIndex: "txnid",
       align: "center",
       className: "ff-poppins fw-bold",
+      width: 120,
     },
     {
       title: (
@@ -1279,6 +1261,7 @@ const TXNSummary = () => {
       key: "counterPartyName",
       dataIndex: "counterPartyName",
       className: "ff-poppins fw-bold",
+      width: 150,
     },
     {
       title: (
@@ -1306,6 +1289,7 @@ const TXNSummary = () => {
       key: "side",
       dataIndex: "side",
       className: "ff-poppins fw-bold",
+      width: 60,
     },
     {
       title: (
@@ -1333,6 +1317,7 @@ const TXNSummary = () => {
       key: "nature",
       dataIndex: "nature",
       className: "ff-poppins fw-bold",
+      width: 120,
     },
     {
       title: (
@@ -1360,6 +1345,7 @@ const TXNSummary = () => {
       key: "ccY1",
       dataIndex: "ccY1",
       className: "ff-poppins fw-bold",
+      width: 60,
     },
     {
       title: (
@@ -1387,6 +1373,7 @@ const TXNSummary = () => {
       key: "amount1",
       dataIndex: "quantity",
       className: "ff-poppins fw-bold",
+      width: 80,
     },
     {
       title: (
@@ -1414,6 +1401,7 @@ const TXNSummary = () => {
       key: "rate1",
       dataIndex: "rate",
       className: "ff-poppins fw-bold",
+      width: 120,
     },
     {
       title: (
@@ -1441,6 +1429,7 @@ const TXNSummary = () => {
       key: "ccY2",
       dataIndex: "ccY2",
       className: "ff-poppins fw-bold",
+      width: 60,
     },
     {
       title: (
@@ -1468,6 +1457,8 @@ const TXNSummary = () => {
       key: "amount2",
       dataIndex: "amount",
       className: "ff-poppins fw-bold",
+      width: 120,
+      ellipsis: true,
     },
     {
       title: (
@@ -1495,6 +1486,8 @@ const TXNSummary = () => {
       key: "time",
       dataIndex: "time",
       className: "ff-poppins fw-bold",
+      width: 80,
+      ellipsis: true,
     },
     {
       title: (
@@ -1522,6 +1515,8 @@ const TXNSummary = () => {
       key: "lC_No",
       dataIndex: "lcNumber",
       className: "ff-poppins fw-bold",
+      width: 120,
+      ellipsis: true,
     },
     {
       title: (
@@ -1549,12 +1544,16 @@ const TXNSummary = () => {
       key: "accountNumber",
       dataIndex: "accountNumber",
       className: "ff-poppins fw-bold",
+      width: 120,
+      ellipsis: true,
     },
     {
       title: "Checker",
       key: "Checker",
       dataIndex: "Checker",
       className: "comment-class text-center",
+      width: 80,
+      ellipsis: true,
       render: (text, record) => {
         return (
           <>
@@ -1618,6 +1617,8 @@ const TXNSummary = () => {
       key: "14",
       dataIndex: "status",
       className: "ff-poppins fw-bold",
+      width: 80,
+      ellipsis: true,
       render: (text, record) => (
         <>
           <span className={text === "Accepted" ? "color-green" : "color-red"}>
@@ -1631,6 +1632,8 @@ const TXNSummary = () => {
       title: "",
       dataIndex: "",
       className: "comment-class ",
+      width: 80,
+      ellipsis: true,
       render: (text, record) => {
         return (
           <>
@@ -1694,11 +1697,12 @@ const TXNSummary = () => {
       dataIndex: "txnid",
       align: "center",
       className: "ff-poppins fw-bold",
+      width: 120,
     },
     {
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Customer Name</span>
+          <span className='ff-poppins text-nowrap fw-bold'>Customer Name</span>
           <Popover
             content={popoverContentCustomerName}
             trigger='click'
@@ -1721,6 +1725,7 @@ const TXNSummary = () => {
       key: "counterPartyName",
       dataIndex: "counterPartyName",
       className: "ff-poppins fw-bold",
+      width: 150,
     },
     {
       title: (
@@ -1748,6 +1753,7 @@ const TXNSummary = () => {
       key: "side",
       dataIndex: "side",
       className: "ff-poppins fw-bold",
+      width: 60,
     },
     {
       title: (
@@ -1775,6 +1781,7 @@ const TXNSummary = () => {
       key: "nature",
       dataIndex: "nature",
       className: "ff-poppins fw-bold",
+      width: 120,
     },
     {
       title: (
@@ -1802,6 +1809,7 @@ const TXNSummary = () => {
       key: "ccY1",
       dataIndex: "ccY1",
       className: "ff-poppins fw-bold",
+      width: 60,
     },
     {
       title: (
@@ -1829,6 +1837,7 @@ const TXNSummary = () => {
       key: "amount1",
       dataIndex: "quantity",
       className: "ff-poppins fw-bold",
+      width: 80,
     },
     {
       title: (
@@ -1856,6 +1865,7 @@ const TXNSummary = () => {
       key: "rate1",
       dataIndex: "rate",
       className: "ff-poppins fw-bold",
+      width: 80,
     },
     {
       title: (
@@ -1883,6 +1893,7 @@ const TXNSummary = () => {
       key: "ccY2",
       dataIndex: "ccY2",
       className: "ff-poppins fw-bold",
+      width: 80,
     },
     {
       title: (
@@ -1910,6 +1921,7 @@ const TXNSummary = () => {
       key: "amount2",
       dataIndex: "amount",
       className: "ff-poppins fw-bold",
+      width: 80,
     },
     {
       title: (
@@ -1937,6 +1949,7 @@ const TXNSummary = () => {
       key: "time",
       dataIndex: "time",
       className: "ff-poppins fw-bold",
+      width: 80,
     },
     {
       title: (
@@ -1964,6 +1977,7 @@ const TXNSummary = () => {
       key: "lC_No",
       dataIndex: "lcNumber",
       className: "ff-poppins fw-bold",
+      width: 120,
     },
     {
       title: (
@@ -1991,6 +2005,7 @@ const TXNSummary = () => {
       key: "accountNumber",
       dataIndex: "accountNumber",
       className: "ff-poppins fw-bold",
+      width: 120,
     },
     // {
     //   title: "Checker",
@@ -2060,6 +2075,7 @@ const TXNSummary = () => {
       key: "14",
       dataIndex: "status",
       className: "ff-poppins fw-bold",
+      width: 80,
       render: (text, record) => (
         <>
           <span className={text === "Accepted" ? "color-green" : "color-red"}>
@@ -2073,6 +2089,7 @@ const TXNSummary = () => {
       title: "",
       dataIndex: "",
       className: "comment-class ",
+      width: 120,
       render: (text, record) => {
         return (
           <>
