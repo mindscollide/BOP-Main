@@ -25,6 +25,9 @@
   outline: 0;
   box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
+.DealerBitInput:disabled {
+  background-color: #e9ecef;
+}
 /* End  Dealer Bit  Input Field */
 
 /* Start Dealer Table Bit Input Field */
@@ -261,9 +264,78 @@
   border: 1px solid #e1e1e1;
 }
 
-.amountValue  {
+.amountValue {
   max-width: 70px;
 
   margin: 0 auto;
   text-align: center;
 }
+
+/* DealBox Input Fields Bid */
+
+/* Start Dealer Bit Input Field  */
+.DealBoxBitInput {
+  display: block;
+  width: 100%;
+  padding: 0.375rem 0.75rem;
+  font-size: calc(1.275rem + 0.3vw) !important;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #12a812 !important;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border-radius: 0.375rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  text-align: center;
+  font-weight: 600;
+}
+
+.DealBoxBitInput:is(:focus, :focus-visible) {
+  color: #212529;
+  background-color: #fff;
+  border-color: #86b7fe;
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.DealBoxBitInput:disabled {
+  background-color: #e9ecef;
+}
+/* End Dealer Bit Input Field  */
+
+/* Start Dealer Offer Input Field  */
+.DealBoxOfferInput {
+  display: block;
+  width: 100%;
+  padding: 0.375rem 0.75rem;
+  font-size: calc(1.275rem + 0.3vw) !important;
+  font-weight: 400;
+  line-height: 1.5;
+  color: rgba(var(--bs-danger-rgb)) !important;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border-radius: 0.375rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+.DealBoxOfferInput:is(:focus, :focus-visible) {
+  color: #212529;
+  background-color: #fff;
+  border-color: #86b7fe;
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.DealBoxOfferInput:disabled {
+  background-color: #e9ecef;
+}
+/* End Dealer Offer Input Field  */

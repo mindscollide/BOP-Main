@@ -15,6 +15,7 @@ import {
   validateLinkForCorporateCreatePasswordApi,
 } from "@/container/loginScreens/CreatePassword/createPassword_Action";
 import { LogoutApi } from "@/container/loginScreens/authActions/logoutAction";
+import { GetAllNatureOfTransactionsApi } from "@/container/pages/mainCorporate/rfqModal/RFQActions";
 
 const authSlice = createSlice({
   name: "auth",
@@ -30,6 +31,7 @@ const authSlice = createSlice({
     passwordCreated: null,
     logout: null,
     getAllInstruments: null,
+    GetAllNatureOfTransactions: null,
   },
   reducers: {
     clearAuthResponseMessage: (state) => {
@@ -182,6 +184,22 @@ const authSlice = createSlice({
       .addCase(getAllInstrumentsApi.rejected, (state, { payload }) => {
         state.Loader = false;
         state.getAllInstruments = null;
+        state.responseMessage = payload;
+      })
+      .addCase(GetAllNatureOfTransactionsApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(
+        GetAllNatureOfTransactionsApi.fulfilled,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.GetAllNatureOfTransactions = payload.response;
+          state.responseMessage = payload.message;
+        }
+      )
+      .addCase(GetAllNatureOfTransactionsApi.rejected, (state, { payload }) => {
+        state.Loader = false;
+        state.GetAllNatureOfTransactions = null;
         state.responseMessage = payload;
       });
   },

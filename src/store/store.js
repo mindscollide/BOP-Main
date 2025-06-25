@@ -4,7 +4,6 @@ import bankSpotSlicer from "../container/pages/mainTreasury/tabsContent/liveRate
 import misSlicer from "../container/pages/mainTreasury/tabsContent/liveRates/mis/slicer/misSlicer";
 import WatchListSlice from "./watchListSlicer/WatchListSlicer";
 import RFQSlice from "../container/pages/mainCorporate/rfqModal/RFQSlicer";
-import CorporateBlotterSlicer from "../container/pages/mainTreasury/tabsContent/liveRates/blotter/txnSummary/CorporateBlotterSlicer";
 import authSlicer from "@/store/authSlicer/authSlicer";
 import DealerReducer from "./dealerReducer/dealerSlicer";
 import CategoryReducer from "./categoryReducer/categoryReducer";
@@ -15,6 +14,7 @@ import chatSlicer from "./chatSlicer/chatSlicer";
 import RealtimeActionsSlice from "./realtimeActionsSlicer/realtimeActionSlice";
 import { errorInterceptor } from "./middleware/errorInterceptor";
 import modalSlicer from "./modalSlice/modalSlicer";
+import BlotterSlicer from "@/store/BlotterSlicer/BlotterSlicer";
 
 const store = configureStore({
   reducer: {
@@ -23,7 +23,6 @@ const store = configureStore({
     authReducer: authSlicer,
     WatchListReducer: WatchListSlice,
     RFQReducer: RFQSlice,
-    CorporateBlotterReducer: CorporateBlotterSlicer,
     dealerReducer: DealerReducer,
     categoryReducer: CategoryReducer,
     ReportReducer: ReportSlicer,
@@ -32,6 +31,7 @@ const store = configureStore({
     chatSlicer: chatSlicer,
     RealtimeActionsSlice: RealtimeActionsSlice,
     modalReducer: modalSlicer,
+    BlotterSlicer: BlotterSlicer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 });

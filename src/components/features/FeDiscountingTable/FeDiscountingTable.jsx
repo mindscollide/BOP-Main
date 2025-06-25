@@ -6,10 +6,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { publishDiscountingRatesAction } from "@/container/pages/mainDealer/dealerActions";
 import { useSelector } from "react-redux";
-import {
-  formatPercentageInput,
-  formatPercentageInput2,
-} from "@/utils/formatters";
+import { isValidNumberUnderMax } from "@/utils/formatters";
 import {
   GetFEDiscountingTableApi,
   PublishFEDiscountingTableApi,
@@ -97,23 +94,29 @@ const FeDiscountingTable = () => {
       dispatch(FeDiscountingPublishedAction(null));
     };
   }, [getFeDiscountingData, getAllTenorsData, getAllInstrument]);
-
   const onInputChange = (record, instrumentName, value) => {
-    setRowData((prevState) =>
-      prevState.map((stateData) => {
-        // Match by TenorID only, since each row contains all instruments
-        if (
-          stateData.TenorID === record.TenorID &&
-          stateData.instrumentName === record.instrumentName
-        ) {
-          return {
-            ...stateData,
-            [`${instrumentName}`]: formatPercentageInput(value),
-          };
-        }
-        return stateData;
-      })
-    );
+    const previousValue = record[instrumentName]; // Get previous value from record
+    const validated = isValidNumberUnderMax(value, previousValue, 100);
+
+    // Only update if valid or corrected (not false)
+    if (validated !== false) {
+      const finalValue = typeof validated === "string" ? validated : value;
+
+      setRowData((prevState) =>
+        prevState.map((stateData) => {
+          if (
+            stateData.TenorID === record.TenorID &&
+            stateData.instrumentName === record.instrumentName
+          ) {
+            return {
+              ...stateData,
+              [instrumentName]: finalValue,
+            };
+          }
+          return stateData;
+        })
+      );
+    }
   };
 
   const handlePublishDiscount = () => {

@@ -4,7 +4,6 @@ import NotificationSnackbar from "../common/NotificationSnackbar";
 import { useDispatch } from "react-redux";
 import { clearDealerResponseMessage } from "@/store/dealerReducer/dealerSlicer";
 import { clearAuthResponseMessage } from "@/store/authSlicer/authSlicer";
-// import  { NotificationSnackBar } from "../common/NotificationSnackbar";
 
 export const ResponseMessage = () => {
   const disaptch = useDispatch();
@@ -15,9 +14,6 @@ export const ResponseMessage = () => {
     (state) => state.authReducer.responseMessage
   );
   const [message, setMessage] = useState("");
-
-  console.log(authResponseMessage, "authResponseMessageauthResponseMessage");
-  // const [open, setOpen] = useState({  message: "" });
 
   useEffect(() => {
     if (UploadRateResponseMessage !== "") {
