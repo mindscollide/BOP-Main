@@ -113,18 +113,15 @@ const TXNSummary = () => {
 
   const isCorproate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
 
-  useTableScrollBottom(
-    () => {
-      if (totalRecord !== blotterdata.length) {
-        setHasReachedBottom(true);
-        let Data = { sRow: sRow, Length: 10 };
-        dispatch(BlotterDataAPI({ navigate, Data }));
-      }
+  console.log(
+    {
+      isShouldTrue: totalRecord !== blotterdata.length,
+      totalRecord,
+      blotterLength: blotterdata.length,
+      sRow,
     },
-    0,
-    "TXNSummary_Table"
+    "totalRecordtotalRecord"
   );
-
   //Extracting Out the Blotter Data API
   useEffect(() => {
     try {
@@ -157,6 +154,28 @@ const TXNSummary = () => {
       console.log(error, "error");
     }
   }, [GlobalStateGetBlotterData]);
+
+  
+  useTableScrollBottom(
+    () => {
+      if (totalRecord !== blotterdata.length) {
+        console.log(
+          {
+            isShouldTrue: totalRecord !== blotterdata.length,
+            totalRecord,
+            blotterLength: blotterdata.length,
+            sRow,
+          },
+          "totalRecordtotalRecord"
+        );
+        setHasReachedBottom(true);
+        let Data = { sRow: sRow, Length: 10 };
+        dispatch(BlotterDataAPI({ navigate, Data }));
+      }
+    },
+    10,
+    "TXNSummary_Table"
+  );
 
   //TXN ID PopOver Functions Starts
   const handleOpenChange = (newOpen) => {
@@ -1340,7 +1359,7 @@ const TXNSummary = () => {
         </div>
       ),
       key: "counterPartyName",
-      dataIndex: "counterPartyName",
+      dataIndex: "corporateName",
       className: "ff-poppins fw-bold",
       width: 150,
     },
@@ -1483,6 +1502,9 @@ const TXNSummary = () => {
       dataIndex: "rate",
       className: "ff-poppins fw-bold",
       width: 120,
+      render: (text, record) => {
+        return text.toFixed(2);
+      },
     },
     {
       title: (
@@ -1540,6 +1562,9 @@ const TXNSummary = () => {
       className: "ff-poppins fw-bold",
       width: 120,
       ellipsis: true,
+      render: (text, record) => {
+        return text.toFixed(2);
+      },
     },
     {
       title: (
@@ -1565,10 +1590,15 @@ const TXNSummary = () => {
         </div>
       ),
       key: "time",
-      dataIndex: "time",
+      dataIndex: "tradeDateTime",
       className: "ff-poppins fw-bold",
       width: 80,
       ellipsis: true,
+      render: (text, record) => {
+        if (text !== undefined && text !== null && text !== "") {
+          return formatDateTimeToUTCTime(text);
+        }
+      },
     },
     {
       title: (
@@ -1803,8 +1833,8 @@ const TXNSummary = () => {
           </Popover>
         </div>
       ),
-      key: "counterPartyName",
-      dataIndex: "counterPartyName",
+      key: "corporateName",
+      dataIndex: "corporateName",
       className: "ff-poppins fw-bold",
       width: 150,
     },
@@ -2028,9 +2058,14 @@ const TXNSummary = () => {
         </div>
       ),
       key: "time",
-      dataIndex: "time",
+      dataIndex: "tradeDateTime",
       className: "ff-poppins fw-bold",
       width: 80,
+      render: (text, record) => {
+        if (text !== undefined && text !== null && text !== "") {
+          return formatDateTimeToUTCTime(text);
+        }
+      },
     },
     {
       title: (
@@ -2163,14 +2198,7 @@ const TXNSummary = () => {
       },
     },
   ];
-  //Custome hook for Scrolling (1)
-  // const { hasReachedBottom, setHasReachedBottom } = useTableScrollBottom(() => {
-  //   console.log("🚀 Table reached bottom", totalRecord, blotterdata.length,hasReachedBottom);
-  //   if (totalRecord !== blotterdata.length) {
-  //     let Data = { sRow: sRow, Length: 10 };
-  //     dispatch(BlotterDataAPI({ navigate, Data }));
-  //   }
-  // });
+
 
   return (
     <>
@@ -2186,7 +2214,7 @@ const TXNSummary = () => {
             ? CorporateColumn
             : Treasurycolumns
         }
-        scroll={{ x: "max-content", y: 300 }}
+        scroll={{ x: "scroll", y: 300 }}
       />
       <CommentModal
         comment={comment}

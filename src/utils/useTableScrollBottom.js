@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 export const useTableScrollBottom = (onBottomReach, threshold = 0, prefixCls = "ant-table") => {
   const [hasReachedBottom, setHasReachedBottom] = useState(false);
   const containerRef = useRef(null);
+  const previousScrollTopRef = useRef(0); // for detecting vertical scroll only
 
   useEffect(() => {
     const selector = `.${prefixCls}-body`;
@@ -17,6 +18,12 @@ export const useTableScrollBottom = (onBottomReach, threshold = 0, prefixCls = "
 
     const handleScroll = () => {
       const { scrollTop, scrollHeight, clientHeight } = scrollContainer;
+
+      // Check if vertical scroll happened
+      const scrolledVertically = scrollTop !== previousScrollTopRef.current;
+      previousScrollTopRef.current = scrollTop;
+
+      if (!scrolledVertically) return; // ignore horizontal-only scroll
 
       const isScrollable = scrollHeight > clientHeight;
       const isBottom = scrollTop + clientHeight >= scrollHeight - threshold;

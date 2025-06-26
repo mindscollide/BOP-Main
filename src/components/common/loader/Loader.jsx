@@ -57,7 +57,7 @@ const Loader = () => {
       // Hide loader after a short delay when loading completes
       timeout = setTimeout(() => {
         setIsLoading(false);
-      }, 500);
+      }, 1000);
     }
 
     return () => clearTimeout(timeout);
