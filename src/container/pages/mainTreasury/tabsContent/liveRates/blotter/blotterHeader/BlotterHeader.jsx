@@ -39,10 +39,7 @@ const BlotterHeader = () => {
   const onClickMailModal = () => {
     setOpenMailModal(true);
   };
-  const activeTab =
-    isBranch || isCorporate
-      ? tabsData.filter((data, index) => index === 0)
-      : tabsData;
+
   return (
     <>
       <section className="position-relative">
