@@ -19,7 +19,12 @@ import InfoTransaction from "../infoTransaction/InfoTransaction";
 import { setTransactionInfoModal } from "@/store/modalSlice/modalSlicer";
 import { formatDateTimeToUTCTime } from "@/components/utils/timeFunction";
 import { useTableScrollBottom } from "@/utils/useTableScrollBottom";
-import { BlotterDataAPI } from "../BlotterActions";
+import {
+  AssignTransactionAPI,
+  BlotterDataAPI,
+  AcceptTransactionAPI,
+  RejectTransactionAPI,
+} from "../BlotterActions";
 const TXNSummary = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -119,13 +124,44 @@ const TXNSummary = () => {
       totalRecord,
       blotterLength: blotterdata.length,
       sRow,
+      hasReachedBottom,
     },
     "totalRecordtotalRecord"
+  );
+
+  useEffect(() => {
+    try {
+      let Data = { sRow: 0, Length: 10 };
+      dispatch(BlotterDataAPI({ navigate, Data }));
+    } catch (error) {
+      console.log(error, "error");
+    }
+  }, []);
+
+  useTableScrollBottom(
+    () => {
+      if (totalRecord !== blotterdata.length) {
+        console.log(
+          {
+            isShouldTrue: totalRecord !== blotterdata.length,
+            totalRecord,
+            blotterLength: blotterdata.length,
+            sRow,
+          },
+          "totalRecordtotalRecord"
+        );
+        setHasReachedBottom(true);
+        let Data = { sRow: sRow, Length: 10 };
+        dispatch(BlotterDataAPI({ navigate, Data }));
+      }
+    },
+    0,
+    "TXNSummary_Table"
   );
   //Extracting Out the Blotter Data API
   useEffect(() => {
     try {
-      if (GlobalStateGetBlotterData && GlobalStateGetBlotterData !== null) {
+      if (GlobalStateGetBlotterData !== null) {
         if (hasReachedBottom) {
           setHasReachedBottom(false);
           setBlotterdata((prevData) => [
@@ -154,28 +190,6 @@ const TXNSummary = () => {
       console.log(error, "error");
     }
   }, [GlobalStateGetBlotterData]);
-
-  
-  useTableScrollBottom(
-    () => {
-      if (totalRecord !== blotterdata.length) {
-        console.log(
-          {
-            isShouldTrue: totalRecord !== blotterdata.length,
-            totalRecord,
-            blotterLength: blotterdata.length,
-            sRow,
-          },
-          "totalRecordtotalRecord"
-        );
-        setHasReachedBottom(true);
-        let Data = { sRow: sRow, Length: 10 };
-        dispatch(BlotterDataAPI({ navigate, Data }));
-      }
-    },
-    10,
-    "TXNSummary_Table"
-  );
 
   //TXN ID PopOver Functions Starts
   const handleOpenChange = (newOpen) => {
@@ -1222,7 +1236,9 @@ const TXNSummary = () => {
               {record.statusID === 1 ? (
                 <CustomButton
                   icon={<i className='icon-close blotterTableIconSize '></i>}
-                  className='btn btn-danger '
+                  // className='btn btn-danger '
+                  size={"small"}
+                  applyClass={"ActionButton"}
                 />
               ) : null}
               {/* <CustomButton
@@ -2198,7 +2214,6 @@ const TXNSummary = () => {
       },
     },
   ];
-
 
   return (
     <>

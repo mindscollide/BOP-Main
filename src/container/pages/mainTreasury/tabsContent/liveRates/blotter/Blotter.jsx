@@ -8,14 +8,7 @@ const Blotter = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   //Calling Corporate Blotter Data API
-  useEffect(() => {
-    try {
-      let Data = { sRow: 0, Length: 10 };
-      dispatch(BlotterDataAPI({ navigate, Data }));
-    } catch (error) {
-      console.log(error, "error");
-    }
-  }, []);
+
   return (
     <>
       <div className='row m-0 mt-3'>

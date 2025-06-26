@@ -725,3 +725,17 @@
   border-color: #f85e35 !important;
 }
 /* Stop Reject Button View Deal Box */
+.ActionButton .ant-btn.ant-btn-icon-only  {
+  max-width: 20px !important;
+  max-height: 20px !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.ActionButton i {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}

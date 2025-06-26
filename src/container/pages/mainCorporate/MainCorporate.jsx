@@ -1,9 +1,10 @@
-import React, { Suspense, lazy } from "react";
+import React, { Suspense, lazy, useEffect } from "react";
 import GlobalTabs from "../../../components/common/tabs/Tabs";
 import { useSelector } from "react-redux";
 import { setActiveTab } from "./rfqModal/RFQSlicer";
 import { useDispatch } from "react-redux";
 import BlotterHeader from "../mainTreasury/tabsContent/liveRates/blotter/blotterHeader/BlotterHeader";
+import { useNavigate } from "react-router-dom";
 const shouldIncludeComponents =
   import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
 
@@ -28,8 +29,9 @@ const BranchDiscountingTable = shouldIncludeComponents
   : null;
 const MainCorporate = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const activeTab = useSelector((state) => state.RFQReducer.activeTab);
-
+  console.log(activeTab, "activeTabactiveTabactiveTab");
   const handleTabChange = (tabTitle) => {
     dispatch(setActiveTab(tabTitle));
   };
@@ -37,33 +39,39 @@ const MainCorporate = () => {
   const tabsData = [
     {
       title: "Spot",
-      content: SpotBranch && (
-        <Suspense fallback={<>Loading Spot...</>}>
-          <SpotBranch />
-        </Suspense>
-      ),
+      content:
+        SpotBranch && activeTab === "Spot" ? (
+          <Suspense fallback={<>Loading Spot...</>}>
+            <SpotBranch />
+            <section className='bg-white mt-2 p-2'>
+              <BlotterHeader />
+            </section>
+          </Suspense>
+        ) : null,
     },
     {
       title: "Forwards",
-      content: ForwardTableBranchComponent && (
-        <Suspense fallback={<>Loading Forwards...</>}>
-          <ForwardTableBranchComponent />
-          <section className='bg-white p-2'>
-            <BlotterHeader />
-          </section>
-        </Suspense>
-      ),
+      content:
+        ForwardTableBranchComponent && activeTab === "Forwards" ? (
+          <Suspense fallback={<>Loading Forwards...</>}>
+            <ForwardTableBranchComponent />
+            <section className='bg-white p-2'>
+              <BlotterHeader />
+            </section>
+          </Suspense>
+        ) : null,
     },
     {
       title: "Discounting",
-      content: BranchDiscountingTable && (
-        <Suspense fallback={<>Loading Discounting...</>}>
-          <BranchDiscountingTable />
-          <section className='bg-white p-2'>
-            <BlotterHeader />
-          </section>
-        </Suspense>
-      ),
+      content:
+        BranchDiscountingTable && activeTab === "Discounting" ? (
+          <Suspense fallback={<>Loading Discounting...</>}>
+            <BranchDiscountingTable />
+            <section className='bg-white p-2'>
+              <BlotterHeader />
+            </section>
+          </Suspense>
+        ) : null,
     },
   ];
 

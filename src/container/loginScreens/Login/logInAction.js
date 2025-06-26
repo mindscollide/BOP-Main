@@ -31,15 +31,22 @@ export const loginInApi = createAsyncThunk(
             case "ERM_AuthService_AuthManager_Login_02".toLowerCase():
             case "ERM_AuthService_AuthManager_Login_04".toLowerCase():
             case "ERM_AuthService_AuthManager_Login_05".toLowerCase():
+              return rejectWithValue("User is Locked")
             case "ERM_AuthService_AuthManager_Login_06".toLowerCase():
+              return rejectWithValue("User is Disabled")
             case "ERM_AuthService_AuthManager_Login_07".toLowerCase():
+              return rejectWithValue("User is Closed")
             case "ERM_AuthService_AuthManager_Login_08".toLowerCase():
+              return rejectWithValue("User is Dormant")
             case "ERM_AuthService_AuthManager_Login_09".toLowerCase():
+              return rejectWithValue("Login Failed")
             case "ERM_AuthService_AuthManager_Login_10".toLowerCase():
+              return rejectWithValue("Login Failed")
             case "ERM_AuthService_AuthManager_Login_11".toLowerCase():
+              return rejectWithValue("Someting went wrong")
             case "ERM_AuthService_AuthManager_Login_12".toLowerCase():
               console.log("", response.data);
-              return rejectWithValue("Something went wrong");
+              return rejectWithValue("Not A valid role to login");
 
             case "ERM_AuthService_AuthManager_Login_13".toLowerCase():
               console.log("", response.data);

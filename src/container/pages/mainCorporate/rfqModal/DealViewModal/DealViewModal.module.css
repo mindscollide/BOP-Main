@@ -57,3 +57,10 @@
   display: inline-block;
   color: var(--color-dark);
 }
+
+.DealViewModal__body {
+  margin: 0;
+  padding: 0 !important;
+  max-height: 70vh !important;
+  overflow-x: hidden;
+}

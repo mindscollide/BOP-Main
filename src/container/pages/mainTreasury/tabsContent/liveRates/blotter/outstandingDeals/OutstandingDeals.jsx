@@ -7,9 +7,16 @@ import { Checkbox, Popover } from "antd";
 import IconElement from "@/components/common/IconElement/IconElement";
 import CommentModal from "../commentModal/CommentModal";
 import { useNavigate } from "react-router-dom";
-import { GetBlotterOutstandingDealsDataAPI } from "../BlotterActions";
+import {
+  AcceptTransactionAPI,
+  AssignTransactionAPI,
+  GetBlotterOutstandingDealsDataAPI,
+  RejectTransactionAPI,
+} from "../BlotterActions";
 import { formatDateTimeToUTCTime } from "@/components/utils/timeFunction";
 import { useTableScrollBottom } from "@/utils/useTableScrollBottom";
+import DealViewModal from "@/container/pages/mainCorporate/rfqModal/DealViewModal/DealViewModal";
+import { setViewDealModal } from "@/store/modalSlice/modalSlicer";
 
 const OutstandingDeals = () => {
   const dispatch = useDispatch();
@@ -92,6 +99,7 @@ const OutstandingDeals = () => {
   //Status Filter State
   const [openStatus, setOpenStatus] = useState(false);
   const [selectedItemsStatus, setSelectedItemsStatus] = useState([]);
+  const [dealData, setDealData] = useState(null);
 
   useEffect(() => {
     try {
@@ -727,6 +735,16 @@ const OutstandingDeals = () => {
   );
   //status PopOver Functions Ends
 
+  const handleClickAssignTransaction = (record) => {
+    let Data = { PK_TransactionID: Number(record.pK_TransactionID) };
+    dispatch(AssignTransactionAPI({ navigate, Data }));
+  };
+
+  const openViewDeal = (record) => {
+    dispatch(setViewDealModal(true));
+    setDealData(record);
+  }
+
   const columns = [
     // TXNID
     {
@@ -1116,7 +1134,6 @@ const OutstandingDeals = () => {
       className: "ff-poppins fw-bold",
       width: 120,
     },
-
     // Status
     {
       title: (
@@ -1170,17 +1187,59 @@ const OutstandingDeals = () => {
       className: "comment-class ",
       width: 120,
       render: (text, record) => {
+        // 2 = Pending, 5 = In Progress, 6 = Accepted
+        // 2 = Assigned
+        // 5 = if isRfq to show deal icon and modal open of deal ||   Accepted or Rejected
+        // 6 = Accepted Red and Rejected Rejec
+        // const handleClickChat = (txnid) => {
+        //   setSelectedTXNID(txnid);
+        //   setShowChatModal(true);
+        // };
         return (
           <div className='col-action text-nowrap text-center d-flex gap-1'>
             {record.statusID === 6 ? (
               <>
                 <CustomButton
                   icon={<i className='icon-check'></i>}
-                  className='btn btn-sm btn-success '
+                  className='btn btn-sm btn-danger'
+                  applyClass={"ActionButton"}
                 />
                 <CustomButton
                   icon={<i className='icon-close '></i>}
-                  className='btn btn-sm btn-danger '
+                  className='btn btn-sm btn-success '
+                />
+              </>
+            ) : record.statusID === 5 ? (
+              <>
+                {record.isRFQ === true ? (
+                  <>
+                    <CustomButton
+                      icon={<i className='icon-open '></i>}
+                      className='btn btn-sm btn-primary'
+                      onClick={ () => openViewDeal(record)}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <CustomButton
+                      icon={<i className='icon-check'></i>}
+                      className='btn btn-sm btn-success '
+                    />
+                    <CustomButton
+                      icon={<i className='icon-close '></i>}
+                      className='btn btn-sm btn-danger '
+                    />
+                  </>
+                )}
+              </>
+            ) : record.statusID === 4 ? null : record.statusID === 2 ? (
+              <>
+                <CustomButton
+                  icon={
+                    <i className='icon-user-check blotterTableIconSize '></i>
+                  }
+                  className='btn  btn-primary'
+                  onClick={() => handleClickAssignTransaction(record)}
                 />
               </>
             ) : null}
@@ -1262,7 +1321,7 @@ const OutstandingDeals = () => {
         columns={columns}
         scroll={{ x: "max-content", y: 300 }}
       />
-
+      <DealViewModal dealData={dealData} />
       <CommentModal
         comment={comment}
         setShowCommentModal={setShowCommentModal}
