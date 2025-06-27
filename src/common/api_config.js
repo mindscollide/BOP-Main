@@ -84,7 +84,7 @@ const BlotterDataRM = {
 
 const GetBlotterOutstandingDealsDataRM = {
   RequestMethod: "ServiceManager.GetBlotterOutstandingDealsData",
-}
+};
 const GetAllCounterPartyDataRM = {
   RequestMethod: "ServiceManager.GetAllCounterPartyData",
 };
@@ -183,12 +183,46 @@ const getDealerDasboardDataRM = {
 
 const GetAllInstrumentsRM = {
   RequestMethod: "ServiceManager.GetAllInstruments",
-}
+};
 
 const GetAllNatureOfTransactionsRM = {
   RequestMethod: "ServiceManager.GetAllNatureOfTransactions",
-}
+};
+
+const SaveSpotTransactionRM = {
+  RequestMethod: "ServiceManager.SaveSpotTransaction",
+};
+
+const SaveForwardTransactionRM = {
+  RequestMethod: "ServiceManager.SaveForwardTransaction",
+};
+const SaveFEDiscountingTransactionRM = {
+  RequestMethod: "ServiceManager.SaveFEDiscountingTransaction",
+};
+
+const SaveNonFeDiscountingTransactionRM = {
+  RequestMethod: "ServiceManager.SaveNonFEDiscountingTransaction",
+};
+
+const AssignTransactionRM = {
+  RequestMethod: "ServiceManager.AssignTransaction",
+};
+
+const AcceptTransactionRM = {
+  RequestMethod: "ServiceManager.AcceptTransaction",
+};
+
+const RejectTransactionRM = {
+  RequestMethod: "ServiceManager.RejectTransaction",
+};
 export {
+  RejectTransactionRM,
+  AcceptTransactionRM,
+  AssignTransactionRM,
+  SaveNonFeDiscountingTransactionRM,
+  SaveFEDiscountingTransactionRM,
+  SaveForwardTransactionRM,
+  SaveSpotTransactionRM,
   GetBlotterOutstandingDealsDataRM,
   GetAllNatureOfTransactionsRM,
   GetAllInstrumentsRM,

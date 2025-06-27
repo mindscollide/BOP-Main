@@ -18,3 +18,11 @@
   background: linear-gradient(to bottom, #eeb592 0%, #fc6d0f 100%) !important;
   color: #fff !important;
 }
+[class^="icon-"], [class*=" icon-"] {
+  font-size: 17px !important;
+  vertical-align: middle;
+}
+
+.blotterTableIconSize {
+  font-size: 14px !important;
+}

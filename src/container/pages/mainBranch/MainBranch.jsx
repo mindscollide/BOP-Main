@@ -1,9 +1,9 @@
 import React, { Suspense, lazy } from "react";
 import GlobalTabs from "../../../components/common/tabs/Tabs";
-import TXNSummary from "../mainTreasury/tabsContent/liveRates/blotter/txnSummary/TXNSummary";
 import { useSelector } from "react-redux";
 import { setActiveTab } from "../mainCorporate/rfqModal/RFQSlicer";
 import { useDispatch } from "react-redux";
+import BlotterHeader from "../mainTreasury/tabsContent/liveRates/blotter/blotterHeader/BlotterHeader";
 
 // Conditionally import CustomButton based on the environment variables
 const shouldIncludeComponents =
@@ -50,6 +50,9 @@ const MainBranch = () => {
       content: ForwardTableBranchComponent && (
         <Suspense fallback={<>Loading Forwards.... </>}>
           <ForwardTableBranchComponent />
+          <section className='bg-white p-2'>
+            <BlotterHeader />
+          </section>
         </Suspense>
       ),
     },
@@ -58,7 +61,9 @@ const MainBranch = () => {
       content: BranchDiscountingTable && (
         <Suspense fallback={<>Loading Discounting...</>}>
           <BranchDiscountingTable />
-          <TXNSummary />
+          <section className='bg-white p-2'>
+            <BlotterHeader />
+          </section>
         </Suspense>
       ),
     },

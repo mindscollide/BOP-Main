@@ -12,6 +12,7 @@ import emailImage from "./../../../../../../../assets/icons/email.png";
 import excelImage from "./../../../../../../../assets/icons/excel.png";
 import printImage from "./../../../../../../../assets/icons/print.png";
 import { useNavigate } from "react-router-dom";
+import CancelReasonModal from "../cancelReasonModal/cancelReasonModal";
 
 const BlotterHeader = () => {
   const navigate = useNavigate();
@@ -38,67 +39,64 @@ const BlotterHeader = () => {
   const onClickMailModal = () => {
     setOpenMailModal(true);
   };
-  const activeTab =
-    isBranch || isCorporate
-      ? tabsData.filter((data, index) => index === 0)
-      : tabsData;
+
   return (
     <>
-      <section className='position-relative'>
+      <section className="position-relative">
         {isTreasury ? (
           <>
             <GlobalTabs
-              tabClass=' d-flex justify-content-start gap-2 mb-3 align-items-center'
+              tabClass=" d-flex justify-content-start gap-2 mb-3 align-items-center"
               tabs={tabsData}
               defaultActiveKey={"0"}
             />
-            <div className='moreOptionsNOPExport'>
-              <div className='nop-hd-container'>
-                <div className='d-flex align-items-center'>
+            <div className="moreOptionsNOPExport">
+              <div className="nop-hd-container">
+                <div className="d-flex align-items-center">
                   <>
                     {" "}
-                    <span className='hd-txt me-3'>NOP (US$)</span>
-                    <span className='hd-cr me-2'>46,999</span>
+                    <span className="hd-txt me-3">NOP (US$)</span>
+                    <span className="hd-cr me-2">46,999</span>
                     <CustomButton
                       applyClass={"NOP-button"}
-                      value='+'
+                      value="+"
                       onClick={onClickNopModal}
                     />{" "}
                     <CustomButton
                       applyClass={"Export-button"}
-                      value='Export'
+                      value="Export"
                       onClick={onClickOpenExport}
                     />
                   </>
 
                   {openExportDiv ? (
                     <>
-                      <div className='exportOptions'>
-                        <div className='exportOptionsBox'>
+                      <div className="exportOptions">
+                        <div className="exportOptionsBox">
                           <img
                             src={pdfImage}
                             width={30}
                             height={30}
-                            alt='pdf'
+                            alt="pdf"
                           />
                           <img
                             src={excelImage}
                             width={30}
                             height={30}
-                            alt='excel'
+                            alt="excel"
                           />
                           <img
                             src={emailImage}
                             width={30}
                             height={30}
-                            alt='email'
+                            alt="email"
                             onClick={onClickMailModal}
                           />
                           <img
                             src={printImage}
                             width={30}
                             height={30}
-                            alt='print'
+                            alt="print"
                           />
                         </div>
                       </div>
@@ -110,49 +108,49 @@ const BlotterHeader = () => {
           </>
         ) : isBranch || isCorporate ? (
           <>
-            <div className='fs-6 fw-bold color-hd data-summary-heading mb-4'>
+            <div className="fs-6 fw-bold color-hd data-summary-heading mb-4">
               TXN Summary
             </div>
-            <div className='moreOptionsNOPExport'>
-              <div className='nop-hd-container'>
-                <div className='d-flex align-items-center'>
+            <div className="moreOptionsNOPExport">
+              <div className="nop-hd-container">
+                <div className="d-flex align-items-center">
                   <>
                     {" "}
                     <CustomButton
                       applyClass={"Export-button"}
-                      value='Export'
+                      value="Export"
                       onClick={onClickOpenExport}
                     />
                   </>
 
                   {openExportDiv ? (
                     <>
-                      <div className='exportOptions'>
-                        <div className='exportOptionsBox'>
+                      <div className="exportOptions">
+                        <div className="exportOptionsBox">
                           <img
                             src={pdfImage}
                             width={30}
                             height={30}
-                            alt='pdf'
+                            alt="pdf"
                           />
                           <img
                             src={excelImage}
                             width={30}
                             height={30}
-                            alt='excel'
+                            alt="excel"
                           />
                           <img
                             src={emailImage}
                             width={30}
                             height={30}
-                            alt='email'
+                            alt="email"
                             onClick={onClickMailModal}
                           />
                           <img
                             src={printImage}
                             width={30}
                             height={30}
-                            alt='print'
+                            alt="print"
                           />
                         </div>
                       </div>
@@ -165,87 +163,7 @@ const BlotterHeader = () => {
           </>
         ) : null}
       </section>
-      {/* <div className='box-header position-relative'>
-        {isTreasury ? (
-          <>
-            {" "}
-            <div className='filter-export-wrapper ms-auto'>
-              <div className='d-flex align-items-center'>
-                <div className='nop-hd-container'>
-                  <div className='d-flex align-items-center'>
-                
-                      <>
-                        {" "}
-                        <span className='hd-txt me-3'>NOP (US$)</span>
-                        <span className='hd-cr me-2'>46,999</span>
-                        <CustomButton
-                          applyClass={"NOP-button"}
-                          value='+'
-                          onClick={onClickNopModal}
-                        />{" "}
-                        <CustomButton
-                          applyClass={"Export-button"}
-                          value='Export'
-                          onClick={onClickOpenExport}
-                        />
-                      </>
-            
 
-                    {openExportDiv ? (
-                      <>
-                        <div className='dropdown-menu dropdown-ex-doc border show export-class'>
-                          <Row align='middle'>
-                            <Col className='export-to-doc cursor-pointer'>
-                              <img
-                                src={pdfImage}
-                                width={30}
-                                height={30}
-                                alt='pdf'
-                              />
-                            </Col>
-                            <Col className='export-to-doc cursor-pointer'>
-                              <img
-                                src={excelImage}
-                                width={30}
-                                height={30}
-                                alt='excel'
-                              />
-                            </Col>
-                            <Col>
-                              <img
-                                src={emailImage}
-                                width={30}
-                                height={30}
-                                alt='email'
-                                onClick={onClickMailModal}
-                              />
-                            </Col>
-                            <Col>
-                              <img
-                                src={printImage}
-                                width={30}
-                                height={30}
-                                alt='print'
-                              />
-                            </Col>
-                          </Row>
-                        </div>
-                      </>
-                    ) : null}
-                  </div>
-                </div>
-              </div>
-            </div>{" "}
-            <GlobalTabs
-              tabClass='buttonClassTab'
-              tabs={activeTab}
-              defaultActiveKey={"0"}
-            />{" "}
-          </>
-        ) : isBranch || isCorporate ? (
-          <TXNSummary />
-        ) : null}
-      </div> */}
       {openNopModal ? (
         <NopModal
           openNopModal={openNopModal}
@@ -259,6 +177,7 @@ const BlotterHeader = () => {
           setOpenMailModal={setOpenMailModal}
         />
       ) : null}
+      {/* <CancelReasonModal /> */}
     </>
   );
 };

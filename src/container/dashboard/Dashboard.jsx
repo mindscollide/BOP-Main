@@ -140,7 +140,7 @@ const Dashboard = () => {
           <Outlet />
           <AnimatePresence>{dealMoalRequest && <DealBox />}</AnimatePresence>
 
-          <DealViewModal />
+        
           {chatModal && <ChatBox />}
         </main>
       </Content>

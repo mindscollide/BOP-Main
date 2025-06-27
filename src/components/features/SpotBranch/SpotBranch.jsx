@@ -7,7 +7,6 @@ import BidAmountBox from "../../common/bidAmountBox/BidAmountBox";
 import GlobalTable from "../../common/table/GlobalTable";
 import SellAndBuyModal from "./SellAndBuyModal/SellAndBuyModal";
 import ChatBox from "../chatBox/ChatBox.jsx";
-import BlotterHeader from "@/container/pages/mainTreasury/tabsContent/liveRates/blotter/blotterHeader/BlotterHeader";
 import { GetDashboardDataAPI, SaveUserDashboardAPI } from "./WatchlistAction";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -258,34 +257,41 @@ const SpotBranch = () => {
             </Row>
             <Row>
               <Col lg={12} md={12} sm={12}>
-                <Droppable droppableId='droppable' direction='vertical'>
-                  {(provided) => (
-                    <div ref={provided.innerRef} {...provided.droppableProps}>
-                      <GlobalTable
-                        columns={columns}
-                        dataSource={watchlistTableData}
-                        prefixCls={"WatchList_table"}
-                        pagination={false}
-                        bordered={false}
-                        components={{
-                          body: {
-                            row: DraggableBodyRow,
-                          },
-                        }}
-                        onRow={(record, index) => {
-                          console.log("Missing draggableId for row:", record);
-                          console.log("Missing draggableId for row:", index);
-                          return {
+                {Array.isArray(watchlistTableData).length > 0 ? (
+                  <Droppable droppableId='droppable' direction='vertical'>
+                    {(provided) => (
+                      <div ref={provided.innerRef} {...provided.droppableProps}>
+                        <GlobalTable
+                          columns={columns}
+                          dataSource={watchlistTableData}
+                          prefixCls={"WatchList_table"}
+                          pagination={false}
+                          bordered={false}
+                          components={{
+                            body: {
+                              row: DraggableBodyRow, // Drag functionality only works with this component
+                            },
+                          }}
+                          onRow={(record, index) => ({
                             index,
-                            "data-row-key": record.instrumentID, // Ensure this matches your API data
-                          };
-                        }}
-                        scroll={{ y: 330, x: "auto" }}
-                      />
-                      {provided.placeholder}
-                    </div>
-                  )}
-                </Droppable>
+                            "data-row-key": record.instrumentID,
+                          })}
+                          scroll={{ y: 330, x: "auto" }}
+                        />
+                        {provided.placeholder}
+                      </div>
+                    )}
+                  </Droppable>
+                ) : (
+                  <GlobalTable
+                    columns={columns}
+                    dataSource={watchlistTableData}
+                    prefixCls={"WatchList_table"}
+                    pagination={false}
+                    bordered={false}
+                    scroll={{ y: 330, x: "auto" }}
+                  />
+                )}
               </Col>
             </Row>
           </Col>
@@ -293,7 +299,7 @@ const SpotBranch = () => {
       </DragDropContext>
       {/* ChatBox Component */}
       {/* <ChatBox /> */}
-      <Blotter />
+      {/* <Blotter /> */}
       {iSellAndBuyModal && <SellAndBuyModal />}
     </section>
   );

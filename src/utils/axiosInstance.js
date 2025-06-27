@@ -14,7 +14,7 @@ import axios from "axios";
  * @returns {function} - A function that takes bodyData and makes a POST request
  */
 const createPostAPI =
-  (url, requestMethod) => async (bodyData, isDoc, fileName, ext) => {
+  (url, requestMethod) => async (bodyData, isDoc, fileName, ext, navigate, rejectWithValue) => {
     try {
       console.log(bodyData, isDoc, fileName, ext, "createPostAPIcreatePostAPI");
       const headers = setCustomHeaders(isDoc, fileName, ext); // Pass parameters if needed
@@ -45,6 +45,10 @@ const createPostAPI =
       }
 
       const response = await axios(axiosConfig);
+      // if(response.data.responseCode === 401) {
+      //   navigate("/");
+      //   throw new Error("Unauthorized access, please login again");
+      // }
       return response;
     } catch (error) {
       console.error(`Error calling ${url}:`, error);

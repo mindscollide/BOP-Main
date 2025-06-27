@@ -7,8 +7,16 @@ import { Checkbox, Popover } from "antd";
 import IconElement from "@/components/common/IconElement/IconElement";
 import CommentModal from "../commentModal/CommentModal";
 import { useNavigate } from "react-router-dom";
-import { GetBlotterOutstandingDealsDataAPI } from "../BlotterActions";
+import {
+  AcceptTransactionAPI,
+  AssignTransactionAPI,
+  GetBlotterOutstandingDealsDataAPI,
+  RejectTransactionAPI,
+} from "../BlotterActions";
 import { formatDateTimeToUTCTime } from "@/components/utils/timeFunction";
+import { useTableScrollBottom } from "@/utils/useTableScrollBottom";
+import DealViewModal from "@/container/pages/mainCorporate/rfqModal/DealViewModal/DealViewModal";
+import { setViewDealModal } from "@/store/modalSlice/modalSlicer";
 
 const OutstandingDeals = () => {
   const dispatch = useDispatch();
@@ -44,6 +52,9 @@ const OutstandingDeals = () => {
 
   //local states
   const [blotterdata, setBlotterdata] = useState([]);
+  const [totalRecord, setTotalRecords] = useState(0);
+  const [sRow, setRow] = useState(0);
+  const [hasReachedBottom, setHasReachedBottom] = useState(false);
   //TXNID Filter State
   const [open, setOpen] = useState(false);
   const [selectedItemsTXNID, setSelectedItemsTXNID] = useState([]);
@@ -88,6 +99,7 @@ const OutstandingDeals = () => {
   //Status Filter State
   const [openStatus, setOpenStatus] = useState(false);
   const [selectedItemsStatus, setSelectedItemsStatus] = useState([]);
+  const [dealData, setDealData] = useState(null);
 
   useEffect(() => {
     try {
@@ -96,12 +108,46 @@ const OutstandingDeals = () => {
     } catch (error) {}
   }, []);
 
-  //Extracting Out the Blotter Data API
+  useTableScrollBottom(
+    () => {
+      console.log(totalRecord, blotterdata.length, "totalRecord");
+      if (totalRecord !== blotterdata.length) {
+        setHasReachedBottom(true);
+        let Data = { sRow: sRow, Length: 10 };
+        dispatch(GetBlotterOutstandingDealsDataAPI({ navigate, Data }));
+      }
+    },
+    0,
+    "OutStanding_Table"
+  );
+
   useEffect(() => {
     try {
       if (getBlotterOutstandingData && getBlotterOutstandingData !== null) {
-        // Now will be requiring some Clarification on it
-        setBlotterdata(getBlotterOutstandingData.outstandingDeals);
+        if (hasReachedBottom) {
+          setHasReachedBottom(false);
+          setBlotterdata((prevData) => [
+            ...prevData,
+            ...getBlotterOutstandingData.outstandingDeals,
+          ]);
+          setTotalRecords(getBlotterOutstandingData.totalCount);
+          setRow(
+            (prevRow) =>
+              prevRow + getBlotterOutstandingData.outstandingDeals.length
+          );
+        } else {
+          setHasReachedBottom(false);
+          setBlotterdata(getBlotterOutstandingData.outstandingDeals);
+          setTotalRecords(getBlotterOutstandingData.totalCount);
+          setRow(getBlotterOutstandingData.outstandingDeals.length);
+        }
+      } else if (getBlotterOutstandingData === null) {
+        if (!hasReachedBottom) {
+          setHasReachedBottom(false);
+          setBlotterdata([]);
+          setTotalRecords(0);
+          setRow(0);
+        }
       }
     } catch (error) {
       console.log(error, "error");
@@ -689,6 +735,16 @@ const OutstandingDeals = () => {
   );
   //status PopOver Functions Ends
 
+  const handleClickAssignTransaction = (record) => {
+    let Data = { PK_TransactionID: Number(record.pK_TransactionID) };
+    dispatch(AssignTransactionAPI({ navigate, Data }));
+  };
+
+  const openViewDeal = (record) => {
+    dispatch(setViewDealModal(true));
+    setDealData(record);
+  }
+
   const columns = [
     // TXNID
     {
@@ -718,6 +774,7 @@ const OutstandingDeals = () => {
       dataIndex: "txnid",
       align: "center",
       className: "ff-poppins fw-bold",
+      width: 120,
     },
     // Client Name
     {
@@ -744,8 +801,9 @@ const OutstandingDeals = () => {
         </div>
       ),
       key: "counterPartyName",
-      dataIndex: "counterPartyName",
+      dataIndex: "corporateName",
       className: "ff-poppins fw-bold",
+      width: 120,
     },
     // Branch Code
     {
@@ -772,8 +830,9 @@ const OutstandingDeals = () => {
         </div>
       ),
       key: "side",
-      dataIndex: "branchName",
+      dataIndex: "branchCode",
       className: "ff-poppins fw-bold",
+      width: 120,
     },
     // Side
     {
@@ -802,6 +861,7 @@ const OutstandingDeals = () => {
       key: "side",
       dataIndex: "side",
       className: "ff-poppins fw-bold",
+      width: 60,
     },
     // Nature
     {
@@ -830,6 +890,7 @@ const OutstandingDeals = () => {
       key: "nature",
       dataIndex: "nature",
       className: "ff-poppins fw-bold",
+      width: 120,
     },
     // Bid
     {
@@ -841,6 +902,10 @@ const OutstandingDeals = () => {
       key: "rate1",
       dataIndex: "bid",
       className: "ff-poppins fw-bold",
+      width: 60,
+      render: (text, reocrd) => {
+        return text.toFixed(2);
+      },
     },
     // Offer
     {
@@ -852,6 +917,10 @@ const OutstandingDeals = () => {
       key: "rate2",
       dataIndex: "offer",
       className: "ff-poppins fw-bold",
+      width: 60,
+      render: (text, reocrd) => {
+        return text.toFixed(2);
+      },
     },
     // CCY1
     {
@@ -880,6 +949,7 @@ const OutstandingDeals = () => {
       key: "ccY1",
       dataIndex: "ccY1",
       className: "ff-poppins fw-bold",
+      width: 80,
     },
     // Amount
     {
@@ -908,6 +978,10 @@ const OutstandingDeals = () => {
       key: "amount1",
       dataIndex: "quantity",
       className: "ff-poppins fw-bold",
+      width: 80,
+      render: (text, reocrd) => {
+        return text.toFixed(2);
+      },
     },
     // CCY2
     {
@@ -936,6 +1010,7 @@ const OutstandingDeals = () => {
       key: "ccY2",
       dataIndex: "ccY2",
       className: "ff-poppins fw-bold",
+      width: 80,
     },
     // Amount
     {
@@ -964,6 +1039,10 @@ const OutstandingDeals = () => {
       key: "amount2",
       dataIndex: "amount",
       className: "ff-poppins fw-bold",
+      width: 80,
+      render: (text, reocrd) => {
+        return text.toFixed(2);
+      },
     },
     // Time
     {
@@ -992,6 +1071,7 @@ const OutstandingDeals = () => {
       key: "time",
       dataIndex: "tradeDateTime",
       className: "ff-poppins fw-bold",
+      width: 60,
       render: (text, record) => {
         return formatDateTimeToUTCTime(text);
       },
@@ -1023,6 +1103,7 @@ const OutstandingDeals = () => {
       key: "lC_No",
       dataIndex: "lcNumber",
       className: "ff-poppins fw-bold",
+      width: 120,
     },
     // Account No
     {
@@ -1051,26 +1132,8 @@ const OutstandingDeals = () => {
       key: "accountNumber",
       dataIndex: "accountNumber",
       className: "ff-poppins fw-bold",
+      width: 120,
     },
-    // Comment
-    // {
-    //   title: "Comment",
-    //   key: "comment",
-    //   dataIndex: "comment",
-    //   className: "comment-class text-center ",
-    //   render: (text, record) => (
-    //     <>
-    //       {text !== "" ? (
-    //         <span className='d-inline-block cursor-pointer'>
-    //           <IconElement
-    //             iconClass='icon-view-comment fs-5 color-blue'
-    //             onClick={() => handleShowCommentModal(text)} // Show Comment Modal
-    //           />
-    //         </span>
-    //       ) : null}
-    //     </>
-    //   ),
-    // },
     // Status
     {
       title: (
@@ -1098,6 +1161,7 @@ const OutstandingDeals = () => {
       key: "14",
       dataIndex: "status",
       className: "ff-poppins fw-bold",
+      width: 80,
       render: (text, record) => (
         <>
           <span
@@ -1121,36 +1185,148 @@ const OutstandingDeals = () => {
       title: "Action",
       dataIndex: "chat",
       className: "comment-class ",
-    },
-    // Chat
-    // {
-    //   key: "15",
-    //   title: "Action",
-    //   dataIndex: "action",
-    //   className: "comment-class ",
-    // },
-  ];
+      width: 120,
+      render: (text, record) => {
+        // 2 = Pending, 5 = In Progress, 6 = Accepted
+        // 2 = Assigned
+        // 5 = if isRfq to show deal icon and modal open of deal ||   Accepted or Rejected
+        // 6 = Accepted Red and Rejected Rejec
+        // const handleClickChat = (txnid) => {
+        //   setSelectedTXNID(txnid);
+        //   setShowChatModal(true);
+        // };
+        return (
+          <div className='col-action text-nowrap text-center d-flex gap-1'>
+            {record.statusID === 6 ? (
+              <>
+                <CustomButton
+                  icon={<i className='icon-check'></i>}
+                  className='btn btn-sm btn-danger'
+                  applyClass={"ActionButton"}
+                />
+                <CustomButton
+                  icon={<i className='icon-close '></i>}
+                  className='btn btn-sm btn-success '
+                />
+              </>
+            ) : record.statusID === 5 ? (
+              <>
+                {record.isRFQ === true ? (
+                  <>
+                    <CustomButton
+                      icon={<i className='icon-open '></i>}
+                      className='btn btn-sm btn-primary'
+                      onClick={ () => openViewDeal(record)}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <CustomButton
+                      icon={<i className='icon-check'></i>}
+                      className='btn btn-sm btn-success '
+                    />
+                    <CustomButton
+                      icon={<i className='icon-close '></i>}
+                      className='btn btn-sm btn-danger '
+                    />
+                  </>
+                )}
+              </>
+            ) : record.statusID === 4 ? null : record.statusID === 2 ? (
+              <>
+                <CustomButton
+                  icon={
+                    <i className='icon-user-check blotterTableIconSize '></i>
+                  }
+                  className='btn  btn-primary'
+                  onClick={() => handleClickAssignTransaction(record)}
+                />
+              </>
+            ) : null}
+            {/* 
+            <CustomButton
+              icon={<i className='icon-trash '></i>}
+              className='btn btn-sm btn-danger  '
+            />
 
-  console.log(blotterdata, "blotterdatablotterdata");
+            <CustomButton
+              icon={<i className='icon-open '></i>}
+              className='btn btn-sm btn-primary  '
+            />
+            <CustomButton
+              icon={<i className='icon-view-comment'></i>}
+              className='btn btn-sm btn-primary'
+            /> */}
+          </div>
+        );
+      },
+    },
+    // Action
+    {
+      key: "16",
+      title: "",
+      dataIndex: "chat",
+      className: "comment-class ",
+      width: 120,
+      render: (text, record) => {
+        return (
+          <div className='d-flex gap-1 justify-content-start'>
+            {record.statusID === 6 ? (
+              <CustomButton
+                icon={
+                  <i className='icon-view-comment blotterTableIconSize '></i>
+                }
+                className='btn  btn-primary'
+              />
+            ) : (
+              <span className='w-30'></span>
+            )}
+            <CustomButton
+              icon={<i className='icon-chat2 '></i>}
+              className='btn btn-sm btn-danger chat-btn-trigger'
+              onClick={() => handleClickChat(record.txnid)}
+            />
+            <CustomButton
+              onClick={() => handleClickInfo(record)}
+              icon={
+                <svg
+                  id='info_Layer_1'
+                  x='0px'
+                  y='0px'
+                  width='12px'
+                  height='12px'
+                  fill='#ffffff'
+                  viewBox='0 0 55 55'>
+                  <g>
+                    <path d='M41.407,45.858c0.067,0.838,0.156,1.672,0.183,2.508   c0.005,0.152-0.205,0.376-0.37,0.461c-1.347,0.687-2.679,1.416-4.069,2.005c-3.305,1.396-6.715,2.5-10.277,3.009   c-1.447,0.206-2.936,0.154-4.403,0.153c-0.477-0.001-0.968-0.178-1.424-0.345c-1.313-0.481-1.98-1.443-1.948-2.85   c0.015-0.583,0.103-1.179,0.253-1.744c1.863-7.013,3.752-14.02,5.61-21.037c0.199-0.751,0.327-1.543,0.341-2.318   c0.021-1.142-0.615-1.925-1.667-2.331c-1.605-0.618-3.258-0.468-4.89-0.161c-1.764,0.332-3.468,0.873-5.149,1.884   c-0.074-0.978-0.157-1.863-0.187-2.75c-0.005-0.127,0.234-0.307,0.396-0.388c1.334-0.67,2.648-1.389,4.021-1.968   c3.327-1.403,6.755-2.512,10.337-3.021c1.465-0.208,2.994-0.294,4.457-0.125c2.782,0.323,3.808,2.02,3.073,4.73   c-0.94,3.474-1.914,6.941-2.838,10.419c-1.049,3.953-2.087,7.912-3.077,11.879c-0.524,2.107,0.385,3.449,2.526,3.839   c2.048,0.376,4.038-0.017,5.981-0.634C39.313,46.75,40.296,46.295,41.407,45.858z'></path>
+                    <circle cx='27.5' cy='7.608' r='6.609'></circle>
+                  </g>
+                </svg>
+              }
+              className='btn btn-sm btn-primary info-btn-trigger ms-1'
+            />
+          </div>
+        );
+      },
+    },
+  ];
 
   return (
     <>
-      <div className='box-content-wrapper'>
-        <GlobalTable
-          pagination={false}
-          dataSource={blotterdata}
-          bordered={false}
-          prefixCls='TXNSummary_Table'
-          columns={columns}
-          scroll={{ x: "max-content", y: 400 }}
-        />
-
-        <CommentModal
-          comment={comment}
-          setShowCommentModal={setShowCommentModal}
-          showCommentModal={showCommentModal}
-        />
-      </div>
+      <GlobalTable
+        pagination={false}
+        dataSource={blotterdata}
+        bordered={false}
+        prefixCls='OutStanding_Table'
+        columns={columns}
+        scroll={{ x: "max-content", y: 300 }}
+      />
+      <DealViewModal dealData={dealData} />
+      <CommentModal
+        comment={comment}
+        setShowCommentModal={setShowCommentModal}
+        showCommentModal={showCommentModal}
+      />
     </>
   );
 };
