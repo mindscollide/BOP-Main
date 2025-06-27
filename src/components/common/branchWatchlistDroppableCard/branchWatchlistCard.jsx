@@ -3,9 +3,9 @@ import { Row, Col } from "react-bootstrap";
 import "./branchWatchlistCard.css";
 import BidAmountBox from "../../common/bidAmountBox/BidAmountBox";
 import CardDragger from "../cardDragger/cardDragger";
-import { useModal } from "../../../context/ModalContext";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { setISellAndBuyModal } from "@/store/modalSlice/modalSlicer";
 
 const BranchRateCardsOfWatchList = ({
   currencyLabel,
@@ -14,14 +14,13 @@ const BranchRateCardsOfWatchList = ({
   buyValue,
   sellValue,
 }) => {
-  const { setISellAndBuyModal } = useModal();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleOpenModal = () => {
     // Wrap the state update in startTransition
     startTransition(() => {
-      setISellAndBuyModal(true);
+      dispatch(setISellAndBuyModal(true));
     });
   };
 

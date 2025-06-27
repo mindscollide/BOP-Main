@@ -31,3 +31,25 @@ ul.nav.nav-tabs.buttonClassTab .nav-link:hover {
   display: flex;
   align-items: center;
 }
+.moreOptionsNOPExport {
+  position: absolute;
+  top: 10px;
+  
+  right: 15px;
+  margin-bottom: 10px !important;
+}
+.exportOptions {
+  position: absolute;
+  top: 36px;
+  right: 0;
+  z-index: 1000;
+
+}
+.exportOptionsBox {
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  padding: 10px 5px !important;
+  display: flex;
+  gap: 12px;
+}

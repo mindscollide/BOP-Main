@@ -4,13 +4,13 @@ import TresmarkForwards from "./bankForwards/tresmarkForwards/TresmarkForwards";
 import TresmarkCrossesPreimums from "./bankForwards/tresmarkCrossessPremiums/TresmarkCrossessPremiums";
 
 const Forwards = () => {
-  const isDealer = import.meta.env.VITE_APP_INCLUDE_DEALER === "true";
-  console.log(isDealer, "isDealerisDealer")
+  const isDealerOrIsTreasury = import.meta.env.VITE_APP_INCLUDE_DEALER === "true" || import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
+  console.log(isDealerOrIsTreasury, "isDealerisDealer")
   return (
     <>
       <BankForwards />
-      {isDealer === true && <TresmarkForwards />}
-      {isDealer === true && <TresmarkCrossesPreimums />}
+      {isDealerOrIsTreasury === true && <TresmarkForwards />}
+      {isDealerOrIsTreasury === true && <TresmarkCrossesPreimums />}
     </>
   );
 };

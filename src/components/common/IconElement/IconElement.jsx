@@ -3,7 +3,7 @@ import React, { useRef, useState } from "react";
 const IconElement = ({
   iconClass,
   onClick,
-  applyClass,
+  applyClass = "",
   onFileChange,
   isFile = false,
 }) => {

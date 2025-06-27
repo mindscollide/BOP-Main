@@ -22,7 +22,7 @@ const FwdCalculator = () => {
   // //Resulting Calculated value of Forwads
   const CalculatedForwards = useSelector(
     (state) =>
-      state?.CalculatorReducer?.calculateForwardsData?.forwardRate || null
+      state?.CalculatorReducer?.calculateForwardsData?.forwardRate || 0
   );
 
   //Local States
@@ -52,16 +52,26 @@ const FwdCalculator = () => {
     try {
       if (CurrencyData && CurrencyData !== null) {
         // Transform currency data into label/value format
-        const options = CurrencyData.currency.map((item) => ({
-          label: item.currency,
-          value: item.ready,
-        }));
+        const options = CurrencyData.currency.map((item) => {
+          if (item.currency === "USD") {
+            setSelectedOption({
+              label: item.currency,
+              value: item.ready,
+            });
+            setPrice(item.ready)
+          }
+          return {
+            label: item.currency,
+            value: item.ready,
+          };
+        });
         setCurrencyOptions(options);
       }
     } catch (error) {
       console.log(error);
     }
   }, [CurrencyData]);
+
 
   // Effect to update date whenever inputValue changes
   useEffect(() => {
@@ -192,7 +202,6 @@ const FwdCalculator = () => {
                 name="price"
                 defaultValue="285.2635"
                 value={price}
-                onChange={handleInputChange}
                 applyClass={"CalculatorTextfield"}
               />
 

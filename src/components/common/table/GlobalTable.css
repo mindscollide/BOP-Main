@@ -1487,6 +1487,9 @@ td.TXNSummary_Table-cell.ff-poppins.fw-bold {
   white-space: nowrap !important;
 }
 
-tr.TXNSummary_Table-measure-row {
+tr.TXNSummary_Table-cell-scrollbar {
   display: none !important;
+}
+.TXNSummary_Table-measure-row {
+  visibility: collapse !important;
 }

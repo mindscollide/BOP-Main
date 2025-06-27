@@ -8,6 +8,8 @@ import { useSelector } from "react-redux";
 import CustomButton from "@/components/common/globalButton/button";
 import { Col, Row } from "react-bootstrap";
 import CorporateBookaForwardModal from "./CorporateBookaForwardModal/CorporateBookaForwardModal";
+import { buildDiscountingTable, buildForwardsTable } from "@/components/utils/generateColumnsData";
+import { IndexCell } from "@/components/common/inputField/IndexCell";
 
 const BranchForwardsTable = () => {
   const dispatch = useDispatch();
@@ -36,48 +38,34 @@ const BranchForwardsTable = () => {
     }
   }, []);
 
-  //Extracting forward and Discounting Api Data
+
+
   useEffect(() => {
-    try {
-      if (
-        GetAllFowardsAndDiscountsRatesAPIData &&
-        GetAllFowardsAndDiscountsRatesAPIData !== null
-      ) {
-        setTenorsData(GetAllFowardsAndDiscountsRatesAPIData.tenors);
-        setForwardRatesData(GetAllFowardsAndDiscountsRatesAPIData.forwardRates);
-        setDiscountRatesData(
-          GetAllFowardsAndDiscountsRatesAPIData.discountRates
+    if (GetAllFowardsAndDiscountsRatesAPIData !== null) {
+      try {
+        const { tenors, forwardRates, discountRates, instruments } =
+          GetAllFowardsAndDiscountsRatesAPIData;
+        let getAllTenorsData = { tenors };
+        let getAllInstrument = { instruments };
+        const { rowData, columnsData } = buildForwardsTable(
+          2,
+          forwardRates,
+          getAllTenorsData,
+          getAllInstrument,
+          IndexCell,
         );
-        setInstrumentForwards(
-          GetAllFowardsAndDiscountsRatesAPIData.instruments
-        );
+        console.log(rowData,columnsData, "columnsDatacolumnsData" )
+        if (rowData.length > 0) {
+          setDataSource(rowData);
+          setColumnsData(columnsData);
+        }
+      } catch (error) {
+        console.log(error, "Error while building discounting table");
       }
-    } catch (error) {
-      console.log(error, "error");
     }
   }, [GetAllFowardsAndDiscountsRatesAPIData]);
 
-  useEffect(() => {
-    if (
-      tenorsData.length > 0 &&
-      instrumentForwards.length > 0 &&
-      forwardRatesData.length > 0 &&
-      discountRatesData.length > 0
-    ) {
-      const { forwardsRates } = generateData(
-        4,
-        tenorsData,
-        instrumentForwards,
-        forwardRatesData,
-        discountRatesData
-      );
-      if (forwardsRates.length > 0) {
-        setDataSource(forwardsRates);
-        const forwardsColumns = createColumns(forwardsRates, 2);
-        setColumnsData(forwardsColumns);
-      }
-    }
-  }, [tenorsData, instrumentForwards, forwardRatesData, discountRatesData]);
+
 
   const handleBookaForwardCorporate = () => {
     setBookaForwardModalCall(true);

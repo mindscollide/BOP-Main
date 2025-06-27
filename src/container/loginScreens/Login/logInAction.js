@@ -19,126 +19,67 @@ export const loginInApi = createAsyncThunk(
 
       const response = await getBlotterData(Data);
       if (response.data.responseCode === 200) {
-        const {
-          isExecuted,
-          responseMessage,
-          roleID,
-          userID,
-          token,
-          userName,
-          firstName,
-          lastName,
-          refreshToken,
-          bankID,
-        } = response.data.responseResult;
+        const { isExecuted, responseMessage, token, refreshToken } =
+          response.data.responseResult;
+        console.log(isExecuted, "messageKeymessageKey");
+
         if (isExecuted) {
-          // localStorage.setItem("user", userID);
-          // localStorage.setItem("roleID", roleID);
-          // roleBasedNavigation(navigate, roleID);
-          if (
-            responseMessage
-              .toLowerCase()
-              .includes("ERM_AuthService_AuthManager_Login_01".toLowerCase())
-          ) {
-            console.log("", response.data);
-            return rejectWithValue("Something went wrong");
-          } else if (
-            responseMessage
-              .toLowerCase()
-              .includes("ERM_AuthService_AuthManager_Login_02".toLowerCase())
-          ) {
-            console.log("", response.data);
-            return rejectWithValue("Something went wrong");
-          } else if (
-            responseMessage
-              .toLowerCase()
-              .includes("ERM_AuthService_AuthManager_Login_03".toLowerCase())
-          ) {
-            localStorage.setItem("token", token);
-            localStorage.setItem("refreshToken", refreshToken);
-            localStorage.setItem("name", firstName);
-            localStorage.setItem("email", userName);
-            localStorage.setItem("roleId", roleID);
-            localStorage.setItem("userID", userID);
-            // localStorage.setItem("roleID", roleID);
-            roleBasedNavigation(navigate, roleID);
-            return {
-              response: response.data.responseResult,
-              message: "Successfully logged In",
-            };
-          } else if (
-            responseMessage
-              .toLowerCase()
-              .includes("ERM_AuthService_AuthManager_Login_04".toLowerCase())
-          ) {
-            console.log("", response.data);
-            return rejectWithValue("Something went wrong");
-          } else if (
-            responseMessage
-              .toLowerCase()
-              .includes("ERM_AuthService_AuthManager_Login_05".toLowerCase())
-          ) {
-            console.log("", response.data);
-            return rejectWithValue("Something went wrong");
-          } else if (
-            responseMessage
-              .toLowerCase()
-              .includes("ERM_AuthService_AuthManager_Login_06".toLowerCase())
-          ) {
-            console.log("", response.data);
-            return rejectWithValue("Something went wrong");
-          } else if (
-            responseMessage
-              .toLowerCase()
-              .includes("ERM_AuthService_AuthManager_Login_07".toLowerCase())
-          ) {
-            console.log("", response.data);
-            return rejectWithValue("Something went wrong");
-          } else if (
-            responseMessage
-              .toLowerCase()
-              .includes("ERM_AuthService_AuthManager_Login_08".toLowerCase())
-          ) {
-            console.log("", response.data);
-            return rejectWithValue("Something went wrong");
-          } else if (
-            responseMessage
-              .toLowerCase()
-              .includes("ERM_AuthService_AuthManager_Login_09".toLowerCase())
-          ) {
-            console.log("", response.data);
-            return rejectWithValue("Something went wrong");
-          } else if (
-            responseMessage
-              .toLowerCase()
-              .includes("ERM_AuthService_AuthManager_Login_10".toLowerCase())
-          ) {
-            console.log("", response.data);
-            return rejectWithValue("Something went wrong");
-          } else if (
-            responseMessage
-              .toLowerCase()
-              .includes("ERM_AuthService_AuthManager_Login_11".toLowerCase())
-          ) {
-            console.log("", response.data);
-            return rejectWithValue("Something went wrong");
-          } else if (
-            responseMessage
-              .toLowerCase()
-              .includes("ERM_AuthService_AuthManager_Login_12".toLowerCase())
-          ) {
-            console.log("", response.data);
-            return rejectWithValue("Something went wrong");
-          } else if (
-            responseMessage
-              .toLowerCase()
-              .includes("ERM_AuthService_AuthManager_Login_13".toLowerCase())
-          ) {
-            console.log("", response.data);
-            return rejectWithValue("Something went wrong");
-          } else {
-            console.log("", response.data);
-            return rejectWithValue("Something went wrong");
+          console.log(responseMessage, "responseMessage");
+
+          switch (responseMessage.toLowerCase()) {
+            case "ERM_AuthService_AuthManager_Login_01".toLowerCase():
+            case "ERM_AuthService_AuthManager_Login_02".toLowerCase():
+            case "ERM_AuthService_AuthManager_Login_04".toLowerCase():
+            case "ERM_AuthService_AuthManager_Login_05".toLowerCase():
+            case "ERM_AuthService_AuthManager_Login_06".toLowerCase():
+            case "ERM_AuthService_AuthManager_Login_07".toLowerCase():
+            case "ERM_AuthService_AuthManager_Login_08".toLowerCase():
+            case "ERM_AuthService_AuthManager_Login_09".toLowerCase():
+            case "ERM_AuthService_AuthManager_Login_10".toLowerCase():
+            case "ERM_AuthService_AuthManager_Login_11".toLowerCase():
+            case "ERM_AuthService_AuthManager_Login_12".toLowerCase():
+              console.log("", response.data);
+              return rejectWithValue("Something went wrong");
+
+            case "ERM_AuthService_AuthManager_Login_13".toLowerCase():
+              console.log("", response.data);
+              return rejectWithValue("Branch is InActive");
+
+            case "ERM_AuthService_AuthManager_Login_03".toLowerCase():
+              const {
+                branch,
+                employeeID,
+                ldapAccount,
+                userID,
+                firstName,
+                email,
+                contactNumber,
+                userRoleID,
+                userStatusID,
+              } = response.data.responseResult.user;
+
+              localStorage.setItem("token", token);
+              localStorage.setItem("refreshToken", refreshToken);
+              localStorage.setItem("name", firstName);
+              localStorage.setItem("email", email);
+              localStorage.setItem("roleId", userRoleID);
+              localStorage.setItem("userID", userID);
+              localStorage.setItem("branch", JSON.stringify(branch));
+              localStorage.setItem("employeeID", employeeID);
+              localStorage.setItem("ldapAccount", ldapAccount);
+              localStorage.setItem("contactNumber", contactNumber);
+              localStorage.setItem("userStatusID", userStatusID);
+
+              roleBasedNavigation(navigate, userRoleID);
+
+              return {
+                response: response.data.responseResult,
+                message: "Successfully logged In",
+              };
+
+            default:
+              console.log("", response.data);
+              return rejectWithValue("Something went wrong");
           }
         } else {
           console.log("", response.data);
@@ -168,148 +109,63 @@ export const corporateUserLoginInApi = createAsyncThunk(
         const {
           isExecuted,
           responseMessage,
-          corporateID,
-          roleID,
-          userID,
           token,
-          userName,
-          firstName,
-          lastName,
           refreshToken,
-          bankID,
         } = response.data.responseResult;
 
         if (isExecuted) {
-          if (
-            responseMessage
-              .toLowerCase()
-              .includes(
-                "ERM_AuthService_AuthManager_CorporateUserLogin_01".toLowerCase()
-              )
-          ) {
-            console.log("", response.data);
-            return rejectWithValue("Something went wrong");
-          } else if (
-            responseMessage
-              .toLowerCase()
-              .includes(
-                "ERM_AuthService_AuthManager_CorporateUserLogin_02".toLowerCase()
-              )
-          ) {
-            console.log("", response.data);
-            return rejectWithValue("Something went wrong");
-          } else if (
-            responseMessage
-              .toLowerCase()
-              .includes(
-                "ERM_AuthService_AuthManager_CorporateUserLogin_03".toLowerCase()
-              )
-          ) {
-            localStorage.setItem("refreshToken", refreshToken);
-            localStorage.setItem("token", token);
-            localStorage.setItem("name", firstName);
-            localStorage.setItem("email", userName);
-            localStorage.setItem("roleId", roleID);
-            localStorage.setItem("corporateID", corporateID);
-            localStorage.setItem("userID", userID);
-            roleBasedNavigation(navigate, roleID);
-            return {
-              response: response.data.responseResult,
-              message: "Successfully logged In",
-            };
-          } else if (
-            responseMessage
-              .toLowerCase()
-              .includes(
-                "ERM_AuthService_AuthManager_CorporateUserLogin_04".toLowerCase()
-              )
-          ) {
-            console.log("", response.data);
-            return rejectWithValue("Something went wrong");
-          } else if (
-            responseMessage
-              .toLowerCase()
-              .includes(
-                "ERM_AuthService_AuthManager_CorporateUserLogin_05".toLowerCase()
-              )
-          ) {
-            console.log("", response.data);
-            return rejectWithValue("Something went wrong");
-          } else if (
-            responseMessage
-              .toLowerCase()
-              .includes(
-                "ERM_AuthService_AuthManager_CorporateUserLogin_06".toLowerCase()
-              )
-          ) {
-            console.log("", response.data);
-            return rejectWithValue("Something went wrong");
-          } else if (
-            responseMessage
-              .toLowerCase()
-              .includes(
-                "ERM_AuthService_AuthManager_CorporateUserLogin_07".toLowerCase()
-              )
-          ) {
-            console.log("", response.data);
-            return rejectWithValue("Something went wrong");
-          } else if (
-            responseMessage
-              .toLowerCase()
-              .includes(
-                "ERM_AuthService_AuthManager_CorporateUserLogin_08".toLowerCase()
-              )
-          ) {
-            console.log("", response.data);
-            return rejectWithValue("Something went wrong");
-          } else if (
-            responseMessage
-              .toLowerCase()
-              .includes(
-                "ERM_AuthService_AuthManager_CorporateUserLogin_09".toLowerCase()
-              )
-          ) {
-            console.log("", response.data);
-            return rejectWithValue("Something went wrong");
-          } else if (
-            responseMessage
-              .toLowerCase()
-              .includes(
-                "ERM_AuthService_AuthManager_CorporateUserLogin_10".toLowerCase()
-              )
-          ) {
-            console.log("", response.data);
-            return rejectWithValue("Something went wrong");
-          } else if (
-            responseMessage
-              .toLowerCase()
-              .includes(
-                "ERM_AuthService_AuthManager_CorporateUserLogin_11".toLowerCase()
-              )
-          ) {
-            console.log("", response.data);
-            return rejectWithValue("Something went wrong");
-          } else if (
-            responseMessage
-              .toLowerCase()
-              .includes(
-                "ERM_AuthService_AuthManager_CorporateUserLogin_12".toLowerCase()
-              )
-          ) {
-            console.log("", response.data);
-            return rejectWithValue("Something went wrong");
-          } else if (
-            responseMessage
-              .toLowerCase()
-              .includes(
-                "ERM_AuthService_AuthManager_CorporateUserLogin_13".toLowerCase()
-              )
-          ) {
-            console.log("", response.data);
-            return rejectWithValue("Something went wrong");
-          } else {
-            console.log("", response.data);
-            return rejectWithValue("Something went wrong");
+          switch (responseMessage.toLowerCase()) {
+            case "ERM_AuthService_AuthManager_CorporateUserLogin_01".toLowerCase():
+            case "ERM_AuthService_AuthManager_CorporateUserLogin_02".toLowerCase():
+            case "ERM_AuthService_AuthManager_CorporateUserLogin_04".toLowerCase():
+            case "ERM_AuthService_AuthManager_CorporateUserLogin_05".toLowerCase():
+            case "ERM_AuthService_AuthManager_CorporateUserLogin_06".toLowerCase():
+            case "ERM_AuthService_AuthManager_CorporateUserLogin_07".toLowerCase():
+            case "ERM_AuthService_AuthManager_CorporateUserLogin_08".toLowerCase():
+            case "ERM_AuthService_AuthManager_CorporateUserLogin_09".toLowerCase():
+            case "ERM_AuthService_AuthManager_CorporateUserLogin_10".toLowerCase():
+            case "ERM_AuthService_AuthManager_CorporateUserLogin_11".toLowerCase():
+            case "ERM_AuthService_AuthManager_CorporateUserLogin_12".toLowerCase():
+              console.log("", response.data);
+              return rejectWithValue("Something went wrong");
+
+            case "ERM_AuthService_AuthManager_CorporateUserLogin_13".toLowerCase():
+              console.log("", response.data);
+              return rejectWithValue("Corporate is InActive");
+
+            case "ERM_AuthService_AuthManager_CorporateUserLogin_03".toLowerCase():
+              const {
+                corporate,
+                employeeID,
+                ldapAccount,
+                userID,
+                firstName,
+                email,
+                contactNumber,
+                userRoleID,
+                userStatusID,
+              } = response.data.responseResult.user;
+              localStorage.setItem("token", token);
+              localStorage.setItem("refreshToken", refreshToken);
+              localStorage.setItem("name", firstName);
+              localStorage.setItem("email", email);
+              localStorage.setItem("roleId", userRoleID);
+              localStorage.setItem("userID", userID);
+              localStorage.setItem("corporate", JSON.stringify(corporate));
+              localStorage.setItem("employeeID", employeeID);
+              localStorage.setItem("ldapAccount", ldapAccount);
+              localStorage.setItem("contactNumber", contactNumber);
+              localStorage.setItem("userStatusID", userStatusID);
+
+              roleBasedNavigation(navigate, userRoleID);
+              return {
+                response: response.data.responseResult,
+                message: "Successfully logged In",
+              };
+
+            default:
+              console.log("", response.data);
+              return rejectWithValue("Something went wrong");
           }
         } else {
           console.log("", response.data);
@@ -318,7 +174,7 @@ export const corporateUserLoginInApi = createAsyncThunk(
       }
     } catch (error) {
       // Reject with error message
-      return rejectWithValue(error.response.data);
+      return rejectWithValue("Something went wrong");
     }
   }
 );

@@ -1,18 +1,20 @@
 import React, { startTransition, useCallback, useEffect } from "react";
 import "../settingModal.css";
 import { useSelector } from "react-redux";
-import { useModal } from "@/context/ModalContext";
 import { Checkbox } from "antd";
+import { setSettingRecords } from "@/store/modalSlice/modalSlicer";
+import { useDispatch } from "react-redux";
 const SettingusersComponent = () => {
-  const { settingsRecord, setSettingRecords } = useModal();
+  const dispatch = useDispatch();
+  const settingsRecord = useSelector(
+    (state) => state.modalReducer.settingsRecord
+  );
   const userSettingData = useSelector(
     (state) => state.settingSlicer.settingData
   );
 
   useEffect(() => {
     if (userSettingData !== null) {
-      console.log(userSettingData, "Error setting user settings");
-
       try {
         if (userSettingData.length > 0) {
           const newSettings = {};
@@ -23,21 +25,7 @@ const SettingusersComponent = () => {
             );
           });
 
-          console.log(newSettings, "Error setting user settings");
-
-          setSettingRecords((prev) => ({
-            ...prev,
-            [userSettingData[0].configKey]: JSON.parse(
-              userSettingData[0].configValue
-            ),
-            [userSettingData[1].configKey]: JSON.parse(
-              userSettingData[1].configValue
-            ),
-
-            [userSettingData[2].configKey]: JSON.parse(
-              userSettingData[2].configValue
-            ),
-          }));
+          dispatch(setSettingRecords(newSettings));
         }
       } catch (error) {
         console.error("Error setting user settings:", error);
@@ -47,16 +35,19 @@ const SettingusersComponent = () => {
 
   const handleChange = useCallback(
     (event) => {
-      console.log({ event }, "valuevaluevaluevalue");
       const { name, checked } = event.target;
+
+      console.log({ event }, "valuevaluevaluevalue");
+
       startTransition(() => {
-        setSettingRecords({
-          ...settingsRecord,
-          [name]: checked,
-        });
+        dispatch(
+          setSettingRecords({
+            [name]: checked,
+          })
+        );
       });
     },
-    [settingsRecord, setSettingRecords]
+    [dispatch]
   );
 
   console.log(settingsRecord, "settingsRecordsettingsRecord");

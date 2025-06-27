@@ -1,6 +1,5 @@
 import IconElement from "@/components/common/IconElement/IconElement";
 import InputFIeld from "@/components/common/inputField/InputField";
-import { useModal } from "@/context/ModalContext";
 import styles from "./ChatBox.module.css";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -11,12 +10,19 @@ import { convertDateTimeIntoGMT, formatDateToUTC } from "@/utils/formatters";
 import moment from "moment";
 import { Col, Row } from "react-bootstrap";
 import { fileToBase64 } from "@/utils/converts";
-import { useMqtt } from "@/context/MqttContext";
+import { setChatModal } from "@/store/modalSlice/modalSlicer";
+import { setIncomingChat } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 // import styles from "./ChatBranch.css";
+
 const ChatBox = () => {
-  const { setChatModal, chatModalTransactionId } = useModal();
+  const chatModalTransactionId = useSelector(
+    (state) => state.modalReducer.chatModalTransactionId
+  );
+  const IncomingChat = useSelector(
+    (state) => state.RealtimeActionsSlice.IncomingChat
+  );
   const [receiverId, setReceiverId] = useState(0);
-  const { setIncomingChat, IncomingChat } = useMqtt();
+
   console.log(IncomingChat, "IncomingChatIncomingChat");
   const [message, setMessage] = useState("");
   const [file, setFile] = useState(null);
@@ -58,7 +64,7 @@ const ChatBox = () => {
   }, [getAllUserData]);
 
   useEffect(() => {
-    if (IncomingChat !== null) {
+    if (Array.isArray(IncomingChat) && IncomingChat.length > 0) {
       try {
         setTransactionChat((prevState) => {
           const updatedChats = prevState.getAllChat.map((existingChat) => {
@@ -66,12 +72,11 @@ const ChatBox = () => {
               (newChat) => newChat.chatMessageID === existingChat.chatMessageID
             );
             if (updatedChat) {
-              setIncomingChat((prevIncoming) => {
-                return prevIncoming.filter(
-                  (chat, index) =>
-                    chat.chatMessageID !== updatedChat.chatMessageID
-                );
-              });
+              let IncomingChatData = [...IncomingChat].filter(
+                (chat, index) =>
+                  chat.chatMessageID !== updatedChat.chatMessageID
+              );
+              dispatch(setIncomingChat(IncomingChatData));
             }
 
             return updatedChat
@@ -100,7 +105,7 @@ const ChatBox = () => {
   }, [IncomingChat]); // Add all dependencies
 
   const handleClickClose = () => {
-    setChatModal(false);
+    dispatch(setChatModal(false));
   };
 
   const handleClickSaveChat = async (e) => {
@@ -250,7 +255,6 @@ const ChatBox = () => {
                     </div>
                   );
                 } else {
-                  console.log(data, "datadatadatadatadata");
                   return (
                     <div className='text-end mb-3' key={data.chatMessageID}>
                       <div className='message-outbox message-box text-start'>

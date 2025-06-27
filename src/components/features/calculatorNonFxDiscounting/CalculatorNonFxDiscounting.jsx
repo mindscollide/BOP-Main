@@ -22,7 +22,7 @@ const CalculatorNonFxDiscounting = () => {
   // //Resulting Calculated value of NonFX Discounting
   const CalculatedNonFxDiscounting = useSelector(
     (state) =>
-      state?.CalculatorReducer?.calculateNonFXDiscountingData?.nonFXRate || null
+      state?.CalculatorReducer?.calculateNonFXDiscountingData?.nonFXRate || 0
   );
 
   //Local States
@@ -34,16 +34,24 @@ const CalculatorNonFxDiscounting = () => {
   const [swapValue, setSwapValue] = useState(0);
   const [tagText, setTagText] = useState(formatDate(new Date()));
 
-
   //Extracting the currecny Data
   useEffect(() => {
     try {
       if (CurrencyData && CurrencyData !== null) {
         // Transform currency data into label/value format
-        const options = CurrencyData.currency.map((item) => ({
-          label: item.currency,
-          value: item.ready,
-        }));
+        const options = CurrencyData.currency.map((item) => {
+          if (item.currency === "USD") {
+            setSelectedOption({
+              label: item.currency,
+              value: item.ready,
+            });
+            setPrice(item.ready);
+          }
+          return {
+            label: item.currency,
+            value: item.ready,
+          };
+        });
         setCurrencyOptions(options);
       }
     } catch (error) {
@@ -105,97 +113,98 @@ const CalculatorNonFxDiscounting = () => {
 
   //Calculate Non Fx Discounting API Call
   const handleNonFxDiscounting = () => {
-    let Data = {
-      Ready: Number(price),
-      Tenor: Number(inputValue),
-      Swap: Number(swapValue),
-      Kibor: Number(kiborValue),
-      Currency: selectedOption.label,
-    };
-    dispatch(CalculateNonFxDiscountingAPI({ Data, navigate }));
+    if (selectedOption !== null) {
+      let Data = {
+        Ready: Number(price),
+        Tenor: Number(inputValue),
+        Swap: Number(swapValue),
+        Kibor: Number(kiborValue),
+        Currency: selectedOption.label,
+      };
+      dispatch(CalculateNonFxDiscountingAPI({ Data, navigate }));
+    }
   };
 
   return (
     <>
-      <div className="card-box h-auto">
-        <div className="box-header bg-primary-orange px-2 color-white">
-          <div className="d-flex align-items-center">
-            <div className="fs-6 fw-bold">Non FX Discounting</div>
-            <div className="clc-btn-wrapper ms-auto">
+      <div className='card-box h-auto'>
+        <div className='box-header bg-primary-orange px-2 color-white'>
+          <div className='d-flex align-items-center'>
+            <div className='fs-6 fw-bold'>Non FX Discounting</div>
+            <div className='clc-btn-wrapper ms-auto'>
               <CustomButton
-                value="Calculate Rate"
-                applyClass="calculatorButton"
+                value='Calculate Rate'
+                applyClass='calculatorButton'
                 onClick={handleNonFxDiscounting}
               />
             </div>
           </div>
         </div>
-        <div className="box-content-wrapper h-auto">
-          <div className="d-flex align-items-center">
-            <div className="flex-fill px-2 p-2">
-              <label className="mt-1">Currency</label>
+        <div className='box-content-wrapper h-auto'>
+          <div className='d-flex align-items-center'>
+            <div className='flex-fill px-2 p-2'>
+              <label className='mt-1'>Currency</label>
               <SelectDropdown
                 options={currencyOptions}
                 value={selectedOption}
                 onChange={handleChangeCurrencyCalculator}
-                placeholder="Select a currency"
+                placeholder='Select a currency'
               />
 
-              <label className="mt-1">Ready</label>
+              <label className='mt-1'>Ready</label>
               <InputFIeld
-                type="number"
-                name="price"
-                defaultValue="285.2635"
+                type='number'
+                name='price'
+                defaultValue='285.2635'
                 value={price}
-                onChange={handleInputChange}
                 applyClass={"CalculatorTextfield"}
               />
 
-              <label className="mt-1">Tenor</label>
+              <label className='mt-1'>Tenor</label>
               <InputFieldWithTag
-                type="text"
+                type='text'
                 value={inputValue}
                 onChange={handleInputChangeTenor}
-                placeholder="Enter value"
-                applyClass="inputField-calculator"
-                applyClassTag="tag-for-calculator"
-                width="100%" // width of the entire container
-                inputWidth="60%" // width of the input field
+                placeholder='Enter value'
+                applyClass='inputField-calculator'
+                applyClassTag='tag-for-calculator'
+                width='100%' // width of the entire container
+                inputWidth='60%' // width of the input field
                 tagText={tagText}
-                tagWidth="40%" // width of the span
-                tagClassName="yourTagClass"
+                tagWidth='40%' // width of the span
+                tagClassName='yourTagClass'
               />
 
-              <div className="d-flex flex-row mt-1">
-                <span className="d-flex flex-column">
+              <div className='d-flex flex-row mt-1'>
+                <span className='d-flex flex-column'>
                   <label>Swap</label>
                   <InputFIeld
                     value={swapValue}
                     onChange={handleInputChangeSwap}
-                    applyClass="CalculatorTextfield-withTagInputfield"
+                    applyClass='CalculatorTextfield-withTagInputfield'
                   />
                 </span>
 
-                <span className="d-flex flex-column">
+                <span className='d-flex flex-column'>
                   <label>KIBOR</label>
                   <InputFieldWithTag
-                    type="text"
+                    type='text'
                     value={kiborValue}
                     onChange={handleInputChangeKibor}
-                    placeholder="Enter value"
-                    applyClass="inputField-calculator"
-                    applyClassTag="tag-for-calculator"
-                    width="100%" // width of the entire container
-                    inputWidth="80%" // width of the input field
-                    tagText="%"
-                    tagWidth="20%" // width of the span
-                    tagClassName="yourTagClass"
+                    placeholder='Enter value'
+                    applyClass='inputField-calculator'
+                    applyClassTag='tag-for-calculator'
+                    width='100%' // width of the entire container
+                    inputWidth='80%' // width of the input field
+                    tagText='%'
+                    tagWidth='20%' // width of the span
+                    tagClassName='yourTagClass'
                   />
                 </span>
               </div>
             </div>
-            <div className="px-2 text-center">
-              <div className="clc-amount fs-4 fw-bold px-4 py-3 bg-primary color-white">
+            <div className='px-2 text-center'>
+              <div className='clc-amount fs-4 fw-bold px-4 py-3 bg-primary color-white'>
                 {CalculatedNonFxDiscounting}
               </div>
             </div>

@@ -12,14 +12,16 @@ import {
   publishTenorWiseForwardRatesRM,
   getDiscountingRatesRM,
   publishDiscountingRatesRM,
+  getDealerDasboardDataRM,
 } from "@/common/api_config";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
 import createPostAPI from "@/utils/axiosInstance";
+import { setCreateTenorModal } from "@/store/modalSlice/modalSlicer";
 
 // Define the login async thunk
 export const clearRatesAction = createAsyncThunk(
   "uploadRate/clearRate", // A unique action type string
-  async ({ navigate, Data }, { rejectWithValue }) => {
+  async ({ navigate, Data }, { rejectWithValue, dispatch }) => {
     try {
       let clearRates = createPostAPI(
         uploadRatesApi,
@@ -29,9 +31,16 @@ export const clearRatesAction = createAsyncThunk(
       const response = await clearRates(Data);
       const { responseCode } = response.data;
 
-      const { isExecuted, responseMessage } = response.data.responseResult;
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
+      }
+
       if (responseCode === 417) {
-      } else if (response.data.responseCode === 200) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(clearRatesAction({ navigate, Data }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (
             responseMessage
@@ -76,11 +85,13 @@ export const clearRatesAction = createAsyncThunk(
           console.log("", response.data);
           return rejectWithValue("Something went wrong");
         }
+      } else {
+        return rejectWithValue("Something went wrong");
       }
     } catch (error) {
       console.log(error);
       // Reject with error message
-      return rejectWithValue(error.response.data);
+      return rejectWithValue("Something went wrong");
     }
   }
 );
@@ -100,10 +111,12 @@ export const getLastPublishRatesAction = createAsyncThunk(
       const { responseCode } = response.data;
       if (responseCode === 401) {
         navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
       }
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        dispatch(getLastPublishRatesAction({ navigate }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -154,7 +167,7 @@ export const getLastPublishRatesAction = createAsyncThunk(
     } catch (error) {
       console.log(error);
       // Reject with error message
-      return rejectWithValue(error.response.data);
+      return rejectWithValue("Something went wrong");
     }
   }
 );
@@ -172,15 +185,18 @@ export const PublishNewRatesAction = createAsyncThunk(
       const response = await PublishNewRates(Data);
 
       const { responseCode } = response.data;
+      console.log(responseCode, "responseCoderesponseCode");
       if (responseCode === 401) {
-        navigate("/");
+        return rejectWithValue("401");
       }
 
-      const { isExecuted, responseMessage } = response.data.responseResult;
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
-        dispatch(PublishNewRatesAction({ navigate, Data }));
-      } else if (response.data.responseCode === 200) {
+        // Inside your thunk
+        return rejectWithValue("417", {
+          originalAction: PublishNewRatesAction({ navigate, Data }),
+        });
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (
             responseMessage
@@ -237,7 +253,7 @@ export const PublishNewRatesAction = createAsyncThunk(
     } catch (error) {
       console.log(error);
       // Reject with error message
-      return rejectWithValue(error.response.data);
+      return rejectWithValue("Something went wrong");
     }
   }
 );
@@ -256,13 +272,14 @@ export const marketOnOffAction = createAsyncThunk(
       const { responseCode } = response.data;
       if (responseCode === 401) {
         navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
       }
 
-      const { isExecuted, responseMessage } = response.data.responseResult;
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(marketOnOffAction({ navigate, Data }));
-      } else if (response.data.responseCode === 200) {
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (
             responseMessage
@@ -307,11 +324,13 @@ export const marketOnOffAction = createAsyncThunk(
           console.log("", response.data);
           return rejectWithValue("Something went wrong");
         }
+      } else {
+        return rejectWithValue("Something went wrong");
       }
     } catch (error) {
       console.log(error);
       // Reject with error message
-      return rejectWithValue(error.response.data);
+      return rejectWithValue("Something went wrong");
     }
   }
 );
@@ -319,7 +338,7 @@ export const marketOnOffAction = createAsyncThunk(
 // Define the login async thunk
 export const getAllTenorsAction = createAsyncThunk(
   "uploadRate/getAllTenors", // A unique action type string
-  async ({}, { rejectWithValue }) => {
+  async ({ navigate }, { rejectWithValue, dispatch }) => {
     try {
       let getAllTenors = createPostAPI(
         uploadRatesApi,
@@ -330,7 +349,15 @@ export const getAllTenorsAction = createAsyncThunk(
 
       const { responseCode } = response.data;
 
+      if (responseCode === 401) {
+        navigate("/");
+
+        return rejectWithValue("Something-went-wrong");
+      }
+
       if (responseCode === 417) {
+        dispatch(refreshTokenAction({ navigate }));
+        dispatch(getAllTenorsAction({ navigate }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -381,7 +408,7 @@ export const getAllTenorsAction = createAsyncThunk(
     } catch (error) {
       console.log(error);
       // Reject with error message
-      return rejectWithValue(error.response.data);
+      return rejectWithValue("Something went wrong");
     }
   }
 );
@@ -390,7 +417,7 @@ export const getAllTenorsAction = createAsyncThunk(
 export const createTenorAction = createAsyncThunk(
   "uploadRate/createTenors", // A unique action type string
   async (
-    { navigate, Data, setCreateTenorModal, setCreateTenor },
+    { navigate, Data, setCreateTenor },
     { dispatch, rejectWithValue }
   ) => {
     try {
@@ -404,6 +431,7 @@ export const createTenorAction = createAsyncThunk(
       const { responseCode } = response.data;
       if (responseCode === 401) {
         navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
       }
 
       if (responseCode === 417) {
@@ -412,7 +440,6 @@ export const createTenorAction = createAsyncThunk(
           createTenorAction({
             navigate,
             Data,
-            setCreateTenorModal,
             setCreateTenor,
           })
         );
@@ -426,7 +453,7 @@ export const createTenorAction = createAsyncThunk(
                 "UploadRate_UploadRateServiceManager_CreateTenor_01".toLowerCase()
               )
           ) {
-            setCreateTenorModal(false);
+            dispatch(setCreateTenorModal(false))
             setCreateTenor({
               noOfDays: "",
               tenorName: "",
@@ -476,12 +503,12 @@ export const createTenorAction = createAsyncThunk(
           return rejectWithValue("Something went wrong");
         }
       } else {
-        return rejectWithValue(error.response.data);
+        return rejectWithValue("Something went wrong");
       }
     } catch (error) {
       console.log(error);
       // Reject with error message
-      return rejectWithValue(error.response.data);
+      return rejectWithValue("Something went wrong");
     }
   }
 );
@@ -500,6 +527,7 @@ export const getTenorWiseForwardsAction = createAsyncThunk(
       const { responseCode } = response.data;
       if (responseCode === 401) {
         navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
       }
 
       if (responseCode === 417) {
@@ -515,53 +543,6 @@ export const getTenorWiseForwardsAction = createAsyncThunk(
                 "UploadRate_UploadRateServiceManager_GetTenorWiseForwardRates_01".toLowerCase()
               )
           ) {
-            let newData = {
-              responseResult: {
-                currentTenorWiseForwardRates: [
-                  {
-                    tenorID: 1,
-                    bid: 1.25,
-                    ask: 1.3,
-                    dateTime: "20240808143452",
-                  },
-                  {
-                    tenorID: 2,
-                    bid: 1.35,
-                    ask: 1.4,
-                    dateTime: "20240808143452",
-                  },
-                  {
-                    tenorID: 3,
-                    bid: 1.45,
-                    ask: 1.5,
-                    dateTime: "20240808143452",
-                  },
-                ],
-                lastTenorWiseForwardRates: [
-                  {
-                    tenorID: 1,
-                    bid: 1.2,
-                    ask: 1.25,
-                    dateTime: "20240808143452",
-                  },
-                  {
-                    tenorID: 2,
-                    bid: 1.3,
-                    ask: 1.35,
-                    dateTime: "20240808143452",
-                  },
-                  {
-                    tenorID: 3,
-                    bid: 1.4,
-                    ask: 1.45,
-                    dateTime: "20240808143452",
-                  },
-                ],
-                responseMessage:
-                  "UploadRate_UploadRateServiceManager_GetTenorWiseForwardRates_01",
-                isExecuted: true,
-              },
-            };
             return {
               response: response.data.responseResult,
               message: "Successfully",
@@ -604,7 +585,7 @@ export const getTenorWiseForwardsAction = createAsyncThunk(
     } catch (error) {
       console.log(error);
       // Reject with error message
-      return rejectWithValue(error.response.data);
+      return rejectWithValue("Something went wrong");
     }
   }
 );
@@ -623,6 +604,7 @@ export const PublishTenorWiseForwardsAction = createAsyncThunk(
       const { responseCode } = response.data;
       if (responseCode === 401) {
         navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
       }
 
       if (responseCode === 417) {
@@ -683,12 +665,12 @@ export const PublishTenorWiseForwardsAction = createAsyncThunk(
           return rejectWithValue("Something went wrong");
         }
       } else {
-        return rejectWithValue(error.response.data);
+        return rejectWithValue("Something went wrong");
       }
     } catch (error) {
       console.log(error);
       // Reject with error message
-      return rejectWithValue(error.response.data);
+      return rejectWithValue("Something went wrong");
     }
   }
 );
@@ -706,6 +688,7 @@ export const getDiscountingRatesAction = createAsyncThunk(
       const { responseCode } = response.data;
       if (responseCode === 401) {
         navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
       }
 
       if (responseCode === 417) {
@@ -806,7 +789,7 @@ export const getDiscountingRatesAction = createAsyncThunk(
     } catch (error) {
       console.log(error);
       // Reject with error message
-      return rejectWithValue(error.response.data);
+      return rejectWithValue("Something went wrong");
     }
   }
 );
@@ -815,82 +798,162 @@ export const publishDiscountingRatesAction = createAsyncThunk(
   "uploadRate/publishDiscountingRates",
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
-      try {
-        const response = await publishDiscountingRates(Data);
-        const { responseCode } = response.data;
-
-        if (responseCode === 401) {
-          navigate("/");
-        }
-        if (responseCode === 417) {
-          await dispatch(refreshTokenAction({ navigate }));
-          dispatch(publishDiscountingRatesAction({ navigate, Data }));
-        } else if (responseCode === 200) {
-          const { isExecuted, responseMessage } = response.data.responseResult;
-          if (isExecuted) {
-            if (
-              responseMessage
-                .toLowerCase()
-                .includes(
-                  "UploadRate_UploadRateServiceManager_PublishDiscountingRates_01".toLowerCase()
-                )
-            ) {
-              return {
-                response: response.data.responseResult,
-                message: "Successfully",
-              };
-            } else if (
-              responseMessage
-                .toLowerCase()
-                .includes(
-                  "UploadRate_UploadRateServiceManager_PublishDiscountingRates_02".toLowerCase()
-                )
-            ) {
-              return rejectWithValue("Something went wrong");
-            } else if (
-              responseMessage
-                .toLowerCase()
-                .includes(
-                  "UploadRate_UploadRateServiceManager_PublishDiscountingRates_03".toLowerCase()
-                )
-            ) {
-              return rejectWithValue("Something went wrong");
-            } else if (
-              responseMessage
-                .toLowerCase()
-                .includes(
-                  "UploadRate_UploadRateServiceManager_PublishDiscountingRates_04".toLowerCase()
-                )
-            ) {
-              return rejectWithValue("Something went wrong");
-            } else if (
-              responseMessage
-                .toLowerCase()
-                .includes(
-                  "UploadRate_UploadRateServiceManager_PublishDiscountingRates_05".toLowerCase()
-                )
-            ) {
-              return rejectWithValue("Something went wrong");
-            } else {
-              console.log("", response.data);
-              return rejectWithValue("Something went wrong");
-            }
+      let publishDiscountingRates = createPostAPI(
+        uploadRatesApi,
+        getDiscountingRatesRM.RequestMethod
+      );
+      const response = await publishDiscountingRates(Data);
+      const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
+      }
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(publishDiscountingRatesAction({ navigate, Data }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_PublishDiscountingRates_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message: "Successfully",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_PublishDiscountingRates_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_PublishDiscountingRates_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_PublishDiscountingRates_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_PublishDiscountingRates_05".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
           } else {
             console.log("", response.data);
             return rejectWithValue("Something went wrong");
           }
         } else {
-          return rejectWithValue(error.response.data);
+          console.log("", response.data);
+          return rejectWithValue("Something went wrong");
         }
-      } catch (error) {
-        console.log(error);
-        // Reject with error message
-        return rejectWithValue(error.response.data);
+      } else {
+        return rejectWithValue("Something went wrong");
       }
     } catch (error) {
       console.log(error);
       // Reject with error message
-      return rejectWithValue(error.response.data);
+      return rejectWithValue("Something went wrong");
+    }
+  }
+);
+
+export const getDealerDashboardApi = createAsyncThunk(
+  "uploadRates/getDashboardApi",
+  async ({ navigate }, { rejectWithValue, dispatch }) => {
+    try {
+      let DealerDashboardApi = createPostAPI(
+        uploadRatesApi,
+        getDealerDasboardDataRM.RequestMethod
+      );
+      const response = await DealerDashboardApi();
+      const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
+      }
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(getDealerDashboardApi({ navigate }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_GetDealerDashboardData_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message: "Successfully",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_GetDealerDashboardData_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_GetDealerDashboardData_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_GetDealerDashboardData_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_GetDealerDashboardData_05".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          console.log("", response.data);
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      console.log(error);
+      // Reject with error message
+      return rejectWithValue("Something went wrong");
     }
   }
 );

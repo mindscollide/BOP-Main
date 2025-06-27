@@ -78,9 +78,13 @@ const ViewAllNatureOfBussiness = {
   RequestMethod: "ServiceManager.ViewAllNatureOfBussiness",
 };
 
-const CorporateBlotterData = {
+const BlotterDataRM = {
   RequestMethod: "ServiceManager.GetBlotterData",
 };
+
+const GetBlotterOutstandingDealsDataRM = {
+  RequestMethod: "ServiceManager.GetBlotterOutstandingDealsData",
+}
 const GetAllCounterPartyDataRM = {
   RequestMethod: "ServiceManager.GetAllCounterPartyData",
 };
@@ -152,6 +156,7 @@ const saveChatRM = {
 const UploadDocumentRM = {
   RequestMethod: "ServiceManager.UploadDocuments",
 };
+
 const DownloadFileRM = {
   RequestMethod: "ServiceManager.DownloadFile",
 };
@@ -159,16 +164,35 @@ const DownloadFileRM = {
 const GetFeDiscountingRM = {
   RequestMethod: "ServiceManager.GetFEDiscountingRates",
 };
+
 const PublishFeDiscountingRM = {
   RequestMethod: "ServiceManager.PublishFEDiscountingRates",
 };
+
 const GetNonFeDiscountingRatesRM = {
   RequestMethod: "ServiceManager.GetNonFEDiscountingRates",
 };
+
 const PublishNonFeDiscountingRatesRM = {
   RequestMethod: "ServiceManager.PublishNonFEDiscountingRates",
 };
+
+const getDealerDasboardDataRM = {
+  RequestMethod: "ServiceManager.GetDealerDashboardData",
+};
+
+const GetAllInstrumentsRM = {
+  RequestMethod: "ServiceManager.GetAllInstruments",
+}
+
+const GetAllNatureOfTransactionsRM = {
+  RequestMethod: "ServiceManager.GetAllNatureOfTransactions",
+}
 export {
+  GetBlotterOutstandingDealsDataRM,
+  GetAllNatureOfTransactionsRM,
+  GetAllInstrumentsRM,
+  getDealerDasboardDataRM,
   GetFeDiscountingRM,
   PublishFeDiscountingRM,
   GetNonFeDiscountingRatesRM,
@@ -203,7 +227,7 @@ export {
   GetDashboardData,
   SaveUserDashboard,
   ViewAllNatureOfBussiness,
-  CorporateBlotterData,
+  BlotterDataRM,
   refreshTokenRM,
   GetAllCounterPartyDataRM,
   SaveTransactionRFQ,

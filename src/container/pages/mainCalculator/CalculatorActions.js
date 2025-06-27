@@ -23,6 +23,7 @@ export const GetAllCalculatorData = createAsyncThunk(
       const { responseCode } = response.data;
       if (responseCode === 401) {
         navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
       }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -81,6 +82,7 @@ export const CalculateFxDiscountingAPI = createAsyncThunk(
       const { responseCode } = response.data;
       if (responseCode === 401) {
         navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
       }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -139,6 +141,7 @@ export const CalculateNonFxDiscountingAPI = createAsyncThunk(
       const { responseCode } = response.data;
       if (responseCode === 401) {
         navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
       }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -197,6 +200,7 @@ export const CalculateForwardsAPI = createAsyncThunk(
       const { responseCode } = response.data;
       if (responseCode === 401) {
         navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
       }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));

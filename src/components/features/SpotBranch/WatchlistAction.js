@@ -26,6 +26,7 @@ export const GetFXInstrumentsAPI = createAsyncThunk(
       const { responseCode } = response.data;
       if (responseCode === 401) {
         navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
       }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -102,6 +103,7 @@ export const GetMisDataByRangeAPI = createAsyncThunk(
       const { responseCode } = response.data;
       if (responseCode === 401) {
         navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
       }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -234,9 +236,11 @@ export const GetAllCounterPartyDataAPI = createAsyncThunk(
       const { responseCode } = response.data;
       if (responseCode === 401) {
         navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
       }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        dispatch(GetAllCounterPartyDataAPI({ navigate , Data}));
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -310,6 +314,7 @@ export const GetDashboardDataAPI = createAsyncThunk(
       console.log(responseCode, "responseCoderesponseCode");
       if (responseCode === 401) {
         navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
       }
       if (responseCode === 417) {
         console.log(responseCode, "responseCoderesponseCode");
@@ -381,6 +386,7 @@ export const SaveUserDashboardAPI = createAsyncThunk(
       const { responseCode } = response.data;
       if (responseCode === 401) {
         navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
       }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));

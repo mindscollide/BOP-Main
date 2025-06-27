@@ -77,6 +77,21 @@
 }
 /* End Clear Rates Publish Button Dealer Bit Button */
 
+/* View Deal Button  */
+.viewDealBtn {
+  border-radius: 4px !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  position: relative !important;
+  transition: all 0.3s ease-in !important;
+  -webkit-transition: all 0.3s ease-in !important;
+  background: #f7f8ff !important;
+  border-color: #f7f8ff !important;
+  color: #000 !important;
+  padding: 0px 10px;
+  height: 35px !important;
+  font-family: "Poppins", sans-serif !important;
+}
 /* Start Plus Button Dealer Bit Button */
 .PlusButton {
   border-radius: 4px !important;
@@ -485,6 +500,7 @@
   height: auto !important;
   font-weight: 700;
   font-family: "POPPINS";
+  margin: 0 auto;
 }
 
 .authLoginBtn:hover {
@@ -671,3 +687,41 @@
   border-color: #feac78 !important;
 }
 /* End Save Button Setting Modaln */
+
+/* Start Accept Button View Deal Box */
+.AcceptBtnDealBox {
+  border-radius: 4px !important;
+  font-weight: 500 !important;
+  position: relative !important;
+  transition: all 0.3s ease-in !important;
+  font-family: "Poppins", sans-serif;
+  -webkit-transition: all 0.3s ease-in !important;
+  background: var(--color-secondary);
+  border-color: var(--color-secondary);
+  font-size: 1.25rem !important;
+  height: 44px;
+}
+.AcceptBtnDealBox:is(:hover) {
+  background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
+  border-color: #feac78 !important;
+}
+/* Stop Accept Button View Deal Box */
+
+/* Start Reject Button View Deal Box */
+.RejectBtnDealBox {
+  border-radius: 4px !important;
+  font-weight: 500 !important;
+  position: relative !important;
+  transition: all 0.3s ease-in !important;
+  font-family: "Poppins", sans-serif;
+  -webkit-transition: all 0.3s ease-in !important;
+  background: #dc3545;
+  border-color: #dc3545;
+  font-size: 1.25rem !important;
+  height: 44px;
+}
+.RejectBtnDealBox:is(:hover) {
+  background: #f85e35 !important;
+  border-color: #f85e35 !important;
+}
+/* Stop Reject Button View Deal Box */

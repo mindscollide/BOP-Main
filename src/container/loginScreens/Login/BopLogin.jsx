@@ -26,6 +26,9 @@ const BopLogin = () => {
     hasErrorOnUserName: false,
   });
   const [showPassowrd, setShowPassword] = useState(false);
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [userNameError, setUserNameError] = useState("");
   /**
    * Handles input field changes for email and password.
    * Validates email format and updates the credentials state.
@@ -70,11 +73,6 @@ const BopLogin = () => {
 
     // Validation for Corporate login (shouldIsCorporate === true)
     if (shouldIsCorporate) {
-      if (!hasEmailisValid) {
-        alert("Email is Not Valid");
-        return; // Early return to stop further execution
-      }
-
       if (email && password && !hasErrorOnEmail && !hasErrorOnPassword) {
         Data = {
           Email: email,
@@ -83,7 +81,12 @@ const BopLogin = () => {
           Device: "Browser",
         };
       } else {
-        alert("Please fill out all required fields.");
+        if (password === "") {
+          setPasswordError("Please enter a password.");
+        }
+        if (!hasEmailisValid) {
+          setEmailError("Enter a valid email address");
+        }
         return;
       }
 
@@ -108,7 +111,12 @@ const BopLogin = () => {
         // Dispatch the login API action for non-corporate user
         dispatch(loginInApi({ Data, navigate, shouldIsCorporate }));
       } else {
-        alert("Please fill out all required fields.");
+        if (password === "") {
+          setPasswordError("Please enter a password");
+        }
+        if (email === "") {
+          setUserNameError("Please enter a username");
+        }
         return;
       }
     }
@@ -158,32 +166,42 @@ const BopLogin = () => {
                     />
                   </InputGroup>
                   {crendentials.hasEmailisValid === false && (
-                    <p style={{ textAlign: "left" }}>"Email is Not Valid"</p>
+                    <p className='color-red fs-sm d-flex justify-content-start m-0'>
+                      {emailError}
+                    </p>
                   )}
                 </>
               ) : (
-                <InputGroup>
-                  <InputGroup.Text className={styles["Icon-Field-class"]}>
-                    <IconElement iconClass={"icon-user"} />
-                  </InputGroup.Text>
-                  <Form.Control
-                    name='email'
-                    autoComplete='off'
-                    className={styles["form-comtrol-textfield"]}
-                    placeholder='User Name'
-                    required
-                    value={crendentials.email}
-                    onChange={handleChangeFields}
-                    type='text'
-                    // pattern='^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-                    aria-label='email'
-                    maxLength={100}
-                    aria-describedby='basic-addon1'
-                  />
-                </InputGroup>
+                <>
+                  <InputGroup>
+                    <InputGroup.Text className={styles["Icon-Field-class"]}>
+                      <IconElement iconClass={"icon-user"} />
+                    </InputGroup.Text>
+                    <Form.Control
+                      name='email'
+                      autoComplete='off'
+                      className={styles["form-comtrol-textfield"]}
+                      placeholder='User Name'
+                      required
+                      value={crendentials.email}
+                      onChange={handleChangeFields}
+                      type='text'
+                      // pattern='^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+                      aria-label='email'
+                      maxLength={100}
+                      aria-describedby='basic-addon1'
+                    />
+                  </InputGroup>
+
+                  {crendentials.email === "" && (
+                    <p className='color-red fs-sm d-flex justify-content-start m-0'>
+                      {userNameError}
+                    </p>
+                  )}
+                </>
               )}
 
-              <InputGroup className='my-3'>
+              <InputGroup className='mt-3'>
                 <InputGroup.Text
                   id='basic-addon1'
                   className={styles["Icon-Field-class"]}>
@@ -217,11 +235,17 @@ const BopLogin = () => {
                   )}
                 </InputGroup.Text>
               </InputGroup>
+              {crendentials.password === "" && (
+                <p className='color-red fs-sm d-flex justify-content-start m-0'>
+                  {passwordError}
+                </p>
+              )}
 
               <CustomButton
                 value={"Login"}
                 onClick={handleSubmit}
                 applyClass={"authLoginBtn"}
+                className={"mt-3"}
               />
 
               {shouldIsCorporate && (
@@ -234,7 +258,8 @@ const BopLogin = () => {
                 </p>
               )}
             </section>
-          </Form>z
+          </Form>
+          z
         </Col>
       </Row>
     </section>
