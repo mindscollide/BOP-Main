@@ -21,8 +21,7 @@ const FwdCalculator = () => {
 
   // //Resulting Calculated value of Forwads
   const CalculatedForwards = useSelector(
-    (state) =>
-      state?.CalculatorReducer?.calculateForwardsData?.forwardRate || 0
+    (state) => state?.CalculatorReducer?.calculateForwardsData?.forwardRate || 0
   );
 
   //Local States
@@ -58,7 +57,7 @@ const FwdCalculator = () => {
               label: item.currency,
               value: item.ready,
             });
-            setPrice(item.ready)
+            setPrice(item.ready);
           }
           return {
             label: item.currency,
@@ -71,7 +70,6 @@ const FwdCalculator = () => {
       console.log(error);
     }
   }, [CurrencyData]);
-
 
   // Effect to update date whenever inputValue changes
   useEffect(() => {
@@ -86,7 +84,7 @@ const FwdCalculator = () => {
   //Handle onChange Currency
   const handleChangeCurrencyCalculator = (selected) => {
     setSelectedOption(selected);
-    setPrice(selected.value); 
+    setPrice(selected.value);
   };
 
   //Handle onChange Import Export
@@ -118,7 +116,6 @@ const FwdCalculator = () => {
     }
   };
 
-
   // Only allow numeric or decimal values handle change Ready
   const handleInputChange = (e) => {
     const val = e.target.value;
@@ -128,21 +125,47 @@ const FwdCalculator = () => {
     }
   };
 
-  // Only allow numeric input
+  // Only allow numeric input Tenor
   const handleInputChangeTenor = (e) => {
     const value = e.target.value;
-    // Only allow digits, optional negative sign at start
-    if (/^-?\d*$/.test(value)) {
-      setInputValue(value);
+
+    // Allow only digits and up to 4 characters
+    if (/^\d{0,4}$/.test(value)) {
+      const numericValue = parseInt(value, 10);
+
+      // Allow empty input (for typing) or numbers from 1 to 1000
+      if (value === "" || (numericValue >= 1 && numericValue <= 1000)) {
+        setInputValue(value);
+      }
     }
   };
 
   // Only allow numeric input Swap
+  // Only allow numeric input Swap
   const handleInputChangeSwap = (e) => {
     const value = e.target.value;
-    // Only allow digits, optional negative sign at start
-    if (/^-?\d*$/.test(value)) {
+
+    // Allow optional negative sign, up to 2 digits before decimal, up to 4 digits after decimal
+    if (/^-?\d{0,2}(\.\d{0,4})?$/.test(value)) {
       setSwapValue(value);
+    }
+  };
+
+  // Handle Change Ready Value
+  const handleReadyValue = (e) => {
+    const value = e.target.value;
+
+    // Match format: up to 4 digits before decimal, up to 4 digits after
+    if (/^\d{0,4}(\.\d{0,4})?$/.test(value)) {
+      const [integerPart] = value.split(".");
+
+      // Allow empty string (for typing) or numeric part between 1 and 1000
+      if (
+        value === "" ||
+        (parseInt(integerPart, 10) >= 1 && parseInt(integerPart, 10) <= 1000)
+      ) {
+        setPrice(value);
+      }
     }
   };
 
@@ -203,6 +226,7 @@ const FwdCalculator = () => {
                 defaultValue="285.2635"
                 value={price}
                 applyClass={"CalculatorTextfield"}
+                onChange={handleReadyValue}
               />
 
               <label className="mt-1">Tenor</label>
