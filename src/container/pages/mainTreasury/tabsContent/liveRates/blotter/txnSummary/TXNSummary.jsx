@@ -24,6 +24,9 @@ import {
   BlotterDataAPI,
   AcceptTransactionAPI,
   RejectTransactionAPI,
+  AcceptRFQTransaction,
+  RejectRFQTransaction,
+  RequestCancellation,
 } from "../BlotterActions";
 const TXNSummary = () => {
   const dispatch = useDispatch();
@@ -803,6 +806,20 @@ const TXNSummary = () => {
     setInfoRecord(record);
     dispatch(setTransactionInfoModal(true));
   };
+
+  const handleCheckerAccept = (transactionID, type) => {
+    if (type === "Accepted") {
+      let Data = { PK_TransactionID: transactionID };
+      dispatch(AcceptRFQTransaction({ Data, navigate }));
+    } else if (type === "Rejected") {
+      let Data = { PK_TransactionID: transactionID, Comment: "Hello" };
+      dispatch(RejectRFQTransaction({ Data, navigate }));
+    } else if (type === "Cancelled") {
+      let Data = { PK_TransactionID: transactionID, Comment: "Hello" };
+      dispatch(RequestCancellation({ Data, navigate }));
+    }
+  };
+
   const Treasurycolumns = [
     {
       title: (
@@ -1685,14 +1702,34 @@ const TXNSummary = () => {
         return (
           <>
             <div className='col-action text-nowrap text-center'>
-              <CustomButton
-                icon={<i className='icon-check'></i>}
-                className='btn btn-sm btn-success me-1 blotterCheckerButton'
-              />
-              <CustomButton
-                icon={<i className='icon-trash'></i>}
-                className='btn btn-sm btn-danger me-1 blotterCheckerButton '
-              />
+              {record.statusID === 4 && record.isRFQ === true ? (
+                <>
+                  <CustomButton
+                    icon={<i className='icon-check'></i>}
+                    className='btn btn-sm btn-success me-1 blotterCheckerButton'
+                    onClick={() =>
+                      handleCheckerAccept(record.pK_TransactionID, "Accepted")
+                    }
+                  />
+                  <CustomButton
+                    icon={<i className='icon-trash'></i>}
+                    className='btn btn-sm btn-danger me-1 blotterCheckerButton '
+                    onClick={() =>
+                      handleCheckerAccept(record.pK_TransactionID, "Rejected")
+                    }
+                  />
+                </>
+              ) : record.statusID === 1 && record.isRFQ === true ? (
+                <>
+                  <CustomButton
+                    icon={<i className='icon-close'></i>}
+                    className='btn btn-sm btn-danger me-1 blotterCheckerButton '
+                    onClick={() =>
+                      handleCheckerAccept(record.pK_TransactionID, "Cancelled")
+                    }
+                  />
+                </>
+              ) : null}
             </div>
           </>
         );
@@ -1993,6 +2030,9 @@ const TXNSummary = () => {
       dataIndex: "rate",
       className: "ff-poppins fw-bold",
       width: 80,
+      render: (text, record) => {
+        return text.toFixed(2);
+      },
     },
     {
       title: (
@@ -2229,7 +2269,7 @@ const TXNSummary = () => {
             ? CorporateColumn
             : Treasurycolumns
         }
-        scroll={{ x: "scroll", y: 300 }}
+        scroll={{ x: "max-content", y: 300 }}
       />
       <CommentModal
         comment={comment}

@@ -8,10 +8,13 @@ import CustomButton from "@/components/common/globalButton/button";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { setViewDealModal } from "@/store/modalSlice/modalSlicer";
+import { RFQTransactionQuotation } from "@/container/pages/mainTreasury/tabsContent/liveRates/blotter/BlotterActions";
+import { useNavigate } from "react-router-dom";
 
-const DealViewModal = ({dealData}) => {
-  console.log(dealData, "dealDatadealData")
-  const dispatch = useDispatch()
+const DealViewModal = ({ dealData }) => {
+  console.log(dealData, "dealDatadealData");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [bid, setBid] = useState("");
   const [offer, setOffer] = useState("");
   const viewDealModal = useSelector(
@@ -20,17 +23,38 @@ const DealViewModal = ({dealData}) => {
 
   const closeModal = () => {
     dispatch(setViewDealModal(false));
-  }
+  };
   useEffect(() => {
-    if(dealData !== null) {
+    if (dealData !== null) {
       setBid(dealData?.bid);
       setOffer(dealData?.offer);
     }
     return () => {
       setBid("");
       setOffer("");
+    };
+  }, [dealData]);
+
+  const handleChangeRate = (event, type) => {
+    if(type === "bid") {
+      setBid(event.target.value);
+    } else {
+      setOffer(event.target.value);
     }
-  } ,[dealData])
+
+  }
+
+  const handleSubmit = () => {
+    // scenario is if side is "buy" then bid should be disabled and offer should be enabled
+    // RFQTransactionQuotation
+    // RFQForwardTransactionQuotation
+    // RFQFEDiscountingTransactionQuotation
+    // RFQNonFEDiscountingTransactionQuotation
+    let Data = { PK_TransactionID: dealData?.pK_TransactionID, Rate: Number(offer) };
+    dispatch(RFQTransactionQuotation({ navigate, Data }));
+  };
+
+  const handleCancel = () => {};
   if (!viewDealModal) return null;
   return (
     <GlobalModal
@@ -48,23 +72,31 @@ const DealViewModal = ({dealData}) => {
               <Row>
                 <Col sm={12} md={12} lg={12}>
                   <label className={styles["DealViewModal__label"]}>Side</label>
-                  <p className={styles["DealViewModal__value"]}>{dealData?.side}</p>
+                  <p className={styles["DealViewModal__value"]}>
+                    {dealData?.side}
+                  </p>
                 </Col>
                 <Col sm={12} md={12} lg={12}>
                   <label className={styles["DealViewModal__label"]}>
                     Nature
                   </label>
-                  <p className={styles["DealViewModal__value"]}>{dealData?.nature}</p>
+                  <p className={styles["DealViewModal__value"]}>
+                    {dealData?.nature}
+                  </p>
                 </Col>
                 <Col sm={12} md={12} lg={12}>
                   <label className={styles["DealViewModal__label"]}>CCY1</label>
-                  <p className={styles["DealViewModal__value"]}>{dealData?.ccY1}</p>
+                  <p className={styles["DealViewModal__value"]}>
+                    {dealData?.ccY1}
+                  </p>
                 </Col>
                 <Col sm={12} md={12} lg={12}>
                   <label className={styles["DealViewModal__label"]}>
                     Amount
                   </label>
-                  <p className={styles["DealViewModal__value"]}>{dealData?.quantity}</p>
+                  <p className={styles["DealViewModal__value"]}>
+                    {dealData?.quantity}
+                  </p>
                 </Col>
                 <Col sm={12} md={12} lg={12}>
                   <label className={styles["DealViewModal__label"]}>CCY2</label>
@@ -74,19 +106,25 @@ const DealViewModal = ({dealData}) => {
                   <label className={styles["DealViewModal__label"]}>
                     Amount
                   </label>
-                  <p className={styles["DealViewModal__value"]}>{dealData?.amount}</p>
+                  <p className={styles["DealViewModal__value"]}>
+                    {dealData?.amount}
+                  </p>
                 </Col>
                 <Col sm={12} md={12} lg={12}>
                   <label className={styles["DealViewModal__label"]}>
                     LC No.
                   </label>
-                  <p className={styles["DealViewModal__value"]}>{dealData?.lcNumber}</p>
+                  <p className={styles["DealViewModal__value"]}>
+                    {dealData?.lcNumber}
+                  </p>
                 </Col>
                 <Col sm={12} md={12} lg={12}>
                   <label className={styles["DealViewModal__label"]}>
                     Account No.
                   </label>
-                  <p className={styles["DealViewModal__value"]}>{dealData?.accountNumber}</p>
+                  <p className={styles["DealViewModal__value"]}>
+                    {dealData?.accountNumber}
+                  </p>
                 </Col>
               </Row>
             </Col>
@@ -97,7 +135,9 @@ const DealViewModal = ({dealData}) => {
               className={styles["DealViewModal_SecondSide"]}>
               <Row className='mb-5'>
                 <Col sm={10} md={10} lg={10}>
-                  <p className={styles["PartyName"]}>{dealData?.corporateName}</p>
+                  <p className={styles["PartyName"]}>
+                    {dealData?.corporateName}
+                  </p>
                   <span>{dealData?.txnid}</span>
                 </Col>
                 <Col
@@ -105,7 +145,10 @@ const DealViewModal = ({dealData}) => {
                   md={2}
                   lg={2}
                   className='d-flex justify-content-center'>
-                  <IconElement onClick={closeModal} iconClass={"icon-close fs-4 cursor-pointer"} />
+                  <IconElement
+                    onClick={closeModal}
+                    iconClass={"icon-close fs-4 cursor-pointer"}
+                  />
                 </Col>
               </Row>
               <Row className='mt-5'>
@@ -114,8 +157,11 @@ const DealViewModal = ({dealData}) => {
                     <label className={styles["DealViewModal_label"]}>Bid</label>
                     <InputFIeld
                       applyClass={"DealBoxBitInput"}
-                      disabled={dealData.side.toLowerCase() === "side" ? false : true}
+                      disabled={
+                        dealData.side.toLowerCase() === "side" ? false : true
+                      }
                       value={bid}
+                      onChange={(e) => handleChangeRate(e, "bid")}
                     />
                   </div>
                 </Col>
@@ -126,8 +172,11 @@ const DealViewModal = ({dealData}) => {
                     </label>
                     <InputFIeld
                       applyClass={"DealBoxOfferInput"}
-                      disabled={dealData.side.toLowerCase() === "buy" ? false : true}
+                      disabled={
+                        dealData.side.toLowerCase() === "buy" ? false : true
+                      }
                       value={offer}
+                      onChange={(e) => handleChangeRate(e, "offer")}
                     />
                   </div>
                 </Col>
@@ -144,6 +193,7 @@ const DealViewModal = ({dealData}) => {
                     value={"Submit"}
                     applyClass={"AcceptBtnDealBox"}
                     className={"px-4"}
+                    onClick={handleSubmit}
                   />
                   <CustomButton
                     value={"Cancel"}

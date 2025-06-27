@@ -6,7 +6,10 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import ChatBox from "@/components/features/chatBox/ChatBox";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { getAllInstrumentsApi } from "@/components/utils/globalApis";
+import {
+  getAllActiveCorporatesApi,
+  getAllInstrumentsApi,
+} from "@/components/utils/globalApis";
 import { useMqttClient } from "@/components/utils/mqttConnection";
 
 import {
@@ -126,6 +129,9 @@ const Dashboard = () => {
     }
     if (IsCorporate || IsBranch) {
       dispatch(GetAllNatureOfTransactionsApi({ navigate }));
+      if (IsBranch) {
+        dispatch(getAllActiveCorporatesApi({ navigate }));
+      }
     }
 
     dispatch(getAllInstrumentsApi({ navigate }));
@@ -140,7 +146,6 @@ const Dashboard = () => {
           <Outlet />
           <AnimatePresence>{dealMoalRequest && <DealBox />}</AnimatePresence>
 
-        
           {chatModal && <ChatBox />}
         </main>
       </Content>

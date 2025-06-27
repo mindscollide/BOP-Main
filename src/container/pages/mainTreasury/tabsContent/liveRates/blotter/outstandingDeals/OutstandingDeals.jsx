@@ -743,8 +743,23 @@ const OutstandingDeals = () => {
   const openViewDeal = (record) => {
     dispatch(setViewDealModal(true));
     setDealData(record);
-  }
-
+  };
+  const acceptTransaction = (record) => {
+    dispatch(
+      AcceptTransactionAPI({
+        navigate,
+        Data: { PK_TransactionID: record.pK_TransactionID },
+      })
+    );
+  };
+  const rejectTransaction = (record) => {
+    dispatch(
+      RejectTransactionAPI({
+        navigate,
+        Data: { PK_TransactionID: record.pK_TransactionID },
+      })
+    );
+  };
   const columns = [
     // TXNID
     {
@@ -1216,7 +1231,7 @@ const OutstandingDeals = () => {
                     <CustomButton
                       icon={<i className='icon-open '></i>}
                       className='btn btn-sm btn-primary'
-                      onClick={ () => openViewDeal(record)}
+                      onClick={() => openViewDeal(record)}
                     />
                   </>
                 ) : (
@@ -1224,10 +1239,12 @@ const OutstandingDeals = () => {
                     <CustomButton
                       icon={<i className='icon-check'></i>}
                       className='btn btn-sm btn-success '
+                      onClick={() => acceptTransaction(record)}
                     />
                     <CustomButton
                       icon={<i className='icon-close '></i>}
                       className='btn btn-sm btn-danger '
+                      onClick={() => rejectTransaction(record)}
                     />
                   </>
                 )}
@@ -1321,7 +1338,7 @@ const OutstandingDeals = () => {
         columns={columns}
         scroll={{ x: "max-content", y: 300 }}
       />
-      <DealViewModal dealData={dealData} />
+      <DealViewModal dealData={dealData}  />
       <CommentModal
         comment={comment}
         setShowCommentModal={setShowCommentModal}

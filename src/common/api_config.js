@@ -1,273 +1,301 @@
-const loginRequestMethod = {
+export const loginRequestMethod = {
   RequestMethod: "ServiceManager.Login",
 };
 
-const corporateUserRequestMethod = {
+export const corporateUserRequestMethod = {
   RequestMethod: "ServiceManager.CorporateUserLogin",
 };
 
-const sendEmailForResetPaswordRM = {
+export const sendEmailForResetPaswordRM = {
   RequestMethod: "ServiceManager.SendEmailForResetPasword",
 };
 
-const refreshTokenRM = {
+export const refreshTokenRM = {
   RequestMethod: "ServiceManager.RefreshToken",
 };
 
-const clearRatesRM = {
+export const clearRatesRM = {
   RequestMethod: "ServiceManager.ClearRates",
 };
 
-const marketOnOffRM = {
+export const marketOnOffRM = {
   RequestMethod: "ServiceManager.MarketONOFF",
 };
 
-const getLastAndCurrentUSDRatesRM = {
+export const getLastAndCurrentUSDRatesRM = {
   RequestMethod: "ServiceManager.GetTheLastAndCurrentPublishUSDRates",
 };
 
-const publishCurrentUSDRatesRM = {
+export const publishCurrentUSDRatesRM = {
   RequestMethod: "ServiceManager.PublishTheCurrentUSDRates",
 };
 
-const createTenorRM = {
+export const createTenorRM = {
   RequestMethod: "ServiceManager.CreateTenor",
 };
 
-const getAllTenorsRM = {
+export const getAllTenorsRM = {
   RequestMethod: "ServiceManager.GetAllTenors",
 };
 
-const getTenorWiseForwardRatesRM = {
+export const getTenorWiseForwardRatesRM = {
   RequestMethod: "ServiceManager.GetTenorWiseForwardRates",
 };
 
-const publishTenorWiseForwardRatesRM = {
+export const publishTenorWiseForwardRatesRM = {
   RequestMethod: "ServiceManager.PublishTenorWiseForwardRates",
 };
 
-const getDiscountingRatesRM = {
+export const getDiscountingRatesRM = {
   RequestMethod: "ServiceManager.GetDiscountingRates",
 };
 
-const publishDiscountingRatesRM = {
+export const publishDiscountingRatesRM = {
   RequestMethod: "ServiceManager.PublishDiscountingRates",
 };
 
-const GetFXInstruments = {
+export const GetFXInstruments = {
   RequestMethod: "ServiceManager.GetFXInstruments",
 };
 
-const GetMisDataByRange = {
+export const GetMisDataByRange = {
   RequestMethod: "ServiceManager.GetMisDataByRange",
 };
 
-const GetAllFowardsAndDiscountsRates = {
+export const GetAllFowardsAndDiscountsRates = {
   RequestMethod: "ServiceManager.GetAllFowardsAndDiscountsRates",
 };
 
-const GetDashboardData = {
+export const GetDashboardData = {
   RequestMethod: "ServiceManager.GetDashboardData",
 };
 
-const SaveUserDashboard = {
+export const SaveUserDashboard = {
   RequestMethod: "ServiceManager.SaveUserDashboard",
 };
 
-const ViewAllNatureOfBussiness = {
+export const ViewAllNatureOfBussiness = {
   RequestMethod: "ServiceManager.ViewAllNatureOfBussiness",
 };
 
-const BlotterDataRM = {
+export const BlotterDataRM = {
   RequestMethod: "ServiceManager.GetBlotterData",
 };
 
-const GetBlotterOutstandingDealsDataRM = {
+export const GetBlotterOutstandingDealsDataRM = {
   RequestMethod: "ServiceManager.GetBlotterOutstandingDealsData",
 };
-const GetAllCounterPartyDataRM = {
+export const GetAllCounterPartyDataRM = {
   RequestMethod: "ServiceManager.GetAllCounterPartyData",
 };
 
-const getAllCategoriesRM = {
+export const getAllCategoriesRM = {
   RequestMethod: "ServiceManager.GetAllCategories",
 };
 
-const SaveTransactionRFQ = {
+export const SaveTransactionRFQ = {
   RequestMethod: "ServiceManager.SaveTransactionRFQ",
 };
 
-const DownloadFile = {
+export const DownloadFile = {
   RequestMethod: "DownloadFile",
 };
 
-const validateLinkForCorporatePasswordRM = {
+export const validateLinkForCorporatePasswordRM = {
   RequestMethod: "ServiceManager.ValidateLinkForCorporatePassword",
 };
 
-const createCorporateUserPasswordRM = {
+export const createCorporateUserPasswordRM = {
   RequestMethod: "ServiceManager.CreateCorporateUserPassword",
 };
 
 // Calculator Data
-const getAllCalculatorData = {
+export const getAllCalculatorData = {
   RequestMethod: "ServiceManager.GetCalculatorData",
 };
 
 // Calculator Fx Discounting
-const calculateFxDiscountingData = {
+export const calculateFxDiscountingData = {
   RequestMethod: "ServiceManager.CalculateFxDiscounting",
 };
 
 // Calculator NonFx Discounting
-const calculateNonFxDiscountingData = {
+export const calculateNonFxDiscountingData = {
   RequestMethod: "ServiceManager.CalculateNonFxDiscounting",
 };
 
 // Calculator Forwards
-const calculateForwardsData = {
+export const calculateForwardsData = {
   RequestMethod: "ServiceManager.CalculateForward",
 };
 
-const getUserSettingsRM = {
+export const getUserSettingsRM = {
   RequestMethod: "ServiceManager.GetUserSettings",
 };
 
-const updateUserSettingsRM = {
+export const updateUserSettingsRM = {
   RequestMethod: "ServiceManager.UpdateUserSettings",
 };
 
-const getMarketingTimingRM = {
+export const getMarketingTimingRM = {
   RequestMethod: "ServiceManager.GetMarketTimeSettings",
 };
 
-const LogoutRM = {
+export const LogoutRM = {
   RequestMethod: "ServiceManager.LogOut",
 };
 
-const getChatByTransactionIdRM = {
+export const getChatByTransactionIdRM = {
   RequestMethod: "ServiceManager.GetAllChatByTransactionID",
 };
 
-const saveChatRM = {
+export const saveChatRM = {
   RequestMethod: "ServiceManager.SaveChat",
 };
 
-const UploadDocumentRM = {
+export const UploadDocumentRM = {
   RequestMethod: "ServiceManager.UploadDocuments",
 };
 
-const DownloadFileRM = {
+export const DownloadFileRM = {
   RequestMethod: "ServiceManager.DownloadFile",
 };
 
-const GetFeDiscountingRM = {
+export const GetFeDiscountingRM = {
   RequestMethod: "ServiceManager.GetFEDiscountingRates",
 };
 
-const PublishFeDiscountingRM = {
+export const PublishFeDiscountingRM = {
   RequestMethod: "ServiceManager.PublishFEDiscountingRates",
 };
 
-const GetNonFeDiscountingRatesRM = {
+export const GetNonFeDiscountingRatesRM = {
   RequestMethod: "ServiceManager.GetNonFEDiscountingRates",
 };
 
-const PublishNonFeDiscountingRatesRM = {
+export const PublishNonFeDiscountingRatesRM = {
   RequestMethod: "ServiceManager.PublishNonFEDiscountingRates",
 };
 
-const getDealerDasboardDataRM = {
+export const getDealerDasboardDataRM = {
   RequestMethod: "ServiceManager.GetDealerDashboardData",
 };
 
-const GetAllInstrumentsRM = {
+export const GetAllInstrumentsRM = {
   RequestMethod: "ServiceManager.GetAllInstruments",
 };
 
-const GetAllNatureOfTransactionsRM = {
+export const GetAllNatureOfTransactionsRM = {
   RequestMethod: "ServiceManager.GetAllNatureOfTransactions",
 };
 
-const SaveSpotTransactionRM = {
+export const SaveSpotTransactionRM = {
   RequestMethod: "ServiceManager.SaveSpotTransaction",
 };
 
-const SaveForwardTransactionRM = {
+export const SaveForwardTransactionRM = {
   RequestMethod: "ServiceManager.SaveForwardTransaction",
 };
-const SaveFEDiscountingTransactionRM = {
+export const SaveFEDiscountingTransactionRM = {
   RequestMethod: "ServiceManager.SaveFEDiscountingTransaction",
 };
 
-const SaveNonFeDiscountingTransactionRM = {
+export const SaveNonFeDiscountingTransactionRM = {
   RequestMethod: "ServiceManager.SaveNonFEDiscountingTransaction",
 };
 
-const AssignTransactionRM = {
+export const AssignTransactionRM = {
   RequestMethod: "ServiceManager.AssignTransaction",
 };
 
-const AcceptTransactionRM = {
+export const AcceptTransactionRM = {
   RequestMethod: "ServiceManager.AcceptTransaction",
 };
 
-const RejectTransactionRM = {
+export const RejectTransactionRM = {
   RequestMethod: "ServiceManager.RejectTransaction",
 };
-export {
-  RejectTransactionRM,
-  AcceptTransactionRM,
-  AssignTransactionRM,
-  SaveNonFeDiscountingTransactionRM,
-  SaveFEDiscountingTransactionRM,
-  SaveForwardTransactionRM,
-  SaveSpotTransactionRM,
-  GetBlotterOutstandingDealsDataRM,
-  GetAllNatureOfTransactionsRM,
-  GetAllInstrumentsRM,
-  getDealerDasboardDataRM,
-  GetFeDiscountingRM,
-  PublishFeDiscountingRM,
-  GetNonFeDiscountingRatesRM,
-  PublishNonFeDiscountingRatesRM,
-  DownloadFileRM,
-  UploadDocumentRM,
-  saveChatRM,
-  getChatByTransactionIdRM,
-  LogoutRM,
-  getUserSettingsRM,
-  updateUserSettingsRM,
-  getMarketingTimingRM,
-  validateLinkForCorporatePasswordRM,
-  createCorporateUserPasswordRM,
-  getAllCategoriesRM,
-  clearRatesRM,
-  loginRequestMethod,
-  corporateUserRequestMethod,
-  sendEmailForResetPaswordRM,
-  marketOnOffRM,
-  getLastAndCurrentUSDRatesRM,
-  publishCurrentUSDRatesRM,
-  createTenorRM,
-  getAllTenorsRM,
-  getTenorWiseForwardRatesRM,
-  publishTenorWiseForwardRatesRM,
-  getDiscountingRatesRM,
-  publishDiscountingRatesRM,
-  GetFXInstruments,
-  GetMisDataByRange,
-  GetAllFowardsAndDiscountsRates,
-  GetDashboardData,
-  SaveUserDashboard,
-  ViewAllNatureOfBussiness,
-  BlotterDataRM,
-  refreshTokenRM,
-  GetAllCounterPartyDataRM,
-  SaveTransactionRFQ,
-  DownloadFile,
-  getAllCalculatorData,
-  calculateFxDiscountingData,
-  calculateNonFxDiscountingData,
-  calculateForwardsData,
+
+
+
+export const AcceptTransactionCancellationRM = {
+  RequestMethod: "ServiceManager.AcceptTransactionCancellationRequest",
 };
+
+export const RejectTransactionCancellationRM = {
+  RequestMethod: "ServiceManager.RejectTransactionCancellationRequest",
+};
+
+export const CancelTransactionRM = {
+  RequestMethod: "ServiceManager.CancelTransaction",
+};
+
+export const RequestCancellationRM = {
+  RequestMethod: "ServiceManager.RequestCancellation",
+};
+
+export const AcceptRFQTransactionRM = {
+  RequestMethod: "ServiceManager.AcceptRFQTransaction",
+};
+
+export const RejectRFQTransactionRM = {
+  RequestMethod: "ServiceManager.RejectRFQTransaction",
+};
+
+export const SaveSpotTransactionRFQRM = {
+  RequestMethod: "ServiceManager.SaveSpotTransactionRFQ",
+};
+
+export const SaveForwardTransactionRFQRM = {
+  RequestMethod: "ServiceManager.SaveForwardTransactionRFQ",
+};
+
+export const SaveFEDiscountingTransactionRFQRM = {
+  RequestMethod: "ServiceManager.SaveFEDiscountingTransactionRFQ",
+};
+
+export const SaveNonFEDiscountingTransactionRFQRM = {
+  RequestMethod: "ServiceManager.SaveNonFEDiscountingTransactionRFQ",
+};
+
+export const RFQTransactionQuotationRM = {
+  RequestMethod: "ServiceManager.RFQTransactionQuotation",
+};
+
+export const RFQForwardTransactionQuotationRM = {
+  RequestMethod: "ServiceManager.RFQForwardTransactionQuotation",
+};
+
+export const RFQFEDiscountingTransactionQuotationRM = {
+  RequestMethod: "ServiceManager.RFQFEDiscountingTransactionQuotation",
+};
+
+export const RFQNonFEDiscountingTransactionQuotationRM = {
+  RequestMethod: "ServiceManager.RFQNonFEDiscountingTransactionQuotation",
+};
+
+export const ExpireRFQTransactionRM = {
+  RequestMethod: "ServiceManager.ExpireRFQTransaction",
+};
+
+export const GetSpotTransactionDetailsRM = {
+  RequestMethod: "ServiceManager.GetSpotTransactionDetails",
+};
+
+export const GetForwardTransactionDetailsRM = {
+  RequestMethod: "ServiceManager.GetForwardTransactionDetails",
+};
+
+export const GetFEDiscountingTransactionDetailsRM = {
+  RequestMethod: "ServiceManager.GetFEDiscountingTransactionDetails",
+};
+
+export const GetNonFEDiscountingTransactionDetailsRM = {
+  RequestMethod: "ServiceManager.GetNonFEDiscountingTransactionDetails",
+};
+
+export const GetActiveCorporatesRM = {
+  RequestMethod: "ServiceManager.GetActiveCorporates"
+}
+
+

@@ -7,6 +7,7 @@ import { resetAndForgotPassword } from "../../container/loginScreens/forgetPassw
 import { setCustomHeaders } from "@/common/utils";
 import { refreshTokenAction } from "../../container/loginScreens/authActions/refreshToken";
 import {
+  getAllActiveCorporatesApi,
   getAllCategoriesAction,
   getAllInstrumentsApi,
 } from "@/components/utils/globalApis";
@@ -32,6 +33,7 @@ const authSlice = createSlice({
     logout: null,
     getAllInstruments: null,
     GetAllNatureOfTransactions: null,
+    GetAllActiveCorproates: null,
   },
   reducers: {
     clearAuthResponseMessage: (state) => {
@@ -200,6 +202,19 @@ const authSlice = createSlice({
       .addCase(GetAllNatureOfTransactionsApi.rejected, (state, { payload }) => {
         state.Loader = false;
         state.GetAllNatureOfTransactions = null;
+        state.responseMessage = payload;
+      })
+      .addCase(getAllActiveCorporatesApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(getAllActiveCorporatesApi.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.GetAllActiveCorproates = payload.response;
+        state.responseMessage = payload.message;
+      })
+      .addCase(getAllActiveCorporatesApi.rejected, (state, { payload }) => {
+        state.Loader = false;
+        state.GetAllActiveCorproates = null;
         state.responseMessage = payload;
       });
   },

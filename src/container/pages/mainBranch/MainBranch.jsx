@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { setActiveTab } from "../mainCorporate/rfqModal/RFQSlicer";
 import { useDispatch } from "react-redux";
 import BlotterHeader from "../mainTreasury/tabsContent/liveRates/blotter/blotterHeader/BlotterHeader";
+import TXNSummary from "../mainTreasury/tabsContent/liveRates/blotter/txnSummary/TXNSummary";
 
 // Conditionally import CustomButton based on the environment variables
 const shouldIncludeComponents =
@@ -39,33 +40,39 @@ const MainBranch = () => {
   const tabsData = [
     {
       title: "Spot",
-      content: SpotBranch && (
-        <Suspense fallback={<>Loading Spot...</>}>
-          <SpotBranch />
-        </Suspense>
-      ),
+      content:
+        SpotBranch && activeTab === "Spot" ? (
+          <Suspense fallback={<>Loading Spot...</>}>
+            <SpotBranch />
+            <section className='bg-white mt-2 p-2'>
+              <BlotterHeader />
+            </section>
+          </Suspense>
+        ) : null,
     },
     {
       title: "Forwards",
-      content: ForwardTableBranchComponent && (
-        <Suspense fallback={<>Loading Forwards.... </>}>
-          <ForwardTableBranchComponent />
-          <section className='bg-white p-2'>
-            <BlotterHeader />
-          </section>
-        </Suspense>
-      ),
+      content:
+        ForwardTableBranchComponent && activeTab === "Forwards" ? (
+          <Suspense fallback={<>Loading Forwards.... </>}>
+            <ForwardTableBranchComponent />
+            <section className='bg-white p-2'>
+              <BlotterHeader />
+            </section>
+          </Suspense>
+        ) : null,
     },
     {
       title: "Discounting",
-      content: BranchDiscountingTable && (
-        <Suspense fallback={<>Loading Discounting...</>}>
-          <BranchDiscountingTable />
-          <section className='bg-white p-2'>
-            <BlotterHeader />
-          </section>
-        </Suspense>
-      ),
+      content:
+        BranchDiscountingTable && activeTab === "Discounting" ? (
+          <Suspense fallback={<>Loading Discounting...</>}>
+            <BranchDiscountingTable />
+            <section className='bg-white p-2'>
+              <TXNSummary />
+            </section>
+          </Suspense>
+        ) : null,
     },
   ];
   return (

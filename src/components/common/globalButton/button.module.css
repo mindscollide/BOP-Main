@@ -696,14 +696,16 @@
   transition: all 0.3s ease-in !important;
   font-family: "Poppins", sans-serif;
   -webkit-transition: all 0.3s ease-in !important;
+  background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
+  border-color: #feac78 !important;
   background: var(--color-secondary);
   border-color: var(--color-secondary);
   font-size: 1.25rem !important;
   height: 44px;
 }
 .AcceptBtnDealBox:is(:hover) {
-  background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
-  border-color: #feac78 !important;
+  background: var(--color-secondary) !important;
+  border-color: var(--color-secondar) !important;
 }
 /* Stop Accept Button View Deal Box */
 
@@ -715,17 +717,17 @@
   transition: all 0.3s ease-in !important;
   font-family: "Poppins", sans-serif;
   -webkit-transition: all 0.3s ease-in !important;
-  background: #dc3545;
-  border-color: #dc3545;
+  -webkit-transition: all 0.3s ease-in !important;
+  background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
   font-size: 1.25rem !important;
   height: 44px;
 }
 .RejectBtnDealBox:is(:hover) {
-  background: #f85e35 !important;
-  border-color: #f85e35 !important;
+  background: var(--color-secondary) !important;
+  border-color: var(--color-secondar) !important;
 }
 /* Stop Reject Button View Deal Box */
-.ActionButton .ant-btn.ant-btn-icon-only  {
+.ActionButton .ant-btn.ant-btn-icon-only {
   max-width: 20px !important;
   max-height: 20px !important;
   display: flex;

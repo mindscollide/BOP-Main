@@ -3,6 +3,7 @@ import {
   AssignTransactionAPI,
   BlotterDataAPI,
   GetBlotterOutstandingDealsDataAPI,
+  RFQTransactionQuotation,
   RejectTransactionAPI,
   SaveFEDiscountingTransactionAPI,
   SaveForwardTransactionAPI,
@@ -26,6 +27,7 @@ const BlotterSlicer = createSlice({
     assignTransaction: null,
     acceptTransaction: null,
     rejectedTransaction: null,
+    rfqSaveQuotation: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -185,6 +187,22 @@ const BlotterSlicer = createSlice({
         state.Loader = false;
         state.error = action.payload;
         state.rejectedTransaction = null;
+      })
+      .addCase(RFQTransactionQuotation.pending, (state) => {
+        state.Loader = true;
+        state.error = null;
+      })
+      .addCase(RFQTransactionQuotation.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.rfqSaveQuotation = payload.response;
+        state.error = null;
+        state.responseMessage = payload.message;
+      })
+      .addCase(RFQTransactionQuotation.rejected, (state, action) => {
+        console.log(action, "actionaction");
+        state.Loader = false;
+        state.error = action.payload;
+        state.rfqSaveQuotation = null;
       });
   },
 });

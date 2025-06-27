@@ -1,11 +1,30 @@
 import {
+  AcceptRFQTransactionRM,
+  AcceptTransactionCancellationRM,
   AcceptTransactionRM,
   AssignTransactionRM,
   BlotterDataRM,
+  CancelTransactionRM,
+  ExpireRFQTransactionRM,
   GetBlotterOutstandingDealsDataRM,
+  GetFEDiscountingTransactionDetailsRM,
+  GetForwardTransactionDetailsRM,
+  GetNonFEDiscountingTransactionDetailsRM,
+  GetSpotTransactionDetailsRM,
+  RFQFEDiscountingTransactionQuotationRM,
+  RFQForwardTransactionQuotationRM,
+  RFQNonFEDiscountingTransactionQuotationRM,
+  RFQTransactionQuotationRM,
+  RejectRFQTransactionRM,
+  RejectTransactionCancellationRM,
   RejectTransactionRM,
+  RequestCancellationRM,
+  SaveFEDiscountingTransactionRFQRM,
+  SaveForwardTransactionRFQRM,
   SaveForwardTransactionRM,
+  SaveNonFEDiscountingTransactionRFQRM,
   SaveNonFeDiscountingTransactionRM,
+  SaveSpotTransactionRFQRM,
   SaveSpotTransactionRM,
 } from "@/common/api_config";
 import { BlotterApi } from "@/common/apiend_points";
@@ -697,6 +716,1467 @@ export const RejectTransactionAPI = createAsyncThunk(
       }
     } catch (error) {
       return rejectWithValue("Error rejecting transaction");
+    }
+  }
+);
+
+export const AcceptTransactionCancellationRequest = createAsyncThunk(
+  "Blotter/AcceptTransactionCancellationRequest",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      const postAPI = createPostAPI(
+        BlotterApi,
+        AcceptTransactionCancellationRM.RequestMethod
+      );
+      const response = await postAPI(Data);
+      const { responseCode } = response.data;
+
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access");
+      }
+
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(AcceptTransactionCancellationRequest({ navigate, Data }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          return {
+            response: response.data.responseResult,
+            message: "Cancellation request accepted successfully",
+          };
+        } else {
+          return rejectWithValue(responseMessage || "Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      return rejectWithValue("Error accepting transaction cancellation");
+    }
+  }
+);
+
+export const RejectTransactionCancellationRequest = createAsyncThunk(
+  "Blotter/RejectTransactionCancellationRequest",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      const postAPI = createPostAPI(
+        BlotterApi,
+        RejectTransactionCancellationRM.RequestMethod
+      );
+      const response = await postAPI(Data);
+      const { responseCode } = response.data;
+
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access");
+      }
+
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(RejectTransactionCancellationRequest({ navigate, Data }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          return {
+            response: response.data.responseResult,
+            message: "Cancellation request rejected successfully",
+          };
+        } else {
+          return rejectWithValue(responseMessage || "Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      return rejectWithValue("Error rejecting transaction cancellation");
+    }
+  }
+);
+
+export const CancelTransaction = createAsyncThunk(
+  "Blotter/CancelTransaction",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      const postAPI = createPostAPI(
+        BlotterApi,
+        CancelTransactionRM.RequestMethod
+      );
+      const response = await postAPI(Data);
+      const { responseCode } = response.data;
+
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access");
+      }
+
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(CancelTransaction({ navigate, Data }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_CancelTransaction_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message: "Transaction cancelled successfully",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_CancelTransaction_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Unsuccessfull");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_CancelTransaction_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Role");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_CancelTransaction_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_CancelTransaction_05".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Transaction");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_CancelTransaction_06".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Transaction Status");
+          } else {
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      return rejectWithValue("Error cancelling transaction");
+    }
+  }
+);
+
+export const RequestCancellation = createAsyncThunk(
+  "Blotter/RequestCancellation",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      const postAPI = createPostAPI(
+        BlotterApi,
+        RequestCancellationRM.RequestMethod
+      );
+      const response = await postAPI(Data);
+      const { responseCode } = response.data;
+
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access");
+      }
+
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(RequestCancellation({ navigate, Data }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RequestCancellation_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message: "Cancellation requested successfully",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RequestCancellation_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Unsuccessfull");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RequestCancellation_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Role");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RequestCancellation_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RequestCancellation_05".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Transaction");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RequestCancellation_06".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Transaction Status");
+          } else {
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      return rejectWithValue("Error requesting cancellation");
+    }
+  }
+);
+
+export const AcceptRFQTransaction = createAsyncThunk(
+  "Blotter/AcceptRFQTransaction",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      const postAPI = createPostAPI(
+        BlotterApi,
+        AcceptRFQTransactionRM.RequestMethod
+      );
+      const response = await postAPI(Data);
+      const { responseCode } = response.data;
+
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access");
+      }
+
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(AcceptRFQTransaction({ navigate, Data }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_AcceptRFQTransaction_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message: "RFQ transaction accepted successfully",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_AcceptRFQTransaction_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Unsuccessfull");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_AcceptRFQTransaction_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Role");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_AcceptRFQTransaction_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_AcceptRFQTransaction_05".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Transaction");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_AcceptRFQTransaction_06".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Transaction Status");
+          } else {
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          return rejectWithValue(responseMessage || "Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      return rejectWithValue("Error accepting RFQ transaction");
+    }
+  }
+);
+
+export const RejectRFQTransaction = createAsyncThunk(
+  "Blotter/RejectRFQTransaction",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      const postAPI = createPostAPI(
+        BlotterApi,
+        RejectRFQTransactionRM.RequestMethod
+      );
+      const response = await postAPI(Data);
+      const { responseCode } = response.data;
+
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access");
+      }
+
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(RejectRFQTransaction({ navigate, Data }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RejectRFQTransaction_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message: "RFQ transaction rejected successfully",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RejectRFQTransaction_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Unsuccessfull");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RejectRFQTransaction_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Role");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RejectRFQTransaction_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RejectRFQTransaction_05".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Transaction");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RejectRFQTransaction_06".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Transaction Status");
+          } else {
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      return rejectWithValue("Error rejecting RFQ transaction");
+    }
+  }
+);
+
+export const SaveSpotTransactionRFQ = createAsyncThunk(
+  "Blotter/SaveSpotTransactionRFQ",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      const postAPI = createPostAPI(
+        BlotterApi,
+        SaveSpotTransactionRFQRM.RequestMethod
+      );
+      const response = await postAPI(Data);
+      const { responseCode } = response.data;
+
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access");
+      }
+
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(SaveSpotTransactionRFQ({ navigate, Data }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveSpotTransactionRFQ_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message: "Spot RFQ transaction saved successfully",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveSpotTransactionRFQ_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Unsuccessfull");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveSpotTransactionRFQ_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Role");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveSpotTransactionRFQ_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else {
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          return rejectWithValue(responseMessage || "Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      return rejectWithValue("Error saving spot RFQ transaction");
+    }
+  }
+);
+
+export const SaveForwardTransactionRFQ = createAsyncThunk(
+  "Blotter/SaveForwardTransactionRFQ",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      const postAPI = createPostAPI(
+        BlotterApi,
+        SaveForwardTransactionRFQRM.RequestMethod
+      );
+      const response = await postAPI(Data);
+      const { responseCode } = response.data;
+
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access");
+      }
+
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(SaveForwardTransactionRFQ({ navigate, Data }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveForwardTransactionRFQ_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message: "Forward RFQ transaction saved successfully",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveForwardTransactionRFQ_01".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Unsuccessfull");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveForwardTransactionRFQ_01".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Role");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveForwardTransactionRFQ_01".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else {
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          return rejectWithValue(responseMessage || "Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      return rejectWithValue("Error saving forward RFQ transaction");
+    }
+  }
+);
+
+export const SaveFEDiscountingTransactionRFQ = createAsyncThunk(
+  "Blotter/SaveFEDiscountingTransactionRFQ",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      const postAPI = createPostAPI(
+        BlotterApi,
+        SaveFEDiscountingTransactionRFQRM.RequestMethod
+      );
+      const response = await postAPI(Data);
+      const { responseCode } = response.data;
+
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access");
+      }
+
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(SaveFEDiscountingTransactionRFQ({ navigate, Data }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveFEDiscountingTransactionRFQ_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message: "FE Discounting RFQ transaction saved successfully",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveFEDiscountingTransactionRFQ_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Unsuccessfull");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveFEDiscountingTransactionRFQ_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Role");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveFEDiscountingTransactionRFQ_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else {
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          return rejectWithValue(responseMessage || "Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      return rejectWithValue("Error saving FE discounting RFQ transaction");
+    }
+  }
+);
+
+export const SaveNonFEDiscountingTransactionRFQ = createAsyncThunk(
+  "Blotter/SaveNonFEDiscountingTransactionRFQ",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      const postAPI = createPostAPI(
+        BlotterApi,
+        SaveNonFEDiscountingTransactionRFQRM.RequestMethod
+      );
+      const response = await postAPI(Data);
+      const { responseCode } = response.data;
+
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access");
+      }
+
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(SaveNonFEDiscountingTransactionRFQ({ navigate, Data }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveNonFEDiscountingTransactionRFQ_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message: "Non-FE Discounting RFQ transaction saved successfully",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveNonFEDiscountingTransactionRFQ_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Unsuccessfull");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveNonFEDiscountingTransactionRFQ_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Role");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveNonFEDiscountingTransactionRFQ_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else {
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          return rejectWithValue(responseMessage || "Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      return rejectWithValue("Error saving Non-FE discounting RFQ transaction");
+    }
+  }
+);
+
+export const RFQTransactionQuotation = createAsyncThunk(
+  "Blotter/RFQTransactionQuotation",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      const postAPI = createPostAPI(
+        BlotterApi,
+        RFQTransactionQuotationRM.RequestMethod
+      );
+      const response = await postAPI(Data);
+      const { responseCode } = response.data;
+
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access");
+      }
+
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(RFQTransactionQuotation({ navigate, Data }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RFQTransactionQuotation_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message: "RFQ quotation generated successfully",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RFQTransactionQuotation_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Unsuccessfull");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RFQTransactionQuotation_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Role");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RFQTransactionQuotation_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RFQTransactionQuotation_05".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Transaction");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RFQTransactionQuotation_06".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Transaction Status");
+          } else {
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          return rejectWithValue(responseMessage || "Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      return rejectWithValue("Error generating RFQ quotation");
+    }
+  }
+);
+
+export const RFQForwardTransactionQuotation = createAsyncThunk(
+  "Blotter/RFQForwardTransactionQuotation",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      const postAPI = createPostAPI(
+        BlotterApi,
+        RFQForwardTransactionQuotationRM.RequestMethod
+      );
+      const response = await postAPI(Data);
+      const { responseCode } = response.data;
+
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access");
+      }
+
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(RFQForwardTransactionQuotation({ navigate, Data }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RFQForwardTransactionQuotation_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message: "Forward RFQ quotation generated successfully",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RFQForwardTransactionQuotation_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Unsuccessfull");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RFQForwardTransactionQuotation_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Role");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RFQForwardTransactionQuotation_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RFQForwardTransactionQuotation_05".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Transaction");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RFQForwardTransactionQuotation_06".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Transaction Status");
+          } else {
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          return rejectWithValue(responseMessage || "Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      return rejectWithValue("Error generating forward RFQ quotation");
+    }
+  }
+);
+
+export const RFQFEDiscountingTransactionQuotation = createAsyncThunk(
+  "Blotter/RFQFEDiscountingTransactionQuotation",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      const postAPI = createPostAPI(
+        BlotterApi,
+        RFQFEDiscountingTransactionQuotationRM.RequestMethod
+      );
+      const response = await postAPI(Data);
+      const { responseCode } = response.data;
+
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access");
+      }
+
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(RFQFEDiscountingTransactionQuotation({ navigate, Data }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RFQFEDiscountingTransactionQuotation_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message: "FE Discounting quotation generated successfully",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RFQFEDiscountingTransactionQuotation_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Unsuccessfull");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RFQFEDiscountingTransactionQuotation_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Role");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RFQFEDiscountingTransactionQuotation_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RFQFEDiscountingTransactionQuotation_05".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Transaction");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RFQFEDiscountingTransactionQuotation_05".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Transaction Status");
+          } else {
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          return rejectWithValue(responseMessage || "Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      return rejectWithValue("Error generating FE discounting RFQ quotation");
+    }
+  }
+);
+
+export const RFQNonFEDiscountingTransactionQuotation = createAsyncThunk(
+  "Blotter/RFQNonFEDiscountingTransactionQuotation",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      const postAPI = createPostAPI(
+        BlotterApi,
+        RFQNonFEDiscountingTransactionQuotationRM.RequestMethod
+      );
+      const response = await postAPI(Data);
+      const { responseCode } = response.data;
+
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access");
+      }
+
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(RFQNonFEDiscountingTransactionQuotation({ navigate, Data }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RFQNonFEDiscountingTransactionQuotation_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message: "Non-FE Discounting quotation generated successfully",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RFQNonFEDiscountingTransactionQuotation_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Unsuccessfull");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RFQNonFEDiscountingTransactionQuotation_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Role");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RFQNonFEDiscountingTransactionQuotation_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RFQNonFEDiscountingTransactionQuotation_05".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Transaction");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_RFQNonFEDiscountingTransactionQuotation_06".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Transaction Status");
+          } else {
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          return rejectWithValue(responseMessage || "Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      return rejectWithValue(
+        "Error generating Non-FE discounting RFQ quotation"
+      );
+    }
+  }
+);
+
+export const ExpireRFQTransaction = createAsyncThunk(
+  "Blotter/ExpireRFQTransaction",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      const postAPI = createPostAPI(
+        BlotterApi,
+        ExpireRFQTransactionRM.RequestMethod
+      );
+      const response = await postAPI(Data);
+      const { responseCode } = response.data;
+
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access");
+      }
+
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(ExpireRFQTransaction({ navigate, Data }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_ExpireRFQTransaction_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message: "RFQ transaction expired successfully",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_ExpireRFQTransaction_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Unsuccessfull");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_ExpireRFQTransaction_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Role");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_ExpireRFQTransaction_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_ExpireRFQTransaction_05".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Transaction");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_ExpireRFQTransaction_06".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Transaction Status");
+          } else {
+            return rejectWithValue("Something went wrong");
+          }
+          return {
+            response: response.data.responseResult,
+            message: "RFQ transaction expired successfully",
+          };
+        } else {
+          return rejectWithValue(responseMessage || "Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      return rejectWithValue("Error expiring RFQ transaction");
+    }
+  }
+);
+
+export const GetSpotTransactionDetails = createAsyncThunk(
+  "Blotter/GetSpotTransactionDetails",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      const postAPI = createPostAPI(
+        BlotterApi,
+        GetSpotTransactionDetailsRM.RequestMethod
+      );
+      const response = await postAPI(Data);
+      const { responseCode } = response.data;
+
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access");
+      }
+
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(GetSpotTransactionDetails({ navigate, Data }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_GetSpotTransactionDetails_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message: "Spot transaction details retrieved successfully",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_GetSpotTransactionDetails_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Unsuccessfull");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_GetSpotTransactionDetails_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Role");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_GetSpotTransactionDetails_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else {
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      return rejectWithValue("Error retrieving spot transaction details");
+    }
+  }
+);
+
+export const GetForwardTransactionDetails = createAsyncThunk(
+  "Blotter/GetForwardTransactionDetails",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      const postAPI = createPostAPI(
+        BlotterApi,
+        GetForwardTransactionDetailsRM.RequestMethod
+      );
+      const response = await postAPI(Data);
+      const { responseCode } = response.data;
+
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access");
+      }
+
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(GetForwardTransactionDetails({ navigate, Data }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_GetForwardTransactionDetails_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message: "Forward transaction details retrieved successfully",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_GetForwardTransactionDetails_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Unsuccessfull");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_GetForwardTransactionDetails_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Role");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_GetForwardTransactionDetails_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else {
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      return rejectWithValue("Error retrieving forward transaction details");
+    }
+  }
+);
+
+export const GetFEDiscountingTransactionDetails = createAsyncThunk(
+  "Blotter/GetFEDiscountingTransactionDetails",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      const postAPI = createPostAPI(
+        BlotterApi,
+        GetFEDiscountingTransactionDetailsRM.RequestMethod
+      );
+      const response = await postAPI(Data);
+      const { responseCode } = response.data;
+
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access");
+      }
+
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(GetFEDiscountingTransactionDetails({ navigate, Data }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_GetFEDiscountingTransactionDetails_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message:
+                "FE Discounting transaction details retrieved successfully",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_GetFEDiscountingTransactionDetails_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Unsuccessfull");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_GetFEDiscountingTransactionDetails_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Role");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_GetFEDiscountingTransactionDetails_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else {
+            return rejectWithValue("Something went wrong");
+          }
+          return {
+            response: responseResult,
+            message:
+              "FE Discounting transaction details retrieved successfully",
+          };
+        } else {
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      return rejectWithValue(
+        "Error retrieving FE discounting transaction details"
+      );
+    }
+  }
+);
+
+export const GetNonFEDiscountingTransactionDetails = createAsyncThunk(
+  "Blotter/GetNonFEDiscountingTransactionDetails",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      const postAPI = createPostAPI(
+        BlotterApi,
+        GetNonFEDiscountingTransactionDetailsRM.RequestMethod
+      );
+      const response = await postAPI(Data);
+      const { responseCode } = response.data;
+
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access");
+      }
+
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(GetNonFEDiscountingTransactionDetails({ navigate, Data }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_GetNonFEDiscountingTransactionDetails_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message:
+                "Non-FE Discounting transaction details retrieved successfully",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_GetNonFEDiscountingTransactionDetails_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Unsuccessfull");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_GetNonFEDiscountingTransactionDetails_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Role");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_GetNonFEDiscountingTransactionDetails_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else {
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      return rejectWithValue(
+        "Error retrieving Non-FE discounting transaction details"
+      );
     }
   }
 );

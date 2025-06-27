@@ -11,7 +11,10 @@ import { SaveTransactionRFQAPI } from "./RFQActions";
 import { useSelector } from "react-redux";
 import { GetFXInstrumentsAPI } from "@/components/features/SpotBranch/WatchlistAction";
 import { set } from "zod";
-import { SaveSpotTransactionAPI } from "../../mainTreasury/tabsContent/liveRates/blotter/BlotterActions";
+import {
+  SaveSpotTransactionAPI,
+  SaveSpotTransactionRFQ,
+} from "../../mainTreasury/tabsContent/liveRates/blotter/BlotterActions";
 
 const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
   const dispatch = useDispatch();
@@ -19,7 +22,16 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
   const natureOfBusinessList = useSelector(
     (state) => state.authReducer.GetAllNatureOfTransactions
   );
-  console.log(natureOfBusinessList, "natureOfBusinessList");
+  const GetAllActiveCorproates = useSelector(
+    (state) => state.authReducer.GetAllActiveCorproates
+  );
+
+  const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
+  console.log(
+    GetAllActiveCorproates,
+    "GetAllActiveCorproatesGetAllActiveCorproates"
+  );
+  // const isCorporate =
   //Const Nature of Busniess Global State Data
   const viewNatureOfBussniessGlobalStateData = useSelector(
     (state) => state.RFQReducer.viewAllNatureBussniessData
@@ -32,6 +44,7 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
 
   //Local states
   const [natureOfBusinessOptions, setNatureOfBusinessOptions] = useState([]);
+  console.log(natureOfBusinessOptions, "natureOfBusinessOptionsnatureOfBusinessOptions")
   const [currencyOptions, setCurrencyOptions] = useState([]);
   const [selectedNature, setSelectedNature] = useState({
     value: 0,
@@ -49,6 +62,12 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
     { label: "Sell", value: 2 },
   ]);
 
+  const [corporateValue, setCorporateValue] = useState({
+    value: 0,
+    label: "",
+  });
+  const [getAllCorporates, setGetAllCorporates] = useState([]);
+
   const [typeOptionSelected, setTypeOptionSelected] = useState({
     value: 0,
     label: "",
@@ -58,27 +77,9 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
     setOpenRfqModal(false);
   };
 
-  //Extracting out the Nature of Busniess Data
-  useEffect(() => {
-    try {
-      if (
-        viewNatureOfBussniessGlobalStateData &&
-        viewNatureOfBussniessGlobalStateData.natureofBusinesses
-      ) {
-        const formattedOptions =
-          viewNatureOfBussniessGlobalStateData.natureofBusinesses.map(
-            (business) => ({
-              label: business.name,
-              value: business.pK_NatureOfBusiness,
-            })
-          );
-        setNatureOfBusinessOptions(formattedOptions);
-      }
-    } catch (error) {}
-  }, [viewNatureOfBussniessGlobalStateData]);
-
   useEffect(() => {
     if (natureOfBusinessList !== null) {
+      console.log(natureOfBusinessList, "natureOfBusinessListnatureOfBusinessList")
       try {
         const formattedOptions = natureOfBusinessList.natureOfTransactions.map(
           (business) => ({
@@ -93,6 +94,28 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
       }
     }
   }, [natureOfBusinessList]);
+
+  useEffect(() => {
+    if (GetAllActiveCorproates !== null) {
+      try {
+        const { corporates } = GetAllActiveCorproates;
+        if (corporates.length > 0) {
+          const formattedOptions = corporates.map((corporate) => ({
+            label: corporate.corporateName,
+
+            value: corporate.corporateID,
+          }));
+          setCorporateValue({
+            label: formattedOptions[0].label,
+            value: formattedOptions[0].value,
+          });
+          setGetAllCorporates(formattedOptions);
+        }
+      } catch (error) {
+        console.log(error, "Error in GetAllActiveCorproates useEffect");
+      }
+    }
+  }, [GetAllActiveCorproates]);
 
   console.log(currencyOptions, "currencyOptionscurrencyOptions");
 
@@ -150,9 +173,20 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
   };
 
   const handleChangeType = (selectType) => {
+    console.log("selectType", selectType);
     setTypeOptionSelected(selectType);
+    console.log(natureOfBusinessOptions[0], "selectedNatureselectedNature");
+    // setSelectedNature({
+    //   value: natureOfBusinessOptions[0].value,
+    //   label: natureOfBusinessOptions[0].label,
+    // });
   };
+  console.log(selectedNature, "selectedNatureselectedNature");
 
+  const handleChangeCorporate = (selectedOption) => {
+    setCorporateValue(selectedOption);
+    console.log("selectedOption", selectedOption);
+  };
   // Handle Confirm Button
   const handleConfirmButton = () => {
     if (
@@ -165,7 +199,7 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
       let corporate = JSON.parse(localStorage.getItem("corporate"));
       //Caliing Save RFQ Trasaction API
       let Data = {
-        CorporateID: corporate.corporateID,
+        CorporateID: isBranch ? corporateValue.value : corporate.corporateID,
         InstrumentID: 21,
         // InstrumentID: selectedCurrency.value,
         SecondaryInstrumentID: 0,
@@ -175,8 +209,8 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
         NatureOfTransactionID: selectedNature.value,
         LCNumber: lcNumberData,
       };
-
-      dispatch(SaveSpotTransactionAPI({ navigate, Data }));
+      dispatch(SaveSpotTransactionRFQ({ navigate, Data }));
+      // dispatch(SaveSpotTransactionAPI({ navigate, Data }));
     }
   };
 
@@ -202,98 +236,118 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
         }
         modalBody={
           <>
-            <div className='modal-body' rfq-type='Forex'>
-              <Row className='m-0 '>
-                <Col lg={2} md={2} sm={2}>
-                  <label className='LabelRFQTransactionModal'>Currency*</label>
-                </Col>
-                <Col lg={4} md={4} sm={4} className='mb-2'>
-                  <SelectDropdown
-                    classNamePrefix='bookaForwardCorporate'
-                    placeholder=''
-                    options={currencyOptions}
-                    onChange={handleCurrencyChange}
-                    value={selectedCurrency}
-                  />
-                </Col>
+            <Row className='m-0 '>
+              {isBranch && (
+                <>
+                  {" "}
+                  <Col lg={2} md={2} sm={2}>
+                    <label className='LabelRFQTransactionModal'>
+                      Company Name*
+                    </label>
+                  </Col>
+                  <Col lg={4} md={4} sm={4} className='mb-3'>
+                    <SelectDropdown
+                      classNamePrefix='bookaForwardCorporate'
+                      placeholder=''
+                      options={getAllCorporates}
+                      onChange={handleChangeCorporate}
+                      value={corporateValue}
+                    />
+                  </Col>
+                  <Col lg={2} md={2} sm={2}></Col>
+                  <Col lg={4} md={4} sm={4} className='mb-2'></Col>
+                </>
+              )}
 
-                <Col lg={2} md={2} sm={2}>
-                  <label className='LabelRFQTransactionModal'>Type*</label>
-                </Col>
-                <Col lg={4} md={4} sm={4} className='mb-2'>
-                  <SelectDropdown
-                    placeholder='Select Type'
-                    value={
-                      typeOptionSelected.value === 0 ? null : typeOptionSelected
+              <Col lg={2} md={2} sm={2}>
+                <label className='LabelRFQTransactionModal'>Currency*</label>
+              </Col>
+              <Col lg={4} md={4} sm={4} className='mb-2'>
+                <SelectDropdown
+                  classNamePrefix='bookaForwardCorporate'
+                  placeholder=''
+                  options={currencyOptions}
+                  onChange={handleCurrencyChange}
+                  value={selectedCurrency}
+                />
+              </Col>
+
+              <Col lg={2} md={2} sm={2}>
+                <label className='LabelRFQTransactionModal'>Type*</label>
+              </Col>
+              <Col lg={4} md={4} sm={4} className='mb-2'>
+                <SelectDropdown
+                  placeholder='Select Type'
+                  value={
+                    typeOptionSelected.value === 0 ? null : typeOptionSelected
+                  }
+                  onChange={handleChangeType}
+                  options={typeOptions}
+                  classNamePrefix='bookaForwardCorporate'
+                />
+              </Col>
+            </Row>
+
+            <Row className='m-0 mt-2'>
+              <Col lg={2} md={2} sm={2}>
+                <label className='LabelRFQTransactionModal'>Amount*</label>
+              </Col>
+              <Col lg={4} md={4} sm={4} className='mb-2'>
+                <InputFIeld
+                  onChange={handleChangeAccount}
+                  value={amountData}
+                  name='Amount'
+                  applyClass='CalculatorTextfield'
+                />
+              </Col>
+              <Col lg={2} md={2} sm={2}>
+                <label className='LabelRFQTransactionModal'>A/c No</label>
+              </Col>
+              <Col lg={4} md={4} sm={4} className='mb-2'>
+                <InputFIeld
+                  onChange={handleChangeAcNumber}
+                  value={acNumberData}
+                  name='AcNumber'
+                  applyClass='CalculatorTextfield'
+                />
+              </Col>
+            </Row>
+
+            <Row className='m-0 mt-2'>
+              <Col lg={2} md={2} sm={2}>
+                <label className='LabelRFQTransactionModal'>Nature*</label>
+              </Col>
+
+              <Col lg={4} md={4} sm={4} className='mb-2'>
+                <SelectDropdown
+                  placeholder=''
+                  classNamePrefix='bookaForwardCorporate'
+                  options={natureOfBusinessOptions.filter((option) => {
+                    if (typeOptionSelected?.value === 1 && option.isForSpot) {
+                      return option.isForBuy;
                     }
-                    onChange={handleChangeType}
-                    options={typeOptions}
-                    classNamePrefix='bookaForwardCorporate'
-                  />
-                </Col>
-              </Row>
+                    if (typeOptionSelected?.value === 2 && option.isForSpot) {
+                      return option.isForSell;
+                    }
+                    return false; // if value is neither 1 nor 2, show no options
+                  })}
+                  onChange={handleNatureChange}
+                  value={selectedNature}
+                />
+              </Col>
 
-              <Row className='m-0 mt-2'>
-                <Col lg={2} md={2} sm={2}>
-                  <label className='LabelRFQTransactionModal'>Amount*</label>
-                </Col>
-                <Col lg={4} md={4} sm={4} className='mb-2'>
-                  <InputFIeld
-                    onChange={handleChangeAccount}
-                    value={amountData}
-                    name='Amount'
-                    applyClass='CalculatorTextfield'
-                  />
-                </Col>
-                <Col lg={2} md={2} sm={2}>
-                  <label className='LabelRFQTransactionModal'>A/c No</label>
-                </Col>
-                <Col lg={4} md={4} sm={4} className='mb-2'>
-                  <InputFIeld
-                    onChange={handleChangeAcNumber}
-                    value={acNumberData}
-                    name='AcNumber'
-                    applyClass='CalculatorTextfield'
-                  />
-                </Col>
-              </Row>
-
-              <Row className='m-0 mt-2'>
-                <Col lg={2} md={2} sm={2}>
-                  <label className='LabelRFQTransactionModal'>Nature*</label>
-                </Col>
-
-                <Col lg={4} md={4} sm={4} className='mb-2'>
-                  <SelectDropdown
-                    placeholder=''
-                    classNamePrefix='bookaForwardCorporate'
-                    options={natureOfBusinessOptions.filter((option) => {
-                      if (typeOptionSelected?.value === 1 && option.isForSpot) {
-                        return option.isForBuy;
-                      }
-                      if (typeOptionSelected?.value === 2 && option.isForSpot) {
-                        return option.isForSell;
-                      }
-                      return false; // if value is neither 1 nor 2, show no options
-                    })}
-                    onChange={handleNatureChange}
-                    value={selectedNature}
-                  />
-                </Col>
-
-                <Col lg={2} md={2} sm={2}>
-                  <label className='LabelRFQTransactionModal'>LC No</label>
-                </Col>
-                <Col lg={4} md={4} sm={4} className='mb-2'>
-                  <InputFIeld
-                    onChange={handleChangeLcNumber}
-                    value={lcNumberData}
-                    name='LcNumber'
-                    applyClass='CalculatorTextfield'
-                  />
-                </Col>
-              </Row>
-            </div>
+              <Col lg={2} md={2} sm={2}>
+                <label className='LabelRFQTransactionModal'>LC No</label>
+              </Col>
+              <Col lg={4} md={4} sm={4} className='mb-2'>
+                <InputFIeld
+                  onChange={handleChangeLcNumber}
+                  value={lcNumberData}
+                  name='LcNumber'
+                  applyClass='CalculatorTextfield'
+                />
+              </Col>
+            </Row>
           </>
         }
         modalFooter={
