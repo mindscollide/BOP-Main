@@ -9,9 +9,11 @@ import CommentModal from "../commentModal/CommentModal";
 import { useNavigate } from "react-router-dom";
 import {
   AcceptTransactionAPI,
+  AcceptTransactionCancellationRequest,
   AssignTransactionAPI,
   GetBlotterOutstandingDealsDataAPI,
   RejectTransactionAPI,
+  RejectTransactionCancellationRequest,
 } from "../BlotterActions";
 import { formatDateTimeToUTCTime } from "@/components/utils/timeFunction";
 import { useTableScrollBottom } from "@/utils/useTableScrollBottom";
@@ -760,6 +762,15 @@ const OutstandingDeals = () => {
       })
     );
   };
+
+  const handleAcceptTransactionCancellation = (transactionID) => {
+    let Data = { PK_TransactionID: transactionID };
+    dispatch(AcceptTransactionCancellationRequest({ navigate, Data }));
+  };
+  const handleRejectTransactionCancellation = (transactionID) => {
+    let Data = { PK_TransactionID: transactionID };
+    dispatch(RejectTransactionCancellationRequest({ navigate, Data }));
+  };
   const columns = [
     // TXNID
     {
@@ -1218,10 +1229,16 @@ const OutstandingDeals = () => {
                   icon={<i className='icon-check'></i>}
                   className='btn btn-sm btn-danger'
                   applyClass={"ActionButton"}
+                  onClick={() =>
+                    handleAcceptTransactionCancellation(record.pK_TransactionID)
+                  }
                 />
                 <CustomButton
                   icon={<i className='icon-close '></i>}
                   className='btn btn-sm btn-success '
+                  onClick={() =>
+                    handleRejectTransactionCancellation(record.pK_TransactionID)
+                  }
                 />
               </>
             ) : record.statusID === 5 ? (
@@ -1294,6 +1311,7 @@ const OutstandingDeals = () => {
                   <i className='icon-view-comment blotterTableIconSize '></i>
                 }
                 className='btn  btn-primary'
+                onClick={() => handleShowCommentModal(record.comment)}
               />
             ) : (
               <span className='w-30'></span>
@@ -1338,7 +1356,7 @@ const OutstandingDeals = () => {
         columns={columns}
         scroll={{ x: "max-content", y: 300 }}
       />
-      <DealViewModal dealData={dealData}  />
+      <DealViewModal dealData={dealData} />
       <CommentModal
         comment={comment}
         setShowCommentModal={setShowCommentModal}
