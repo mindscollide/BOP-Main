@@ -87,7 +87,12 @@ const SpotBranch = () => {
   //Watch<List>Data State
   //By Default for having Six Tiles
   const [watchlistData, setWatchlistData] = useState({
-    watchlist1: { currecncyLabel: "", buyValue: "", sellValue: "" },
+    watchlist1: {
+      currecncyLabel: "USDPKR",
+      instrumentID: 21,
+      buyValue: "200",
+      sellValue: "240",
+    },
     watchlist2: { currecncyLabel: "", buyValue: "", sellValue: "" },
     watchlist3: { currecncyLabel: "", buyValue: "", sellValue: "" },
     watchlist4: { currecncyLabel: "", buyValue: "", sellValue: "" },

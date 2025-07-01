@@ -9,6 +9,7 @@ const initialState = {
   dealModalRequest: false,
   viewDealModal: false,
   chatModalTransactionId: "",
+  treasuryPersonID: 0,
   settingsRecord: {
     BD_Enable2FA: false,
     BD_SoundOnEveryMessage: false,
@@ -52,6 +53,9 @@ const modalSlice = createSlice({
     setViewDealModal(state, { payload }) {
       state.viewDealModal = payload;
     },
+    setTreasuryPersonID(state, { payload }) {
+      state.treasuryPersonID = payload;
+    },
     resetModalState() {
       return initialState;
     },
@@ -59,6 +63,7 @@ const modalSlice = createSlice({
 });
 
 export const {
+  setTreasuryPersonID,
   setDealModalRequest,
   setViewDealModal,
   setCreateTenorModal,

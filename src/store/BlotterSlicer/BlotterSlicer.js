@@ -32,8 +32,14 @@ const BlotterSlicer = createSlice({
     rfqSaveQuotation: null,
     cancelPendingTransaction: null,
     calculateTenorSwapAndForwardRateData: null,
+    activeTabBlotter: "TXN Summary",
   },
-  reducers: {},
+  reducers: {
+    setActiveTreasuryTab: (state, {payload}) => {
+      console.log(payload , "setActiveTreasuryTabsetActiveTreasuryTab")
+      state.activeTabBlotter = payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       // Pending state (while the API call is being made CorporateBlotterDataAPI)
@@ -248,5 +254,7 @@ const BlotterSlicer = createSlice({
       );
   },
 });
+
+export const { setActiveTreasuryTab } = BlotterSlicer.actions;
 
 export default BlotterSlicer.reducer;

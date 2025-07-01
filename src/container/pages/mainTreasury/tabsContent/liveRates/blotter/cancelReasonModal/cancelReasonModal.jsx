@@ -12,7 +12,8 @@ const CancelReasonModal = ({
   setCancelReasonComment,
 }) => {
   const handleChange = (event) => {
-    setCancelReasonComment(event.target.value.toTrimStart());
+    console.log(event.target.value, "event.target.valueevent.target.value");
+    setCancelReasonComment(event.target.value.trimStart());
   };
   return (
     <GlobalModal

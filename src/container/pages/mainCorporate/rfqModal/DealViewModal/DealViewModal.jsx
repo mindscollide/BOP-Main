@@ -36,13 +36,12 @@ const DealViewModal = ({ dealData }) => {
   }, [dealData]);
 
   const handleChangeRate = (event, type) => {
-    if(type === "bid") {
+    if (type === "bid") {
       setBid(event.target.value);
     } else {
       setOffer(event.target.value);
     }
-
-  }
+  };
 
   const handleSubmit = () => {
     // scenario is if side is "buy" then bid should be disabled and offer should be enabled
@@ -50,7 +49,11 @@ const DealViewModal = ({ dealData }) => {
     // RFQForwardTransactionQuotation
     // RFQFEDiscountingTransactionQuotation
     // RFQNonFEDiscountingTransactionQuotation
-    let Data = { PK_TransactionID: dealData?.pK_TransactionID, Rate: Number(offer) };
+    let Data = {
+      PK_TransactionID: dealData?.pK_TransactionID,
+      Rate:
+        dealData.side.toLowerCase() === "sell" ? Number(bid) : Number(offer),
+    };
     dispatch(RFQTransactionQuotation({ navigate, Data }));
   };
 
@@ -158,7 +161,7 @@ const DealViewModal = ({ dealData }) => {
                     <InputFIeld
                       applyClass={"DealBoxBitInput"}
                       disabled={
-                        dealData.side.toLowerCase() === "side" ? false : true
+                        dealData.side.toLowerCase() === "sell" ? false : true
                       }
                       value={bid}
                       onChange={(e) => handleChangeRate(e, "bid")}

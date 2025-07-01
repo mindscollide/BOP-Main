@@ -21,6 +21,10 @@ const ChatBox = () => {
   const IncomingChat = useSelector(
     (state) => state.RealtimeActionsSlice.IncomingChat
   );
+  const receiverPersonID = useSelector(
+    (state) => state.modalReducer.treasuryPersonID
+  );
+
   const [receiverId, setReceiverId] = useState(0);
 
   console.log(IncomingChat, "IncomingChatIncomingChat");
@@ -62,47 +66,49 @@ const ChatBox = () => {
       });
     }
   }, [getAllUserData]);
-
   useEffect(() => {
     if (Array.isArray(IncomingChat) && IncomingChat.length > 0) {
       try {
         setTransactionChat((prevState) => {
+          const existingChatIDs = prevState.getAllChat.map(
+            (chat) => chat.chatMessageID
+          );
+
           const updatedChats = prevState.getAllChat.map((existingChat) => {
-            const updatedChat = IncomingChat.find(
+            const incomingMatch = IncomingChat.find(
               (newChat) => newChat.chatMessageID === existingChat.chatMessageID
             );
-            if (updatedChat) {
-              let IncomingChatData = [...IncomingChat].filter(
-                (chat, index) =>
-                  chat.chatMessageID !== updatedChat.chatMessageID
-              );
-              dispatch(setIncomingChat(IncomingChatData));
-            }
-
-            return updatedChat
-              ? { ...existingChat, ...updatedChat }
+            return incomingMatch
+              ? { ...existingChat, ...incomingMatch }
               : existingChat;
           });
 
           const newChats = IncomingChat.filter(
-            (newChat) =>
-              !prevState.getAllChat.some(
-                (existingChat) =>
-                  existingChat.chatMessageID === newChat.chatMessageID
-              )
+            (newChat) => !existingChatIDs.includes(newChat.chatMessageID)
           );
 
           return {
             ...prevState,
-            getAllChat: [...newChats, ...updatedChats], // Prepend new, keep updated
+            getAllChat: [...newChats, ...updatedChats], // prepend new chats, keep updated
           };
         });
-        // Check if there are actually any matches to prevent unnecessary updates
+
+        // Only dispatch AFTER state update is done
+        const updatedIncoming = IncomingChat.filter(
+          (newChat) =>
+            !transactionChat.getAllChat.some(
+              (existingChat) =>
+                existingChat.chatMessageID === newChat.chatMessageID
+            )
+        );
+        if (updatedIncoming.length !== IncomingChat.length) {
+          dispatch(setIncomingChat(updatedIncoming));
+        }
       } catch (error) {
         console.log(error, "Error in processing IncomingChat");
       }
     }
-  }, [IncomingChat]); // Add all dependencies
+  }, [IncomingChat]);
 
   const handleClickClose = () => {
     dispatch(setChatModal(false));
@@ -110,6 +116,7 @@ const ChatBox = () => {
 
   const handleClickSaveChat = async (e) => {
     e.preventDefault();
+    console.log("first", "file in handleClickSaveChat");
     if (message !== "" || file !== null) {
       if (file !== null) {
         const result = await dispatch(uploadDocumentApi({ file, navigate }));
@@ -119,7 +126,7 @@ const ChatBox = () => {
           let newRecords = [...response.attachments];
           let Data = {
             TranscationID: chatModalTransactionId, // This is the transaction ID for the chat
-            ReceiverID: isTreasury ? 201 : 211, // He is the user who is receiving a message
+            ReceiverID: receiverPersonID, // He is the user who is receiving a message
             Message: message, // This is the message content
             Attachments: response.attachments.map((fileData, index) => {
               return {
@@ -151,7 +158,7 @@ const ChatBox = () => {
       } else {
         let Data = {
           TranscationID: chatModalTransactionId, // This is the transaction ID for the chat
-          ReceiverID: isTreasury ? 201 : 211, // He is the user who is receiving a message
+          ReceiverID: receiverPersonID, // He is the user who is receiving a message
           Message: message, // This is the message content
           Attachments: [], // This is an array of attachments (if any)
         };
@@ -310,7 +317,6 @@ const ChatBox = () => {
           <form onSubmit={handleClickSaveChat}>
             <div className='d-flex align-items-center position-relative'>
               {file && (
-                // <span className={styles["singleFileView"]}>{file.name}</span>
                 <div className={styles["uploaded-file-section"]}>
                   <div className={styles["file-upload"]}>
                     <Row>
@@ -320,17 +326,10 @@ const ChatBox = () => {
                         sm={3}
                         className={styles["chat-upload-icon"]}>
                         <IconElement applyClass={"icon-file"} />
-                        {/* <img
-                          draggable='false'
-                          src=''
-                          className='attachment-icon'
-                          extension='txt'
-                          alt=''
-                        /> */}
                         <p className={styles["chat-upload-text"]}>
                           {file.name}
                         </p>
-                        <div class={styles["delete-uplaoded-file"]}>
+                        <div className={styles["delete-uplaoded-file"]}>
                           <IconElement
                             applyClass={"icon-close"}
                             onClick={() => setFile(null)}
@@ -342,25 +341,30 @@ const ChatBox = () => {
                   </div>
                 </div>
               )}
+
               <div className='textarea-block col pe-1'>
                 <InputFIeld
-                  type={"text"}
-                  applyClass={"chatSenderInput"}
+                  type='text'
+                  applyClass='chatSenderInput'
                   value={message}
-                  onChange={(e) => setMessage(e.target.value.trimStart())}
+                  // pattern={}
+                  onChange={(e) => setMessage(e.target.value)}
                 />
               </div>
-              <div className=''>
+
+              <div>
                 <IconElement
-                  applyClass={"icon-send cursor-pointer"}
+                  applyClass='icon-send cursor-pointer'
                   onClick={handleClickSaveChat}
                 />
                 <span className='fw-bold cursor-pointer upload-file-wrapper'>
                   <IconElement
-                    applyClass={"icon-attachment"}
+                    applyClass='icon-attachment'
                     isFile={true}
                     onFileChange={(e) => {
-                      console.log("File selected:", setFile(e.target.files[0]));
+                      const selectedFile = e.target.files[0];
+                      console.log("File selected:", selectedFile);
+                      setFile(selectedFile);
                     }}
                   />
                 </span>

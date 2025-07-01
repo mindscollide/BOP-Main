@@ -17,7 +17,12 @@ const RealtimeActionsSlice = createSlice({
     BlotterTransactionRFQExpired: null,
     BlotterTransactionAdded: null,
     BlotterTransactionAssigned: null,
-    BlotterTransactionAccepted: null
+    BlotterTransactionAccepted: null,
+    BlotterTransactionRFQQuoted: null,
+    BlotterTransactionCancellationRequestData: null,
+    BlotterTranscationCancelled: null,
+    BlotterTransactionRejected: null,
+    TransactionAssignedByTreasury: null
   },
   reducers: {
     setMarketTimingsUpdated(state, { payload }) {
@@ -64,11 +69,30 @@ const RealtimeActionsSlice = createSlice({
     },
     BlotterTransactionAccepted(state, { payload }) {
       state.BlotterTransactionAccepted = payload;
-    }
+    },
+    BlotterTransactionRFQQuoted(state, { payload }) {
+      state.BlotterTransactionRFQQuoted = payload;
+    },
+    BlotterTransactionCancellationRequest(state, { payload }) {
+      state.BlotterTransactionCancellationRequestData = payload;
+    },
+    BlotterTranscationCancelled(state, { payload }) {
+      state.BlotterTranscationCancelled = payload;
+    },
+    BlotterTransactionRejected(state, { payload }) {
+      state.BlotterTransactionRejected = payload;
+    },
+    TransactionAssignedByTreasury(state, { payload }) {
+      state.TransactionAssignedByTreasury = payload;
+    },
   },
 });
 
 export const {
+  TransactionAssignedByTreasury,
+  BlotterTransactionRejected,
+  BlotterTranscationCancelled,
+  BlotterTransactionCancellationRequest,
   BlotterTransactionAccepted,
   BlotterTransactionAssigned,
   BlotterTransactionAdded,
@@ -83,7 +107,8 @@ export const {
   tenorWiseFowardsRatesPublishedActions,
   NonFeDiscountingPublishedAction,
   marketStatusUpdated,
-  BlotterTransactionRFQExpired
+  BlotterTransactionRFQExpired,
+  BlotterTransactionRFQQuoted,
 } = RealtimeActionsSlice.actions;
 
 export default RealtimeActionsSlice.reducer;

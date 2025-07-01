@@ -30,8 +30,12 @@ import {
   BlotterTransactionAccepted,
   BlotterTransactionAdded,
   BlotterTransactionAssigned,
+  BlotterTransactionCancellationRequest,
   BlotterTransactionRFQExpired,
+  BlotterTransactionRFQQuoted,
+  BlotterTranscationCancelled,
 } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
+import { getAllChatByTransactionId } from "@/components/features/chatBox/ChatActions";
 
 const OutstandingDeals = () => {
   const dispatch = useDispatch();
@@ -46,9 +50,24 @@ const OutstandingDeals = () => {
   const blotterTransactionAdded = useSelector(
     (state) => state.RealtimeActionsSlice.BlotterTransactionAdded
   );
-
+  const blotterTransactionRFQQuoted = useSelector(
+    (state) => state.RealtimeActionsSlice.BlotterTransactionRFQQuoted
+  );
   const blotterTransactionAccepted = useSelector(
     (state) => state.RealtimeActionsSlice.BlotterTransactionAccepted
+  );
+
+  const blotterTranscationCancelled = useSelector(
+    (state) => state.RealtimeActionsSlice.BlotterTranscationCancelled
+  );
+
+  const blotterTransactionCancellationRequest = useSelector(
+    (state) =>
+      state.RealtimeActionsSlice.BlotterTransactionCancellationRequestData
+  );
+
+  const blotterTransactionRejected = useSelector(
+    (state) => state.RealtimeActionsSlice.BlotterTransactionRejected
   );
   //HardCoded Filter Values start
   const TXN_ID_OPTIONS = [
@@ -131,8 +150,10 @@ const OutstandingDeals = () => {
 
   useEffect(() => {
     try {
-      let Data = { sRow: 0, Length: 10 };
-      dispatch(GetBlotterOutstandingDealsDataAPI({ Data, navigate }));
+      if (blotterdata.length === 0) {
+        let Data = { sRow: 0, Length: 10 };
+        dispatch(GetBlotterOutstandingDealsDataAPI({ Data, navigate }));
+      }
     } catch (error) {}
   }, []);
 
@@ -216,6 +237,33 @@ const OutstandingDeals = () => {
       }
     }
   }, [blotterTransactionAdded]);
+
+  useEffect(() => {
+    if (blotterTransactionRFQQuoted !== null) {
+      try {
+        const { transaction } = blotterTransactionRFQQuoted;
+        setBlotterdata((prevBlotterData) => {
+          return prevBlotterData.map((tblData, index) => {
+            if (tblData.pK_TransactionID === transaction.pK_TransactionID) {
+              return {
+                ...tblData,
+                bid: transaction.bid,
+                offer: transaction.offer,
+                statusID: transaction.statusID,
+                rfqTimerDetails: transaction.rfqTimerDetails,
+                amount: transaction.amount,
+              };
+            }
+            return tblData;
+          });
+        });
+        dispatch(BlotterTransactionRFQQuoted(null));
+      } catch (error) {
+        console.log(error, "error in blotterTransactionRFQQuoted");
+      }
+    }
+  }, [blotterTransactionRFQQuoted]);
+
   useEffect(() => {
     if (blotterTransactionAccepted !== null) {
       try {
@@ -232,6 +280,41 @@ const OutstandingDeals = () => {
       }
     }
   }, [blotterTransactionAccepted]);
+
+  useEffect(() => {
+    if (blotterTranscationCancelled !== null) {
+      try {
+        const { transaction } = blotterTranscationCancelled;
+        setBlotterdata((prevBlotterData) => {
+          return prevBlotterData.filter(
+            (tblData, index) =>
+              tblData.pK_TransactionID !== transaction.pK_TransactionID
+          );
+        });
+        dispatch(BlotterTranscationCancelled(null));
+      } catch (error) {
+        console.log(error, "error in blotterTransactionRFQExpired");
+      }
+    }
+  }, [blotterTranscationCancelled]);
+
+  useEffect(() => {
+    if (blotterTransactionRejected !== null) {
+      try {
+        const { transaction } = blotterTransactionRejected;
+        setBlotterdata((prevBlotterData) => {
+          return prevBlotterData.filter(
+            (tblData, index) =>
+              tblData.pK_TransactionID !== transaction.pK_TransactionID
+          );
+        });
+        dispatch(BlotterTransactionAccepted(null));
+      } catch (error) {
+        console.log(error, "error in blotterTransactionRFQExpired");
+      }
+    }
+  }, [blotterTransactionRejected]);
+
   useEffect(() => {
     if (blotterTransactionAssigned !== null) {
       try {
@@ -245,18 +328,23 @@ const OutstandingDeals = () => {
 
         setBlotterdata((prevBlotterData) =>
           prevBlotterData.map((tableData) => {
-            if (tableData.transactionID === transactionID) {
-              if (tableData.treasuryPersonID === treasuryPersonID) {
+            if (tableData.pK_TransactionID === transactionID) {
+              if (
+                Number(localStorage.getItem("userID")) ===
+                Number(treasuryPersonID)
+              ) {
                 return {
                   ...tableData,
                   status: statusForAssignedUser,
                   statusID: statusID,
+                  treasuryPersonID: treasuryPersonID,
                 };
               } else {
                 return {
                   ...tableData,
                   status: statusForOtherTreasury,
                   statusID: statusID,
+                  treasuryPersonID: treasuryPersonID,
                 };
               }
             }
@@ -271,6 +359,28 @@ const OutstandingDeals = () => {
       }
     }
   }, [blotterTransactionAssigned]);
+
+  useEffect(() => {
+    if (blotterTransactionCancellationRequest !== null) {
+      try {
+        try {
+          const { transaction } = blotterTransactionCancellationRequest;
+          let ishasAlready = blotterdata.find(
+            (data, index) =>
+              data.pK_TransactionID === transaction.pK_TransactionID
+          );
+          if (!ishasAlready) {
+            setBlotterdata([transaction, ...blotterdata]);
+          }
+          dispatch(BlotterTransactionCancellationRequest(null));
+        } catch (error) {
+          console.log(error, "error in blotterTransactionRFQExpired");
+        }
+      } catch (error) {
+        console.log(error, "error in blotterTransactionCancellationRequest");
+      }
+    }
+  }, [blotterTransactionCancellationRequest]);
 
   //TXN ID PopOver Functions Starts
   const handleOpenChange = (newOpen) => {
@@ -887,6 +997,21 @@ const OutstandingDeals = () => {
     let Data = { PK_TransactionID: transactionID };
     dispatch(RejectTransactionCancellationRequest({ navigate, Data }));
   };
+
+  const handleClickChat = (txnID, treasuryPersonID) => {
+    let Data = {
+      TranscationID: txnID,
+    };
+
+    dispatch(
+      getAllChatByTransactionId({
+        navigate,
+        Data,
+        treasuryPersonID,
+      })
+    );
+  };
+
   const columns = [
     // TXNID
     {
@@ -1483,7 +1608,9 @@ const OutstandingDeals = () => {
               <CustomButton
                 icon={<i className='icon-chat2 '></i>}
                 className='btn btn-sm btn-danger chat-btn-trigger'
-                onClick={() => handleClickChat(record.txnid)}
+                onClick={() =>
+                  handleClickChat(record.pK_TransactionID, record.fK_UserID)
+                }
               />
             ) : (
               <span className='w-30'></span>
@@ -1522,7 +1649,7 @@ const OutstandingDeals = () => {
         bordered={false}
         prefixCls='OutStanding_Table'
         columns={columns}
-        scroll={{ x: "max-content", y: 300 }}
+        scroll={{ x: "max-content", y: 500 }}
       />
       <DealViewModal dealData={dealData} />
       <CommentModal

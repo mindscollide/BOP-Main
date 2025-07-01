@@ -13,9 +13,17 @@ import {
 import { useMqttClient } from "@/components/utils/mqttConnection";
 
 import {
+  BlotterTransactionAccepted,
+  BlotterTransactionAdded,
+  BlotterTransactionAssigned,
+  BlotterTransactionCancellationRequest,
   BlotterTransactionRFQExpired,
+  BlotterTransactionRFQQuoted,
+  BlotterTransactionRejected,
+  BlotterTranscationCancelled,
   FeDiscountingPublishedAction,
   NonFeDiscountingPublishedAction,
+  TransactionAssignedByTreasury,
   categoryisAdded,
   categoryisDeleted,
   categoryisUpdated,
@@ -30,7 +38,10 @@ import { formatDateToUTC } from "@/utils/formatters";
 import { LogoutApi } from "../loginScreens/authActions/logoutAction";
 import DealBox from "@/components/features/dealbox/DealBox";
 import DealViewModal from "../pages/mainCorporate/rfqModal/DealViewModal/DealViewModal";
-import { setDealModalRequest } from "@/store/modalSlice/modalSlicer";
+import {
+  setChatModal,
+  setDealModalRequest,
+} from "@/store/modalSlice/modalSlicer";
 import { AnimatePresence } from "framer-motion";
 import { GetAllNatureOfTransactionsApi } from "../pages/mainCorporate/rfqModal/RFQActions";
 const Dashboard = () => {
@@ -40,10 +51,13 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const chatModal = useSelector((state) => state.modalReducer.chatModal);
+  const chatModalTransactionId = useSelector(
+    (state) => state.modalReducer.chatModalTransactionId
+  );
   const dealMoalRequest = useSelector(
     (state) => state.modalReducer.dealModalRequest
   );
-  console.log(dealMoalRequest, "dealMoalRequestdealMoalRequest");
+  console.log(chatModalTransactionId, "dealMoalRequestdealMoalRequest");
   const IsBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
   const IsCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
   const isTreasury = import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
@@ -110,6 +124,23 @@ const Dashboard = () => {
           break;
         case "BLOTTER_RFQ_TRANSACTION_EXPIRED":
           dispatch(BlotterTransactionRFQExpired(data.payload));
+          console.log(
+            chatModal &&
+              chatModalTransactionId ===
+                data.payload?.transaction?.pK_TransactionID,
+            chatModal,
+            chatModalTransactionId,
+            data.payload?.transaction?.pK_TransactionID,
+            "chatModalTransactionId in dashboard"
+          );
+          if (
+            chatModal &&
+            chatModalTransactionId ===
+              data.payload?.transaction?.pK_TransactionID
+          ) {
+            console.log(first);
+            dispatch(setChatModal(false));
+          }
           break;
         case "BLOTTER_TRANSACTION_ADDED":
           dispatch(BlotterTransactionAdded(data.payload));
@@ -119,6 +150,21 @@ const Dashboard = () => {
           break;
         case "BLOTTER_TRANSACTION_ACCEPTED":
           dispatch(BlotterTransactionAccepted(data.payload));
+          break;
+        case "BLOTTER_TRANSACTION_RFQ_QUOTED":
+          dispatch(BlotterTransactionRFQQuoted(data.payload));
+          break;
+        case "BLOTTER_TRANSACTION_CANCELLATION_REQUEST":
+          dispatch(BlotterTransactionCancellationRequest(data.payload));
+          break;
+        case "BLOTTER_TRANSACTION_CANCELLED":
+          dispatch(BlotterTranscationCancelled(data.payload));
+          break;
+        case "BLOTTER_TRANSACTION_REJECTED":
+          dispatch(BlotterTransactionRejected(data.payload));
+          break;
+        case "BLOTTER_TRANSACTION_ASSIGNED_TO_TREASURY":
+          dispatch(TransactionAssignedByTreasury(data.payload));
           break;
         default:
           console.warn("No specific handler for this message type");
