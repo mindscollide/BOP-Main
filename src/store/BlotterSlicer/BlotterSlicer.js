@@ -2,6 +2,7 @@ import {
   AcceptTransactionAPI,
   AssignTransactionAPI,
   BlotterDataAPI,
+  CancelPendingTransactionApi,
   GetBlotterOutstandingDealsDataAPI,
   RFQTransactionQuotation,
   RejectTransactionAPI,
@@ -9,6 +10,7 @@ import {
   SaveForwardTransactionAPI,
   SaveNonFEDiscountingTransactionAPI,
   SaveSpotTransactionAPI,
+  calculateTenorSwapAndForwardRateApi,
 } from "@/container/pages/mainTreasury/tabsContent/liveRates/blotter/BlotterActions";
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -28,6 +30,8 @@ const BlotterSlicer = createSlice({
     acceptTransaction: null,
     rejectedTransaction: null,
     rfqSaveQuotation: null,
+    cancelPendingTransaction: null,
+    calculateTenorSwapAndForwardRateData: null,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -203,7 +207,45 @@ const BlotterSlicer = createSlice({
         state.Loader = false;
         state.error = action.payload;
         state.rfqSaveQuotation = null;
-      });
+      })
+      .addCase(CancelPendingTransactionApi.pending, (state) => {
+        state.Loader = true;
+        state.error = null;
+      })
+      .addCase(CancelPendingTransactionApi.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.responseMessage = payload.message;
+        state.cancelPendingTransaction = payload.response;
+        state.error = null;
+      })
+      .addCase(CancelPendingTransactionApi.rejected, (state, action) => {
+        console.log(action, "actionaction");
+        state.Loader = false;
+        state.cancelPendingTransaction = null;
+        state.error = action.payload;
+      })
+      .addCase(calculateTenorSwapAndForwardRateApi.pending, (state) => {
+        state.Loader = true;
+        state.error = null;
+      })
+      .addCase(
+        calculateTenorSwapAndForwardRateApi.fulfilled,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.calculateTenorSwapAndForwardRateData = payload.response;
+          state.error = null;
+          state.responseMessage = payload.message;
+        }
+      )
+      .addCase(
+        calculateTenorSwapAndForwardRateApi.rejected,
+        (state, action) => {
+          console.log(action, "actionaction");
+          state.Loader = false;
+          state.error = action.payload;
+          state.calculateTenorSwapAndForwardRateData = null;
+        }
+      );
   },
 });
 

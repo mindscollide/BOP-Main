@@ -298,4 +298,9 @@ export const GetActiveCorporatesRM = {
   RequestMethod: "ServiceManager.GetActiveCorporates"
 }
 
-
+export const CancelPendingTransactionRM = {
+  RequestMethod : "ServiceManager.CancelPendingTransaction",
+}
+export const CalculateTenorSwapAndForwardRateRM = {
+  RequestMethod: "ServiceManager.CalculateTenorSwapAndForwardRate",
+}

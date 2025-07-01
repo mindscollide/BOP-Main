@@ -14,6 +14,10 @@ const RealtimeActionsSlice = createSlice({
     categoryisAdded: null,
     categoryisUpdated: null,
     categoryisDeleted: null,
+    BlotterTransactionRFQExpired: null,
+    BlotterTransactionAdded: null,
+    BlotterTransactionAssigned: null,
+    BlotterTransactionAccepted: null
   },
   reducers: {
     setMarketTimingsUpdated(state, { payload }) {
@@ -49,10 +53,25 @@ const RealtimeActionsSlice = createSlice({
     categoryisDeleted(state, { payload }) {
       state.categoryisDeleted = payload;
     },
+    BlotterTransactionRFQExpired(state, { payload }) {
+      state.BlotterTransactionRFQExpired = payload;
+    },
+    BlotterTransactionAdded(state, { payload }) {
+      state.BlotterTransactionAdded = payload;
+    },
+    BlotterTransactionAssigned(state, { payload }) {
+      state.BlotterTransactionAssigned = payload;
+    },
+    BlotterTransactionAccepted(state, { payload }) {
+      state.BlotterTransactionAccepted = payload;
+    }
   },
 });
 
 export const {
+  BlotterTransactionAccepted,
+  BlotterTransactionAssigned,
+  BlotterTransactionAdded,
   categoryisAdded,
   categoryisUpdated,
   categoryisDeleted,
@@ -64,6 +83,7 @@ export const {
   tenorWiseFowardsRatesPublishedActions,
   NonFeDiscountingPublishedAction,
   marketStatusUpdated,
+  BlotterTransactionRFQExpired
 } = RealtimeActionsSlice.actions;
 
 export default RealtimeActionsSlice.reducer;

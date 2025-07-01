@@ -13,6 +13,7 @@ import {
 import { useMqttClient } from "@/components/utils/mqttConnection";
 
 import {
+  BlotterTransactionRFQExpired,
   FeDiscountingPublishedAction,
   NonFeDiscountingPublishedAction,
   categoryisAdded,
@@ -106,6 +107,18 @@ const Dashboard = () => {
           break;
         case "CATEGORY_DELETED":
           dispatch(categoryisDeleted(data.payload));
+          break;
+        case "BLOTTER_RFQ_TRANSACTION_EXPIRED":
+          dispatch(BlotterTransactionRFQExpired(data.payload));
+          break;
+        case "BLOTTER_TRANSACTION_ADDED":
+          dispatch(BlotterTransactionAdded(data.payload));
+          break;
+        case "BLOTTER_TRANSACTION_ASSIGNED":
+          dispatch(BlotterTransactionAssigned(data.payload));
+          break;
+        case "BLOTTER_TRANSACTION_ACCEPTED":
+          dispatch(BlotterTransactionAccepted(data.payload));
           break;
         default:
           console.warn("No specific handler for this message type");

@@ -4,6 +4,8 @@ import {
   AcceptTransactionRM,
   AssignTransactionRM,
   BlotterDataRM,
+  CalculateTenorSwapAndForwardRateRM,
+  CancelPendingTransactionRM,
   CancelTransactionRM,
   ExpireRFQTransactionRM,
   GetBlotterOutstandingDealsDataRM,
@@ -1793,6 +1795,7 @@ export const RFQNonFEDiscountingTransactionQuotation = createAsyncThunk(
 export const ExpireRFQTransaction = createAsyncThunk(
   "Blotter/ExpireRFQTransaction",
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    console.log("ExpireRFQTransaction", Data);
     try {
       const postAPI = createPostAPI(
         BlotterApi,
@@ -2177,6 +2180,148 @@ export const GetNonFEDiscountingTransactionDetails = createAsyncThunk(
       return rejectWithValue(
         "Error retrieving Non-FE discounting transaction details"
       );
+    }
+  }
+);
+
+export const CancelPendingTransactionApi = createAsyncThunk(
+  "Blotter/CancelPendingTransactionApi",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      const postAPI = createPostAPI(
+        BlotterApi,
+        CancelPendingTransactionRM.RequestMethod
+      );
+      const response = await postAPI(Data);
+      const { responseCode } = response.data;
+
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access");
+      }
+
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(CancelPendingTransactionApi({ navigate, Data }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_CancelPendingRFQTransaction_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message: "Pending transaction cancelled successfully",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_CancelPendingRFQTransaction_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Unsuccessfull");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_CancelPendingRFQTransaction_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Role");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_CancelPendingRFQTransaction_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_CancelPendingRFQTransaction_05".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Transaction");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_CancelPendingRFQTransaction_06".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Invalid Transaction Status");
+          } else {
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          return rejectWithValue(responseMessage || "Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      return rejectWithValue("Error cancelling pending transaction");
+    }
+  }
+);
+
+export const calculateTenorSwapAndForwardRateApi = createAsyncThunk(
+  "Blotter/calculateForwardRFQData",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      const postAPI = createPostAPI(
+        BlotterApi,
+        CalculateTenorSwapAndForwardRateRM.RequestMethod
+      );
+      const response = await postAPI(Data);
+      const { responseCode } = response.data;
+
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access");
+      }
+
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(calculateForwardRFQData({ navigate, Data }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_CalculateTenorSwapAndForwardRate_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message: "Forward RFQ data calculated successfully",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_CalculateTenorSwapAndForwardRate_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else return rejectWithValue;
+        } else {
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      return rejectWithValue("Error calculating forward RFQ data");
     }
   }
 );

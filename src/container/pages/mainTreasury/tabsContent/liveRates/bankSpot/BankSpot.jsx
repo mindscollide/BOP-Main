@@ -24,6 +24,7 @@ const BankSpot = () => {
       key: "1",
       title: "Instrument",
       dataIndex: "instrument",
+      width: 80,
       className: "color-hd fw-bold title-col text-nowrap roboto-13",
       render: (text, record) => (
         <span>{record?.worldCurrency?.instrumentName}</span>
@@ -32,6 +33,8 @@ const BankSpot = () => {
     {
       title: "Bid",
       dataIndex: "bid",
+      width: 80,
+
       key: "bid",
       render: (text, record) => (
         <BidAmountBox
@@ -45,6 +48,8 @@ const BankSpot = () => {
       title: "Offer",
       dataIndex: "offer",
       key: "offer",
+      width: 80,
+
       render: (text, record) => (
         <BidAmountBox
           applyClass={"OfferCardBox"}
@@ -57,12 +62,15 @@ const BankSpot = () => {
       title: "Instrument",
       dataIndex: "currency",
       key: "currency",
+      width: 80,
       className: "roboto-13",
       render: (text, record) => record?.worldCrosses?.instrumentName,
     },
     {
       title: "Bid",
       dataIndex: "previousBid",
+      width: 80,
+
       key: "previousBid",
       render: (text, record) => (
         <BidAmountBox
@@ -76,6 +84,8 @@ const BankSpot = () => {
       title: "Offer",
       dataIndex: "previousOffer",
       key: "previousOffer",
+      width: 80,
+
       render: (text, record) => (
         <BidAmountBox
           applyClass={"OfferCardBox"}
@@ -88,6 +98,8 @@ const BankSpot = () => {
       title: "Time",
       dataIndex: "time",
       key: "time",
+      width: 80,
+
       className: "roboto-13",
       render: (text, record) => formatDateTimeToUTCTime(text),
     },
@@ -107,12 +119,13 @@ const BankSpot = () => {
         <div className='text-start color-white fw-bold fs-6'>Bank Spot</div>
       </div>
 
-      <div className='box-content-wrapper position-relative px-2'>
+      <div className=' position-relative mb-2 px-2'>
         <GlobalTable
           columns={columns}
           dataSource={bankSpotData}
           prefixCls={"BankSpot_Table"}
           pagination={false}
+          scroll={{ x: "max-content", y: 250 }}
         />
         {bankSportLoader ? <SectionLoader /> : null}
       </div>

@@ -8,7 +8,7 @@ const Blotter = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   //Calling Corporate Blotter Data API
-
+  console.log("Checiing")
   return (
     <>
       <div className='row m-0 mt-3'>

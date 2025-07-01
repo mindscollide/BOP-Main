@@ -1457,6 +1457,9 @@ td.Dealer_Discounting-cell {
 .TXNSummary_Table-wrapper .TXNSummary_Table {
   scrollbar-color: auto !important;
 }
+.BankSpot_Table-wrapper .BankSpot_Table {
+  scrollbar-color: auto !important;
+}
 th.TXNSummary_Table-cell {
   background: var(--color-primary) !important;
   border-color: var(--color-primary) !important;
@@ -1490,6 +1493,7 @@ td.TXNSummary_Table-cell.ff-poppins.fw-bold {
 tr.TXNSummary_Table-cell-scrollbar {
   display: none !important;
 }
+
 .TXNSummary_Table-measure-row {
   visibility: collapse !important;
 }

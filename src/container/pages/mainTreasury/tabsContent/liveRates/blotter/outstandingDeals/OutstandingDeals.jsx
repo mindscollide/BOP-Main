@@ -11,6 +11,7 @@ import {
   AcceptTransactionAPI,
   AcceptTransactionCancellationRequest,
   AssignTransactionAPI,
+  ExpireRFQTransaction,
   GetBlotterOutstandingDealsDataAPI,
   RejectTransactionAPI,
   RejectTransactionCancellationRequest,
@@ -19,11 +20,36 @@ import { formatDateTimeToUTCTime } from "@/components/utils/timeFunction";
 import { useTableScrollBottom } from "@/utils/useTableScrollBottom";
 import DealViewModal from "@/container/pages/mainCorporate/rfqModal/DealViewModal/DealViewModal";
 import { setViewDealModal } from "@/store/modalSlice/modalSlicer";
+import { RFQTImer } from "@/components/utils/Timer";
+import {
+  convertDateTimeIntoGMT,
+  convertDateTimeIntoLocal,
+} from "@/utils/formatters";
+import { useMqttClient } from "@/components/utils/mqttConnection";
+import {
+  BlotterTransactionAccepted,
+  BlotterTransactionAdded,
+  BlotterTransactionAssigned,
+  BlotterTransactionRFQExpired,
+} from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 
 const OutstandingDeals = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const blotterTransactionRFQExpired = useSelector(
+    (state) => state.RealtimeActionsSlice.BlotterTransactionRFQExpired
+  );
 
+  const blotterTransactionAssigned = useSelector(
+    (state) => state.RealtimeActionsSlice.BlotterTransactionAssigned
+  );
+  const blotterTransactionAdded = useSelector(
+    (state) => state.RealtimeActionsSlice.BlotterTransactionAdded
+  );
+
+  const blotterTransactionAccepted = useSelector(
+    (state) => state.RealtimeActionsSlice.BlotterTransactionAccepted
+  );
   //HardCoded Filter Values start
   const TXN_ID_OPTIONS = [
     "09-09-2024/0568",
@@ -155,6 +181,96 @@ const OutstandingDeals = () => {
       console.log(error, "error");
     }
   }, [getBlotterOutstandingData]);
+
+  useEffect(() => {
+    if (blotterTransactionRFQExpired !== null) {
+      try {
+        const { transaction } = blotterTransactionRFQExpired;
+        setBlotterdata((prevBlotterData) => {
+          return prevBlotterData.filter(
+            (tblData, index) =>
+              tblData.pK_TransactionID !== transaction.pK_TransactionID
+          );
+        });
+        dispatch(BlotterTransactionRFQExpired(null));
+      } catch (error) {
+        console.log(error, "error in blotterTransactionRFQExpired");
+      }
+    }
+  }, [blotterTransactionRFQExpired]);
+
+  useEffect(() => {
+    if (blotterTransactionAdded !== null) {
+      try {
+        const { transaction } = blotterTransactionAdded;
+        let ishasAlready = blotterdata.find(
+          (data, index) =>
+            data.pK_TransactionID === transaction.pK_TransactionID
+        );
+        if (!ishasAlready) {
+          setBlotterdata([transaction, ...blotterdata]);
+          dispatch(BlotterTransactionAdded(null));
+        }
+      } catch (error) {
+        console.log(error, "error in blotterTransactionAdded");
+      }
+    }
+  }, [blotterTransactionAdded]);
+  useEffect(() => {
+    if (blotterTransactionAccepted !== null) {
+      try {
+        const { transaction } = blotterTransactionAccepted;
+        setBlotterdata((prevBlotterData) => {
+          return prevBlotterData.filter(
+            (tblData, index) =>
+              tblData.pK_TransactionID !== transaction.pK_TransactionID
+          );
+        });
+        dispatch(BlotterTransactionAccepted(null));
+      } catch (error) {
+        console.log(error, "error in blotterTransactionRFQExpired");
+      }
+    }
+  }, [blotterTransactionAccepted]);
+  useEffect(() => {
+    if (blotterTransactionAssigned !== null) {
+      try {
+        const {
+          transactionID,
+          treasuryPersonID,
+          statusID,
+          statusForAssignedUser,
+          statusForOtherTreasury,
+        } = blotterTransactionAssigned;
+
+        setBlotterdata((prevBlotterData) =>
+          prevBlotterData.map((tableData) => {
+            if (tableData.transactionID === transactionID) {
+              if (tableData.treasuryPersonID === treasuryPersonID) {
+                return {
+                  ...tableData,
+                  status: statusForAssignedUser,
+                  statusID: statusID,
+                };
+              } else {
+                return {
+                  ...tableData,
+                  status: statusForOtherTreasury,
+                  statusID: statusID,
+                };
+              }
+            }
+
+            // ⚠️ Add this to return unchanged rows
+            return tableData;
+          })
+        );
+        dispatch(BlotterTransactionAssigned(null));
+      } catch (error) {
+        console.log(error, "error in blotterTransactionAssigned");
+      }
+    }
+  }, [blotterTransactionAssigned]);
 
   //TXN ID PopOver Functions Starts
   const handleOpenChange = (newOpen) => {
@@ -1099,7 +1215,35 @@ const OutstandingDeals = () => {
       className: "ff-poppins fw-bold",
       width: 60,
       render: (text, record) => {
-        return formatDateTimeToUTCTime(text);
+        // if the isRFQ true and status is 2 or 5 and time is ended true
+        let Data = { PK_TransactionID: record.pK_TransactionID };
+        // ExpireRFQTransaction({navigate, Data})
+        let isRFQ = record.isRFQ
+          ? (record.statusID === 2 || record.statusID === 5) &&
+            record.rfqTimerDetails !== null &&
+            record.rfqTimerDetails?.isEnded === false
+            ? true
+            : false
+          : false;
+        let rfqTimer =
+          isRFQ && record.rfqTimerDetails.endTime
+            ? convertDateTimeIntoLocal(record.rfqTimerDetails.endTime)
+            : null;
+        console.log(rfqTimer, text, "rfqTimerrfqTimer");
+        return (
+          <span>
+            {formatDateTimeToUTCTime(text)}{" "}
+            {isRFQ && (
+              <RFQTImer
+                endTime={rfqTimer}
+                dispatch={dispatch}
+                apiFunction={ExpireRFQTransaction}
+                navigate={navigate}
+                Data={Data}
+              />
+            )}
+          </span>
+        );
       },
     },
     // LC No.
@@ -1223,50 +1367,7 @@ const OutstandingDeals = () => {
         // };
         return (
           <div className='col-action text-nowrap text-center d-flex gap-1'>
-            {record.statusID === 6 ? (
-              <>
-                <CustomButton
-                  icon={<i className='icon-check'></i>}
-                  className='btn btn-sm btn-danger'
-                  applyClass={"ActionButton"}
-                  onClick={() =>
-                    handleAcceptTransactionCancellation(record.pK_TransactionID)
-                  }
-                />
-                <CustomButton
-                  icon={<i className='icon-close '></i>}
-                  className='btn btn-sm btn-success '
-                  onClick={() =>
-                    handleRejectTransactionCancellation(record.pK_TransactionID)
-                  }
-                />
-              </>
-            ) : record.statusID === 5 ? (
-              <>
-                {record.isRFQ === true ? (
-                  <>
-                    <CustomButton
-                      icon={<i className='icon-open '></i>}
-                      className='btn btn-sm btn-primary'
-                      onClick={() => openViewDeal(record)}
-                    />
-                  </>
-                ) : (
-                  <>
-                    <CustomButton
-                      icon={<i className='icon-check'></i>}
-                      className='btn btn-sm btn-success '
-                      onClick={() => acceptTransaction(record)}
-                    />
-                    <CustomButton
-                      icon={<i className='icon-close '></i>}
-                      className='btn btn-sm btn-danger '
-                      onClick={() => rejectTransaction(record)}
-                    />
-                  </>
-                )}
-              </>
-            ) : record.statusID === 4 ? null : record.statusID === 2 ? (
+            {record.statusID === 2 ? (
               <>
                 <CustomButton
                   icon={
@@ -1276,6 +1377,66 @@ const OutstandingDeals = () => {
                   onClick={() => handleClickAssignTransaction(record)}
                 />
               </>
+            ) : Number(record?.treasuryPersonID) ===
+              Number(localStorage.getItem("userID")) ? (
+              record.statusID === 6 ? (
+                <>
+                  <CustomButton
+                    icon={<i className='icon-check'></i>}
+                    className='btn btn-sm btn-danger'
+                    applyClass={"ActionButton"}
+                    onClick={() =>
+                      handleAcceptTransactionCancellation(
+                        record.pK_TransactionID
+                      )
+                    }
+                  />
+                  <CustomButton
+                    icon={<i className='icon-close'></i>}
+                    className='btn btn-sm btn-success '
+                    onClick={() =>
+                      handleRejectTransactionCancellation(
+                        record.pK_TransactionID
+                      )
+                    }
+                  />
+                </>
+              ) : record.statusID === 5 ? (
+                <>
+                  {record.isRFQ === true ? (
+                    <>
+                      <CustomButton
+                        icon={<i className='icon-open '></i>}
+                        className='btn btn-sm btn-primary'
+                        onClick={() => openViewDeal(record)}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <CustomButton
+                        icon={<i className='icon-check'></i>}
+                        className='btn btn-sm btn-success '
+                        onClick={() => acceptTransaction(record)}
+                      />
+                      <CustomButton
+                        icon={<i className='icon-close '></i>}
+                        className='btn btn-sm btn-danger '
+                        onClick={() => rejectTransaction(record)}
+                      />
+                    </>
+                  )}
+                </>
+              ) : record.statusID === 4 ? null : record.statusID === 2 ? (
+                <>
+                  <CustomButton
+                    icon={
+                      <i className='icon-user-check blotterTableIconSize '></i>
+                    }
+                    className='btn  btn-primary'
+                    onClick={() => handleClickAssignTransaction(record)}
+                  />
+                </>
+              ) : null
             ) : null}
             {/* 
             <CustomButton
@@ -1316,11 +1477,18 @@ const OutstandingDeals = () => {
             ) : (
               <span className='w-30'></span>
             )}
-            <CustomButton
-              icon={<i className='icon-chat2 '></i>}
-              className='btn btn-sm btn-danger chat-btn-trigger'
-              onClick={() => handleClickChat(record.txnid)}
-            />
+            {(record.statusID === 4 || record.statusID === 5) &&
+            Number(record.treasuryPersonID) ===
+              Number(localStorage.getItem("userID")) ? (
+              <CustomButton
+                icon={<i className='icon-chat2 '></i>}
+                className='btn btn-sm btn-danger chat-btn-trigger'
+                onClick={() => handleClickChat(record.txnid)}
+              />
+            ) : (
+              <span className='w-30'></span>
+            )}
+
             <CustomButton
               onClick={() => handleClickInfo(record)}
               icon={

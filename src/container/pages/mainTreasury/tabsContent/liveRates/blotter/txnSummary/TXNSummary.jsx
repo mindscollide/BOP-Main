@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import GlobalTable from "../../../../../../../components/common/table/GlobalTable";
 import IconElement from "../../../../../../../components/common/IconElement/IconElement";
 import { useDispatch } from "react-redux";
@@ -27,10 +27,29 @@ import {
   AcceptRFQTransaction,
   RejectRFQTransaction,
   RequestCancellation,
+  CancelPendingTransactionApi,
 } from "../BlotterActions";
+import CancelReasonModal from "../cancelReasonModal/cancelReasonModal";
+import { useMqttClient } from "@/components/utils/mqttConnection";
+import {
+  BlotterTransactionAccepted,
+  BlotterTransactionAdded,
+  BlotterTransactionRFQExpired,
+} from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 const TXNSummary = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const blotterTransactionRFQExpired = useSelector(
+    (state) => state.RealtimeActionsSlice.BlotterTransactionRFQExpired
+  );
+
+  const blotterTransactionAccepted = useSelector(
+    (state) => state.RealtimeActionsSlice.BlotterTransactionAccepted
+  );
+  const [cancelReasonModal, setCancelReasonModal] = useState(false);
+  const [cancelReasonComment, setCancelReasonComment] = useState("");
+  const [cancelType, setCancelType] = useState("");
+  const [cancelTransactionID, setCancelTransactionID] = useState(0);
 
   //HardCoded Filter Values start
   const TXN_ID_OPTIONS = [
@@ -134,8 +153,10 @@ const TXNSummary = () => {
 
   useEffect(() => {
     try {
-      let Data = { sRow: 0, Length: 10 };
-      dispatch(BlotterDataAPI({ navigate, Data }));
+      if (GlobalStateGetBlotterData === null) {
+        let Data = { sRow: 0, Length: 10 };
+        dispatch(BlotterDataAPI({ navigate, Data }));
+      }
     } catch (error) {
       console.log(error, "error");
     }
@@ -193,6 +214,39 @@ const TXNSummary = () => {
       console.log(error, "error");
     }
   }, [GlobalStateGetBlotterData]);
+
+  useEffect(() => {
+    if (blotterTransactionRFQExpired !== null) {
+      try {
+        const { transaction } = blotterTransactionRFQExpired;
+        setBlotterdata([transaction, ...blotterdata]);
+        dispatch(BlotterTransactionRFQExpired(null));
+      } catch (error) {
+        console.log(error, "error in blotterTransactionRFQExpired");
+      }
+    }
+  }, [blotterTransactionRFQExpired]);
+
+  // useEffect(() => {}, [blotterTransactionAssigned]);
+  useEffect(() => {
+    if (blotterTransactionAccepted !== null) {
+      try {
+        const { transaction } = blotterTransactionAccepted;
+
+        setBlotterdata((prevBlotterData) =>
+          prevBlotterData.map((item) =>
+            item.pK_TransactionID === transaction.pK_TransactionID
+              ? transaction
+              : item
+          )
+        );
+
+        dispatch(BlotterTransactionAccepted(null));
+      } catch (error) {
+        console.log(error, "error in blotterTransactionRFQExpired");
+      }
+    }
+  }, [blotterTransactionAccepted]);
 
   //TXN ID PopOver Functions Starts
   const handleOpenChange = (newOpen) => {
@@ -815,10 +869,43 @@ const TXNSummary = () => {
       let Data = { PK_TransactionID: transactionID, Comment: "Hello" };
       dispatch(RejectRFQTransaction({ Data, navigate }));
     } else if (type === "Cancelled") {
+      setCancelReasonModal(true);
+      setCancelType(type);
+      setCancelTransactionID(transactionID);
       let Data = { PK_TransactionID: transactionID, Comment: "Hello" };
       dispatch(RequestCancellation({ Data, navigate }));
+    } else if (type === "CancelTransaction") {
+      setCancelReasonModal(true);
+      setCancelType(type);
+      setCancelTransactionID(transactionID);
+
+      let Data = { PK_TransactionID: transactionID, Comment: "Hello" };
+      dispatch(CancelPendingTransactionApi({ navigate, Data }));
     }
   };
+
+  const handleClickReasonSubmit = useCallback(() => {
+    if (cancelType === "Cancelled") {
+      let Data = {
+        PK_TransactionID: cancelTransactionID,
+        Comment: cancelReasonComment,
+      };
+      dispatch(RequestCancellation({ Data, navigate }));
+    } else if (cancelType === "CancelTransaction") {
+      let Data = {
+        PK_TransactionID: cancelTransactionID,
+        Comment: cancelReasonComment,
+      };
+      dispatch(CancelPendingTransactionApi({ navigate, Data }));
+    }
+  }, [cancelType, cancelTransactionID, cancelReasonModal, cancelReasonComment]);
+
+  const handleCloseReasonModal = useCallback(() => {
+    setCancelReasonModal(false);
+    setCancelType("");
+    setCancelTransactionID(0);
+    setCancelReasonComment("");
+  }, [cancelType, cancelTransactionID, cancelReasonModal, cancelReasonComment]);
 
   const Treasurycolumns = [
     {
@@ -1307,11 +1394,11 @@ const TXNSummary = () => {
               ) : (
                 <span className='w-30'></span>
               )}
-              <CustomButton
+              {/* <CustomButton
                 icon={<i className='icon-chat2 '></i>}
                 className='btn btn-sm btn-danger chat-btn-trigger'
                 onClick={() => handleClickChat(record.txnid)}
-              />
+              /> */}
               <CustomButton
                 onClick={() => handleClickInfo(record)}
                 icon={
@@ -1628,6 +1715,7 @@ const TXNSummary = () => {
       width: 80,
       ellipsis: true,
       render: (text, record) => {
+        //  if the rfq is true and status  4 after timer has elapsed then call expired
         if (text !== undefined && text !== null && text !== "") {
           return formatDateTimeToUTCTime(text);
         }
@@ -1719,13 +1807,26 @@ const TXNSummary = () => {
                     }
                   />
                 </>
-              ) : record.statusID === 1 && record.isRFQ === true ? (
+              ) : record.statusID === 1 ? (
                 <>
                   <CustomButton
                     icon={<i className='icon-close'></i>}
                     className='btn btn-sm btn-danger me-1 blotterCheckerButton '
                     onClick={() =>
                       handleCheckerAccept(record.pK_TransactionID, "Cancelled")
+                    }
+                  />
+                </>
+              ) : record.statusID === 2 || record.statusID === 5 ? (
+                <>
+                  <CustomButton
+                    icon={<i className='icon-close'></i>}
+                    className='btn btn-sm btn-danger me-1 blotterCheckerButton '
+                    onClick={() =>
+                      handleCheckerAccept(
+                        record.pK_TransactionID,
+                        "CancelTransaction"
+                      )
                     }
                   />
                 </>
@@ -1802,11 +1903,14 @@ const TXNSummary = () => {
         return (
           <>
             <div className='col-chat text-nowrap text-center'>
-              <CustomButton
-                icon={<i className='icon-chat2'></i>}
-                className='btn btn-sm btn-danger chat-btn-trigger'
-                onClick={() => handleClickChat(record.txnid)}
-              />
+              {record.statusID === 5 || record.statusID === 4 ? (
+                <CustomButton
+                  icon={<i className='icon-chat2'></i>}
+                  className='btn btn-sm btn-danger chat-btn-trigger'
+                  onClick={() => handleClickChat(record.txnid)}
+                />
+              ) : null}
+
               <CustomButton
                 onClick={() => handleClickInfo(record)}
                 icon={
@@ -2119,7 +2223,7 @@ const TXNSummary = () => {
       width: 80,
       render: (text, record) => {
         if (text !== undefined && text !== null && text !== "") {
-          return formatDateTimeToUTCTime(text);
+          return <span>{formatDateTimeToUTCTime(text)}</span>;
         }
       },
     },
@@ -2224,11 +2328,55 @@ const TXNSummary = () => {
         return (
           <>
             <div className='col-chat text-nowrap text-center'>
-              <CustomButton
-                icon={<i className='icon-chat2'></i>}
-                className='btn btn-sm btn-danger chat-btn-trigger'
-                onClick={() => handleClickChat(record.txnid)}
-              />
+              {record.statusID === 4 && record.isRFQ === true ? (
+                <>
+                  <CustomButton
+                    icon={<i className='icon-check'></i>}
+                    className='btn btn-sm btn-success me-1 blotterCheckerButton'
+                    onClick={() =>
+                      handleCheckerAccept(record.pK_TransactionID, "Accepted")
+                    }
+                  />
+                  <CustomButton
+                    icon={<i className='icon-trash'></i>}
+                    className='btn btn-sm btn-danger me-1 blotterCheckerButton '
+                    onClick={() =>
+                      handleCheckerAccept(record.pK_TransactionID, "Rejected")
+                    }
+                  />
+                </>
+              ) : record.statusID === 1 ? (
+                <>
+                  <CustomButton
+                    icon={<i className='icon-close'></i>}
+                    className='btn btn-sm btn-danger me-1 blotterCheckerButton '
+                    onClick={() =>
+                      handleCheckerAccept(record.pK_TransactionID, "Cancelled")
+                    }
+                  />
+                </>
+              ) : record.statusID === 2 || record.statusID === 5 ? (
+                <>
+                  <CustomButton
+                    icon={<i className='icon-close'></i>}
+                    className='btn btn-sm btn-danger me-1 blotterCheckerButton '
+                    onClick={() =>
+                      handleCheckerAccept(
+                        record.pK_TransactionID,
+                        "CancelTransaction"
+                      )
+                    }
+                  />
+                </>
+              ) : null}
+              {record.statusID === 5 || record.statusID === 4 ? (
+                <CustomButton
+                  icon={<i className='icon-chat2'></i>}
+                  className='btn btn-sm btn-danger chat-btn-trigger'
+                  onClick={() => handleClickChat(record.txnid)}
+                />
+              ) : null}
+
               <CustomButton
                 onClick={() => handleClickInfo(record)}
                 icon={
@@ -2276,6 +2424,17 @@ const TXNSummary = () => {
         setShowCommentModal={setShowCommentModal}
         showCommentModal={showCommentModal}
       />
+      {cancelReasonModal && (
+        <CancelReasonModal
+          cancelReasonModal={cancelReasonModal}
+          setCancelReasonModal={setCancelReasonModal}
+          cancelReasonComment
+          setCancelReasonComment
+          handleClickReasonSubmit={handleClickReasonSubmit}
+          handleCloseReasonModal={handleCloseReasonModal}
+        />
+      )}
+
       <InfoTransaction InfoRecord={InfoRecord} setInfoRecord={setInfoRecord} />
     </>
   );
