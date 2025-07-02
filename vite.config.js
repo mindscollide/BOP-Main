@@ -6,6 +6,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     historyApiFallback: true,
+    host: true,
+    port: 5000,
   },
   resolve: {
     alias: {

@@ -147,7 +147,7 @@
   background-color: #096fed !important;
   border-color: #096fed !important;
 }
-.publishForwardsBtn_active {
+/* .publishForwardsBtn_active {
   border-radius: 4px !important;
   font-size: 14px !important;
   font-weight: 500 !important;
@@ -156,10 +156,19 @@
   -webkit-transition: all 0.3s ease-in !important;
   background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
   border-color: #feac78 !important;
-}
+} */
 .publishForwardsBtn:is(:hover, :focus, :focus-visible, :visited, :active) {
   background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
   border-color: #feac78 !important;
+}
+.publishForwardsBtn:disabled {
+  background-color: var(---color-light-gray) !important;
+  border-color: var(---color-light-gray) !important; 
+  cursor: default !important ;
+}
+.publishForwardsBtn:disabled:is(:hover, :focus, :focus-visible, :visited, :active) {
+  background-color: var(---color-light-gray) !important;
+  border-color: var(---color-light-gray) !important; 
 }
 /* End Publish Forwards Button */
 

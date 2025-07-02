@@ -18,10 +18,11 @@ import { setActiveTab } from "@/container/pages/mainCorporate/rfqModal/RFQSlicer
 import { useSelector } from "react-redux";
 import { setActiveTreasuryTab } from "@/store/BlotterSlicer/BlotterSlicer";
 import { useDispatch } from "react-redux";
+import { BlotterDataAPI, GetBlotterOutstandingDealsDataAPI } from "../BlotterActions";
 
 const BlotterHeader = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [openNopModal, setOpenNopModal] = useState(false);
   const [openExportDiv, setOpenExportDiv] = useState(false);
   const [openMailModal, setOpenMailModal] = useState(false);
@@ -31,7 +32,19 @@ const BlotterHeader = () => {
   const activeTab = useSelector(
     (state) => state.BlotterSlicer.activeTabBlotter
   );
-  console.log(activeTab, "activeTabactiveTab")
+
+  useEffect(() => {
+    try {
+      let Data = { sRow: 0, Length: 10 };
+      dispatch(BlotterDataAPI({ navigate, Data }));
+      if (isTreasury) {
+        dispatch(GetBlotterOutstandingDealsDataAPI({ Data, navigate }));
+      }
+    } catch (error) {
+      console.log(error, "error");
+    }
+  }, []);
+  console.log(activeTab, "activeTabactiveTab");
   const tabsData = [
     {
       title: "TXN Summary",
@@ -56,7 +69,7 @@ const BlotterHeader = () => {
   };
 
   const handleTabChange = (tabTitle) => {
-    console.log(tabTitle, "tabTitletabTitletabTitle")
+    console.log(tabTitle, "tabTitletabTitletabTitle");
     dispatch(setActiveTreasuryTab(tabTitle));
   };
 

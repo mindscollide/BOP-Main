@@ -14,15 +14,32 @@ const RealtimeActionsSlice = createSlice({
     categoryisAdded: null,
     categoryisUpdated: null,
     categoryisDeleted: null,
+
     BlotterTransactionRFQExpired: null,
+    BlotterTransactionRFQExpiredForTreasury: null,
+    
     BlotterTransactionAdded: null,
+    BlotterTransactionAddedForTreasury: null,
+
     BlotterTransactionAssigned: null,
+    BlotterTransactionAssignedForTreasury: null,
+
     BlotterTransactionAccepted: null,
+    BlotterTransactionAcceptedForTreasury: null,
+
     BlotterTransactionRFQQuoted: null,
+    BlotterTransactionRFQQuotedForTreasury: null,
+
     BlotterTransactionCancellationRequestData: null,
+    BlotterTransactionCancellationRequestDataForTreasury: null,
+
     BlotterTranscationCancelled: null,
+    BlotterTranscationCancelledForTreasury: null,
+
     BlotterTransactionRejected: null,
-    TransactionAssignedByTreasury: null
+    BlotterTransactionRejectedForTreasury: null,
+
+    TransactionAssignedByTreasury: null,
   },
   reducers: {
     setMarketTimingsUpdated(state, { payload }) {
@@ -61,27 +78,52 @@ const RealtimeActionsSlice = createSlice({
     BlotterTransactionRFQExpired(state, { payload }) {
       state.BlotterTransactionRFQExpired = payload;
     },
+    BlotterTransactionRFQExpiredForTreasury(state, { payload }) {
+      state.BlotterTransactionRFQExpiredForTreasury = payload;
+    },
     BlotterTransactionAdded(state, { payload }) {
       state.BlotterTransactionAdded = payload;
+    },
+    BlotterTransactionAddedForTreasury(state, { payload }) {
+      state.BlotterTransactionAddedForTreasury = payload;
     },
     BlotterTransactionAssigned(state, { payload }) {
       state.BlotterTransactionAssigned = payload;
     },
+    BlotterTransactionAssignedForTreasury(state, { payload }) {
+      state.BlotterTransactionAssignedForTreasury = payload;
+    },
     BlotterTransactionAccepted(state, { payload }) {
       state.BlotterTransactionAccepted = payload;
+    },
+    BlotterTransactionAcceptedForTreasury(state, { payload }) {
+      state.BlotterTransactionAcceptedForTreasury = payload;
     },
     BlotterTransactionRFQQuoted(state, { payload }) {
       state.BlotterTransactionRFQQuoted = payload;
     },
+    BlotterTransactionRFQQuotedForTreasury(state, { payload }) {
+      state.BlotterTransactionRFQQuotedForTreasury = payload;
+    },
     BlotterTransactionCancellationRequest(state, { payload }) {
       state.BlotterTransactionCancellationRequestData = payload;
+    },
+    BlotterTransactionCancellationRequestForTreasury(state, { payload }) {
+      state.BlotterTransactionCancellationRequestDataForTreasury = payload;
     },
     BlotterTranscationCancelled(state, { payload }) {
       state.BlotterTranscationCancelled = payload;
     },
+    BlotterTranscationCancelledForTreasury(state, { payload }) {
+      state.BlotterTranscationCancelledForTreasury = payload;
+    },
     BlotterTransactionRejected(state, { payload }) {
       state.BlotterTransactionRejected = payload;
     },
+    BlotterTransactionRejectedForTreasury(state, { payload }) {
+      state.BlotterTransactionRejectedForTreasury = payload;
+    },
+
     TransactionAssignedByTreasury(state, { payload }) {
       state.TransactionAssignedByTreasury = payload;
     },
@@ -89,6 +131,14 @@ const RealtimeActionsSlice = createSlice({
 });
 
 export const {
+  BlotterTransactionRFQExpiredForTreasury,
+  BlotterTransactionAddedForTreasury,
+  BlotterTransactionAssignedForTreasury,
+  BlotterTransactionAcceptedForTreasury,
+  BlotterTransactionRFQQuotedForTreasury,
+  BlotterTransactionCancellationRequestForTreasury,
+  BlotterTranscationCancelledForTreasury,
+  BlotterTransactionRejectedForTreasury,
   TransactionAssignedByTreasury,
   BlotterTransactionRejected,
   BlotterTranscationCancelled,

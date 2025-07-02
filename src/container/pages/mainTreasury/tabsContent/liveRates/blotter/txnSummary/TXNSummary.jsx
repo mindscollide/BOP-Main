@@ -117,6 +117,8 @@ const TXNSummary = () => {
 
   //local states
   const [blotterdata, setBlotterdata] = useState([]);
+
+  console.log(blotterdata, "blotterdatablotterdata")
   const [totalRecord, setTotalRecords] = useState(0);
   const [sRow, setRow] = useState(0);
   const [hasReachedBottom, setHasReachedBottom] = useState(false);
@@ -173,28 +175,6 @@ const TXNSummary = () => {
   const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
 
   const isCorproate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
-
-  console.log(
-    {
-      isShouldTrue: totalRecord !== blotterdata.length,
-      totalRecord,
-      blotterLength: blotterdata.length,
-      sRow,
-      hasReachedBottom,
-    },
-    "totalRecordtotalRecord"
-  );
-
-  useEffect(() => {
-    try {
-      if (GlobalStateGetBlotterData === null) {
-        let Data = { sRow: 0, Length: 10 };
-        dispatch(BlotterDataAPI({ navigate, Data }));
-      }
-    } catch (error) {
-      console.log(error, "error");
-    }
-  }, []);
 
   useTableScrollBottom(
     () => {
@@ -1912,7 +1892,6 @@ const TXNSummary = () => {
       width: 80,
       render: (text, record) => {
         let Data = { PK_TransactionID: record.pK_TransactionID };
-        // ExpireRFQTransaction({navigate, Data})
         let isRFQ = record.isRFQ
           ? record.statusID === 4 &&
             record.rfqTimerDetails !== null &&
@@ -2087,7 +2066,7 @@ const TXNSummary = () => {
               {record.statusID === 5 || record.statusID === 4 ? (
                 <CustomButton
                   icon={<i className='icon-chat2'></i>}
-                  className='btn btn-sm btn-danger chat-btn-trigger'
+                  className='btn btn-sm btn-danger chat-btn-trigge blotterCheckerButtonr'
                   onClick={() =>
                     handleClickChat(record.txnid, record.treasuryPersonID)
                   }

@@ -19,9 +19,26 @@ import {
 import { FeDiscountingPublishedAction } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { InputCell } from "@/components/common/inputField/InputCell";
 
+/**
+ * FeDiscountingTable component renders a table for displaying and managing 
+ * discounting rates for financial instruments. It fetches data from the Redux 
+ * store and allows users to input and publish updated rates.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered component.
+ *
+ * @example
+ * return (
+ *   <FeDiscountingTable />
+ * );
+ */
 const FeDiscountingTable = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const marketStatus = useSelector(
+    (state) => state.RealtimeActionsSlice.marketStatus
+  );
+
   const [columnsData, setColumnsData] = useState([]);
   const [rowData, setRowData] = useState([]);
   const getAllInstrument = useSelector(
@@ -139,6 +156,7 @@ const FeDiscountingTable = () => {
         <CustomButton
           applyClass='publishForwardsBtn'
           value={"Publish FE Discounting"}
+          disabled={marketStatus === false ? true : false}
           onClick={handlePublishDiscount}
         />
       </span>

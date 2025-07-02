@@ -14,13 +14,20 @@ import { useMqttClient } from "@/components/utils/mqttConnection";
 
 import {
   BlotterTransactionAccepted,
+  BlotterTransactionAcceptedForTreasury,
   BlotterTransactionAdded,
+  BlotterTransactionAddedForTreasury,
   BlotterTransactionAssigned,
+  BlotterTransactionAssignedForTreasury,
   BlotterTransactionCancellationRequest,
+  BlotterTransactionCancellationRequestForTreasury,
   BlotterTransactionRFQExpired,
   BlotterTransactionRFQQuoted,
+  BlotterTransactionRFQQuotedForTreasury,
   BlotterTransactionRejected,
+  BlotterTransactionRejectedForTreasury,
   BlotterTranscationCancelled,
+  BlotterTranscationCancelledForTreasury,
   FeDiscountingPublishedAction,
   NonFeDiscountingPublishedAction,
   TransactionAssignedByTreasury,
@@ -144,24 +151,31 @@ const Dashboard = () => {
           break;
         case "BLOTTER_TRANSACTION_ADDED":
           dispatch(BlotterTransactionAdded(data.payload));
+          dispatch(BlotterTransactionAddedForTreasury(data.payload))
           break;
         case "BLOTTER_TRANSACTION_ASSIGNED":
           dispatch(BlotterTransactionAssigned(data.payload));
+          dispatch(BlotterTransactionAssignedForTreasury(data.payload))
           break;
         case "BLOTTER_TRANSACTION_ACCEPTED":
           dispatch(BlotterTransactionAccepted(data.payload));
+          dispatch(BlotterTransactionAcceptedForTreasury(data.payload));
           break;
         case "BLOTTER_TRANSACTION_RFQ_QUOTED":
           dispatch(BlotterTransactionRFQQuoted(data.payload));
+          dispatch(BlotterTransactionRFQQuotedForTreasury(data.payload))
           break;
         case "BLOTTER_TRANSACTION_CANCELLATION_REQUEST":
           dispatch(BlotterTransactionCancellationRequest(data.payload));
+          dispatch(BlotterTransactionCancellationRequestForTreasury(data.payload))
           break;
         case "BLOTTER_TRANSACTION_CANCELLED":
           dispatch(BlotterTranscationCancelled(data.payload));
+          dispatch(BlotterTranscationCancelledForTreasury(data.payload))
           break;
         case "BLOTTER_TRANSACTION_REJECTED":
           dispatch(BlotterTransactionRejected(data.payload));
+          dispatch(BlotterTransactionRejectedForTreasury(data.payload))
           break;
         case "BLOTTER_TRANSACTION_ASSIGNED_TO_TREASURY":
           dispatch(TransactionAssignedByTreasury(data.payload));

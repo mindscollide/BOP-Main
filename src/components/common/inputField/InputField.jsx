@@ -20,6 +20,8 @@ const InputFIeld = ({
   className,
   defaultValue,
   accept,
+  onClick,
+  onKeyDown
 }) => (
   <input
     value={value}
@@ -39,6 +41,8 @@ const InputFIeld = ({
     required={required}
     onFocus={onFocus}
     accept={accept}
+    onClick={onClick}
+    onKeyDown={onKeyDown}
   />
 );
 export default InputFIeld;

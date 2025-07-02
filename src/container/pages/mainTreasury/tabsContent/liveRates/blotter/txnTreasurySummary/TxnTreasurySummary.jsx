@@ -34,53 +34,53 @@ import CancelReasonModal from "../cancelReasonModal/cancelReasonModal";
 import { useMqttClient } from "@/components/utils/mqttConnection";
 import {
   BlotterTransactionAccepted,
+  BlotterTransactionAcceptedForTreasury,
   BlotterTransactionAdded,
   BlotterTransactionCancellationRequest,
+  BlotterTransactionCancellationRequestForTreasury,
   BlotterTransactionRFQExpired,
   BlotterTransactionRFQQuoted,
+  BlotterTransactionRFQQuotedForTreasury,
+  BlotterTransactionRejectedForTreasury,
+  BlotterTranscationCancelledForTreasury,
 } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { RFQTImer } from "@/components/utils/Timer";
 import { convertDateTimeIntoLocal } from "@/utils/formatters";
 const TXNTreasurySummary = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const blotterTransactionRFQExpired = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTransactionRFQExpired
-  );
-
-  const blotterTransactionRFQQuoted = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTransactionRFQQuoted
-  );
-
-  const blotterTransactionAccepted = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTransactionAccepted
-  );
-  const blotterTransactionCancellationRequest = useSelector(
+  const blotterTransactionRFQExpiredForTreasury = useSelector(
     (state) =>
-      state.RealtimeActionsSlice.BlotterTransactionCancellationRequestData
-  );
-  const blotterTransactionAdded = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTransactionAdded
+      state.RealtimeActionsSlice.BlotterTransactionRFQExpiredForTreasury
   );
 
-  const blotterTranscationCancelled = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTranscationCancelled
+  const blotterTransactionRFQQuotedForTreasury = useSelector(
+    (state) => state.RealtimeActionsSlice.BlotterTransactionRFQQuotedForTreasury
   );
-  const blotterTransactionRejected = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTransactionRejected
+
+  const blotterTransactionAcceptedForTreasury = useSelector(
+    (state) => state.RealtimeActionsSlice.BlotterTransactionAcceptedForTreasury
+  );
+  const blotterTransactionCancellationRequestDataForTreasury = useSelector(
+    (state) =>
+      state.RealtimeActionsSlice
+        .BlotterTransactionCancellationRequestDataForTreasury
+  );
+  const blotterTransactionAddedForTreasury = useSelector(
+    (state) => state.RealtimeActionsSlice.BlotterTransactionAddedForTreasury
+  );
+
+  const blotterTranscationCancelledForTreasury = useSelector(
+    (state) => state.RealtimeActionsSlice.BlotterTranscationCancelledForTreasury
+  );
+  const blotterTransactionRejectedForTreasury = useSelector(
+    (state) => state.RealtimeActionsSlice.BlotterTransactionRejectedForTreasury
   );
 
   const [cancelReasonModal, setCancelReasonModal] = useState(false);
   const [cancelReasonComment, setCancelReasonComment] = useState("");
   const [cancelType, setCancelType] = useState("");
   const [cancelTransactionID, setCancelTransactionID] = useState(0);
-
-  console.log(
-    cancelReasonComment,
-    cancelType,
-    cancelTransactionID,
-    "cancelTransactionIDcancelTransactionID"
-  );
 
   //HardCoded Filter Values start
   const TXN_ID_OPTIONS = [
@@ -182,17 +182,6 @@ const TXNTreasurySummary = () => {
     "totalRecordtotalRecord"
   );
 
-  useEffect(() => {
-    try {
-      if (GlobalStateGetBlotterData === null) {
-        let Data = { sRow: 0, Length: 10 };
-        dispatch(BlotterDataAPI({ navigate, Data }));
-      }
-    } catch (error) {
-      console.log(error, "error");
-    }
-  }, []);
-
   useTableScrollBottom(
     () => {
       if (totalRecord !== blotterdata.length) {
@@ -247,26 +236,25 @@ const TXNTreasurySummary = () => {
   }, [GlobalStateGetBlotterData]);
 
   useEffect(() => {
-    if (blotterTransactionRFQExpired !== null) {
+    if (blotterTransactionRFQExpiredForTreasury !== null) {
       try {
-        const { transaction } = blotterTransactionRFQExpired;
+        const { transaction } = blotterTransactionRFQExpiredForTreasury;
         setBlotterdata([transaction, ...blotterdata]);
         dispatch(BlotterTransactionRFQExpired(null));
       } catch (error) {
         console.log(error, "error in blotterTransactionRFQExpired");
       }
     }
-  }, [blotterTransactionRFQExpired]);
+  }, [blotterTransactionRFQExpiredForTreasury]);
 
-  // useEffect(() => {}, [blotterTransactionAssigned]);
   useEffect(() => {
-    if (blotterTransactionAccepted !== null) {
+    if (blotterTransactionAcceptedForTreasury !== null) {
       try {
-        const { transaction } = blotterTransactionAccepted;
+        const { transaction } = blotterTransactionAcceptedForTreasury;
         let isAlreadyExist = blotterdata.find(
           (data2, index) =>
             data2.pK_TransactionID === transaction.pK_TransactionID
-        );
+      );
         if (isAlreadyExist !== undefined) {
           setBlotterdata((prevBlotterData) =>
             prevBlotterData.map((item) =>
@@ -276,20 +264,20 @@ const TXNTreasurySummary = () => {
             )
           );
         } else {
-          // setBlotterdata([transaction, ...blotterdata]);
+          setBlotterdata((prev) => [transaction, ...prev]);
         }
 
-        dispatch(BlotterTransactionAccepted(null));
+        dispatch(BlotterTransactionAcceptedForTreasury(null));
       } catch (error) {
         console.log(error, "error in blotterTransactionRFQExpired");
       }
     }
-  }, [blotterTransactionAccepted]);
+  }, [blotterTransactionAcceptedForTreasury]);
 
   useEffect(() => {
-    if (blotterTransactionRFQQuoted !== null) {
+    if (blotterTransactionRFQQuotedForTreasury !== null) {
       try {
-        const { transaction } = blotterTransactionRFQQuoted;
+        const { transaction } = blotterTransactionRFQQuotedForTreasury;
         setBlotterdata((prevBlotterData) => {
           return prevBlotterData.map((tblData, index) => {
             if (tblData.pK_TransactionID === transaction.pK_TransactionID) {
@@ -306,98 +294,103 @@ const TXNTreasurySummary = () => {
             return tblData;
           });
         });
-        dispatch(BlotterTransactionRFQQuoted(null));
+        dispatch(BlotterTransactionRFQQuotedForTreasury(null));
       } catch (error) {
         console.log(error, "error in blotterTransactionRFQQuoted");
       }
     }
-  }, [blotterTransactionRFQQuoted]);
+  }, [blotterTransactionRFQQuotedForTreasury]);
 
   useEffect(() => {
-    if (blotterTransactionCancellationRequest !== null) {
+    if (blotterTransactionCancellationRequestDataForTreasury !== null) {
       try {
-        try {
-          const { transaction } = blotterTransactionCancellationRequest;
-          let isAlreadyExist = blotterdata.find(
-            (data2, index) =>
-              data2.pK_TransactionID === transaction.pK_TransactionID
+        const { transaction } =
+          blotterTransactionCancellationRequestDataForTreasury;
+        let isAlreadyExist = blotterdata.find(
+          (data2, index) =>
+            data2.pK_TransactionID === transaction.pK_TransactionID
+        );
+        if (isAlreadyExist !== undefined) {
+          setBlotterdata((prevBlotterData) =>
+            prevBlotterData.filter(
+              (item) => item.pK_TransactionID !== transaction.pK_TransactionID
+            )
           );
-          if (isAlreadyExist !== undefined) {
-            setBlotterdata((prevBlotterData) =>
-              prevBlotterData.filter(
-                (item) => item.pK_TransactionID !== transaction.pK_TransactionID
-              )
-            );
-          }
-          dispatch(BlotterTransactionCancellationRequest(null));
-        } catch (error) {
-          console.log(error, "error in blotterTransactionRFQExpired");
         }
+        dispatch(BlotterTransactionCancellationRequestForTreasury(null));
       } catch (error) {
         console.log(error, "error in blotterTransactionCancellationRequest");
       }
     }
-  }, [blotterTransactionCancellationRequest]);
+  }, [blotterTransactionCancellationRequestDataForTreasury]);
 
   useEffect(() => {
-    if (blotterTranscationCancelled !== null) {
-      const { transaction } = blotterTranscationCancelled;
-      let isAlreadyExist = blotterdata.find(
-        (data2, index) =>
-          data2.pK_TransactionID === transaction.pK_TransactionID
-      );
-      if (isAlreadyExist !== undefined) {
-        setBlotterdata((prevBlotterData) =>
-          prevBlotterData.map((item) =>
-            item.pK_TransactionID === transaction.pK_TransactionID
-              ? transaction
-              : item
-          )
-        );
-      } else {
-        setBlotterdata([transaction, ...blotterdata]);
-      }
-    }
-  }, [blotterTranscationCancelled]);
-
-  useEffect(() => {
-    if (blotterTransactionRejected !== null) {
-      const { transaction } = blotterTransactionRejected;
-      let isAlreadyExist = blotterdata.find(
-        (data2, index) =>
-          data2.pK_TransactionID === transaction.pK_TransactionID
-      );
-      if (isAlreadyExist !== undefined) {
-        setBlotterdata((prevBlotterData) =>
-          prevBlotterData.map((item) =>
-            item.pK_TransactionID === transaction.pK_TransactionID
-              ? transaction
-              : item
-          )
-        );
-      } else {
-        setBlotterdata([transaction, ...blotterdata]);
-      }
-    }
-  }, [blotterTransactionRejected]);
-
-  useEffect(() => {
-    if (blotterTransactionAdded !== null) {
+    if (blotterTranscationCancelledForTreasury !== null) {
       try {
-        const { transaction } = blotterTransactionAdded;
-        let ishasAlready = blotterdata.find(
-          (data, index) =>
-            data.pK_TransactionID === transaction.pK_TransactionID
+        const { transaction } = blotterTranscationCancelledForTreasury;
+        let isAlreadyExist = blotterdata.find(
+          (data2, index) =>
+            data2.pK_TransactionID === transaction.pK_TransactionID
         );
-        if (!ishasAlready) {
+        if (isAlreadyExist !== undefined) {
+          setBlotterdata((prevBlotterData) =>
+            prevBlotterData.map((item) =>
+              item.pK_TransactionID === transaction.pK_TransactionID
+                ? transaction
+                : item
+            )
+          );
+        } else {
           setBlotterdata([transaction, ...blotterdata]);
-          dispatch(BlotterTransactionAdded(null));
         }
+        dispatch(BlotterTranscationCancelledForTreasury(null));
+      } catch (error) {}
+    }
+  }, [blotterTranscationCancelledForTreasury]);
+
+  useEffect(() => {
+    if (blotterTransactionRejectedForTreasury !== null) {
+      try {
+        const { transaction } = blotterTransactionRejectedForTreasury;
+        let isAlreadyExist = blotterdata.find(
+          (data2, index) =>
+            data2.pK_TransactionID === transaction.pK_TransactionID
+        );
+        if (isAlreadyExist !== undefined) {
+          setBlotterdata((prevBlotterData) =>
+            prevBlotterData.map((item) =>
+              item.pK_TransactionID === transaction.pK_TransactionID
+                ? transaction
+                : item
+            )
+          );
+        } else {
+          setBlotterdata([transaction, ...blotterdata]);
+        }
+        dispatch(BlotterTransactionRejectedForTreasury(null));
       } catch (error) {
-        console.log(error, "error in blotterTransactionAdded");
+        console.log(error, "error in blotterTransactionRejectedForTreasury");
       }
     }
-  }, [blotterTransactionAdded]);
+  }, [blotterTransactionRejectedForTreasury]);
+
+  // useEffect(() => {
+  //   if (blotterTransactionAdded !== null) {
+  //     try {
+  //       const { transaction } = blotterTransactionAdded;
+  //       let ishasAlready = blotterdata.find(
+  //         (data, index) =>
+  //           data.pK_TransactionID === transaction.pK_TransactionID
+  //       );
+  //       if (!ishasAlready) {
+  //         setBlotterdata([transaction, ...blotterdata]);
+  //         dispatch(BlotterTransactionAdded(null));
+  //       }
+  //     } catch (error) {
+  //       console.log(error, "error in blotterTransactionAdded");
+  //     }
+  //   }
+  // }, [blotterTransactionAdded]);
 
   //TXN ID PopOver Functions Starts
   const handleOpenChange = (newOpen) => {
@@ -1272,7 +1265,7 @@ const TXNTreasurySummary = () => {
       key: "amount1",
       dataIndex: "quantity",
       className: "ff-poppins fw-bold",
-      width: 60,
+      width: 80,
     },
     {
       title: (
@@ -1506,6 +1499,7 @@ const TXNTreasurySummary = () => {
                   // className='btn btn-danger '
                   size={"small"}
                   applyClass={"ActionButton"}
+                  onClick={() => handleCheckerAccept(record.pK_TransactionID, "Cancelled")}
                 />
               ) : null}
               {/* <CustomButton
@@ -1598,6 +1592,7 @@ const TXNTreasurySummary = () => {
         prefixCls='TXNSummary_Table'
         columns={Treasurycolumns}
         scroll={{ x: "max-content", y: 500 }}
+        rowClassName={(record) => record.statusID === 7 ? "isCancelled": ""}
       />
       <CommentModal
         comment={comment}

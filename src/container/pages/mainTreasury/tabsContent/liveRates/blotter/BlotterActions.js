@@ -31,7 +31,10 @@ import {
 } from "@/common/api_config";
 import { BlotterApi } from "@/common/apiend_points";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
-import { setViewDealModal } from "@/store/modalSlice/modalSlicer";
+import {
+  setRfqModalOpen,
+  setViewDealModal,
+} from "@/store/modalSlice/modalSlicer";
 import createPostAPI from "@/utils/axiosInstance";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
@@ -201,6 +204,7 @@ export const SaveSpotTransactionAPI = createAsyncThunk(
                 "Blotter_BlotterServiceManager_SaveSpotTransaction_01".toLowerCase()
               )
           ) {
+            dispatch(setRfqModalOpen(false));
             return {
               response: response.data.responseResult,
               message: "Spot transaction saved successfully",
@@ -638,7 +642,10 @@ export const AcceptTransactionAPI = createAsyncThunk(
 
 export const RejectTransactionAPI = createAsyncThunk(
   "Blotter/Reject",
-  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+  async (
+    { navigate, Data, setCancelReasonModal },
+    { dispatch, rejectWithValue }
+  ) => {
     try {
       const postAPI = createPostAPI(
         BlotterApi,
@@ -653,7 +660,9 @@ export const RejectTransactionAPI = createAsyncThunk(
       }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(RejectTransactionAPI({ navigate, Data }));
+        dispatch(
+          RejectTransactionAPI({ navigate, Data, setCancelReasonModal })
+        );
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -664,6 +673,9 @@ export const RejectTransactionAPI = createAsyncThunk(
                 "Blotter_BlotterServiceManager_RejectTransaction_01".toLowerCase()
               )
           ) {
+            if (typeof setCancelReasonModal === "function") {
+              setCancelReasonModal(false);
+            }
             return {
               response: response.data.responseResult,
               message: "Transaction rejected successfully",
@@ -763,7 +775,10 @@ export const AcceptTransactionCancellationRequest = createAsyncThunk(
 
 export const RejectTransactionCancellationRequest = createAsyncThunk(
   "Blotter/RejectTransactionCancellationRequest",
-  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+  async (
+    { navigate, Data, setCancelReasonModal },
+    { dispatch, rejectWithValue }
+  ) => {
     try {
       const postAPI = createPostAPI(
         BlotterApi,
@@ -783,6 +798,9 @@ export const RejectTransactionCancellationRequest = createAsyncThunk(
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
+          if (typeof setCancelReasonModal === "function") {
+            setCancelReasonModal(false);
+          }
           return {
             response: response.data.responseResult,
             message: "Cancellation request rejected successfully",
@@ -889,7 +907,10 @@ export const CancelTransaction = createAsyncThunk(
 
 export const RequestCancellation = createAsyncThunk(
   "Blotter/RequestCancellation",
-  async ({ navigate, Data, setCancelReasonModal }, { dispatch, rejectWithValue }) => {
+  async (
+    { navigate, Data, setCancelReasonModal },
+    { dispatch, rejectWithValue }
+  ) => {
     try {
       const postAPI = createPostAPI(
         BlotterApi,
@@ -916,7 +937,7 @@ export const RequestCancellation = createAsyncThunk(
                 "Blotter_BlotterServiceManager_RequestCancellation_01".toLowerCase()
               )
           ) {
-            setCancelReasonModal(false)
+            setCancelReasonModal(false);
             return {
               response: response.data.responseResult,
               message: "Cancellation requested successfully",
@@ -1066,7 +1087,10 @@ export const AcceptRFQTransaction = createAsyncThunk(
 
 export const RejectRFQTransaction = createAsyncThunk(
   "Blotter/RejectRFQTransaction",
-  async ({ navigate, Data, setCancelReasonModal }, { dispatch, rejectWithValue }) => {
+  async (
+    { navigate, Data, setCancelReasonModal },
+    { dispatch, rejectWithValue }
+  ) => {
     try {
       const postAPI = createPostAPI(
         BlotterApi,
@@ -1082,7 +1106,9 @@ export const RejectRFQTransaction = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(RejectRFQTransaction({ navigate, Data , setCancelReasonModal}));
+        dispatch(
+          RejectRFQTransaction({ navigate, Data, setCancelReasonModal })
+        );
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -1093,7 +1119,7 @@ export const RejectRFQTransaction = createAsyncThunk(
                 "Blotter_BlotterServiceManager_RejectRFQTransaction_01".toLowerCase()
               )
           ) {
-            setCancelReasonModal(false)
+            setCancelReasonModal(false);
             return {
               response: response.data.responseResult,
               message: "RFQ transaction rejected successfully",
@@ -1185,7 +1211,7 @@ export const SaveSpotTransactionRFQ = createAsyncThunk(
                 "Blotter_BlotterServiceManager_SaveSpotTransactionRFQ_01".toLowerCase()
               )
           ) {
-            setOpenRfqModal(false);
+            dispatch(setRfqModalOpen(false));
             return {
               response: response.data.responseResult,
               message: "Spot RFQ transaction saved successfully",
@@ -1474,7 +1500,7 @@ export const RFQTransactionQuotation = createAsyncThunk(
                 "Blotter_BlotterServiceManager_RFQTransactionQuotation_01".toLowerCase()
               )
           ) {
-            dispatch(setViewDealModal(false))
+            dispatch(setViewDealModal(false));
             return {
               response: response.data.responseResult,
               message: "RFQ quotation generated successfully",
@@ -2194,7 +2220,10 @@ export const GetNonFEDiscountingTransactionDetails = createAsyncThunk(
 
 export const CancelPendingTransactionApi = createAsyncThunk(
   "Blotter/CancelPendingTransactionApi",
-  async ({ navigate, Data , setCancelReasonModal}, { dispatch, rejectWithValue }) => {
+  async (
+    { navigate, Data, setCancelReasonModal },
+    { dispatch, rejectWithValue }
+  ) => {
     try {
       const postAPI = createPostAPI(
         BlotterApi,
@@ -2210,7 +2239,9 @@ export const CancelPendingTransactionApi = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(CancelPendingTransactionApi({ navigate, Data, setCancelReasonModal }));
+        dispatch(
+          CancelPendingTransactionApi({ navigate, Data, setCancelReasonModal })
+        );
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -2221,7 +2252,7 @@ export const CancelPendingTransactionApi = createAsyncThunk(
                 "Blotter_BlotterServiceManager_CancelPendingRFQTransaction_01".toLowerCase()
               )
           ) {
-            setCancelReasonModal(false)
+            setCancelReasonModal(false);
             return {
               response: response.data.responseResult,
               message: "Pending transaction cancelled successfully",

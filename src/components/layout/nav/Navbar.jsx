@@ -20,6 +20,10 @@ import {
   categoryisDeleted,
   categoryisUpdated,
 } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
+import {
+  setIBuySellData,
+  setRfqModalOpen,
+} from "@/store/modalSlice/modalSlicer";
 
 const GlobalNavbar = () => {
   const getAllCategoriesData = useSelector(
@@ -43,9 +47,12 @@ const GlobalNavbar = () => {
   const isCategoryDeleted = useSelector(
     (state) => state.RealtimeActionsSlice.categoryisDeleted
   );
+  const isRfqModalOpen = useSelector(
+    (state) => state.modalReducer.rfqModalOpen
+  );
+  console.log(isRfqModalOpen, "isRfqModalOpenisRfqModalOpen");
   const dispatch = useDispatch();
   const [selectedValue, setSelectedValue] = useState(1);
-  const [openRfqModal, setOpenRfqModal] = useState(false);
   const [
     openRfqModalForwardCorporateComponent,
     setOpenRfqModalForwardCorporateComponent,
@@ -88,8 +95,9 @@ const GlobalNavbar = () => {
   //handle RFQ Condition Under Certain tabs
   const onClickRFQ = () => {
     if (activeTab === "Spot") {
-      console.log("Handle Spot logic");
-      setOpenRfqModal(true);
+      console.log(typeof setRfqModalOpen, "Handle Spot logic");
+      dispatch(setIBuySellData(null)); // Dispatch the action to set the data in the Redux store
+      dispatch(setRfqModalOpen(true));
     } else if (activeTab === "Forwards") {
       console.log("Handle Forwards logic");
       setOpenRfqModalForwardCorporateComponent(true);
@@ -271,15 +279,7 @@ const GlobalNavbar = () => {
         </div>
       </div>
 
-      {/* Spot RFQ Modal  */}
-      {openRfqModal ? (
-        <>
-          <RFQModal
-            openRfqModal={openRfqModal}
-            setOpenRfqModal={setOpenRfqModal}
-          />
-        </>
-      ) : null}
+      {isRfqModalOpen && <RFQModal />}
 
       {/* Forwards RFQ Modal  */}
       {openRfqModalForwardCorporateComponent && (

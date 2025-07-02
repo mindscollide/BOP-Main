@@ -15,8 +15,12 @@ import {
   SaveSpotTransactionAPI,
   SaveSpotTransactionRFQ,
 } from "../../mainTreasury/tabsContent/liveRates/blotter/BlotterActions";
+import {
+  setIBuySellData,
+  setRfqModalOpen,
+} from "@/store/modalSlice/modalSlicer";
 
-const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
+const RFQModal = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const natureOfBusinessList = useSelector(
@@ -41,7 +45,12 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
   const GlobalStateInstrumentFX = useSelector(
     (state) => state.WatchListReducer.WatchListData
   );
+  const isRfqModalOpen = useSelector(
+    (state) => state.modalReducer.rfqModalOpen
+  );
 
+  const iBuySellData = useSelector((state) => state.modalReducer.IBuySellData);
+  console.log(iBuySellData, "iBuySellDataiBuySellData");
   //Local states
   const [natureOfBusinessOptions, setNatureOfBusinessOptions] = useState([]);
   console.log(
@@ -54,13 +63,13 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
     label: "",
   });
   const [selectedCurrency, setSelectedCurrency] = useState({
-    value: 0,
-    label: "",
+    value: 21,
+    label: "USDPKR",
   });
   const [amountData, setAmountData] = useState("");
   const [acNumberData, setAcNumberData] = useState("");
   const [lcNumberData, setLcNumberData] = useState("");
-  const [typeOptions, setTypeOptions] = useState([
+  const [typeOptions] = useState([
     { label: "Buy", value: 1 },
     { label: "Sell", value: 2 },
   ]);
@@ -77,8 +86,14 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
   });
 
   const onCloseRfq = () => {
-    setOpenRfqModal(false);
+    dispatch(setRfqModalOpen(false));
   };
+
+  useEffect(() => {
+    return () => {
+      dispatch(setIBuySellData(null));
+    };
+  }, []);
 
   useEffect(() => {
     if (natureOfBusinessList !== null) {
@@ -104,6 +119,23 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
       }
     }
   }, [natureOfBusinessList]);
+  useEffect(() => {
+    if (iBuySellData !== null) {
+      try {
+        setTypeOptionSelected({
+          value: iBuySellData.type === "buy" ? 1 : 2,
+          label: iBuySellData.type === "buy" ? "Buy" : "Sell",
+        });
+        setSelectedCurrency({
+          value: 21,
+          label: iBuySellData.currencyLabel,
+        });
+        console.log(iBuySellData, "iBuySellDataiBuySellDataiBuySellData");
+      } catch (error) {
+        console.log(error, "Error in iBuySellData useEffect");
+      }
+    }
+  }, [iBuySellData]);
 
   useEffect(() => {
     if (GetAllActiveCorproates !== null) {
@@ -126,8 +158,6 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
       }
     }
   }, [GetAllActiveCorproates]);
-
-  console.log(currencyOptions, "currencyOptionscurrencyOptions");
 
   //Onchange for Selecting the nature of business
 
@@ -163,9 +193,9 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
       const regex = /^[0-9]*$/;
       if (regex.test(value)) {
         setAcNumberData(value);
+      } else {
+        setAcNumberData("");
       }
-    } else {
-      setAcNumberData(value);
     }
   };
 
@@ -197,38 +227,78 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
     setCorporateValue(selectedOption);
     console.log("selectedOption", selectedOption);
   };
+  console.log(
+    typeOptionSelected.value,
+    selectedNature.value,
+    selectedCurrency.value,
+    lcNumberData,
+    amountData,
+    corporateValue.value,
+
+    "handleConfirmButtonhandleConfirmButton"
+  );
   // Handle Confirm Button
   const handleConfirmButton = () => {
-    if (
-      typeOptionSelected.value !== 0 &&
-      selectedNature.value !== 0 &&
-      selectedCurrency.value === 0 &&
-      lcNumberData !== "" &&
-      amountData !== ""
-    ) {
-      let corporate = JSON.parse(localStorage.getItem("corporate"));
-      //Caliing Save RFQ Trasaction API
-      let Data = {
-        CorporateID: isBranch ? corporateValue.value : corporate.corporateID,
-        InstrumentID: 21,
-        // InstrumentID: selectedCurrency.value,
-        SecondaryInstrumentID: 0,
-        IsBuySide: typeOptionSelected.value === 1 ? true : false,
-        Quantity: Number(amountData),
-        AccountNumber: acNumberData,
-        NatureOfTransactionID: selectedNature.value,
-        LCNumber: lcNumberData,
-      };
-      dispatch(SaveSpotTransactionRFQ({ navigate, Data, setOpenRfqModal }));
-      // dispatch(SaveSpotTransactionAPI({ navigate, Data }));
+    console.log(
+      typeOptionSelected.value,
+      selectedNature.value,
+      selectedCurrency.value,
+      lcNumberData,
+      amountData,
+      corporateValue.value,
+      "handleConfirmButtonhandleConfirmButton"
+    );
+    try {
+      console.log(
+        typeOptionSelected.value !== 0 &&
+          selectedNature.value !== 0 &&
+          selectedCurrency.value === 0 &&
+          lcNumberData !== "" &&
+          amountData !== "",
+        "handleConfirmButtonhandleConfirmButton"
+      );
+      if (
+        typeOptionSelected.value !== 0 &&
+        selectedNature.value !== 0 &&
+        selectedCurrency.value !== 0 &&
+        lcNumberData !== "" &&
+        amountData !== ""
+      ) {
+        console.log(selectedNature, "selectedNatureselectedNature");
+
+        let corporate = JSON.parse(localStorage.getItem("corporate"));
+        console.log(corporate, "selectedNatureselectedNature");
+
+        //Caliing Save RFQ Trasaction API
+        let Data = {
+          CorporateID: isBranch ? corporateValue.value : corporate.corporateID,
+          InstrumentID: 21,
+          // InstrumentID: selectedCurrency.value,
+          SecondaryInstrumentID: 0,
+          IsBuySide: typeOptionSelected.value === 1 ? true : false,
+          Quantity: Number(amountData),
+          AccountNumber: acNumberData,
+          NatureOfTransactionID: selectedNature.value,
+          LCNumber: lcNumberData,
+        };
+        console.log(Data, "selectedNatureselectedNature");
+        if (iBuySellData !== null) {
+          dispatch(SaveSpotTransactionAPI({ navigate, Data }));
+        } else {
+          dispatch(SaveSpotTransactionRFQ({ navigate, Data }));
+        }
+        // dispatch(SaveSpotTransactionAPI({ navigate, Data }));
+      }
+    } catch (error) {
+      console.log(error, "Error in handleConfirmButton");
     }
   };
 
   return (
     <>
       <Modal
-        show={openRfqModal}
-        setShow={setOpenRfqModal}
+        show={isRfqModalOpen}
+        // setShow={setOpenRfqModal}
         onHide={onCloseRfq}
         closeButton
         size='lg'
@@ -261,6 +331,7 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
                       placeholder=''
                       options={getAllCorporates}
                       onChange={handleChangeCorporate}
+                      isSearchable={true}
                       value={corporateValue}
                     />
                   </Col>
@@ -279,6 +350,7 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
                   options={currencyOptions}
                   onChange={handleCurrencyChange}
                   value={selectedCurrency}
+                  isDisabled={iBuySellData !== null ? true : false}
                 />
               </Col>
 
@@ -294,6 +366,7 @@ const RFQModal = ({ openRfqModal, setOpenRfqModal }) => {
                   onChange={handleChangeType}
                   options={typeOptions}
                   classNamePrefix='bookaForwardCorporate'
+                  isDisabled={iBuySellData !== null ? true : false}
                 />
               </Col>
             </Row>

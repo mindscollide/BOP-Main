@@ -8,6 +8,7 @@ const Loader = () => {
   const bankSpotReducerLoader = useSelector(
     (state) => state.bankSpotReducer.Loader
   );
+  const blotterReducerLoader = useSelector((state) => state.BlotterSlicer.Loader) 
   const misReducerLoader = useSelector((state) => state.misReducer.Loader);
   const WatchListReducerLoader = useSelector(
     (state) => state.WatchListReducer.Loader
@@ -46,6 +47,7 @@ const Loader = () => {
     settingSlicerLoader,
     chatSlicerLoader,
     dealerSliceLoader,
+    blotterReducerLoader
   ].some((loading) => loading);
 
   useEffect(() => {

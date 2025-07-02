@@ -32,6 +32,7 @@ const GlobalTable = ({
       bordered={bordered}
       pagination={pagination}
       footer={footer}
+      size="middle"
       style={style}
       rowClassName={rowClassName}
       dropdownPrefixCls={dropdownPrefixCls}

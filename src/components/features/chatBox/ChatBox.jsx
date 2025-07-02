@@ -115,7 +115,6 @@ const ChatBox = () => {
   };
 
   const handleClickSaveChat = async (e) => {
-    e.preventDefault();
     console.log("first", "file in handleClickSaveChat");
     if (message !== "" || file !== null) {
       if (file !== null) {
@@ -314,7 +313,7 @@ const ChatBox = () => {
             : null}
         </div>
         <div className='chat-box-footer'>
-          <form onSubmit={handleClickSaveChat}>
+          <form>
             <div className='d-flex align-items-center position-relative'>
               {file && (
                 <div className={styles["uploaded-file-section"]}>
@@ -347,6 +346,12 @@ const ChatBox = () => {
                   type='text'
                   applyClass='chatSenderInput'
                   value={message}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" ) {
+                      e.preventDefault(); // prevent newline
+                      handleClickSaveChat(e); // manually trigger submit
+                    }
+                  }}
                   // pattern={}
                   onChange={(e) => setMessage(e.target.value)}
                 />

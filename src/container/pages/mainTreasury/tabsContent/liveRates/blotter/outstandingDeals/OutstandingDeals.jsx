@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import GlobalTable from "../../../../../../../components/common/table/GlobalTable";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
@@ -33,10 +33,83 @@ import {
   BlotterTransactionCancellationRequest,
   BlotterTransactionRFQExpired,
   BlotterTransactionRFQQuoted,
+  BlotterTransactionRejected,
   BlotterTranscationCancelled,
 } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { getAllChatByTransactionId } from "@/components/features/chatBox/ChatActions";
+import CancelReasonModal from "../cancelReasonModal/cancelReasonModal";
 
+/**
+ * OutstandingDeals component displays a list of outstanding deals in the blotter.
+ * It manages the state of various filters and handles updates to the blotter data
+ * based on real-time actions from the Redux store.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered OutstandingDeals component.
+ *
+ * @example
+ * // Usage
+ * <OutstandingDeals />
+ *
+ * @reduxState
+ * - BlotterTransactionRFQExpired: Data for expired RFQs.
+ * - BlotterTransactionAssigned: Data for assigned transactions.
+ * - BlotterTransactionAdded: Data for newly added transactions.
+ * - BlotterTransactionRFQQuoted: Data for quoted RFQs.
+ * - BlotterTransactionAccepted: Data for accepted transactions.
+ * - BlotterTranscationCancelled: Data for cancelled transactions.
+ * - BlotterTransactionCancellationRequestData: Data for cancellation requests.
+ * - BlotterTransactionRejected: Data for rejected transactions.
+ * - getBlotterOutstandingData: Data for outstanding deals.
+ *
+ * @localState
+ * - blotterdata: Array of current blotter data.
+ * - totalRecord: Total number of records in the blotter.
+ * - sRow: Current row index for pagination.
+ * - hasReachedBottom: Boolean indicating if the bottom of the table has been reached.
+ * - open: Boolean for TXN ID filter visibility.
+ * - selectedItemsTXNID: Array of selected TXN IDs.
+ * - showCommentModal: Boolean for comment modal visibility.
+ * - comment: Current comment text.
+ * - openCustomername: Boolean for customer name filter visibility.
+ * - selectedItemsCustomerName: Array of selected customer names.
+ * - openType: Boolean for type filter visibility.
+ * - selectedItemsType: Array of selected types.
+ * - openNature: Boolean for nature filter visibility.
+ * - selectedItemsNature: Array of selected natures.
+ * - openCCY1: Boolean for CCY1 filter visibility.
+ * - selectedItemsCCY1: Array of selected CCY1 values.
+ * - openAmount1: Boolean for amount1 filter visibility.
+ * - selectedItemsAmount1: Array of selected amount1 values.
+ * - openRate: Boolean for rate filter visibility.
+ * - selectedItemsRate: Array of selected rates.
+ * - openCCY2: Boolean for CCY2 filter visibility.
+ * - selectedItemsCCY2: Array of selected CCY2 values.
+ * - openAmount2: Boolean for amount2 filter visibility.
+ * - selectedItemsAmount2: Array of selected amount2 values.
+ * - openTime: Boolean for time filter visibility.
+ * - selectedItemsTime: Array of selected times.
+ * - openLCno: Boolean for LC number filter visibility.
+ * - selectedItemsLCno: Array of selected LC numbers.
+ * - openAccNO: Boolean for account number filter visibility.
+ * - selectedItemsAccNO: Array of selected account numbers.
+ * - openStatus: Boolean for status filter visibility.
+ * - selectedItemsStatus: Array of selected statuses.
+ * - dealData: Data for the current deal.
+ */
+/**
+ * OutstandingDeals component displays a list of outstanding deals in the blotter.
+ * It manages the state of various filters and handles updates to the blotter data
+ * based on real-time actions from the Redux store.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered OutstandingDeals component.
+ *
+ * @example
+ * return (
+ *   <OutstandingDeals />
+ * );
+ */
 const OutstandingDeals = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -99,6 +172,8 @@ const OutstandingDeals = () => {
 
   //local states
   const [blotterdata, setBlotterdata] = useState([]);
+
+  console.log(blotterdata, "blotterdatablotterdata");
   const [totalRecord, setTotalRecords] = useState(0);
   const [sRow, setRow] = useState(0);
   const [hasReachedBottom, setHasReachedBottom] = useState(false);
@@ -148,14 +223,10 @@ const OutstandingDeals = () => {
   const [selectedItemsStatus, setSelectedItemsStatus] = useState([]);
   const [dealData, setDealData] = useState(null);
 
-  useEffect(() => {
-    try {
-      if (blotterdata.length === 0) {
-        let Data = { sRow: 0, Length: 10 };
-        dispatch(GetBlotterOutstandingDealsDataAPI({ Data, navigate }));
-      }
-    } catch (error) {}
-  }, []);
+  const [cancelReasonModal, setCancelReasonModal] = useState(false);
+  const [cancelReasonComment, setCancelReasonComment] = useState("");
+  const [cancelType, setCancelType] = useState("");
+  const [cancelTransactionID, setCancelTransactionID] = useState(0);
 
   useTableScrollBottom(
     () => {
@@ -210,7 +281,7 @@ const OutstandingDeals = () => {
         setBlotterdata((prevBlotterData) => {
           return prevBlotterData.filter(
             (tblData, index) =>
-              tblData.pK_TransactionID !== transaction.pK_TransactionID
+              tblData.pK_TransactionID !== transaction?.pK_TransactionID
           );
         });
         dispatch(BlotterTransactionRFQExpired(null));
@@ -226,12 +297,12 @@ const OutstandingDeals = () => {
         const { transaction } = blotterTransactionAdded;
         let ishasAlready = blotterdata.find(
           (data, index) =>
-            data.pK_TransactionID === transaction.pK_TransactionID
+            data.pK_TransactionID === transaction?.pK_TransactionID
         );
-        if (!ishasAlready) {
+        if (ishasAlready === undefined) {
           setBlotterdata([transaction, ...blotterdata]);
-          dispatch(BlotterTransactionAdded(null));
         }
+        dispatch(BlotterTransactionAdded(null));
       } catch (error) {
         console.log(error, "error in blotterTransactionAdded");
       }
@@ -244,7 +315,7 @@ const OutstandingDeals = () => {
         const { transaction } = blotterTransactionRFQQuoted;
         setBlotterdata((prevBlotterData) => {
           return prevBlotterData.map((tblData, index) => {
-            if (tblData.pK_TransactionID === transaction.pK_TransactionID) {
+            if (tblData.pK_TransactionID === transaction?.pK_TransactionID) {
               return {
                 ...tblData,
                 bid: transaction.bid,
@@ -271,7 +342,7 @@ const OutstandingDeals = () => {
         setBlotterdata((prevBlotterData) => {
           return prevBlotterData.filter(
             (tblData, index) =>
-              tblData.pK_TransactionID !== transaction.pK_TransactionID
+              tblData.pK_TransactionID !== transaction?.pK_TransactionID
           );
         });
         dispatch(BlotterTransactionAccepted(null));
@@ -288,7 +359,7 @@ const OutstandingDeals = () => {
         setBlotterdata((prevBlotterData) => {
           return prevBlotterData.filter(
             (tblData, index) =>
-              tblData.pK_TransactionID !== transaction.pK_TransactionID
+              tblData.pK_TransactionID !== transaction?.pK_TransactionID
           );
         });
         dispatch(BlotterTranscationCancelled(null));
@@ -305,10 +376,10 @@ const OutstandingDeals = () => {
         setBlotterdata((prevBlotterData) => {
           return prevBlotterData.filter(
             (tblData, index) =>
-              tblData.pK_TransactionID !== transaction.pK_TransactionID
+              tblData.pK_TransactionID !== transaction?.pK_TransactionID
           );
         });
-        dispatch(BlotterTransactionAccepted(null));
+        dispatch(BlotterTransactionRejected(null));
       } catch (error) {
         console.log(error, "error in blotterTransactionRFQExpired");
       }
@@ -363,19 +434,15 @@ const OutstandingDeals = () => {
   useEffect(() => {
     if (blotterTransactionCancellationRequest !== null) {
       try {
-        try {
-          const { transaction } = blotterTransactionCancellationRequest;
-          let ishasAlready = blotterdata.find(
-            (data, index) =>
-              data.pK_TransactionID === transaction.pK_TransactionID
-          );
-          if (!ishasAlready) {
-            setBlotterdata([transaction, ...blotterdata]);
-          }
-          dispatch(BlotterTransactionCancellationRequest(null));
-        } catch (error) {
-          console.log(error, "error in blotterTransactionRFQExpired");
+        const { transaction } = blotterTransactionCancellationRequest;
+        let ishasAlready = blotterdata.find(
+          (data, index) =>
+            data.pK_TransactionID === transaction?.pK_TransactionID
+        );
+        if (ishasAlready === undefined) {
+          setBlotterdata([transaction, ...blotterdata]);
         }
+        dispatch(BlotterTransactionCancellationRequest(null));
       } catch (error) {
         console.log(error, "error in blotterTransactionCancellationRequest");
       }
@@ -981,12 +1048,15 @@ const OutstandingDeals = () => {
     );
   };
   const rejectTransaction = (record) => {
-    dispatch(
-      RejectTransactionAPI({
-        navigate,
-        Data: { PK_TransactionID: record.pK_TransactionID },
-      })
-    );
+    setCancelReasonModal(true);
+    setCancelType("Rejected");
+    setCancelTransactionID(record.pK_TransactionID);
+    // dispatch(
+    //   RejectTransactionAPI({
+    //     navigate,
+    //     Data: { PK_TransactionID: record.pK_TransactionID },
+    //   })
+    // );
   };
 
   const handleAcceptTransactionCancellation = (transactionID) => {
@@ -994,8 +1064,11 @@ const OutstandingDeals = () => {
     dispatch(AcceptTransactionCancellationRequest({ navigate, Data }));
   };
   const handleRejectTransactionCancellation = (transactionID) => {
-    let Data = { PK_TransactionID: transactionID };
-    dispatch(RejectTransactionCancellationRequest({ navigate, Data }));
+    // let Data = { PK_TransactionID: transactionID };
+    // dispatch(RejectTransactionCancellationRequest({ navigate, Data }));
+    setCancelReasonModal(true);
+    setCancelType("Cancellation");
+    setCancelTransactionID(transactionID);
   };
 
   const handleClickChat = (txnID, treasuryPersonID) => {
@@ -1011,6 +1084,35 @@ const OutstandingDeals = () => {
       })
     );
   };
+
+  const handleClickReasonSubmit = useCallback(() => {
+    if (cancelType === "Rejected") {
+      let Data = {
+        PK_TransactionID: cancelTransactionID,
+        Comment: cancelReasonComment,
+      };
+      dispatch(RejectTransactionAPI({ navigate, Data, setCancelReasonModal }));
+    } else if (cancelType === "Cancellation") {
+      let Data = {
+        PK_TransactionID: cancelTransactionID,
+        Comment: cancelReasonComment,
+      };
+      dispatch(RejectTransactionCancellationRequest({ navigate, Data, setCancelReasonModal }));
+    }
+  }, [
+    cancelType,
+    cancelTransactionID,
+    cancelReasonModal,
+    cancelReasonComment,
+    setCancelReasonModal,
+  ]);
+
+  const handleCloseReasonModal = useCallback(() => {
+    setCancelReasonModal(false);
+    setCancelType("");
+    setCancelTransactionID(0);
+    setCancelReasonComment("");
+  }, [cancelType, cancelTransactionID, cancelReasonModal, cancelReasonComment]);
 
   const columns = [
     // TXNID
@@ -1540,12 +1642,12 @@ const OutstandingDeals = () => {
                     <>
                       <CustomButton
                         icon={<i className='icon-check'></i>}
-                        className='btn btn-sm btn-success '
+                        className='btn btn-sm btn-success blotterCheckerButton '
                         onClick={() => acceptTransaction(record)}
                       />
                       <CustomButton
                         icon={<i className='icon-close '></i>}
-                        className='btn btn-sm btn-danger '
+                        className='btn btn-sm btn-danger blotterCheckerButton '
                         onClick={() => rejectTransaction(record)}
                       />
                     </>
@@ -1555,7 +1657,7 @@ const OutstandingDeals = () => {
                 <>
                   <CustomButton
                     icon={
-                      <i className='icon-user-check blotterTableIconSize '></i>
+                      <i className='icon-user-check blotterCheckerButton '></i>
                     }
                     className='btn  btn-primary'
                     onClick={() => handleClickAssignTransaction(record)}
@@ -1652,6 +1754,17 @@ const OutstandingDeals = () => {
         scroll={{ x: "max-content", y: 500 }}
       />
       <DealViewModal dealData={dealData} />
+      {cancelReasonModal && (
+        <CancelReasonModal
+          cancelReasonModal={cancelReasonModal}
+          setCancelReasonModal={setCancelReasonModal}
+          cancelReasonComment={cancelReasonComment}
+          setCancelReasonComment={setCancelReasonComment}
+          handleClickReasonSubmit={handleClickReasonSubmit}
+          handleCloseReasonModal={handleCloseReasonModal}
+        />
+      )}
+
       <CommentModal
         comment={comment}
         setShowCommentModal={setShowCommentModal}

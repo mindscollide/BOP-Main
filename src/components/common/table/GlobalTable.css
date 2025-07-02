@@ -1541,3 +1541,10 @@ tr.OutStanding_Table-cell-scrollbar {
 .OutStanding_Table-measure-row {
   visibility: collapse !important;
 }
+
+.TXNSummary_Table-row-level-0.isCancelled,
+.TXNSummary_Table-row-level-0.isCancelled:has(
+    .TXNSummary_Table-cell
+  ) {
+  background-color: #12a812 !important;
+}
