@@ -12,19 +12,48 @@ import emailImage from "./../../../../../../../assets/icons/email.png";
 import excelImage from "./../../../../../../../assets/icons/excel.png";
 import printImage from "./../../../../../../../assets/icons/print.png";
 import { useNavigate } from "react-router-dom";
+import CancelReasonModal from "../cancelReasonModal/cancelReasonModal";
+import TXNTreasurySummary from "../txnTreasurySummary/TxnTreasurySummary";
+import { setActiveTab } from "@/container/pages/mainCorporate/rfqModal/RFQSlicer";
+import { useSelector } from "react-redux";
+import { setActiveTreasuryTab } from "@/store/BlotterSlicer/BlotterSlicer";
+import { useDispatch } from "react-redux";
+import { BlotterDataAPI, GetBlotterOutstandingDealsDataAPI } from "../BlotterActions";
 
 const BlotterHeader = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [openNopModal, setOpenNopModal] = useState(false);
   const [openExportDiv, setOpenExportDiv] = useState(false);
   const [openMailModal, setOpenMailModal] = useState(false);
   const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
   const isCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
   const isTreasury = import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
+  const activeTab = useSelector(
+    (state) => state.BlotterSlicer.activeTabBlotter
+  );
 
+  useEffect(() => {
+    try {
+      let Data = { sRow: 0, Length: 10 };
+      dispatch(BlotterDataAPI({ navigate, Data }));
+      if (isTreasury) {
+        dispatch(GetBlotterOutstandingDealsDataAPI({ Data, navigate }));
+      }
+    } catch (error) {
+      console.log(error, "error");
+    }
+  }, []);
+  console.log(activeTab, "activeTabactiveTab");
   const tabsData = [
-    { title: "TXN Summary", content: <TXNSummary /> },
-    { title: "Outstanding Deals", content: <OutstandingDeals /> },
+    {
+      title: "TXN Summary",
+      content: activeTab === "TXN Summary" && <TXNTreasurySummary />,
+    },
+    {
+      title: "Outstanding Deals",
+      content: activeTab === "Outstanding Deals" && <OutstandingDeals />,
+    },
   ];
 
   const onClickNopModal = () => {
@@ -38,10 +67,12 @@ const BlotterHeader = () => {
   const onClickMailModal = () => {
     setOpenMailModal(true);
   };
-  const activeTab =
-    isBranch || isCorporate
-      ? tabsData.filter((data, index) => index === 0)
-      : tabsData;
+
+  const handleTabChange = (tabTitle) => {
+    console.log(tabTitle, "tabTitletabTitletabTitle");
+    dispatch(setActiveTreasuryTab(tabTitle));
+  };
+
   return (
     <>
       <section className='position-relative'>
@@ -50,6 +81,8 @@ const BlotterHeader = () => {
             <GlobalTabs
               tabClass=' d-flex justify-content-start gap-2 mb-3 align-items-center'
               tabs={tabsData}
+              onTabChange={handleTabChange}
+              activeKey={activeTab}
               defaultActiveKey={"0"}
             />
             <div className='moreOptionsNOPExport'>
@@ -165,87 +198,7 @@ const BlotterHeader = () => {
           </>
         ) : null}
       </section>
-      {/* <div className='box-header position-relative'>
-        {isTreasury ? (
-          <>
-            {" "}
-            <div className='filter-export-wrapper ms-auto'>
-              <div className='d-flex align-items-center'>
-                <div className='nop-hd-container'>
-                  <div className='d-flex align-items-center'>
-                
-                      <>
-                        {" "}
-                        <span className='hd-txt me-3'>NOP (US$)</span>
-                        <span className='hd-cr me-2'>46,999</span>
-                        <CustomButton
-                          applyClass={"NOP-button"}
-                          value='+'
-                          onClick={onClickNopModal}
-                        />{" "}
-                        <CustomButton
-                          applyClass={"Export-button"}
-                          value='Export'
-                          onClick={onClickOpenExport}
-                        />
-                      </>
-            
 
-                    {openExportDiv ? (
-                      <>
-                        <div className='dropdown-menu dropdown-ex-doc border show export-class'>
-                          <Row align='middle'>
-                            <Col className='export-to-doc cursor-pointer'>
-                              <img
-                                src={pdfImage}
-                                width={30}
-                                height={30}
-                                alt='pdf'
-                              />
-                            </Col>
-                            <Col className='export-to-doc cursor-pointer'>
-                              <img
-                                src={excelImage}
-                                width={30}
-                                height={30}
-                                alt='excel'
-                              />
-                            </Col>
-                            <Col>
-                              <img
-                                src={emailImage}
-                                width={30}
-                                height={30}
-                                alt='email'
-                                onClick={onClickMailModal}
-                              />
-                            </Col>
-                            <Col>
-                              <img
-                                src={printImage}
-                                width={30}
-                                height={30}
-                                alt='print'
-                              />
-                            </Col>
-                          </Row>
-                        </div>
-                      </>
-                    ) : null}
-                  </div>
-                </div>
-              </div>
-            </div>{" "}
-            <GlobalTabs
-              tabClass='buttonClassTab'
-              tabs={activeTab}
-              defaultActiveKey={"0"}
-            />{" "}
-          </>
-        ) : isBranch || isCorporate ? (
-          <TXNSummary />
-        ) : null}
-      </div> */}
       {openNopModal ? (
         <NopModal
           openNopModal={openNopModal}

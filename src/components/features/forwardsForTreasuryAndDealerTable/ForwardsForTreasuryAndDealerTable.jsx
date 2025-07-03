@@ -35,12 +35,32 @@ const GlobalTable = shouldIncludeComponents
   ? lazy(() => import("../../common/table/GlobalTable"))
   : null;
 
+/**
+ * ForwardsForTreasuryAndBranchTable component is responsible for displaying and managing
+ * the forwards for treasury and dealer branch data in a tabular format.
+ *
+ * @component
+ * @param {Object} props - The component props.
+ * @param {Object} props.newTenorRecord - The new tenor record to be added.
+ * @param {Function} props.setNewTenorRecord - Function to set the new tenor record.
+ * @returns {JSX.Element} The rendered component.
+ *
+ * @example
+ * <ForwardsForTreasuryAndBranchTable
+ *   newTenorRecord={newTenorRecord}
+ *   setNewTenorRecord={setNewTenorRecord}
+ * />
+ */
 const ForwardsForTreasuryAndBranchTable = ({
   newTenorRecord,
   setNewTenorRecord,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const marketStatus = useSelector(
+    (state) => state.RealtimeActionsSlice.marketStatus
+  );
 
   const forwardsForTreasuryBranch = useSelector(
     (state) => state.dealerReducer.forwardsForTreasuryBranch
@@ -330,6 +350,7 @@ const ForwardsForTreasuryAndBranchTable = ({
                   applyClass='publishForwardsBtn'
                   value={"Publish Forwards"}
                   onClick={handlePublishForwards}
+                  disabled={marketStatus === false ? true : false}
                 />
               </span>
             )}

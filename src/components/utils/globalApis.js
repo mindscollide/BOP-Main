@@ -1,4 +1,5 @@
 import {
+  GetActiveCorporatesRM,
   getAllCategoriesRM,
   GetAllInstrumentsRM,
   GetAllNatureOfTransactionsRM,
@@ -141,3 +142,64 @@ export const getAllInstrumentsApi = createAsyncThunk(
 );
 
 
+export const getAllActiveCorporatesApi = createAsyncThunk("Auth/getAllActiveCorporates", async ({ navigate }, { dispatch, rejectWithValue }) => {
+  try {
+    let getActiveCorporates = createPostAPI(
+      authApi,
+      GetActiveCorporatesRM.RequestMethod
+    );
+
+    const response = await getActiveCorporates();
+    if (response.data.responseCode === 401) {
+      navigate("/");
+      return rejectWithValue("Unauthorized access, please log in again.");
+    }
+    if (response.data.responseCode === 417) {
+      await dispatch(refreshTokenAction({ navigate }));
+      dispatch(getAllActiveCorporatesApi({ navigate }));
+    } else if (response.data.responseCode === 200) {
+      const { isExecuted, responseMessage } = response.data.responseResult;
+      if (isExecuted) {
+        if (
+          responseMessage
+            .toLowerCase()
+            .includes(
+              "ERM_AuthService_CommonManager_GetActiveCorporates_01".toLowerCase()
+            )
+        ) {
+          return {
+            response: response.data.responseResult,
+            message: "Data available",
+          };
+        } else if (
+          responseMessage
+            .toLowerCase()
+            .includes(
+              "ERM_AuthService_CommonManager_GetActiveCorporates_02".toLowerCase()
+            )
+        ) {
+          return rejectWithValue("No Data available");
+        } else if (
+          responseMessage
+            .toLowerCase()
+            .includes(
+              "ERM_AuthService_CommonManager_GetActiveCorporates_03".toLowerCase()
+            )
+        ) {
+          return rejectWithValue("Something went wrong");
+        } else {
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        console.log("", response.data);
+        return rejectWithValue("Something went wrong");
+      }
+    } else {
+      return rejectWithValue("Something went wrong");
+    }
+  } catch (error) {
+    // Reject with error message
+    console.log("", error);
+    return rejectWithValue("Something went wrong");
+  }
+})

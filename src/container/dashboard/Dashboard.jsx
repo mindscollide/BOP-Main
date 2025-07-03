@@ -6,12 +6,31 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import ChatBox from "@/components/features/chatBox/ChatBox";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { getAllInstrumentsApi } from "@/components/utils/globalApis";
+import {
+  getAllActiveCorporatesApi,
+  getAllInstrumentsApi,
+} from "@/components/utils/globalApis";
 import { useMqttClient } from "@/components/utils/mqttConnection";
 
 import {
+  BlotterTransactionAccepted,
+  BlotterTransactionAcceptedForTreasury,
+  BlotterTransactionAdded,
+  BlotterTransactionAddedForTreasury,
+  BlotterTransactionAssigned,
+  BlotterTransactionAssignedForTreasury,
+  BlotterTransactionCancellationRequest,
+  BlotterTransactionCancellationRequestForTreasury,
+  BlotterTransactionRFQExpired,
+  BlotterTransactionRFQQuoted,
+  BlotterTransactionRFQQuotedForTreasury,
+  BlotterTransactionRejected,
+  BlotterTransactionRejectedForTreasury,
+  BlotterTranscationCancelled,
+  BlotterTranscationCancelledForTreasury,
   FeDiscountingPublishedAction,
   NonFeDiscountingPublishedAction,
+  TransactionAssignedByTreasury,
   categoryisAdded,
   categoryisDeleted,
   categoryisUpdated,
@@ -26,7 +45,10 @@ import { formatDateToUTC } from "@/utils/formatters";
 import { LogoutApi } from "../loginScreens/authActions/logoutAction";
 import DealBox from "@/components/features/dealbox/DealBox";
 import DealViewModal from "../pages/mainCorporate/rfqModal/DealViewModal/DealViewModal";
-import { setDealModalRequest } from "@/store/modalSlice/modalSlicer";
+import {
+  setChatModal,
+  setDealModalRequest,
+} from "@/store/modalSlice/modalSlicer";
 import { AnimatePresence } from "framer-motion";
 import { GetAllNatureOfTransactionsApi } from "../pages/mainCorporate/rfqModal/RFQActions";
 const Dashboard = () => {
@@ -36,10 +58,13 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const chatModal = useSelector((state) => state.modalReducer.chatModal);
+  const chatModalTransactionId = useSelector(
+    (state) => state.modalReducer.chatModalTransactionId
+  );
   const dealMoalRequest = useSelector(
     (state) => state.modalReducer.dealModalRequest
   );
-  console.log(dealMoalRequest, "dealMoalRequestdealMoalRequest");
+  console.log(chatModalTransactionId, "dealMoalRequestdealMoalRequest");
   const IsBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
   const IsCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
   const isTreasury = import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
@@ -104,6 +129,57 @@ const Dashboard = () => {
         case "CATEGORY_DELETED":
           dispatch(categoryisDeleted(data.payload));
           break;
+        case "BLOTTER_RFQ_TRANSACTION_EXPIRED":
+          dispatch(BlotterTransactionRFQExpired(data.payload));
+          console.log(
+            chatModal &&
+              chatModalTransactionId ===
+                data.payload?.transaction?.pK_TransactionID,
+            chatModal,
+            chatModalTransactionId,
+            data.payload?.transaction?.pK_TransactionID,
+            "chatModalTransactionId in dashboard"
+          );
+          if (
+            chatModal &&
+            chatModalTransactionId ===
+              data.payload?.transaction?.pK_TransactionID
+          ) {
+            console.log(first);
+            dispatch(setChatModal(false));
+          }
+          break;
+        case "BLOTTER_TRANSACTION_ADDED":
+          dispatch(BlotterTransactionAdded(data.payload));
+          dispatch(BlotterTransactionAddedForTreasury(data.payload))
+          break;
+        case "BLOTTER_TRANSACTION_ASSIGNED":
+          dispatch(BlotterTransactionAssigned(data.payload));
+          dispatch(BlotterTransactionAssignedForTreasury(data.payload))
+          break;
+        case "BLOTTER_TRANSACTION_ACCEPTED":
+          dispatch(BlotterTransactionAccepted(data.payload));
+          dispatch(BlotterTransactionAcceptedForTreasury(data.payload));
+          break;
+        case "BLOTTER_TRANSACTION_RFQ_QUOTED":
+          dispatch(BlotterTransactionRFQQuoted(data.payload));
+          dispatch(BlotterTransactionRFQQuotedForTreasury(data.payload))
+          break;
+        case "BLOTTER_TRANSACTION_CANCELLATION_REQUEST":
+          dispatch(BlotterTransactionCancellationRequest(data.payload));
+          dispatch(BlotterTransactionCancellationRequestForTreasury(data.payload))
+          break;
+        case "BLOTTER_TRANSACTION_CANCELLED":
+          dispatch(BlotterTranscationCancelled(data.payload));
+          dispatch(BlotterTranscationCancelledForTreasury(data.payload))
+          break;
+        case "BLOTTER_TRANSACTION_REJECTED":
+          dispatch(BlotterTransactionRejected(data.payload));
+          dispatch(BlotterTransactionRejectedForTreasury(data.payload))
+          break;
+        case "BLOTTER_TRANSACTION_ASSIGNED_TO_TREASURY":
+          dispatch(TransactionAssignedByTreasury(data.payload));
+          break;
         default:
           console.warn("No specific handler for this message type");
           break;
@@ -126,6 +202,9 @@ const Dashboard = () => {
     }
     if (IsCorporate || IsBranch) {
       dispatch(GetAllNatureOfTransactionsApi({ navigate }));
+      if (IsBranch) {
+        dispatch(getAllActiveCorporatesApi({ navigate }));
+      }
     }
 
     dispatch(getAllInstrumentsApi({ navigate }));
@@ -140,7 +219,6 @@ const Dashboard = () => {
           <Outlet />
           <AnimatePresence>{dealMoalRequest && <DealBox />}</AnimatePresence>
 
-          <DealViewModal />
           {chatModal && <ChatBox />}
         </main>
       </Content>

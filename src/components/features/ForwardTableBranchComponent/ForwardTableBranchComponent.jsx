@@ -1,4 +1,3 @@
-import TXNSummary from "@/container/pages/mainTreasury/tabsContent/liveRates/blotter/txnSummary/TXNSummary";
 import React, { lazy } from "react";
 import { Col } from "react-bootstrap";
 
@@ -14,8 +13,7 @@ const ForwardsForBranch = shouldIncludeComponents
 const ForwardTableBranchComponent = () => {
   return (
     <Col lg={12} md={12} sm={12}>
-      {shouldIncludeComponents ? <ForwardsForBranch /> : null}
-      {shouldIncludeComponents ? <TXNSummary /> : null}
+      <ForwardsForBranch />
     </Col>
   );
 };

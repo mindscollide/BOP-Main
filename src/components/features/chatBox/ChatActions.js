@@ -6,7 +6,7 @@ import {
 } from "@/common/api_config";
 import { chatApi } from "@/common/apiend_points";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
-import { setChatModal, setChatModalTransactionId } from "@/store/modalSlice/modalSlicer";
+import { setChatModal, setChatModalTransactionId, setTreasuryPersonID } from "@/store/modalSlice/modalSlicer";
 import createPostAPI from "@/utils/axiosInstance";
 import { fileToBase64 } from "@/utils/converts";
 import { formatDateToUTC } from "@/utils/formatters";
@@ -15,7 +15,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 export const getAllChatByTransactionId = createAsyncThunk(
   "chat/getAllUserChatByTransactionId",
   async (
-    { navigate, Data },
+    { navigate, Data, treasuryPersonID },
     { rejectWithValue, dispatch }
   ) => {
     try {
@@ -36,7 +36,7 @@ export const getAllChatByTransactionId = createAsyncThunk(
           getAllChatByTransactionId({
             navigate,
             Data,
-            
+            treasuryPersonID
           })
         );
       } else if (responseCode === 200) {
@@ -54,6 +54,7 @@ export const getAllChatByTransactionId = createAsyncThunk(
         ) {
           dispatch(setChatModal(true));
           dispatch(setChatModalTransactionId(Data.TranscationID));
+          dispatch(setTreasuryPersonID(treasuryPersonID))
           return {
             response: response.data.responseResult,
             message: "Data Found",

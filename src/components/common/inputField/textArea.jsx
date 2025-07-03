@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./input.module.css";
 
-const InputFIeld = ({
+const TextArea = ({
   type,
   value,
   onChange,
@@ -20,10 +20,8 @@ const InputFIeld = ({
   className,
   defaultValue,
   accept,
-  onClick,
-  onKeyDown
 }) => (
-  <input
+  <textarea
     value={value}
     type={type}
     onChange={onChange}
@@ -41,8 +39,6 @@ const InputFIeld = ({
     required={required}
     onFocus={onFocus}
     accept={accept}
-    onClick={onClick}
-    onKeyDown={onKeyDown}
   />
 );
-export default InputFIeld;
+export default TextArea;

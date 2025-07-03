@@ -66,6 +66,23 @@ const DealeAndTreasuryNonFeDiscountingTable = shouldIncludeComponents
     )
   : null;
 
+/**
+ * ForwardsForTreasuryAndDealer component.
+ *
+ * This component is responsible for managing the creation and display of
+ * forwards for treasury and dealer operations. It allows users to create
+ * new tenors, select existing tenors, and view related data in tables.
+ *
+ * It utilizes Redux for state management and includes modal functionality
+ * for creating new tenor records. The component also handles validation
+ * for tenor names and days, ensuring that duplicates are not created.
+ *
+ * @component
+ * @example
+ * return (
+ *   <ForwardsForTreasuryAndDealer />
+ * )
+ */
 const ForwardsForTreasuryAndDealer = () => {
   const createTenorModal = useSelector(
     (state) => state.modalReducer.createTenorModal
@@ -73,6 +90,7 @@ const ForwardsForTreasuryAndDealer = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const [newTenorRecord, setNewTenorRecord] = useState(null);
   const tenorsCreated = useSelector(
     (state) => state.RealtimeActionsSlice.tenorsCreated

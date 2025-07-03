@@ -34,56 +34,53 @@ import CancelReasonModal from "../cancelReasonModal/cancelReasonModal";
 import { useMqttClient } from "@/components/utils/mqttConnection";
 import {
   BlotterTransactionAccepted,
+  BlotterTransactionAcceptedForTreasury,
   BlotterTransactionAdded,
   BlotterTransactionCancellationRequest,
+  BlotterTransactionCancellationRequestForTreasury,
   BlotterTransactionRFQExpired,
   BlotterTransactionRFQQuoted,
-  TransactionAssignedByTreasury,
+  BlotterTransactionRFQQuotedForTreasury,
+  BlotterTransactionRejectedForTreasury,
+  BlotterTranscationCancelledForTreasury,
 } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { RFQTImer } from "@/components/utils/Timer";
 import { convertDateTimeIntoLocal } from "@/utils/formatters";
-const TXNSummary = () => {
+const TXNTreasurySummary = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const blotterTransactionRFQExpired = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTransactionRFQExpired
-  );
-
-  const blotterTransactionRFQQuoted = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTransactionRFQQuoted
-  );
-
-  const blotterTransactionAccepted = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTransactionAccepted
-  );
-  const blotterTransactionCancellationRequest = useSelector(
+  const blotterTransactionRFQExpiredForTreasury = useSelector(
     (state) =>
-      state.RealtimeActionsSlice.BlotterTransactionCancellationRequestData
-  );
-  const blotterTransactionAdded = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTransactionAdded
+      state.RealtimeActionsSlice.BlotterTransactionRFQExpiredForTreasury
   );
 
-  const blotterTranscationCancelled = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTranscationCancelled
+  const blotterTransactionRFQQuotedForTreasury = useSelector(
+    (state) => state.RealtimeActionsSlice.BlotterTransactionRFQQuotedForTreasury
   );
-  const blotterTransactionRejected = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTransactionRejected
+
+  const blotterTransactionAcceptedForTreasury = useSelector(
+    (state) => state.RealtimeActionsSlice.BlotterTransactionAcceptedForTreasury
+  );
+  const blotterTransactionCancellationRequestDataForTreasury = useSelector(
+    (state) =>
+      state.RealtimeActionsSlice
+        .BlotterTransactionCancellationRequestDataForTreasury
+  );
+  const blotterTransactionAddedForTreasury = useSelector(
+    (state) => state.RealtimeActionsSlice.BlotterTransactionAddedForTreasury
+  );
+
+  const blotterTranscationCancelledForTreasury = useSelector(
+    (state) => state.RealtimeActionsSlice.BlotterTranscationCancelledForTreasury
+  );
+  const blotterTransactionRejectedForTreasury = useSelector(
+    (state) => state.RealtimeActionsSlice.BlotterTransactionRejectedForTreasury
   );
 
   const [cancelReasonModal, setCancelReasonModal] = useState(false);
   const [cancelReasonComment, setCancelReasonComment] = useState("");
   const [cancelType, setCancelType] = useState("");
   const [cancelTransactionID, setCancelTransactionID] = useState(0);
-  const transactionAssignedByTreasury = useSelector(
-    (state) => state.RealtimeActionsSlice.TransactionAssignedByTreasury
-  );
-  console.log(
-    cancelReasonComment,
-    cancelType,
-    cancelTransactionID,
-    "cancelTransactionIDcancelTransactionID"
-  );
 
   //HardCoded Filter Values start
   const TXN_ID_OPTIONS = [
@@ -117,8 +114,6 @@ const TXNSummary = () => {
 
   //local states
   const [blotterdata, setBlotterdata] = useState([]);
-
-  console.log(blotterdata, "blotterdatablotterdata")
   const [totalRecord, setTotalRecords] = useState(0);
   const [sRow, setRow] = useState(0);
   const [hasReachedBottom, setHasReachedBottom] = useState(false);
@@ -176,6 +171,17 @@ const TXNSummary = () => {
 
   const isCorproate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
 
+  console.log(
+    {
+      isShouldTrue: totalRecord !== blotterdata.length,
+      totalRecord,
+      blotterLength: blotterdata.length,
+      sRow,
+      hasReachedBottom,
+    },
+    "totalRecordtotalRecord"
+  );
+
   useTableScrollBottom(
     () => {
       if (totalRecord !== blotterdata.length) {
@@ -230,26 +236,25 @@ const TXNSummary = () => {
   }, [GlobalStateGetBlotterData]);
 
   useEffect(() => {
-    if (blotterTransactionRFQExpired !== null) {
+    if (blotterTransactionRFQExpiredForTreasury !== null) {
       try {
-        const { transaction } = blotterTransactionRFQExpired;
+        const { transaction } = blotterTransactionRFQExpiredForTreasury;
         setBlotterdata([transaction, ...blotterdata]);
         dispatch(BlotterTransactionRFQExpired(null));
       } catch (error) {
         console.log(error, "error in blotterTransactionRFQExpired");
       }
     }
-  }, [blotterTransactionRFQExpired]);
+  }, [blotterTransactionRFQExpiredForTreasury]);
 
-  // useEffect(() => {}, [blotterTransactionAssigned]);
   useEffect(() => {
-    if (blotterTransactionAccepted !== null) {
+    if (blotterTransactionAcceptedForTreasury !== null) {
       try {
-        const { transaction } = blotterTransactionAccepted;
+        const { transaction } = blotterTransactionAcceptedForTreasury;
         let isAlreadyExist = blotterdata.find(
           (data2, index) =>
             data2.pK_TransactionID === transaction.pK_TransactionID
-        );
+      );
         if (isAlreadyExist !== undefined) {
           setBlotterdata((prevBlotterData) =>
             prevBlotterData.map((item) =>
@@ -259,20 +264,20 @@ const TXNSummary = () => {
             )
           );
         } else {
-          // setBlotterdata([transaction, ...blotterdata]);
+          setBlotterdata((prev) => [transaction, ...prev]);
         }
 
-        dispatch(BlotterTransactionAccepted(null));
+        dispatch(BlotterTransactionAcceptedForTreasury(null));
       } catch (error) {
         console.log(error, "error in blotterTransactionRFQExpired");
       }
     }
-  }, [blotterTransactionAccepted]);
+  }, [blotterTransactionAcceptedForTreasury]);
 
   useEffect(() => {
-    if (blotterTransactionRFQQuoted !== null) {
+    if (blotterTransactionRFQQuotedForTreasury !== null) {
       try {
-        const { transaction } = blotterTransactionRFQQuoted;
+        const { transaction } = blotterTransactionRFQQuotedForTreasury;
         setBlotterdata((prevBlotterData) => {
           return prevBlotterData.map((tblData, index) => {
             if (tblData.pK_TransactionID === transaction.pK_TransactionID) {
@@ -289,126 +294,103 @@ const TXNSummary = () => {
             return tblData;
           });
         });
-        dispatch(BlotterTransactionRFQQuoted(null));
+        dispatch(BlotterTransactionRFQQuotedForTreasury(null));
       } catch (error) {
         console.log(error, "error in blotterTransactionRFQQuoted");
       }
     }
-  }, [blotterTransactionRFQQuoted]);
+  }, [blotterTransactionRFQQuotedForTreasury]);
 
   useEffect(() => {
-    if (blotterTransactionCancellationRequest !== null) {
+    if (blotterTransactionCancellationRequestDataForTreasury !== null) {
       try {
-        try {
-          const { transaction } = blotterTransactionCancellationRequest;
-          let isAlreadyExist = blotterdata.find(
-            (data2, index) =>
-              data2.pK_TransactionID === transaction.pK_TransactionID
+        const { transaction } =
+          blotterTransactionCancellationRequestDataForTreasury;
+        let isAlreadyExist = blotterdata.find(
+          (data2, index) =>
+            data2.pK_TransactionID === transaction.pK_TransactionID
+        );
+        if (isAlreadyExist !== undefined) {
+          setBlotterdata((prevBlotterData) =>
+            prevBlotterData.filter(
+              (item) => item.pK_TransactionID !== transaction.pK_TransactionID
+            )
           );
-          if (isAlreadyExist !== undefined) {
-            setBlotterdata((prevBlotterData) =>
-              prevBlotterData.map((item) =>
-                item.pK_TransactionID === transaction.pK_TransactionID
-                  ? transaction
-                  : item
-              )
-            );
-          }
-          dispatch(BlotterTransactionCancellationRequest(null));
-        } catch (error) {
-          console.log(error, "error in blotterTransactionRFQExpired");
         }
+        dispatch(BlotterTransactionCancellationRequestForTreasury(null));
       } catch (error) {
         console.log(error, "error in blotterTransactionCancellationRequest");
       }
     }
-  }, [blotterTransactionCancellationRequest]);
+  }, [blotterTransactionCancellationRequestDataForTreasury]);
 
   useEffect(() => {
-    if (blotterTranscationCancelled !== null) {
-      const { transaction } = blotterTranscationCancelled;
-      let isAlreadyExist = blotterdata.find(
-        (data2, index) =>
-          data2.pK_TransactionID === transaction.pK_TransactionID
-      );
-      if (isAlreadyExist !== undefined) {
-        setBlotterdata((prevBlotterData) =>
-          prevBlotterData.map((item) =>
-            item.pK_TransactionID === transaction.pK_TransactionID
-              ? transaction
-              : item
-          )
-        );
-      } else {
-        setBlotterdata([transaction, ...blotterdata]);
-      }
-    }
-  }, [blotterTranscationCancelled]);
-
-  useEffect(() => {
-    if (blotterTransactionRejected !== null) {
-      const { transaction } = blotterTransactionRejected;
-      let isAlreadyExist = blotterdata.find(
-        (data2, index) =>
-          data2.pK_TransactionID === transaction.pK_TransactionID
-      );
-      if (isAlreadyExist !== undefined) {
-        setBlotterdata((prevBlotterData) =>
-          prevBlotterData.map((item) =>
-            item.pK_TransactionID === transaction.pK_TransactionID
-              ? transaction
-              : item
-          )
-        );
-      } else {
-        setBlotterdata([transaction, ...blotterdata]);
-      }
-    }
-  }, [blotterTransactionRejected]);
-
-  useEffect(() => {
-    if (blotterTransactionAdded !== null) {
+    if (blotterTranscationCancelledForTreasury !== null) {
       try {
-        const { transaction } = blotterTransactionAdded;
-        let ishasAlready = blotterdata.find(
-          (data, index) =>
-            data.pK_TransactionID === transaction.pK_TransactionID
+        const { transaction } = blotterTranscationCancelledForTreasury;
+        let isAlreadyExist = blotterdata.find(
+          (data2, index) =>
+            data2.pK_TransactionID === transaction.pK_TransactionID
         );
-        if (!ishasAlready) {
+        if (isAlreadyExist !== undefined) {
+          setBlotterdata((prevBlotterData) =>
+            prevBlotterData.map((item) =>
+              item.pK_TransactionID === transaction.pK_TransactionID
+                ? transaction
+                : item
+            )
+          );
+        } else {
           setBlotterdata([transaction, ...blotterdata]);
-          dispatch(BlotterTransactionAdded(null));
         }
-      } catch (error) {
-        console.log(error, "error in blotterTransactionAdded");
-      }
+        dispatch(BlotterTranscationCancelledForTreasury(null));
+      } catch (error) {}
     }
-  }, [blotterTransactionAdded]);
+  }, [blotterTranscationCancelledForTreasury]);
 
   useEffect(() => {
-    if (transactionAssignedByTreasury !== null) {
+    if (blotterTransactionRejectedForTreasury !== null) {
       try {
-        setBlotterdata((prevBlotterData) => {
-          return prevBlotterData.map((tblData) => {
-            if (
-              tblData.pK_TransactionID ===
-              transactionAssignedByTreasury.transactionID
-            ) {
-              return {
-                ...tblData,
-                statusID: transactionAssignedByTreasury.statusID,
-                treasuryPersonID:
-                  transactionAssignedByTreasury.treasuryPersonID,
-              };
-            }
-            return tblData; // ✅ return individual item, not whole array
-          });
-        });
-        dispatch(TransactionAssignedByTreasury(null));
+        const { transaction } = blotterTransactionRejectedForTreasury;
+        let isAlreadyExist = blotterdata.find(
+          (data2, index) =>
+            data2.pK_TransactionID === transaction.pK_TransactionID
+        );
+        if (isAlreadyExist !== undefined) {
+          setBlotterdata((prevBlotterData) =>
+            prevBlotterData.map((item) =>
+              item.pK_TransactionID === transaction.pK_TransactionID
+                ? transaction
+                : item
+            )
+          );
+        } else {
+          setBlotterdata([transaction, ...blotterdata]);
+        }
+        dispatch(BlotterTransactionRejectedForTreasury(null));
       } catch (error) {
-        console.log(error, "error in TransactionAssignedByTreasury");
+        console.log(error, "error in blotterTransactionRejectedForTreasury");
       }
     }
-  }, [transactionAssignedByTreasury]);
+  }, [blotterTransactionRejectedForTreasury]);
+
+  // useEffect(() => {
+  //   if (blotterTransactionAdded !== null) {
+  //     try {
+  //       const { transaction } = blotterTransactionAdded;
+  //       let ishasAlready = blotterdata.find(
+  //         (data, index) =>
+  //           data.pK_TransactionID === transaction.pK_TransactionID
+  //       );
+  //       if (!ishasAlready) {
+  //         setBlotterdata([transaction, ...blotterdata]);
+  //         dispatch(BlotterTransactionAdded(null));
+  //       }
+  //     } catch (error) {
+  //       console.log(error, "error in blotterTransactionAdded");
+  //     }
+  //   }
+  // }, [blotterTransactionAdded]);
 
   //TXN ID PopOver Functions Starts
   const handleOpenChange = (newOpen) => {
@@ -1004,16 +986,15 @@ const TXNSummary = () => {
     setOpenExportDiv(!openExportDiv);
   };
 
-  const handleClickChat = (txnID, treasuryPersonID) => {
+  const handleClickChat = (record) => {
     let Data = {
-      TranscationID: txnID,
+      TranscationID: 123456789,
     };
 
     dispatch(
       getAllChatByTransactionId({
         navigate,
         Data,
-        treasuryPersonID,
       })
     );
     // setChatModalTransactionId(record);
@@ -1082,7 +1063,7 @@ const TXNSummary = () => {
     setCancelReasonComment("");
   }, [cancelType, cancelTransactionID, cancelReasonModal, cancelReasonComment]);
 
-  const BranchColumn = [
+  const Treasurycolumns = [
     {
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
@@ -1111,11 +1092,14 @@ const TXNSummary = () => {
       align: "center",
       className: "ff-poppins fw-bold",
       width: 120,
+      ellipsis: {
+        showTitle: false,
+      },
     },
     {
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Customer Name</span>
+          <span className='ff-poppins fw-bold'>Client</span>
           <Popover
             content={popoverContentCustomerName}
             trigger='click'
@@ -1138,508 +1122,15 @@ const TXNSummary = () => {
       key: "counterPartyName",
       dataIndex: "corporateName",
       className: "ff-poppins fw-bold",
-      width: 150,
-    },
-    {
-      title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Type</span>
-          <Popover
-            content={popoverContentType}
-            trigger='click'
-            arrow={false}
-            placement='bottom'
-            open={openType}
-            onOpenChange={handleOpenChangeType}>
-            <span
-              style={{
-                cursor: "pointer",
-                color: "white",
-                background: "#f56600",
-                borderRadius: "4px",
-              }}>
-              ▼
-            </span>
-          </Popover>
-        </div>
-      ),
-      key: "side",
-      dataIndex: "side",
-      className: "ff-poppins fw-bold",
-      width: 60,
-    },
-    {
-      title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Nature</span>
-          <Popover
-            content={popoverContentNature}
-            trigger='click'
-            arrow={false}
-            placement='bottom'
-            open={openNature}
-            onOpenChange={handleOpenChangeNature}>
-            <span
-              style={{
-                cursor: "pointer",
-                color: "white",
-                background: "#f56600",
-                borderRadius: "4px",
-              }}>
-              ▼
-            </span>
-          </Popover>
-        </div>
-      ),
-      key: "nature",
-      dataIndex: "nature",
-      className: "ff-poppins fw-bold",
       width: 120,
-    },
-    {
-      title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>CCY1</span>
-          <Popover
-            content={popoverContentCCY1}
-            trigger='click'
-            arrow={false}
-            placement='bottom'
-            open={openCCY1}
-            onOpenChange={handleOpenChangeCCY1}>
-            <span
-              style={{
-                cursor: "pointer",
-                color: "white",
-                background: "#f56600",
-                borderRadius: "4px",
-              }}>
-              ▼
-            </span>
-          </Popover>
-        </div>
-      ),
-      key: "ccY1",
-      dataIndex: "ccY1",
-      className: "ff-poppins fw-bold",
-      width: 60,
-    },
-    {
-      title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Amount</span>
-          <Popover
-            content={popoverContentAmount1}
-            trigger='click'
-            arrow={false}
-            placement='bottom'
-            open={openAmount1}
-            onOpenChange={handleOpenChangeAmount1}>
-            <span
-              style={{
-                cursor: "pointer",
-                color: "white",
-                background: "#f56600",
-                borderRadius: "4px",
-              }}>
-              ▼
-            </span>
-          </Popover>
-        </div>
-      ),
-      key: "amount1",
-      dataIndex: "quantity",
-      className: "ff-poppins fw-bold",
-      width: 80,
-    },
-    {
-      title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Rate</span>
-          <Popover
-            content={popoverContentRate}
-            trigger='click'
-            arrow={false}
-            placement='bottom'
-            open={openRate}
-            onOpenChange={handleOpenChangeRate}>
-            <span
-              style={{
-                cursor: "pointer",
-                color: "white",
-                background: "#f56600",
-                borderRadius: "4px",
-              }}>
-              ▼
-            </span>
-          </Popover>
-        </div>
-      ),
-      key: "rate1",
-      dataIndex: "rate",
-      className: "ff-poppins fw-bold",
-      width: 120,
-      render: (text, record) => {
-        return text.toFixed(2);
+      ellipsis: {
+        showTitle: false,
       },
     },
     {
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>CCY2</span>
-          <Popover
-            content={popoverContentCCY2}
-            trigger='click'
-            arrow={false}
-            placement='bottom'
-            open={openCCY2}
-            onOpenChange={handleOpenChangeCCY2}>
-            <span
-              style={{
-                cursor: "pointer",
-                color: "white",
-                background: "#f56600",
-                borderRadius: "4px",
-              }}>
-              ▼
-            </span>
-          </Popover>
-        </div>
-      ),
-      key: "ccY2",
-      dataIndex: "ccY2",
-      className: "ff-poppins fw-bold",
-      width: 60,
-    },
-    {
-      title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Amount</span>
-          <Popover
-            content={popoverContentAmount2}
-            trigger='click'
-            arrow={false}
-            placement='bottom'
-            open={openAmount2}
-            onOpenChange={handleOpenChangeAmount2}>
-            <span
-              style={{
-                cursor: "pointer",
-                color: "white",
-                background: "#f56600",
-                borderRadius: "4px",
-              }}>
-              ▼
-            </span>
-          </Popover>
-        </div>
-      ),
-      key: "amount2",
-      dataIndex: "amount",
-      className: "ff-poppins fw-bold",
-      width: 120,
-      ellipsis: true,
-      render: (text, record) => {
-        return text.toFixed(2);
-      },
-    },
-    {
-      title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Time</span>
-          <Popover
-            content={popoverContentTime}
-            trigger='click'
-            arrow={false}
-            placement='bottom'
-            open={openTime}
-            onOpenChange={handleOpenChangeTime}>
-            <span
-              style={{
-                cursor: "pointer",
-                color: "white",
-                background: "#f56600",
-                borderRadius: "4px",
-              }}>
-              ▼
-            </span>
-          </Popover>
-        </div>
-      ),
-      key: "time",
-      dataIndex: "tradeDateTime",
-      className: "ff-poppins fw-bold",
-      width: 80,
-      ellipsis: true,
-      render: (text, record) => {
-        //  if the rfq is true and status  4 after timer has elapsed then call expired
-        let Data = { PK_TransactionID: record.pK_TransactionID };
-        // ExpireRFQTransaction({navigate, Data})
-        let isRFQ = record.isRFQ
-          ? record.statusID === 4 &&
-            record.rfqTimerDetails !== null &&
-            record.rfqTimerDetails?.isEnded === false
-            ? true
-            : false
-          : false;
-        let rfqTimer =
-          isRFQ && record.rfqTimerDetails.endTime
-            ? convertDateTimeIntoLocal(record.rfqTimerDetails.endTime)
-            : null;
-        if (text !== undefined && text !== null && text !== "") {
-          return (
-            <span>
-              {formatDateTimeToUTCTime(text)}{" "}
-              {isRFQ && (
-                <RFQTImer
-                  endTime={rfqTimer}
-                  dispatch={dispatch}
-                  apiFunction={ExpireRFQTransaction}
-                  navigate={navigate}
-                  Data={Data}
-                />
-              )}
-            </span>
-          );
-        }
-      },
-    },
-    {
-      title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>LC NO.</span>
-          <Popover
-            content={popoverContentLCno}
-            trigger='click'
-            arrow={false}
-            placement='bottom'
-            open={openLCno}
-            onOpenChange={handleOpenChangeLCno}>
-            <span
-              style={{
-                cursor: "pointer",
-                color: "white",
-                background: "#f56600",
-                borderRadius: "4px",
-              }}>
-              ▼
-            </span>
-          </Popover>
-        </div>
-      ),
-      key: "lC_No",
-      dataIndex: "lcNumber",
-      className: "ff-poppins fw-bold",
-      width: 120,
-      ellipsis: true,
-    },
-    {
-      title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Acc NO.</span>
-          <Popover
-            content={popoverContentAccNO}
-            trigger='click'
-            arrow={false}
-            placement='bottom'
-            open={openAccNO}
-            onOpenChange={handleOpenChangeAccNO}>
-            <span
-              style={{
-                cursor: "pointer",
-                color: "white",
-                background: "#f56600",
-                borderRadius: "4px",
-              }}>
-              ▼
-            </span>
-          </Popover>
-        </div>
-      ),
-      key: "accountNumber",
-      dataIndex: "accountNumber",
-      className: "ff-poppins fw-bold",
-      width: 120,
-      ellipsis: true,
-    },
-    {
-      title: "Checker",
-      key: "Checker",
-      dataIndex: "Checker",
-      className: "comment-class text-center",
-      width: 80,
-      ellipsis: true,
-      render: (text, record) => {
-        return (
-          <>
-            <div className='col-action text-nowrap text-center'>
-              {record.statusID === 4 && record.isRFQ === true ? (
-                <>
-                  <CustomButton
-                    icon={<i className='icon-check'></i>}
-                    className='btn btn-sm btn-success me-1 blotterCheckerButton'
-                    onClick={() =>
-                      handleCheckerAccept(record.pK_TransactionID, "Accepted")
-                    }
-                  />
-                  <CustomButton
-                    icon={<i className='icon-close'></i>}
-                    className='btn btn-sm btn-danger me-1 blotterCheckerButton '
-                    onClick={() =>
-                      handleCheckerAccept(record.pK_TransactionID, "Rejected")
-                    }
-                  />
-                </>
-              ) : record.statusID === 1 ? (
-                <>
-                  <CustomButton
-                    icon={<i className='icon-close'></i>}
-                    className='btn btn-sm btn-danger me-1 blotterCheckerButton '
-                    onClick={() =>
-                      handleCheckerAccept(record.pK_TransactionID, "Cancelled")
-                    }
-                  />
-                </>
-              ) : record.statusID === 2 || record.statusID === 5 ? (
-                <>
-                  <CustomButton
-                    icon={<i className='icon-close'></i>}
-                    className='btn btn-sm btn-danger me-1 blotterCheckerButton '
-                    onClick={() =>
-                      handleCheckerAccept(
-                        record.pK_TransactionID,
-                        "CancelTransaction"
-                      )
-                    }
-                  />
-                </>
-              ) : null}
-            </div>
-          </>
-        );
-      },
-    },
-
-    {
-      title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Status</span>
-          <Popover
-            content={popoverContentStatus}
-            trigger='click'
-            arrow={false}
-            placement='bottom'
-            open={openStatus}
-            onOpenChange={handleOpenChangeStatus}>
-            <span
-              style={{
-                cursor: "pointer",
-                color: "white",
-                background: "#f56600",
-                borderRadius: "4px",
-              }}>
-              ▼
-            </span>
-          </Popover>
-        </div>
-      ),
-      key: "14",
-      dataIndex: "status",
-      className: "ff-poppins fw-bold",
-      width: 80,
-      ellipsis: true,
-      render: (text, record) => (
-        <>
-          <span className={text === "Accepted" ? "color-green" : "color-red"}>
-            {text}
-          </span>
-        </>
-      ),
-    },
-    {
-      key: "15",
-      title: "",
-      dataIndex: "",
-      className: "comment-class ",
-      width: 80,
-      ellipsis: true,
-      render: (text, record) => {
-        return (
-          <>
-            <div className='col-chat text-nowrap text-center'>
-              {record.statusID === 5 || record.statusID === 4 ? (
-                <CustomButton
-                  icon={<i className='icon-chat2'></i>}
-                  className='btn btn-sm btn-danger chat-btn-trigger'
-                  onClick={() =>
-                    handleClickChat(
-                      record.pK_TransactionID,
-                      record.treasuryPersonID
-                    )
-                  }
-                />
-              ) : null}
-
-              <CustomButton
-                onClick={() => handleClickInfo(record)}
-                icon={
-                  <svg
-                    id='info_Layer_1'
-                    x='0px'
-                    y='0px'
-                    width='12px'
-                    height='12px'
-                    fill='#ffffff'
-                    viewBox='0 0 55 55'>
-                    <g>
-                      <path d='M41.407,45.858c0.067,0.838,0.156,1.672,0.183,2.508   c0.005,0.152-0.205,0.376-0.37,0.461c-1.347,0.687-2.679,1.416-4.069,2.005c-3.305,1.396-6.715,2.5-10.277,3.009   c-1.447,0.206-2.936,0.154-4.403,0.153c-0.477-0.001-0.968-0.178-1.424-0.345c-1.313-0.481-1.98-1.443-1.948-2.85   c0.015-0.583,0.103-1.179,0.253-1.744c1.863-7.013,3.752-14.02,5.61-21.037c0.199-0.751,0.327-1.543,0.341-2.318   c0.021-1.142-0.615-1.925-1.667-2.331c-1.605-0.618-3.258-0.468-4.89-0.161c-1.764,0.332-3.468,0.873-5.149,1.884   c-0.074-0.978-0.157-1.863-0.187-2.75c-0.005-0.127,0.234-0.307,0.396-0.388c1.334-0.67,2.648-1.389,4.021-1.968   c3.327-1.403,6.755-2.512,10.337-3.021c1.465-0.208,2.994-0.294,4.457-0.125c2.782,0.323,3.808,2.02,3.073,4.73   c-0.94,3.474-1.914,6.941-2.838,10.419c-1.049,3.953-2.087,7.912-3.077,11.879c-0.524,2.107,0.385,3.449,2.526,3.839   c2.048,0.376,4.038-0.017,5.981-0.634C39.313,46.75,40.296,46.295,41.407,45.858z'></path>
-                      <circle cx='27.5' cy='7.608' r='6.609'></circle>
-                    </g>
-                  </svg>
-                }
-                className='btn btn-sm btn-primary info-btn-trigger ms-1'
-              />
-            </div>
-          </>
-        );
-      },
-    },
-  ];
-
-  const CorporateColumn = [
-    {
-      title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>TXN ID</span>
-          <Popover
-            content={popoverContentTXN}
-            trigger='click'
-            arrow={false}
-            placement='bottom'
-            open={open}
-            onOpenChange={handleOpenChange}>
-            <span
-              style={{
-                cursor: "pointer",
-                color: "white",
-                background: "#f56600",
-                borderRadius: "4px",
-              }}>
-              ▼
-            </span>
-          </Popover>
-        </div>
-      ),
-      key: "txnid",
-      dataIndex: "txnid",
-      align: "center",
-      className: "ff-poppins fw-bold",
-      width: 120,
-    },
-    {
-      title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins text-nowrap fw-bold'>Customer Name</span>
+          <span className='ff-poppins fw-bold'>Branch Code</span>
           <Popover
             content={popoverContentCustomerName}
             trigger='click'
@@ -1659,10 +1150,10 @@ const TXNSummary = () => {
           </Popover>
         </div>
       ),
-      key: "corporateName",
-      dataIndex: "corporateName",
+      key: "counterPartyName",
+      dataIndex: "branchCode",
       className: "ff-poppins fw-bold",
-      width: 150,
+      width: 120,
     },
     {
       title: (
@@ -1690,7 +1181,7 @@ const TXNSummary = () => {
       key: "side",
       dataIndex: "side",
       className: "ff-poppins fw-bold",
-      width: 60,
+      width: 70,
     },
     {
       title: (
@@ -1746,7 +1237,7 @@ const TXNSummary = () => {
       key: "ccY1",
       dataIndex: "ccY1",
       className: "ff-poppins fw-bold",
-      width: 60,
+      width: 80,
     },
     {
       title: (
@@ -1802,7 +1293,7 @@ const TXNSummary = () => {
       key: "rate1",
       dataIndex: "rate",
       className: "ff-poppins fw-bold",
-      width: 80,
+      width: 120,
       render: (text, record) => {
         return text.toFixed(2);
       },
@@ -1833,7 +1324,7 @@ const TXNSummary = () => {
       key: "ccY2",
       dataIndex: "ccY2",
       className: "ff-poppins fw-bold",
-      width: 80,
+      width: 60,
     },
     {
       title: (
@@ -1861,7 +1352,10 @@ const TXNSummary = () => {
       key: "amount2",
       dataIndex: "amount",
       className: "ff-poppins fw-bold",
-      width: 80,
+      width: 120,
+      render: (text, record) => {
+        return text.toFixed(2);
+      },
     },
     {
       title: (
@@ -1891,34 +1385,7 @@ const TXNSummary = () => {
       className: "ff-poppins fw-bold",
       width: 80,
       render: (text, record) => {
-        let Data = { PK_TransactionID: record.pK_TransactionID };
-        let isRFQ = record.isRFQ
-          ? record.statusID === 4 &&
-            record.rfqTimerDetails !== null &&
-            record.rfqTimerDetails?.isEnded === false
-            ? true
-            : false
-          : false;
-        let rfqTimer =
-          isRFQ && record.rfqTimerDetails.endTime
-            ? convertDateTimeIntoLocal(record.rfqTimerDetails.endTime)
-            : null;
-        if (text !== undefined && text !== null && text !== "") {
-          return (
-            <span>
-              {formatDateTimeToUTCTime(text)}{" "}
-              {isRFQ && (
-                <RFQTImer
-                  endTime={rfqTimer}
-                  dispatch={dispatch}
-                  apiFunction={ExpireRFQTransaction}
-                  navigate={navigate}
-                  Data={Data}
-                />
-              )}
-            </span>
-          );
-        }
+        return text !== "" && formatDateTimeToUTCTime(text);
       },
     },
     {
@@ -1977,6 +1444,7 @@ const TXNSummary = () => {
       className: "ff-poppins fw-bold",
       width: 120,
     },
+
     {
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
@@ -2013,66 +1481,82 @@ const TXNSummary = () => {
       ),
     },
     {
-      key: "15",
-      title: "",
+      title: "Action",
+      key: "Checker",
       dataIndex: "",
+      className: "comment-class text-center",
+      width: 80,
+      align: "center",
+      render: (text, record) => {
+        console.log(record, "record in action column");
+        return (
+          <>
+            <div className='col-action text-nowrap text-center d-flex gap-1 justify-content-center'>
+              {/* Check  */}
+              {record.statusID === 1 ? (
+                <CustomButton
+                  icon={<i className='icon-close blotterTableIconSize '></i>}
+                  // className='btn btn-danger '
+                  size={"small"}
+                  applyClass={"ActionButton"}
+                  onClick={() => handleCheckerAccept(record.pK_TransactionID, "Cancelled")}
+                />
+              ) : null}
+              {/* <CustomButton
+                icon={<i className='icon-check blotterTableIconSize'></i>}
+                className='btn btn-success '
+              />
+              <CustomButton
+                icon={<i className='icon-trash blotterTableIconSize '></i>}
+                className='btn  btn-danger  '
+              />
+
+              <CustomButton
+                icon={<i className='icon-user-check blotterTableIconSize '></i>}
+                className='btn  btn-primary  '
+              />
+              <CustomButton
+                icon={<i className='icon-open  blotterTableIconSize'></i>}
+                className='btn  btn-primary  '
+              />
+              <CustomButton
+                icon={
+                  <i className='icon-view-comment blotterTableIconSize'></i>
+                }
+                className='btn  btn-primary'
+              /> */}
+            </div>
+          </>
+        );
+      },
+    },
+    {
+      key: "",
+      title: "",
+      dataIndex: "chat",
       className: "comment-class ",
-      width: 120,
+      width: 80,
+      align: "center",
       render: (text, record) => {
         return (
           <>
-            <div className='col-chat text-nowrap text-center'>
-              {record.statusID === 4 && record.isRFQ === true ? (
-                <>
-                  <CustomButton
-                    icon={<i className='icon-check'></i>}
-                    className='btn btn-sm btn-success me-1 blotterCheckerButton'
-                    onClick={() =>
-                      handleCheckerAccept(record.pK_TransactionID, "Accepted")
-                    }
-                  />
-                  <CustomButton
-                    icon={<i className='icon-trash'></i>}
-                    className='btn btn-sm btn-danger me-1 blotterCheckerButton '
-                    onClick={() =>
-                      handleCheckerAccept(record.pK_TransactionID, "Rejected")
-                    }
-                  />
-                </>
-              ) : record.statusID === 1 ? (
-                <>
-                  <CustomButton
-                    icon={<i className='icon-close'></i>}
-                    className='btn btn-sm btn-danger me-1 blotterCheckerButton '
-                    onClick={() =>
-                      handleCheckerAccept(record.pK_TransactionID, "Cancelled")
-                    }
-                  />
-                </>
-              ) : record.statusID === 2 || record.statusID === 5 ? (
-                <>
-                  <CustomButton
-                    icon={<i className='icon-close'></i>}
-                    className='btn btn-sm btn-danger me-1 blotterCheckerButton '
-                    onClick={() =>
-                      handleCheckerAccept(
-                        record.pK_TransactionID,
-                        "CancelTransaction"
-                      )
-                    }
-                  />
-                </>
-              ) : null}
-              {record.statusID === 5 || record.statusID === 4 ? (
+            <div className='d-flex gap-1 justify-content-start'>
+              {record.statusID === 3 ? (
                 <CustomButton
-                  icon={<i className='icon-chat2'></i>}
-                  className='btn btn-sm btn-danger chat-btn-trigge blotterCheckerButtonr'
-                  onClick={() =>
-                    handleClickChat(record.txnid, record.treasuryPersonID)
+                  icon={
+                    <i className='icon-view-comment blotterTableIconSize '></i>
                   }
+                  className='btn  btn-primary'
+                  onClick={() => handleShowCommentModal(record.comment)}
                 />
-              ) : null}
-
+              ) : (
+                <span className='w-30'></span>
+              )}
+              {/* <CustomButton
+                icon={<i className='icon-chat2 '></i>}
+                className='btn btn-sm btn-danger chat-btn-trigger'
+                onClick={() => handleClickChat(record.txnid)}
+              /> */}
               <CustomButton
                 onClick={() => handleClickInfo(record)}
                 icon={
@@ -2106,14 +1590,9 @@ const TXNSummary = () => {
         dataSource={blotterdata}
         bordered={false}
         prefixCls='TXNSummary_Table'
-        columns={
-          isBranch
-            ? BranchColumn
-            : isCorproate
-            ? CorporateColumn
-            : Treasurycolumns
-        }
+        columns={Treasurycolumns}
         scroll={{ x: "max-content", y: 500 }}
+        rowClassName={(record) => record.statusID === 7 ? "isCancelled": ""}
       />
       <CommentModal
         comment={comment}
@@ -2136,4 +1615,4 @@ const TXNSummary = () => {
   );
 };
 
-export default TXNSummary;
+export default TXNTreasurySummary;

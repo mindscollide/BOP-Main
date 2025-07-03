@@ -18,9 +18,26 @@ import {
 import { NonFeDiscountingPublishedAction } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { InputCell } from "@/components/common/inputField/InputCell";
 
+/**
+ * NonFeDiscountingTable component renders a table for displaying and managing 
+ * non-FE discounting rates. It fetches data from the Redux store and allows 
+ * users to publish updated rates.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered NonFeDiscountingTable component.
+ *
+ * @example
+ * return (
+ *   <NonFeDiscountingTable />
+ * );
+ */
 const NonFeDiscountingTable = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const marketStatus = useSelector(
+    (state) => state.RealtimeActionsSlice.marketStatus
+  );
+
   const [tableData, setTableData] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
   const getDashboardForwards = useSelector(
@@ -129,6 +146,7 @@ const NonFeDiscountingTable = () => {
           applyClass='publishForwardsBtn'
           value={"Publish Non FE Discounting"}
           onClick={handlePublishDiscount}
+          disabled={marketStatus === false ? true : false}
         />
       </span>
     </>

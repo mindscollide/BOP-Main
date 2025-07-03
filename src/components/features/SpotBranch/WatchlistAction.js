@@ -240,7 +240,7 @@ export const GetAllCounterPartyDataAPI = createAsyncThunk(
       }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(GetAllCounterPartyDataAPI({ navigate , Data}));
+        dispatch(GetAllCounterPartyDataAPI({ navigate, Data }));
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -332,6 +332,45 @@ export const GetDashboardDataAPI = createAsyncThunk(
               )
           ) {
             console.log("globalStateWatchlistCardData", response.data);
+            let Data = {
+              responseResult: {
+                datetime: "20240904073145",
+                sections: [
+                  {
+                    sectionID: 1,
+                    instrumentID: 21,
+                    instrumentName: "USD",
+                    sell: 5,
+                    buy: 4,
+                  },
+                  {
+                    sectionID: 2,
+                    instrumentID: 22,
+                    instrumentName: "EUR",
+                    sell: 5,
+                    buy: 4,
+                  },
+                  {
+                    sectionID: 3,
+                    instrumentID: 23,
+                    instrumentName: "GBP",
+                    sell: 5,
+                    buy: 4,
+                  },
+                  {
+                    sectionID: 4,
+                    instrumentID: 24,
+                    instrumentName: "JPY",
+                    sell: 5,
+                    buy: 4,
+                  },
+                ],
+                responseMessage:
+                  "WatchList_WatchListServiceManager_GetDashboardData_01",
+                isExecuted: true,
+              },
+            };
+
             return {
               response: response.data.responseResult,
               message: "Successfully Rerieved Data",

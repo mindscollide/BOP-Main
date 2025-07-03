@@ -18,3 +18,23 @@
   background: linear-gradient(to bottom, #eeb592 0%, #fc6d0f 100%) !important;
   color: #fff !important;
 }
+[class^="icon-"],
+[class*=" icon-"] {
+  font-size: 17px !important;
+  vertical-align: middle;
+}
+
+.blotterTableIconSize {
+  font-size: 14px !important;
+}
+
+.RFQ_TimerStyle {
+  display: inline-block;
+  padding: 5px;
+  border-radius: 4px;
+  background: #f21616;
+  color: #ffffff;
+  font-size: 12px;
+  margin-left: 2px;
+  font-weight: 600;
+}

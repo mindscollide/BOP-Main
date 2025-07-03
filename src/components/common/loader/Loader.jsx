@@ -8,6 +8,7 @@ const Loader = () => {
   const bankSpotReducerLoader = useSelector(
     (state) => state.bankSpotReducer.Loader
   );
+  const blotterReducerLoader = useSelector((state) => state.BlotterSlicer.Loader) 
   const misReducerLoader = useSelector((state) => state.misReducer.Loader);
   const WatchListReducerLoader = useSelector(
     (state) => state.WatchListReducer.Loader
@@ -46,6 +47,7 @@ const Loader = () => {
     settingSlicerLoader,
     chatSlicerLoader,
     dealerSliceLoader,
+    blotterReducerLoader
   ].some((loading) => loading);
 
   useEffect(() => {
@@ -57,7 +59,7 @@ const Loader = () => {
       // Hide loader after a short delay when loading completes
       timeout = setTimeout(() => {
         setIsLoading(false);
-      }, 500);
+      }, 1000);
     }
 
     return () => clearTimeout(timeout);
@@ -65,7 +67,7 @@ const Loader = () => {
 
   return (
     isLoader && (
-      <div className='body-loader'>
+      <div className='body-loader overflow-hidden'>
         <div className='body-loader-inner'>
           <div className='logo-loader-wrapper'>
             <img

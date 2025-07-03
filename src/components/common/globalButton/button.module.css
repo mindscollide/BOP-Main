@@ -147,7 +147,7 @@
   background-color: #096fed !important;
   border-color: #096fed !important;
 }
-.publishForwardsBtn_active {
+/* .publishForwardsBtn_active {
   border-radius: 4px !important;
   font-size: 14px !important;
   font-weight: 500 !important;
@@ -156,10 +156,19 @@
   -webkit-transition: all 0.3s ease-in !important;
   background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
   border-color: #feac78 !important;
-}
+} */
 .publishForwardsBtn:is(:hover, :focus, :focus-visible, :visited, :active) {
   background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
   border-color: #feac78 !important;
+}
+.publishForwardsBtn:disabled {
+  background-color: var(---color-light-gray) !important;
+  border-color: var(---color-light-gray) !important; 
+  cursor: default !important ;
+}
+.publishForwardsBtn:disabled:is(:hover, :focus, :focus-visible, :visited, :active) {
+  background-color: var(---color-light-gray) !important;
+  border-color: var(---color-light-gray) !important; 
 }
 /* End Publish Forwards Button */
 
@@ -696,14 +705,16 @@
   transition: all 0.3s ease-in !important;
   font-family: "Poppins", sans-serif;
   -webkit-transition: all 0.3s ease-in !important;
+  background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
+  border-color: #feac78 !important;
   background: var(--color-secondary);
   border-color: var(--color-secondary);
   font-size: 1.25rem !important;
   height: 44px;
 }
 .AcceptBtnDealBox:is(:hover) {
-  background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
-  border-color: #feac78 !important;
+  background: var(--color-secondary) !important;
+  border-color: var(--color-secondar) !important;
 }
 /* Stop Accept Button View Deal Box */
 
@@ -715,13 +726,64 @@
   transition: all 0.3s ease-in !important;
   font-family: "Poppins", sans-serif;
   -webkit-transition: all 0.3s ease-in !important;
-  background: #dc3545;
-  border-color: #dc3545;
+  -webkit-transition: all 0.3s ease-in !important;
+  background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
   font-size: 1.25rem !important;
   height: 44px;
 }
 .RejectBtnDealBox:is(:hover) {
-  background: #f85e35 !important;
-  border-color: #f85e35 !important;
+  background: var(--color-secondary) !important;
+  border-color: var(--color-secondar) !important;
 }
 /* Stop Reject Button View Deal Box */
+.ActionButton .ant-btn.ant-btn-icon-only {
+  max-width: 20px !important;
+  max-height: 20px !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.ActionButton i {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+.cancelReasonModalSubmitBtn {
+  border-radius: 4px !important;
+  font-weight: 600 !important;
+  position: relative !important;
+  transition: all 0.3s ease-in !important;
+  font-family: "Poppins", sans-serif;
+  -webkit-transition: all 0.3s ease-in !important;
+  background: #fff;
+  border-color: #dc3545;
+  font-size: 14px !important;
+  color: #dc3545;
+  padding: 6px 25px;
+}
+.cancelReasonModalSubmitBtn:is(:hover) {
+  background: #dc3545 !important;
+  border-color: #dc3545 !important;
+  color: #fff !important;
+}
+/* Stop Reject Button View Deal Box */
+.cancelReasonModalCancelBtn {
+  border-radius: 4px !important;
+  font-weight: 600 !important;
+  position: relative !important;
+  transition: all 0.3s ease-in !important;
+  font-family: "Poppins", sans-serif;
+  -webkit-transition: all 0.3s ease-in !important;
+  background: #fff;
+  border-color: #0d6efd;
+  font-size: 14px !important;
+  color: #0d6efd;
+  padding: 0 25px;
+}
+.cancelReasonModalCancelBtn:is(:hover) {
+  background: #0d6efd !important;
+  border-color: #0d6efd !important;
+  color: #fff !important;
+}
