@@ -14,15 +14,15 @@ import { motion } from "framer-motion";
 const DealBox = () => {
   const dispatch = useDispatch();
   const openViewDealModal = () => {
-    dispatch(setDealModalRequest(false));
     dispatch(setViewDealModal(true));
+    // setDealData(record);
   };
 
-  useEffect(() => {
-    setTimeout(() => {
-      dispatch(setDealModalRequest(false));
-    }, 3000);
-  }, []);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     dispatch(setDealModalRequest(false));
+  //   }, 3000);
+  // }, []);
 
   return (
     <motion.section

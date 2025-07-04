@@ -17,9 +17,11 @@ const RealtimeActionsSlice = createSlice({
 
     BlotterTransactionRFQExpired: null,
     BlotterTransactionRFQExpiredForTreasury: null,
-    
+    BlotterTransactionRFQExpiredForTreasuryDealBox: null,
+
     BlotterTransactionAdded: null,
     BlotterTransactionAddedForTreasury: null,
+    BlotterTransactionAddedForTreasuryDealBox: null,
 
     BlotterTransactionAssigned: null,
     BlotterTransactionAssignedForTreasury: null,
@@ -29,6 +31,7 @@ const RealtimeActionsSlice = createSlice({
 
     BlotterTransactionRFQQuoted: null,
     BlotterTransactionRFQQuotedForTreasury: null,
+    BlotterTransactionRFQQuotedForTreasuryDealBox: null,
 
     BlotterTransactionCancellationRequestData: null,
     BlotterTransactionCancellationRequestDataForTreasury: null,
@@ -81,11 +84,17 @@ const RealtimeActionsSlice = createSlice({
     BlotterTransactionRFQExpiredForTreasury(state, { payload }) {
       state.BlotterTransactionRFQExpiredForTreasury = payload;
     },
+    setBlotterTransactionRFQExpiredForTreasuryDealBox(state, { payload }) {
+      state.BlotterTransactionRFQExpiredForTreasuryDealBox = payload;
+    },
     BlotterTransactionAdded(state, { payload }) {
       state.BlotterTransactionAdded = payload;
     },
     BlotterTransactionAddedForTreasury(state, { payload }) {
       state.BlotterTransactionAddedForTreasury = payload;
+    },
+    setBlotterTransactionAddedForTreasuryDealBox(state, { payload }) {
+      state.BlotterTransactionAddedForTreasuryDealBox = payload;
     },
     BlotterTransactionAssigned(state, { payload }) {
       state.BlotterTransactionAssigned = payload;
@@ -104,6 +113,9 @@ const RealtimeActionsSlice = createSlice({
     },
     BlotterTransactionRFQQuotedForTreasury(state, { payload }) {
       state.BlotterTransactionRFQQuotedForTreasury = payload;
+    },
+    setBlotterTransactionRFQQuotedForTreasuryDealBox(state, { payload }) {
+      state.BlotterTransactionRFQQuotedForTreasuryDealBox = payload;
     },
     BlotterTransactionCancellationRequest(state, { payload }) {
       state.BlotterTransactionCancellationRequestData = payload;
@@ -131,6 +143,7 @@ const RealtimeActionsSlice = createSlice({
 });
 
 export const {
+  setBlotterTransactionRFQQuotedForTreasuryDealBox,
   BlotterTransactionRFQExpiredForTreasury,
   BlotterTransactionAddedForTreasury,
   BlotterTransactionAssignedForTreasury,
@@ -159,6 +172,8 @@ export const {
   marketStatusUpdated,
   BlotterTransactionRFQExpired,
   BlotterTransactionRFQQuoted,
+  setBlotterTransactionRFQExpiredForTreasuryDealBox,
+  setBlotterTransactionAddedForTreasuryDealBox,
 } = RealtimeActionsSlice.actions;
 
 export default RealtimeActionsSlice.reducer;

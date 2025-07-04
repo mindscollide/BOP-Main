@@ -1097,7 +1097,13 @@ const OutstandingDeals = () => {
         PK_TransactionID: cancelTransactionID,
         Comment: cancelReasonComment,
       };
-      dispatch(RejectTransactionCancellationRequest({ navigate, Data, setCancelReasonModal }));
+      dispatch(
+        RejectTransactionCancellationRequest({
+          navigate,
+          Data,
+          setCancelReasonModal,
+        })
+      );
     }
   }, [
     cancelType,
@@ -1598,9 +1604,10 @@ const OutstandingDeals = () => {
               <>
                 <CustomButton
                   icon={
-                    <i className='icon-user-check blotterTableIconSize '></i>
+                    <i className='icon-user-check  '></i>
                   }
-                  className='btn  btn-primary'
+                  size={"small"}
+                  className='btn  btn-primary btn-sm'
                   onClick={() => handleClickAssignTransaction(record)}
                 />
               </>
@@ -1609,9 +1616,10 @@ const OutstandingDeals = () => {
               record.statusID === 6 ? (
                 <>
                   <CustomButton
-                    icon={<i className='icon-check'></i>}
+                    icon={<i className='icon-check '></i>}
                     className='btn btn-sm btn-danger'
                     applyClass={"ActionButton"}
+                    size={"small"}
                     onClick={() =>
                       handleAcceptTransactionCancellation(
                         record.pK_TransactionID
@@ -1619,8 +1627,9 @@ const OutstandingDeals = () => {
                     }
                   />
                   <CustomButton
-                    icon={<i className='icon-close'></i>}
-                    className='btn btn-sm btn-success '
+                    icon={<i className='icon-close '></i>}
+                    className='btn btn-sm  '
+                    size={"small"}
                     onClick={() =>
                       handleRejectTransactionCancellation(
                         record.pK_TransactionID
@@ -1634,6 +1643,7 @@ const OutstandingDeals = () => {
                     <>
                       <CustomButton
                         icon={<i className='icon-open '></i>}
+                        size={"small"}
                         className='btn btn-sm btn-primary'
                         onClick={() => openViewDeal(record)}
                       />
@@ -1642,11 +1652,13 @@ const OutstandingDeals = () => {
                     <>
                       <CustomButton
                         icon={<i className='icon-check'></i>}
+                        size={"small"}
                         className='btn btn-sm btn-success blotterCheckerButton '
                         onClick={() => acceptTransaction(record)}
                       />
                       <CustomButton
                         icon={<i className='icon-close '></i>}
+                        size={"small"}
                         className='btn btn-sm btn-danger blotterCheckerButton '
                         onClick={() => rejectTransaction(record)}
                       />
@@ -1656,6 +1668,7 @@ const OutstandingDeals = () => {
               ) : record.statusID === 4 ? null : record.statusID === 2 ? (
                 <>
                   <CustomButton
+                    size={"small"}
                     icon={
                       <i className='icon-user-check blotterCheckerButton '></i>
                     }

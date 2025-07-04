@@ -24,6 +24,7 @@ import {
   setIBuySellData,
   setRfqModalOpen,
 } from "@/store/modalSlice/modalSlicer";
+import ViewCurrentDeals from "@/container/pages/mainTreasury/tabsContent/liveRates/blotter/viewCurrentDeals/ViewCurrentDeals";
 
 const GlobalNavbar = () => {
   const getAllCategoriesData = useSelector(
@@ -68,6 +69,7 @@ const GlobalNavbar = () => {
     window.open("/BOP/calculator", "_blank");
   };
   console.log(allCategories, "allCategoriesallCategories");
+  const [viewCurrentDeals, setViewCurrentDeals] = useState(false);
   // Conditionally import CustomButton based on the environment variables
   const shouldIncludeBranch =
     import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
@@ -232,6 +234,19 @@ const GlobalNavbar = () => {
             <SiteLogoComponent />
             <div className='ms-auto'>
               <div className='d-flex align-items-center gap-2'>
+                {shouldIncludeTreasury && (
+                  <>
+                    <section className='position-relative'>
+                      <IconElement
+                        iconClass={
+                          "icon-clock fs-4 color-red px-2 cursor-pointer"
+                        }
+                        onClick={() => setViewCurrentDeals(!viewCurrentDeals)}
+                      />
+                      {viewCurrentDeals && <ViewCurrentDeals />}
+                    </section>
+                  </>
+                )}
                 {location.pathname !== "/calculator" ? (
                   <>
                     {(shouldIncludeCorporate || shouldIncludeBranch) && (

@@ -118,7 +118,7 @@ const TXNSummary = () => {
   //local states
   const [blotterdata, setBlotterdata] = useState([]);
 
-  console.log(blotterdata, "blotterdatablotterdata")
+  console.log(blotterdata, "blotterdatablotterdata");
   const [totalRecord, setTotalRecords] = useState(0);
   const [sRow, setRow] = useState(0);
   const [hasReachedBottom, setHasReachedBottom] = useState(false);
@@ -1477,6 +1477,7 @@ const TXNSummary = () => {
                 <>
                   <CustomButton
                     icon={<i className='icon-check'></i>}
+                    size={"small"}
                     className='btn btn-sm btn-success me-1 blotterCheckerButton'
                     onClick={() =>
                       handleCheckerAccept(record.pK_TransactionID, "Accepted")
@@ -1484,6 +1485,7 @@ const TXNSummary = () => {
                   />
                   <CustomButton
                     icon={<i className='icon-close'></i>}
+                    size={"small"}
                     className='btn btn-sm btn-danger me-1 blotterCheckerButton '
                     onClick={() =>
                       handleCheckerAccept(record.pK_TransactionID, "Rejected")
@@ -1494,6 +1496,7 @@ const TXNSummary = () => {
                 <>
                   <CustomButton
                     icon={<i className='icon-close'></i>}
+                    size={"small"}
                     className='btn btn-sm btn-danger me-1 blotterCheckerButton '
                     onClick={() =>
                       handleCheckerAccept(record.pK_TransactionID, "Cancelled")
@@ -1504,6 +1507,7 @@ const TXNSummary = () => {
                 <>
                   <CustomButton
                     icon={<i className='icon-close'></i>}
+                    size={"small"}
                     className='btn btn-sm btn-danger me-1 blotterCheckerButton '
                     onClick={() =>
                       handleCheckerAccept(
@@ -1570,6 +1574,7 @@ const TXNSummary = () => {
               {record.statusID === 5 || record.statusID === 4 ? (
                 <CustomButton
                   icon={<i className='icon-chat2'></i>}
+                  size={"small"}
                   className='btn btn-sm btn-danger chat-btn-trigger'
                   onClick={() =>
                     handleClickChat(
@@ -1582,6 +1587,7 @@ const TXNSummary = () => {
 
               <CustomButton
                 onClick={() => handleClickInfo(record)}
+                size={"small"}
                 icon={
                   <svg
                     id='info_Layer_1'
@@ -2026,6 +2032,7 @@ const TXNSummary = () => {
                 <>
                   <CustomButton
                     icon={<i className='icon-check'></i>}
+                    size={"small"}
                     className='btn btn-sm btn-success me-1 blotterCheckerButton'
                     onClick={() =>
                       handleCheckerAccept(record.pK_TransactionID, "Accepted")
@@ -2033,6 +2040,7 @@ const TXNSummary = () => {
                   />
                   <CustomButton
                     icon={<i className='icon-trash'></i>}
+                    size={"small"}
                     className='btn btn-sm btn-danger me-1 blotterCheckerButton '
                     onClick={() =>
                       handleCheckerAccept(record.pK_TransactionID, "Rejected")
@@ -2043,6 +2051,7 @@ const TXNSummary = () => {
                 <>
                   <CustomButton
                     icon={<i className='icon-close'></i>}
+                    size={"small"}
                     className='btn btn-sm btn-danger me-1 blotterCheckerButton '
                     onClick={() =>
                       handleCheckerAccept(record.pK_TransactionID, "Cancelled")
@@ -2053,6 +2062,7 @@ const TXNSummary = () => {
                 <>
                   <CustomButton
                     icon={<i className='icon-close'></i>}
+                    size={"small"}
                     className='btn btn-sm btn-danger me-1 blotterCheckerButton '
                     onClick={() =>
                       handleCheckerAccept(
@@ -2066,6 +2076,7 @@ const TXNSummary = () => {
               {record.statusID === 5 || record.statusID === 4 ? (
                 <CustomButton
                   icon={<i className='icon-chat2'></i>}
+                  size={"small"}
                   className='btn btn-sm btn-danger chat-btn-trigge blotterCheckerButtonr'
                   onClick={() =>
                     handleClickChat(record.txnid, record.treasuryPersonID)
@@ -2075,6 +2086,7 @@ const TXNSummary = () => {
 
               <CustomButton
                 onClick={() => handleClickInfo(record)}
+                size={"small"}
                 icon={
                   <svg
                     id='info_Layer_1'

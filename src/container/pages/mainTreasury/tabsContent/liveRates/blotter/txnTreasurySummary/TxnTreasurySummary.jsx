@@ -1032,7 +1032,7 @@ const TXNTreasurySummary = () => {
         PK_TransactionID: cancelTransactionID,
         Comment: cancelReasonComment,
       };
-      dispatch(RequestCancellation({ Data, navigate, setCancelReasonModal }));
+      dispatch(RejectTransactionAPI({ Data, navigate, setCancelReasonModal }));
     } else if (cancelType === "CancelTransaction") {
       let Data = {
         PK_TransactionID: cancelTransactionID,
