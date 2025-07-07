@@ -24,9 +24,9 @@ const RFQSlice = createSlice({
       // Fulfilled state (when the API call succeeds SaveTransactionRFQAPI)
       .addCase(SaveTransactionRFQAPI.fulfilled, (state, { payload }) => {
         state.Loader = false;
-        state.saveRFQTransactionData = payload.response;
+        state.saveRFQTransactionData = payload?.response;
         state.error = null;
-        state.responseMessage = payload.message;
+        state.responseMessage = payload?.message;
       })
       // Rejected state (when the API call fails ViewAllNatureOfBussinessAPI)
       .addCase(SaveTransactionRFQAPI.rejected, (state, action) => {

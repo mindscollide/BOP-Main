@@ -4,7 +4,7 @@ import {
   calculateNonFxDiscountingData,
   getAllCalculatorData,
 } from "@/common/api_config";
-import { CalculatorApi } from "@/common/apiend_points";
+import { calculatorApi } from "@/common/apiend_points";
 import { setCustomHeaders } from "@/common/utils";
 import createPostAPI from "@/utils/axiosInstance";
 import { createAsyncThunk } from "@reduxjs/toolkit";
@@ -15,7 +15,7 @@ export const GetAllCalculatorData = createAsyncThunk(
   async ({ navigate }, { dispatch, rejectWithValue }) => {
     try {
       let GetAllCalculator = createPostAPI(
-        CalculatorApi,
+        calculatorApi,
         getAllCalculatorData.RequestMethod
       );
 
@@ -74,7 +74,7 @@ export const CalculateFxDiscountingAPI = createAsyncThunk(
   async ({ Data, navigate }, { dispatch, rejectWithValue }) => {
     try {
       let CalculateFxDiscounting = createPostAPI(
-        CalculatorApi,
+        calculatorApi,
         calculateFxDiscountingData.RequestMethod
       );
 
@@ -133,7 +133,7 @@ export const CalculateNonFxDiscountingAPI = createAsyncThunk(
   async ({ Data, navigate }, { dispatch, rejectWithValue }) => {
     try {
       let CalculateNonFxDiscounting = createPostAPI(
-        CalculatorApi,
+        calculatorApi,
         calculateNonFxDiscountingData.RequestMethod
       );
 
@@ -192,7 +192,7 @@ export const CalculateForwardsAPI = createAsyncThunk(
   async ({ Data, navigate }, { dispatch, rejectWithValue }) => {
     try {
       let CalculateForwards = createPostAPI(
-        CalculatorApi,
+        calculatorApi,
         calculateForwardsData.RequestMethod
       );
 

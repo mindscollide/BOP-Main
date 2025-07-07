@@ -1,6 +1,5 @@
 import { refreshTokenRM } from "@/common/api_config";
 import { authApi } from "@/common/apiend_points";
-import { setCustomHeaders } from "@/common/utils";
 import createPostAPI from "@/utils/axiosInstance";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
@@ -20,7 +19,7 @@ export const refreshTokenAction = createAsyncThunk(
       const response = await refreshToken(Data);
       if (response.data.responseCode === 205) {
         localStorage.clear();
-        navigate("/");
+        window.location.href = "/"
         return rejectWithValue("Something went wrong");
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage, token, refreshToken } =
@@ -49,7 +48,7 @@ export const refreshTokenAction = createAsyncThunk(
               )
           ) {
             localStorage.clear();
-            navigate("/");
+            window.location.href = "/"
             return rejectWithValue("Something went wrong");
           } else {
             console.log("", response.data);
@@ -58,7 +57,7 @@ export const refreshTokenAction = createAsyncThunk(
         } else {
           console.log("", response.data);
           localStorage.clear();
-          navigate("/");
+          window.location.href = "/"
           return rejectWithValue("Something went wrong");
         }
       }

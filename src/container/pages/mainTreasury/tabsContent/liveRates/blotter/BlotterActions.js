@@ -29,7 +29,7 @@ import {
   SaveSpotTransactionRFQRM,
   SaveSpotTransactionRM,
 } from "@/common/api_config";
-import { BlotterApi } from "@/common/apiend_points";
+import { blotterApi } from "@/common/apiend_points";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
 import {
   setRfqModalOpen,
@@ -44,7 +44,7 @@ export const BlotterDataAPI = createAsyncThunk(
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       let getBlotterData = createPostAPI(
-        BlotterApi,
+        blotterApi,
         BlotterDataRM.RequestMethod
       );
 
@@ -113,7 +113,7 @@ export const GetBlotterOutstandingDealsDataAPI = createAsyncThunk(
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       let getBlotterOutStandingData = createPostAPI(
-        BlotterApi,
+        blotterApi,
         GetBlotterOutstandingDealsDataRM.RequestMethod
       );
 
@@ -181,7 +181,7 @@ export const SaveSpotTransactionAPI = createAsyncThunk(
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       const postAPI = createPostAPI(
-        BlotterApi,
+        blotterApi,
         SaveSpotTransactionRM.RequestMethod
       );
       const response = await postAPI(Data);
@@ -254,7 +254,7 @@ export const SaveForwardTransactionAPI = createAsyncThunk(
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       const postAPI = createPostAPI(
-        BlotterApi,
+        blotterApi,
         SaveForwardTransactionRM.RequestMethod
       );
       const response = await postAPI(Data);
@@ -325,7 +325,7 @@ export const SaveFEDiscountingTransactionAPI = createAsyncThunk(
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       const postAPI = createPostAPI(
-        BlotterApi,
+        blotterApi,
         SaveFEDiscountingTransactionRM.RequestMethod
       );
       const response = await postAPI(Data);
@@ -396,7 +396,7 @@ export const SaveNonFEDiscountingTransactionAPI = createAsyncThunk(
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       const postAPI = createPostAPI(
-        BlotterApi,
+        blotterApi,
         SaveNonFeDiscountingTransactionRM.RequestMethod
       );
       const response = await postAPI(Data);
@@ -467,7 +467,7 @@ export const AssignTransactionAPI = createAsyncThunk(
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       const postAPI = createPostAPI(
-        BlotterApi,
+        blotterApi,
         AssignTransactionRM.RequestMethod
       );
       const response = await postAPI(Data);
@@ -556,7 +556,7 @@ export const AcceptTransactionAPI = createAsyncThunk(
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       const postAPI = createPostAPI(
-        BlotterApi,
+        blotterApi,
         AcceptTransactionRM.RequestMethod
       );
       const response = await postAPI(Data);
@@ -648,7 +648,7 @@ export const RejectTransactionAPI = createAsyncThunk(
   ) => {
     try {
       const postAPI = createPostAPI(
-        BlotterApi,
+        blotterApi,
         RejectTransactionRM.RequestMethod
       );
       const response = await postAPI(Data);
@@ -740,7 +740,7 @@ export const AcceptTransactionCancellationRequest = createAsyncThunk(
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       const postAPI = createPostAPI(
-        BlotterApi,
+        blotterApi,
         AcceptTransactionCancellationRM.RequestMethod
       );
       const response = await postAPI(Data);
@@ -781,7 +781,7 @@ export const RejectTransactionCancellationRequest = createAsyncThunk(
   ) => {
     try {
       const postAPI = createPostAPI(
-        BlotterApi,
+        blotterApi,
         RejectTransactionCancellationRM.RequestMethod
       );
       const response = await postAPI(Data);
@@ -822,7 +822,7 @@ export const CancelTransaction = createAsyncThunk(
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       const postAPI = createPostAPI(
-        BlotterApi,
+        blotterApi,
         CancelTransactionRM.RequestMethod
       );
       const response = await postAPI(Data);
@@ -913,7 +913,7 @@ export const RequestCancellation = createAsyncThunk(
   ) => {
     try {
       const postAPI = createPostAPI(
-        BlotterApi,
+        blotterApi,
         RequestCancellationRM.RequestMethod
       );
       const response = await postAPI(Data);
@@ -1002,7 +1002,7 @@ export const AcceptRFQTransaction = createAsyncThunk(
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       const postAPI = createPostAPI(
-        BlotterApi,
+        blotterApi,
         AcceptRFQTransactionRM.RequestMethod
       );
       const response = await postAPI(Data);
@@ -1093,7 +1093,7 @@ export const RejectRFQTransaction = createAsyncThunk(
   ) => {
     try {
       const postAPI = createPostAPI(
-        BlotterApi,
+        blotterApi,
         RejectRFQTransactionRM.RequestMethod
       );
       const response = await postAPI(Data);
@@ -1187,7 +1187,7 @@ export const SaveSpotTransactionRFQ = createAsyncThunk(
   ) => {
     try {
       const postAPI = createPostAPI(
-        BlotterApi,
+        blotterApi,
         SaveSpotTransactionRFQRM.RequestMethod
       );
       const response = await postAPI(Data);
@@ -1260,7 +1260,7 @@ export const SaveForwardTransactionRFQ = createAsyncThunk(
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       const postAPI = createPostAPI(
-        BlotterApi,
+        blotterApi,
         SaveForwardTransactionRFQRM.RequestMethod
       );
       const response = await postAPI(Data);
@@ -1332,7 +1332,7 @@ export const SaveFEDiscountingTransactionRFQ = createAsyncThunk(
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       const postAPI = createPostAPI(
-        BlotterApi,
+        blotterApi,
         SaveFEDiscountingTransactionRFQRM.RequestMethod
       );
       const response = await postAPI(Data);
@@ -1404,7 +1404,7 @@ export const SaveNonFEDiscountingTransactionRFQ = createAsyncThunk(
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       const postAPI = createPostAPI(
-        BlotterApi,
+        blotterApi,
         SaveNonFEDiscountingTransactionRFQRM.RequestMethod
       );
       const response = await postAPI(Data);
@@ -1476,7 +1476,7 @@ export const RFQTransactionQuotation = createAsyncThunk(
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       const postAPI = createPostAPI(
-        BlotterApi,
+        blotterApi,
         RFQTransactionQuotationRM.RequestMethod
       );
       const response = await postAPI(Data);
@@ -1565,7 +1565,7 @@ export const RFQForwardTransactionQuotation = createAsyncThunk(
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       const postAPI = createPostAPI(
-        BlotterApi,
+        blotterApi,
         RFQForwardTransactionQuotationRM.RequestMethod
       );
       const response = await postAPI(Data);
@@ -1653,7 +1653,7 @@ export const RFQFEDiscountingTransactionQuotation = createAsyncThunk(
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       const postAPI = createPostAPI(
-        BlotterApi,
+        blotterApi,
         RFQFEDiscountingTransactionQuotationRM.RequestMethod
       );
       const response = await postAPI(Data);
@@ -1741,7 +1741,7 @@ export const RFQNonFEDiscountingTransactionQuotation = createAsyncThunk(
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       const postAPI = createPostAPI(
-        BlotterApi,
+        blotterApi,
         RFQNonFEDiscountingTransactionQuotationRM.RequestMethod
       );
       const response = await postAPI(Data);
@@ -1832,7 +1832,7 @@ export const ExpireRFQTransaction = createAsyncThunk(
     console.log("ExpireRFQTransaction", Data);
     try {
       const postAPI = createPostAPI(
-        BlotterApi,
+        blotterApi,
         ExpireRFQTransactionRM.RequestMethod
       );
       const response = await postAPI(Data);
@@ -1924,7 +1924,7 @@ export const GetSpotTransactionDetails = createAsyncThunk(
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       const postAPI = createPostAPI(
-        BlotterApi,
+        blotterApi,
         GetSpotTransactionDetailsRM.RequestMethod
       );
       const response = await postAPI(Data);
@@ -1996,7 +1996,7 @@ export const GetForwardTransactionDetails = createAsyncThunk(
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       const postAPI = createPostAPI(
-        BlotterApi,
+        blotterApi,
         GetForwardTransactionDetailsRM.RequestMethod
       );
       const response = await postAPI(Data);
@@ -2068,7 +2068,7 @@ export const GetFEDiscountingTransactionDetails = createAsyncThunk(
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       const postAPI = createPostAPI(
-        BlotterApi,
+        blotterApi,
         GetFEDiscountingTransactionDetailsRM.RequestMethod
       );
       const response = await postAPI(Data);
@@ -2148,7 +2148,7 @@ export const GetNonFEDiscountingTransactionDetails = createAsyncThunk(
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       const postAPI = createPostAPI(
-        BlotterApi,
+        blotterApi,
         GetNonFEDiscountingTransactionDetailsRM.RequestMethod
       );
       const response = await postAPI(Data);
@@ -2226,7 +2226,7 @@ export const CancelPendingTransactionApi = createAsyncThunk(
   ) => {
     try {
       const postAPI = createPostAPI(
-        BlotterApi,
+        blotterApi,
         CancelPendingTransactionRM.RequestMethod
       );
       const response = await postAPI(Data);
@@ -2317,7 +2317,7 @@ export const calculateTenorSwapAndForwardRateApi = createAsyncThunk(
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       const postAPI = createPostAPI(
-        BlotterApi,
+        blotterApi,
         CalculateTenorSwapAndForwardRateRM.RequestMethod
       );
       const response = await postAPI(Data);

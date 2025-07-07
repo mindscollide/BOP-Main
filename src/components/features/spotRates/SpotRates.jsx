@@ -17,12 +17,17 @@ import { useNavigate } from "react-router-dom";
 import {
   convertDateTimeIntoGMT,
   formatCurrencyInput,
+  isValidNumberUnderMax,
 } from "@/utils/formatters";
 import moment from "moment";
 import {
   currentRatePublishedAction,
   marketStatusUpdated,
 } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
+import {
+  formatDateTimeToUTCTime,
+  formatDateUTCToGMT,
+} from "@/components/utils/timeFunction";
 const SpotRates = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -50,7 +55,7 @@ const SpotRates = () => {
   });
   console.log("currentRates", currentRates);
   const [refreshInterval, setRefreshInterval] = useState(1);
-
+  console.log(refreshInterval, "refreshIntervalrefreshInterval");
   useEffect(() => {
     dispatch(getLastPublishRatesAction({ navigate }));
   }, []);
@@ -158,14 +163,18 @@ const SpotRates = () => {
         askValue: formatCurrencyInput(value),
       });
     } else if (name === "refreshInterval") {
-      setRefreshInterval(value);
+      const validated = isValidNumberUnderMax(value, "", 100);
+      if (validated) {
+        setRefreshInterval(value);
+      }
     }
   };
   const handlePublishRates = () => {
     if (
       currentRates.bidValue !== "" &&
       currentRates.askValue !== null &&
-      refreshInterval !== 0
+      refreshInterval !== 0 &&
+      refreshInterval !== ""
     ) {
       if (Number(currentRates.askValue) > Number(currentRates.bidValue)) {
         let Data = {
@@ -181,6 +190,50 @@ const SpotRates = () => {
       alert("Fill all the fields");
     }
   };
+  // const handlePublishRates = () => {
+  //   // First check for empty fields
+  //   if (
+  //     currentRates.bidValue === "" ||
+  //     currentRates.askValue === null ||
+  //     refreshInterval === 0 ||
+  //     refreshInterval === ""
+  //   ) {
+  //     alert("Fill all the fields");
+  //     return;
+  //   }
+
+  //   // Convert to numbers
+  //   const bidValue = Number(currentRates.bidValue);
+  //   const askValue = Number(currentRates.askValue);
+
+  //   // Check if ask is greater than bid
+  //   if (askValue <= bidValue) {
+  //     alert("Ask value must be greater than Bid value.");
+  //     return;
+  //   }
+
+  //   // Calculate 2.5% deviation threshold
+  //   const deviationThreshold = bidValue * 0.025; // 2.5% of bid value
+  //   const minAllowedAsk = bidValue + deviationThreshold;
+  //   const maxAllowedAsk = bidValue + 3 * deviationThreshold; // For ±2.5% range
+
+  //   // Check if ask is within ±2.5% of bid
+  //   if (askValue < minAllowedAsk || askValue > maxAllowedAsk) {
+  //     alert(`Ask value must be within ±2.5% of Bid value.
+  //            Current range should be between ${minAllowedAsk.toFixed(
+  //              2
+  //            )} and ${maxAllowedAsk.toFixed(2)}`);
+  //     return;
+  //   }
+
+  //   // If all checks pass, proceed with publishing
+  //   const Data = {
+  //     CurrentBid: bidValue,
+  //     CurrentAsk: askValue,
+  //     RefreshInterval: Number(refreshInterval),
+  //   };
+  //   dispatch(PublishNewRatesAction({ Data, navigate }));
+  // };
 
   return (
     <Row>
@@ -247,7 +300,7 @@ const SpotRates = () => {
                     {/* {} */}
                     {lastPublishRates.dateTime !== "" &&
                       moment(
-                        convertDateTimeIntoGMT(lastPublishRates.dateTime)
+                        formatDateUTCToGMT(lastPublishRates.dateTime)
                       ).format("DD MMM YYYY, hh:mm:ss")}
                   </div>
                 </div>
@@ -289,9 +342,9 @@ const SpotRates = () => {
                   <div className='fw-bold fs-6 ff-roboto'>Current Value @</div>
                   <div className='datetime fw-bold ms-auto ff-roboto'>
                     {currentRates.dateTime !== "" &&
-                      moment(
-                        convertDateTimeIntoGMT(currentRates.dateTime)
-                      ).format("DD MMM YYYY, hh:mm:ss")}
+                      moment(formatDateUTCToGMT(currentRates.dateTime)).format(
+                        "DD MMM YYYY, hh:mm:ss"
+                      )}
                   </div>
                 </div>
                 <div className='rate-box-content'>

@@ -15,7 +15,11 @@ const settingSlicer = createSlice({
     updateSettingData: null,
     getMarketTimingData: null,
   },
-  reducers: {},
+  reducers: {
+    clearSettingResponseMessage: (state) => {
+      state.responseMessage = "";
+    },
+  },
   extraReducers: (builder) => {
     builder
       // Pending state (while the API call is being made)
@@ -29,7 +33,7 @@ const settingSlicer = createSlice({
         state.Loader = false;
         state.settingData = payload;
         state.error = null;
-        state.responseMessage = payload.message;
+        state.responseMessage = payload?.message;
       })
       // Rejected state (when the API call fails)
       .addCase(getUserSettingDataAPI.rejected, (state, action) => {
@@ -46,7 +50,7 @@ const settingSlicer = createSlice({
         state.Loader = false;
         state.getMarketTimingData = payload;
         state.error = null;
-        state.responseMessage = payload.message;
+        state.responseMessage = payload?.message;
       })
       .addCase(getMarkingTimingApi.rejected, (state, action) => {
         console.log(action, "actionaction");
@@ -62,7 +66,7 @@ const settingSlicer = createSlice({
         state.Loader = false;
         state.updateSettingData = payload;
         state.error = null;
-        state.responseMessage = payload.message;
+        state.responseMessage = payload?.message;
       })
       .addCase(updateUserSettingDataAPI.rejected, (state, action) => {
         console.log(action, "actionaction");
@@ -73,4 +77,5 @@ const settingSlicer = createSlice({
   },
 });
 
+export const { clearSettingResponseMessage } = settingSlicer.actions;
 export default settingSlicer.reducer;

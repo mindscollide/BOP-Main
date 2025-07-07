@@ -8,7 +8,11 @@ const categoryReducer = createSlice({
     Loader: false,
     getAllCategoriesRecords: null,
   },
-  reducers: {},
+  reducers: {
+    clearCatgeoryResponseMessage: (state) => {
+      state.responseMessage = "";
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getAllCategoryTableData.pending, (state) => {
@@ -16,8 +20,8 @@ const categoryReducer = createSlice({
       })
       .addCase(getAllCategoryTableData.fulfilled, (state, { payload }) => {
         state.Loader = false;
-        state.getAllCategoriesRecords = payload.response;
-        state.responseMessage = payload.message;
+        state.getAllCategoriesRecords = payload?.response;
+        state.responseMessage = payload?.message;
       })
       .addCase(getAllCategoryTableData.rejected, (state, { payload }) => {
         state.Loader = false;
@@ -26,5 +30,7 @@ const categoryReducer = createSlice({
       });
   },
 });
+
+export const { clearCatgeoryResponseMessage } = categoryReducer.actions;
 
 export default categoryReducer.reducer;

@@ -14,9 +14,8 @@ import axios from "axios";
  * @returns {function} - A function that takes bodyData and makes a POST request
  */
 const createPostAPI =
-  (url, requestMethod) => async (bodyData, isDoc, fileName, ext, navigate, rejectWithValue) => {
+  (url, requestMethod) => async (bodyData, isDoc, fileName, ext) => {
     try {
-      console.log(bodyData, isDoc, fileName, ext, "createPostAPIcreatePostAPI");
       const headers = setCustomHeaders(isDoc, fileName, ext); // Pass parameters if needed
 
       const form = new FormData();

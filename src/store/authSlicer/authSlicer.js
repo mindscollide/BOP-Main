@@ -50,9 +50,9 @@ const authSlice = createSlice({
       // Fulfilled state (when the API call succeeds)
       .addCase(loginInApi.fulfilled, (state, { payload }) => {
         state.Loader = false;
-        state.userDetails = payload.response;
+        state.userDetails = payload?.response;
         state.error = null;
-        state.responseMessage = payload.message;
+        state.responseMessage = payload?.message;
       })
       // Rejected state (when the API call fails)
       .addCase(loginInApi.rejected, (state, action) => {
@@ -69,9 +69,9 @@ const authSlice = createSlice({
       // Fulfilled state (when the API call succeeds)
       .addCase(corporateUserLoginInApi.fulfilled, (state, { payload }) => {
         state.Loader = false;
-        state.userDetails = payload.response;
+        state.userDetails = payload?.response;
         state.error = null;
-        state.responseMessage = payload.message;
+        state.responseMessage = payload?.message;
       })
       // Rejected state (when the API call fails)
       .addCase(corporateUserLoginInApi.rejected, (state, action) => {
@@ -87,8 +87,8 @@ const authSlice = createSlice({
         console.log(payload, "payloadpayload");
         state.Loader = false;
         state.error = null;
-        state.responseMessage = payload.message;
-        state.resetPasswordResponse = payload.response;
+        state.responseMessage = payload?.message;
+        state.resetPasswordResponse = payload?.response;
       })
       .addCase(resetAndForgotPassword.rejected, (state, { payload }) => {
         console.log(payload, "payloadpayload");
@@ -102,8 +102,8 @@ const authSlice = createSlice({
       })
       .addCase(refreshTokenAction.fulfilled, (state, { payload }) => {
         state.Loader = false;
-        state.refreshTokenResponse = payload.response;
-        state.responseMessage = payload.message;
+        state.refreshTokenResponse = payload?.response;
+        state.responseMessage = payload?.message;
       })
       .addCase(refreshTokenAction.rejected, (state, { payload }) => {
         state.Loader = false;
@@ -116,12 +116,12 @@ const authSlice = createSlice({
       .addCase(getAllCategoriesAction.fulfilled, (state, { payload }) => {
         state.Loader = false;
         state.getAllCategories = payload?.response;
-        state.responseMessage = payload.message;
+        state.responseMessage = payload?.message;
       })
       .addCase(getAllCategoriesAction.rejected, (state, { payload }) => {
         state.Loader = false;
         state.getAllCategories = null;
-        state.responseMessage = payload.message;
+        state.responseMessage = payload?.message;
       })
       .addCase(validateLinkForCorporateCreatePasswordApi.pending, (state) => {
         state.Loader = true;
@@ -130,8 +130,8 @@ const authSlice = createSlice({
         validateLinkForCorporateCreatePasswordApi.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
-          state.isValidatedCreatePasswordString = payload.response;
-          state.responseMessage = payload.message;
+          state.isValidatedCreatePasswordString = payload?.response;
+          state.responseMessage = payload?.message;
         }
       )
       .addCase(
@@ -149,8 +149,8 @@ const authSlice = createSlice({
         createCorporateCreatePasswordApi.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
-          state.passwordCreated = payload.response;
-          state.responseMessage = payload.message;
+          state.passwordCreated = payload?.response;
+          state.responseMessage = payload?.message;
         }
       )
       .addCase(
@@ -167,8 +167,8 @@ const authSlice = createSlice({
       })
       .addCase(LogoutApi.fulfilled, (state, { payload }) => {
         state.Loader = false;
-        state.logout = payload.response;
-        state.responseMessage = payload.message;
+        state.logout = payload?.response;
+        state.responseMessage = payload?.message;
       })
       .addCase(LogoutApi.rejected, (state, { payload }) => {
         state.Loader = false;
@@ -180,8 +180,8 @@ const authSlice = createSlice({
       })
       .addCase(getAllInstrumentsApi.fulfilled, (state, { payload }) => {
         state.Loader = false;
-        state.getAllInstruments = payload.response;
-        state.responseMessage = payload.message;
+        state.getAllInstruments = payload?.response;
+        state.responseMessage = payload?.message;
       })
       .addCase(getAllInstrumentsApi.rejected, (state, { payload }) => {
         state.Loader = false;
@@ -195,8 +195,8 @@ const authSlice = createSlice({
         GetAllNatureOfTransactionsApi.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
-          state.GetAllNatureOfTransactions = payload.response;
-          state.responseMessage = payload.message;
+          state.GetAllNatureOfTransactions = payload?.response;
+          state.responseMessage = payload?.message;
         }
       )
       .addCase(GetAllNatureOfTransactionsApi.rejected, (state, { payload }) => {
@@ -209,8 +209,8 @@ const authSlice = createSlice({
       })
       .addCase(getAllActiveCorporatesApi.fulfilled, (state, { payload }) => {
         state.Loader = false;
-        state.GetAllActiveCorproates = payload.response;
-        state.responseMessage = payload.message;
+        state.GetAllActiveCorproates = payload?.response;
+        state.responseMessage = payload?.message;
       })
       .addCase(getAllActiveCorporatesApi.rejected, (state, { payload }) => {
         state.Loader = false;

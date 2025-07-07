@@ -12,12 +12,10 @@ import {
   createTenorAction,
   getAllTenorsAction,
   getDealerDashboardApi,
-  getTenorWiseForwardsAction,
 } from "@/container/pages/mainDealer/dealerActions";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { createTenorSchema } from "@/common/validationSchemas";
 import { setCreateTenorModal } from "@/store/modalSlice/modalSlicer";
 import { setTenorsCreated } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 const shouldIncludeComponents =
@@ -36,7 +34,7 @@ const IconElement = shouldIncludeComponents
   ? lazy(() => import("../../common/IconElement/IconElement"))
   : null;
 
-const ForwardsForTreasuryAndBranchTable = shouldIncludeComponents
+const TenoreWiseCurrentAndLastRates = shouldIncludeComponents
   ? lazy(() =>
       import(
         "../forwardsForTreasuryAndDealerTable/ForwardsForTreasuryAndDealerTable"
@@ -44,13 +42,7 @@ const ForwardsForTreasuryAndBranchTable = shouldIncludeComponents
     )
   : null;
 
-const DealeAndTreasuryDiscountingTable = shouldIncludeComponents
-  ? lazy(() =>
-      import(
-        "../dealeAndTreasuryDiscountingTable/DealeAndTreasuryDiscountingTable"
-      )
-    )
-  : null;
+
 
 const DealeAndTreasuryFeDiscountingTable = shouldIncludeComponents
   ? lazy(() =>
@@ -301,10 +293,10 @@ const ForwardsForTreasuryAndDealer = () => {
             </div>
           </div>
         </Col>
-        {ForwardsForTreasuryAndBranchTable && (
+        {TenoreWiseCurrentAndLastRates && (
           <Col sm={12} md={12} lg={12} className='mt-3'>
             <Suspense fallback={<div>Loading table...</div>}>
-              <ForwardsForTreasuryAndBranchTable
+              <TenoreWiseCurrentAndLastRates
                 newTenorRecord={newTenorRecord}
                 setNewTenorRecord={setNewTenorRecord}
               />
@@ -314,7 +306,7 @@ const ForwardsForTreasuryAndDealer = () => {
         {DealeAndTreasuryFeDiscountingTable && (
           <Col sm={12} md={12} lg={12} className='mt-3'>
             <Suspense fallback={<div>Loading table...</div>}>
-              <h6 className='fs-4 fw-bold color-primary'>FE Discounting</h6>
+              <h6 className='fs-4 fw-bold color-primary'>FE Discounting %</h6>
               <DealeAndTreasuryFeDiscountingTable />
             </Suspense>
           </Col>
@@ -322,7 +314,7 @@ const ForwardsForTreasuryAndDealer = () => {
         {DealeAndTreasuryNonFeDiscountingTable && (
           <Col sm={12} md={12} lg={12} className='mt-3'>
             <Suspense fallback={<div>Loading table...</div>}>
-              <h6 className='fs-4 fw-bold color-primary'>Non-FE Discounting</h6>
+              <h6 className='fs-4 fw-bold color-primary'>Non-FE Discounting %</h6>
               <DealeAndTreasuryNonFeDiscountingTable />
             </Suspense>
           </Col>

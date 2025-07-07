@@ -32,16 +32,6 @@ const SpotBranch = () => {
     (state) => state.WatchListReducer?.GettheDashboardData ?? null
   );
 
-  //WatchList table Data Api Call
-  useEffect(() => {
-    try {
-      dispatch(GetDashboardDataAPI({ navigate }));
-      // dispatch(GetDashboardDataAPI({navigate})); // Fetching the Dashboard Data
-    } catch (error) {
-      console.log(error, "error");
-    }
-  }, []);
-
   // Extracting out the Cards Wathlist data in the state
   useEffect(() => {
     try {

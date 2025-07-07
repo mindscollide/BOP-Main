@@ -35,9 +35,12 @@ const BlotterSlicer = createSlice({
     activeTabBlotter: "TXN Summary",
   },
   reducers: {
-    setActiveTreasuryTab: (state, {payload}) => {
-      console.log(payload , "setActiveTreasuryTabsetActiveTreasuryTab")
+    setActiveTreasuryTab: (state, { payload }) => {
+      console.log(payload, "setActiveTreasuryTabsetActiveTreasuryTab");
       state.activeTabBlotter = payload;
+    },
+    clearBlotterResponseMessage: (state) => {
+      state.responseMessage = "";
     },
   },
   extraReducers: (builder) => {
@@ -50,9 +53,9 @@ const BlotterSlicer = createSlice({
       // Fulfilled state (when the API call succeeds CorporateBlotterDataAPI)
       .addCase(BlotterDataAPI.fulfilled, (state, { payload }) => {
         state.Loader = false;
-        state.getBlotterApiData = payload.response;
+        state.getBlotterApiData = payload?.response;
         state.error = null;
-        state.responseMessage = payload.message;
+        state.responseMessage = payload?.message;
       })
       // Rejected state (when the API call fails CorporateBlotterDataAPI)
       .addCase(BlotterDataAPI.rejected, (state, action) => {
@@ -69,9 +72,9 @@ const BlotterSlicer = createSlice({
         GetBlotterOutstandingDealsDataAPI.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
-          state.getBlotterOutstandingData = payload.response;
+          state.getBlotterOutstandingData = payload?.response;
           state.error = null;
-          state.responseMessage = payload.message;
+          state.responseMessage = payload?.message;
         }
       )
       .addCase(GetBlotterOutstandingDealsDataAPI.rejected, (state, action) => {
@@ -86,9 +89,9 @@ const BlotterSlicer = createSlice({
       })
       .addCase(SaveSpotTransactionAPI.fulfilled, (state, { payload }) => {
         state.Loader = false;
-        state.saveSpotTransaction = payload.response;
+        state.saveSpotTransaction = payload?.response;
         state.error = null;
-        state.responseMessage = payload.message;
+        state.responseMessage = payload?.message;
       })
       .addCase(SaveSpotTransactionAPI.rejected, (state, action) => {
         console.log(action, "actionaction");
@@ -102,9 +105,9 @@ const BlotterSlicer = createSlice({
       })
       .addCase(SaveForwardTransactionAPI.fulfilled, (state, { payload }) => {
         state.Loader = false;
-        state.saveForwardsTransaction = payload.response;
+        state.saveForwardsTransaction = payload?.response;
         state.error = null;
-        state.responseMessage = payload.message;
+        state.responseMessage = payload?.message;
       })
       .addCase(SaveForwardTransactionAPI.rejected, (state, action) => {
         console.log(action, "actionaction");
@@ -120,9 +123,9 @@ const BlotterSlicer = createSlice({
         SaveFEDiscountingTransactionAPI.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
-          state.saveFedDiscountTransaction = payload.response;
+          state.saveFedDiscountTransaction = payload?.response;
           state.error = null;
-          state.responseMessage = payload.message;
+          state.responseMessage = payload?.message;
         }
       )
       .addCase(SaveFEDiscountingTransactionAPI.rejected, (state, action) => {
@@ -139,9 +142,9 @@ const BlotterSlicer = createSlice({
         SaveNonFEDiscountingTransactionAPI.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
-          state.saveNonFeDiscountTransaction = payload.response;
+          state.saveNonFeDiscountTransaction = payload?.response;
           state.error = null;
-          state.responseMessage = payload.message;
+          state.responseMessage = payload?.message;
         }
       )
       .addCase(SaveNonFEDiscountingTransactionAPI.rejected, (state, action) => {
@@ -156,9 +159,9 @@ const BlotterSlicer = createSlice({
       })
       .addCase(AssignTransactionAPI.fulfilled, (state, { payload }) => {
         state.Loader = false;
-        state.assignTransaction = payload.response;
+        state.assignTransaction = payload?.response;
         state.error = null;
-        state.responseMessage = payload.message;
+        state.responseMessage = payload?.message;
       })
       .addCase(AssignTransactionAPI.rejected, (state, action) => {
         console.log(action, "actionaction");
@@ -172,9 +175,9 @@ const BlotterSlicer = createSlice({
       })
       .addCase(AcceptTransactionAPI.fulfilled, (state, { payload }) => {
         state.Loader = false;
-        state.acceptTransaction = payload.response;
+        state.acceptTransaction = payload?.response;
         state.error = null;
-        state.responseMessage = payload.message;
+        state.responseMessage = payload?.message;
       })
       .addCase(AcceptTransactionAPI.rejected, (state, action) => {
         console.log(action, "actionaction");
@@ -188,9 +191,9 @@ const BlotterSlicer = createSlice({
       })
       .addCase(RejectTransactionAPI.fulfilled, (state, { payload }) => {
         state.Loader = false;
-        state.rejectedTransaction = payload.response;
+        state.rejectedTransaction = payload?.response;
         state.error = null;
-        state.responseMessage = payload.message;
+        state.responseMessage = payload?.message;
       })
       .addCase(RejectTransactionAPI.rejected, (state, action) => {
         console.log(action, "actionaction");
@@ -204,9 +207,9 @@ const BlotterSlicer = createSlice({
       })
       .addCase(RFQTransactionQuotation.fulfilled, (state, { payload }) => {
         state.Loader = false;
-        state.rfqSaveQuotation = payload.response;
+        state.rfqSaveQuotation = payload?.response;
         state.error = null;
-        state.responseMessage = payload.message;
+        state.responseMessage = payload?.message;
       })
       .addCase(RFQTransactionQuotation.rejected, (state, action) => {
         console.log(action, "actionaction");
@@ -220,8 +223,8 @@ const BlotterSlicer = createSlice({
       })
       .addCase(CancelPendingTransactionApi.fulfilled, (state, { payload }) => {
         state.Loader = false;
-        state.responseMessage = payload.message;
-        state.cancelPendingTransaction = payload.response;
+        state.responseMessage = payload?.message;
+        state.cancelPendingTransaction = payload?.response;
         state.error = null;
       })
       .addCase(CancelPendingTransactionApi.rejected, (state, action) => {
@@ -238,9 +241,9 @@ const BlotterSlicer = createSlice({
         calculateTenorSwapAndForwardRateApi.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
-          state.calculateTenorSwapAndForwardRateData = payload.response;
+          state.calculateTenorSwapAndForwardRateData = payload?.response;
           state.error = null;
-          state.responseMessage = payload.message;
+          state.responseMessage = payload?.message;
         }
       )
       .addCase(
@@ -255,6 +258,7 @@ const BlotterSlicer = createSlice({
   },
 });
 
-export const { setActiveTreasuryTab } = BlotterSlicer.actions;
+export const { setActiveTreasuryTab, clearBlotterResponseMessage } =
+  BlotterSlicer.actions;
 
 export default BlotterSlicer.reducer;

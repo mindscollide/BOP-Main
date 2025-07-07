@@ -46,6 +46,17 @@ import {
 } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { RFQTImer } from "@/components/utils/Timer";
 import { convertDateTimeIntoLocal } from "@/utils/formatters";
+/**
+ * TXNTreasurySummary component that manages and displays the treasury transaction summary.
+ * It connects to the Redux store to fetch and manage the state of various transaction types,
+ * including RFQ expired, quoted, accepted, cancellation requests, added, cancelled, and rejected transactions.
+ *
+ * This component also handles local state for various filters and modals, and implements infinite scrolling
+ * to load more transaction data as the user scrolls down.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered component.
+ */
 const TXNTreasurySummary = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -170,7 +181,7 @@ const TXNTreasurySummary = () => {
   const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
 
   const isCorproate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
-
+  console.log("Checking", { blotterdata });
   console.log(
     {
       isShouldTrue: totalRecord !== blotterdata.length,
@@ -237,10 +248,18 @@ const TXNTreasurySummary = () => {
 
   useEffect(() => {
     if (blotterTransactionRFQExpiredForTreasury !== null) {
+      console.log("Checking");
+
       try {
         const { transaction } = blotterTransactionRFQExpiredForTreasury;
-        setBlotterdata([transaction, ...blotterdata]);
-        dispatch(BlotterTransactionRFQExpired(null));
+        let isAlreadyExist = blotterdata.find(
+          (data2, index) =>
+            data2.pK_TransactionID === transaction.pK_TransactionID
+        );
+        if (isAlreadyExist === undefined) {
+          setBlotterdata([transaction, ...blotterdata]);
+          dispatch(BlotterTransactionRFQExpired(null));
+        }
       } catch (error) {
         console.log(error, "error in blotterTransactionRFQExpired");
       }
@@ -249,12 +268,14 @@ const TXNTreasurySummary = () => {
 
   useEffect(() => {
     if (blotterTransactionAcceptedForTreasury !== null) {
+      console.log("Checking");
+
       try {
         const { transaction } = blotterTransactionAcceptedForTreasury;
         let isAlreadyExist = blotterdata.find(
           (data2, index) =>
             data2.pK_TransactionID === transaction.pK_TransactionID
-      );
+        );
         if (isAlreadyExist !== undefined) {
           setBlotterdata((prevBlotterData) =>
             prevBlotterData.map((item) =>
@@ -275,34 +296,9 @@ const TXNTreasurySummary = () => {
   }, [blotterTransactionAcceptedForTreasury]);
 
   useEffect(() => {
-    if (blotterTransactionRFQQuotedForTreasury !== null) {
-      try {
-        const { transaction } = blotterTransactionRFQQuotedForTreasury;
-        setBlotterdata((prevBlotterData) => {
-          return prevBlotterData.map((tblData, index) => {
-            if (tblData.pK_TransactionID === transaction.pK_TransactionID) {
-              return {
-                ...tblData,
-                bid: transaction.bid,
-                offer: transaction.offer,
-                statusID: transaction.statusID,
-                rfqTimerDetails: transaction.rfqTimerDetails,
-                amount: transaction.amount,
-                rate: transaction.rate,
-              };
-            }
-            return tblData;
-          });
-        });
-        dispatch(BlotterTransactionRFQQuotedForTreasury(null));
-      } catch (error) {
-        console.log(error, "error in blotterTransactionRFQQuoted");
-      }
-    }
-  }, [blotterTransactionRFQQuotedForTreasury]);
-
-  useEffect(() => {
     if (blotterTransactionCancellationRequestDataForTreasury !== null) {
+      console.log("Checking");
+
       try {
         const { transaction } =
           blotterTransactionCancellationRequestDataForTreasury;
@@ -326,6 +322,8 @@ const TXNTreasurySummary = () => {
 
   useEffect(() => {
     if (blotterTranscationCancelledForTreasury !== null) {
+      console.log("Checking");
+
       try {
         const { transaction } = blotterTranscationCancelledForTreasury;
         let isAlreadyExist = blotterdata.find(
@@ -350,6 +348,8 @@ const TXNTreasurySummary = () => {
 
   useEffect(() => {
     if (blotterTransactionRejectedForTreasury !== null) {
+      console.log("Checking");
+
       try {
         const { transaction } = blotterTransactionRejectedForTreasury;
         let isAlreadyExist = blotterdata.find(
@@ -373,24 +373,6 @@ const TXNTreasurySummary = () => {
       }
     }
   }, [blotterTransactionRejectedForTreasury]);
-
-  // useEffect(() => {
-  //   if (blotterTransactionAdded !== null) {
-  //     try {
-  //       const { transaction } = blotterTransactionAdded;
-  //       let ishasAlready = blotterdata.find(
-  //         (data, index) =>
-  //           data.pK_TransactionID === transaction.pK_TransactionID
-  //       );
-  //       if (!ishasAlready) {
-  //         setBlotterdata([transaction, ...blotterdata]);
-  //         dispatch(BlotterTransactionAdded(null));
-  //       }
-  //     } catch (error) {
-  //       console.log(error, "error in blotterTransactionAdded");
-  //     }
-  //   }
-  // }, [blotterTransactionAdded]);
 
   //TXN ID PopOver Functions Starts
   const handleOpenChange = (newOpen) => {
@@ -1499,7 +1481,9 @@ const TXNTreasurySummary = () => {
                   // className='btn btn-danger '
                   size={"small"}
                   applyClass={"ActionButton"}
-                  onClick={() => handleCheckerAccept(record.pK_TransactionID, "Cancelled")}
+                  onClick={() =>
+                    handleCheckerAccept(record.pK_TransactionID, "Cancelled")
+                  }
                 />
               ) : null}
               {/* <CustomButton
@@ -1592,7 +1576,7 @@ const TXNTreasurySummary = () => {
         prefixCls='TXNSummary_Table'
         columns={Treasurycolumns}
         scroll={{ x: "max-content", y: 500 }}
-        rowClassName={(record) => record.statusID === 7 ? "isCancelled": ""}
+        rowClassName={(record) => (record.statusID === 7 ? "isCancelled" : "")}
       />
       <CommentModal
         comment={comment}

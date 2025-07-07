@@ -19,7 +19,6 @@ const MainTabs = () => {
   useEffect(() => {
     dispatch(GetFXInstrumentsAPI({ navigate }));
     dispatch(GetAllFowardsAndDiscountsRatesAPI({ navigate }));
-    // dispatch(GetFEDiscountingTableApi({navigate}))/
   }, []);
   const tabsData = [
     { title: "Live Rates", content: <LiveRates /> },

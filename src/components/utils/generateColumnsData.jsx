@@ -26,10 +26,12 @@ export const buildDiscountingTable = (
 
     // Step 2: Create a map using composite key (instrumentID-tenorID)
     const rateMap = {};
+    console.log(Data, "DataDataDataData");
     Data?.forEach((rate) => {
-      const key = `${rate.instumentID}-${rate.tenorID}`;
+      const key = `${rate.instrumentID}-${rate.tenorID}`;
       rateMap[key] = rate.rate;
     });
+    console.log(rateMap, "DataDataDataData");
 
     // Step 3: Build the row data
     const rowData = applicableTenors.map((tenor) => {
@@ -77,6 +79,38 @@ export const buildDiscountingTable = (
           ),
         })),
       ];
+    } else if (value === 3) {
+      columnsData = [
+        {
+          title: "",
+          dataIndex: "",
+          key: "",
+          width: 80,
+          children: [
+            {
+              title: "Tenor",
+              dataIndex: "tenorName",
+              key: "tenorName",
+              width: 250,
+            },
+          ],
+        },
+        ...applicableInstruments.map((inst) => ({
+          title: inst.instrumentName,
+          key: `rate_${inst.instrumentName}`,
+          align: "center",
+          width: 60,
+          children: [
+            {
+              title: "Value",
+              dataIndex: `rate_${inst.instrumentName}`,
+              render: (text, record) => (
+                <InputFIeld value={text} record={record} />
+              ),
+            },
+          ],
+        })),
+      ];
     } else {
       columnsData = [
         {
@@ -102,7 +136,7 @@ export const buildDiscountingTable = (
         })),
       ];
     }
-
+    console.log(columnsData, "columnsDatacolumnsDatacolumnsData")
     // Step 4: Build the column definitions
 
     return { rowData, columnsData };
@@ -211,7 +245,7 @@ export const buildForwardsTable = (
               title: "Tenor",
               dataIndex: `tenorName`,
               key: "tenorName",
-              align: "center"
+              align: "center",
             },
           ],
         },
@@ -227,10 +261,7 @@ export const buildForwardsTable = (
               key: `bid_${inst.instrumentName}`,
               align: "center",
               render: (text, record) => (
-                <InputFIeld
-                  value={text}
-                  record={record}
-                />
+                <InputFIeld value={text} record={record} />
               ),
             },
             {
@@ -239,10 +270,7 @@ export const buildForwardsTable = (
               key: `ask_${inst.instrumentName}`,
               align: "center",
               render: (text, record) => (
-                <InputFIeld
-                  value={text}
-                  record={record}
-                />
+                <InputFIeld value={text} record={record} />
               ),
             },
           ],

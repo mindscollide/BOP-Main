@@ -20,7 +20,11 @@ const WatchListSlice = createSlice({
     GettheDashboardData: null,
     SaveUserDashboardData: null,
   },
-  reducers: {},
+  reducers: {
+    clearWatchListResponseMessage: (state) => {
+      state.responseMessage = "";
+    },
+  },
   extraReducers: (builder) => {
     builder
       // Pending state (while the API call is being made)
@@ -31,9 +35,9 @@ const WatchListSlice = createSlice({
       // Fulfilled state (when the API call succeeds)
       .addCase(GetFXInstrumentsAPI.fulfilled, (state, { payload }) => {
         state.Loader = false;
-        state.WatchListData = payload.response;
+        state.WatchListData = payload?.response;
         state.error = null;
-        state.responseMessage = payload.message;
+        state.responseMessage = payload?.message;
       })
       // Rejected state (when the API call fails)
       .addCase(GetFXInstrumentsAPI.rejected, (state, action) => {
@@ -53,7 +57,7 @@ const WatchListSlice = createSlice({
         state.Loader = false;
         state.GetMisDataByRange = payload?.response;
         state.error = null;
-        state.responseMessage = payload.message;
+        state.responseMessage = payload?.message;
       })
       // Rejected state (while the API call is fail GetMisDataByRange)
       .addCase(GetMisDataByRangeAPI.rejected, (state, action) => {
@@ -73,9 +77,9 @@ const WatchListSlice = createSlice({
         GetAllFowardsAndDiscountsRatesAPI.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
-          state.GetAllFowardsAndDiscountsRatesData = payload.response;
+          state.GetAllFowardsAndDiscountsRatesData = payload?.response;
           state.error = null;
-          state.responseMessage = payload.message;
+          state.responseMessage = payload?.message;
         }
       )
       // Rejected state (while the API call is fail GetAllFowardsAndDiscountsRates)
@@ -94,9 +98,9 @@ const WatchListSlice = createSlice({
       // Fulfilled state (while the API call is being made GetAllCounterPartyDataAPI)
       .addCase(GetAllCounterPartyDataAPI.fulfilled, (state, { payload }) => {
         state.Loader = false;
-        state.GetAllCounterPartyData = payload.response;
+        state.GetAllCounterPartyData = payload?.response;
         state.error = null;
-        state.responseMessage = payload.message;
+        state.responseMessage = payload?.message;
       })
       // Rejected state (while the API call is fail GetAllCounterPartyDataAPI)
       .addCase(GetAllCounterPartyDataAPI.rejected, (state, action) => {
@@ -115,9 +119,9 @@ const WatchListSlice = createSlice({
       .addCase(GetDashboardDataAPI.fulfilled, (state, { payload }) => {
         console.log(payload.response, "globalStateWatchlistCardData");
         state.Loader = false;
-        state.GettheDashboardData = payload.response;
+        state.GettheDashboardData = payload?.response;
         state.error = null;
-        state.responseMessage = payload.message;
+        state.responseMessage = payload?.message;
       })
       // Rejected state (while the API call is fail GetDashboardData)
       .addCase(GetDashboardDataAPI.rejected, (state, action) => {
@@ -135,9 +139,9 @@ const WatchListSlice = createSlice({
       // Fulfilled state (while the API call is being made SaveUserDashboard)
       .addCase(SaveUserDashboardAPI.fulfilled, (state, { payload }) => {
         state.Loader = false;
-        state.SaveUserDashboardData = payload.response;
+        state.SaveUserDashboardData = payload?.response;
         state.error = null;
-        state.responseMessage = payload.message;
+        state.responseMessage = payload?.message;
       })
       // Rejected state (while the API call is fail SaveUserDashboard)
       .addCase(SaveUserDashboardAPI.rejected, (state, action) => {
@@ -149,4 +153,5 @@ const WatchListSlice = createSlice({
   },
 });
 
+export const { clearWatchListResponseMessage } = WatchListSlice.actions;
 export default WatchListSlice.reducer;

@@ -4,7 +4,7 @@ import {
   GetAllInstrumentsRM,
   GetAllNatureOfTransactionsRM,
 } from "@/common/api_config";
-import { authApi, SystemAdminApi } from "@/common/apiend_points";
+import { authApi } from "@/common/apiend_points";
 import { setCustomHeaders } from "@/common/utils";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
 import createPostAPI from "@/utils/axiosInstance";

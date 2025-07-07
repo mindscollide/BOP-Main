@@ -37,6 +37,23 @@ const MIS = () => {
     let Data = { StartDate: "20240828070208", EndDate: "20240828070208" };
     dispatch(GetMisDataByRangeAPI({ navigate, Data }));
   }, []);
+
+  useEffect(() => {
+    if (GetMisDataByRangeData !== null) {
+      try {
+        const { profiteInPKRWiseMISData, volumeWiseMISData, totalProfit } =
+          GetMisDataByRangeData;
+        setMisTableData([
+          volumeWiseMISData?.misData,
+          profiteInPKRWiseMISData.misData,
+        ]);
+        setTotalProfit(totalProfit);
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }, [GetMisDataByRangeData]);
+
   const columns = [
     {
       title: "",
@@ -162,21 +179,6 @@ const MIS = () => {
       alert("Please select both dates.");
     }
   };
-
-  useEffect(() => {
-    if (GetMisDataByRangeData !== null) {
-      const { profiteInPKRWiseMISData, volumeWiseMISData, totalProfit } =
-        GetMisDataByRangeData;
-      setMisTableData([
-        volumeWiseMISData?.misData,
-        profiteInPKRWiseMISData.misData,
-      ]);
-      setTotalProfit(totalProfit);
-    } else {
-      setMisTableData(null);
-      setTotalProfit(0);
-    }
-  }, [GetMisDataByRangeData]);
 
   return (
     <>

@@ -112,7 +112,7 @@ const TXNSummary = () => {
 
   //Global State For Blotter Data
   const GlobalStateGetBlotterData = useSelector(
-    (state) => state.BlotterSlicer.getBlotterApiData
+    (state) => state.BlotterSlicer.getblotterApiData
   );
 
   //local states

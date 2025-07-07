@@ -13,13 +13,16 @@ import { useNavigate } from "react-router-dom";
 import { RFQTImer } from "@/components/utils/Timer";
 import { ExpireRFQTransaction } from "../BlotterActions";
 import { formatDateTimeToUTCTime } from "@/components/utils/timeFunction";
+import { useMqttClient } from "@/components/utils/mqttConnection";
 
-const ViewCurrentDeals = () => {
+const ViewCurrentDeals = ({ outStandingData, setOutStandingData }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const getBlotterOutstandingData = useSelector(
-    (state) => state.BlotterSlicer.getBlotterOutstandingData
-  );
+  const { connectToMqtt, isConnected } = useMqttClient({
+    onMessageArrivedCallback: (data) => {
+      console.log(data, "ViewCurrentDealsViewCurrentDeals")
+    }
+  })
   const blotterTransactionAdded = useSelector(
     (state) =>
       state.RealtimeActionsSlice.BlotterTransactionAddedForTreasuryDealBox
@@ -32,18 +35,6 @@ const ViewCurrentDeals = () => {
     (state) =>
       state.RealtimeActionsSlice.BlotterTransactionRFQQuotedForTreasuryDealBox
   );
-
-  const [outStandingData, setOutStandingData] = useState([]);
-
-  useEffect(() => {
-    try {
-      if (getBlotterOutstandingData && getBlotterOutstandingData !== null) {
-        setOutStandingData(getBlotterOutstandingData.outstandingDeals);
-      }
-    } catch (error) {
-      console.log(error, "error");
-    }
-  }, [getBlotterOutstandingData]);
 
   useEffect(() => {
     if (blotterTransactionAdded !== null) {
@@ -126,7 +117,11 @@ const ViewCurrentDeals = () => {
           if (isRFQ) {
             return (
               <Row className='my-2 '>
-                <Col sm={6} md={6} lg={6} className='fs-sm color-black fw-bold d-flex align-items-center'>
+                <Col
+                  sm={6}
+                  md={6}
+                  lg={6}
+                  className='fs-sm color-black fw-bold d-flex align-items-center'>
                   {record.txnid}
                 </Col>
                 <Col sm={6} md={6} lg={6} className='fs-sm color-black fw-bold'>

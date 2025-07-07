@@ -58,7 +58,7 @@ const DealViewModal = ({ dealData }) => {
   };
 
   const handleCancel = () => {};
-  if (!viewDealModal) return null;
+  if (!viewDealModal && !dealData) return null;
   return (
     <GlobalModal
       show={viewDealModal}

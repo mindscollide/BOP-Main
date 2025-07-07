@@ -276,7 +276,7 @@
   font-size: 14px;
 }
 .Treasury_Forwards-thead tr:nth-child(1) th:nth-child(1),
-.Treasury_Forwards-thead tr:nth-child(1) th:nth-child(2) {
+.Treasury_Forwards-thead tr:nth-child(1) {
   background-color: transparent !important;
   text-align: center;
   color: #fff;
@@ -1543,8 +1543,7 @@ tr.OutStanding_Table-cell-scrollbar {
 }
 
 .TXNSummary_Table-row-level-0.isCancelled,
-.TXNSummary_Table-row-level-0.isCancelled:has(
-    .TXNSummary_Table-cell
-  ) {
+.TXNSummary_Table-row-level-0.isCancelled:has(.TXNSummary_Table-cell) {
   background-color: #12a812 !important;
 }
+
