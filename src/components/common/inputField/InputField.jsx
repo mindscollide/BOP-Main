@@ -21,7 +21,8 @@ const InputFIeld = ({
   defaultValue,
   accept,
   onClick,
-  onKeyDown
+  onKeyDown,
+  onBlur
 }) => (
   <input
     value={value}
@@ -43,6 +44,7 @@ const InputFIeld = ({
     accept={accept}
     onClick={onClick}
     onKeyDown={onKeyDown}
+    onBlur={onBlur}
   />
 );
 export default InputFIeld;

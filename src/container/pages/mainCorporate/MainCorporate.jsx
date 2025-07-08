@@ -5,6 +5,7 @@ import { setActiveTab } from "./rfqModal/RFQSlicer";
 import { useDispatch } from "react-redux";
 import BlotterHeader from "../mainTreasury/tabsContent/liveRates/blotter/blotterHeader/BlotterHeader";
 import { useNavigate } from "react-router-dom";
+import { BlotterDataAPI } from "../mainTreasury/tabsContent/liveRates/blotter/BlotterActions";
 const shouldIncludeComponents =
   import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
 
@@ -31,10 +32,13 @@ const MainCorporate = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const activeTab = useSelector((state) => state.RFQReducer.activeTab);
-  console.log(activeTab, "activeTabactiveTabactiveTab");
   const handleTabChange = (tabTitle) => {
     dispatch(setActiveTab(tabTitle));
   };
+  useEffect(() => {
+    let Data = { sRow: 0, Length: 10 };
+    dispatch(BlotterDataAPI({ navigate, Data }));
+  }, [])
 
   const tabsData = [
     {

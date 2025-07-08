@@ -44,7 +44,7 @@ const MainBranch = () => {
   useEffect(() => {
     try {
       dispatch(GetDashboardDataAPI({ navigate }));
-      dispatch(GetAllFowardsAndDiscountsRatesAPI({ navigate }));
+      // dispatch(GetAllFowardsAndDiscountsRatesAPI({ navigate }));
       let Data = { sRow: 0, Length: 10 };
       dispatch(BlotterDataAPI({ navigate, Data }));
 

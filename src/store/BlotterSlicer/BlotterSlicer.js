@@ -42,6 +42,9 @@ const BlotterSlicer = createSlice({
     clearBlotterResponseMessage: (state) => {
       state.responseMessage = "";
     },
+    clearCalculateTenorSwapAndForwardRateData: (state) => {
+      state.calculateTenorSwapAndForwardRateData = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -234,7 +237,7 @@ const BlotterSlicer = createSlice({
         state.error = action.payload;
       })
       .addCase(calculateTenorSwapAndForwardRateApi.pending, (state) => {
-        state.Loader = true;
+        state.Loader = false;
         state.error = null;
       })
       .addCase(
@@ -258,7 +261,7 @@ const BlotterSlicer = createSlice({
   },
 });
 
-export const { setActiveTreasuryTab, clearBlotterResponseMessage } =
+export const { setActiveTreasuryTab, clearBlotterResponseMessage, clearCalculateTenorSwapAndForwardRateData } =
   BlotterSlicer.actions;
 
 export default BlotterSlicer.reducer;

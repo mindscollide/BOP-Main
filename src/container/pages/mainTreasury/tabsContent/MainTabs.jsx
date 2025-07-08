@@ -10,7 +10,10 @@ import {
   GetFXInstrumentsAPI,
 } from "@/components/features/SpotBranch/WatchlistAction";
 import { useNavigate } from "react-router-dom";
-import { GetFEDiscountingTableApi } from "@/components/features/FeDiscountingTable/FeDiscountTableAction";
+import {
+  BlotterDataAPI,
+  GetBlotterOutstandingDealsDataAPI,
+} from "./liveRates/blotter/BlotterActions";
 
 const MainTabs = () => {
   const dispatch = useDispatch();
@@ -19,7 +22,12 @@ const MainTabs = () => {
   useEffect(() => {
     dispatch(GetFXInstrumentsAPI({ navigate }));
     dispatch(GetAllFowardsAndDiscountsRatesAPI({ navigate }));
+    let Data = { sRow: 0, Length: 10 };
+    dispatch(BlotterDataAPI({ navigate, Data }));
+    dispatch(GetBlotterOutstandingDealsDataAPI({ navigate, Data }));
   }, []);
+
+
   const tabsData = [
     { title: "Live Rates", content: <LiveRates /> },
     { title: "Forwards", content: <Forwards /> },

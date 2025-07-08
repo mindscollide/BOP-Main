@@ -67,10 +67,10 @@ export const GetAllFowardsAndDiscountsRates = {
 };
 
 export const GetDashboardData = {
-  RequestMethod: "ServiceManager.GetDashboardData",
+  RequestMethod: "ServiceManager.GetFXTradingSectionAndApplicableInstrument",
 };
 
-export const SaveUserDashboard = {
+export const SaveUserDashboardRM = {
   RequestMethod: "ServiceManager.SaveUserDashboard",
 };
 

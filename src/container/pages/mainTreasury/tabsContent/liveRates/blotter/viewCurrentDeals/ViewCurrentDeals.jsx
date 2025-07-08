@@ -20,7 +20,7 @@ const ViewCurrentDeals = ({ outStandingData, setOutStandingData }) => {
   const navigate = useNavigate();
   const { connectToMqtt, isConnected } = useMqttClient({
     onMessageArrivedCallback: (data) => {
-      console.log(data, "ViewCurrentDealsViewCurrentDeals")
+      console.log(data, "ViewCurrentDeals")
     }
   })
   const blotterTransactionAdded = useSelector(

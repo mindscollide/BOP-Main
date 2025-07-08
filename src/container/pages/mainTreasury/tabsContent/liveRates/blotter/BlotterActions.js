@@ -251,7 +251,10 @@ export const SaveSpotTransactionAPI = createAsyncThunk(
 
 export const SaveForwardTransactionAPI = createAsyncThunk(
   "Blotter/SaveForward",
-  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+  async (
+    { navigate, Data, setBookaForwardModalCall },
+    { dispatch, rejectWithValue }
+  ) => {
     try {
       const postAPI = createPostAPI(
         blotterApi,
@@ -266,7 +269,13 @@ export const SaveForwardTransactionAPI = createAsyncThunk(
       }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(SaveForwardTransactionAPI({ navigate, Data }));
+        dispatch(
+          SaveForwardTransactionAPI({
+            navigate,
+            Data,
+            setBookaForwardModalCall,
+          })
+        );
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -277,6 +286,7 @@ export const SaveForwardTransactionAPI = createAsyncThunk(
                 "Blotter_BlotterServiceManager_SaveForwardTransaction_01".toLowerCase()
               )
           ) {
+            setBookaForwardModalCall(false);
             return {
               response: response.data.responseResult,
               message: "Forward transaction saved successfully",

@@ -181,17 +181,7 @@ const TXNTreasurySummary = () => {
   const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
 
   const isCorproate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
-  console.log("Checking", { blotterdata });
-  console.log(
-    {
-      isShouldTrue: totalRecord !== blotterdata.length,
-      totalRecord,
-      blotterLength: blotterdata.length,
-      sRow,
-      hasReachedBottom,
-    },
-    "totalRecordtotalRecord"
-  );
+
 
   useTableScrollBottom(
     () => {
@@ -257,7 +247,7 @@ const TXNTreasurySummary = () => {
             data2.pK_TransactionID === transaction.pK_TransactionID
         );
         if (isAlreadyExist === undefined) {
-          setBlotterdata([transaction, ...blotterdata]);
+          setBlotterdata((prev) => [transaction, ...prev]);
           dispatch(BlotterTransactionRFQExpired(null));
         }
       } catch (error) {
@@ -339,7 +329,7 @@ const TXNTreasurySummary = () => {
             )
           );
         } else {
-          setBlotterdata([transaction, ...blotterdata]);
+          setBlotterdata((prev) => [transaction, ...prev]);
         }
         dispatch(BlotterTranscationCancelledForTreasury(null));
       } catch (error) {}
@@ -365,7 +355,7 @@ const TXNTreasurySummary = () => {
             )
           );
         } else {
-          setBlotterdata([transaction, ...blotterdata]);
+          setBlotterdata((prev) => [transaction, ...prev]);
         }
         dispatch(BlotterTransactionRejectedForTreasury(null));
       } catch (error) {

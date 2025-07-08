@@ -18,11 +18,11 @@ const DealBox = () => {
     // setDealData(record);
   };
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     dispatch(setDealModalRequest(false));
-  //   }, 3000);
-  // }, []);
+  useEffect(() => {
+    setTimeout(() => {
+      dispatch(setDealModalRequest(false));
+    }, 4000);
+  }, []);
 
   return (
     <motion.section
@@ -49,7 +49,7 @@ const DealBox = () => {
         </Col>
 
         <Col sm={8} md={8} lg={8}>
-          27-06-2024/f9f2
+          {/* {27-06-2024/f9f2} */}
         </Col>
       </Row>
       <Row className='my-3'>

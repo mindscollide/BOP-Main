@@ -138,8 +138,10 @@ const Dashboard = () => {
           break;
         case "BLOTTER_RFQ_TRANSACTION_EXPIRED":
           dispatch(BlotterTransactionRFQExpired(data.payload));
-          dispatch(setBlotterTransactionRFQExpiredForTreasuryDealBox(data.payload))
-  
+          dispatch(
+            setBlotterTransactionRFQExpiredForTreasuryDealBox(data.payload)
+          );
+
           if (
             chatModal &&
             chatModalTransactionId ===
@@ -151,12 +153,12 @@ const Dashboard = () => {
           break;
         case "BLOTTER_TRANSACTION_ADDED":
           dispatch(BlotterTransactionAdded(data.payload));
-          dispatch(BlotterTransactionAddedForTreasury(data.payload))
-          dispatch(setBlotterTransactionAddedForTreasuryDealBox(data.payload))
+          dispatch(BlotterTransactionAddedForTreasury(data.payload));
+          dispatch(setBlotterTransactionAddedForTreasuryDealBox(data.payload));
           break;
         case "BLOTTER_TRANSACTION_ASSIGNED":
           dispatch(BlotterTransactionAssigned(data.payload));
-          dispatch(BlotterTransactionAssignedForTreasury(data.payload))
+          dispatch(BlotterTransactionAssignedForTreasury(data.payload));
           break;
         case "BLOTTER_TRANSACTION_ACCEPTED":
           dispatch(BlotterTransactionAccepted(data.payload));
@@ -164,20 +166,24 @@ const Dashboard = () => {
           break;
         case "BLOTTER_TRANSACTION_RFQ_QUOTED":
           dispatch(BlotterTransactionRFQQuoted(data.payload));
-          dispatch(BlotterTransactionRFQQuotedForTreasury(data.payload))
-          dispatch(setBlotterTransactionRFQQuotedForTreasuryDealBox(data.payload))
+          dispatch(BlotterTransactionRFQQuotedForTreasury(data.payload));
+          dispatch(
+            setBlotterTransactionRFQQuotedForTreasuryDealBox(data.payload)
+          );
           break;
         case "BLOTTER_TRANSACTION_CANCELLATION_REQUEST":
           dispatch(BlotterTransactionCancellationRequest(data.payload));
-          dispatch(BlotterTransactionCancellationRequestForTreasury(data.payload))
+          dispatch(
+            BlotterTransactionCancellationRequestForTreasury(data.payload)
+          );
           break;
         case "BLOTTER_TRANSACTION_CANCELLED":
           dispatch(BlotterTranscationCancelled(data.payload));
-          dispatch(BlotterTranscationCancelledForTreasury(data.payload))
+          dispatch(BlotterTranscationCancelledForTreasury(data.payload));
           break;
         case "BLOTTER_TRANSACTION_REJECTED":
           dispatch(BlotterTransactionRejected(data.payload));
-          dispatch(BlotterTransactionRejectedForTreasury(data.payload))
+          dispatch(BlotterTransactionRejectedForTreasury(data.payload));
           break;
         case "BLOTTER_TRANSACTION_ASSIGNED_TO_TREASURY":
           dispatch(TransactionAssignedByTreasury(data.payload));
@@ -219,7 +225,11 @@ const Dashboard = () => {
       <Content>
         <main className='px-3'>
           <Outlet />
-          <AnimatePresence>{blotterTransactionAdded && isTreasury && <DealBox />}</AnimatePresence>
+          <AnimatePresence>
+            {blotterTransactionAdded && isTreasury && dealMoalRequest && (
+              <DealBox />
+            )}
+          </AnimatePresence>
 
           {chatModal && <ChatBox />}
         </main>

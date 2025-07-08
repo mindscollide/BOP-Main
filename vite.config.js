@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     historyApiFallback: true,
     host: true,
-    port: 5000,
+    port: 5173,
   },
   resolve: {
     alias: {

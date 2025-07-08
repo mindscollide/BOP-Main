@@ -112,7 +112,7 @@ const TXNSummary = () => {
 
   //Global State For Blotter Data
   const GlobalStateGetBlotterData = useSelector(
-    (state) => state.BlotterSlicer.getblotterApiData
+    (state) => state.BlotterSlicer.getBlotterApiData
   );
 
   //local states
@@ -259,7 +259,7 @@ const TXNSummary = () => {
             )
           );
         } else {
-          // setBlotterdata([transaction, ...blotterdata]);
+          setBlotterdata([transaction, ...blotterdata]);
         }
 
         dispatch(BlotterTransactionAccepted(null));

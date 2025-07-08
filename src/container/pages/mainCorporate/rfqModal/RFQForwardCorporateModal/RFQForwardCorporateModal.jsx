@@ -1,18 +1,109 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./RFQForwardCorporateModal.css";
 import Modal from "@/components/common/globalModal/Modal";
 import { Col, Row } from "react-bootstrap";
 import SelectDropdown from "@/components/common/selectDropdown/SelectDropdown";
 import InputFIeld from "@/components/common/inputField/InputField";
 import CustomButton from "@/components/common/globalButton/button";
+import { useSelector } from "react-redux";
+import { formatDate } from "@/common/utils";
 const RFQForwardCorporateModal = ({
   openRfqModalForwardCorporateComponent,
   setOpenRfqModalForwardCorporateComponent,
 }) => {
+  const natureOfBusinessList = useSelector(
+    (state) => state.authReducer.GetAllNatureOfTransactions
+  );
+  const GetAllActiveCorproates = useSelector(
+    (state) => state.authReducer.GetAllActiveCorproates
+  );
+
   //Local States
   const [amountData, setAmountData] = useState("");
   const [Tenor, setTenor] = useState("");
   const [options, setOptions] = useState("");
+
+  const [natureOfBusinessOptions, setNatureOfBusinessOptions] = useState(null);
+
+  const [currencyOptions, setCurrencyOptions] = useState([]);
+  const [selectedNature, setSelectedNature] = useState({
+    value: 0,
+    label: "",
+  });
+  const [selectedCurrency, setSelectedCurrency] = useState({
+    value: 21,
+    label: "USDPKR",
+  });
+
+  const [typeOptions] = useState([
+    { label: "Buy", value: 1 },
+    { label: "Sell", value: 2 },
+  ]);
+
+  const [corporateValue, setCorporateValue] = useState({
+    value: 0,
+    label: "",
+  });
+
+  const [typeOptionSelected, setTypeOptionSelected] = useState({
+    value: 0,
+    label: "",
+  });
+  const [tenoreDate, setTenorDate] = useState(formatDate(new Date()));
+  const [optionsDate, setOptionsDate] = useState(formatDate(new Date()));
+  const [accountNumber, setAcNumberData] = useState("");
+
+  const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
+  const [getAllCorporates, setGetAllCorporates] = useState([]);
+  console.log(options, "optionsoptions");
+
+  useEffect(() => {
+    if (natureOfBusinessList !== null) {
+      try {
+        const formattedOptions = natureOfBusinessList.natureOfTransactions.find(
+          (business, index) => business.isForForward === true
+        );
+        setNatureOfBusinessOptions(formattedOptions);
+        setTypeOptionSelected({
+          value: typeOptions[0].value,
+          label: typeOptions[0].label,
+        });
+      } catch (error) {
+        console.log(error, "Error in natureOfBusinessList useEffect");
+      }
+    }
+  }, [natureOfBusinessList]);
+
+  useEffect(() => {
+    if (GetAllActiveCorproates !== null) {
+      try {
+        const { corporates } = GetAllActiveCorproates;
+        if (corporates.length > 0) {
+          const formattedOptions = corporates.map((corporate) => ({
+            label: corporate.corporateName,
+
+            value: corporate.corporateID,
+          }));
+          setCorporateValue({
+            label: formattedOptions[0].label,
+            value: formattedOptions[0].value,
+          });
+          setGetAllCorporates(formattedOptions);
+        }
+      } catch (error) {
+        console.log(error, "Error in GetAllActiveCorproates useEffect");
+      }
+    }
+  }, [GetAllActiveCorproates]);
+
+  const handleChangeAcNo = (event) => {
+    const { value } = event.target;
+
+    // Accept only alphanumeric characters
+    if (/^[a-zA-Z0-9]*$/.test(value)) {
+      setAcNumberData(value);
+    }
+  };
 
   // handle Change amount
   const handleChangeAmount = (event) => {
@@ -20,37 +111,66 @@ const RFQForwardCorporateModal = ({
     if (name === "Amount") {
       const regex = /^[0-9]*$/;
       if (regex.test(value)) {
-        setAmountData(value);
+        const numericValue = parseInt(value, 10);
+        if (value === "" || (numericValue >= 1 && numericValue <= 1000)) {
+          setAmountData(value);
+        }
       }
-    } else {
-      setAmountData(value);
     }
   };
 
-  // handle Change Tenor
   const handleChangeTenor = (event) => {
-    const { name, value } = event.target;
-    if (name === "Tenor") {
-      const regex = /^\d{0,4}$/; // Allow only 0 to 4 digits
-      if (regex.test(value)) {
+    const { value } = event.target;
+
+    // Allow only digits and up to 4 characters
+    if (/^\d{0,4}$/.test(value)) {
+      const numericValue = parseInt(value, 10);
+
+      // Allow empty input or numbers from 1 to 1000
+      if (value === "" || (numericValue >= 1 && numericValue <= 1000)) {
         setTenor(value);
+
+        if (value !== "") {
+          const newDate = new Date();
+          newDate.setDate(newDate.getDate() + numericValue); // Use numericValue here
+          setTenorDate(formatDate(newDate));
+        } else {
+          setTenorDate(formatDate(new Date())); // Optional: clear tag text if input is empty
+        }
       }
-    } else {
-      setTenor(value);
     }
   };
 
   // handle Change Options
   const handleChangeOptions = (event) => {
-    const { name, value } = event.target;
-    if (name === "Options") {
-      const regex = /^\d{0,4}$/; // Allow only 0 to 4 digits
-      if (regex.test(value)) {
+    const { value } = event.target;
+
+    // Allow only digits and up to 4 characters
+    if (/^\d{0,4}$/.test(value)) {
+      const numericValue = parseInt(value, 10);
+
+      // Allow empty input or numbers from 1 to 1000
+      if (value === "" || (numericValue >= 1 && numericValue <= 1000)) {
         setOptions(value);
+
+        if (value !== "") {
+          const newDate = new Date();
+          newDate.setDate(newDate.getDate() + numericValue); // Use numericValue here
+          setOptionsDate(formatDate(newDate));
+        } else {
+          setOptionsDate(formatDate(new Date())); // Optional: clear tag text if input is empty
+        }
       }
-    } else {
-      setOptions(value);
     }
+  };
+
+  const handleChangeType = (selectedValue) => {
+    setTypeOptionSelected(selectedValue);
+  };
+
+  const handleChangeCorporate = (selectedOption) => {
+    setCorporateValue(selectedOption);
+    console.log("selectedOption", selectedOption);
   };
 
   return (
@@ -61,15 +181,15 @@ const RFQForwardCorporateModal = ({
         setShow={openRfqModalForwardCorporateComponent}
         onHide={() => setOpenRfqModalForwardCorporateComponent(false)}
         closeButton
-        headerClassName="RFQModalHeaderForwardTabCorporate"
-        footerClassName="RFQModalFooterForwardTabCorporate"
-        bodyClassName="RFQModalBodyForwardTabCorporate"
-        className=""
+        headerClassName='RFQModalHeaderForwardTabCorporate'
+        footerClassName='RFQModalFooterForwardTabCorporate'
+        bodyClassName='RFQModalBodyForwardTabCorporate'
+        className=''
         modalHeader={
           <>
             <Row>
               <Col lg={12} md={12} sm={12}>
-                <span className="ForwardRFQModalHeadingCorporate">
+                <span className='ForwardRFQModalHeadingCorporate'>
                   Gul Ahmed{" "}
                 </span>
               </Col>
@@ -80,92 +200,126 @@ const RFQForwardCorporateModal = ({
           <>
             <div>
               <Row>
+                {isBranch && (
+                  <>
+                    {" "}
+                    <Col lg={12} md={12} sm={12} className='mb-2'>
+                      <label className='LabelRFQTransactionModal'>
+                        Company Name*
+                      </label>
+                      <SelectDropdown
+                        classNamePrefix='bookaForwardCorporate'
+                        placeholder=''
+                        options={getAllCorporates}
+                        onChange={handleChangeCorporate}
+                        isSearchable={true}
+                        value={corporateValue}
+                      />
+                    </Col>
+                  </>
+                )}
                 <Col lg={6} md={6} sm={6}>
-                  <div className="d-flex flex-column flex-wrap">
-                    <label className="LabelRFQTransactionModal">
+                  <div className='d-flex flex-column flex-wrap'>
+                    <label className='LabelRFQTransactionModal'>
                       Currency*
                     </label>
                     <SelectDropdown
-                      classNamePrefix="bookaForwardCorporate"
-                      placeholder=""
+                      classNamePrefix='bookaForwardCorporate'
+                      placeholder=''
+                      value={selectedCurrency}
                     />
                   </div>
                 </Col>
 
                 <Col lg={6} md={6} sm={6}>
-                  <div className="d-flex flex-column flex-wrap">
-                    <label className="LabelRFQTransactionModal">Type*</label>
+                  <div className='d-flex flex-column flex-wrap'>
+                    <label className='LabelRFQTransactionModal'>Type*</label>
                     <SelectDropdown
-                      placeholder=""
-                      classNamePrefix="bookaForwardCorporate"
+                      placeholder=''
+                      classNamePrefix='bookaForwardCorporate'
+                      options={typeOptions}
+                      value={typeOptionSelected}
+                      onChange={handleChangeType}
                     />
                   </div>
                 </Col>
               </Row>
 
-              <Row className="mt-2">
+              <Row className='mt-2'>
                 <Col lg={6} md={6} sm={6}>
-                  <div className="d-flex flex-column flex-wrap">
-                    <label className="LabelRFQTransactionModal">Nature</label>
-                    <InputFIeld applyClass="CalculatorTextfield" />
+                  <div className='d-flex flex-column flex-wrap'>
+                    <label className='LabelRFQTransactionModal'>Nature</label>
+                    <InputFIeld
+                      applyClass='CalculatorTextfield'
+                      value={
+                        natureOfBusinessOptions !== null
+                          ? natureOfBusinessOptions?.name
+                          : ""
+                      }
+                    />
                   </div>
                 </Col>
                 <Col lg={6} md={6} sm={6}>
-                  <div className="d-flex flex-column flex-wrap">
-                    <label className="LabelRFQTransactionModal">A/c No*</label>
-                    <InputFIeld applyClass="CalculatorTextfield" />
+                  <div className='d-flex flex-column flex-wrap'>
+                    <label className='LabelRFQTransactionModal'>A/c No*</label>
+                    <InputFIeld
+                      applyClass='CalculatorTextfield'
+                      onChange={handleChangeAcNo}
+                      type='text'
+                      value={accountNumber}
+                    />
                   </div>
                 </Col>
               </Row>
 
-              <Row className="mt-2">
+              <Row className='mt-2'>
                 <Col lg={12} md={12} sm={12}>
-                  <div className="d-flex flex-column flex-wrap">
-                    <label className="LabelRFQTransactionModal">Amount</label>
+                  <div className='d-flex flex-column flex-wrap'>
+                    <label className='LabelRFQTransactionModal'>Amount</label>
                     <InputFIeld
                       value={amountData}
-                      name="Amount"
+                      name='Amount'
                       onChange={handleChangeAmount}
-                      applyClass="CalculatorTextfield"
+                      applyClass='CalculatorTextfield'
                     />
                   </div>
                 </Col>
               </Row>
 
-              <Row className="mt-2 position-relative">
+              <Row className='mt-2 position-relative'>
                 <Col lg={9} md={9} sm={9}>
-                  <div className="d-flex flex-column flex-wrap">
-                    <label className="LabelRFQTransactionModal">Tenor</label>
+                  <div className='d-flex flex-column flex-wrap'>
+                    <label className='LabelRFQTransactionModal'>Tenor</label>
                     <InputFIeld
                       value={Tenor}
-                      name="Tenor"
+                      name='Tenor'
                       onChange={handleChangeTenor}
-                      applyClass="CalculatorTextfield"
+                      applyClass='CalculatorTextfield'
                     />
                   </div>
                 </Col>
                 <Col lg={3} md={3} sm={3}>
-                  <span className="DateColumnTenorForwardTabRFQModal">
-                    Wed, Apr 30, 2025
+                  <span className='DateColumnTenorForwardTabRFQModal'>
+                    {tenoreDate}
                   </span>
                 </Col>
               </Row>
 
-              <Row className="mt-2 position-relative">
+              <Row className='mt-2 position-relative'>
                 <Col lg={9} md={9} sm={9}>
-                  <div className="d-flex flex-column flex-wrap">
-                    <label className="LabelRFQTransactionModal">Options</label>
+                  <div className='d-flex flex-column flex-wrap'>
+                    <label className='LabelRFQTransactionModal'>Options</label>
                     <InputFIeld
                       value={options}
                       onChange={handleChangeOptions}
-                      name="Options"
-                      applyClass="CalculatorTextfield"
+                      name='Options'
+                      applyClass='CalculatorTextfield'
                     />
                   </div>
                 </Col>
                 <Col lg={3} md={3} sm={3}>
-                  <span className="DateColumnTenorForwardTabRFQModal">
-                    Wed, Apr 30, 2025
+                  <span className='DateColumnTenorForwardTabRFQModal'>
+                    {optionsDate}
                   </span>
                 </Col>
               </Row>
@@ -179,11 +333,10 @@ const RFQForwardCorporateModal = ({
                 lg={12}
                 md={12}
                 sm={12}
-                className="d-flex justify-content-center"
-              >
+                className='d-flex justify-content-center'>
                 <CustomButton
-                  value="Confirm"
-                  applyClass="ConfirmButtonBookaForward"
+                  value='Confirm'
+                  applyClass='ConfirmButtonBookaForward'
                 />
               </Col>
             </Row>

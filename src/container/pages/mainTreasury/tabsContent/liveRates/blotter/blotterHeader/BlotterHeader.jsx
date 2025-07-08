@@ -33,17 +33,7 @@ const BlotterHeader = () => {
     (state) => state.BlotterSlicer.activeTabBlotter
   );
 
-  // useEffect(() => {
-  //   try {
-  //     let Data = { sRow: 0, Length: 10 };
-  //     dispatch(BlotterDataAPI({ navigate, Data }));
-  //     if (isTreasury) {
-  //       dispatch(GetBlotterOutstandingDealsDataAPI({ Data, navigate }));
-  //     }
-  //   } catch (error) {
-  //     console.log(error, "error");
-  //   }
-  // }, []);
+
   console.log(activeTab, "activeTabactiveTab");
   const tabsData = [
     {
