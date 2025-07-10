@@ -8,32 +8,32 @@ const CategoryDiscounting = () => {
   const [columnsData, setColumnsData] = useState([]);
 
   const getAllCounterPartyData = useSelector(
-    (state) => state.WatchListReducer.GetAllCounterPartyData
+    (state) => state.WatchListReducer?.GetAllCounterPartyData
   );
 
   useEffect(() => {
     if (getAllCounterPartyData !== null) {
-      const {
-        spreadedForwardRates,
-        spreadedDiscountRates,
-        instruments,
-        tenors,
-      } = getAllCounterPartyData;
-      if (spreadedDiscountRates.length > 0) {
-        const { discountRates } = generateData(
-          1,
-          tenors,
-          instruments,
-          spreadedForwardRates,
-          spreadedDiscountRates
-        );
-        if (discountRates.length > 0) {
-          setDataSource(discountRates);
+      // const {
+      //   spreadedForwardRates,
+      //   spreadedDiscountRates,
+      //   instruments,
+      //   tenors,
+      // } = getAllCounterPartyData;
+      // if (spreadedDiscountRates.length > 0) {
+      //   const { discountRates } = generateData(
+      //     1,
+      //     tenors,
+      //     instruments,
+      //     spreadedForwardRates,
+      //     spreadedDiscountRates
+      //   );
+      //   if (discountRates.length > 0) {
+      //     setDataSource(discountRates);
 
-          const forwardsColumns = createColumns(discountRates, 1);
-          setColumnsData(forwardsColumns);
-        }
-      }
+      //     const forwardsColumns = createColumns(discountRates, 1);
+      //     setColumnsData(forwardsColumns);
+      //   }
+      // }
     }
   }, [getAllCounterPartyData]);
 

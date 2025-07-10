@@ -11,6 +11,19 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
+const initialWatchlistData = Object.fromEntries(
+  Array.from({ length: 6 }, (_, i) => [
+    `watchlist${i + 1}`,
+    {
+      tile: String(i + 1),
+      currecncyLabel: "",
+      instrumentID: 0,
+      buyValue: "",
+      sellValue: "",
+    },
+  ])
+);
+
 const SpotBranch = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -35,21 +48,8 @@ const SpotBranch = () => {
   );
   console.log(GetSpotRatesForCounterParty, "GetSpotRatesForCounterParty");
 
-  //By Default for having Six Tiles
-  const [watchlistData, setWatchlistData] = useState({
-    watchlist1: {
-      currecncyLabel: "",
-      instrumentID: 0,
-      buyValue: "",
-      sellValue: "",
-    },
-    watchlist2: { currecncyLabel: "", buyValue: "", sellValue: "" },
-    watchlist3: { currecncyLabel: "", buyValue: "", sellValue: "" },
-    watchlist4: { currecncyLabel: "", buyValue: "", sellValue: "" },
-    watchlist5: { currecncyLabel: "", buyValue: "", sellValue: "" },
-    watchlist6: { currecncyLabel: "", buyValue: "", sellValue: "" },
-  });
-
+  const [watchlistData, setWatchlistData] = useState(initialWatchlistData);
+  console.log(watchlistData, "watchlistDatawatchlistDatawatchlistData")
   // Extracting out the Cards Wathlist data in the state
   useEffect(() => {
     try {
@@ -79,8 +79,8 @@ const SpotBranch = () => {
             console.log("matchedRate", matchedRate);
             return {
               ...item,
-              bid: matchedRate ? matchedRate.bid : 0,
-              offer: matchedRate ? matchedRate.offer : 0,
+              bid: matchedRate ? 200 : 200,
+              offer: matchedRate ? 215 : 215,
             };
           });
 
@@ -91,19 +91,35 @@ const SpotBranch = () => {
           if (filterSections.length > 0) {
             setWatchlistData((prevData) => {
               const updatedData = { ...prevData };
-
-              for (let i = 0; i < 6; i++) {
-                const item = filterSections[i];
-                updatedData[`watchlist${i + 1}`] = item
-                  ? {
-                      ...prevData[`watchlist${i + 1}`],
-                      currecncyLabel: `${item.instrumentName}${item.secondaryInstrumentName}`,
-                      buyValue: item.bid,
-                      sellValue: item.offer,
-                      instrumentID: item.instrumentID,
-                    }
-                  : prevData[`watchlist${i + 1}`]; // fallback to previous state if not found
+              console.log(updatedData, "updatedDataupdatedData")
+              // Reset all watchlists to preserve their tile positions
+              for (let i = 1; i <= 6; i++) {
+                updatedData[`watchlist${i}`] = {
+                  ...prevData[`watchlist${i}`],
+                  currecncyLabel: "",
+                  instrumentID: 0,
+                  buyValue: "",
+                  sellValue: "",
+                };
               }
+
+              // Update only according to SectionID
+              filterSections.forEach((item) => {
+                const sectionID = item.sectionID || item.SectionID; // check for both cases
+                const tileKey = `watchlist${sectionID}`;
+
+                if (updatedData[tileKey]) {
+                  updatedData[tileKey] = {
+                    ...prevData[tileKey],
+                    currecncyLabel: `${item.instrumentName}${item.secondaryInstrumentName}`,
+                    buyValue: item.bid,
+                    sellValue: item.offer,
+                    instrumentID: item.instrumentID,
+                    isSell: item.isSell,
+                    isBuy: item.isBuy
+                  };
+                }
+              });
 
               return updatedData;
             });
@@ -130,7 +146,7 @@ const SpotBranch = () => {
       render: (text, record) => {
         console.log(text, record, "responseresponseresponse");
         return (
-          <span className="instrument-column">
+          <span className='instrument-column'>
             {record.secondaryInstrumentID === 0
               ? text
               : `${text}${record.secondaryInstrumentName}`}
@@ -145,11 +161,11 @@ const SpotBranch = () => {
       width: "120px",
       align: "center",
       render: (text, record) => (
-        <div className="d-flex justify-content-center">
+        <div className='d-flex justify-content-center'>
           <BidAmountBox
             spot={false}
             BidAmountValue={text}
-            applyClass="BidCardBox"
+            applyClass='BidCardBox'
           />
         </div>
       ),
@@ -161,11 +177,11 @@ const SpotBranch = () => {
       align: "center",
       width: "120px",
       render: (text, record) => (
-        <div className="d-flex justify-content-center">
+        <div className='d-flex justify-content-center'>
           <BidAmountBox
             spot={false}
             BidAmountValue={text}
-            applyClass="OfferCardBox"
+            applyClass='OfferCardBox'
           />
         </div>
       ),
@@ -175,21 +191,23 @@ const SpotBranch = () => {
   const onDragEnd = (result) => {
     const { source, destination } = result;
 
-    console.log(result, "resultresultresultresult");
+    console.log(destination, source, "resultresultresultresult11");
 
-    // If there's no destination, do nothing
     if (!destination) return;
 
-    // Handle dropping into BranchRateCardsOfWatchList
+    // Only proceed if item is dropped into one of the watchlist tiles
     if (destination.droppableId.startsWith("watchlist")) {
-      const item = watchlistTableData[source.index]; // Get dragged item
-      const { instrumentID, secondaryInstrumentID } = item; // Extract values
-      //   Calling the save Droppale Item API
-      let Data = {
-        SectionID: String(source.index),
+      const item = watchlistTableData[source.index]; // Dragged item
+      const findSectionID = watchlistData[destination.droppableId]; // Get correct tile object
+      console.log(findSectionID, "findSectionIDfindSectionID");
+      const { instrumentID, secondaryInstrumentID } = item;
+
+      const Data = {
+        SectionID: String(findSectionID.tile), // Use tile number instead of index
         InstrumentID: Number(instrumentID),
         SecondaryInstrumentID: Number(secondaryInstrumentID),
       };
+
       console.log(Data, "resultresultresultresult");
 
       dispatch(SaveUserDashboardAPI({ navigate, Data }));
@@ -216,8 +234,7 @@ const SpotBranch = () => {
               ...style,
               ...provided.draggableProps.style,
             }}
-            className={className}
-          >
+            className={className}>
             {children}
           </tr>
         )}
@@ -227,16 +244,16 @@ const SpotBranch = () => {
   return (
     <section>
       <DragDropContext onDragEnd={onDragEnd}>
-        <Row className="px-2">
+        <Row className='px-2'>
           <Col>
-            <span className="FxTradingOuterBox">
-              <Row className="mt-2">
+            <span className='FxTradingOuterBox'>
+              <Row className='mt-2'>
                 <Col lg={12} md={12} sm={12}>
-                  <span className="FxTradingLabel">FX Trading</span>
+                  <span className='FxTradingLabel'>FX Trading</span>
                 </Col>
               </Row>
 
-              <Row className="mt-3">
+              <Row className='mt-3'>
                 {[...Array(6)].map((_, index) => {
                   const droppableId = `watchlist${index + 1}`;
                   const data = watchlistData[droppableId] || {}; // Get data if available, else empty
@@ -247,14 +264,15 @@ const SpotBranch = () => {
                         {(provided) => (
                           <div
                             ref={provided.innerRef}
-                            {...provided.droppableProps}
-                          >
+                            {...provided.droppableProps}>
                             <BranchRateCardsOfWatchList
                               currencyLabel={data.currecncyLabel || ""}
-                              buyHeading="I Buy"
-                              sellHeading="I Sell"
+                              buyHeading='I Buy'
+                              sellHeading='I Sell'
                               buyValue={data.buyValue || ""}
                               sellValue={data.sellValue || ""}
+                              isSellDisabled={data.isSell}
+                              isBuyDisabled={data.isBuy}
                             />
                             {provided.placeholder}
                           </div>
@@ -266,19 +284,19 @@ const SpotBranch = () => {
               </Row>
             </span>
           </Col>
-          <Col lg={3} md={3} sm={12} className="WatchListOuterBox">
+          <Col lg={3} md={3} sm={12} className='WatchListOuterBox'>
             <Row>
               <Col lg={6} md={6} sm={12}>
-                <span className="WatchlistLabel">Watchlist</span>
+                <span className='WatchlistLabel'>Watchlist</span>
               </Col>
-              <Col lg={6} md={6} sm={12} className="d-flex justify-content-end">
+              <Col lg={6} md={6} sm={12} className='d-flex justify-content-end'>
                 <span>21-11-2022 9:18 PM</span>
               </Col>
             </Row>
             <Row>
               <Col lg={12} md={12} sm={12}>
                 {watchlistTableData.length > 0 ? (
-                  <Droppable droppableId="droppable" direction="vertical">
+                  <Droppable droppableId='droppable' direction='vertical'>
                     {(provided) => (
                       <div ref={provided.innerRef} {...provided.droppableProps}>
                         <GlobalTable

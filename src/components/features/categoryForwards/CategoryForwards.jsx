@@ -7,7 +7,7 @@ const CategoryForwards = () => {
   const [dataSource, setDataSource] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
   const getAllCounterPartyData = useSelector(
-    (state) => state.WatchListReducer.GetAllCounterPartyData
+    (state) => state.WatchListReducer?.GetAllCounterPartyData
   );
 
   // Define the columns structure for the Ant Design Table
@@ -15,21 +15,21 @@ const CategoryForwards = () => {
 
   useEffect(() => {
     if (getAllCounterPartyData !== null) {
-      const { spreadedForwardRates, instruments, tenors } =
-        getAllCounterPartyData;
-      if (spreadedForwardRates.length > 0) {
-        const { forwardsRates } = generateData(
-          4,
-          tenors,
-          instruments,
-          spreadedForwardRates
-        );
-        if (forwardsRates.length > 0) {
-          setDataSource(forwardsRates);
-          const forwardsColumns = createColumns(forwardsRates, 2);
-          setColumnsData(forwardsColumns);
-        }
-      }
+      // const { spreadedForwardRates, instruments, tenors } =
+      //   getAllCounterPartyData;
+      // if (spreadedForwardRates.length > 0) {
+      //   const { forwardsRates } = generateData(
+      //     4,
+      //     tenors,
+      //     instruments,
+      //     spreadedForwardRates
+      //   );
+      //   if (forwardsRates.length > 0) {
+      //     setDataSource(forwardsRates);
+      //     const forwardsColumns = createColumns(forwardsRates, 2);
+      //     setColumnsData(forwardsColumns);
+      //   }
+      // }
     }
   }, [getAllCounterPartyData]);
 
