@@ -35,45 +35,55 @@ const BranchForwardsTable = () => {
   const globalStateWatchlistCardData = useSelector(
     (state) => state.WatchListReducer?.GettheDashboardData ?? null
   );
-  // useEffect(() => {
-  //   dispatch(getAllTenorsAction(navigate));
-  // }, []);
 
-  const getAllTenorsData = useSelector(
+  const getAllTenorsRecords = useSelector(
     (state) => state.dealerReducer.getAllTenors
   );
 
-  const GetForwardRatesForCounterPartyData = useSelector((state) => state);
-
+  const GetForwardRatesForCounterPartyData = useSelector(
+    (state) => state.WatchListReducer.GetForwardRatesForCounterParty
+  );
   console.log(
+    globalStateWatchlistCardData !== null &&
+      getAllTenorsRecords !== null &&
+      GetForwardRatesForCounterPartyData !== null,
+    globalStateWatchlistCardData,
+    getAllTenorsRecords,
     GetForwardRatesForCounterPartyData,
     "GetForwardRatesForCounterPartyDataGetForwardRatesForCounterPartyData"
   );
   useEffect(() => {
-    if (globalStateWatchlistCardData !== null) {
+    if (
+      globalStateWatchlistCardData !== null &&
+      getAllTenorsRecords !== null &&
+      GetForwardRatesForCounterPartyData !== null
+    ) {
       try {
         const { forwardApplicableInstruments } = globalStateWatchlistCardData;
         console.log(
           forwardApplicableInstruments,
           "forwardApplicableInstrumentsforwardApplicableInstruments"
         );
+
         //********************************************** */
         // const { tenors, forwardRates, instruments } =
         //   GetAllFowardsAndDiscountsRatesAPIData;
-        // let getAllTenorsData = { tenors };
-        // let getAllInstrument = { instruments };
+
+        let getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
+        let getAllInstrument = { instruments: forwardApplicableInstruments };
+
         const { rowData, columnsData } = buildForwardsTable(
-          2,
-          forwardRates,
-          getAllTenorsData.tenors,
-          forwardApplicableInstruments,
+          3,
+          GetForwardRatesForCounterPartyData.forwardRates,
+          getAllTenorsData,
+          getAllInstrument,
           IndexCell
         );
         // console.log(rowData, columnsData, "columnsDatacolumnsData");
-        // if (rowData.length > 0) {
-        //   setDataSource(rowData);
-        //   setColumnsData(columnsData);
-        // }
+        if (rowData.length > 0) {
+          setDataSource(rowData);
+          setColumnsData(columnsData);
+        }
         //********************************************** */
         // const { tenors, forwardRates, instruments } =
         //   GetAllFowardsAndDiscountsRatesAPIData;
@@ -95,7 +105,11 @@ const BranchForwardsTable = () => {
         console.log(error, "Error while building discounting table");
       }
     }
-  }, [globalStateWatchlistCardData]);
+  }, [
+    globalStateWatchlistCardData,
+    getAllTenorsRecords,
+    GetForwardRatesForCounterPartyData,
+  ]);
 
   const handleBookaForwardCorporate = () => {
     setBookaForwardModalCall(true);

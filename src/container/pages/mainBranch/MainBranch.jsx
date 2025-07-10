@@ -8,6 +8,7 @@ import TXNSummary from "@/components/features/blotter/txnSummary/TXNSummary";
 import { useNavigate } from "react-router-dom";
 import {
   GetDashboardDataAPI,
+  GetDiscountingRatesForCounterPartyApi,
   GetForwardRatesForCounterPartyApi,
 } from "@/components/features/SpotBranch/WatchlistAction";
 import {
@@ -48,15 +49,15 @@ const MainBranch = () => {
   //WatchList table Data Api Call
   useEffect(() => {
     try {
-      dispatch(GetDashboardDataAPI({ navigate }));
       dispatch(GetSpotRatesForCounterPartyAPI(navigate));
       let Data = { sRow: 0, Length: 10 };
       dispatch(BlotterDataAPI({ navigate, Data }));
 
-      // dispatch(GetDashboardDataAPI({navigate})); // Fetching the Dashboard Data
+      dispatch(GetDashboardDataAPI({ navigate })); // Fetching the Dashboard Data
       // dispatch(getAllTenorsAction({ navigate }));
       dispatch(getAllTenorsAction({ navigate }));
       dispatch(GetForwardRatesForCounterPartyApi({ navigate }));
+      dispatch(GetDiscountingRatesForCounterPartyApi({ navigate }));
     } catch (error) {
       console.log(error, "error");
     }

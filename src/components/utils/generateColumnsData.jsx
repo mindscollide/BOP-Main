@@ -18,9 +18,12 @@ export const buildDiscountingTable = (
     const applicableInstruments =
       value === 1
         ? instruments?.filter((inst) => inst.discountingApplicable) || []
+        : value === 3
+        ? instruments
         : instruments;
+
     const applicableTenors =
-      value === 1
+      value === 1 || value === 3
         ? tenors?.filter((tenor) => tenor.isDiscountingApplicable) || []
         : tenors;
 
@@ -85,6 +88,7 @@ export const buildDiscountingTable = (
           title: "",
           dataIndex: "",
           key: "",
+
           width: 80,
           children: [
             {
@@ -104,6 +108,7 @@ export const buildDiscountingTable = (
             {
               title: "Value",
               dataIndex: `rate_${inst.instrumentName}`,
+              align: "center",
               render: (text, record) => (
                 <InputFIeld value={text} record={record} />
               ),
@@ -136,7 +141,7 @@ export const buildDiscountingTable = (
         })),
       ];
     }
-    console.log(columnsData, "columnsDatacolumnsDatacolumnsData")
+    console.log(columnsData, "columnsDatacolumnsDatacolumnsData");
     // Step 4: Build the column definitions
 
     return { rowData, columnsData };
@@ -157,7 +162,7 @@ export const buildForwardsTable = (
   if (!Data || !getAllTenorsData || !getAllInstrument) {
     return { rowData: [], columnsData: [] };
   }
-
+  console.log({ Data, value, getAllTenorsData, getAllInstrument }, "DataData");
   try {
     const { tenors } = getAllTenorsData;
     const { instruments } = getAllInstrument;
@@ -165,11 +170,15 @@ export const buildForwardsTable = (
     const applicableInstruments =
       value === 1
         ? instruments?.filter((inst) => inst.discountingApplicable) || []
+        : value === 3
+        ? instruments
         : instruments;
 
     const applicableTenors =
       value === 1
-        ? tenors?.filter((tenor) => tenor.isDiscountingApplicable) || []
+        ? tenors?.filter((tenor) => tenor.isForwardingApplicable) || []
+        : value === 3
+        ? tenors?.filter((tenor) => tenor.isForwardingApplicable) || []
         : tenors;
 
     // Step 1: Create rateMap with bid/ask
@@ -178,7 +187,7 @@ export const buildForwardsTable = (
       const key = `${entry.instrumentID}-${entry.tenorID}`;
       rateMap[key] = {
         bid: entry.bid ?? 0,
-        ask: entry.ask ?? 0,
+        ask: value === 3 ? entry.offer : entry.ask ?? 0,
       };
     });
 

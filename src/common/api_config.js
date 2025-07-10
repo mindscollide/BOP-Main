@@ -314,3 +314,7 @@ export const GetAllInstrumentForTreasuryRM = {
 export const GetForwardRatesForCounterParty = {
   RequestMethod: "ServiceManager.GetForwardRatesForCounterParty",
 };
+
+export const GetDiscountingRatesForCounterParty = {
+  RequestMethod: "ServiceManager.GetDiscountingRatesForCounterParty",
+};
