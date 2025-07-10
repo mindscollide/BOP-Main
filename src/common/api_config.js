@@ -1,4 +1,3 @@
-
 export const loginRequestMethod = {
   RequestMethod: "ServiceManager.Login",
 };
@@ -305,6 +304,13 @@ export const CalculateTenorSwapAndForwardRateRM = {
   RequestMethod: "ServiceManager.CalculateTenorSwapAndForwardRate",
 };
 
+export const GetSpotRatesForCounterParty = {
+  RequestMethod: "ServiceManager.GetSpotRatesForCounterParty",
+};
 export const GetAllInstrumentForTreasuryRM = {
   RequestMethod: "ServiceManagerGetAllInstrumentForTreasury",
+};
+
+export const GetForwardRatesForCounterParty = {
+  RequestMethod: "ServiceManager.GetForwardRatesForCounterParty",
 };

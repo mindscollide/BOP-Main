@@ -1,6 +1,6 @@
 import { setCustomHeaders } from "@/common/utils";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { uploadRatesApi } from "@/common/apiend_points";
+import { authApi, uploadRatesApi } from "@/common/apiend_points";
 import {
   clearRatesRM,
   marketOnOffRM,
@@ -340,10 +340,7 @@ export const getAllTenorsAction = createAsyncThunk(
   "uploadRate/getAllTenors", // A unique action type string
   async ({ navigate }, { rejectWithValue, dispatch }) => {
     try {
-      let getAllTenors = createPostAPI(
-        uploadRatesApi,
-        getAllTenorsRM.RequestMethod
-      );
+      let getAllTenors = createPostAPI(authApi, getAllTenorsRM.RequestMethod);
 
       const response = await getAllTenors();
 
@@ -365,7 +362,7 @@ export const getAllTenorsAction = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "UploadRate_UploadRateServiceManager_GetAllTenors_01".toLowerCase()
+                "ERM_AuthService_CommonManager_GetAllTenors_01".toLowerCase()
               )
           ) {
             return {
@@ -376,7 +373,7 @@ export const getAllTenorsAction = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "UploadRate_UploadRateServiceManager_GetAllTenors_02".toLowerCase()
+                "ERM_AuthService_CommonManager_GetAllTenors_02".toLowerCase()
               )
           ) {
             return rejectWithValue("Something went wrong");
@@ -384,7 +381,7 @@ export const getAllTenorsAction = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "UploadRate_UploadRateServiceManager_GetAllTenors_03".toLowerCase()
+                "ERM_AuthService_CommonManager_GetAllTenors_03".toLowerCase()
               )
           ) {
             return rejectWithValue("Something went wrong");
@@ -392,7 +389,7 @@ export const getAllTenorsAction = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "UploadRate_UploadRateServiceManager_GetAllTenors_04".toLowerCase()
+                "ERM_AuthService_CommonManager_GetAllTenors_04".toLowerCase()
               )
           ) {
             return rejectWithValue("Something went wrong");
@@ -416,10 +413,7 @@ export const getAllTenorsAction = createAsyncThunk(
 // Define the login async thunk
 export const createTenorAction = createAsyncThunk(
   "uploadRate/createTenors", // A unique action type string
-  async (
-    { navigate, Data, setCreateTenor },
-    { dispatch, rejectWithValue }
-  ) => {
+  async ({ navigate, Data, setCreateTenor }, { dispatch, rejectWithValue }) => {
     try {
       let createTenor = createPostAPI(
         uploadRatesApi,
@@ -453,7 +447,7 @@ export const createTenorAction = createAsyncThunk(
                 "UploadRate_UploadRateServiceManager_CreateTenor_01".toLowerCase()
               )
           ) {
-            dispatch(setCreateTenorModal(false))
+            dispatch(setCreateTenorModal(false));
             setCreateTenor({
               noOfDays: "",
               tenorName: "",

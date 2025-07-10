@@ -1,3 +1,18 @@
+// import {
+//   AcceptTransactionAPI,
+//   AssignTransactionAPI,
+//   BlotterDataAPI,
+//   CancelPendingTransactionApi,
+//   GetBlotterOutstandingDealsDataAPI,
+//   RFQTransactionQuotation,
+//   RejectTransactionAPI,
+//   SaveFEDiscountingTransactionAPI,
+//   SaveForwardTransactionAPI,
+//   SaveNonFEDiscountingTransactionAPI,
+//   SaveSpotTransactionAPI,
+//   calculateTenorSwapAndForwardRateApi,
+//   GetSpotRatesForCounterPartyAPI,
+// } from "@/container/pages/mainTreasury/tabsContent/liveRates/blotter/BlotterActions";
 import {
   AcceptTransactionAPI,
   AssignTransactionAPI,
@@ -11,6 +26,7 @@ import {
   SaveNonFEDiscountingTransactionAPI,
   SaveSpotTransactionAPI,
   calculateTenorSwapAndForwardRateApi,
+  GetSpotRatesForCounterPartyAPI,
 } from "@/components/features/blotter/BlotterActions";
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -33,6 +49,7 @@ const BlotterSlicer = createSlice({
     cancelPendingTransaction: null,
     calculateTenorSwapAndForwardRateData: null,
     activeTabBlotter: "TXN Summary",
+    GetSpotRatesForCounterParty: null,
   },
   reducers: {
     setActiveTreasuryTab: (state, { payload }) => {
@@ -257,11 +274,35 @@ const BlotterSlicer = createSlice({
           state.error = action.payload;
           state.calculateTenorSwapAndForwardRateData = null;
         }
-      );
+      )
+
+      //*************************** */
+      .addCase(GetSpotRatesForCounterPartyAPI.pending, (state) => {
+        state.Loader = false;
+        state.error = null;
+      })
+      .addCase(
+        GetSpotRatesForCounterPartyAPI.fulfilled,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.GetSpotRatesForCounterParty = payload?.response;
+          state.error = null;
+          state.responseMessage = payload?.message;
+        }
+      )
+      .addCase(GetSpotRatesForCounterPartyAPI.rejected, (state, action) => {
+        console.log(action, "actionaction");
+        state.Loader = false;
+        state.error = action.payload;
+        state.GetSpotRatesForCounterParty = null;
+      });
   },
 });
 
-export const { setActiveTreasuryTab, clearBlotterResponseMessage, clearCalculateTenorSwapAndForwardRateData } =
-  BlotterSlicer.actions;
+export const {
+  setActiveTreasuryTab,
+  clearBlotterResponseMessage,
+  clearCalculateTenorSwapAndForwardRateData,
+} = BlotterSlicer.actions;
 
 export default BlotterSlicer.reducer;
