@@ -6,7 +6,7 @@ import BranchRateCardsOfWatchList from "../../common/branchWatchlistDroppableCar
 import BidAmountBox from "../../common/bidAmountBox/BidAmountBox";
 import GlobalTable from "../../common/table/GlobalTable";
 import SellAndBuyModal from "./SellAndBuyModal/SellAndBuyModal";
-import {  SaveUserDashboardAPI } from "./WatchlistAction";
+import { SaveUserDashboardAPI } from "./WatchlistAction";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -30,6 +30,20 @@ const SpotBranch = () => {
     (state) => state.WatchListReducer?.GettheDashboardData ?? null
   );
 
+  //By Default for having Six Tiles
+  const [watchlistData, setWatchlistData] = useState({
+    watchlist1: {
+      currecncyLabel: "",
+      instrumentID: 0,
+      buyValue: "",
+      sellValue: "",
+    },
+    watchlist2: { currecncyLabel: "", buyValue: "", sellValue: "" },
+    watchlist3: { currecncyLabel: "", buyValue: "", sellValue: "" },
+    watchlist4: { currecncyLabel: "", buyValue: "", sellValue: "" },
+    watchlist5: { currecncyLabel: "", buyValue: "", sellValue: "" },
+    watchlist6: { currecncyLabel: "", buyValue: "", sellValue: "" },
+  });
   // Extracting out the Cards Wathlist data in the state
   useEffect(() => {
     try {
@@ -47,21 +61,28 @@ const SpotBranch = () => {
             };
           });
           setWatchlistTableData(updateData);
-          const filterSections = spotApplicableInstruments.filter(
+          const filterSections = updateData.filter(
             (list, index) => list.sectionID !== "0"
           );
-          console.log(filterSections, "watchLists");
           if (filterSections.length > 0) {
-            setWatchlistData((prevData) => ({
-              ...prevData,
-              watchlist1: {
-                ...prevData.watchlist1,
-                currecncyLabel: `${filterSections[0].instrumentName}${filterSections[0].secondaryInstrumentName}`,
-                buyValue: filterSections[0].bid,
-                sellValue: filterSections[0].offer,
-                instrumentID: filterSections[0].instrumentID,
-              },
-            }));
+            setWatchlistData((prevData) => {
+              const updatedData = { ...prevData };
+
+              for (let i = 0; i < 6; i++) {
+                const item = filterSections[i];
+                updatedData[`watchlist${i + 1}`] = item
+                  ? {
+                      ...prevData[`watchlist${i + 1}`],
+                      currecncyLabel: `${item.instrumentName}${item.secondaryInstrumentName}`,
+                      buyValue: item.bid,
+                      sellValue: item.offer,
+                      instrumentID: item.instrumentID,
+                    }
+                  : prevData[`watchlist${i + 1}`]; // fallback to previous state if not found
+              }
+
+              return updatedData;
+            });
           }
         }
       }
@@ -71,20 +92,6 @@ const SpotBranch = () => {
   }, [globalStateWatchlistCardData]);
 
   //Watch<List>Data State
-  //By Default for having Six Tiles
-  const [watchlistData, setWatchlistData] = useState({
-    watchlist1: {
-      currecncyLabel: "",
-      instrumentID: 0,
-      buyValue: "",
-      sellValue: "",
-    },
-    watchlist2: { currecncyLabel: "", buyValue: "", sellValue: "" },
-    watchlist3: { currecncyLabel: "", buyValue: "", sellValue: "" },
-    watchlist4: { currecncyLabel: "", buyValue: "", sellValue: "" },
-    watchlist5: { currecncyLabel: "", buyValue: "", sellValue: "" },
-    watchlist6: { currecncyLabel: "", buyValue: "", sellValue: "" },
-  });
 
   console.log(watchlistData, "watchlistDatawatchlistData");
 
@@ -97,8 +104,14 @@ const SpotBranch = () => {
       width: "160px",
       align: "left",
       render: (text, record) => {
-        console.log(text, "responseresponseresponse");
-        return <span className='instrument-column'>{text}</span>;
+        console.log(text, record, "responseresponseresponse");
+        return (
+          <span className='instrument-column'>
+            {record.secondaryInstrumentID === 0
+              ? text
+              : `${text}${record.secondaryInstrumentName}`}
+          </span>
+        );
       },
     },
     {
