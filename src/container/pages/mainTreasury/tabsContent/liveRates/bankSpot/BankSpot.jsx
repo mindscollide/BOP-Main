@@ -5,7 +5,6 @@ import BidAmountBox from "../../../../../../components/common/bidAmountBox/BidAm
 import { formatDateTimeToUTCTime } from "../../../../../../components/utils/timeFunction";
 import { getBankSpotData, loaderInitialize } from "./slicer/bankSpotSlicer";
 import SectionLoader from "../../../../../../components/common/sectionLoader/SectionLoader";
-import { GetFXInstrumentsAPI } from "@/components/features/SpotBranch/WatchlistAction";
 
 const BankSpot = () => {
   const bankSportLoader = useSelector((state) => state.bankSpotReducer.Loader);
@@ -114,20 +113,20 @@ const BankSpot = () => {
   }, [TresuaryBankSpotData]);
 
   return (
-    <div className='card-box'>
+    <div className=''>
       <div className='box-header bg-primary-orange px-3'>
         <div className='text-start color-white fw-bold fs-6'>Bank Spot</div>
       </div>
 
-      <div className=' position-relative mb-2 px-2'>
+      <div className='  mb-2 px-2'>
         <GlobalTable
           columns={columns}
           dataSource={bankSpotData}
           prefixCls={"BankSpot_Table"}
           pagination={false}
-          scroll={{ x: "max-content", y: 250 }}
+          scroll={{ x: "max-content", y: 500 }}
         />
-        {bankSportLoader ? <SectionLoader /> : null}
+        {/* {bankSportLoader ? <SectionLoader /> : null} */}
       </div>
     </div>
   );

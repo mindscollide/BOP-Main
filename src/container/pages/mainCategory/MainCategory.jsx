@@ -7,7 +7,6 @@ import { useSelector } from "react-redux";
 import { getAllCategoriesAction } from "@/components/utils/globalApis";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { GetAllCounterPartyDataAPI } from "@/components/features/SpotBranch/WatchlistAction";
 import { setActiveTab } from "../mainCorporate/rfqModal/RFQSlicer";
 import Forwards from "../mainTreasury/tabsContent/forwards/Forwards";
 import { setCategoryValue } from "@/store/dealerReducer/dealerSlicer";
@@ -31,24 +30,7 @@ const MainCategory = () => {
     dispatch(setActiveTab(tabTitle));
   };
 
-  // GetAllCounterPartyDataAPI
-  useEffect(() => {
-    if (getAllCategories !== null) {
-      const { categories } = getAllCategories;
-      if (categories.length > 0) {
-        let Data = {
-          CategoryID: categories[0].categoryID,
-        };
-        let obj = {
-          value: categories[0].categoryID,
-          label: categories[0].categoryName,
-        };
-        dispatch(setCategoryValue(obj));
-        dispatch(GetAllCounterPartyDataAPI({ Data, navigate }));
-        console.log(categories[0], "categoriescategories");
-      }
-    }
-  }, [getAllCategories]);
+
 
   const tabsData = [
     { title: "Spot", content: <SpotDealerAndTreasury /> },

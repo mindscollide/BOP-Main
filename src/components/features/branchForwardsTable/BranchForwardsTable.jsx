@@ -3,7 +3,6 @@ import GlobalTable from "../../common/table/GlobalTable";
 import { createColumns, generateData } from "../../utils/generateData";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { GetAllFowardsAndDiscountsRatesAPI } from "../SpotBranch/WatchlistAction";
 import { useSelector } from "react-redux";
 import CustomButton from "@/components/common/globalButton/button";
 import { Col, Row } from "react-bootstrap";

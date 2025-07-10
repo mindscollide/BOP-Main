@@ -9,12 +9,10 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { SaveTransactionRFQAPI } from "./RFQActions";
 import { useSelector } from "react-redux";
-import { GetFXInstrumentsAPI } from "@/components/features/SpotBranch/WatchlistAction";
-import { set } from "zod";
 import {
   SaveSpotTransactionAPI,
   SaveSpotTransactionRFQ,
-} from "../../mainTreasury/tabsContent/liveRates/blotter/BlotterActions";
+} from "@/components/features/blotter/BlotterActions";
 import {
   setIBuySellData,
   setRfqModalOpen,

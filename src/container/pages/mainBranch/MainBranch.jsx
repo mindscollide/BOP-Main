@@ -3,14 +3,11 @@ import GlobalTabs from "../../../components/common/tabs/Tabs";
 import { useSelector } from "react-redux";
 import { setActiveTab } from "../mainCorporate/rfqModal/RFQSlicer";
 import { useDispatch } from "react-redux";
-import BlotterHeader from "../mainTreasury/tabsContent/liveRates/blotter/blotterHeader/BlotterHeader";
-import TXNSummary from "../mainTreasury/tabsContent/liveRates/blotter/txnSummary/TXNSummary";
+import BlotterHeader from "@/components/features/blotter/blotterHeader/BlotterHeader";
+import TXNSummary from "@/components/features/blotter/txnSummary/TXNSummary";
 import { useNavigate } from "react-router-dom";
-import {
-  GetAllFowardsAndDiscountsRatesAPI,
-  GetDashboardDataAPI,
-} from "@/components/features/SpotBranch/WatchlistAction";
-import { BlotterDataAPI } from "../mainTreasury/tabsContent/liveRates/blotter/BlotterActions";
+import { GetDashboardDataAPI } from "@/components/features/SpotBranch/WatchlistAction";
+import { BlotterDataAPI } from "@/components/features/blotter/BlotterActions";
 
 // Conditionally import CustomButton based on the environment variables
 const shouldIncludeComponents =
