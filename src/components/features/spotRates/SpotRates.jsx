@@ -32,6 +32,7 @@ const SpotRates = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isMarketOn, setIsMarketOn] = useState(false);
+  console.log(isMarketOn, "isMarketOnisMarketOn");
   const getLastPublishRates = useSelector(
     (state) => state.dealerReducer.getLastPublishRates
   );
@@ -118,18 +119,23 @@ const SpotRates = () => {
           dateTime: currentValueDateTime,
         });
         setRefreshInterval(refreshInterval);
-        dispatch(currentRatePublishedAction(null));
+        // dispatch(currentRatePublishedAction(null));
       } catch (error) {
         console.log(error);
       }
     }
   }, [currentUpdatedRates]);
-
+  console.log(getLastPublishRates, "getLastPublishRatesgetLastPublishRates")
   useEffect(() => {
     if (marketStatus !== null) {
       try {
         console.log(marketStatus, "marketStatusmarketStatusmarketStatus");
         setIsMarketOn(marketStatus);
+        if (getLastPublishRates !== null) {
+        console.log(getLastPublishRates, "marketStatusmarketStatusmarketStatus");
+
+          setRefreshInterval(getLastPublishRates.refreshInterval);
+        }
       } catch (error) {
         console.log(error);
       }
