@@ -216,8 +216,6 @@ export const RejectTransactionRM = {
   RequestMethod: "ServiceManager.RejectTransaction",
 };
 
-
-
 export const AcceptTransactionCancellationRM = {
   RequestMethod: "ServiceManager.AcceptTransactionCancellationRequest",
 };
@@ -295,12 +293,16 @@ export const GetNonFEDiscountingTransactionDetailsRM = {
 };
 
 export const GetActiveCorporatesRM = {
-  RequestMethod: "ServiceManager.GetActiveCorporates"
-}
+  RequestMethod: "ServiceManager.GetActiveCorporates",
+};
 
 export const CancelPendingTransactionRM = {
-  RequestMethod : "ServiceManager.CancelPendingTransaction",
-}
+  RequestMethod: "ServiceManager.CancelPendingTransaction",
+};
 export const CalculateTenorSwapAndForwardRateRM = {
   RequestMethod: "ServiceManager.CalculateTenorSwapAndForwardRate",
-}
+};
+
+export const GetSpotRatesForCounterParty = {
+  RequestMethod: "ServiceManager.GetSpotRatesForCounterParty",
+};

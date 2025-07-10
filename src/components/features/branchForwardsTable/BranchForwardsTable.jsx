@@ -31,31 +31,41 @@ const BranchForwardsTable = () => {
   const GetAllFowardsAndDiscountsRatesAPIData = useSelector(
     (state) => state.WatchListReducer.GetAllFowardsAndDiscountsRatesData
   );
+  //Global State for Watchlist Card Data
+  const globalStateWatchlistCardData = useSelector(
+    (state) => state.WatchListReducer?.GettheDashboardData ?? null
+  );
 
+  // const getAllTenors = useSelector((state) => state.);
   useEffect(() => {
-    if (GetAllFowardsAndDiscountsRatesAPIData !== null) {
+    if (globalStateWatchlistCardData !== null) {
       try {
-        const { tenors, forwardRates, instruments } =
-          GetAllFowardsAndDiscountsRatesAPIData;
-        let getAllTenorsData = { tenors };
-        let getAllInstrument = { instruments };
-        const { rowData, columnsData } = buildForwardsTable(
-          2,
-          forwardRates,
-          getAllTenorsData,
-          getAllInstrument,
-          IndexCell
+        const { forwardApplicableInstruments } = globalStateWatchlistCardData;
+        console.log(
+          forwardApplicableInstruments,
+          "forwardApplicableInstrumentsforwardApplicableInstruments"
         );
-        console.log(rowData, columnsData, "columnsDatacolumnsData");
-        if (rowData.length > 0) {
-          setDataSource(rowData);
-          setColumnsData(columnsData);
-        }
+        // const { tenors, forwardRates, instruments } =
+        //   GetAllFowardsAndDiscountsRatesAPIData;
+        // let getAllTenorsData = { tenors };
+        // let getAllInstrument = { instruments };
+        // const { rowData, columnsData } = buildForwardsTable(
+        //   2,
+        //   forwardRates,
+        //   getAllTenorsData,
+        //   getAllInstrument,
+        //   IndexCell
+        // );
+        // console.log(rowData, columnsData, "columnsDatacolumnsData");
+        // if (rowData.length > 0) {
+        //   setDataSource(rowData);
+        //   setColumnsData(columnsData);
+        // }
       } catch (error) {
         console.log(error, "Error while building discounting table");
       }
     }
-  }, [GetAllFowardsAndDiscountsRatesAPIData]);
+  }, [globalStateWatchlistCardData]);
 
   const handleBookaForwardCorporate = () => {
     setBookaForwardModalCall(true);
@@ -80,14 +90,15 @@ const BranchForwardsTable = () => {
           />
         </Col>
       </Row>
-      <Row className='my-2'>
+      <Row className="my-2">
         <Col
           lg={12}
           md={12}
           sm={12}
-          className='d-flex justify-content-center align-items-center'>
+          className="d-flex justify-content-center align-items-center"
+        >
           <CustomButton
-            value='Book a Forward'
+            value="Book a Forward"
             applyClass={"FowwardBranchBookaForwardBtn"}
             onClick={handleBookaForwardCorporate}
           />

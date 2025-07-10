@@ -44,11 +44,13 @@ const MainBranch = () => {
   useEffect(() => {
     try {
       dispatch(GetDashboardDataAPI({ navigate }));
-      // dispatch(GetAllFowardsAndDiscountsRatesAPI({ navigate }));
+      dispatch(GetSpotRatesForCounterPartyAPI(navigate));
+
       let Data = { sRow: 0, Length: 10 };
       dispatch(BlotterDataAPI({ navigate, Data }));
 
       // dispatch(GetDashboardDataAPI({navigate})); // Fetching the Dashboard Data
+      // dispatch(getAllTenorsAction({ navigate }));
     } catch (error) {
       console.log(error, "error");
     }
@@ -64,7 +66,7 @@ const MainBranch = () => {
         SpotBranch && activeTab === "Spot" ? (
           <Suspense fallback={<>Loading Spot...</>}>
             <SpotBranch />
-            <section className='bg-white mt-2 p-2'>
+            <section className="bg-white mt-2 p-2">
               <BlotterHeader />
             </section>
           </Suspense>
@@ -76,7 +78,7 @@ const MainBranch = () => {
         ForwardsForBranch && activeTab === "Forwards" ? (
           <Suspense fallback={<>Loading Forwards.... </>}>
             <ForwardsForBranch />
-            <section className='bg-white p-2'>
+            <section className="bg-white p-2">
               <BlotterHeader />
             </section>
           </Suspense>
@@ -88,7 +90,7 @@ const MainBranch = () => {
         BranchDiscountingTable && activeTab === "Discounting" ? (
           <Suspense fallback={<>Loading Discounting...</>}>
             <BranchDiscountingTable />
-            <section className='bg-white p-2'>
+            <section className="bg-white p-2">
               <TXNSummary />
             </section>
           </Suspense>
@@ -102,7 +104,7 @@ const MainBranch = () => {
         onTabChange={handleTabChange}
         activeKey={activeTab}
         defaultActiveKey={"0"}
-        tabClass='mb-4'
+        tabClass="mb-4"
       />
     </>
   );

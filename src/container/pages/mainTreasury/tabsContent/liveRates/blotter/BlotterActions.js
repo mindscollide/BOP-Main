@@ -28,8 +28,9 @@ import {
   SaveNonFeDiscountingTransactionRM,
   SaveSpotTransactionRFQRM,
   SaveSpotTransactionRM,
+  GetSpotRatesForCounterParty,
 } from "@/common/api_config";
-import { blotterApi } from "@/common/apiend_points";
+import { blotterApi, watchListApi } from "@/common/apiend_points";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
 import {
   setRfqModalOpen,
@@ -2331,7 +2332,8 @@ export const calculateTenorSwapAndForwardRateApi = createAsyncThunk(
         CalculateTenorSwapAndForwardRateRM.RequestMethod
       );
       const response = await postAPI(Data);
-      const { responseCode } = response.data;
+      const { responseCode } =
+        response.dataGetNonFEDiscountingTransactionDetailsRM;
 
       if (responseCode === 401) {
         navigate("/");
@@ -2372,6 +2374,83 @@ export const calculateTenorSwapAndForwardRateApi = createAsyncThunk(
       }
     } catch (error) {
       return rejectWithValue("Error calculating forward RFQ data");
+    }
+  }
+);
+
+// Define the GetSpotRatesForCounterPartyAPI async thunk
+export const GetSpotRatesForCounterPartyAPI = createAsyncThunk(
+  "watchlist/GetSpotRatesForCounterParty", // A unique action type string
+  async ({ navigate }, { dispatch, rejectWithValue }) => {
+    try {
+      const GetSpotRatesForCounterPartyM = createPostAPI(
+        watchListApi,
+        GetSpotRatesForCounterParty.RequestMethod
+      );
+
+      const response = await GetSpotRatesForCounterPartyM();
+      const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
+      }
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(GetSpotRatesForCounterPartyAPI({ navigate }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetSpotRatesForCounterParty_01".toLowerCase()
+              )
+          ) {
+            console.log("", response.data);
+            return {
+              response: response.data.responseResult,
+              message: "API executed successfully.",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetSpotRatesForCounterParty_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("No Record Found.");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetSpotRatesForCounterParty_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Role doesn’t matched.");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetSpotRatesForCounterParty_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Exception occured.");
+          } else {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          console.log("", response.data);
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      // Reject with error message
+      console.log("", error);
+      return rejectWithValue("Something went wrong");
     }
   }
 );
