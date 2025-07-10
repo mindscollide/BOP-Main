@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import BlotterHeader from "./blotterHeader/BlotterHeader";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { BlotterDataAPI } from "./BlotterActions";
 
 const Blotter = () => {
   const dispatch = useDispatch();

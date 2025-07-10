@@ -53,10 +53,7 @@ const RFQModal = () => {
   console.log(iBuySellData, "iBuySellDataiBuySellData");
   //Local states
   const [natureOfBusinessOptions, setNatureOfBusinessOptions] = useState([]);
-  console.log(
-    natureOfBusinessOptions,
-    "natureOfBusinessOptionsnatureOfBusinessOptions"
-  );
+
   const [currencyOptions, setCurrencyOptions] = useState([]);
   const [selectedNature, setSelectedNature] = useState({
     value: 0,
@@ -215,11 +212,6 @@ const RFQModal = () => {
   const handleChangeType = (selectType) => {
     console.log("selectType", selectType);
     setTypeOptionSelected(selectType);
-    console.log(natureOfBusinessOptions[0], "selectedNatureselectedNature");
-    // setSelectedNature({
-    //   value: natureOfBusinessOptions[0].value,
-    //   label: natureOfBusinessOptions[0].label,
-    // });
   };
   console.log(selectedNature, "selectedNatureselectedNature");
 
@@ -227,36 +219,10 @@ const RFQModal = () => {
     setCorporateValue(selectedOption);
     console.log("selectedOption", selectedOption);
   };
-  console.log(
-    typeOptionSelected.value,
-    selectedNature.value,
-    selectedCurrency.value,
-    lcNumberData,
-    amountData,
-    corporateValue.value,
 
-    "handleConfirmButtonhandleConfirmButton"
-  );
   // Handle Confirm Button
   const handleConfirmButton = () => {
-    console.log(
-      typeOptionSelected.value,
-      selectedNature.value,
-      selectedCurrency.value,
-      lcNumberData,
-      amountData,
-      corporateValue.value,
-      "handleConfirmButtonhandleConfirmButton"
-    );
     try {
-      console.log(
-        typeOptionSelected.value !== 0 &&
-          selectedNature.value !== 0 &&
-          selectedCurrency.value === 0 &&
-          lcNumberData !== "" &&
-          amountData !== "",
-        "handleConfirmButtonhandleConfirmButton"
-      );
       if (
         typeOptionSelected.value !== 0 &&
         selectedNature.value !== 0 &&
@@ -264,10 +230,7 @@ const RFQModal = () => {
         lcNumberData !== "" &&
         amountData !== ""
       ) {
-        console.log(selectedNature, "selectedNatureselectedNature");
-
         let corporate = JSON.parse(localStorage.getItem("corporate"));
-        console.log(corporate, "selectedNatureselectedNature");
 
         //Caliing Save RFQ Trasaction API
         let Data = {
@@ -281,13 +244,11 @@ const RFQModal = () => {
           NatureOfTransactionID: selectedNature.value,
           LCNumber: lcNumberData,
         };
-        console.log(Data, "selectedNatureselectedNature");
         if (iBuySellData !== null) {
           dispatch(SaveSpotTransactionAPI({ navigate, Data }));
         } else {
           dispatch(SaveSpotTransactionRFQ({ navigate, Data }));
         }
-        // dispatch(SaveSpotTransactionAPI({ navigate, Data }));
       }
     } catch (error) {
       console.log(error, "Error in handleConfirmButton");

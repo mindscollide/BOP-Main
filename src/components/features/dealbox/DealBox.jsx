@@ -14,14 +14,14 @@ import { motion } from "framer-motion";
 const DealBox = () => {
   const dispatch = useDispatch();
   const openViewDealModal = () => {
-    dispatch(setDealModalRequest(false));
     dispatch(setViewDealModal(true));
+    // setDealData(record);
   };
 
   useEffect(() => {
     setTimeout(() => {
       dispatch(setDealModalRequest(false));
-    }, 3000);
+    }, 4000);
   }, []);
 
   return (
@@ -49,7 +49,7 @@ const DealBox = () => {
         </Col>
 
         <Col sm={8} md={8} lg={8}>
-          27-06-2024/f9f2
+          {/* {27-06-2024/f9f2} */}
         </Col>
       </Row>
       <Row className='my-3'>

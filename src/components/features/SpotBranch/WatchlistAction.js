@@ -4,7 +4,7 @@ import {
   GetDashboardData,
   GetFXInstruments,
   GetMisDataByRange,
-  SaveUserDashboard,
+  SaveUserDashboardRM,
 } from "@/common/api_config";
 import { watchListApi } from "@/common/apiend_points";
 import { setCustomHeaders } from "@/common/utils";
@@ -328,7 +328,7 @@ export const GetDashboardDataAPI = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "WatchList_WatchListServiceManager_GetDashboardData_01".toLowerCase()
+                "WatchList_WatchListServiceManager_GetFXTradingSectionAndApplicableInstrument_01".toLowerCase()
               )
           ) {
             console.log("globalStateWatchlistCardData", response.data);
@@ -418,7 +418,7 @@ export const SaveUserDashboardAPI = createAsyncThunk(
     try {
       let SaveUserDashboard = createPostAPI(
         watchListApi,
-        SaveUserDashboard.RequestMethod
+        SaveUserDashboardRM.RequestMethod
       );
 
       const response = await SaveUserDashboard(Data);

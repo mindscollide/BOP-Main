@@ -11,8 +11,8 @@ export const LogoutApi = createAsyncThunk(
       const response = await logoutUser();
       const { responseCode } = response.data;
 
-      console.log(responseCode,response, "responseCoderesponseCode")
-     if (responseCode === 401) {
+      console.log(responseCode, response, "responseCoderesponseCode");
+      if (responseCode === 401) {
         navigate("/");
         return rejectWithValue("Unauthorized access, please login again");
       }
@@ -27,8 +27,8 @@ export const LogoutApi = createAsyncThunk(
               .toLowerCase()
               .includes("ERM_AuthService_AuthManager_LogOut_01".toLowerCase())
           ) {
-            navigate("/");
             localStorage.clear();
+            navigate("/");
           } else if (
             responseMessage
               .toLowerCase()
@@ -48,8 +48,6 @@ export const LogoutApi = createAsyncThunk(
       } else {
         return rejectWithValue("Something went wrong");
       }
-      console.log(response, "response");
-      return response;
     } catch (error) {
       return rejectWithValue(error);
     }

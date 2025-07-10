@@ -1,49 +1,21 @@
-const baseURL = "http://192.168.18.241";
+const baseURL = import.meta.env.VITE_BASE_URL;
 
-const authPort = ":13000/ERM_Auth";
-
-const uploadRatesPort = ":13010/UploadRate";
-
-const watchListPort = ":13011/WatchList";
-
-const BlotterPort = ":13001/Blotter";
-
-const ReportPort = ":13006/ExcelReport";
-
-const CalculatorPort = ":13003/Calculator";
-
-const SettingPort = ":13008/Setting";
-
-const ChatPort = ":13004/Chat";
-
-const SystemAdminPort = ":13009/SystemAdmin";
-
-const authApi = `${baseURL}${authPort}`;
-
-const uploadRatesApi = `${baseURL}${uploadRatesPort}`;
-
-const watchListApi = `${baseURL}${watchListPort}`;
-
-const BlotterApi = `${baseURL}${BlotterPort}`;
-
-const reportApi = `${baseURL}${ReportPort}`;
-
-const CalculatorApi = `${baseURL}${CalculatorPort}`;
-
-const settingApi = `${baseURL}${SettingPort}`;
-
-const chatApi = `${baseURL}${ChatPort}`;
-
-const SystemAdminApi = `${baseURL}${SystemAdminPort}`;
+const authApi = `${baseURL}${import.meta.env.VITE_AUTH_PORT}`;
+const uploadRatesApi = `${baseURL}${import.meta.env.VITE_UPLOAD_RATES_PORT}`;
+const watchListApi = `${baseURL}${import.meta.env.VITE_WATCHLIST_PORT}`;
+const blotterApi = `${baseURL}${import.meta.env.VITE_BLOTTER_PORT}`;
+const reportApi = `${baseURL}${import.meta.env.VITE_REPORT_PORT}`;
+const calculatorApi = `${baseURL}${import.meta.env.VITE_CALCULATOR_PORT}`;
+const settingApi = `${baseURL}${import.meta.env.VITE_SETTING_PORT}`;
+const chatApi = `${baseURL}${import.meta.env.VITE_CHAT_PORT}`;
 
 export {
   authApi,
   uploadRatesApi,
   watchListApi,
-  BlotterApi,
+  blotterApi,
   reportApi,
-  CalculatorApi,
+  calculatorApi,
   settingApi,
   chatApi,
-  SystemAdminApi,
 };

@@ -24,6 +24,7 @@ import {
   setIBuySellData,
   setRfqModalOpen,
 } from "@/store/modalSlice/modalSlicer";
+import ViewCurrentDeals from "@/container/pages/mainTreasury/tabsContent/liveRates/blotter/viewCurrentDeals/ViewCurrentDeals";
 
 const GlobalNavbar = () => {
   const getAllCategoriesData = useSelector(
@@ -62,12 +63,15 @@ const GlobalNavbar = () => {
     setOpenRfqModalDiscountingCorporateComponent,
   ] = useState(false);
   const [allCategories, setAllCategories] = useState([]);
+  const [outStandingData, setOutStandingData] = useState([]);
+
   const navigate = useNavigate();
   const location = useLocation();
   const handleCalculatorClick = () => {
     window.open("/BOP/calculator", "_blank");
   };
   console.log(allCategories, "allCategoriesallCategories");
+  const [viewCurrentDeals, setViewCurrentDeals] = useState(false);
   // Conditionally import CustomButton based on the environment variables
   const shouldIncludeBranch =
     import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
@@ -79,6 +83,10 @@ const GlobalNavbar = () => {
     import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
 
   console.log(shouldIncludeCorporate, "shouldIncludeDealer");
+
+  const getBlotterOutstandingData = useSelector(
+    (state) => state.BlotterSlicer.getBlotterOutstandingData
+  );
   const handleChangeCategory = (event) => {
     console.log(event);
     let Data = { CategoryID: event.value };
@@ -124,6 +132,17 @@ const GlobalNavbar = () => {
       } catch (error) {}
     }
   }, [getAllCategoriesData]);
+
+  useEffect(() => {
+    try {
+      if (getBlotterOutstandingData && getBlotterOutstandingData !== null) {
+        setOutStandingData(getBlotterOutstandingData.outstandingDeals);
+      }
+    } catch (error) {
+      console.log(error, "error");
+    }
+  }, [getBlotterOutstandingData]);
+
   useEffect(() => {
     if (isCategoryAdded !== null) {
       try {
@@ -232,6 +251,26 @@ const GlobalNavbar = () => {
             <SiteLogoComponent />
             <div className='ms-auto'>
               <div className='d-flex align-items-center gap-2'>
+                {shouldIncludeTreasury &&
+                location.pathname === "/BOP/treasury" &&
+                outStandingData.length !== 0 ? (
+                  <>
+                    <section className='position-relative'>
+                      <IconElement
+                        iconClass={
+                          "icon-clock fs-4 color-red px-2 cursor-pointer"
+                        }
+                        onClick={() => setViewCurrentDeals(!viewCurrentDeals)}
+                      />
+                      {viewCurrentDeals && (
+                        <ViewCurrentDeals
+                          setOutStandingData={setOutStandingData}
+                          outStandingData={outStandingData}
+                        />
+                      )}
+                    </section>
+                  </>
+                ) : null}
                 {location.pathname !== "/calculator" ? (
                   <>
                     {(shouldIncludeCorporate || shouldIncludeBranch) && (

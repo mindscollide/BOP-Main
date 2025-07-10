@@ -8,7 +8,10 @@ import { useSelector } from "react-redux";
 import CustomButton from "@/components/common/globalButton/button";
 import { Col, Row } from "react-bootstrap";
 import CorporateBookaForwardModal from "./CorporateBookaForwardModal/CorporateBookaForwardModal";
-import { buildDiscountingTable, buildForwardsTable } from "@/components/utils/generateColumnsData";
+import {
+  buildDiscountingTable,
+  buildForwardsTable,
+} from "@/components/utils/generateColumnsData";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 
 const BranchForwardsTable = () => {
@@ -29,21 +32,10 @@ const BranchForwardsTable = () => {
     (state) => state.WatchListReducer.GetAllFowardsAndDiscountsRatesData
   );
 
-  //Excecuting forward and Discounting Api
-  useEffect(() => {
-    try {
-      dispatch(GetAllFowardsAndDiscountsRatesAPI({ navigate }));
-    } catch (error) {
-      console.log(error, "error");
-    }
-  }, []);
-
-
-
   useEffect(() => {
     if (GetAllFowardsAndDiscountsRatesAPIData !== null) {
       try {
-        const { tenors, forwardRates,  instruments } =
+        const { tenors, forwardRates, instruments } =
           GetAllFowardsAndDiscountsRatesAPIData;
         let getAllTenorsData = { tenors };
         let getAllInstrument = { instruments };
@@ -52,9 +44,9 @@ const BranchForwardsTable = () => {
           forwardRates,
           getAllTenorsData,
           getAllInstrument,
-          IndexCell,
+          IndexCell
         );
-        console.log(rowData,columnsData, "columnsDatacolumnsData" )
+        console.log(rowData, columnsData, "columnsDatacolumnsData");
         if (rowData.length > 0) {
           setDataSource(rowData);
           setColumnsData(columnsData);
@@ -64,8 +56,6 @@ const BranchForwardsTable = () => {
       }
     }
   }, [GetAllFowardsAndDiscountsRatesAPIData]);
-
-
 
   const handleBookaForwardCorporate = () => {
     setBookaForwardModalCall(true);

@@ -6,12 +6,10 @@ import BranchRateCardsOfWatchList from "../../common/branchWatchlistDroppableCar
 import BidAmountBox from "../../common/bidAmountBox/BidAmountBox";
 import GlobalTable from "../../common/table/GlobalTable";
 import SellAndBuyModal from "./SellAndBuyModal/SellAndBuyModal";
-import ChatBox from "../chatBox/ChatBox.jsx";
-import { GetDashboardDataAPI, SaveUserDashboardAPI } from "./WatchlistAction";
+import {  SaveUserDashboardAPI } from "./WatchlistAction";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import Blotter from "@/container/pages/mainTreasury/tabsContent/liveRates/blotter/Blotter";
 
 const SpotBranch = () => {
   const dispatch = useDispatch();
@@ -26,21 +24,11 @@ const SpotBranch = () => {
   const [watchlistCardData, setWatchlistCardData] = useState([]);
   const [watchlistTableData, setWatchlistTableData] = useState([]);
 
-  console.log(watchlistCardData, "watchlistTableDatawatchlistTableData");
+  console.log(watchlistTableData, "watchlistTableDatawatchlistTableData");
   //Global State for Watchlist Card Data
   const globalStateWatchlistCardData = useSelector(
     (state) => state.WatchListReducer?.GettheDashboardData ?? null
   );
-
-  //WatchList table Data Api Call
-  useEffect(() => {
-    try {
-      dispatch(GetDashboardDataAPI({ navigate }));
-      // dispatch(GetDashboardDataAPI({navigate})); // Fetching the Dashboard Data
-    } catch (error) {
-      console.log(error, "error");
-    }
-  }, []);
 
   // Extracting out the Cards Wathlist data in the state
   useEffect(() => {
@@ -49,49 +37,47 @@ const SpotBranch = () => {
         globalStateWatchlistCardData &&
         globalStateWatchlistCardData !== null
       ) {
-        console.log(globalStateWatchlistCardData.watchLists, "watchLists");
-        console.log(
-          typeof globalStateWatchlistCardData.watchLists,
-          "watchLists"
-        );
-        setWatchlistCardData(globalStateWatchlistCardData.sections);
-        setWatchlistTableData(globalStateWatchlistCardData.watchLists);
+        const { spotApplicableInstruments } = globalStateWatchlistCardData;
+        if (spotApplicableInstruments.length > 0) {
+          const updateData = spotApplicableInstruments.map((list, index) => {
+            return {
+              ...list,
+              bid: 200,
+              offer: 215,
+            };
+          });
+          setWatchlistTableData(updateData);
+          const filterSections = spotApplicableInstruments.filter(
+            (list, index) => list.sectionID !== "0"
+          );
+          console.log(filterSections, "watchLists");
+          if (filterSections.length > 0) {
+            setWatchlistData((prevData) => ({
+              ...prevData,
+              watchlist1: {
+                ...prevData.watchlist1,
+                currecncyLabel: `${filterSections[0].instrumentName}${filterSections[0].secondaryInstrumentName}`,
+                buyValue: filterSections[0].bid,
+                sellValue: filterSections[0].offer,
+                instrumentID: filterSections[0].instrumentID,
+              },
+            }));
+          }
+        }
       }
     } catch (error) {
       console.log(error, "error");
     }
   }, [globalStateWatchlistCardData]);
 
-  useEffect(() => {
-    if (watchlistCardData.length > 0) {
-      setWatchlistData((prevData) => {
-        const updatedData = { ...prevData };
-
-        watchlistCardData.forEach((item, index) => {
-          if (index < 6) {
-            updatedData[`watchlist${index + 1}`] = {
-              currecncyLabel: item.instrumentName || "Unknown", // Handle null
-              buyValue: item.buy ?? "--", // Handle null or undefined
-              sellValue: item.sell ?? "--",
-            };
-          }
-        });
-
-        console.log(updatedData, "updated watchlistData");
-
-        return updatedData;
-      });
-    }
-  }, [watchlistCardData]);
-
   //Watch<List>Data State
   //By Default for having Six Tiles
   const [watchlistData, setWatchlistData] = useState({
     watchlist1: {
-      currecncyLabel: "USDPKR",
-      instrumentID: 21,
-      buyValue: "200",
-      sellValue: "240",
+      currecncyLabel: "",
+      instrumentID: 0,
+      buyValue: "",
+      sellValue: "",
     },
     watchlist2: { currecncyLabel: "", buyValue: "", sellValue: "" },
     watchlist3: { currecncyLabel: "", buyValue: "", sellValue: "" },
@@ -99,6 +85,8 @@ const SpotBranch = () => {
     watchlist5: { currecncyLabel: "", buyValue: "", sellValue: "" },
     watchlist6: { currecncyLabel: "", buyValue: "", sellValue: "" },
   });
+
+  console.log(watchlistData, "watchlistDatawatchlistData");
 
   //Column of my watch<list> Table
   const columns = [
@@ -158,28 +146,16 @@ const SpotBranch = () => {
     // Handle dropping into BranchRateCardsOfWatchList
     if (destination.droppableId.startsWith("watchlist")) {
       const item = watchlistTableData[source.index]; // Get dragged item
-      const { instrumentName, bid, offer, key, instrumentID } = item; // Extract values
-      console.log(item, "resultresultresultresult");
+      const { instrumentID, secondaryInstrumentID } = item; // Extract values
       //   Calling the save Droppale Item API
       let Data = {
-        DashboardSections: [
-          {
-            SectionID: Number(source.index),
-            InstrumentID: Number(instrumentID),
-            Sell: offer,
-            Buy: bid,
-          },
-        ],
+        SectionID: String(source.index),
+        InstrumentID: Number(instrumentID),
+        SecondaryInstrumentID: Number(secondaryInstrumentID),
       };
+      console.log(Data, "resultresultresultresult");
+
       dispatch(SaveUserDashboardAPI({ navigate, Data }));
-      setWatchlistData((prevData) => ({
-        ...prevData,
-        [destination.droppableId]: {
-          currecncyLabel: instrumentName,
-          buyValue: bid,
-          sellValue: offer,
-        },
-      }));
     }
   };
 
@@ -262,7 +238,7 @@ const SpotBranch = () => {
             </Row>
             <Row>
               <Col lg={12} md={12} sm={12}>
-                {Array.isArray(watchlistTableData).length > 0 ? (
+                {watchlistTableData.length > 0 ? (
                   <Droppable droppableId='droppable' direction='vertical'>
                     {(provided) => (
                       <div ref={provided.innerRef} {...provided.droppableProps}>

@@ -27,9 +27,9 @@ const CalculatorSlice = createSlice({
       // Fulfilled state (when the API call succeeds GetAllCalculatorData)
       .addCase(GetAllCalculatorData.fulfilled, (state, { payload }) => {
         state.Loader = false;
-        state.calculatorData = payload.response;
+        state.calculatorData = payload?.response;
         state.error = null;
-        state.responseMessage = payload.message;
+        state.responseMessage = payload?.message;
       })
       // Rejected state (when the API call fails GetAllCalculatorData)
       .addCase(GetAllCalculatorData.rejected, (state, action) => {
@@ -47,9 +47,9 @@ const CalculatorSlice = createSlice({
       // Fulfilled state (when the API call succeeds CalculateFxDiscountingAPI)
       .addCase(CalculateFxDiscountingAPI.fulfilled, (state, { payload }) => {
         state.Loader = false;
-        state.calculateFXDiscountingData = payload.response;
+        state.calculateFXDiscountingData = payload?.response;
         state.error = null;
-        state.responseMessage = payload.message;
+        state.responseMessage = payload?.message;
       })
       // Rejected state (when the API call fails CalculateFxDiscountingAPI)
       .addCase(CalculateFxDiscountingAPI.rejected, (state, action) => {
@@ -67,9 +67,9 @@ const CalculatorSlice = createSlice({
       // Fulfilled state (when the API call succeeds CalculateNonFxDiscountingAPI)
       .addCase(CalculateNonFxDiscountingAPI.fulfilled, (state, { payload }) => {
         state.Loader = false;
-        state.calculateNonFXDiscountingData = payload.response;
+        state.calculateNonFXDiscountingData = payload?.response;
         state.error = null;
-        state.responseMessage = payload.message;
+        state.responseMessage = payload?.message;
       })
       // Rejected state (when the API call fails CalculateNonFxDiscountingAPI)
       .addCase(CalculateNonFxDiscountingAPI.rejected, (state, action) => {
@@ -87,9 +87,9 @@ const CalculatorSlice = createSlice({
       // Fulfilled state (when the API call succeeds CalculateForwardsAPI)
       .addCase(CalculateForwardsAPI.fulfilled, (state, { payload }) => {
         state.Loader = false;
-        state.calculateForwardsData = payload.response;
+        state.calculateForwardsData = payload?.response;
         state.error = null;
-        state.responseMessage = payload.message;
+        state.responseMessage = payload?.message;
       })
       // Rejected state (when the API call fails CalculateForwardsAPI)
       .addCase(CalculateForwardsAPI.rejected, (state, action) => {

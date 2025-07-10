@@ -1,10 +1,16 @@
-import React, { Suspense, lazy } from "react";
+import React, { Suspense, lazy, useEffect } from "react";
 import GlobalTabs from "../../../components/common/tabs/Tabs";
 import { useSelector } from "react-redux";
 import { setActiveTab } from "../mainCorporate/rfqModal/RFQSlicer";
 import { useDispatch } from "react-redux";
 import BlotterHeader from "../mainTreasury/tabsContent/liveRates/blotter/blotterHeader/BlotterHeader";
 import TXNSummary from "../mainTreasury/tabsContent/liveRates/blotter/txnSummary/TXNSummary";
+import { useNavigate } from "react-router-dom";
+import {
+  GetAllFowardsAndDiscountsRatesAPI,
+  GetDashboardDataAPI,
+} from "@/components/features/SpotBranch/WatchlistAction";
+import { BlotterDataAPI } from "../mainTreasury/tabsContent/liveRates/blotter/BlotterActions";
 
 // Conditionally import CustomButton based on the environment variables
 const shouldIncludeComponents =
@@ -14,10 +20,10 @@ const SpotBranch = shouldIncludeComponents
   ? lazy(() => import("../../../components/features/SpotBranch/SpotBranch"))
   : null;
 
-const ForwardTableBranchComponent = shouldIncludeComponents
+const ForwardsForBranch = shouldIncludeComponents
   ? lazy(() =>
       import(
-        "../../../components/features/ForwardTableBranchComponent/ForwardTableBranchComponent"
+        "../../../components/features/branchForwardsTable/BranchForwardsTable"
       )
     )
   : null;
@@ -32,7 +38,21 @@ const BranchDiscountingTable = shouldIncludeComponents
 
 const MainBranch = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const activeTab = useSelector((state) => state.RFQReducer.activeTab);
+  //WatchList table Data Api Call
+  useEffect(() => {
+    try {
+      dispatch(GetDashboardDataAPI({ navigate }));
+      // dispatch(GetAllFowardsAndDiscountsRatesAPI({ navigate }));
+      let Data = { sRow: 0, Length: 10 };
+      dispatch(BlotterDataAPI({ navigate, Data }));
+
+      // dispatch(GetDashboardDataAPI({navigate})); // Fetching the Dashboard Data
+    } catch (error) {
+      console.log(error, "error");
+    }
+  }, []);
 
   const handleTabChange = (tabTitle) => {
     dispatch(setActiveTab(tabTitle));
@@ -53,9 +73,9 @@ const MainBranch = () => {
     {
       title: "Forwards",
       content:
-        ForwardTableBranchComponent && activeTab === "Forwards" ? (
+        ForwardsForBranch && activeTab === "Forwards" ? (
           <Suspense fallback={<>Loading Forwards.... </>}>
-            <ForwardTableBranchComponent />
+            <ForwardsForBranch />
             <section className='bg-white p-2'>
               <BlotterHeader />
             </section>

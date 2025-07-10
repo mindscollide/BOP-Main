@@ -8,7 +8,11 @@ const ReportSlicer = createSlice({
     error: null,
     responseMessage: "",
   },
-  reducers: {},
+  reducers: {
+    clearReportResponseMessage: (state) => {
+      state.responseMessage = "";
+    },
+  },
   extraReducers: (builder) => {
     builder
       // Pending state
@@ -32,4 +36,5 @@ const ReportSlicer = createSlice({
   },
 });
 
+export const { clearReportResponseMessage } = ReportSlicer.actions;
 export default ReportSlicer.reducer;

@@ -51,7 +51,7 @@ const GlobalTable = shouldIncludeComponents
  *   setNewTenorRecord={setNewTenorRecord}
  * />
  */
-const ForwardsForTreasuryAndBranchTable = ({
+const TenoreWiseCurrentAndLastRates = ({
   newTenorRecord,
   setNewTenorRecord,
 }) => {
@@ -361,4 +361,4 @@ const ForwardsForTreasuryAndBranchTable = ({
   );
 };
 
-export default ForwardsForTreasuryAndBranchTable;
+export default TenoreWiseCurrentAndLastRates;

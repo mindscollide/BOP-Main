@@ -4,6 +4,10 @@ import NotificationSnackbar from "../common/NotificationSnackbar";
 import { useDispatch } from "react-redux";
 import { clearDealerResponseMessage } from "@/store/dealerReducer/dealerSlicer";
 import { clearAuthResponseMessage } from "@/store/authSlicer/authSlicer";
+import { clearBlotterResponseMessage } from "@/store/BlotterSlicer/BlotterSlicer";
+import { clearCatgeoryResponseMessage } from "@/store/categoryReducer/categoryReducer";
+import { clearReportResponseMessage } from "@/store/ReportSlicer/ReportSlicer";
+import { clearSettingResponseMessage } from "@/store/settingSlicer/SettingSlicer";
 
 export const ResponseMessage = () => {
   const disaptch = useDispatch();
@@ -46,9 +50,9 @@ export const ResponseMessage = () => {
     if (WatchListResponseMessage !== "") {
       setMessage(WatchListResponseMessage);
 
-      disaptch(clearDealerResponseMessage());
       setTimeout(() => {
         setMessage("");
+        // disaptch(clearDealerResponseMessage());
       }, 3000);
     }
   }, [WatchListResponseMessage]);
@@ -56,9 +60,9 @@ export const ResponseMessage = () => {
     if (RFQResponseMessage !== "") {
       setMessage(RFQResponseMessage);
 
-      disaptch(clearDealerResponseMessage());
       setTimeout(() => {
         setMessage("");
+        // disaptch(clearDealerResponseMessage());
       }, 3000);
     }
   }, [RFQResponseMessage]);
@@ -66,9 +70,9 @@ export const ResponseMessage = () => {
     if (dealerResponseMessage !== "") {
       setMessage(dealerResponseMessage);
 
-      disaptch(clearDealerResponseMessage());
       setTimeout(() => {
         setMessage("");
+        disaptch(clearDealerResponseMessage());
       }, 3000);
     }
   }, [dealerResponseMessage]);
@@ -76,9 +80,9 @@ export const ResponseMessage = () => {
     if (catgeoryResponseMessage !== "") {
       setMessage(catgeoryResponseMessage);
 
-      disaptch(clearDealerResponseMessage());
       setTimeout(() => {
         setMessage("");
+        disaptch(clearCatgeoryResponseMessage());
       }, 3000);
     }
   }, [catgeoryResponseMessage]);
@@ -86,9 +90,9 @@ export const ResponseMessage = () => {
     if (ReportResponseMessage !== "") {
       setMessage(ReportResponseMessage);
 
-      disaptch(clearDealerResponseMessage());
       setTimeout(() => {
         setMessage("");
+        disaptch(clearReportResponseMessage());
       }, 3000);
     }
   }, [ReportResponseMessage]);
@@ -96,9 +100,9 @@ export const ResponseMessage = () => {
     if (CalculatorResponseMessage !== "") {
       setMessage(CalculatorResponseMessage);
 
-      disaptch(clearDealerResponseMessage());
       setTimeout(() => {
         setMessage("");
+        // disaptch(clearDealerResponseMessage());
       }, 3000);
     }
   }, [CalculatorResponseMessage]);
@@ -106,9 +110,9 @@ export const ResponseMessage = () => {
     if (settingResponseMessage !== "") {
       setMessage(settingResponseMessage);
 
-      disaptch(clearDealerResponseMessage());
       setTimeout(() => {
         setMessage("");
+        disaptch(clearSettingResponseMessage());
       }, 3000);
     }
   }, [settingResponseMessage]);
@@ -116,9 +120,9 @@ export const ResponseMessage = () => {
     if (BlotterResponseMessage !== "") {
       setMessage(BlotterResponseMessage);
 
-      disaptch(clearDealerResponseMessage());
       setTimeout(() => {
         setMessage("");
+        disaptch(clearBlotterResponseMessage());
       }, 3000);
     }
   }, [BlotterResponseMessage]);
@@ -126,9 +130,9 @@ export const ResponseMessage = () => {
     if (chatResponseMessage !== "") {
       setMessage(chatResponseMessage);
 
-      disaptch(clearDealerResponseMessage());
       setTimeout(() => {
         setMessage("");
+        // disaptch(clearDealerResponseMessage());
       }, 3000);
     }
   }, [chatResponseMessage]);
@@ -137,12 +141,23 @@ export const ResponseMessage = () => {
     if (authResponseMessage) {
       setMessage(authResponseMessage);
 
-      disaptch(clearAuthResponseMessage());
       setTimeout(() => {
         setMessage("");
+        disaptch(clearAuthResponseMessage());
       }, 3000);
     }
   }, [authResponseMessage]);
+  // UploadRateResponseMessage
+  useEffect(() => {
+    if (UploadRateResponseMessage) {
+      setMessage(UploadRateResponseMessage);
+
+      setTimeout(() => {
+        setMessage("");
+        // disaptch(clearAuthResponseMessage());
+      }, 3000);
+    }
+  }, [UploadRateResponseMessage]);
   // return null
   return <NotificationSnackbar message={message} />;
 };

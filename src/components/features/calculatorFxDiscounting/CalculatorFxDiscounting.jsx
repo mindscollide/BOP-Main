@@ -56,16 +56,6 @@ const CalculatorFxDiscounting = () => {
     }
   }, [CurrencyData]);
 
-  // Effect to update date whenever inputValue changes
-  useEffect(() => {
-    const num = parseInt(inputValue, 10);
-    if (!isNaN(num)) {
-      const newDate = new Date();
-      newDate.setDate(newDate.getDate() + num);
-      setTagText(formatDate(newDate));
-    }
-  }, [inputValue]);
-
   //Handle onChange Currency
   const handleChangeCurrencyCalculator = (selected) => {
     setSelectedOption(selected);
@@ -81,20 +71,28 @@ const CalculatorFxDiscounting = () => {
     }
   };
 
-  // Only allow numeric input
   const handleInputChangeTenor = (e) => {
     const value = e.target.value;
-
+  
     // Allow only digits and up to 4 characters
     if (/^\d{0,4}$/.test(value)) {
       const numericValue = parseInt(value, 10);
-
-      // Allow empty input (for typing) or numbers from 1 to 1000
+  
+      // Allow empty input or numbers from 1 to 1000
       if (value === "" || (numericValue >= 1 && numericValue <= 1000)) {
         setInputValue(value);
+  
+        if (value !== "") {
+          const newDate = new Date();
+          newDate.setDate(newDate.getDate() + numericValue); // Use numericValue here
+          setTagText(formatDate(newDate));
+        } else {
+          setTagText(""); // Optional: clear tag text if input is empty
+        }
       }
     }
   };
+  
 
   // Only allow numeric input
   const handleInputChangelibor = (e) => {
@@ -135,72 +133,72 @@ const CalculatorFxDiscounting = () => {
 
   return (
     <>
-      <div className="card-box h-auto">
-        <div className="box-header bg-primary-orange px-2 color-white">
-          <div className="d-flex align-items-center">
-            <div className="fs-6 fw-bold">FX Discounting</div>
-            <div className="clc-btn-wrapper ms-auto">
+      <div className='card-box h-auto'>
+        <div className='box-header bg-primary-orange px-2 color-white'>
+          <div className='d-flex align-items-center'>
+            <div className='fs-6 fw-bold'>FX Discounting</div>
+            <div className='clc-btn-wrapper ms-auto'>
               <CustomButton
-                value="Calculate Rate"
-                applyClass="calculatorButton"
+                value='Calculate Rate'
+                applyClass='calculatorButton'
                 onClick={handleCalculateFxDiscountingRate}
               />
             </div>
           </div>
         </div>
-        <div className="box-content-wrapper h-auto">
-          <div className="d-flex align-items-center">
-            <div className="flex-fill px-2 p-2">
-              <label className="mt-1">Currency</label>
+        <div className='box-content-wrapper h-auto'>
+          <div className='d-flex align-items-center'>
+            <div className='flex-fill px-2 p-2'>
+              <label className='mt-1'>Currency</label>
               <SelectDropdown
                 options={currencyOptions}
                 value={selectedOption}
                 onChange={handleChangeCurrencyCalculator}
-                placeholder="Select a currency"
+                placeholder='Select a currency'
               />
 
-              <label className="mt-1">Ready</label>
+              <label className='mt-1'>Ready</label>
               <InputFIeld
-                type="number"
-                name="price"
-                defaultValue="285.2635"
+                type='number'
+                name='price'
+                defaultValue='285.2635'
                 value={price}
                 applyClass={"CalculatorTextfield"}
                 onChange={handleReadyValue}
               />
 
-              <label className="mt-1">Tenor</label>
+              <label className='mt-1'>Tenor</label>
               <InputFieldWithTag
-                type="text"
+                type='text'
                 value={inputValue}
                 onChange={handleInputChangeTenor}
-                placeholder="Enter value"
-                applyClass="inputField-calculator"
-                applyClassTag="tag-for-calculator"
-                width="100%" // width of the entire container
-                inputWidth="60%" // width of the input field
+                placeholder='Enter value'
+                applyClass='inputField-calculator'
+                applyClassTag='tag-for-calculator'
+                width='100%' // width of the entire container
+                inputWidth='60%' // width of the input field
                 tagText={tagText}
-                tagWidth="40%" // width of the span
-                tagClassName="yourTagClass"
+                tagWidth='40%' // width of the span
+                tagClassName='yourTagClass'
               />
 
-              <label className="mt-1">Libor</label>
+              <label className='mt-1'>Libor</label>
               <InputFieldWithTag
-                type="text"
+                type='text'
                 value={liborValue}
                 onChange={handleInputChangelibor}
-                placeholder="Enter value"
-                applyClass="inputField-calculator"
-                applyClassTag="tag-for-calculator"
-                width="100%" // width of the entire container
-                inputWidth="90%" // width of the input field
-                tagText="%"
-                tagWidth="10%" // width of the span
-                tagClassName="yourTagClass"
+                placeholder='Enter value'
+                applyClass='inputField-calculator'
+                applyClassTag='tag-for-calculator'
+                width='100%' // width of the entire container
+                inputWidth='90%' // width of the input field
+                tagText='%'
+                tagWidth='10%' // width of the span
+                tagClassName='yourTagClass'
               />
             </div>
-            <div className="px-2 text-center">
-              <div className="clc-amount fs-4 fw-bold px-4 py-3 bg-black color-white">
+            <div className='px-2 text-center'>
+              <div className='clc-amount fs-4 fw-bold px-4 py-3 bg-black color-white'>
                 {CalculatedFxDiscounting}
               </div>
             </div>
