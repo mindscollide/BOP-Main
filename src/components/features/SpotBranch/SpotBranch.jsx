@@ -10,7 +10,6 @@ import { SaveUserDashboardAPI } from "./WatchlistAction";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { GetSpotRatesForCounterPartyAPI } from "@/container/pages/mainTreasury/tabsContent/liveRates/blotter/BlotterActions";
 
 const SpotBranch = () => {
   const dispatch = useDispatch();

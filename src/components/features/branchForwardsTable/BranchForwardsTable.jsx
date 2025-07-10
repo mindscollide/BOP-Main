@@ -3,6 +3,7 @@ import GlobalTable from "../../common/table/GlobalTable";
 import { createColumns, generateData } from "../../utils/generateData";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+// import { GetAllFowardsAndDiscountsRatesAPI } from "../SpotBranch/WatchlistAction";
 import { useSelector } from "react-redux";
 import CustomButton from "@/components/common/globalButton/button";
 import { Col, Row } from "react-bootstrap";
@@ -26,16 +27,28 @@ const BranchForwardsTable = () => {
   //Book a Forward Modal State
   const [bookaForwardModalCall, setBookaForwardModalCall] = useState(false);
 
-  //Global State for Extracting Forward and discount rate data
-  const GetAllFowardsAndDiscountsRatesAPIData = useSelector(
-    (state) => state.WatchListReducer.GetAllFowardsAndDiscountsRatesData
-  );
+  // //Global State for Extracting Forward and discount rate data
+  // const GetAllFowardsAndDiscountsRatesAPIData = useSelector(
+  //   (state) => state.WatchListReducer.GetAllFowardsAndDiscountsRatesData
+  // );
   //Global State for Watchlist Card Data
   const globalStateWatchlistCardData = useSelector(
     (state) => state.WatchListReducer?.GettheDashboardData ?? null
   );
+  // useEffect(() => {
+  //   dispatch(getAllTenorsAction(navigate));
+  // }, []);
 
-  // const getAllTenors = useSelector((state) => state.);
+  const getAllTenorsData = useSelector(
+    (state) => state.dealerReducer.getAllTenors
+  );
+
+  const GetForwardRatesForCounterPartyData = useSelector((state) => state);
+
+  console.log(
+    GetForwardRatesForCounterPartyData,
+    "GetForwardRatesForCounterPartyDataGetForwardRatesForCounterPartyData"
+  );
   useEffect(() => {
     if (globalStateWatchlistCardData !== null) {
       try {
@@ -44,6 +57,24 @@ const BranchForwardsTable = () => {
           forwardApplicableInstruments,
           "forwardApplicableInstrumentsforwardApplicableInstruments"
         );
+        //********************************************** */
+        // const { tenors, forwardRates, instruments } =
+        //   GetAllFowardsAndDiscountsRatesAPIData;
+        // let getAllTenorsData = { tenors };
+        // let getAllInstrument = { instruments };
+        const { rowData, columnsData } = buildForwardsTable(
+          2,
+          forwardRates,
+          getAllTenorsData.tenors,
+          forwardApplicableInstruments,
+          IndexCell
+        );
+        // console.log(rowData, columnsData, "columnsDatacolumnsData");
+        // if (rowData.length > 0) {
+        //   setDataSource(rowData);
+        //   setColumnsData(columnsData);
+        // }
+        //********************************************** */
         // const { tenors, forwardRates, instruments } =
         //   GetAllFowardsAndDiscountsRatesAPIData;
         // let getAllTenorsData = { tenors };

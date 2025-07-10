@@ -3,6 +3,7 @@ import {
   GetAllFowardsAndDiscountsRates,
   GetAllInstrumentForTreasuryRM,
   GetDashboardData,
+  GetForwardRatesForCounterParty,
   GetFXInstruments,
   GetMisDataByRange,
   SaveUserDashboardRM,
@@ -252,6 +253,83 @@ export const getAllTreasuryInstrumentsApi = createAsyncThunk(
               )
           ) {
             return rejectWithValue("Something went wrong");
+          } else {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          console.log("", response.data);
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        console.log("", response.data);
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      // Reject with error message
+      console.log("", error);
+      return rejectWithValue("Something went wrong");
+    }
+  }
+);
+
+// Define the GetForwardRatesForCounterParty async thunk
+export const GetForwardRatesForCounterPartyApi = createAsyncThunk(
+  "watchlist/GetForwardRatesForCounterParty", // A unique action type string
+  async ({ navigate }, { dispatch, rejectWithValue }) => {
+    try {
+      let GetForwardRatesForCounterPartyData = createPostAPI(
+        watchListApi,
+        GetForwardRatesForCounterParty.RequestMethod
+      );
+
+      const response = await GetForwardRatesForCounterPartyData();
+      const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
+      }
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(GetForwardRatesForCounterPartyApi({ navigate }));
+      } else if (response.data.responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetForwardRatesForCounterParty_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message: "",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetForwardRatesForCounterParty_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("No Record found");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetForwardRatesForCounterParty_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Role doesn’t matched");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetForwardRatesForCounterParty_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Exception occured");
           } else {
             console.log("", response.data);
             return rejectWithValue("Something went wrong");

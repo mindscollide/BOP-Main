@@ -1,3 +1,18 @@
+// import {
+//   AcceptTransactionAPI,
+//   AssignTransactionAPI,
+//   BlotterDataAPI,
+//   CancelPendingTransactionApi,
+//   GetBlotterOutstandingDealsDataAPI,
+//   RFQTransactionQuotation,
+//   RejectTransactionAPI,
+//   SaveFEDiscountingTransactionAPI,
+//   SaveForwardTransactionAPI,
+//   SaveNonFEDiscountingTransactionAPI,
+//   SaveSpotTransactionAPI,
+//   calculateTenorSwapAndForwardRateApi,
+//   GetSpotRatesForCounterPartyAPI,
+// } from "@/container/pages/mainTreasury/tabsContent/liveRates/blotter/BlotterActions";
 import {
   AcceptTransactionAPI,
   AssignTransactionAPI,
@@ -12,7 +27,7 @@ import {
   SaveSpotTransactionAPI,
   calculateTenorSwapAndForwardRateApi,
   GetSpotRatesForCounterPartyAPI,
-} from "@/container/pages/mainTreasury/tabsContent/liveRates/blotter/BlotterActions";
+} from "@/components/features/blotter/BlotterActions";
 import { createSlice } from "@reduxjs/toolkit";
 
 const BlotterSlicer = createSlice({

@@ -6,8 +6,16 @@ import { useDispatch } from "react-redux";
 import BlotterHeader from "@/components/features/blotter/blotterHeader/BlotterHeader";
 import TXNSummary from "@/components/features/blotter/txnSummary/TXNSummary";
 import { useNavigate } from "react-router-dom";
-import { GetDashboardDataAPI } from "@/components/features/SpotBranch/WatchlistAction";
-import { BlotterDataAPI } from "@/components/features/blotter/BlotterActions";
+import {
+  GetDashboardDataAPI,
+  GetForwardRatesForCounterPartyApi,
+} from "@/components/features/SpotBranch/WatchlistAction";
+import {
+  BlotterDataAPI,
+  GetSpotRatesForCounterPartyAPI,
+} from "@/components/features/blotter/BlotterActions";
+import { getAllTenorsAction } from "../mainDealer/dealerActions";
+// import { getAllTenorsAction } from "@/container/pages/mainDealer/dealerActions";
 
 // Conditionally import CustomButton based on the environment variables
 const shouldIncludeComponents =
@@ -42,12 +50,13 @@ const MainBranch = () => {
     try {
       dispatch(GetDashboardDataAPI({ navigate }));
       dispatch(GetSpotRatesForCounterPartyAPI(navigate));
-
       let Data = { sRow: 0, Length: 10 };
       dispatch(BlotterDataAPI({ navigate, Data }));
 
       // dispatch(GetDashboardDataAPI({navigate})); // Fetching the Dashboard Data
       // dispatch(getAllTenorsAction({ navigate }));
+      dispatch(getAllTenorsAction({ navigate }));
+      dispatch(GetForwardRatesForCounterPartyApi({ navigate }));
     } catch (error) {
       console.log(error, "error");
     }
