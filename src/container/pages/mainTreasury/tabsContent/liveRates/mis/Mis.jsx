@@ -8,7 +8,6 @@ import CustomButton from "../../../../../../components/common/globalButton/butto
 import { getMisData, loaderInitializeMis } from "./slicer/misSlicer";
 import SectionLoader from "../../../../../../components/common/sectionLoader/SectionLoader";
 import { useNavigate } from "react-router-dom";
-import { GetMisDataByRangeAPI } from "@/components/features/SpotBranch/WatchlistAction";
 import { formatDateToUTC } from "@/utils/formatters";
 
 const MIS = () => {
@@ -35,7 +34,6 @@ const MIS = () => {
 
   useEffect(() => {
     let Data = { StartDate: "20240828070208", EndDate: "20240828070208" };
-    dispatch(GetMisDataByRangeAPI({ navigate, Data }));
   }, []);
 
   useEffect(() => {
@@ -174,7 +172,6 @@ const MIS = () => {
         EndDate: formatDateToUTC(endDate),
       };
       console.log(Data, "Data");
-      dispatch(GetMisDataByRangeAPI({ navigate, Data }));
     } else {
       alert("Please select both dates.");
     }

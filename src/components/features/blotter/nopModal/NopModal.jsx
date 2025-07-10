@@ -2,10 +2,10 @@ import React from "react";
 import { useState } from "react";
 import { Radio, Space } from "antd";
 import { Col, Row } from "react-bootstrap";
-import CustomButton from "../../../../../../../components/common/globalButton/button";
-import Modal from "../../../../../../../components/common/globalModal/Modal";
-import GlobalTable from "../../../../../../../components/common/table/GlobalTable";
-import DatePickerCom from "../../../../../../../components/common/datePicker/DatePicker";
+import CustomButton from "@/components/common/globalButton/button";
+import Modal from "@/components/common/globalModal/Modal";
+import GlobalTable from "@/components/common/table/GlobalTable";
+import DatePickerCom from "@/components/common/datePicker/DatePicker";
 import "./NopModal.css";
 
 const NopModal = ({ openNopModal, setOpenNopModal }) => {

@@ -8,7 +8,7 @@ import CustomButton from "@/components/common/globalButton/button";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { setViewDealModal } from "@/store/modalSlice/modalSlicer";
-import { RFQTransactionQuotation } from "@/container/pages/mainTreasury/tabsContent/liveRates/blotter/BlotterActions";
+import { RFQTransactionQuotation } from "@/components/features/blotter/BlotterActions";
 import { useNavigate } from "react-router-dom";
 
 const DealViewModal = ({ dealData }) => {

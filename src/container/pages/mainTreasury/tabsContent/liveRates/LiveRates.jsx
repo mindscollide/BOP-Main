@@ -8,7 +8,7 @@ const shouldIncludeComponents =
 
 const shouldIsDealer = import.meta.env.VITE_APP_INCLUDE_DEALER === "true";
 
-const Blotter = lazy(() => import("./blotter/Blotter"));
+const Blotter = lazy(() => import("@/components/features/blotter/Blotter"));
 
 // if (import.meta.env.VITE_APP_INCLUDE_BRANCH === "true") {
 //     const Branch = (await import("./container/pages/mainBranch/MainBranch"))

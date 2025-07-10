@@ -9,8 +9,6 @@ import IconElement from "@/components/common/IconElement/IconElement";
 import RFQModal from "@/container/pages/mainCorporate/rfqModal/RFQModal";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { getAllCategoryTableData } from "@/container/pages/mainCategory/categoryActions";
-import { GetAllCounterPartyDataAPI } from "@/components/features/SpotBranch/WatchlistAction";
 import RFQForwardCorporateModal from "@/container/pages/mainCorporate/rfqModal/RFQForwardCorporateModal/RFQForwardCorporateModal";
 import RFQDiscountingCorporateModal from "@/container/pages/mainCorporate/rfqModal/RFQDiscountingCorporateModal/RFQDiscountingCorporateModal";
 import SettingModal from "@/components/features/settingsModal/settingModal";
@@ -24,7 +22,7 @@ import {
   setIBuySellData,
   setRfqModalOpen,
 } from "@/store/modalSlice/modalSlicer";
-import ViewCurrentDeals from "@/container/pages/mainTreasury/tabsContent/liveRates/blotter/viewCurrentDeals/ViewCurrentDeals";
+import ViewCurrentDeals from "@/components/features/blotter/viewCurrentDeals/ViewCurrentDeals";
 
 const GlobalNavbar = () => {
   const getAllCategoriesData = useSelector(
@@ -92,7 +90,6 @@ const GlobalNavbar = () => {
     let Data = { CategoryID: event.value };
     console.log(Data);
 
-    dispatch(GetAllCounterPartyDataAPI({ Data, navigate }));
     let obj = {
       value: event.value,
       label: event.label,

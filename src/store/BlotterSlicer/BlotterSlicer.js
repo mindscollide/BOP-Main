@@ -11,7 +11,7 @@ import {
   SaveNonFEDiscountingTransactionAPI,
   SaveSpotTransactionAPI,
   calculateTenorSwapAndForwardRateApi,
-} from "@/container/pages/mainTreasury/tabsContent/liveRates/blotter/BlotterActions";
+} from "@/components/features/blotter/BlotterActions";
 import { createSlice } from "@reduxjs/toolkit";
 
 const BlotterSlicer = createSlice({
