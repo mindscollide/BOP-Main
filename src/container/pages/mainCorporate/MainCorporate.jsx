@@ -3,9 +3,18 @@ import GlobalTabs from "../../../components/common/tabs/Tabs";
 import { useSelector } from "react-redux";
 import { setActiveTab } from "./rfqModal/RFQSlicer";
 import { useDispatch } from "react-redux";
-import BlotterHeader from "../mainTreasury/tabsContent/liveRates/blotter/blotterHeader/BlotterHeader";
 import { useNavigate } from "react-router-dom";
-import { BlotterDataAPI } from "../mainTreasury/tabsContent/liveRates/blotter/BlotterActions";
+import BlotterHeader from "@/components/features/blotter/blotterHeader/BlotterHeader";
+import {
+  BlotterDataAPI,
+  GetSpotRatesForCounterPartyAPI,
+} from "@/components/features/blotter/BlotterActions";
+import { getAllTenorsAction } from "../mainDealer/dealerActions";
+import {
+  GetDashboardDataAPI,
+  GetDiscountingRatesForCounterPartyApi,
+  GetForwardRatesForCounterPartyApi,
+} from "@/components/features/SpotBranch/WatchlistAction";
 const shouldIncludeComponents =
   import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
 
@@ -36,10 +45,19 @@ const MainCorporate = () => {
     dispatch(setActiveTab(tabTitle));
   };
   useEffect(() => {
-    let Data = { sRow: 0, Length: 10 };
-    dispatch(BlotterDataAPI({ navigate, Data }));
-  }, [])
+    try {
+      dispatch(GetSpotRatesForCounterPartyAPI({ navigate }));
+      dispatch(GetDashboardDataAPI({ navigate })); // Fetching the Dashboard Data
 
+      let Data = { sRow: 0, Length: 10 };
+      dispatch(BlotterDataAPI({ navigate, Data }));
+      dispatch(getAllTenorsAction({ navigate }));
+      dispatch(GetForwardRatesForCounterPartyApi({ navigate }));
+      dispatch(GetDiscountingRatesForCounterPartyApi({ navigate }));
+    } catch (error) {
+      console.log(error, "error");
+    }
+  }, []);
   const tabsData = [
     {
       title: "Spot",
@@ -47,7 +65,7 @@ const MainCorporate = () => {
         SpotBranch && activeTab === "Spot" ? (
           <Suspense fallback={<>Loading Spot...</>}>
             <SpotBranch />
-            <section className='bg-white mt-2 p-2'>
+            <section className="bg-white mt-2 p-2">
               <BlotterHeader />
             </section>
           </Suspense>
@@ -59,7 +77,7 @@ const MainCorporate = () => {
         ForwardTableBranchComponent && activeTab === "Forwards" ? (
           <Suspense fallback={<>Loading Forwards...</>}>
             <ForwardTableBranchComponent />
-            <section className='bg-white p-2'>
+            <section className="bg-white p-2">
               <BlotterHeader />
             </section>
           </Suspense>
@@ -71,7 +89,7 @@ const MainCorporate = () => {
         BranchDiscountingTable && activeTab === "Discounting" ? (
           <Suspense fallback={<>Loading Discounting...</>}>
             <BranchDiscountingTable />
-            <section className='bg-white p-2'>
+            <section className="bg-white p-2">
               <BlotterHeader />
             </section>
           </Suspense>
@@ -84,7 +102,7 @@ const MainCorporate = () => {
       tabs={tabsData}
       activeKey={activeTab}
       onTabChange={handleTabChange}
-      tabClass='mb-4'
+      tabClass="mb-4"
     />
   );
 };

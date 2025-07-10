@@ -54,19 +54,11 @@ const SpotBranch = () => {
   useEffect(() => {
     try {
       if (
-        globalStateWatchlistCardData &&
-        globalStateWatchlistCardData !== null
+        globalStateWatchlistCardData !== null &&
+        GetSpotRatesForCounterParty !== null
       ) {
         const { spotApplicableInstruments } = globalStateWatchlistCardData;
         if (spotApplicableInstruments.length > 0) {
-          // const updateData = spotApplicableInstruments.map((list, index) => {
-          //   return {
-          //     ...list,
-          //     bid: 200,
-          //     offer: 215,
-          //   };
-          // });
-
           const ratesFromAPI =
             GetSpotRatesForCounterParty?.responseResult?.instruments || [];
 
@@ -129,11 +121,11 @@ const SpotBranch = () => {
     } catch (error) {
       console.log(error, "error");
     }
-  }, [globalStateWatchlistCardData]);
+  }, [globalStateWatchlistCardData, GetSpotRatesForCounterParty]);
 
   //Watch<List>Data State
 
-  console.log(watchlistData, "watchlistDatawatchlistData");
+  console.log(globalStateWatchlistCardData, "watchlistDatawatchlistData");
 
   //Column of my watch<list> Table
   const columns = [

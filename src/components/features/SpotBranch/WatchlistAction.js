@@ -3,6 +3,7 @@ import {
   GetAllFowardsAndDiscountsRates,
   GetAllInstrumentForTreasuryRM,
   GetDashboardData,
+  GetDiscountingRatesForCounterParty,
   GetForwardRatesForCounterParty,
   GetFXInstruments,
   GetMisDataByRange,
@@ -327,6 +328,83 @@ export const GetForwardRatesForCounterPartyApi = createAsyncThunk(
               .toLowerCase()
               .includes(
                 "WatchList_WatchListServiceManager_GetForwardRatesForCounterParty_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Exception occured");
+          } else {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          console.log("", response.data);
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        console.log("", response.data);
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      // Reject with error message
+      console.log("", error);
+      return rejectWithValue("Something went wrong");
+    }
+  }
+);
+
+// Define the GetForwardRatesForCounterParty async thunk
+export const GetDiscountingRatesForCounterPartyApi = createAsyncThunk(
+  "watchlist/GetDiscountingRatesForCounterParty", // A unique action type string
+  async ({ navigate }, { dispatch, rejectWithValue }) => {
+    try {
+      let GetDiscountingRatesForCounterPartyData = createPostAPI(
+        watchListApi,
+        GetDiscountingRatesForCounterParty.RequestMethod
+      );
+
+      const response = await GetDiscountingRatesForCounterPartyData();
+      const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
+      }
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(GetDiscountingRatesForCounterPartyApi({ navigate }));
+      } else if (response.data.responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetDiscountingRatesForCounterParty_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message: "",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetDiscountingRatesForCounterParty_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("No Record found");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetDiscountingRatesForCounterParty_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Role doesn’t matched");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetDiscountingRatesForCounterParty_04".toLowerCase()
               )
           ) {
             return rejectWithValue("Exception occured");

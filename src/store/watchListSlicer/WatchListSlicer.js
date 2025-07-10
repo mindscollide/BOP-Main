@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
   GetDashboardDataAPI,
+  GetDiscountingRatesForCounterPartyApi,
   GetForwardRatesForCounterPartyApi,
   SaveUserDashboardAPI,
   getAllTreasuryInstrumentsApi,
@@ -16,6 +17,7 @@ const WatchListSlice = createSlice({
     allInstrumentForTreasury: null,
     GetAllFowardsAndDiscountsRatesData: null,
     GetForwardRatesForCounterParty: null,
+    GetDiscountingRatesForCounterParty: null,
   },
   reducers: {
     clearWatchListResponseMessage: (state) => {
@@ -92,7 +94,35 @@ const WatchListSlice = createSlice({
         state.Loader = false;
         state.error = action.payload;
         state.GetForwardRatesForCounterParty = null;
-      });
+      })
+
+      //***************** */
+      // Pending state (while the API call is in Pending State GetDashboardData)
+      .addCase(GetDiscountingRatesForCounterPartyApi.pending, (state) => {
+        state.Loader = true;
+        state.error = null;
+      })
+      // Fulfilled state (while the API call is being made GetDashboardData)
+      .addCase(
+        GetDiscountingRatesForCounterPartyApi.fulfilled,
+        (state, { payload }) => {
+          // console.log(payload.response, "globalStateWatchlistCardData");
+          state.Loader = false;
+          state.GetDiscountingRatesForCounterParty = payload?.response;
+          state.error = null;
+          state.responseMessage = payload?.message;
+        }
+      )
+      // Rejected state (while the API call is fail GetDashboardData)
+      .addCase(
+        GetDiscountingRatesForCounterPartyApi.rejected,
+        (state, action) => {
+          // console.log(action, "actionaction");
+          state.Loader = false;
+          state.error = action.payload;
+          state.GetDiscountingRatesForCounterParty = null;
+        }
+      );
   },
 });
 
