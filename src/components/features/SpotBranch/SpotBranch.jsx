@@ -6,12 +6,10 @@ import BranchRateCardsOfWatchList from "../../common/branchWatchlistDroppableCar
 import BidAmountBox from "../../common/bidAmountBox/BidAmountBox";
 import GlobalTable from "../../common/table/GlobalTable";
 import SellAndBuyModal from "./SellAndBuyModal/SellAndBuyModal";
-import ChatBox from "../chatBox/ChatBox.jsx";
-import { GetDashboardDataAPI, SaveUserDashboardAPI } from "./WatchlistAction";
+import {  SaveUserDashboardAPI } from "./WatchlistAction";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import Blotter from "@/container/pages/mainTreasury/tabsContent/liveRates/blotter/Blotter";
 
 const SpotBranch = () => {
   const dispatch = useDispatch();
@@ -61,44 +59,16 @@ const SpotBranch = () => {
                 currecncyLabel: `${filterSections[0].instrumentName}${filterSections[0].secondaryInstrumentName}`,
                 buyValue: filterSections[0].bid,
                 sellValue: filterSections[0].offer,
-                instrumentID: filterSections[0].instrumentID
+                instrumentID: filterSections[0].instrumentID,
               },
             }));
           }
-          
         }
-
-        console.log(globalStateWatchlistCardData, "watchLists");
-        console.log(typeof globalStateWatchlistCardData, "watchLists");
-        // setWatchlistCardData(globalStateWatchlistCardData.sections);
-        // setWatchlistTableData(globalStateWatchlistCardData.watchLists);
       }
     } catch (error) {
       console.log(error, "error");
     }
   }, [globalStateWatchlistCardData]);
-
-  useEffect(() => {
-    if (watchlistCardData.length > 0) {
-      setWatchlistData((prevData) => {
-        const updatedData = { ...prevData };
-
-        watchlistCardData.forEach((item, index) => {
-          if (index < 6) {
-            updatedData[`watchlist${index + 1}`] = {
-              currecncyLabel: item.instrumentName || "Unknown", // Handle null
-              buyValue: item.buy ?? "--", // Handle null or undefined
-              sellValue: item.sell ?? "--",
-            };
-          }
-        });
-
-        console.log(updatedData, "updated watchlistData");
-
-        return updatedData;
-      });
-    }
-  }, [watchlistCardData]);
 
   //Watch<List>Data State
   //By Default for having Six Tiles
@@ -116,7 +86,7 @@ const SpotBranch = () => {
     watchlist6: { currecncyLabel: "", buyValue: "", sellValue: "" },
   });
 
-  console.log(watchlistData, "watchlistDatawatchlistData")
+  console.log(watchlistData, "watchlistDatawatchlistData");
 
   //Column of my watch<list> Table
   const columns = [
@@ -176,9 +146,7 @@ const SpotBranch = () => {
     // Handle dropping into BranchRateCardsOfWatchList
     if (destination.droppableId.startsWith("watchlist")) {
       const item = watchlistTableData[source.index]; // Get dragged item
-      console.log(item, "itemitem");
       const { instrumentID, secondaryInstrumentID } = item; // Extract values
-      console.log(item, "resultresultresultresult");
       //   Calling the save Droppale Item API
       let Data = {
         SectionID: String(source.index),
@@ -188,14 +156,6 @@ const SpotBranch = () => {
       console.log(Data, "resultresultresultresult");
 
       dispatch(SaveUserDashboardAPI({ navigate, Data }));
-      // setWatchlistData((prevData) => ({
-      //   ...prevData,
-      //   [destination.droppableId]: {
-      //     currecncyLabel: instrumentName,
-      //     buyValue: bid,
-      //     sellValue: offer,
-      //   },
-      // }));
     }
   };
 
