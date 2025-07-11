@@ -33,6 +33,66 @@
   font-family: "Roboto", sans-serif !important;
 }
 
-span.RFQGeneralReactSelectClass__indicator-separator.css-1u9des2-indicatorSeparator {
+span.RfqSpot__indicator-separator.css-1u9des2-indicatorSeparator {
   display: none !important;
+}
+
+/* Control container (already applied) */
+.RfqSpot__control {
+  min-height: 28px !important;
+  height: 28px !important;
+  padding: 0 !important; /* Remove any inner control padding */
+}
+
+/* Value container (where the selected value appears) */
+.RfqSpot__value-container {
+  padding: 0 10px !important;
+  height: 28px !important;
+  font-weight: 800 !important;
+  /* display: flex; */
+  /* align-items: center; */
+}
+
+/* Input field inside the select (for typing/searching) */
+.RfqSpot__input {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Placeholder text (if shown) */
+.RfqSpot__placeholder {
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 12px; /* optional: match the tighter layout */
+  line-height: 1;
+}
+
+/* Single selected value */
+.RfqSpot__single-value {
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 14px;
+  line-height: 1;
+}
+
+/* Indicators (dropdown arrow, clear button) */
+.RfqSpot__indicators {
+  height: 24px;
+}
+
+.RfqSpot__indicator {
+  padding: 0 6px !important;
+}
+
+.RfqSpot__option {
+  padding: 8px 15px !important;
+  font-size: 12px !important;
+  border-bottom: 1px solid #81828f;
+}
+.RfqSpot__menu-list {
+  background-color: var(--color-light-gray2);
+}
+.RfqSpot__option--is-focused , .RfqSpot__option--is-selected{
+  background-color: var(--color-blue) !important;
+  color: white !important;
 }

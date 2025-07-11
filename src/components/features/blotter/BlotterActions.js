@@ -830,7 +830,10 @@ export const RejectTransactionCancellationRequest = createAsyncThunk(
 
 export const CancelTransaction = createAsyncThunk(
   "Blotter/CancelTransaction",
-  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+  async (
+    { navigate, Data, setCancelReasonModal },
+    { dispatch, rejectWithValue }
+  ) => {
     try {
       const postAPI = createPostAPI(
         blotterApi,
@@ -846,7 +849,7 @@ export const CancelTransaction = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(CancelTransaction({ navigate, Data }));
+        dispatch(CancelTransaction({ navigate, Data, setCancelReasonModal }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -857,6 +860,7 @@ export const CancelTransaction = createAsyncThunk(
                 "Blotter_BlotterServiceManager_CancelTransaction_01".toLowerCase()
               )
           ) {
+            setCancelReasonModal(false);
             return {
               response: response.data.responseResult,
               message: "Transaction cancelled successfully",

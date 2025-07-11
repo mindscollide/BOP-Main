@@ -71,7 +71,6 @@ const Dashboard = () => {
   const dealMoalRequest = useSelector(
     (state) => state.modalReducer.dealModalRequest
   );
-  console.log(chatModalTransactionId, "dealMoalRequestdealMoalRequest");
   const IsBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
   const IsCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
   const isTreasury = import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
@@ -88,10 +87,8 @@ const Dashboard = () => {
   const userID = localStorage.getItem("userID");
   const { connectToMqtt, isConnected } = useMqttClient({
     onMessageArrivedCallback: (data) => {
-      console.log("Handle feature-specific data", data.payload.message);
       switch (data.payload.message) {
         case "INCOMING_CHAT":
-          console.log("Handle feature-specific data", data.payload.message);
           try {
             const chatObj = {
               ...data.payload.chat,

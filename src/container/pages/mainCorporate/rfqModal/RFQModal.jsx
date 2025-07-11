@@ -302,7 +302,7 @@ const RFQModal = () => {
                   </Col>
                   <Col lg={4} md={4} sm={4} className='mb-3'>
                     <SelectDropdown
-                      classNamePrefix='bookaForwardCorporate'
+                      classNamePrefix='RfqSpot'
                       placeholder=''
                       options={getAllCorporates}
                       onChange={handleChangeCorporate}
@@ -320,7 +320,7 @@ const RFQModal = () => {
               </Col>
               <Col lg={4} md={4} sm={4} className='mb-2'>
                 <SelectDropdown
-                  classNamePrefix='bookaForwardCorporate'
+                  classNamePrefix='RfqSpot'
                   placeholder=''
                   options={currencyOptions}
                   onChange={handleCurrencyChange}
@@ -335,12 +335,12 @@ const RFQModal = () => {
               <Col lg={4} md={4} sm={4} className='mb-2'>
                 <SelectDropdown
                   placeholder='Select Type'
+                  classNamePrefix='RfqSpot'
                   value={
                     typeOptionSelected.value === 0 ? null : typeOptionSelected
                   }
                   onChange={handleChangeType}
                   options={typeOptions}
-                  classNamePrefix='bookaForwardCorporate'
                   isDisabled={iBuySellData !== null ? true : false}
                 />
               </Col>
@@ -379,7 +379,7 @@ const RFQModal = () => {
               <Col lg={4} md={4} sm={4} className='mb-2'>
                 <SelectDropdown
                   placeholder=''
-                  classNamePrefix='bookaForwardCorporate'
+                  classNamePrefix='RfqSpot'
                   options={natureOfBusinessOptions.filter((option) => {
                     if (typeOptionSelected?.value === 1 && option.isForSpot) {
                       return option.isForBuy;

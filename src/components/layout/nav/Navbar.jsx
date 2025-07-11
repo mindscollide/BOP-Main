@@ -174,6 +174,7 @@ const GlobalNavbar = () => {
       }
     }
   }, [isCategoryAdded]);
+  
   useEffect(() => {
     if (isCategoryUpdated !== null && categoryValue.value !== 0) {
       const {
