@@ -272,6 +272,8 @@ const ForwardsForTreasuryAndDealer = () => {
                       onChange={handleChangeTenors}
                       options={getAllTenorsList}
                       classNamePrefix={"DealerDropDown"}
+                      
+                      // menuPosition="bottom"
                     />
                   </Suspense>
                 )}

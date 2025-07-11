@@ -1,12 +1,9 @@
 import React from "react";
 import Select from "react-select";
 import "./SelectDropdown.css";
-let DummyOptions = [
-  { label: "Test1", value: 1 },
-  { label: "Test2", value: 2 },
-];
+
 const SelectDropdown = ({
-  options = DummyOptions,
+  options = [],
   className,
   classNamePrefix,
   components,

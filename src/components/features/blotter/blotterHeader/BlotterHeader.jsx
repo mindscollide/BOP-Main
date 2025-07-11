@@ -18,7 +18,10 @@ import { setActiveTab } from "@/container/pages/mainCorporate/rfqModal/RFQSlicer
 import { useSelector } from "react-redux";
 import { setActiveTreasuryTab } from "@/store/BlotterSlicer/BlotterSlicer";
 import { useDispatch } from "react-redux";
-import { BlotterDataAPI, GetBlotterOutstandingDealsDataAPI } from "../BlotterActions";
+import {
+  BlotterDataAPI,
+  GetBlotterOutstandingDealsDataAPI,
+} from "../BlotterActions";
 
 const BlotterHeader = () => {
   const navigate = useNavigate();
@@ -33,12 +36,16 @@ const BlotterHeader = () => {
     (state) => state.BlotterSlicer.activeTabBlotter
   );
 
+  const [isTreasuryVal, setIsTreasuryVal] = useState(0);
 
   console.log(activeTab, "activeTabactiveTab");
+  console.log(isTreasuryVal, "isTreasuryValisTreasuryVal");
   const tabsData = [
     {
       title: "TXN Summary",
-      content: activeTab === "TXN Summary" && <TXNTreasurySummary />,
+      content: activeTab === "TXN Summary" && (
+        <TXNTreasurySummary isTreasuryVal={isTreasuryVal} />
+      ),
     },
     {
       title: "Outstanding Deals",
