@@ -308,7 +308,7 @@ export const GetSpotRatesForCounterParty = {
   RequestMethod: "ServiceManager.GetSpotRatesForCounterParty",
 };
 export const GetAllInstrumentForTreasuryRM = {
-  RequestMethod: "ServiceManagerGetAllInstrumentForTreasury",
+  RequestMethod: "ServiceManager.GetAllInstrumentForTreasury",
 };
 
 export const GetForwardRatesForCounterParty = {
@@ -317,4 +317,24 @@ export const GetForwardRatesForCounterParty = {
 
 export const GetDiscountingRatesForCounterParty = {
   RequestMethod: "ServiceManager.GetDiscountingRatesForCounterParty",
+};
+
+export const GetCategoryWiseSpotRates = {
+  RequestMethod: "ServiceManager.GetCategoryWiseSpotRates",
+};
+
+export const GetCategoryWiseForwardRates = {
+  RequestMethod: "ServiceManager.GetCategoryWiseForwardRates",
+};
+
+export const GetCategoryWiseDiscountingRates = {
+  RequestMethod: "ServiceManager.GetCategoryWiseDiscountingRates",
+};
+
+export const GetBankSpotForTreasury = {
+  RequestMethod: "ServiceManager.GetBankSpotForTreasury",
+};
+
+export const GetBankForwardForTreasury = {
+  RequestMethod: "ServiceManager.GetBankForwardForTreasury",
 };

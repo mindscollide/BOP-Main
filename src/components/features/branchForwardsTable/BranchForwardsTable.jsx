@@ -8,29 +8,18 @@ import { useSelector } from "react-redux";
 import CustomButton from "@/components/common/globalButton/button";
 import { Col, Row } from "react-bootstrap";
 import CorporateBookaForwardModal from "./CorporateBookaForwardModal/CorporateBookaForwardModal";
-import {
-  buildDiscountingTable,
-  buildForwardsTable,
-} from "@/components/utils/generateColumnsData";
+import { buildForwardsTable } from "@/components/utils/generateColumnsData";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 
 const BranchForwardsTable = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  //local states
-  const [instrumentForwards, setInstrumentForwards] = useState([]);
-  const [tenorsData, setTenorsData] = useState([]);
-  const [forwardRatesData, setForwardRatesData] = useState([]);
-  const [discountRatesData, setDiscountRatesData] = useState([]);
+
   const [dataSource, setDataSource] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
   //Book a Forward Modal State
   const [bookaForwardModalCall, setBookaForwardModalCall] = useState(false);
 
-  // //Global State for Extracting Forward and discount rate data
-  // const GetAllFowardsAndDiscountsRatesAPIData = useSelector(
-  //   (state) => state.WatchListReducer.GetAllFowardsAndDiscountsRatesData
-  // );
   //Global State for Watchlist Card Data
   const globalStateWatchlistCardData = useSelector(
     (state) => state.WatchListReducer?.GettheDashboardData ?? null

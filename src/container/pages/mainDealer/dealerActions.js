@@ -1,6 +1,6 @@
 import { setCustomHeaders } from "@/common/utils";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { authApi, uploadRatesApi } from "@/common/apiend_points";
+import { authApi, uploadRatesApi, watchListApi } from "@/common/apiend_points";
 import {
   clearRatesRM,
   marketOnOffRM,
@@ -11,7 +11,6 @@ import {
   getTenorWiseForwardRatesRM,
   publishTenorWiseForwardRatesRM,
   getDiscountingRatesRM,
-  publishDiscountingRatesRM,
   getDealerDasboardDataRM,
 } from "@/common/api_config";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";

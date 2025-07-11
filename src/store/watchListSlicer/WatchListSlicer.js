@@ -1,5 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
+  GetBankForwardForTreasuryApi,
+  GetBankSpotForTreasuryApi,
   GetDashboardDataAPI,
   GetDiscountingRatesForCounterPartyApi,
   GetForwardRatesForCounterPartyApi,
@@ -20,6 +22,9 @@ const WatchListSlice = createSlice({
     GetAllFowardsAndDiscountsRatesData: null,
     GetForwardRatesForCounterParty: null,
     GetDiscountingRatesForCounterParty: null,
+    GetAllInstrumentForTreasury: null,
+    GetBankSpotForTreasury: null,
+    GetBankForwardForTreasury: null,
   },
   reducers: {
     clearWatchListResponseMessage: (state) => {
@@ -87,8 +92,23 @@ const WatchListSlice = createSlice({
         state.error = action.payload;
         state.SaveUserDashboardData = null;
       })
+
       .addCase(getAllTreasuryInstrumentsApi.pending, (state) => {
         state.Loader = true;
+      })
+      .addCase(getAllTreasuryInstrumentsApi.fulfilled, (state, { payload }) => {
+        // console.log(payload.response, "globalStateWatchlistCardData");
+        state.Loader = false;
+        state.GetAllInstrumentForTreasury = payload?.response;
+        state.error = null;
+        state.responseMessage = payload?.message;
+      })
+      // Rejected state (while the API call is fail GetDashboardData)
+      .addCase(getAllTreasuryInstrumentsApi.rejected, (state, action) => {
+        // console.log(action, "actionaction");
+        state.Loader = false;
+        state.error = action.payload;
+        state.GetAllInstrumentForTreasury = null;
       })
 
       //***************** */
@@ -142,9 +162,37 @@ const WatchListSlice = createSlice({
           state.error = action.payload;
           state.GetDiscountingRatesForCounterParty = null;
         }
-      );
+      )
+      .addCase(GetBankSpotForTreasuryApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(GetBankSpotForTreasuryApi.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.GetBankSpotForTreasury = payload?.response;
+        state.responseMessage = payload?.message;
+      })
+      .addCase(GetBankSpotForTreasuryApi.rejected, (state, { payload }) => {
+        state.Loader = false;
+        state.GetBankSpotForTreasury = null;
+        state.responseMessage = payload;
+      })
+      .addCase(GetBankForwardForTreasuryApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(GetBankForwardForTreasuryApi.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.GetBankForwardForTreasury = payload?.response;
+        state.responseMessage = payload?.message;
+      })
+      .addCase(GetBankForwardForTreasuryApi.rejected, (state, { payload }) => {
+        state.Loader = false;
+        state.GetBankForwardForTreasury = null;
+        state.responseMessage = payload;
+      });
   },
 });
+
+//GetBankForwardForTreasuryApi
 
 export const { clearWatchListResponseMessage } = WatchListSlice.actions;
 export default WatchListSlice.reducer;

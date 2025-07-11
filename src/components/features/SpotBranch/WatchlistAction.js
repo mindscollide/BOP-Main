@@ -1,12 +1,10 @@
 import {
-  GetAllCounterPartyDataRM,
-  GetAllFowardsAndDiscountsRates,
   GetAllInstrumentForTreasuryRM,
+  GetBankForwardForTreasury,
+  GetBankSpotForTreasury,
   GetDashboardData,
   GetDiscountingRatesForCounterParty,
   GetForwardRatesForCounterParty,
-  GetFXInstruments,
-  GetMisDataByRange,
   SaveUserDashboardRM,
 } from "@/common/api_config";
 import { watchListApi } from "@/common/apiend_points";
@@ -215,7 +213,7 @@ export const getAllTreasuryInstrumentsApi = createAsyncThunk(
       }
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(getAllTreasuryInstrumentsApi({ Data, navigate }));
+        dispatch(getAllTreasuryInstrumentsApi({ navigate }));
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -428,4 +426,148 @@ export const GetDiscountingRatesForCounterPartyApi = createAsyncThunk(
   }
 );
 
+export const GetBankSpotForTreasuryApi = createAsyncThunk(
+  "watchlist/GetBankSpotForTreasury",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      let GetBankSpotForTreasuryData = createPostAPI(
+        watchListApi,
+        GetBankSpotForTreasury.RequestMethod
+      );
 
+      const response = await GetBankSpotForTreasuryData(Data);
+      const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
+      }
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(GetBankSpotForTreasuryApi({ navigate, Data }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetBankSpotForTreasury_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message: "API executed successfully.",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetBankSpotForTreasury_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("No Record Found");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetBankSpotForTreasury_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Role doesn’t matched.");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetBankSpotForTreasury_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Exception occured.");
+          } else {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          console.log("", response.data);
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const GetBankForwardForTreasuryApi = createAsyncThunk(
+  "watchlist/GetBankForwardForTreasury",
+  async ({ navigate }, { dispatch, rejectWithValue }) => {
+    try {
+      let GetBankForwardForTreasuryData = createPostAPI(
+        watchListApi,
+        GetBankForwardForTreasury.RequestMethod
+      );
+
+      const response = await GetBankForwardForTreasuryData();
+      const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
+      }
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(GetBankForwardForTreasuryApi({ navigate }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetBankForwardForTreasury_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message: "API executed successfully.",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetBankForwardForTreasury_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("No Record Found");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetBankForwardForTreasury_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Role doesn’t matched.");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetBankForwardForTreasury_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Exception occured.");
+          } else {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          console.log("", response.data);
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);

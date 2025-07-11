@@ -1,45 +1,87 @@
 import React, { useEffect, useState } from "react";
 import GlobalTable from "../../common/table/GlobalTable";
-import { createColumns, generateData } from "../../utils/generateData";
 import { useSelector } from "react-redux";
+import { IndexCell } from "@/components/common/inputField/IndexCell";
+import { buildForwardsTable } from "@/components/utils/generateColumnsData";
+import { Row, Col } from "antd";
 
 const CategoryForwards = () => {
   const [dataSource, setDataSource] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
-  const getAllCounterPartyData = useSelector(
-    (state) => state.WatchListReducer?.GetAllCounterPartyData
+
+  const GetCategoryWiseForwardRatesData = useSelector(
+    (state) => state.categoryReducer.GetCategoryWiseForwardRates
+  );
+
+  const allInstrumentForTreasuryData = useSelector(
+    (state) => state.WatchListReducer.GetAllInstrumentForTreasury
+  );
+
+  const getAllTenorsRecords = useSelector(
+    (state) => state.dealerReducer.getAllTenors
+  );
+
+  console.log(
+    {
+      GetCategoryWiseForwardRates: GetCategoryWiseForwardRatesData,
+      allInstrumentForTreasuryData: allInstrumentForTreasuryData,
+      getAllTenorsRecords: getAllTenorsRecords,
+    },
+    "Data For Category Forwards"
   );
 
   // Define the columns structure for the Ant Design Table
   // Define the data source for the Ant Design Table
-
   useEffect(() => {
-    if (getAllCounterPartyData !== null) {
-      // const { spreadedForwardRates, instruments, tenors } =
-      //   getAllCounterPartyData;
-      // if (spreadedForwardRates.length > 0) {
-      //   const { forwardsRates } = generateData(
-      //     4,
-      //     tenors,
-      //     instruments,
-      //     spreadedForwardRates
-      //   );
-      //   if (forwardsRates.length > 0) {
-      //     setDataSource(forwardsRates);
-      //     const forwardsColumns = createColumns(forwardsRates, 2);
-      //     setColumnsData(forwardsColumns);
-      //   }
-      // }
+    if (
+      getAllTenorsRecords &&
+      allInstrumentForTreasuryData !== null &&
+      GetCategoryWiseForwardRatesData !== null
+    ) {
+      try {
+        const { forwardRates } = GetCategoryWiseForwardRatesData;
+        let getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
+        let getAllInstrument = {
+          instruments: allInstrumentForTreasuryData.forwardInstruments,
+        };
+        const { rowData, columnsData } = buildForwardsTable(
+          3,
+          forwardRates,
+          getAllTenorsData,
+          getAllInstrument,
+          IndexCell
+        );
+        if (rowData.length > 0) {
+          setDataSource(rowData);
+          setColumnsData(columnsData);
+        }
+      } catch (error) {
+        console.log(error, "Error while building discounting table");
+      }
     }
-  }, [getAllCounterPartyData]);
-
+  }, [
+    allInstrumentForTreasuryData,
+    getAllTenorsRecords,
+    allInstrumentForTreasuryData,
+  ]);
   return (
-    <GlobalTable
-      columns={columnsData}
-      prefixCls='Dealer_Forwards'
-      dataSource={dataSource}
-      pagination={false}
-    />
+    <>
+      {/* <Row>
+        <Col lg={12} md={12} sm={12} className="heading mb-2"> */}
+      <span className="heading mb-2"> Forward</span>
+      {/* </Col>
+      </Row>
+      <Row>
+        <Col lg={12} md={12} sm={12}> */}
+      <GlobalTable
+        columns={columnsData}
+        prefixCls="Dealer_Forwards"
+        dataSource={dataSource}
+        pagination={false}
+      />
+      {/* </Col> */}
+      {/* </Row> */}
+    </>
   );
 };
 
