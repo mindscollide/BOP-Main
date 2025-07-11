@@ -3,6 +3,7 @@ import {
   GetDashboardDataAPI,
   GetDiscountingRatesForCounterPartyApi,
   GetForwardRatesForCounterPartyApi,
+  GetMisDataByRangeAPI,
   SaveUserDashboardAPI,
   getAllTreasuryInstrumentsApi,
 } from "../../components/features/SpotBranch/WatchlistAction";
@@ -13,6 +14,7 @@ const WatchListSlice = createSlice({
     Loader: false,
     error: null,
     GettheDashboardData: null,
+    GetMisDataByRange: null,
     SaveUserDashboardData: null,
     allInstrumentForTreasury: null,
     GetAllFowardsAndDiscountsRatesData: null,
@@ -26,7 +28,25 @@ const WatchListSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-
+      // Pending state (while the API call is in Pending State GetMisDataByRange)
+      .addCase(GetMisDataByRangeAPI.pending, (state) => {
+        state.Loader = true;
+        state.error = null;
+      })
+      // Fulfilled state (while the API call is being made GetMisDataByRange)
+      .addCase(GetMisDataByRangeAPI.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.GetMisDataByRange = payload?.response;
+        state.error = null;
+        state.responseMessage = payload.message;
+      })
+      // Rejected state (while the API call is fail GetMisDataByRange)
+      .addCase(GetMisDataByRangeAPI.rejected, (state, action) => {
+        console.log(action, "actionaction");
+        state.Loader = false;
+        state.error = action.payload;
+        state.GetMisDataByRange = null;
+      })
       // Pending state (while the API call is in Pending State GetDashboardData)
       .addCase(GetDashboardDataAPI.pending, (state) => {
         state.Loader = true;

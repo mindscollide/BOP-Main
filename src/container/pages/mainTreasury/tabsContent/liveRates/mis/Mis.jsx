@@ -9,6 +9,7 @@ import { getMisData, loaderInitializeMis } from "./slicer/misSlicer";
 import SectionLoader from "../../../../../../components/common/sectionLoader/SectionLoader";
 import { useNavigate } from "react-router-dom";
 import { formatDateToUTC } from "@/utils/formatters";
+import { GetMisDataByRangeAPI } from "@/components/features/SpotBranch/WatchlistAction";
 
 const MIS = () => {
   const dispatch = useDispatch();
@@ -34,6 +35,7 @@ const MIS = () => {
 
   useEffect(() => {
     let Data = { StartDate: "20240828070208", EndDate: "20240828070208" };
+    dispatch(GetMisDataByRangeAPI({navigate, Data}))
   }, []);
 
   useEffect(() => {

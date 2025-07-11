@@ -10,6 +10,8 @@ import { SaveUserDashboardAPI } from "./WatchlistAction";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { formatDateUTCToGMT } from "@/components/utils/timeFunction";
+import moment from "moment";
 
 const initialWatchlistData = Object.fromEntries(
   Array.from({ length: 6 }, (_, i) => [
@@ -36,8 +38,8 @@ const SpotBranch = () => {
   //Card Data Local State
   const [watchlistCardData, setWatchlistCardData] = useState([]);
   const [watchlistTableData, setWatchlistTableData] = useState([]);
-
-  console.log(watchlistTableData, "watchlistTableDatawatchlistTableData");
+  const [watchListDateTime, setWatchListDateTime] = useState(null);
+  console.log(watchListDateTime, "watchlistTableDatawatchlistTableData");
   //Global State for Watchlist Card Data
   const globalStateWatchlistCardData = useSelector(
     (state) => state.WatchListReducer?.GettheDashboardData ?? null
@@ -49,7 +51,7 @@ const SpotBranch = () => {
   console.log(GetSpotRatesForCounterParty, "GetSpotRatesForCounterParty");
 
   const [watchlistData, setWatchlistData] = useState(initialWatchlistData);
-  console.log(watchlistData, "watchlistDatawatchlistDatawatchlistData")
+  console.log(watchlistData, "watchlistDatawatchlistDatawatchlistData");
   // Extracting out the Cards Wathlist data in the state
   useEffect(() => {
     try {
@@ -58,12 +60,14 @@ const SpotBranch = () => {
         GetSpotRatesForCounterParty !== null
       ) {
         const { spotApplicableInstruments } = globalStateWatchlistCardData;
-        if (spotApplicableInstruments.length > 0) {
-          const ratesFromAPI =
-            GetSpotRatesForCounterParty?.responseResult?.instruments || [];
+        const { instruments, time } = GetSpotRatesForCounterParty;
 
+        let DataTime = formatDateUTCToGMT(time);
+        setWatchListDateTime(DataTime);
+
+        if (spotApplicableInstruments.length > 0) {
           const updateData = spotApplicableInstruments.map((item) => {
-            const matchedRate = ratesFromAPI.find(
+            const matchedRate = instruments.find(
               (rate) =>
                 rate.instrumentID === item.instrumentID &&
                 rate.secondaryInstrumentID === item.secondaryInstrumentID
@@ -83,7 +87,7 @@ const SpotBranch = () => {
           if (filterSections.length > 0) {
             setWatchlistData((prevData) => {
               const updatedData = { ...prevData };
-              console.log(updatedData, "updatedDataupdatedData")
+              console.log(updatedData, "updatedDataupdatedData");
               // Reset all watchlists to preserve their tile positions
               for (let i = 1; i <= 6; i++) {
                 updatedData[`watchlist${i}`] = {
@@ -108,7 +112,7 @@ const SpotBranch = () => {
                     sellValue: item.offer,
                     instrumentID: item.instrumentID,
                     isSell: item.isSell,
-                    isBuy: item.isBuy
+                    isBuy: item.isBuy,
                   };
                 }
               });
@@ -282,7 +286,8 @@ const SpotBranch = () => {
                 <span className='WatchlistLabel'>Watchlist</span>
               </Col>
               <Col lg={6} md={6} sm={12} className='d-flex justify-content-end'>
-                <span>21-11-2022 9:18 PM</span>
+                {/* <span>21-11-2022 9:18 PM</span> */}
+                <span>{watchListDateTime !== null && moment(watchListDateTime).format("DD-MM-YYYY h:mm A")}</span>
               </Col>
             </Row>
             <Row>

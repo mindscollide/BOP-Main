@@ -79,6 +79,10 @@ const RFQModal = () => {
     value: 0,
     label: "",
   });
+  let branchDetails =
+    localStorage.getItem("branch") !== null
+      ? JSON.parse(localStorage.getItem("branch"))
+      : null;
 
   const onCloseRfq = () => {
     dispatch(setRfqModalOpen(false));
@@ -125,6 +129,7 @@ const RFQModal = () => {
           value: 21,
           label: iBuySellData.currencyLabel,
         });
+
         console.log(iBuySellData, "iBuySellDataiBuySellDataiBuySellData");
       } catch (error) {
         console.log(error, "Error in iBuySellData useEffect");
@@ -267,8 +272,19 @@ const RFQModal = () => {
         modalHeader={
           <>
             <Row>
-              <Col lg={12} md={12} sm={12}>
-                <span className='heading-RfqModal'>Gul Ahmed</span>
+              <Col lg={12} md={12} sm={12} className=''>
+                {isBranch ? (
+                  <>
+                    <p className='heading-RfqModal'>
+                      {branchDetails.branchName}
+                    </p>
+                    <p className='heading-branchCode'>
+                      Branch Code: {branchDetails.branchCode}
+                    </p>
+                  </>
+                ) : (
+                  ""
+                )}
               </Col>
             </Row>
           </>
