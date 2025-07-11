@@ -45,6 +45,7 @@ const dealerReducer = createSlice({
     publishNonFeDiscounting: null,
     getDealerDashboardData: null,
     forwardsForTreasuryBranch: [],
+    GetCategoryWiseSpotRates: null,
     categoryValue: {
       value: 0,
       label: "",
@@ -305,6 +306,6 @@ export const {
   clearDealerResponseMessage,
   setForwardsForTreasuryBranch,
   setCategoryValue,
-  updateForwardItem
+  updateForwardItem,
 } = dealerReducer.actions;
 export default dealerReducer.reducer;

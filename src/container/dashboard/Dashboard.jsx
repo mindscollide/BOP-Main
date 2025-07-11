@@ -214,16 +214,17 @@ const Dashboard = () => {
         dispatch(getAllActiveCorporatesApi({ navigate }));
       }
     }
-
-    dispatch(getAllInstrumentsApi({ navigate }));
+    if (isTreasury === "false") {
+      dispatch(getAllInstrumentsApi({ navigate }));
+    }
   }, []);
   return (
-    <Layout className='roboto-13'>
+    <Layout className="roboto-13">
       {!location.pathname.includes("calculator") && <Header />}
 
       <GlobalNavbar />
       <Content>
-        <main className='px-3'>
+        <main className="px-3">
           <Outlet />
           <AnimatePresence>
             {blotterTransactionAdded && isTreasury && dealMoalRequest && (

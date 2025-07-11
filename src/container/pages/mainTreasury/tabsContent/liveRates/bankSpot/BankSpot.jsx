@@ -5,15 +5,22 @@ import BidAmountBox from "../../../../../../components/common/bidAmountBox/BidAm
 import { formatDateTimeToUTCTime } from "../../../../../../components/utils/timeFunction";
 import { getBankSpotData, loaderInitialize } from "./slicer/bankSpotSlicer";
 import SectionLoader from "../../../../../../components/common/sectionLoader/SectionLoader";
+import { GetBankSpotForTreasuryApi } from "@/components/features/SpotBranch/WatchlistAction";
+import { useNavigate } from "react-router-dom";
 
 const BankSpot = () => {
+  const navigate = useNavigate();
   const bankSportLoader = useSelector((state) => state.bankSpotReducer.Loader);
   const TresuaryBankSpotData = useSelector(
-    (state) => state.WatchListReducer.WatchListData
+    (state) => state.WatchListReducer.GetBankSpotForTreasury
   );
   console.log(TresuaryBankSpotData, "watchListReducerwatchListReducer");
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(GetBankSpotForTreasuryApi({ navigate }));
+  }, []);
 
   const [bankSpotData, setBankSpotData] = useState([]);
   console.log(bankSpotData, "bankSpotData");
@@ -33,7 +40,6 @@ const BankSpot = () => {
       title: "Bid",
       dataIndex: "bid",
       width: 80,
-
       key: "bid",
       render: (text, record) => (
         <BidAmountBox
@@ -106,25 +112,41 @@ const BankSpot = () => {
 
   useEffect(() => {
     if (TresuaryBankSpotData !== null && TresuaryBankSpotData !== undefined) {
-      setBankSpotData(TresuaryBankSpotData?.instruments);
+      const { worldCrosses, worldCurrencies } = TresuaryBankSpotData;
+      let newData = worldCrosses.map((worldCros, index) => {
+        let isExist = worldCurrencies.find((worldCur, index) => {
+          return worldCros.instrumentID === worldCur.instrumentID;
+        });
+        if (isExist !== undefined) {
+          return {
+            ...worldCros,
+          };
+        }
+      });
+      console.log(
+        worldCrosses,
+        worldCurrencies,
+        "TresuaryBankSpotDataTresuaryBankSpotData"
+      );
+      // setBankSpotData(TresuaryBankSpotData?.instruments);
     } else {
       setBankSpotData([]);
     }
   }, [TresuaryBankSpotData]);
 
   return (
-    <div className=''>
-      <div className='box-header bg-primary-orange px-3'>
-        <div className='text-start color-white fw-bold fs-6'>Bank Spot</div>
+    <div className="">
+      <div className="box-header bg-primary-orange px-3">
+        <div className="text-start color-white fw-bold fs-6">Bank Spot</div>
       </div>
 
-      <div className='  mb-2 px-2'>
+      <div className="  mb-2 px-2">
         <GlobalTable
           columns={columns}
           dataSource={bankSpotData}
           prefixCls={"BankSpot_Table"}
           pagination={false}
-          scroll={{ x: "max-content", y: 500 }}
+          scroll={{ x: "max-content", y: 400 }}
         />
         {/* {bankSportLoader ? <SectionLoader /> : null} */}
       </div>
