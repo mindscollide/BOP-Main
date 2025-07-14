@@ -18,9 +18,11 @@ const BidAmountBox = ({
       <p className='m-0'>
         {divideTheValue[0]}
         {spot && (
-          <span
-            className={styles["afterDotValue"]}
-          >{`. ${divideTheValue[1]?.substring(0, 2)}`}</span>
+          <span className={styles["afterDotValue"]}>{`. ${
+            divideTheValue[1]?.substring(0, 2) !== undefined
+              ? divideTheValue[1]?.substring(0, 2)
+              : "00"
+          }`}</span>
         )}
         {bankSpot && (
           <span>{`. ${
