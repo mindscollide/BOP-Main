@@ -137,7 +137,7 @@ const CorporateBookaForwardModal = ({
       }
     }
   }, [GetAllActiveCorproates]);
-
+  console.log(calculatedForwardsSwapandRate, "calculatedForwardsSwapandRatecalculatedForwardsSwapandRate")
   useEffect(() => {
     if (calculatedForwardsSwapandRate !== null) {
       try {

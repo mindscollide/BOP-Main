@@ -64,9 +64,7 @@ const RFQDiscountingCorporateModal = ({
       if (regex.test(value)) {
         setAmountData(value);
       }
-    } else {
-      setAmountData(value);
-    }
+    } 
   };
 
   const handleChangeTenor = (event) => {

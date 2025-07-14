@@ -7,10 +7,15 @@ import InputFIeld from "@/components/common/inputField/InputField";
 import CustomButton from "@/components/common/globalButton/button";
 import { useSelector } from "react-redux";
 import { formatDate } from "@/common/utils";
+import { useDispatch } from "react-redux";
+import { SaveForwardTransactionRFQApi } from "@/components/features/blotter/BlotterActions";
+import { useNavigate } from "react-router-dom";
 const RFQForwardCorporateModal = ({
   openRfqModalForwardCorporateComponent,
   setOpenRfqModalForwardCorporateComponent,
 }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const natureOfBusinessList = useSelector(
     (state) => state.authReducer.GetAllNatureOfTransactions
   );
@@ -22,8 +27,13 @@ const RFQForwardCorporateModal = ({
   const [amountData, setAmountData] = useState("");
   const [Tenor, setTenor] = useState("");
   const [options, setOptions] = useState("");
+  console.log(Tenor, "TenorTenorTenor");
 
   const [natureOfBusinessOptions, setNatureOfBusinessOptions] = useState(null);
+  console.log(
+    natureOfBusinessOptions,
+    "natureOfBusinessOptionsnatureOfBusinessOptions"
+  );
 
   const [currencyOptions, setCurrencyOptions] = useState([]);
   const [selectedNature, setSelectedNature] = useState({
@@ -55,7 +65,10 @@ const RFQForwardCorporateModal = ({
 
   const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
   const [getAllCorporates, setGetAllCorporates] = useState([]);
-  console.log(options, "optionsoptions");
+  let branchDetails =
+    localStorage.getItem("branch") !== null && isBranch
+      ? JSON.parse(localStorage.getItem("branch"))
+      : null;
 
   useEffect(() => {
     if (natureOfBusinessList !== null) {
@@ -173,6 +186,23 @@ const RFQForwardCorporateModal = ({
     console.log("selectedOption", selectedOption);
   };
 
+  const handleConfirmButton = () => {
+    let Data = {
+      CorporateID: corporateValue.value,
+      InstrumentID: selectedCurrency.value,
+      SecondaryInstrumentID: 0,
+      IsBuySide: typeOptionSelected.value === 1 ? true : false,
+      Quantity: Number(amountData),
+      AccountNumber: accountNumber,
+      NatureOfTransactionID:
+        natureOfBusinessOptions !== null && natureOfBusinessOptions?.id,
+      TenorDays: Number(Tenor),
+      OptionDays: Number(options),
+      // Swap: 0.3,
+    };
+    dispatch(SaveForwardTransactionRFQApi({ navigate, Data }));
+  };
+
   return (
     <div>
       {" "}
@@ -189,9 +219,18 @@ const RFQForwardCorporateModal = ({
           <>
             <Row>
               <Col lg={12} md={12} sm={12}>
-                <span className='ForwardRFQModalHeadingCorporate'>
-                  Gul Ahmed{" "}
-                </span>
+                {isBranch ? (
+                  <>
+                    <p className='heading-RfqModal'>
+                      {branchDetails.branchName}
+                    </p>
+                    <p className='heading-branchCode'>
+                      Branch Code: {branchDetails.branchCode}
+                    </p>
+                  </>
+                ) : (
+                  ""
+                )}
               </Col>
             </Row>
           </>
@@ -337,6 +376,7 @@ const RFQForwardCorporateModal = ({
                 <CustomButton
                   value='Confirm'
                   applyClass='ConfirmButtonBookaForward'
+                  onClick={handleConfirmButton}
                 />
               </Col>
             </Row>
