@@ -45,10 +45,10 @@ const DealViewModal = ({ dealData }) => {
 
   const handleSubmit = () => {
     // scenario is if side is "buy" then bid should be disabled and offer should be enabled
-    // RFQTransactionQuotation
-    // RFQForwardTransactionQuotation
-    // RFQFEDiscountingTransactionQuotation
-    // RFQNonFEDiscountingTransactionQuotation
+    // RFQTransactionQuotation naturetype 1
+    // RFQForwardTransactionQuotation naturetype 2
+    // RFQFEDiscountingTransactionQuotation naturetype 3
+    // RFQNonFEDiscountingTransactionQuotation naturetype 4
     let Data = {
       PK_TransactionID: dealData?.pK_TransactionID,
       Rate:
