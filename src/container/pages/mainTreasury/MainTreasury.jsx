@@ -23,10 +23,12 @@ const MainTreasury = () => {
 
   useEffect(() => {
     dispatch(GetBankSpotForTreasuryApi({ navigate }));
-    let Data = { sRow: 0, Length: 10 };
-    dispatch(BlotterDataAPI({ navigate, Data }));
+    if (import.meta.env.VITE_APP_INCLUDE_TREASURY === "true") {
+      let Data = { sRow: 0, Length: 10 };
+      dispatch(GetBlotterOutstandingDealsDataAPI({ navigate, Data }));
+      dispatch(BlotterDataAPI({ navigate, Data }));
+    }
     dispatch(getAllTreasuryInstrumentsApi({ navigate }));
-    dispatch(GetBlotterOutstandingDealsDataAPI({ navigate, Data }));
     dispatch(GetBankForwardForTreasuryApi({ navigate }));
     dispatch(getAllTenorsAction({ navigate }));
     dispatch(GetDiscountingRatesForTreasuryApi({ navigate }));
