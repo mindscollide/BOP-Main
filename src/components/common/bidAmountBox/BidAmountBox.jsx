@@ -9,10 +9,6 @@ const BidAmountBox = ({
   valueAfterDot = "00",
   onClick,
 }) => {
-  console.log(
-    String(BidAmountValue).split(".")[1].substring(0, 2),
-    "BidAmountValueBidAmountValue"
-  );
   let divideTheValue = String(BidAmountValue).split(".");
   return (
     <div className={`${styles[applyClass]} roboto-13`} onClick={onClick}>
@@ -22,7 +18,7 @@ const BidAmountBox = ({
         {spot && (
           <span
             className={styles["afterDotValue"]}
-          >{`. ${divideTheValue[1].substring(0, 2)}`}</span>
+          >{`. ${divideTheValue[1]?.substring(0, 2)}`}</span>
         )}
       </p>
     </div>
