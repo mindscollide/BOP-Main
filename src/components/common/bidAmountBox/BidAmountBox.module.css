@@ -24,6 +24,10 @@
   font-size: 1.25rem;
   font-weight: 700;
 }
+/* .afterDotValuesmall {
+  font-size: 1.25rem;
+  font-weight: 700;
+} */
 .SellCard {
   background-color: #f26522;
   max-width: 100%;
@@ -119,7 +123,6 @@
 .SellandBuyCardBracnh_disbaled p {
   font-size: 1rem;
   transition: color 0.3s ease; /* Apply transition to color */
-
 }
 .SellandBuyCardBracnh p {
   font-size: 1rem;
