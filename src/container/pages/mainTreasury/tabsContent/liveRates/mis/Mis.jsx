@@ -8,8 +8,8 @@ import CustomButton from "../../../../../../components/common/globalButton/butto
 import { getMisData, loaderInitializeMis } from "./slicer/misSlicer";
 import SectionLoader from "../../../../../../components/common/sectionLoader/SectionLoader";
 import { useNavigate } from "react-router-dom";
-import { GetMisDataByRangeAPI } from "@/components/features/SpotBranch/WatchlistAction";
 import { formatDateToUTC } from "@/utils/formatters";
+import { GetMisDataByRangeAPI } from "@/components/features/SpotBranch/WatchlistAction";
 
 const MIS = () => {
   const dispatch = useDispatch();
@@ -49,14 +49,14 @@ const MIS = () => {
         ]);
         setTotalProfit(totalProfit);
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     }
   }, [GetMisDataByRangeData]);
 
   const columns = [
     {
-      title: "",
+      title: "Top Customer",
       dataIndex: "topCustomer",
       key: "topCustomer",
       render: (text, record, index) => {
@@ -66,24 +66,26 @@ const MIS = () => {
             <span
               className={`${
                 isExpanded ? "expanded" : ""
-              } mis-volumwise-value bg-none color-black tp-customer-hd roboto-13`}>
+              } mis-volumwise-value bg-none color-black tp-customer-hd roboto-13`}
+            >
               {index === 0 ? "Volumewise" : "Profit-wise (PKR)"}
               {shouldIncludeComponents && (
-                <span className='view-detail cursor-pointer'>
+                <span className="view-detail cursor-pointer">
                   <IconElement
                     onClick={() => handleExpandClick(record)}
                     iconClass={`icon-add-circle-fill fs-6 mx-1 ${
                       index === 1 ? "color-green" : "color-blue"
-                    }`}></IconElement>
+                    }`}
+                  ></IconElement>
                 </span>
               )}
             </span>
             {isExpanded ? (
-              <div className='d-grid'>
-                <span className='mis-volumwise-value bg-none color-black py-0 roboto-13'>
+              <div className="d-grid">
+                <span className="mis-volumwise-value bg-none color-black py-0 roboto-13">
                   Import
                 </span>
-                <span className='mis-volumwise-value bg-none color-black py-0 roboto-13'>
+                <span className="mis-volumwise-value bg-none color-black py-0 roboto-13">
                   Export
                 </span>
               </div>
@@ -102,7 +104,8 @@ const MIS = () => {
           <span
             className={`${
               isExpanded ? "expanded" : ""
-            } roboto-13 mis-volumwise-value bg-none color-black`}>
+            } roboto-13 mis-volumwise-value bg-none color-black`}
+          >
             {record?.corporateName}
           </span>
         );
@@ -120,21 +123,24 @@ const MIS = () => {
             <span
               className={`${isExpanded ? "expanded" : ""} ${
                 index === 1 ? "mis-profitwise-value" : "mis-volumwise-value"
-              } roboto-13`}>
+              } roboto-13`}
+            >
               {record?.value}
             </span>
             {isExpanded ? (
-              <div className='d-grid'>
+              <div className="d-grid">
                 <span
                   className={`${
                     index === 1 ? "mis-profitwise-value" : "mis-volumwise-value"
-                  } bg-none py-0 roboto-13`}>
+                  } bg-none py-0 roboto-13`}
+                >
                   {record?.import}
                 </span>
                 <span
                   className={`${
                     index === 1 ? "mis-profitwise-value" : "mis-volumwise-value"
-                  } bg-none py-0 roboto-13`}>
+                  } bg-none py-0 roboto-13`}
+                >
                   {record?.export}
                 </span>
               </div>
@@ -174,7 +180,6 @@ const MIS = () => {
         EndDate: formatDateToUTC(endDate),
       };
       console.log(Data, "Data");
-      dispatch(GetMisDataByRangeAPI({ navigate, Data }));
     } else {
       alert("Please select both dates.");
     }
@@ -182,47 +187,47 @@ const MIS = () => {
 
   return (
     <>
-      <div className='card-box'>
-        <div className='box-header bg-primary-orange px-3'>
-          <div className='text-start color-white fw-bold fs-6'>MIS</div>
+      <div className="card-box">
+        <div className="box-header bg-primary-orange px-3">
+          <div className="text-start color-white fw-bold fs-6">MIS</div>
         </div>
-        <div className='box-content-wrapper px-2'>
-          <div className='d-flex flex-wrap h-clc-100'>
-            <div className='flex-fill px-3'>
+        <div className="box-content-wrapper px-2">
+          <div className="d-flex flex-wrap h-clc-100">
+            <div className="flex-fill px-3">
               <GlobalTable
                 columns={columns}
                 dataSource={misTableData}
                 prefixCls={"MIS_Table"}
                 pagination={false}
               />
-              <div className='expanded-row'>
-                <div className='expanded-column first-column'>
-                  <span className='color-hd border-0 roboto-13'>
+              <div className="expanded-row">
+                <div className="expanded-column first-column">
+                  <span className="color-hd border-0 roboto-13">
                     Total Profit (PKR)
                   </span>
                 </div>
-                <div className='expanded-column third-column'>
-                  <span className='mis-totalprofit-value'>{totalProfit}</span>
+                <div className="expanded-column third-column">
+                  <span className="mis-totalprofit-value">{totalProfit}</span>
                 </div>
               </div>
             </div>
-            <div className='mis-selectrange-form w-fix-210 bg-lighter p-2'>
-              <label className='mb-2 fs-6 color-blue'>Select Range</label>
-              <div className='form-group'>
-                <label className='mb-1'>From</label>
+            <div className="mis-selectrange-form w-fix-210 bg-lighter p-2">
+              <label className="mb-2 fs-6 color-blue">Select Range</label>
+              <div className="form-group">
+                <label className="mb-1">From</label>
                 <DatePickerCom
-                  placeholder='Select Date'
+                  placeholder="Select Date"
                   applyClass={"DatePickerField"}
                   value={MisDate.StartDate}
                   onChange={(date) => handleChangeDate(date, "StartDate")}
                 />
               </div>
-              <div className='form-group'>
-                <label className='mb-1'>
-                  To <span className='invisible'> 123</span>
+              <div className="form-group">
+                <label className="mb-1">
+                  To <span className="invisible"> 123</span>
                 </label>
                 <DatePickerCom
-                  placeholder='Select Date'
+                  placeholder="Select Date"
                   applyClass={"DatePickerField"}
                   value={MisDate.EndDate}
                   minDate={
@@ -233,13 +238,13 @@ const MIS = () => {
                   onChange={(date) => handleChangeDate(date, "EndDate")}
                 />
               </div>
-              <div className='filter-mis-btn mt-3 d-flex gap-1'>
+              <div className="filter-mis-btn mt-3 d-flex gap-1">
                 <CustomButton
-                  value='Search'
+                  value="Search"
                   onClick={handleClickSearch}
-                  applyClass='searchBtn'
+                  applyClass="searchBtn"
                 />
-                <CustomButton value='Reset' applyClass='resetBtn' />
+                <CustomButton value="Reset" applyClass="resetBtn" />
               </div>
             </div>
           </div>

@@ -17,6 +17,8 @@ const BranchRateCardsOfWatchList = ({
   sellHeading,
   buyValue,
   sellValue,
+  isSellDisabled,
+  isBuyDisabled,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -54,7 +56,11 @@ const BranchRateCardsOfWatchList = ({
                   spot={true}
                   BidBoxHeading={sellHeading}
                   BidAmountValue={sellValue}
-                  applyClass={"SellandBuyCardBracnh"}
+                  applyClass={
+                    isBuyDisabled
+                      ? "SellandBuyCardBracnh_disbaled"
+                      : "SellandBuyCardBracnh"
+                  }
                   onClick={() => handleOpenModal("sell")}
                 />
               </Col>
@@ -63,7 +69,11 @@ const BranchRateCardsOfWatchList = ({
                   spot={true}
                   BidBoxHeading={buyHeading}
                   BidAmountValue={buyValue}
-                  applyClass={"SellandBuyCardBracnh"}
+                  applyClass={
+                    isSellDisabled
+                      ? "SellandBuyCardBracnh_disbaled"
+                      : "SellandBuyCardBracnh"
+                  }
                   onClick={() => handleOpenModal("buy")}
                 />
               </Col>

@@ -5,6 +5,7 @@ import Modal from "@/components/common/globalModal/Modal";
 import { Col, Row } from "react-bootstrap";
 import InputFIeld from "@/components/common/inputField/InputField";
 import CustomButton from "@/components/common/globalButton/button";
+import SelectDropdown from "@/components/common/selectDropdown/SelectDropdown";
 
 const NonFEDiscountingModal = ({
   nonfeDiscountingModalCall,
@@ -46,10 +47,9 @@ const NonFEDiscountingModal = ({
                   <Col lg={12} md={12} sm={12}>
                     <div className="d-flex flex-column flex-wrap">
                       <span className="SubHeadings">Currency</span>
-                      <Select
+                      <SelectDropdown
                         options={options}
                         placeholder=""
-                        classNamePrefix="bookaForwardCorporate"
                       />
                     </div>
                   </Col>

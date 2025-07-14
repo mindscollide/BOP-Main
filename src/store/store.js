@@ -15,7 +15,6 @@ import RealtimeActionsSlice from "./realtimeActionsSlicer/realtimeActionSlice";
 import { errorInterceptor } from "./middleware/errorInterceptor";
 import modalSlicer from "./modalSlice/modalSlicer";
 import BlotterSlicer from "@/store/BlotterSlicer/BlotterSlicer";
-
 const store = configureStore({
   reducer: {
     bankSpotReducer: bankSpotSlicer,

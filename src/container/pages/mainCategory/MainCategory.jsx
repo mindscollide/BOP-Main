@@ -7,10 +7,14 @@ import { useSelector } from "react-redux";
 import { getAllCategoriesAction } from "@/components/utils/globalApis";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { GetAllCounterPartyDataAPI } from "@/components/features/SpotBranch/WatchlistAction";
 import { setActiveTab } from "../mainCorporate/rfqModal/RFQSlicer";
-import Forwards from "../mainTreasury/tabsContent/forwards/Forwards";
-import { setCategoryValue } from "@/store/dealerReducer/dealerSlicer";
+import { getAllTreasuryInstrumentsApi } from "@/components/features/SpotBranch/WatchlistAction";
+import {
+  GetCategoryWiseDiscountingRatesApi,
+  GetCategoryWiseForwardRatesApi,
+  GetCategoryWiseSpotRatesApi,
+} from "./categoryActions";
+import { getAllTenorsAction } from "../mainDealer/dealerActions";
 
 const MainCategory = () => {
   const navigate = useNavigate();
@@ -18,12 +22,20 @@ const MainCategory = () => {
   const getAllCategories = useSelector(
     (state) => state.authReducer.getAllCategories
   );
-  const getAllCounterPartyData = useSelector(
-    (state) => state.WatchListReducer.GetAllCounterPartyData
-  );
+
+  // const allInstrumentForTreasuryData = useSelector(
+  //   (state) => state.WatchListReducer.GetAllInstrumentForTreasury
+  // );
+
+  console.log("getAllCategoriesgetAllCategories:", getAllCategories);
 
   useEffect(() => {
     dispatch(getAllCategoriesAction({ navigate }));
+    dispatch(getAllTreasuryInstrumentsApi({ navigate }));
+    dispatch(getAllTenorsAction({ navigate }));
+    // let Data = {
+    //   Category: 1,
+    // };
   }, []);
 
   const activeTab = useSelector((state) => state.RFQReducer.activeTab);
@@ -31,37 +43,27 @@ const MainCategory = () => {
     dispatch(setActiveTab(tabTitle));
   };
 
-  // GetAllCounterPartyDataAPI
-  useEffect(() => {
-    if (getAllCategories !== null) {
-      const { categories } = getAllCategories;
-      if (categories.length > 0) {
-        let Data = {
-          CategoryID: categories[0].categoryID,
-        };
-        let obj = {
-          value: categories[0].categoryID,
-          label: categories[0].categoryName,
-        };
-        dispatch(setCategoryValue(obj));
-        dispatch(GetAllCounterPartyDataAPI({ Data, navigate }));
-        console.log(categories[0], "categoriescategories");
-      }
-    }
-  }, [getAllCategories]);
-
   const tabsData = [
-    { title: "Spot", content: <SpotDealerAndTreasury /> },
-    { title: "Forwards", content: <CategoryForwards /> },
-    { title: "Discounting", content: <CategoryDiscounting /> },
+    {
+      title: "Spot",
+      content: activeTab === "Spot" ? <SpotDealerAndTreasury /> : null,
+    },
+    {
+      title: "Forwards",
+      content: activeTab === "Forwards" ? <CategoryForwards /> : null,
+    },
+    {
+      title: "Discounting",
+      content: activeTab === "Discounting" ? <CategoryDiscounting /> : null,
+    },
   ];
   return (
     <GlobalTabs
       tabs={tabsData}
       activeKey={activeTab}
       onTabChange={handleTabChange}
-      defaultActiveKey='0'
-      tabClass='mb-4'
+      defaultActiveKey="0"
+      tabClass="mb-4"
     />
   );
 };

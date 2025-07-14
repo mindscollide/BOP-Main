@@ -8,7 +8,7 @@ import CustomButton from "@/components/common/globalButton/button";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { setViewDealModal } from "@/store/modalSlice/modalSlicer";
-import { RFQTransactionQuotation } from "@/container/pages/mainTreasury/tabsContent/liveRates/blotter/BlotterActions";
+import { RFQTransactionQuotation } from "@/components/features/blotter/BlotterActions";
 import { useNavigate } from "react-router-dom";
 
 const DealViewModal = ({ dealData }) => {
@@ -45,10 +45,10 @@ const DealViewModal = ({ dealData }) => {
 
   const handleSubmit = () => {
     // scenario is if side is "buy" then bid should be disabled and offer should be enabled
-    // RFQTransactionQuotation
-    // RFQForwardTransactionQuotation
-    // RFQFEDiscountingTransactionQuotation
-    // RFQNonFEDiscountingTransactionQuotation
+    // RFQTransactionQuotation naturetype 1
+    // RFQForwardTransactionQuotation naturetype 2
+    // RFQFEDiscountingTransactionQuotation naturetype 3
+    // RFQNonFEDiscountingTransactionQuotation naturetype 4
     let Data = {
       PK_TransactionID: dealData?.pK_TransactionID,
       Rate:

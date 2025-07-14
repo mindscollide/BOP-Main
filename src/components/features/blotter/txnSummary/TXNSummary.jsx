@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
-import GlobalTable from "../../../../../../../components/common/table/GlobalTable";
-import IconElement from "../../../../../../../components/common/IconElement/IconElement";
+import GlobalTable from "@/components/common/table/GlobalTable";
+import IconElement from "@/components/common/IconElement/IconElement";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { Checkbox, Popover } from "antd";

@@ -28,8 +28,9 @@ import {
   SaveNonFeDiscountingTransactionRM,
   SaveSpotTransactionRFQRM,
   SaveSpotTransactionRM,
+  GetSpotRatesForCounterParty,
 } from "@/common/api_config";
-import { blotterApi } from "@/common/apiend_points";
+import { blotterApi, watchListApi } from "@/common/apiend_points";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
 import {
   setRfqModalOpen,
@@ -829,7 +830,10 @@ export const RejectTransactionCancellationRequest = createAsyncThunk(
 
 export const CancelTransaction = createAsyncThunk(
   "Blotter/CancelTransaction",
-  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+  async (
+    { navigate, Data, setCancelReasonModal },
+    { dispatch, rejectWithValue }
+  ) => {
     try {
       const postAPI = createPostAPI(
         blotterApi,
@@ -845,7 +849,7 @@ export const CancelTransaction = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(CancelTransaction({ navigate, Data }));
+        dispatch(CancelTransaction({ navigate, Data, setCancelReasonModal }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -856,6 +860,7 @@ export const CancelTransaction = createAsyncThunk(
                 "Blotter_BlotterServiceManager_CancelTransaction_01".toLowerCase()
               )
           ) {
+            setCancelReasonModal(false);
             return {
               response: response.data.responseResult,
               message: "Transaction cancelled successfully",
@@ -1265,7 +1270,7 @@ export const SaveSpotTransactionRFQ = createAsyncThunk(
   }
 );
 
-export const SaveForwardTransactionRFQ = createAsyncThunk(
+export const SaveForwardTransactionRFQApi = createAsyncThunk(
   "Blotter/SaveForwardTransactionRFQ",
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
@@ -1283,7 +1288,7 @@ export const SaveForwardTransactionRFQ = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(SaveForwardTransactionRFQ({ navigate, Data }));
+        dispatch(SaveForwardTransactionRFQApi({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -1302,7 +1307,7 @@ export const SaveForwardTransactionRFQ = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "Blotter_BlotterServiceManager_SaveForwardTransactionRFQ_01".toLowerCase()
+                "Blotter_BlotterServiceManager_SaveForwardTransactionRFQ_02".toLowerCase()
               )
           ) {
             return rejectWithValue("Unsuccessfull");
@@ -1310,7 +1315,7 @@ export const SaveForwardTransactionRFQ = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "Blotter_BlotterServiceManager_SaveForwardTransactionRFQ_01".toLowerCase()
+                "Blotter_BlotterServiceManager_SaveForwardTransactionRFQ_03".toLowerCase()
               )
           ) {
             return rejectWithValue("Invalid Role");
@@ -1318,7 +1323,7 @@ export const SaveForwardTransactionRFQ = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "Blotter_BlotterServiceManager_SaveForwardTransactionRFQ_01".toLowerCase()
+                "Blotter_BlotterServiceManager_SaveForwardTransactionRFQ_04".toLowerCase()
               )
           ) {
             return rejectWithValue("Something went wrong");
@@ -1326,7 +1331,7 @@ export const SaveForwardTransactionRFQ = createAsyncThunk(
             return rejectWithValue("Something went wrong");
           }
         } else {
-          return rejectWithValue(responseMessage || "Something went wrong");
+          return rejectWithValue("Something went wrong");
         }
       } else {
         return rejectWithValue("Something went wrong");
@@ -2340,7 +2345,7 @@ export const calculateTenorSwapAndForwardRateApi = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(calculateForwardRFQData({ navigate, Data }));
+        dispatch(calculateTenorSwapAndForwardRateApi({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -2351,6 +2356,7 @@ export const calculateTenorSwapAndForwardRateApi = createAsyncThunk(
                 "Blotter_BlotterServiceManager_CalculateTenorSwapAndForwardRate_01".toLowerCase()
               )
           ) {
+            console.log("Checking", response.data.responseResult);
             return {
               response: response.data.responseResult,
               message: "Forward RFQ data calculated successfully",
@@ -2371,7 +2377,85 @@ export const calculateTenorSwapAndForwardRateApi = createAsyncThunk(
         return rejectWithValue("Something went wrong");
       }
     } catch (error) {
+      console.log(error, "errorerrorerror");
       return rejectWithValue("Error calculating forward RFQ data");
+    }
+  }
+);
+
+// Define the GetSpotRatesForCounterPartyAPI async thunk
+export const GetSpotRatesForCounterPartyAPI = createAsyncThunk(
+  "watchlist/GetSpotRatesForCounterParty", // A unique action type string
+  async ({ navigate }, { dispatch, rejectWithValue }) => {
+    try {
+      const GetSpotRatesForCounterPartyM = createPostAPI(
+        watchListApi,
+        GetSpotRatesForCounterParty.RequestMethod
+      );
+
+      const response = await GetSpotRatesForCounterPartyM();
+      const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
+      }
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(GetSpotRatesForCounterPartyAPI({ navigate }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetSpotRatesForCounterParty_01".toLowerCase()
+              )
+          ) {
+            console.log("", response.data);
+            return {
+              response: response.data.responseResult,
+              message: "API executed successfully.",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetSpotRatesForCounterParty_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("No Record Found.");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetSpotRatesForCounterParty_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Role doesn’t matched.");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetSpotRatesForCounterParty_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Exception occured.");
+          } else {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          console.log("", response.data);
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      // Reject with error message
+      console.log("", error);
+      return rejectWithValue("Something went wrong");
     }
   }
 );

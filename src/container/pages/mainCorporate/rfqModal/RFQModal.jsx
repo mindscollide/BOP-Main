@@ -9,12 +9,10 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { SaveTransactionRFQAPI } from "./RFQActions";
 import { useSelector } from "react-redux";
-import { GetFXInstrumentsAPI } from "@/components/features/SpotBranch/WatchlistAction";
-import { set } from "zod";
 import {
   SaveSpotTransactionAPI,
   SaveSpotTransactionRFQ,
-} from "../../mainTreasury/tabsContent/liveRates/blotter/BlotterActions";
+} from "@/components/features/blotter/BlotterActions";
 import {
   setIBuySellData,
   setRfqModalOpen,
@@ -81,6 +79,10 @@ const RFQModal = () => {
     value: 0,
     label: "",
   });
+  let branchDetails =
+    localStorage.getItem("branch") !== null
+      ? JSON.parse(localStorage.getItem("branch"))
+      : null;
 
   const onCloseRfq = () => {
     dispatch(setRfqModalOpen(false));
@@ -127,6 +129,7 @@ const RFQModal = () => {
           value: 21,
           label: iBuySellData.currencyLabel,
         });
+
         console.log(iBuySellData, "iBuySellDataiBuySellDataiBuySellData");
       } catch (error) {
         console.log(error, "Error in iBuySellData useEffect");
@@ -269,8 +272,19 @@ const RFQModal = () => {
         modalHeader={
           <>
             <Row>
-              <Col lg={12} md={12} sm={12}>
-                <span className='heading-RfqModal'>Gul Ahmed</span>
+              <Col lg={12} md={12} sm={12} className=''>
+                {isBranch ? (
+                  <>
+                    <p className='heading-RfqModal'>
+                      {branchDetails.branchName}
+                    </p>
+                    <p className='heading-branchCode'>
+                      Branch Code: {branchDetails.branchCode}
+                    </p>
+                  </>
+                ) : (
+                  ""
+                )}
               </Col>
             </Row>
           </>
@@ -288,7 +302,7 @@ const RFQModal = () => {
                   </Col>
                   <Col lg={4} md={4} sm={4} className='mb-3'>
                     <SelectDropdown
-                      classNamePrefix='bookaForwardCorporate'
+                      classNamePrefix='RfqSpot'
                       placeholder=''
                       options={getAllCorporates}
                       onChange={handleChangeCorporate}
@@ -306,7 +320,7 @@ const RFQModal = () => {
               </Col>
               <Col lg={4} md={4} sm={4} className='mb-2'>
                 <SelectDropdown
-                  classNamePrefix='bookaForwardCorporate'
+                  classNamePrefix='RfqSpot'
                   placeholder=''
                   options={currencyOptions}
                   onChange={handleCurrencyChange}
@@ -321,12 +335,12 @@ const RFQModal = () => {
               <Col lg={4} md={4} sm={4} className='mb-2'>
                 <SelectDropdown
                   placeholder='Select Type'
+                  classNamePrefix='RfqSpot'
                   value={
                     typeOptionSelected.value === 0 ? null : typeOptionSelected
                   }
                   onChange={handleChangeType}
                   options={typeOptions}
-                  classNamePrefix='bookaForwardCorporate'
                   isDisabled={iBuySellData !== null ? true : false}
                 />
               </Col>
@@ -365,7 +379,7 @@ const RFQModal = () => {
               <Col lg={4} md={4} sm={4} className='mb-2'>
                 <SelectDropdown
                   placeholder=''
-                  classNamePrefix='bookaForwardCorporate'
+                  classNamePrefix='RfqSpot'
                   options={natureOfBusinessOptions.filter((option) => {
                     if (typeOptionSelected?.value === 1 && option.isForSpot) {
                       return option.isForBuy;

@@ -9,11 +9,15 @@ import { useSelector } from "react-redux";
 import { formatDate } from "@/common/utils";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
+// import {
+//   SaveForwardTransactionAPI,
+//   calculateTenorSwapAndForwardRateApi,
+// } from "@/container/pages/mainTreasury/tabsContent/liveRates/blotter/BlotterActions";
+import { clearCalculateTenorSwapAndForwardRateData } from "@/store/BlotterSlicer/BlotterSlicer";
 import {
   SaveForwardTransactionAPI,
   calculateTenorSwapAndForwardRateApi,
-} from "@/container/pages/mainTreasury/tabsContent/liveRates/blotter/BlotterActions";
-import { clearCalculateTenorSwapAndForwardRateData } from "@/store/BlotterSlicer/BlotterSlicer";
+} from "../../blotter/BlotterActions";
 const CorporateBookaForwardModal = ({
   bookaForwardModalCall,
   setBookaForwardModalCall,
@@ -79,11 +83,7 @@ const CorporateBookaForwardModal = ({
     console.log("selectType", selectType);
     setTypeOptionSelected(selectType);
   };
-  const options = [
-    { value: "chocolate", label: "Chocolate" },
-    { value: "strawberry", label: "Strawberry" },
-    { value: "vanilla", label: "Vanilla" },
-  ];
+  const options = [];
 
   useEffect(() => {
     if (natureOfBusinessList !== null) {
@@ -133,7 +133,10 @@ const CorporateBookaForwardModal = ({
       }
     }
   }, [GetAllActiveCorproates]);
-
+  console.log(
+    calculatedForwardsSwapandRate,
+    "calculatedForwardsSwapandRatecalculatedForwardsSwapandRate"
+  );
   useEffect(() => {
     if (calculatedForwardsSwapandRate !== null) {
       try {
@@ -265,7 +268,9 @@ const CorporateBookaForwardModal = ({
         OptionDays: Number(forwardRFQState.Options),
         Swap: Number(forwardRFQState.Swap),
       };
-      dispatch(SaveForwardTransactionAPI({ navigate, Data, setBookaForwardModalCall }));
+      dispatch(
+        SaveForwardTransactionAPI({ navigate, Data, setBookaForwardModalCall })
+      );
     }
   };
 
@@ -297,18 +302,21 @@ const CorporateBookaForwardModal = ({
             <Row className='position-relative'>
               <Col lg={9} md={9} sm={9}>
                 <Row>
-                  <Col lg={12} md={12} sm={12} className='mb-2'>
-                    <div className='d-flex flex-column flex-wrap'>
-                      <span className='SubHeadings'>Client Name</span>
-                      <Select
-                        options={getAllCorporates}
-                        placeholder=''
-                        value={corporateValue}
-                        onChange={handleChangeCorporate}
-                        classNamePrefix='bookaForwardCorporate'
-                      />
-                    </div>
-                  </Col>
+                  {import.meta.env.VITE_APP_INCLUDE_BRANCH === "true" && (
+                    <Col lg={12} md={12} sm={12} className='mb-2'>
+                      <div className='d-flex flex-column flex-wrap'>
+                        <span className='SubHeadings'>Client Name</span>
+                        <Select
+                          options={getAllCorporates}
+                          placeholder=''
+                          value={corporateValue}
+                          onChange={handleChangeCorporate}
+                          classNamePrefix='bookaForwardCorporate'
+                        />
+                      </div>
+                    </Col>
+                  )}
+
                   <Col lg={6} md={6} sm={6}>
                     <div className='d-flex flex-column flex-wrap'>
                       <span className='SubHeadings'>Currency</span>

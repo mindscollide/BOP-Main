@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { Col, Row, Form } from "react-bootstrap";
-import CustomButton from "../../../../../../../components/common/globalButton/button";
-import Modal from "../../../../../../../components/common/globalModal/Modal";
-import InputFIeld from "../../../../../../../components/common/inputField/InputField";
-import PdfIcon from "../../../../../../../assets/pdf-icon.png";
-import XlsIcon from "../../../../../../../assets/xls.svg";
-import TextArea from "../../../../../../../components/common/textArea/TextArea";
-import SelectDropdown from "../../../../../../../components/common/selectDropdown/SelectDropdown";
+import CustomButton from "@/components/common/globalButton/button";
+import Modal from "@/components/common/globalModal/Modal";
+import InputFIeld from "@/components/common/inputField/InputField";
+import PdfIcon from "@/assets/pdf-icon.png";
+import XlsIcon from "@/assets/xls.svg";
+import TextArea from "@/components/common/textArea/TextArea";
+import SelectDropdown from "@/components/common/selectDropdown/SelectDropdown";
 import "./MailModal.css";
-import IconElement from "../../../../../../../components/common/IconElement/IconElement";
+import IconElement from "@/components/common/IconElement/IconElement";
 
 const MailModal = ({ openMailModal, setOpenMailModal }) => {
   const onCloseModal = () => {

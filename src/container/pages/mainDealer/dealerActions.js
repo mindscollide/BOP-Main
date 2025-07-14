@@ -1,6 +1,6 @@
 import { setCustomHeaders } from "@/common/utils";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { uploadRatesApi } from "@/common/apiend_points";
+import { authApi, uploadRatesApi, watchListApi } from "@/common/apiend_points";
 import {
   clearRatesRM,
   marketOnOffRM,
@@ -11,7 +11,6 @@ import {
   getTenorWiseForwardRatesRM,
   publishTenorWiseForwardRatesRM,
   getDiscountingRatesRM,
-  publishDiscountingRatesRM,
   getDealerDasboardDataRM,
 } from "@/common/api_config";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
@@ -340,10 +339,7 @@ export const getAllTenorsAction = createAsyncThunk(
   "uploadRate/getAllTenors", // A unique action type string
   async ({ navigate }, { rejectWithValue, dispatch }) => {
     try {
-      let getAllTenors = createPostAPI(
-        uploadRatesApi,
-        getAllTenorsRM.RequestMethod
-      );
+      let getAllTenors = createPostAPI(authApi, getAllTenorsRM.RequestMethod);
 
       const response = await getAllTenors();
 
@@ -365,7 +361,7 @@ export const getAllTenorsAction = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "UploadRate_UploadRateServiceManager_GetAllTenors_01".toLowerCase()
+                "ERM_AuthService_CommonManager_GetAllTenors_01".toLowerCase()
               )
           ) {
             return {
@@ -376,7 +372,7 @@ export const getAllTenorsAction = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "UploadRate_UploadRateServiceManager_GetAllTenors_02".toLowerCase()
+                "ERM_AuthService_CommonManager_GetAllTenors_02".toLowerCase()
               )
           ) {
             return rejectWithValue("Something went wrong");
@@ -384,7 +380,7 @@ export const getAllTenorsAction = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "UploadRate_UploadRateServiceManager_GetAllTenors_03".toLowerCase()
+                "ERM_AuthService_CommonManager_GetAllTenors_03".toLowerCase()
               )
           ) {
             return rejectWithValue("Something went wrong");
@@ -392,7 +388,7 @@ export const getAllTenorsAction = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "UploadRate_UploadRateServiceManager_GetAllTenors_04".toLowerCase()
+                "ERM_AuthService_CommonManager_GetAllTenors_04".toLowerCase()
               )
           ) {
             return rejectWithValue("Something went wrong");
@@ -416,10 +412,7 @@ export const getAllTenorsAction = createAsyncThunk(
 // Define the login async thunk
 export const createTenorAction = createAsyncThunk(
   "uploadRate/createTenors", // A unique action type string
-  async (
-    { navigate, Data, setCreateTenor },
-    { dispatch, rejectWithValue }
-  ) => {
+  async ({ navigate, Data, setCreateTenor }, { dispatch, rejectWithValue }) => {
     try {
       let createTenor = createPostAPI(
         uploadRatesApi,
@@ -453,7 +446,7 @@ export const createTenorAction = createAsyncThunk(
                 "UploadRate_UploadRateServiceManager_CreateTenor_01".toLowerCase()
               )
           ) {
-            dispatch(setCreateTenorModal(false))
+            dispatch(setCreateTenorModal(false));
             setCreateTenor({
               noOfDays: "",
               tenorName: "",
@@ -905,7 +898,7 @@ export const getDealerDashboardApi = createAsyncThunk(
           ) {
             return {
               response: response.data.responseResult,
-              message: "Successfully",
+              message: "Successfully.",
             };
           } else if (
             responseMessage
@@ -914,7 +907,7 @@ export const getDealerDashboardApi = createAsyncThunk(
                 "UploadRate_UploadRateServiceManager_GetDealerDashboardData_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Something went wrong");
+            return rejectWithValue("Role doesn’t matched");
           } else if (
             responseMessage
               .toLowerCase()
@@ -938,7 +931,7 @@ export const getDealerDashboardApi = createAsyncThunk(
                 "UploadRate_UploadRateServiceManager_GetDealerDashboardData_05".toLowerCase()
               )
           ) {
-            return rejectWithValue("Something went wrong");
+            return rejectWithValue("No Record Found");
           } else {
             console.log("", response.data);
             return rejectWithValue("Something went wrong");

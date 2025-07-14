@@ -1,11 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {
-  GetAllCounterPartyDataAPI,
-  GetAllFowardsAndDiscountsRatesAPI,
+  GetBankForwardForTreasuryApi,
+  GetBankSpotForTreasuryApi,
   GetDashboardDataAPI,
-  GetFXInstrumentsAPI,
+  GetDiscountingRatesForCounterPartyApi,
+  GetDiscountingRatesForTreasuryApi,
+  GetForwardRatesForCounterPartyApi,
   GetMisDataByRangeAPI,
   SaveUserDashboardAPI,
+  getAllTreasuryInstrumentsApi,
 } from "../../components/features/SpotBranch/WatchlistAction";
 const WatchListSlice = createSlice({
   name: "WatchList",
@@ -13,12 +16,17 @@ const WatchListSlice = createSlice({
     responseMessage: "",
     Loader: false,
     error: null,
-    WatchListData: null,
-    GetMisDataByRange: null,
-    GetAllFowardsAndDiscountsRatesData: null,
-    GetAllCounterPartyData: null,
     GettheDashboardData: null,
+    GetMisDataByRange: null,
     SaveUserDashboardData: null,
+    allInstrumentForTreasury: null,
+    GetAllFowardsAndDiscountsRatesData: null,
+    GetForwardRatesForCounterParty: null,
+    GetDiscountingRatesForCounterParty: null,
+    GetAllInstrumentForTreasury: null,
+    GetBankSpotForTreasury: null,
+    GetBankForwardForTreasury: null,
+    GetDiscountingRatesForTreasury: null,
   },
   reducers: {
     clearWatchListResponseMessage: (state) => {
@@ -27,26 +35,6 @@ const WatchListSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Pending state (while the API call is being made)
-      .addCase(GetFXInstrumentsAPI.pending, (state) => {
-        state.Loader = true;
-        state.error = null;
-      })
-      // Fulfilled state (when the API call succeeds)
-      .addCase(GetFXInstrumentsAPI.fulfilled, (state, { payload }) => {
-        state.Loader = false;
-        state.WatchListData = payload?.response;
-        state.error = null;
-        state.responseMessage = payload?.message;
-      })
-      // Rejected state (when the API call fails)
-      .addCase(GetFXInstrumentsAPI.rejected, (state, action) => {
-        console.log(action, "actionaction");
-        state.Loader = false;
-        state.error = action.payload;
-        state.WatchListData = null;
-      })
-
       // Pending state (while the API call is in Pending State GetMisDataByRange)
       .addCase(GetMisDataByRangeAPI.pending, (state) => {
         state.Loader = true;
@@ -57,7 +45,7 @@ const WatchListSlice = createSlice({
         state.Loader = false;
         state.GetMisDataByRange = payload?.response;
         state.error = null;
-        state.responseMessage = payload?.message;
+        state.responseMessage = payload.message;
       })
       // Rejected state (while the API call is fail GetMisDataByRange)
       .addCase(GetMisDataByRangeAPI.rejected, (state, action) => {
@@ -66,50 +54,6 @@ const WatchListSlice = createSlice({
         state.error = action.payload;
         state.GetMisDataByRange = null;
       })
-
-      // Pending state (while the API call is in Pending State GetAllFowardsAndDiscountsRates)
-      .addCase(GetAllFowardsAndDiscountsRatesAPI.pending, (state) => {
-        state.Loader = true;
-        state.error = null;
-      })
-      // Fulfilled state (while the API call is being made GetAllFowardsAndDiscountsRates)
-      .addCase(
-        GetAllFowardsAndDiscountsRatesAPI.fulfilled,
-        (state, { payload }) => {
-          state.Loader = false;
-          state.GetAllFowardsAndDiscountsRatesData = payload?.response;
-          state.error = null;
-          state.responseMessage = payload?.message;
-        }
-      )
-      // Rejected state (while the API call is fail GetAllFowardsAndDiscountsRates)
-      .addCase(GetAllFowardsAndDiscountsRatesAPI.rejected, (state, action) => {
-        console.log(action, "actionaction");
-        state.Loader = false;
-        state.error = action.payload;
-        state.GetAllFowardsAndDiscountsRatesData = null;
-      })
-
-      // Pending state (while the API call is in Pending State GetAllCounterPartyDataAPI)
-      .addCase(GetAllCounterPartyDataAPI.pending, (state) => {
-        state.Loader = true;
-        state.error = null;
-      })
-      // Fulfilled state (while the API call is being made GetAllCounterPartyDataAPI)
-      .addCase(GetAllCounterPartyDataAPI.fulfilled, (state, { payload }) => {
-        state.Loader = false;
-        state.GetAllCounterPartyData = payload?.response;
-        state.error = null;
-        state.responseMessage = payload?.message;
-      })
-      // Rejected state (while the API call is fail GetAllCounterPartyDataAPI)
-      .addCase(GetAllCounterPartyDataAPI.rejected, (state, action) => {
-        console.log(action, "actionaction");
-        state.Loader = false;
-        state.error = action.payload;
-        state.GetAllCounterPartyData = null;
-      })
-
       // Pending state (while the API call is in Pending State GetDashboardData)
       .addCase(GetDashboardDataAPI.pending, (state) => {
         state.Loader = true;
@@ -149,7 +93,123 @@ const WatchListSlice = createSlice({
         state.Loader = false;
         state.error = action.payload;
         state.SaveUserDashboardData = null;
-      });
+      })
+
+      .addCase(getAllTreasuryInstrumentsApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(getAllTreasuryInstrumentsApi.fulfilled, (state, { payload }) => {
+        // console.log(payload.response, "globalStateWatchlistCardData");
+        state.Loader = false;
+        state.GetAllInstrumentForTreasury = payload?.response;
+        state.error = null;
+        state.responseMessage = payload?.message;
+      })
+      // Rejected state (while the API call is fail GetDashboardData)
+      .addCase(getAllTreasuryInstrumentsApi.rejected, (state, action) => {
+        // console.log(action, "actionaction");
+        state.Loader = false;
+        state.error = action.payload;
+        state.GetAllInstrumentForTreasury = null;
+      })
+
+      //***************** */
+      // Pending state (while the API call is in Pending State GetDashboardData)
+      .addCase(GetForwardRatesForCounterPartyApi.pending, (state) => {
+        state.Loader = true;
+        state.error = null;
+      })
+      // Fulfilled state (while the API call is being made GetDashboardData)
+      .addCase(
+        GetForwardRatesForCounterPartyApi.fulfilled,
+        (state, { payload }) => {
+          // console.log(payload.response, "globalStateWatchlistCardData");
+          state.Loader = false;
+          state.GetForwardRatesForCounterParty = payload?.response;
+          state.error = null;
+          state.responseMessage = payload?.message;
+        }
+      )
+      // Rejected state (while the API call is fail GetDashboardData)
+      .addCase(GetForwardRatesForCounterPartyApi.rejected, (state, action) => {
+        // console.log(action, "actionaction");
+        state.Loader = false;
+        state.error = action.payload;
+        state.GetForwardRatesForCounterParty = null;
+      })
+
+      //***************** */
+      // Pending state (while the API call is in Pending State GetDashboardData)
+      .addCase(GetDiscountingRatesForCounterPartyApi.pending, (state) => {
+        state.Loader = true;
+        state.error = null;
+      })
+      // Fulfilled state (while the API call is being made GetDashboardData)
+      .addCase(
+        GetDiscountingRatesForCounterPartyApi.fulfilled,
+        (state, { payload }) => {
+          // console.log(payload.response, "globalStateWatchlistCardData");
+          state.Loader = false;
+          state.GetDiscountingRatesForCounterParty = payload?.response;
+          state.error = null;
+          state.responseMessage = payload?.message;
+        }
+      )
+      // Rejected state (while the API call is fail GetDashboardData)
+      .addCase(
+        GetDiscountingRatesForCounterPartyApi.rejected,
+        (state, action) => {
+          // console.log(action, "actionaction");
+          state.Loader = false;
+          state.error = action.payload;
+          state.GetDiscountingRatesForCounterParty = null;
+        }
+      )
+      .addCase(GetBankSpotForTreasuryApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(GetBankSpotForTreasuryApi.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.GetBankSpotForTreasury = payload?.response;
+        state.responseMessage = payload?.message;
+      })
+      .addCase(GetBankSpotForTreasuryApi.rejected, (state, { payload }) => {
+        state.Loader = false;
+        state.GetBankSpotForTreasury = null;
+        state.responseMessage = payload;
+      })
+      .addCase(GetBankForwardForTreasuryApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(GetBankForwardForTreasuryApi.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.GetBankForwardForTreasury = payload?.response;
+        state.responseMessage = payload?.message;
+      })
+      .addCase(GetBankForwardForTreasuryApi.rejected, (state, { payload }) => {
+        state.Loader = false;
+        state.GetBankForwardForTreasury = null;
+        state.responseMessage = payload;
+      })
+      .addCase(GetDiscountingRatesForTreasuryApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(
+        GetDiscountingRatesForTreasuryApi.fulfilled,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.GetDiscountingRatesForTreasury = payload?.response;
+          state.responseMessage = payload?.message;
+        }
+      )
+      .addCase(
+        GetDiscountingRatesForTreasuryApi.rejected,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.GetDiscountingRatesForTreasury = null;
+          state.responseMessage = payload;
+        }
+      );
   },
 });
 

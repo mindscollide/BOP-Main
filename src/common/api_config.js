@@ -216,8 +216,6 @@ export const RejectTransactionRM = {
   RequestMethod: "ServiceManager.RejectTransaction",
 };
 
-
-
 export const AcceptTransactionCancellationRM = {
   RequestMethod: "ServiceManager.AcceptTransactionCancellationRequest",
 };
@@ -295,12 +293,57 @@ export const GetNonFEDiscountingTransactionDetailsRM = {
 };
 
 export const GetActiveCorporatesRM = {
-  RequestMethod: "ServiceManager.GetActiveCorporates"
-}
+  RequestMethod: "ServiceManager.GetActiveCorporates",
+};
 
 export const CancelPendingTransactionRM = {
-  RequestMethod : "ServiceManager.CancelPendingTransaction",
-}
+  RequestMethod: "ServiceManager.CancelPendingTransaction",
+};
+
 export const CalculateTenorSwapAndForwardRateRM = {
   RequestMethod: "ServiceManager.CalculateTenorSwapAndForwardRate",
+};
+
+export const GetSpotRatesForCounterParty = {
+  RequestMethod: "ServiceManager.GetSpotRatesForCounterParty",
+};
+export const GetAllInstrumentForTreasuryRM = {
+  RequestMethod: "ServiceManager.GetAllInstrumentForTreasury",
+};
+
+export const GetForwardRatesForCounterParty = {
+  RequestMethod: "ServiceManager.GetForwardRatesForCounterParty",
+};
+
+export const GetDiscountingRatesForCounterParty = {
+  RequestMethod: "ServiceManager.GetDiscountingRatesForCounterParty",
+};
+
+export const GetCategoryWiseSpotRates = {
+  RequestMethod: "ServiceManager.GetCategoryWiseSpotRates",
+};
+
+export const GetCategoryWiseForwardRates = {
+  RequestMethod: "ServiceManager.GetCategoryWiseForwardRates",
+};
+
+export const GetCategoryWiseDiscountingRates = {
+  RequestMethod: "ServiceManager.GetCategoryWiseDiscountingRates",
+};
+
+export const GetBankSpotForTreasury = {
+  RequestMethod: "ServiceManager.GetBankSpotForTreasury",
+};
+
+export const GetBankForwardForTreasury = {
+  RequestMethod: "ServiceManager.GetBankForwardForTreasury",
+};
+
+export const GetDiscountingRatesForTreasury = {
+  RequestMethod: "ServiceManager.GetDiscountingRatesForTreasury",
+};
+
+
+export const CalculateNonFESwapAndDiscountingRM = {
+  RequestMethod: "ServiceManager.CalculateNonFESwapAndDiscounting"
 }

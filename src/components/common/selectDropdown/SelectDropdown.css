@@ -114,3 +114,65 @@
   color: #fff !important;
 }
 /*  */
+
+/* Global Select Dropdonw Modal For trasanctions  */
+
+/* Control container (already applied) */
+.TransactionModal__control {
+  min-height: 28px !important;
+  height: 28px !important;
+  padding: 0 !important; /* Remove any inner control padding */
+}
+
+/* Value container (where the selected value appears) */
+.TransactionModal__value-container {
+  padding: 0 10px !important;
+  height: 28px !important;
+  font-weight: 800 !important;
+  /* display: flex; */
+  /* align-items: center; */
+}
+
+/* Input field inside the select (for typing/searching) */
+.TransactionModal__input {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Placeholder text (if shown) */
+.TransactionModal__placeholder {
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 12px; /* optional: match the tighter layout */
+  line-height: 1;
+}
+
+/* Single selected value */
+.TransactionModal__single-value {
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 14px;
+  line-height: 1;
+}
+
+/* Indicators (dropdown arrow, clear button) */
+.TransactionModal__indicators {
+  height: 24px;
+}
+
+.TransactionModal__indicator {
+  padding: 0 6px !important;
+}
+
+.TransactionModal__option {
+  padding: 8px 15px !important;
+  font-size: 12px !important;
+  border-bottom: 1px solid #81828f;
+}
+.TransactionModal__menu-list {
+  background-color: var(--color-light-gray2);
+}
+.TransactionModal__option--is-focused , .TransactionModal__option--is-selected{
+  background-color: var(--color-blue) !important;
+  color: white !important;
+}

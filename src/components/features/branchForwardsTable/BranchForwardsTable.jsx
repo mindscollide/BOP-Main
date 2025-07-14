@@ -3,59 +3,102 @@ import GlobalTable from "../../common/table/GlobalTable";
 import { createColumns, generateData } from "../../utils/generateData";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { GetAllFowardsAndDiscountsRatesAPI } from "../SpotBranch/WatchlistAction";
+// import { GetAllFowardsAndDiscountsRatesAPI } from "../SpotBranch/WatchlistAction";
 import { useSelector } from "react-redux";
 import CustomButton from "@/components/common/globalButton/button";
 import { Col, Row } from "react-bootstrap";
 import CorporateBookaForwardModal from "./CorporateBookaForwardModal/CorporateBookaForwardModal";
-import {
-  buildDiscountingTable,
-  buildForwardsTable,
-} from "@/components/utils/generateColumnsData";
+import { buildForwardsTable } from "@/components/utils/generateColumnsData";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 
 const BranchForwardsTable = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  //local states
-  const [instrumentForwards, setInstrumentForwards] = useState([]);
-  const [tenorsData, setTenorsData] = useState([]);
-  const [forwardRatesData, setForwardRatesData] = useState([]);
-  const [discountRatesData, setDiscountRatesData] = useState([]);
+
   const [dataSource, setDataSource] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
   //Book a Forward Modal State
   const [bookaForwardModalCall, setBookaForwardModalCall] = useState(false);
 
-  //Global State for Extracting Forward and discount rate data
-  const GetAllFowardsAndDiscountsRatesAPIData = useSelector(
-    (state) => state.WatchListReducer.GetAllFowardsAndDiscountsRatesData
+  //Global State for Watchlist Card Data
+  const globalStateWatchlistCardData = useSelector(
+    (state) => state.WatchListReducer?.GettheDashboardData ?? null
   );
 
+  const getAllTenorsRecords = useSelector(
+    (state) => state.dealerReducer.getAllTenors
+  );
+
+  const GetForwardRatesForCounterPartyData = useSelector(
+    (state) => state.WatchListReducer.GetForwardRatesForCounterParty
+  );
+  console.log(
+    globalStateWatchlistCardData !== null &&
+      getAllTenorsRecords !== null &&
+      GetForwardRatesForCounterPartyData !== null,
+    globalStateWatchlistCardData,
+    getAllTenorsRecords,
+    GetForwardRatesForCounterPartyData,
+    "GetForwardRatesForCounterPartyDataGetForwardRatesForCounterPartyData"
+  );
   useEffect(() => {
-    if (GetAllFowardsAndDiscountsRatesAPIData !== null) {
+    if (
+      globalStateWatchlistCardData !== null &&
+      getAllTenorsRecords !== null &&
+      GetForwardRatesForCounterPartyData !== null
+    ) {
       try {
-        const { tenors, forwardRates, instruments } =
-          GetAllFowardsAndDiscountsRatesAPIData;
-        let getAllTenorsData = { tenors };
-        let getAllInstrument = { instruments };
+        const { forwardApplicableInstruments } = globalStateWatchlistCardData;
+        console.log(
+          forwardApplicableInstruments,
+          "forwardApplicableInstrumentsforwardApplicableInstruments"
+        );
+
+        //********************************************** */
+        // const { tenors, forwardRates, instruments } =
+        //   GetAllFowardsAndDiscountsRatesAPIData;
+
+        let getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
+        let getAllInstrument = { instruments: forwardApplicableInstruments };
+
         const { rowData, columnsData } = buildForwardsTable(
-          2,
-          forwardRates,
+          3,
+          GetForwardRatesForCounterPartyData.forwardRates,
           getAllTenorsData,
           getAllInstrument,
           IndexCell
         );
-        console.log(rowData, columnsData, "columnsDatacolumnsData");
+        // console.log(rowData, columnsData, "columnsDatacolumnsData");
         if (rowData.length > 0) {
           setDataSource(rowData);
           setColumnsData(columnsData);
         }
+        //********************************************** */
+        // const { tenors, forwardRates, instruments } =
+        //   GetAllFowardsAndDiscountsRatesAPIData;
+        // let getAllTenorsData = { tenors };
+        // let getAllInstrument = { instruments };
+        // const { rowData, columnsData } = buildForwardsTable(
+        //   2,
+        //   forwardRates,
+        //   getAllTenorsData,
+        //   getAllInstrument,
+        //   IndexCell
+        // );
+        // console.log(rowData, columnsData, "columnsDatacolumnsData");
+        // if (rowData.length > 0) {
+        //   setDataSource(rowData);
+        //   setColumnsData(columnsData);
+        // }
       } catch (error) {
         console.log(error, "Error while building discounting table");
       }
     }
-  }, [GetAllFowardsAndDiscountsRatesAPIData]);
+  }, [
+    globalStateWatchlistCardData,
+    getAllTenorsRecords,
+    GetForwardRatesForCounterPartyData,
+  ]);
 
   const handleBookaForwardCorporate = () => {
     setBookaForwardModalCall(true);
@@ -80,14 +123,15 @@ const BranchForwardsTable = () => {
           />
         </Col>
       </Row>
-      <Row className='my-2'>
+      <Row className="my-2">
         <Col
           lg={12}
           md={12}
           sm={12}
-          className='d-flex justify-content-center align-items-center'>
+          className="d-flex justify-content-center align-items-center"
+        >
           <CustomButton
-            value='Book a Forward'
+            value="Book a Forward"
             applyClass={"FowwardBranchBookaForwardBtn"}
             onClick={handleBookaForwardCorporate}
           />

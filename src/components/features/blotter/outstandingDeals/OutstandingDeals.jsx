@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import GlobalTable from "../../../../../../../components/common/table/GlobalTable";
+import GlobalTable from "@/components/common/table/GlobalTable";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import CustomButton from "@/components/common/globalButton/button";

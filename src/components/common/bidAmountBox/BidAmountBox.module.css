@@ -24,6 +24,10 @@
   font-size: 1.25rem;
   font-weight: 700;
 }
+/* .afterDotValuesmall {
+  font-size: 1.25rem;
+  font-weight: 700;
+} */
 .SellCard {
   background-color: #f26522;
   max-width: 100%;
@@ -101,7 +105,25 @@
   border: 1px solid #ffffff;
   transition: background-color 0.3s ease, color 0.3s ease; /* Transition on background and color */
 }
+.SellandBuyCardBracnh_disbaled {
+  background-color: transparent;
+  pointer-events: none;
+  max-width: 100% !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  cursor: default !important;
+  flex-direction: column;
+  padding: 0.5rem;
+  border: 1px solid #ffffff;
+  transition: background-color 0.3s ease, color 0.3s ease; /* Transition on background and color */
+}
 
+.SellandBuyCardBracnh_disbaled p {
+  font-size: 1rem;
+  transition: color 0.3s ease; /* Apply transition to color */
+}
 .SellandBuyCardBracnh p {
   font-size: 1rem;
   transition: color 0.3s ease; /* Apply transition to color */

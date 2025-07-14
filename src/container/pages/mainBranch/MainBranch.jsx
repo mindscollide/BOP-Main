@@ -3,14 +3,20 @@ import GlobalTabs from "../../../components/common/tabs/Tabs";
 import { useSelector } from "react-redux";
 import { setActiveTab } from "../mainCorporate/rfqModal/RFQSlicer";
 import { useDispatch } from "react-redux";
-import BlotterHeader from "../mainTreasury/tabsContent/liveRates/blotter/blotterHeader/BlotterHeader";
-import TXNSummary from "../mainTreasury/tabsContent/liveRates/blotter/txnSummary/TXNSummary";
+import BlotterHeader from "@/components/features/blotter/blotterHeader/BlotterHeader";
+import TXNSummary from "@/components/features/blotter/txnSummary/TXNSummary";
 import { useNavigate } from "react-router-dom";
 import {
-  GetAllFowardsAndDiscountsRatesAPI,
   GetDashboardDataAPI,
+  GetDiscountingRatesForCounterPartyApi,
+  GetForwardRatesForCounterPartyApi,
 } from "@/components/features/SpotBranch/WatchlistAction";
-import { BlotterDataAPI } from "../mainTreasury/tabsContent/liveRates/blotter/BlotterActions";
+import {
+  BlotterDataAPI,
+  GetSpotRatesForCounterPartyAPI,
+} from "@/components/features/blotter/BlotterActions";
+import { getAllTenorsAction } from "../mainDealer/dealerActions";
+// import { getAllTenorsAction } from "@/container/pages/mainDealer/dealerActions";
 
 // Conditionally import CustomButton based on the environment variables
 const shouldIncludeComponents =
@@ -43,12 +49,15 @@ const MainBranch = () => {
   //WatchList table Data Api Call
   useEffect(() => {
     try {
-      dispatch(GetDashboardDataAPI({ navigate }));
-      // dispatch(GetAllFowardsAndDiscountsRatesAPI({ navigate }));
+      dispatch(GetSpotRatesForCounterPartyAPI(navigate));
       let Data = { sRow: 0, Length: 10 };
       dispatch(BlotterDataAPI({ navigate, Data }));
 
-      // dispatch(GetDashboardDataAPI({navigate})); // Fetching the Dashboard Data
+      dispatch(GetDashboardDataAPI({ navigate })); // Fetching the Dashboard Data
+      // dispatch(getAllTenorsAction({ navigate }));
+      dispatch(getAllTenorsAction({ navigate }));
+      dispatch(GetForwardRatesForCounterPartyApi({ navigate }));
+      dispatch(GetDiscountingRatesForCounterPartyApi({ navigate }));
     } catch (error) {
       console.log(error, "error");
     }
@@ -64,7 +73,7 @@ const MainBranch = () => {
         SpotBranch && activeTab === "Spot" ? (
           <Suspense fallback={<>Loading Spot...</>}>
             <SpotBranch />
-            <section className='bg-white mt-2 p-2'>
+            <section className="bg-white mt-2 p-2">
               <BlotterHeader />
             </section>
           </Suspense>
@@ -76,7 +85,7 @@ const MainBranch = () => {
         ForwardsForBranch && activeTab === "Forwards" ? (
           <Suspense fallback={<>Loading Forwards.... </>}>
             <ForwardsForBranch />
-            <section className='bg-white p-2'>
+            <section className="bg-white p-2">
               <BlotterHeader />
             </section>
           </Suspense>
@@ -88,7 +97,7 @@ const MainBranch = () => {
         BranchDiscountingTable && activeTab === "Discounting" ? (
           <Suspense fallback={<>Loading Discounting...</>}>
             <BranchDiscountingTable />
-            <section className='bg-white p-2'>
+            <section className="bg-white p-2">
               <TXNSummary />
             </section>
           </Suspense>
@@ -102,7 +111,7 @@ const MainBranch = () => {
         onTabChange={handleTabChange}
         activeKey={activeTab}
         defaultActiveKey={"0"}
-        tabClass='mb-4'
+        tabClass="mb-4"
       />
     </>
   );

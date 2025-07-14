@@ -8,7 +8,7 @@ const shouldIncludeComponents =
 
 const shouldIsDealer = import.meta.env.VITE_APP_INCLUDE_DEALER === "true";
 
-const Blotter = lazy(() => import("./blotter/Blotter"));
+const Blotter = lazy(() => import("@/components/features/blotter/Blotter"));
 
 // if (import.meta.env.VITE_APP_INCLUDE_BRANCH === "true") {
 //     const Branch = (await import("./container/pages/mainBranch/MainBranch"))
@@ -17,11 +17,11 @@ const Blotter = lazy(() => import("./blotter/Blotter"));
 const LiveRates = () => {
   return (
     <>
-      <Row className='m-0'>
-        <Col md={6} className='px-1'>
+      <Row className="m-0">
+        <Col md={6} className="p-0 bg-white">
           <BankSpot />
         </Col>
-        <Col md={6} className='px-1'>
+        <Col md={6} className="px-1">
           <MIS />
         </Col>
       </Row>

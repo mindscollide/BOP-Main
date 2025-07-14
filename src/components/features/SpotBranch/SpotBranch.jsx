@@ -6,10 +6,25 @@ import BranchRateCardsOfWatchList from "../../common/branchWatchlistDroppableCar
 import BidAmountBox from "../../common/bidAmountBox/BidAmountBox";
 import GlobalTable from "../../common/table/GlobalTable";
 import SellAndBuyModal from "./SellAndBuyModal/SellAndBuyModal";
-import {  SaveUserDashboardAPI } from "./WatchlistAction";
+import { SaveUserDashboardAPI } from "./WatchlistAction";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { formatDateUTCToGMT } from "@/components/utils/timeFunction";
+import moment from "moment";
+
+const initialWatchlistData = Object.fromEntries(
+  Array.from({ length: 6 }, (_, i) => [
+    `watchlist${i + 1}`,
+    {
+      tile: String(i + 1),
+      currecncyLabel: "",
+      instrumentID: 0,
+      buyValue: "",
+      sellValue: "",
+    },
+  ])
+);
 
 const SpotBranch = () => {
   const dispatch = useDispatch();
@@ -23,70 +38,98 @@ const SpotBranch = () => {
   //Card Data Local State
   const [watchlistCardData, setWatchlistCardData] = useState([]);
   const [watchlistTableData, setWatchlistTableData] = useState([]);
-
-  console.log(watchlistTableData, "watchlistTableDatawatchlistTableData");
+  const [watchListDateTime, setWatchListDateTime] = useState(null);
+  console.log(watchListDateTime, "watchlistTableDatawatchlistTableData");
   //Global State for Watchlist Card Data
   const globalStateWatchlistCardData = useSelector(
     (state) => state.WatchListReducer?.GettheDashboardData ?? null
   );
 
+  const GetSpotRatesForCounterParty = useSelector(
+    (state) => state.BlotterSlicer.GetSpotRatesForCounterParty
+  );
+  console.log(GetSpotRatesForCounterParty, "GetSpotRatesForCounterParty");
+
+  const [watchlistData, setWatchlistData] = useState(initialWatchlistData);
+  console.log(watchlistData, "watchlistDatawatchlistDatawatchlistData");
   // Extracting out the Cards Wathlist data in the state
   useEffect(() => {
     try {
       if (
-        globalStateWatchlistCardData &&
-        globalStateWatchlistCardData !== null
+        globalStateWatchlistCardData !== null &&
+        GetSpotRatesForCounterParty !== null
       ) {
         const { spotApplicableInstruments } = globalStateWatchlistCardData;
+        const { instruments, time } = GetSpotRatesForCounterParty;
+
+        let DataTime = formatDateUTCToGMT(time);
+        setWatchListDateTime(DataTime);
+
         if (spotApplicableInstruments.length > 0) {
-          const updateData = spotApplicableInstruments.map((list, index) => {
+          const updateData = spotApplicableInstruments.map((item) => {
+            const matchedRate = instruments.find(
+              (rate) =>
+                rate.instrumentID === item.instrumentID &&
+                rate.secondaryInstrumentID === item.secondaryInstrumentID
+            );
+            console.log("matchedRate", matchedRate);
             return {
-              ...list,
-              bid: 200,
-              offer: 215,
+              ...item,
+              bid: matchedRate ? 200 : 200,
+              offer: matchedRate ? 215 : 215,
             };
           });
+
           setWatchlistTableData(updateData);
-          const filterSections = spotApplicableInstruments.filter(
+          const filterSections = updateData.filter(
             (list, index) => list.sectionID !== "0"
           );
-          console.log(filterSections, "watchLists");
           if (filterSections.length > 0) {
-            setWatchlistData((prevData) => ({
-              ...prevData,
-              watchlist1: {
-                ...prevData.watchlist1,
-                currecncyLabel: `${filterSections[0].instrumentName}${filterSections[0].secondaryInstrumentName}`,
-                buyValue: filterSections[0].bid,
-                sellValue: filterSections[0].offer,
-                instrumentID: filterSections[0].instrumentID,
-              },
-            }));
+            setWatchlistData((prevData) => {
+              const updatedData = { ...prevData };
+              console.log(updatedData, "updatedDataupdatedData");
+              // Reset all watchlists to preserve their tile positions
+              for (let i = 1; i <= 6; i++) {
+                updatedData[`watchlist${i}`] = {
+                  ...prevData[`watchlist${i}`],
+                  currecncyLabel: "",
+                  instrumentID: 0,
+                  buyValue: "",
+                  sellValue: "",
+                };
+              }
+
+              // Update only according to SectionID
+              filterSections.forEach((item) => {
+                const sectionID = item.sectionID || item.SectionID; // check for both cases
+                const tileKey = `watchlist${sectionID}`;
+
+                if (updatedData[tileKey]) {
+                  updatedData[tileKey] = {
+                    ...prevData[tileKey],
+                    currecncyLabel: `${item.instrumentName}${item.secondaryInstrumentName}`,
+                    buyValue: item.bid,
+                    sellValue: item.offer,
+                    instrumentID: item.instrumentID,
+                    isSell: item.isSell,
+                    isBuy: item.isBuy,
+                  };
+                }
+              });
+
+              return updatedData;
+            });
           }
         }
       }
     } catch (error) {
       console.log(error, "error");
     }
-  }, [globalStateWatchlistCardData]);
+  }, [globalStateWatchlistCardData, GetSpotRatesForCounterParty]);
 
   //Watch<List>Data State
-  //By Default for having Six Tiles
-  const [watchlistData, setWatchlistData] = useState({
-    watchlist1: {
-      currecncyLabel: "",
-      instrumentID: 0,
-      buyValue: "",
-      sellValue: "",
-    },
-    watchlist2: { currecncyLabel: "", buyValue: "", sellValue: "" },
-    watchlist3: { currecncyLabel: "", buyValue: "", sellValue: "" },
-    watchlist4: { currecncyLabel: "", buyValue: "", sellValue: "" },
-    watchlist5: { currecncyLabel: "", buyValue: "", sellValue: "" },
-    watchlist6: { currecncyLabel: "", buyValue: "", sellValue: "" },
-  });
 
-  console.log(watchlistData, "watchlistDatawatchlistData");
+  console.log(globalStateWatchlistCardData, "watchlistDatawatchlistData");
 
   //Column of my watch<list> Table
   const columns = [
@@ -97,8 +140,14 @@ const SpotBranch = () => {
       width: "160px",
       align: "left",
       render: (text, record) => {
-        console.log(text, "responseresponseresponse");
-        return <span className='instrument-column'>{text}</span>;
+        console.log(text, record, "responseresponseresponse");
+        return (
+          <span className='instrument-column'>
+            {record.secondaryInstrumentID === 0
+              ? text
+              : `${text}${record.secondaryInstrumentName}`}
+          </span>
+        );
       },
     },
     {
@@ -138,21 +187,23 @@ const SpotBranch = () => {
   const onDragEnd = (result) => {
     const { source, destination } = result;
 
-    console.log(result, "resultresultresultresult");
+    console.log(destination, source, "resultresultresultresult11");
 
-    // If there's no destination, do nothing
     if (!destination) return;
 
-    // Handle dropping into BranchRateCardsOfWatchList
+    // Only proceed if item is dropped into one of the watchlist tiles
     if (destination.droppableId.startsWith("watchlist")) {
-      const item = watchlistTableData[source.index]; // Get dragged item
-      const { instrumentID, secondaryInstrumentID } = item; // Extract values
-      //   Calling the save Droppale Item API
-      let Data = {
-        SectionID: String(source.index),
+      const item = watchlistTableData[source.index]; // Dragged item
+      const findSectionID = watchlistData[destination.droppableId]; // Get correct tile object
+      console.log(findSectionID, "findSectionIDfindSectionID");
+      const { instrumentID, secondaryInstrumentID } = item;
+
+      const Data = {
+        SectionID: String(findSectionID.tile), // Use tile number instead of index
         InstrumentID: Number(instrumentID),
         SecondaryInstrumentID: Number(secondaryInstrumentID),
       };
+
       console.log(Data, "resultresultresultresult");
 
       dispatch(SaveUserDashboardAPI({ navigate, Data }));
@@ -216,6 +267,8 @@ const SpotBranch = () => {
                               sellHeading='I Sell'
                               buyValue={data.buyValue || ""}
                               sellValue={data.sellValue || ""}
+                              isSellDisabled={data.isSell}
+                              isBuyDisabled={data.isBuy}
                             />
                             {provided.placeholder}
                           </div>
@@ -233,7 +286,8 @@ const SpotBranch = () => {
                 <span className='WatchlistLabel'>Watchlist</span>
               </Col>
               <Col lg={6} md={6} sm={12} className='d-flex justify-content-end'>
-                <span>21-11-2022 9:18 PM</span>
+                {/* <span>21-11-2022 9:18 PM</span> */}
+                <span>{watchListDateTime !== null && moment(watchListDateTime).format("DD-MM-YYYY h:mm A")}</span>
               </Col>
             </Row>
             <Row>
