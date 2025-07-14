@@ -104,9 +104,11 @@ span.bookaForwardCorporate__indicator-separator.css-1u9des2-indicatorSeparator {
 
   display: flex !important;
   align-items: center !important;
+  justify-content: center;
   padding: 12px !important;
   font-size: 12px !important;
   width: 100% !important;
+  white-space: nowrap;
 }
 
 .dateSpatwo {

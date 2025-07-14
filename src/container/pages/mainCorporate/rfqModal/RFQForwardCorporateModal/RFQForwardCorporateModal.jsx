@@ -65,9 +65,11 @@ const RFQForwardCorporateModal = ({
 
   const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
   const [getAllCorporates, setGetAllCorporates] = useState([]);
-  let branchDetails =
+  let titleDetails =
     localStorage.getItem("branch") !== null && isBranch
       ? JSON.parse(localStorage.getItem("branch"))
+      : localStorage.getItem("corporate") !== null && !isBranch
+      ? JSON.parse(localStorage.getItem("corporate"))
       : null;
 
   useEffect(() => {
@@ -222,14 +224,16 @@ const RFQForwardCorporateModal = ({
                 {isBranch ? (
                   <>
                     <p className='heading-RfqModal'>
-                      {branchDetails.branchName}
+                      {titleDetails.branchName}
                     </p>
                     <p className='heading-branchCode'>
-                      Branch Code: {branchDetails.branchCode}
+                      Branch Code: {titleDetails.branchCode}
                     </p>
                   </>
                 ) : (
-                  ""
+                  <p className='heading-RfqModal'>
+                    {titleDetails.corporateName}
+                  </p>
                 )}
               </Col>
             </Row>
@@ -247,7 +251,7 @@ const RFQForwardCorporateModal = ({
                         Company Name*
                       </label>
                       <SelectDropdown
-                        classNamePrefix='bookaForwardCorporate'
+                        classNamePrefix='TransactionModal'
                         placeholder=''
                         options={getAllCorporates}
                         onChange={handleChangeCorporate}

@@ -5,7 +5,7 @@ import "./SelectDropdown.css";
 const SelectDropdown = ({
   options = [],
   className,
-  classNamePrefix,
+  classNamePrefix = "TransactionModal",
   components,
   closeMenuOnSelect,
   closeMenuOnScroll,
