@@ -162,18 +162,18 @@ const BankSpot = () => {
   }, [TresuaryBankSpotData, GetAllInstrumentForTreasury]);
 
   return (
-    <div className="">
+    <div>
       <div className="box-header bg-primary-orange px-3">
         <div className="text-start color-white fw-bold fs-6">Bank Spot</div>
       </div>
 
-      <div className="  mb-2 px-2">
+      <div className="mb-2 px-2">
         <GlobalTable
           columns={columns}
           dataSource={bankSpotData}
           prefixCls={"BankSpot_Table"}
           pagination={false}
-          scroll={{ x: "max-content", y: 400 }}
+          scroll={{ x: "hidden", y: 275 }}
         />
         {/* {bankSportLoader ? <SectionLoader /> : null} */}
       </div>
