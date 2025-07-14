@@ -338,3 +338,7 @@ export const GetBankSpotForTreasury = {
 export const GetBankForwardForTreasury = {
   RequestMethod: "ServiceManager.GetBankForwardForTreasury",
 };
+
+export const GetDiscountingRatesForTreasury = {
+  RequestMethod: "ServiceManager.GetDiscountingRatesForTreasury",
+};

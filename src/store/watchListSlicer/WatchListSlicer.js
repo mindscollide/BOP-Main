@@ -4,6 +4,7 @@ import {
   GetBankSpotForTreasuryApi,
   GetDashboardDataAPI,
   GetDiscountingRatesForCounterPartyApi,
+  GetDiscountingRatesForTreasuryApi,
   GetForwardRatesForCounterPartyApi,
   GetMisDataByRangeAPI,
   SaveUserDashboardAPI,
@@ -25,6 +26,7 @@ const WatchListSlice = createSlice({
     GetAllInstrumentForTreasury: null,
     GetBankSpotForTreasury: null,
     GetBankForwardForTreasury: null,
+    GetDiscountingRatesForTreasury: null,
   },
   reducers: {
     clearWatchListResponseMessage: (state) => {
@@ -188,11 +190,28 @@ const WatchListSlice = createSlice({
         state.Loader = false;
         state.GetBankForwardForTreasury = null;
         state.responseMessage = payload;
-      });
+      })
+      .addCase(GetDiscountingRatesForTreasuryApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(
+        GetDiscountingRatesForTreasuryApi.fulfilled,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.GetDiscountingRatesForTreasury = payload?.response;
+          state.responseMessage = payload?.message;
+        }
+      )
+      .addCase(
+        GetDiscountingRatesForTreasuryApi.rejected,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.GetDiscountingRatesForTreasury = null;
+          state.responseMessage = payload;
+        }
+      );
   },
 });
-
-//GetBankForwardForTreasuryApi
 
 export const { clearWatchListResponseMessage } = WatchListSlice.actions;
 export default WatchListSlice.reducer;

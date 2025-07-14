@@ -898,7 +898,7 @@ export const getDealerDashboardApi = createAsyncThunk(
           ) {
             return {
               response: response.data.responseResult,
-              message: "Successfully",
+              message: "Successfully.",
             };
           } else if (
             responseMessage
@@ -907,7 +907,7 @@ export const getDealerDashboardApi = createAsyncThunk(
                 "UploadRate_UploadRateServiceManager_GetDealerDashboardData_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Something went wrong");
+            return rejectWithValue("Role doesn’t matched");
           } else if (
             responseMessage
               .toLowerCase()
@@ -931,7 +931,7 @@ export const getDealerDashboardApi = createAsyncThunk(
                 "UploadRate_UploadRateServiceManager_GetDealerDashboardData_05".toLowerCase()
               )
           ) {
-            return rejectWithValue("Something went wrong");
+            return rejectWithValue("No Record Found");
           } else {
             console.log("", response.data);
             return rejectWithValue("Something went wrong");

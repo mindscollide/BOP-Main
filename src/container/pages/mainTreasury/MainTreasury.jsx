@@ -12,6 +12,8 @@ import GlobalTabs from "@/components/common/tabs/Tabs";
 import {
   getAllTreasuryInstrumentsApi,
   GetBankForwardForTreasuryApi,
+  GetBankSpotForTreasuryApi,
+  GetDiscountingRatesForTreasuryApi,
 } from "@/components/features/SpotBranch/WatchlistAction";
 import { getAllTenorsAction } from "../mainDealer/dealerActions";
 
@@ -20,12 +22,14 @@ const MainTreasury = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    dispatch(GetBankSpotForTreasuryApi({ navigate }));
     let Data = { sRow: 0, Length: 10 };
     dispatch(BlotterDataAPI({ navigate, Data }));
     dispatch(getAllTreasuryInstrumentsApi({ navigate }));
     dispatch(GetBlotterOutstandingDealsDataAPI({ navigate, Data }));
     dispatch(GetBankForwardForTreasuryApi({ navigate }));
     dispatch(getAllTenorsAction({ navigate }));
+    dispatch(GetDiscountingRatesForTreasuryApi({ navigate }));
   }, []);
 
   const tabsData = [
