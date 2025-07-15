@@ -14,6 +14,7 @@ const RealtimeActionsSlice = createSlice({
     categoryisAdded: null,
     categoryisUpdated: null,
     categoryisDeleted: null,
+    dealBoxData: null,
 
     BlotterTransactionRFQExpired: null,
     BlotterTransactionRFQExpiredForTreasury: null,
@@ -45,6 +46,9 @@ const RealtimeActionsSlice = createSlice({
     TransactionAssignedByTreasury: null,
   },
   reducers: {
+    setDealBoxData(state, { payload }) {
+      state.dealBoxData = payload;
+    },
     setMarketTimingsUpdated(state, { payload }) {
       state.marketTimingsUpdated = payload;
     },
@@ -174,6 +178,7 @@ export const {
   BlotterTransactionRFQQuoted,
   setBlotterTransactionRFQExpiredForTreasuryDealBox,
   setBlotterTransactionAddedForTreasuryDealBox,
+  setDealBoxData,
 } = RealtimeActionsSlice.actions;
 
 export default RealtimeActionsSlice.reducer;

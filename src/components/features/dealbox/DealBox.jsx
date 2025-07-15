@@ -1,5 +1,5 @@
 import CustomButton from "@/components/common/globalButton/button";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./DealBox.module.css";
 
 import { Col, Row } from "react-bootstrap";
@@ -10,8 +10,19 @@ import {
   setViewDealModal,
 } from "@/store/modalSlice/modalSlicer";
 import { motion } from "framer-motion";
+import { setBlotterTransactionAddedForTreasuryDealBox } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
+import { useSelector } from "react-redux";
 
 const DealBox = () => {
+  const [transactionData, setTransactionData] = useState(null);
+  const blotterTransactionAdded = useSelector(
+    (state) =>
+      state.RealtimeActionsSlice.BlotterTransactionAddedForTreasuryDealBox
+  );
+  console.log(
+    blotterTransactionAdded,
+    "blotterTransactionAddedblotterTransactionAdded"
+  );
   const dispatch = useDispatch();
   const openViewDealModal = () => {
     dispatch(setViewDealModal(true));
@@ -21,8 +32,18 @@ const DealBox = () => {
   useEffect(() => {
     setTimeout(() => {
       dispatch(setDealModalRequest(false));
-    }, 4000);
+      dispatch(setBlotterTransactionAddedForTreasuryDealBox(null));
+    }, 5000);
   }, []);
+  console.log(transactionData, "transactionDatatransactionData");
+  useEffect(() => {
+    if (blotterTransactionAdded !== null) {
+      try {
+        const { transaction } = blotterTransactionAdded;
+        setTransactionData(transaction);
+      } catch (error) {}
+    }
+  }, [blotterTransactionAdded]);
 
   return (
     <motion.section
@@ -49,7 +70,7 @@ const DealBox = () => {
         </Col>
 
         <Col sm={8} md={8} lg={8}>
-          {/* {27-06-2024/f9f2} */}
+          {transactionData?.txnid}
         </Col>
       </Row>
       <Row className='my-3'>
@@ -57,7 +78,7 @@ const DealBox = () => {
           Type
         </Col>
         <Col sm={8} md={8} lg={8}>
-          Sell
+          {transactionData?.side}
         </Col>
       </Row>
       <Row>
