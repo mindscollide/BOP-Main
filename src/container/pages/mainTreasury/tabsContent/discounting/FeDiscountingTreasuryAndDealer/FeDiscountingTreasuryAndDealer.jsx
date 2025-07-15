@@ -5,50 +5,66 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 const FeDiscountingTreasuryAndDealer = () => {
-  const [discountingData, setDiscountingData] = useState([]);
-  const [discounttingColumns, setDiscounttingColumns] = useState([]);
-  const GetAllFowardsAndDiscountsRatesData = useSelector(
-    (state) => state.WatchListReducer.GetAllFowardsAndDiscountsRatesData
+  const [dataSource, setDataSource] = useState([]);
+  const [columnsData, setColumnsData] = useState([]);
+
+  const GetDiscountingRatesForTreasury = useSelector(
+    (state) => state.WatchListReducer.GetDiscountingRatesForTreasury
+  );
+  const getAllTenorsRecords = useSelector(
+    (state) => state.dealerReducer.getAllTenors
+  );
+  const GetAllInstrumentForTreasury = useSelector(
+    (state) => state.WatchListReducer.GetAllInstrumentForTreasury
+  );
+
+  console.log(
+    GetDiscountingRatesForTreasury,
+    "Data For Disscouting for treasury: ",
+    {
+      tenors: getAllTenorsRecords,
+      Instruments: GetAllInstrumentForTreasury,
+      discouting_rates: GetDiscountingRatesForTreasury,
+    }
   );
 
   useEffect(() => {
     if (
-      GetAllFowardsAndDiscountsRatesData &&
-      GetAllFowardsAndDiscountsRatesData.discountRates?.length > 0 &&
-      GetAllFowardsAndDiscountsRatesData.instruments?.length > 0 &&
-      GetAllFowardsAndDiscountsRatesData.tenors?.length > 0
+      GetDiscountingRatesForTreasury !== null &&
+      GetAllInstrumentForTreasury !== null &&
+      getAllTenorsRecords !== null
     ) {
       try {
-        const { discountRates, tenors, instruments } =
-          GetAllFowardsAndDiscountsRatesData;
-
-        const getAllTenorsData = { tenors };
-        const getAllInstrument = { instruments };
-
-        const { rowData, columnsData } = buildDiscountingTable(
+        const { feDiscountingRates } = GetDiscountingRatesForTreasury;
+        let getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
+        let getAllInstrument = {
+          instruments: GetAllInstrumentForTreasury.discountingInstruments,
+        };
+        const { columnsData, rowData } = buildDiscountingTable(
           3,
-          discountRates,
+          feDiscountingRates,
           getAllTenorsData,
           getAllInstrument,
           IndexCell
         );
 
         if (rowData.length > 0) {
-          setDiscountingData(rowData);
-          setDiscounttingColumns(columnsData);
+          setDataSource(rowData);
+          setColumnsData(columnsData);
         }
-      } catch (error) {
-        console.error("Error processing discounting table data:", error);
-      }
+      } catch (error) {}
     }
-  }, [GetAllFowardsAndDiscountsRatesData]);
-
+  }, [
+    getAllTenorsRecords,
+    GetAllInstrumentForTreasury,
+    GetDiscountingRatesForTreasury,
+  ]);
   return (
     <>
       <span className="heading mb-2">FE Discounting</span>
       <GlobalTable
-        columns={discounttingColumns}
-        dataSource={discountingData}
+        columns={columnsData}
+        dataSource={dataSource}
         prefixCls={"Treasury_Discounting"}
         bordered
         pagination={false}

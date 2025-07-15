@@ -12,6 +12,8 @@ import GlobalTabs from "@/components/common/tabs/Tabs";
 import {
   getAllTreasuryInstrumentsApi,
   GetBankForwardForTreasuryApi,
+  GetBankSpotForTreasuryApi,
+  GetDiscountingRatesForTreasuryApi,
 } from "@/components/features/SpotBranch/WatchlistAction";
 import { getAllTenorsAction } from "../mainDealer/dealerActions";
 
@@ -20,12 +22,16 @@ const MainTreasury = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    let Data = { sRow: 0, Length: 10 };
-    dispatch(BlotterDataAPI({ navigate, Data }));
+    dispatch(GetBankSpotForTreasuryApi({ navigate }));
+    if (import.meta.env.VITE_APP_INCLUDE_TREASURY === "true") {
+      let Data = { sRow: 0, Length: 10 };
+      dispatch(GetBlotterOutstandingDealsDataAPI({ navigate, Data }));
+      dispatch(BlotterDataAPI({ navigate, Data }));
+    }
     dispatch(getAllTreasuryInstrumentsApi({ navigate }));
-    dispatch(GetBlotterOutstandingDealsDataAPI({ navigate, Data }));
     dispatch(GetBankForwardForTreasuryApi({ navigate }));
     dispatch(getAllTenorsAction({ navigate }));
+    dispatch(GetDiscountingRatesForTreasuryApi({ navigate }));
   }, []);
 
   const tabsData = [

@@ -10,17 +10,20 @@ import { useNavigate } from "react-router-dom";
 
 const BankSpot = () => {
   const navigate = useNavigate();
-  const bankSportLoader = useSelector((state) => state.bankSpotReducer.Loader);
+  const GetAllInstrumentForTreasury = useSelector(
+    (state) => state.WatchListReducer.GetAllInstrumentForTreasury
+  );
+
   const TresuaryBankSpotData = useSelector(
     (state) => state.WatchListReducer.GetBankSpotForTreasury
   );
+  console.log("Data For Bank Spot for Treasury: ", {
+    instruments: GetAllInstrumentForTreasury,
+    SPOT_Live_rates: TresuaryBankSpotData,
+  });
+  // const bankSportLoader = useSelector((state) => state.bankSpotReducer.Loader);
+
   console.log(TresuaryBankSpotData, "watchListReducerwatchListReducer");
-
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(GetBankSpotForTreasuryApi({ navigate }));
-  }, []);
 
   const [bankSpotData, setBankSpotData] = useState([]);
   console.log(bankSpotData, "bankSpotData");
@@ -29,29 +32,29 @@ const BankSpot = () => {
     {
       key: "1",
       title: "Instrument",
-      dataIndex: "instrument",
+      dataIndex: "instrumentName",
       width: 80,
       className: "color-hd fw-bold title-col text-nowrap roboto-13",
       render: (text, record) => (
-        <span>{record?.worldCurrency?.instrumentName}</span>
+        <span>{`${record?.instrumentName}${record?.secondaryInstrumentName}`}</span>
       ),
     },
     {
       title: "Bid",
-      dataIndex: "bid",
+      dataIndex: "worldCrossBid",
       width: 80,
       key: "bid",
       render: (text, record) => (
         <BidAmountBox
           applyClass={"BidCardBox"}
           spot={false}
-          BidAmountValue={record?.worldCurrency?.bid}
+          BidAmountValue={record?.worldCrossBid}
         />
       ),
     },
     {
       title: "Offer",
-      dataIndex: "offer",
+      dataIndex: "worldCrossOffer",
       key: "offer",
       width: 80,
 
@@ -59,43 +62,43 @@ const BankSpot = () => {
         <BidAmountBox
           applyClass={"OfferCardBox"}
           spot={false}
-          BidAmountValue={record?.worldCurrency?.offer}
+          BidAmountValue={record?.worldCrossOffer}
         />
       ),
     },
     {
       title: "Instrument",
-      dataIndex: "currency",
+      dataIndex: "instrumentName",
       key: "currency",
       width: 80,
       className: "roboto-13",
-      render: (text, record) => record?.worldCrosses?.instrumentName,
+      // render: (text, record) => record?.worldCrosses?.instrumentName,
     },
     {
       title: "Bid",
-      dataIndex: "previousBid",
+      dataIndex: "worldCurBid",
       width: 80,
 
       key: "previousBid",
       render: (text, record) => (
         <BidAmountBox
           applyClass={"BidCardBox"}
-          spot={false}
-          BidAmountValue={record?.worldCrosses?.bid}
+          bankSpot={true}
+          BidAmountValue={record?.worldCurBid}
         />
       ),
     },
     {
       title: "Offer",
-      dataIndex: "previousOffer",
+      dataIndex: "worldCurOffer",
       key: "previousOffer",
       width: 80,
 
       render: (text, record) => (
         <BidAmountBox
           applyClass={"OfferCardBox"}
-          spot={false}
-          BidAmountValue={record?.worldCrosses?.offer}
+          bankSpot={true}
+          BidAmountValue={record?.worldCurOffer}
         />
       ),
     },
@@ -111,42 +114,66 @@ const BankSpot = () => {
   ];
 
   useEffect(() => {
-    if (TresuaryBankSpotData !== null && TresuaryBankSpotData !== undefined) {
+    if (TresuaryBankSpotData && GetAllInstrumentForTreasury) {
       const { worldCrosses, worldCurrencies } = TresuaryBankSpotData;
-      let newData = worldCrosses.map((worldCros, index) => {
-        let isExist = worldCurrencies.find((worldCur, index) => {
-          return worldCros.instrumentID === worldCur.instrumentID;
-        });
-        if (isExist !== undefined) {
-          return {
-            ...worldCros,
+      const { crossInstruments } = GetAllInstrumentForTreasury;
+
+      const enrichedData = worldCrosses
+        .map((worldCross) => {
+          const matchedCurrency = worldCurrencies.find(
+            (worldCur) => worldCur.instrumentID === worldCross.instrumentID
+          );
+
+          let baseData = {
+            worldCrossBid: worldCross.bid,
+            worldCrossOffer: worldCross.offer,
+            worldCurBid: matchedCurrency?.bid ?? 0,
+            worldCurOffer: matchedCurrency?.offer ?? 0,
+            instrumentID: worldCross.instrumentID,
+            secondaryInstrumentID: worldCross.secondaryInstrumentID,
+            time: worldCross.time,
           };
-        }
-      });
-      console.log(
-        worldCrosses,
-        worldCurrencies,
-        "TresuaryBankSpotDataTresuaryBankSpotData"
-      );
-      // setBankSpotData(TresuaryBankSpotData?.instruments);
+
+          // Match instrumentName from crossInstruments
+          const matchedInstrument = crossInstruments.find(
+            (inst) =>
+              inst.instrumentID === worldCross.instrumentID &&
+              inst.secondaryInstrumentID === worldCross.secondaryInstrumentID
+          );
+
+          if (matchedInstrument) {
+            return {
+              ...baseData,
+              instrumentName: matchedInstrument.instrumentName,
+              secondaryInstrumentName:
+                matchedInstrument.secondaryInstrumentName,
+            };
+          }
+
+          return baseData;
+        })
+        .filter(Boolean); // Clean nulls (though unlikely with above logic)
+
+      console.log(enrichedData, "Final Enriched Treasury Bank Spot Data");
+      setBankSpotData(enrichedData);
     } else {
       setBankSpotData([]);
     }
-  }, [TresuaryBankSpotData]);
+  }, [TresuaryBankSpotData, GetAllInstrumentForTreasury]);
 
   return (
-    <div className="">
+    <div>
       <div className="box-header bg-primary-orange px-3">
         <div className="text-start color-white fw-bold fs-6">Bank Spot</div>
       </div>
 
-      <div className="  mb-2 px-2">
+      <div className="mb-2 px-2">
         <GlobalTable
           columns={columns}
           dataSource={bankSpotData}
           prefixCls={"BankSpot_Table"}
           pagination={false}
-          scroll={{ x: "max-content", y: 400 }}
+          scroll={{ x: "hidden", y: 275 }}
         />
         {/* {bankSportLoader ? <SectionLoader /> : null} */}
       </div>

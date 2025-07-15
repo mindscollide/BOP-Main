@@ -368,3 +368,10 @@ export const DownloadPDFReportBlotterTrasactionTreasury = {
   RequestMethod:
     "ServiceManager.DownloadBlotterTransactionDetailsForTreasuryPDFReport",
 };
+export const GetDiscountingRatesForTreasury = {
+  RequestMethod: "ServiceManager.GetDiscountingRatesForTreasury",
+};
+
+export const CalculateNonFESwapAndDiscountingRM = {
+  RequestMethod: "ServiceManager.CalculateNonFESwapAndDiscounting",
+};

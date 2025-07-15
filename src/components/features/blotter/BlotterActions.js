@@ -1270,7 +1270,7 @@ export const SaveSpotTransactionRFQ = createAsyncThunk(
   }
 );
 
-export const SaveForwardTransactionRFQ = createAsyncThunk(
+export const SaveForwardTransactionRFQApi = createAsyncThunk(
   "Blotter/SaveForwardTransactionRFQ",
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
@@ -1288,7 +1288,7 @@ export const SaveForwardTransactionRFQ = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(SaveForwardTransactionRFQ({ navigate, Data }));
+        dispatch(SaveForwardTransactionRFQApi({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -1307,7 +1307,7 @@ export const SaveForwardTransactionRFQ = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "Blotter_BlotterServiceManager_SaveForwardTransactionRFQ_01".toLowerCase()
+                "Blotter_BlotterServiceManager_SaveForwardTransactionRFQ_02".toLowerCase()
               )
           ) {
             return rejectWithValue("Unsuccessfull");
@@ -1315,7 +1315,7 @@ export const SaveForwardTransactionRFQ = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "Blotter_BlotterServiceManager_SaveForwardTransactionRFQ_01".toLowerCase()
+                "Blotter_BlotterServiceManager_SaveForwardTransactionRFQ_03".toLowerCase()
               )
           ) {
             return rejectWithValue("Invalid Role");
@@ -1323,7 +1323,7 @@ export const SaveForwardTransactionRFQ = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "Blotter_BlotterServiceManager_SaveForwardTransactionRFQ_01".toLowerCase()
+                "Blotter_BlotterServiceManager_SaveForwardTransactionRFQ_04".toLowerCase()
               )
           ) {
             return rejectWithValue("Something went wrong");
@@ -1331,7 +1331,7 @@ export const SaveForwardTransactionRFQ = createAsyncThunk(
             return rejectWithValue("Something went wrong");
           }
         } else {
-          return rejectWithValue(responseMessage || "Something went wrong");
+          return rejectWithValue("Something went wrong");
         }
       } else {
         return rejectWithValue("Something went wrong");
@@ -2336,8 +2336,7 @@ export const calculateTenorSwapAndForwardRateApi = createAsyncThunk(
         CalculateTenorSwapAndForwardRateRM.RequestMethod
       );
       const response = await postAPI(Data);
-      const { responseCode } =
-        response.dataGetNonFEDiscountingTransactionDetailsRM;
+      const { responseCode } = response.data;
 
       if (responseCode === 401) {
         navigate("/");
@@ -2346,7 +2345,7 @@ export const calculateTenorSwapAndForwardRateApi = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(calculateForwardRFQData({ navigate, Data }));
+        dispatch(calculateTenorSwapAndForwardRateApi({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -2357,6 +2356,7 @@ export const calculateTenorSwapAndForwardRateApi = createAsyncThunk(
                 "Blotter_BlotterServiceManager_CalculateTenorSwapAndForwardRate_01".toLowerCase()
               )
           ) {
+            console.log("Checking", response.data.responseResult);
             return {
               response: response.data.responseResult,
               message: "Forward RFQ data calculated successfully",
@@ -2377,6 +2377,7 @@ export const calculateTenorSwapAndForwardRateApi = createAsyncThunk(
         return rejectWithValue("Something went wrong");
       }
     } catch (error) {
+      console.log(error, "errorerrorerror");
       return rejectWithValue("Error calculating forward RFQ data");
     }
   }

@@ -44,11 +44,16 @@ const BlotterHeader = () => {
     (state) => state.BlotterSlicer.activeTabBlotter
   );
 
+  const [isTreasuryVal, setIsTreasuryVal] = useState(0);
+
   console.log(activeTab, "activeTabactiveTab");
+  console.log(isTreasuryVal, "isTreasuryValisTreasuryVal");
   const tabsData = [
     {
       title: "TXN Summary",
-      content: activeTab === "TXN Summary" && <TXNTreasurySummary />,
+      content: activeTab === "TXN Summary" && (
+        <TXNTreasurySummary isTreasuryVal={isTreasuryVal} />
+      ),
     },
     {
       title: "Outstanding Deals",

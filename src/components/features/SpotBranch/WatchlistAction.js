@@ -4,7 +4,9 @@ import {
   GetBankSpotForTreasury,
   GetDashboardData,
   GetDiscountingRatesForCounterParty,
+  GetDiscountingRatesForTreasury,
   GetForwardRatesForCounterParty,
+  GetMisDataByRange,
   SaveUserDashboardRM,
 } from "@/common/api_config";
 import { watchListApi } from "@/common/apiend_points";
@@ -630,6 +632,83 @@ export const GetMisDataByRangeAPI = createAsyncThunk(
           return rejectWithValue("Something went wrong");
         }
       } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      // Reject with error message
+      console.log("", error);
+      return rejectWithValue("Something went wrong");
+    }
+  }
+);
+
+// Define the GetDiscountingRatesForTreasury async thunk
+export const GetDiscountingRatesForTreasuryApi = createAsyncThunk(
+  "watchlist/GetDiscountingRatesForTreasury", // A unique action type string
+  async ({ navigate }, { dispatch, rejectWithValue }) => {
+    try {
+      let GetDiscountingRatesForTreasuryData = createPostAPI(
+        watchListApi,
+        GetDiscountingRatesForTreasury.RequestMethod
+      );
+
+      const response = await GetDiscountingRatesForTreasuryData();
+      const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
+      }
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(GetDiscountingRatesForTreasuryApi({ navigate }));
+      } else if (response.data.responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetDiscountingRatesForTreasury_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message: "",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetDiscountingRatesForTreasury_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("No Record found");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetDiscountingRatesForTreasury_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Role doesn’t matched");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetDiscountingRatesForTreasury_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Exception occured");
+          } else {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          console.log("", response.data);
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        console.log("", response.data);
         return rejectWithValue("Something went wrong");
       }
     } catch (error) {

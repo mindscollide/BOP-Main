@@ -27,6 +27,7 @@ import {
   SaveSpotTransactionAPI,
   calculateTenorSwapAndForwardRateApi,
   GetSpotRatesForCounterPartyAPI,
+  SaveForwardTransactionRFQApi,
 } from "@/components/features/blotter/BlotterActions";
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -50,6 +51,7 @@ const BlotterSlicer = createSlice({
     calculateTenorSwapAndForwardRateData: null,
     activeTabBlotter: "TXN Summary",
     GetSpotRatesForCounterParty: null,
+    saveForwardRFQTransaction: null,
   },
   reducers: {
     setActiveTreasuryTab: (state, { payload }) => {
@@ -295,6 +297,19 @@ const BlotterSlicer = createSlice({
         state.Loader = false;
         state.error = action.payload;
         state.GetSpotRatesForCounterParty = null;
+      })
+      .addCase(SaveForwardTransactionRFQApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(SaveForwardTransactionRFQApi.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.saveForwardRFQTransaction = payload.response;
+        state.responseMessage = payload.message;
+      })
+      .addCase(SaveForwardTransactionRFQApi.rejected, (state, { payload }) => {
+        state.Loader = false;
+        state.saveForwardRFQTransaction = null;
+        state.responseMessage = payload;
       });
   },
 });
