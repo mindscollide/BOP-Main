@@ -346,3 +346,7 @@ export const GetDiscountingRatesForTreasury = {
 export const CalculateNonFESwapAndDiscountingRM = {
   RequestMethod: "ServiceManager.CalculateNonFESwapAndDiscounting",
 };
+
+export const GetNOPData = {
+  RequestMethod: "ServiceManager.GetNOPData",
+};

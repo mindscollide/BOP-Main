@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { Radio, Space } from "antd";
 import { Col, Row } from "react-bootstrap";
@@ -7,8 +7,12 @@ import Modal from "@/components/common/globalModal/Modal";
 import GlobalTable from "@/components/common/table/GlobalTable";
 import DatePickerCom from "@/components/common/datePicker/DatePicker";
 import "./NopModal.css";
+import { useSelector } from "react-redux";
 
 const NopModal = ({ openNopModal, setOpenNopModal }) => {
+  // const [dataSource, setDataSource] = useState(null);
+  const GetNOPData = useSelector((state) => state.BlotterSlicer.GetNOPData);
+  console.log("GetNOPDataGetNOPData: ", GetNOPData);
   const [openDownloadTab, setOpenDownloadTab] = useState(false);
 
   const [value, setValue] = useState(1);
@@ -63,6 +67,33 @@ const NopModal = ({ openNopModal, setOpenNopModal }) => {
       ConversionData: <p className="fw-bold m-0">46,765.70</p>,
     },
   ];
+
+  // useEffect(() => {
+  //   if (GetNOPData !== null && GetNOPData?.listOfInstruments) {
+  //     const NOPData = GetNOPData.listOfInstruments.map((data, index) => ({
+  //       key: index.toString(),
+  //       name: <p className="fw-bold m-0">{data.instrumentName}</p>,
+  //       InflowData: data.inflow,
+  //       OutflowData: data.outflow,
+  //       NetData: data.net,
+  //       ConversionData: (
+  //         <p className="fw-bold m-0">{data.conversionToDollar}</p>
+  //       ),
+  //     }));
+
+  //     // Append the NOP summary row
+  //     NOPData.push({
+  //       key: (NOPData.length + 1).toString(),
+  //       name: <p className="fw-bold m-0">NOP</p>,
+  //       InflowData: "",
+  //       OutflowData: "",
+  //       NetData: "",
+  //       ConversionData: <p className="fw-bold m-0">{GetNOPData.nop}</p>,
+  //     });
+
+  //     setDataSource(NOPData);
+  //   }
+  // }, [GetNOPData]);
 
   const columns = [
     {
@@ -206,7 +237,7 @@ const NopModal = ({ openNopModal, setOpenNopModal }) => {
                 <div className="bg-none border-0 mb-3">
                   <Row className="align-items-center w-100">
                     <Col lg={3} md={3} sm={3}>
-                      <h4 className="heading fw-bold">NOP (US$)</h4>
+                      <h4 className="heading fw-bold">NOP (US$).....</h4>
                     </Col>
                     <Col
                       lg={9}

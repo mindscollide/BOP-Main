@@ -32,6 +32,7 @@ import {
   GetSpotTransactionDetailsApi,
   GetForwardTransactionDetailsApi,
   GetNonFEDiscountingTransactionDetailsApi,
+  GetNOPDataAPI,
 } from "@/components/features/blotter/BlotterActions";
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -60,6 +61,7 @@ const BlotterSlicer = createSlice({
     GetSpotTransactionDetails: null,
     GetForwardTransactionDetails: null,
     GetNonFEDiscountingTransactionDetails: null,
+    GetNOPData: null,
   },
   reducers: {
     setActiveTreasuryTab: (state, { payload }) => {
@@ -405,7 +407,20 @@ const BlotterSlicer = createSlice({
           state.GetNonFEDiscountingTransactionDetails = null;
           state.responseMessage = payload?.message;
         }
-      );
+      )
+      .addCase(GetNOPDataAPI.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(GetNOPDataAPI.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.GetNOPData = payload.response;
+        state.responseMessage = payload.message;
+      })
+      .addCase(GetNOPDataAPI.rejected, (state, { payload }) => {
+        state.Loader = false;
+        state.GetNOPData = null;
+        state.responseMessage = payload?.message;
+      });
   },
 });
 

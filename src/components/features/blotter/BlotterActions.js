@@ -29,6 +29,7 @@ import {
   GetSpotRatesForCounterParty,
   GetForwardTransactionDetails,
   GetNonFEDiscountingTransactionDetails,
+  GetNOPData,
 } from "@/common/api_config";
 import { blotterApi, watchListApi } from "@/common/apiend_points";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
@@ -2441,6 +2442,66 @@ export const GetSpotRatesForCounterPartyAPI = createAsyncThunk(
               .toLowerCase()
               .includes(
                 "WatchList_WatchListServiceManager_GetSpotRatesForCounterParty_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Exception occured.");
+          } else {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          console.log("", response.data);
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      // Reject with error message
+      console.log("", error);
+      return rejectWithValue("Something went wrong");
+    }
+  }
+);
+
+// Define the GetNOPData async thunk
+export const GetNOPDataAPI = createAsyncThunk(
+  "Blotter/GetNOPData", // A unique action type string
+  async ({ navigate }, { dispatch, rejectWithValue }) => {
+    try {
+      const GetNOPDataData = createPostAPI(
+        blotterApi,
+        GetNOPData.RequestMethod
+      );
+
+      const response = await GetNOPDataData();
+      const { responseCode } = response.data;
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
+      }
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(GetNOPDataAPI({ navigate }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_GetNOPData_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message: "API executed successfully.",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_GetNOPData_04".toLowerCase()
               )
           ) {
             return rejectWithValue("Exception occured.");
