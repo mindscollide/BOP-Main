@@ -190,10 +190,8 @@ export const PublishNewRatesAction = createAsyncThunk(
       }
 
       if (responseCode === 417) {
-        // Inside your thunk
-        return rejectWithValue("417", {
-          originalAction: PublishNewRatesAction({ navigate, Data }),
-        });
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(PublishNewRatesAction({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {

@@ -18,6 +18,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setCreateTenorModal } from "@/store/modalSlice/modalSlicer";
 import { setTenorsCreated } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
+import NotificationSnackBar from "@/components/common/NotificationSnackbar";
 const shouldIncludeComponents =
   import.meta.env.VITE_APP_INCLUDE_DEALER === "true" ||
   import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
@@ -104,10 +105,27 @@ const ForwardsForTreasuryAndDealer = () => {
     value: 0,
     label: "",
   });
+
+  // state for NotificationSnackbar
+  const [snackbarData, setSnackbarData] = useState({
+    message: "",
+  });
+
   useEffect(() => {
     dispatch(getAllTenorsAction({ navigate }));
     dispatch(getDealerDashboardApi({ navigate }));
   }, []);
+
+  useEffect(() => {
+    if (snackbarData.message !== "") {
+      const timer = setTimeout(() => {
+        setSnackbarData({ message: "" });
+      }, 3000); // 3 seconds
+
+      return () => clearTimeout(timer);
+    }
+  }, [snackbarData.message]);
+
   const handleOpenModal = () => {
     // Wrap the state update in startTransition
     startTransition(() => {
@@ -188,7 +206,9 @@ const ForwardsForTreasuryAndDealer = () => {
       );
 
       if (isExist) {
-        alert("Already exists");
+        setSnackbarData({
+          message: "Already exists",
+        });
         return;
       }
 
@@ -272,7 +292,7 @@ const ForwardsForTreasuryAndDealer = () => {
                       onChange={handleChangeTenors}
                       options={getAllTenorsList}
                       classNamePrefix={"DealerDropDown"}
-                      
+
                       // menuPosition="bottom"
                     />
                   </Suspense>
@@ -402,6 +422,7 @@ const ForwardsForTreasuryAndDealer = () => {
           </>
         }
       />
+      <NotificationSnackBar message={snackbarData.message} />
     </>
   );
 };

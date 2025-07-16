@@ -16,6 +16,25 @@ export const formatCurrencyInput = (value) => {
   return cleanVal;
 };
 
+export const formatCurrencyInputForNegativeValAlso = (value) => {
+  if (!value) return "";
+
+  // Allow negative sign and digits only
+  let cleanVal = value.replace(/[^0-9-]/g, "");
+
+  // Automatically add decimal if length is greater than 3 (ignoring minus)
+  const isNegative = cleanVal.startsWith("-");
+  let digitsOnly = cleanVal.replace(/-/g, ""); // Remove minus for slicing
+
+  if (digitsOnly.length > 3) {
+    let integerPart = digitsOnly.slice(0, 3);
+    let decimalPart = digitsOnly.slice(3, 5) || "00";
+    return `${isNegative ? "-" : ""}${integerPart}.${decimalPart}`;
+  }
+
+  return cleanVal;
+};
+
 export const formatPercentageInput = (value) => {
   if (value === "") return ""; // Allow user to clear input
 
@@ -85,7 +104,10 @@ export const convertDateTimeIntoGMT = (date) => {
     date.slice(10, 12) +
     ":" +
     date.slice(12, 14);
-    console.log(moment(date, "YYYY-m-DD HH:MM:ss").toLocaleString(), "dateStringdateStringdateString")
+  console.log(
+    moment(date, "YYYY-m-DD HH:MM:ss").toLocaleString(),
+    "dateStringdateStringdateString"
+  );
   return new Date(dateString);
 };
 
@@ -119,8 +141,6 @@ export function isValidNumberUnderMax(value, previousValue = "", max = 100) {
   const num = parseFloat(value);
   return !isNaN(num) && num >= 0 && num <= max;
 }
-
-
 
 export const convertDateTimeIntoLocal = (utcDateString) => {
   const year = parseInt(utcDateString.slice(0, 4));
