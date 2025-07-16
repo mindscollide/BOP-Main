@@ -339,11 +339,39 @@ export const GetBankForwardForTreasury = {
   RequestMethod: "ServiceManager.GetBankForwardForTreasury",
 };
 
+export const DownloadExcelReportBlotterTrasactionBranch = {
+  RequestMethod:
+    "ServiceManager.DownloadBlotterTransactionDetailsForBranchExcelReport",
+};
+
+export const DownloadExcelReportBlotterTrasactionCorporate = {
+  RequestMethod:
+    "ServiceManager.DownloadGetBlotterTransactionDetailsForCorporateExcelReport",
+};
+
+export const DownloadExcelReportBlotterTrasactionTreasury = {
+  RequestMethod:
+    "ServiceManager.DownloadBlotterTransactionDetailsForTreasuryExcelReport",
+};
+
+export const DownloadPDFReportBlotterTrasactionBranch = {
+  RequestMethod:
+    "ServiceManager.DownloadBlotterTransactionDetailsForBranchPDFReport",
+};
+
+export const DownloadPDFReportBlotterTrasactionCorporate = {
+  RequestMethod:
+    "ServiceManager.DownloadBlotterTransactionDetailsForCorporatePDFReport",
+};
+
+export const DownloadPDFReportBlotterTrasactionTreasury = {
+  RequestMethod:
+    "ServiceManager.DownloadBlotterTransactionDetailsForTreasuryPDFReport",
+};
 export const GetDiscountingRatesForTreasury = {
   RequestMethod: "ServiceManager.GetDiscountingRatesForTreasury",
 };
 
-
 export const CalculateNonFESwapAndDiscountingRM = {
-  RequestMethod: "ServiceManager.CalculateNonFESwapAndDiscounting"
-}
+  RequestMethod: "ServiceManager.CalculateNonFESwapAndDiscounting",
+};
