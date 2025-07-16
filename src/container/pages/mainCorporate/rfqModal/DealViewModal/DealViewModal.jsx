@@ -58,10 +58,10 @@ const DealViewModal = ({ dealData }) => {
   };
 
   const handleCancel = () => {};
-  if (!viewDealModal && !dealData) return null;
+  // if (!viewDealModal && !dealData) return null;
   return (
     <GlobalModal
-      show={viewDealModal}
+      show={true}
       size={"md"}
       bodyClassName={styles["DealViewModal__body"]}
       modalBody={
@@ -161,7 +161,7 @@ const DealViewModal = ({ dealData }) => {
                     <InputFIeld
                       applyClass={"DealBoxBitInput"}
                       disabled={
-                        dealData.side.toLowerCase() === "sell" ? false : true
+                        dealData?.side.toLowerCase() === "sell" ? false : true
                       }
                       value={bid}
                       onChange={(e) => handleChangeRate(e, "bid")}
@@ -176,7 +176,7 @@ const DealViewModal = ({ dealData }) => {
                     <InputFIeld
                       applyClass={"DealBoxOfferInput"}
                       disabled={
-                        dealData.side.toLowerCase() === "buy" ? false : true
+                        dealData?.side.toLowerCase() === "buy" ? false : true
                       }
                       value={offer}
                       onChange={(e) => handleChangeRate(e, "offer")}

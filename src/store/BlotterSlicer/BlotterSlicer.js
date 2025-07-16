@@ -62,8 +62,16 @@ const BlotterSlicer = createSlice({
     GetForwardTransactionDetails: null,
     GetNonFEDiscountingTransactionDetails: null,
     GetNOPData: null,
+    forwardQuoteModalData: null,
+    discountingQuoteModalData: null,
   },
   reducers: {
+    setDiscountingQuoteModalData: (state, { payload }) => {
+      state.discountingQuoteModalData = payload;
+    },
+    setForwardQuoteModalData: (state, { payload }) => {
+      state.forwardQuoteModalData = payload;
+    },
     setActiveTreasuryTab: (state, { payload }) => {
       console.log(payload, "setActiveTreasuryTabsetActiveTreasuryTab");
       state.activeTabBlotter = payload;
@@ -425,6 +433,8 @@ const BlotterSlicer = createSlice({
 });
 
 export const {
+  setDiscountingQuoteModalData,
+  setForwardQuoteModalData,
   setActiveTreasuryTab,
   clearBlotterResponseMessage,
   clearCalculateTenorSwapAndForwardRateData,

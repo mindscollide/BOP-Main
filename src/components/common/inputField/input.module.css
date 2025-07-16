@@ -342,3 +342,28 @@
   background-color: #e9ecef;
 }
 /* End Dealer Offer Input Field  */
+
+/* Discounting Quote Modal */
+
+.DiscountingQuoteInput {
+  display: block;
+  width: 150px;
+  padding: 0.375rem 0.75rem;
+  font-size: calc(1.275rem + 0.3vw) !important;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #002650;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border-radius: 0.375rem;
+  text-align: center;
+  font-weight: 600;
+}
+.DiscountingQuoteInput:disabled {
+  background: var(--color-light) !important;
+  color: var(--color-blue) !important;
+}

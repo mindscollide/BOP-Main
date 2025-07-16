@@ -1,3 +1,4 @@
+import NotificationSnackBar from "@/components/common/NotificationSnackbar";
 import {
   getTenorWiseForwardsAction,
   PublishTenorWiseForwardsAction,
@@ -73,6 +74,11 @@ const TenoreWiseCurrentAndLastRates = ({
     (state) => state.RealtimeActionsSlice.tenorWiseForwardsRates
   );
 
+  // state for NotificationSnackbar
+  const [snackbarData, setSnackbarData] = useState({
+    message: "",
+  });
+
   useEffect(() => {
     if (newTenorRecord !== null) {
       let newData = [...forwardsForTreasuryBranch, newTenorRecord];
@@ -81,6 +87,16 @@ const TenoreWiseCurrentAndLastRates = ({
       setNewTenorRecord(null);
     }
   }, [newTenorRecord]);
+
+  useEffect(() => {
+    if (snackbarData.message !== "") {
+      const timer = setTimeout(() => {
+        setSnackbarData({ message: "" });
+      }, 3000); // 3 seconds
+
+      return () => clearTimeout(timer);
+    }
+  }, [snackbarData.message]);
 
   useEffect(() => {
     if (getDashboardForwards !== null) {
@@ -187,21 +203,38 @@ const TenoreWiseCurrentAndLastRates = ({
     let checkDoNotempty = forwardsForTreasuryBranch.every(
       (item) => item.currentAsk !== "" && item.currentBid !== ""
     );
-    if (checkDoNotempty) {
-      let Data = {
-        CurrentTenorWiseForwardRates: forwardsForTreasuryBranch.map((item) => {
-          return {
-            TenorID: item.tenorID,
-            Bid: Number(item.currentBid),
-            Ask: Number(item.currentAsk),
-            DateTime: item.dateTime,
-          };
-        }),
-      };
-      dispatch(PublishTenorWiseForwardsAction({ Data, navigate }));
-    } else {
-      alert("Please fill all the fields");
+
+    if (!checkDoNotempty) {
+      setSnackbarData({
+        message: "Please fill all required fields.",
+      });
+      return;
     }
+
+    let checkAskValue = forwardsForTreasuryBranch.find(
+      (item) => Number(item.currentAsk) <= Number(item.currentBid)
+    );
+
+    console.log(checkAskValue, "Checkerchecker");
+
+    if (checkAskValue !== undefined) {
+      setSnackbarData({
+        message: "Ask value must be greater than Bid value.",
+      });
+      return;
+    }
+
+    let Data = {
+      CurrentTenorWiseForwardRates: forwardsForTreasuryBranch.map((item) => {
+        return {
+          TenorID: item.tenorID,
+          Bid: Number(item.currentBid),
+          Ask: Number(item.currentAsk),
+          DateTime: item.dateTime,
+        };
+      }),
+    };
+    dispatch(PublishTenorWiseForwardsAction({ Data, navigate }));
   };
 
   const columns = [
@@ -228,7 +261,7 @@ const TenoreWiseCurrentAndLastRates = ({
             InputFIeld ? (
               <Suspense fallback={<div>Loading input...</div>}>
                 <InputFIeld
-                  type='number'
+                  type="number"
                   value={record.currentBid}
                   onChange={(event) =>
                     handleChangeCurrentForwards(record, "bid", event)
@@ -247,7 +280,7 @@ const TenoreWiseCurrentAndLastRates = ({
             InputFIeld ? (
               <Suspense fallback={<div>Loading input...</div>}>
                 <InputFIeld
-                  type='number'
+                  type="number"
                   value={record.currentAsk}
                   onChange={(event) =>
                     handleChangeCurrentForwards(record, "ask", event)
@@ -271,7 +304,7 @@ const TenoreWiseCurrentAndLastRates = ({
             InputFIeld ? (
               <Suspense fallback={<div>Loading input...</div>}>
                 <InputFIeld
-                  type='number'
+                  type="number"
                   value={record.lastBid}
                   disabled={true}
                   applyClass={"DealerTableBitInput"}
@@ -288,7 +321,7 @@ const TenoreWiseCurrentAndLastRates = ({
             InputFIeld ? (
               <Suspense fallback={<div>Loading input...</div>}>
                 <InputFIeld
-                  type='number'
+                  type="number"
                   value={record.lastAsk}
                   disabled={true}
                   applyClass={"DealerTableBitInput"}
@@ -314,7 +347,7 @@ const TenoreWiseCurrentAndLastRates = ({
               IconElement && (
                 <Suspense fallback={<div>Loading button...</div>}>
                   <CustomButton
-                    type='link'
+                    type="link"
                     icon={
                       <Suspense fallback={<div>Loading icon...</div>}>
                         <IconElement
@@ -345,9 +378,9 @@ const TenoreWiseCurrentAndLastRates = ({
               pagination={false}
             />
             {CustomButton && (
-              <span className='d-flex justify-content-center mt-4'>
+              <span className="d-flex justify-content-center mt-4">
                 <CustomButton
-                  applyClass='publishForwardsBtn'
+                  applyClass="publishForwardsBtn"
                   value={"Publish Forwards"}
                   onClick={handlePublishForwards}
                   disabled={marketStatus === false ? true : false}
@@ -357,6 +390,8 @@ const TenoreWiseCurrentAndLastRates = ({
           </Suspense>
         </>
       )}
+
+      <NotificationSnackBar message={snackbarData.message} />
     </>
   );
 };
