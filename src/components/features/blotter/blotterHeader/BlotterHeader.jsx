@@ -22,6 +22,14 @@ import {
   BlotterDataAPI,
   GetBlotterOutstandingDealsDataAPI,
 } from "../BlotterActions";
+import {
+  DownloadExcelReportBlotterTrasactionBranchAPI,
+  DownloadExcelReportBlotterTrasactionCorporateAPI,
+  DownloadExcelReportBlotterTrasactionTreasuryAPI,
+  DownloadPDFReportBlotterTrasactionBranchAPI,
+  DownloadPDFReportBlotterTrasactionCorporateAPI,
+  DownloadPDFReportBlotterTrasactionTreasuryAPI,
+} from "@/store/ReportSlicer/ReportActions";
 
 const BlotterHeader = () => {
   const navigate = useNavigate();
@@ -70,6 +78,29 @@ const BlotterHeader = () => {
     dispatch(setActiveTreasuryTab(tabTitle));
   };
 
+  const HandlePDFDownloadFunc = () => {
+    console.log("Bracnhhhh");
+
+    if (isTreasury) {
+      dispatch(DownloadPDFReportBlotterTrasactionTreasuryAPI({ navigate }));
+    } else if (isCorporate) {
+      dispatch(DownloadPDFReportBlotterTrasactionCorporateAPI({ navigate }));
+    } else if (isBranch) {
+      console.log("Bracnhhhh");
+      dispatch(DownloadPDFReportBlotterTrasactionBranchAPI({ navigate }));
+    }
+  };
+
+  const HandleExcelDownloadFunc = () => {
+    if (isTreasury) {
+      dispatch(DownloadExcelReportBlotterTrasactionTreasuryAPI({ navigate }));
+    } else if (isCorporate) {
+      dispatch(DownloadExcelReportBlotterTrasactionCorporateAPI({ navigate }));
+    } else if (isBranch) {
+      console.log("Bracnhhhh");
+      dispatch(DownloadExcelReportBlotterTrasactionBranchAPI({ navigate }));
+    }
+  };
   return (
     <>
       <section className="position-relative">
@@ -110,12 +141,14 @@ const BlotterHeader = () => {
                             width={30}
                             height={30}
                             alt="pdf"
+                            onClick={HandlePDFDownloadFunc}
                           />
                           <img
                             src={excelImage}
                             width={30}
                             height={30}
                             alt="excel"
+                            onClick={HandleExcelDownloadFunc}
                           />
                           <img
                             src={emailImage}
@@ -164,12 +197,14 @@ const BlotterHeader = () => {
                             width={30}
                             height={30}
                             alt="pdf"
+                            onClick={HandlePDFDownloadFunc}
                           />
                           <img
                             src={excelImage}
                             width={30}
                             height={30}
                             alt="excel"
+                            onClick={HandleExcelDownloadFunc}
                           />
                           <img
                             src={emailImage}
