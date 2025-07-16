@@ -1040,6 +1040,7 @@ const OutstandingDeals = () => {
   };
 
   const openViewDeal = (record, natureTypeId) => {
+    console.log(record, natureTypeId, "openViewDealopenViewDeal")
     if (natureTypeId === 1) {
       //  For Spot
       dispatch(setViewDealModal(true));
@@ -1048,7 +1049,7 @@ const OutstandingDeals = () => {
       // For Forwards
       dispatch(setForwardQuoteModal(true));
       dispatch(setForwardQuoteModalData(record));
-    } else if (natureTypeId === 3) {
+    } else if (natureTypeId === 3 || natureTypeId === 4 ) {
       dispatch(setDiscountingQuoteModal(true));
       dispatch(setDiscountingQuoteModalData(record));
       // For Fe And Non Fe Discounting
@@ -1661,7 +1662,7 @@ const OutstandingDeals = () => {
                         onClick={() => openViewDeal(record)}
                       />
                     </>
-                  ) : record.natureType === 2 ? (
+                  ) : record.natureType === 2 || record.natureType === 3 || record.natureType === 4 ? (
                     <CustomButton
                       icon={<i className='icon-open '></i>}
                       size={"small"}

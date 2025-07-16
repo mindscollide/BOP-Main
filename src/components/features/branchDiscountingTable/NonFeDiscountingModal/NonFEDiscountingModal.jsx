@@ -14,7 +14,7 @@ import {
 } from "../../blotter/BlotterActions";
 import { formatDate } from "@/common/utils";
 import { useSelector } from "react-redux";
-
+const shouldIncludeBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
 const NonFEDiscountingModal = ({
   nonfeDiscountingModalCall,
   setNonfeDiscountingModalCall,
@@ -38,6 +38,8 @@ const NonFEDiscountingModal = ({
   });
   const [tenoreDate, setTenorDate] = useState(formatDate(new Date()));
   const [tenorValue, setTenorValue] = useState("");
+  const [amount, setAmount] = useState("");
+  const [accNo, setAcc] = useState("");
   const [calculatedData, setCalulatedData] = useState({
     kiborValue: "",
     swapValue: "",
@@ -48,11 +50,6 @@ const NonFEDiscountingModal = ({
     value: 0,
     label: "",
   });
-  const options = [
-    { value: "chocolate", label: "Chocolate" },
-    { value: "strawberry", label: "Strawberry" },
-    { value: "vanilla", label: "Vanilla" },
-  ];
 
   const handleChangeTenor = (event) => {
     const { value } = event.target;
@@ -84,6 +81,25 @@ const NonFEDiscountingModal = ({
         InstrumentID: Number(selectedCurrency.value),
       };
       dispatch(calculateNonFeSwapAndDiscountingRateApi({ Data, navigate }));
+    }
+  };
+  const handleChangeCorporate = (selectedOption) => {
+    setCorporateValue(selectedOption);
+    console.log("selectedOption", selectedOption);
+  };
+
+  const handleChangeState = (name, event) => {
+    const { value } = event.target;
+    if (name === "amount") {
+      const regex = /^[0-9]*$/;
+      if (regex.test(value)) {
+        setAmount(value);
+      }
+    } else if (name === "accNo") {
+      const regex = /^[a-zA-Z0-9]*$/;
+      if (regex.test(value)) {
+        setAcc(value);
+      }
     }
   };
 
@@ -137,17 +153,21 @@ const NonFEDiscountingModal = ({
 
   const handleConfirm = () => {
     let Data = {
-      CorporateID: 7,
-      InstrumentID: 21,
-      Quantity: 15000,
-      AccountNumber: "63482384209309",
-      NatureOfTransactionID: 14,
-      TenorDays: 12,
-      Kibor: 1.5,
-      Swap: 0.3,
+      CorporateID: corporateValue.value,
+      InstrumentID: selectedCurrency.value,
+      Quantity: Number(amount),
+      AccountNumber: accNo,
+      NatureOfTransactionID: selectedNature?.id,
+      TenorDays: Number(tenorValue),
+      Kibor: calculatedData.kiborValue,
+      Swap: calculatedData.swapValue,
     };
     dispatch(SaveNonFEDiscountingTransactionAPI({ navigate, Data }));
   };
+  let branchDetais =
+    localStorage.getItem("branch") !== null
+      ? JSON.parse(localStorage.getItem("branch"))
+      : null;
   return (
     <div>
       {" "}
@@ -166,7 +186,9 @@ const NonFEDiscountingModal = ({
           <>
             <Row>
               <Col lg={12} md={12} sm={12}>
-                <span className='HeaderHeadingName'>Gull Ahmed</span>
+                <span className='HeaderHeadingName'>
+                  {branchDetais !== null ? branchDetais.branchName : ""}
+                </span>
               </Col>
             </Row>
           </>
@@ -175,26 +197,31 @@ const NonFEDiscountingModal = ({
           <>
             <Row>
               <Col lg={12} md={12} sm={12}>
-                <Row className="mb-2">
-                  <Col lg={12} md={12} sm={12}>
-                    <div className='d-flex flex-column flex-wrap'>
-                      <span className='SubHeadings'>Client name</span>
-                      <SelectDropdown
-                        options={getAllCorporates}
-                        placeholder='Please Select Corporate'
-                        value={
-                          corporateValue.value !== 0 ? corporateValue : null
-                        }
-                      />
-                    </div>
-                  </Col>
-                </Row>
+                {shouldIncludeBranch && (
+                  <Row className='mb-2'>
+                    <Col lg={12} md={12} sm={12}>
+                      <div className='d-flex flex-column flex-wrap'>
+                        <span className='SubHeadings'>Client name</span>
+                        <SelectDropdown
+                          options={getAllCorporates}
+                          placeholder='Please Select Corporate'
+                          isSearchable={true}
+                          value={
+                            corporateValue?.value !== 0 ? corporateValue : null
+                          }
+                          onChange={handleChangeCorporate}
+                        />
+                      </div>
+                    </Col>
+                  </Row>
+                )}
+
                 <Row>
                   <Col lg={12} md={12} sm={12}>
                     <div className='d-flex flex-column flex-wrap'>
                       <span className='SubHeadings'>Currency</span>
                       <SelectDropdown
-                        options={options}
+                        options={[]}
                         placeholder=''
                         value={selectedCurrency}
                       />
@@ -216,6 +243,8 @@ const NonFEDiscountingModal = ({
                       <span className='SubHeadings'>A/c No*</span>
                       <InputFIeld
                         applyClass={"BookaForwardCorporateInputFields"}
+                        value={accNo}
+                        onChange={(e) => handleChangeState("accNo", e)}
                       />
                     </div>
                   </Col>
@@ -244,6 +273,8 @@ const NonFEDiscountingModal = ({
                       <span className='SubHeadings'>Amount</span>
                       <InputFIeld
                         applyClass={"BookaForwardCorporateInputFields"}
+                        value={amount}
+                        onChange={(e) => handleChangeState("amount", e)}
                       />
                     </div>
                   </Col>
@@ -267,6 +298,7 @@ const NonFEDiscountingModal = ({
                           <InputFIeld
                             applyClass={"BookaForwardCorporateInputFields"}
                             value={calculatedData.kiborValue}
+                            disabled={true}
                           />
                         </div>
                       </Col>
@@ -285,6 +317,7 @@ const NonFEDiscountingModal = ({
                           <InputFIeld
                             applyClass={"BookaForwardCorporateInputFields"}
                             value={calculatedData.swapValue}
+                            disabled={true}
                           />
                         </div>
                       </Col>
