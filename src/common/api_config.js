@@ -276,19 +276,19 @@ export const ExpireRFQTransactionRM = {
   RequestMethod: "ServiceManager.ExpireRFQTransaction",
 };
 
-export const GetSpotTransactionDetailsRM = {
+export const GetSpotTransactionDetails = {
   RequestMethod: "ServiceManager.GetSpotTransactionDetails",
 };
 
-export const GetForwardTransactionDetailsRM = {
+export const GetForwardTransactionDetails = {
   RequestMethod: "ServiceManager.GetForwardTransactionDetails",
 };
 
-export const GetFEDiscountingTransactionDetailsRM = {
+export const GetFEDiscountingTransactionDetails = {
   RequestMethod: "ServiceManager.GetFEDiscountingTransactionDetails",
 };
 
-export const GetNonFEDiscountingTransactionDetailsRM = {
+export const GetNonFEDiscountingTransactionDetails = {
   RequestMethod: "ServiceManager.GetNonFEDiscountingTransactionDetails",
 };
 
@@ -343,7 +343,6 @@ export const GetDiscountingRatesForTreasury = {
   RequestMethod: "ServiceManager.GetDiscountingRatesForTreasury",
 };
 
-
 export const CalculateNonFESwapAndDiscountingRM = {
-  RequestMethod: "ServiceManager.CalculateNonFESwapAndDiscounting"
-}
+  RequestMethod: "ServiceManager.CalculateNonFESwapAndDiscounting",
+};

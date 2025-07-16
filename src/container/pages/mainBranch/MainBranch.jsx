@@ -16,9 +16,7 @@ import {
   GetSpotRatesForCounterPartyAPI,
 } from "@/components/features/blotter/BlotterActions";
 import { getAllTenorsAction } from "../mainDealer/dealerActions";
-// import { getAllTenorsAction } from "@/container/pages/mainDealer/dealerActions";
 
-// Conditionally import CustomButton based on the environment variables
 const shouldIncludeComponents =
   import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
 
@@ -46,13 +44,13 @@ const MainBranch = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const activeTab = useSelector((state) => state.RFQReducer.activeTab);
+
   //WatchList table Data Api Call
   useEffect(() => {
     try {
       dispatch(GetSpotRatesForCounterPartyAPI(navigate));
       let Data = { sRow: 0, Length: 10 };
       dispatch(BlotterDataAPI({ navigate, Data }));
-
       dispatch(GetDashboardDataAPI({ navigate })); // Fetching the Dashboard Data
       // dispatch(getAllTenorsAction({ navigate }));
       dispatch(getAllTenorsAction({ navigate }));
@@ -66,6 +64,7 @@ const MainBranch = () => {
   const handleTabChange = (tabTitle) => {
     dispatch(setActiveTab(tabTitle));
   };
+
   const tabsData = [
     {
       title: "Spot",

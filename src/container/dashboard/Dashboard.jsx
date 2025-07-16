@@ -54,6 +54,7 @@ import {
 } from "@/store/modalSlice/modalSlicer";
 import { AnimatePresence } from "framer-motion";
 import { GetAllNatureOfTransactionsApi } from "../pages/mainCorporate/rfqModal/RFQActions";
+import InfoTransaction from "@/components/features/blotter/infoTransaction/InfoTransaction";
 const Dashboard = () => {
   const { Content } = Layout;
   const dispatch = useDispatch();
@@ -70,6 +71,9 @@ const Dashboard = () => {
   );
   const dealMoalRequest = useSelector(
     (state) => state.modalReducer.dealModalRequest
+  );
+  const transactionInfoModal = useSelector(
+    (state) => state.modalReducer.transactionInfoModal
   );
   const IsBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
   const IsCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
@@ -228,6 +232,7 @@ const Dashboard = () => {
               <DealBox />
             )}
           </AnimatePresence>
+          {transactionInfoModal && <InfoTransaction />}
 
           {chatModal && <ChatBox />}
         </main>

@@ -1,15 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import GlobalTable from "../../../../../../components/common/table/GlobalTable";
 import BidAmountBox from "../../../../../../components/common/bidAmountBox/BidAmountBox";
 import { formatDateTimeToUTCTime } from "../../../../../../components/utils/timeFunction";
-import { getBankSpotData, loaderInitialize } from "./slicer/bankSpotSlicer";
-import SectionLoader from "../../../../../../components/common/sectionLoader/SectionLoader";
-import { GetBankSpotForTreasuryApi } from "@/components/features/SpotBranch/WatchlistAction";
-import { useNavigate } from "react-router-dom";
 
 const BankSpot = () => {
-  const navigate = useNavigate();
   const GetAllInstrumentForTreasury = useSelector(
     (state) => state.WatchListReducer.GetAllInstrumentForTreasury
   );
@@ -21,12 +16,8 @@ const BankSpot = () => {
     instruments: GetAllInstrumentForTreasury,
     SPOT_Live_rates: TresuaryBankSpotData,
   });
-  // const bankSportLoader = useSelector((state) => state.bankSpotReducer.Loader);
-
-  console.log(TresuaryBankSpotData, "watchListReducerwatchListReducer");
 
   const [bankSpotData, setBankSpotData] = useState([]);
-  console.log(bankSpotData, "bankSpotData");
 
   const columns = [
     {
@@ -175,7 +166,6 @@ const BankSpot = () => {
           pagination={false}
           scroll={{ x: "hidden", y: 275 }}
         />
-        {/* {bankSportLoader ? <SectionLoader /> : null} */}
       </div>
     </div>
   );

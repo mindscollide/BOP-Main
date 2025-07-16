@@ -28,6 +28,10 @@ import {
   calculateTenorSwapAndForwardRateApi,
   GetSpotRatesForCounterPartyAPI,
   SaveForwardTransactionRFQApi,
+  GetFEDiscountingTransactionDetailsApi,
+  GetSpotTransactionDetailsApi,
+  GetForwardTransactionDetailsApi,
+  GetNonFEDiscountingTransactionDetailsApi,
 } from "@/components/features/blotter/BlotterActions";
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -52,6 +56,10 @@ const BlotterSlicer = createSlice({
     activeTabBlotter: "TXN Summary",
     GetSpotRatesForCounterParty: null,
     saveForwardRFQTransaction: null,
+    GetFEDiscountingTransactionDetails: null,
+    GetSpotTransactionDetails: null,
+    GetForwardTransactionDetails: null,
+    GetNonFEDiscountingTransactionDetails: null,
   },
   reducers: {
     setActiveTreasuryTab: (state, { payload }) => {
@@ -63,6 +71,19 @@ const BlotterSlicer = createSlice({
     },
     clearCalculateTenorSwapAndForwardRateData: (state) => {
       state.calculateTenorSwapAndForwardRateData = null;
+    },
+
+    clearGetSpotTransactionDetails: (state) => {
+      state.GetSpotTransactionDetails = null;
+    },
+    clearGetFEDiscountingTransactionDetails: (state) => {
+      state.GetFEDiscountingTransactionDetails = null;
+    },
+    clearGetNonFEDiscountingTransactionDetails: (state) => {
+      state.GetNonFEDiscountingTransactionDetails = null;
+    },
+    clearGetForwardTransactionDetails: (state) => {
+      state.GetForwardTransactionDetails = null;
     },
   },
   extraReducers: (builder) => {
@@ -310,7 +331,81 @@ const BlotterSlicer = createSlice({
         state.Loader = false;
         state.saveForwardRFQTransaction = null;
         state.responseMessage = payload;
-      });
+      })
+      .addCase(GetFEDiscountingTransactionDetailsApi.pending, (state) => {
+        state.Loader = true;
+        // state.error = null;
+      })
+      .addCase(
+        GetFEDiscountingTransactionDetailsApi.fulfilled,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.GetFEDiscountingTransactionDetails = payload.response;
+          // state.error = null;
+          state.responseMessage = payload.message;
+        }
+      )
+      .addCase(
+        GetFEDiscountingTransactionDetailsApi.rejected,
+        (state, action) => {
+          // console.log(action, "actionaction");
+          state.Loader = false;
+          state.error = action.payload;
+          state.GetFEDiscountingTransactionDetails = null;
+          state.responseMessage = payload?.message;
+        }
+      )
+      .addCase(GetSpotTransactionDetailsApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(GetSpotTransactionDetailsApi.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.GetSpotTransactionDetails = payload.response;
+        state.responseMessage = payload.message;
+      })
+      .addCase(GetSpotTransactionDetailsApi.rejected, (state, { payload }) => {
+        state.Loader = false;
+        state.GetSpotTransactionDetails = null;
+        state.responseMessage = payload?.message;
+      })
+      .addCase(GetForwardTransactionDetailsApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(
+        GetForwardTransactionDetailsApi.fulfilled,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.GetForwardTransactionDetails = payload.response;
+          state.responseMessage = payload.message;
+        }
+      )
+      .addCase(
+        GetForwardTransactionDetailsApi.rejected,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.GetForwardTransactionDetails = null;
+          state.responseMessage = payload?.message;
+        }
+      )
+      .addCase(GetNonFEDiscountingTransactionDetailsApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(
+        GetNonFEDiscountingTransactionDetailsApi.fulfilled,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.GetNonFEDiscountingTransactionDetails = payload.response;
+          state.responseMessage = payload.message;
+        }
+      )
+      .addCase(
+        GetNonFEDiscountingTransactionDetailsApi.rejected,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.GetNonFEDiscountingTransactionDetails = null;
+          state.responseMessage = payload?.message;
+        }
+      );
   },
 });
 
@@ -318,6 +413,10 @@ export const {
   setActiveTreasuryTab,
   clearBlotterResponseMessage,
   clearCalculateTenorSwapAndForwardRateData,
+  clearGetFEDiscountingTransactionDetails,
+  clearGetSpotTransactionDetails,
+  clearGetNonFEDiscountingTransactionDetails,
+  clearGetForwardTransactionDetails,
 } = BlotterSlicer.actions;
 
 export default BlotterSlicer.reducer;

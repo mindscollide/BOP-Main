@@ -9,10 +9,8 @@ import {
   CancelTransactionRM,
   ExpireRFQTransactionRM,
   GetBlotterOutstandingDealsDataRM,
-  GetFEDiscountingTransactionDetailsRM,
-  GetForwardTransactionDetailsRM,
-  GetNonFEDiscountingTransactionDetailsRM,
-  GetSpotTransactionDetailsRM,
+  GetFEDiscountingTransactionDetails,
+  GetSpotTransactionDetails,
   RFQFEDiscountingTransactionQuotationRM,
   RFQForwardTransactionQuotationRM,
   RFQNonFEDiscountingTransactionQuotationRM,
@@ -29,11 +27,14 @@ import {
   SaveSpotTransactionRFQRM,
   SaveSpotTransactionRM,
   GetSpotRatesForCounterParty,
+  GetForwardTransactionDetails,
+  GetNonFEDiscountingTransactionDetails,
 } from "@/common/api_config";
 import { blotterApi, watchListApi } from "@/common/apiend_points";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
 import {
   setRfqModalOpen,
+  setTransactionInfoModal,
   setViewDealModal,
 } from "@/store/modalSlice/modalSlicer";
 import createPostAPI from "@/utils/axiosInstance";
@@ -1934,13 +1935,13 @@ export const ExpireRFQTransaction = createAsyncThunk(
   }
 );
 
-export const GetSpotTransactionDetails = createAsyncThunk(
+export const GetSpotTransactionDetailsApi = createAsyncThunk(
   "Blotter/GetSpotTransactionDetails",
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       const postAPI = createPostAPI(
         blotterApi,
-        GetSpotTransactionDetailsRM.RequestMethod
+        GetSpotTransactionDetails.RequestMethod
       );
       const response = await postAPI(Data);
       const { responseCode } = response.data;
@@ -1952,7 +1953,7 @@ export const GetSpotTransactionDetails = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(GetSpotTransactionDetails({ navigate, Data }));
+        dispatch(GetSpotTransactionDetailsApi({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -1963,6 +1964,8 @@ export const GetSpotTransactionDetails = createAsyncThunk(
                 "Blotter_BlotterServiceManager_GetSpotTransactionDetails_01".toLowerCase()
               )
           ) {
+            dispatch(setTransactionInfoModal(true));
+
             return {
               response: response.data.responseResult,
               message: "Spot transaction details retrieved successfully",
@@ -2006,13 +2009,13 @@ export const GetSpotTransactionDetails = createAsyncThunk(
   }
 );
 
-export const GetForwardTransactionDetails = createAsyncThunk(
+export const GetForwardTransactionDetailsApi = createAsyncThunk(
   "Blotter/GetForwardTransactionDetails",
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       const postAPI = createPostAPI(
         blotterApi,
-        GetForwardTransactionDetailsRM.RequestMethod
+        GetForwardTransactionDetails.RequestMethod
       );
       const response = await postAPI(Data);
       const { responseCode } = response.data;
@@ -2024,7 +2027,7 @@ export const GetForwardTransactionDetails = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(GetForwardTransactionDetails({ navigate, Data }));
+        dispatch(GetForwardTransactionDetailsApi({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -2035,6 +2038,8 @@ export const GetForwardTransactionDetails = createAsyncThunk(
                 "Blotter_BlotterServiceManager_GetForwardTransactionDetails_01".toLowerCase()
               )
           ) {
+            dispatch(setTransactionInfoModal(true));
+
             return {
               response: response.data.responseResult,
               message: "Forward transaction details retrieved successfully",
@@ -2078,13 +2083,13 @@ export const GetForwardTransactionDetails = createAsyncThunk(
   }
 );
 
-export const GetFEDiscountingTransactionDetails = createAsyncThunk(
+export const GetFEDiscountingTransactionDetailsApi = createAsyncThunk(
   "Blotter/GetFEDiscountingTransactionDetails",
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       const postAPI = createPostAPI(
         blotterApi,
-        GetFEDiscountingTransactionDetailsRM.RequestMethod
+        GetFEDiscountingTransactionDetails.RequestMethod
       );
       const response = await postAPI(Data);
       const { responseCode } = response.data;
@@ -2096,7 +2101,7 @@ export const GetFEDiscountingTransactionDetails = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(GetFEDiscountingTransactionDetails({ navigate, Data }));
+        dispatch(GetFEDiscountingTransactionDetailsApi({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -2107,6 +2112,7 @@ export const GetFEDiscountingTransactionDetails = createAsyncThunk(
                 "Blotter_BlotterServiceManager_GetFEDiscountingTransactionDetails_01".toLowerCase()
               )
           ) {
+            dispatch(setTransactionInfoModal(true));
             return {
               response: response.data.responseResult,
               message:
@@ -2139,11 +2145,6 @@ export const GetFEDiscountingTransactionDetails = createAsyncThunk(
           } else {
             return rejectWithValue("Something went wrong");
           }
-          return {
-            response: responseResult,
-            message:
-              "FE Discounting transaction details retrieved successfully",
-          };
         } else {
           return rejectWithValue("Something went wrong");
         }
@@ -2158,13 +2159,13 @@ export const GetFEDiscountingTransactionDetails = createAsyncThunk(
   }
 );
 
-export const GetNonFEDiscountingTransactionDetails = createAsyncThunk(
+export const GetNonFEDiscountingTransactionDetailsApi = createAsyncThunk(
   "Blotter/GetNonFEDiscountingTransactionDetails",
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       const postAPI = createPostAPI(
         blotterApi,
-        GetNonFEDiscountingTransactionDetailsRM.RequestMethod
+        GetNonFEDiscountingTransactionDetails.RequestMethod
       );
       const response = await postAPI(Data);
       const { responseCode } = response.data;
@@ -2176,7 +2177,7 @@ export const GetNonFEDiscountingTransactionDetails = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(GetNonFEDiscountingTransactionDetails({ navigate, Data }));
+        dispatch(GetNonFEDiscountingTransactionDetailsApi({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -2187,6 +2188,8 @@ export const GetNonFEDiscountingTransactionDetails = createAsyncThunk(
                 "Blotter_BlotterServiceManager_GetNonFEDiscountingTransactionDetails_01".toLowerCase()
               )
           ) {
+            dispatch(setTransactionInfoModal(true));
+
             return {
               response: response.data.responseResult,
               message:
