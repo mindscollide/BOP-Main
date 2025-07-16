@@ -47,7 +47,7 @@ import {
 import { formatDateToUTC } from "@/utils/formatters";
 import { LogoutApi } from "../loginScreens/authActions/logoutAction";
 import DealBox from "@/components/features/dealbox/DealBox";
-import DealViewModal from "../pages/mainCorporate/rfqModal/DealViewModal/DealViewModal";
+import DealViewModal from "../pages/mainCorporate/rfqModal/SpotQuoteModal/SpotQuoteModal";
 import {
   setChatModal,
   setDealModalRequest,

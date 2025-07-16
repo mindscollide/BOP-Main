@@ -28,7 +28,7 @@ import {
   GetCategoryWiseForwardRatesApi,
   GetCategoryWiseSpotRatesApi,
 } from "@/container/pages/mainCategory/categoryActions";
-import DealViewModal from "@/container/pages/mainCorporate/rfqModal/DealViewModal/DealViewModal";
+import SpotQuoteModal from "@/container/pages/mainCorporate/rfqModal/SpotQuoteModal/SpotQuoteModal";
 import DiscountingRFQQuoteModal from "@/container/pages/mainCorporate/rfqModal/DiscountingRFQQuoteModal/DiscountingRFQQuoteModal";
 import ForwardRFQQuoteModal from "@/container/pages/mainCorporate/rfqModal/ForwardRFQQuoteModal/ForwardRFQQuoteModal";
 
@@ -38,6 +38,22 @@ const GlobalNavbar = () => {
   );
   const settingModalState = useSelector(
     (state) => state.modalReducer.settingModal
+  );
+  const spotQuoteModalState = useSelector(
+    (state) => state.modalReducer.spotQuoteModal
+  );
+
+  const forwardQuoteModalState = useSelector(
+    (state) => state.modalReducer.forwardQuoteModal
+  );
+  const discountingQuoteModalState = useSelector(
+    (state) => state.modalReducer.discountingQuoteModal
+  );
+  console.log(
+    spotQuoteModalState,
+    forwardQuoteModalState,
+    discountingQuoteModalState,
+    "discountingQuoteModalState"
   );
   const activeTab = useSelector((state) => state.RFQReducer.activeTab);
 
@@ -200,7 +216,7 @@ const GlobalNavbar = () => {
       }
     }
   }, [isCategoryAdded]);
-  
+
   useEffect(() => {
     if (isCategoryUpdated !== null && categoryValue.value !== 0) {
       const {
@@ -269,17 +285,17 @@ const GlobalNavbar = () => {
 
   return (
     <>
-      <div className="site-header pt-1">
-        <div className="container-fluid page-gutter">
-          <div className="header-inner d-flex align-items-center">
+      <div className='site-header pt-1'>
+        <div className='container-fluid page-gutter'>
+          <div className='header-inner d-flex align-items-center'>
             <SiteLogoComponent />
-            <div className="ms-auto">
-              <div className="d-flex align-items-center gap-2">
+            <div className='ms-auto'>
+              <div className='d-flex align-items-center gap-2'>
                 {shouldIncludeTreasury &&
                 location.pathname === "/BOP/treasury" &&
                 outStandingData.length !== 0 ? (
                   <>
-                    <section className="position-relative">
+                    <section className='position-relative'>
                       <IconElement
                         iconClass={
                           "icon-clock fs-4 color-red px-2 cursor-pointer"
@@ -300,9 +316,9 @@ const GlobalNavbar = () => {
                     {(shouldIncludeCorporate || shouldIncludeBranch) && (
                       <Suspense fallback={<>Loading RFQ...</>}>
                         <CustomButton
-                          applyClass="rfqBtn"
-                          value="RFQ"
-                          size="small"
+                          applyClass='rfqBtn'
+                          value='RFQ'
+                          size='small'
                           icon={<IconElement iconClass={"icon-list fs-6"} />}
                           onClick={onClickRFQ}
                         />
@@ -311,9 +327,9 @@ const GlobalNavbar = () => {
                     {location.pathname.includes("treasury") &&
                     (shouldIncludeDealer || shouldIncludeTreasury) ? (
                       <CustomButton
-                        applyClass="calcBtn"
-                        value="Calculators"
-                        size="large"
+                        applyClass='calcBtn'
+                        value='Calculators'
+                        size='large'
                         onClick={handleCalculatorClick}
                       />
                     ) : null}
@@ -343,9 +359,9 @@ const GlobalNavbar = () => {
       </div>
 
       {isRfqModalOpen && <RFQModal />}
-      {/* <DealViewModal /> */}
-      {/* <DiscountingRFQQuoteModal /> */}
-      {/* <ForwardRFQQuoteModal /> */}
+      <SpotQuoteModal />
+      <DiscountingRFQQuoteModal />
+      <ForwardRFQQuoteModal />
 
       {/* Forwards RFQ Modal  */}
       {openRfqModalForwardCorporateComponent && (

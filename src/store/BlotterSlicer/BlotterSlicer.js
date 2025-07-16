@@ -33,6 +33,7 @@ import {
   GetForwardTransactionDetailsApi,
   GetNonFEDiscountingTransactionDetailsApi,
   GetNOPDataAPI,
+  calculateNonFeSwapAndDiscountingRateApi,
 } from "@/components/features/blotter/BlotterActions";
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -64,8 +65,13 @@ const BlotterSlicer = createSlice({
     GetNOPData: null,
     forwardQuoteModalData: null,
     discountingQuoteModalData: null,
+    spotQuoteModalData: null,
+    calculateNonFeSwapAndDiscountingRate: null,
   },
   reducers: {
+    setSpotQuoteModalData: (state, { payload }) => {
+      state.spotQuoteModalData = payload;
+    },
     setDiscountingQuoteModalData: (state, { payload }) => {
       state.discountingQuoteModalData = payload;
     },
@@ -428,7 +434,29 @@ const BlotterSlicer = createSlice({
         state.Loader = false;
         state.GetNOPData = null;
         state.responseMessage = payload?.message;
-      });
+      })
+      .addCase(
+        calculateNonFeSwapAndDiscountingRateApi.pending,
+        (state, { payload }) => {
+          state.Loader = false;
+        }
+      )
+      .addCase(
+        calculateNonFeSwapAndDiscountingRateApi.fulfilled,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.calculateNonFeSwapAndDiscountingRate = payload?.response;
+          state.responseMessage = payload?.message;
+        }
+      )
+      .addCase(
+        calculateNonFeSwapAndDiscountingRateApi.rejected,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.calculateNonFeSwapAndDiscountingRate = null;
+          state.responseMessage = payload;
+        }
+      );
   },
 });
 
@@ -442,6 +470,7 @@ export const {
   clearGetSpotTransactionDetails,
   clearGetNonFEDiscountingTransactionDetails,
   clearGetForwardTransactionDetails,
+  setSpotQuoteModalData,
 } = BlotterSlicer.actions;
 
 export default BlotterSlicer.reducer;

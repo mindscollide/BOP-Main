@@ -49,7 +49,6 @@ const WatchListSlice = createSlice({
       })
       // Rejected state (while the API call is fail GetMisDataByRange)
       .addCase(GetMisDataByRangeAPI.rejected, (state, action) => {
-        console.log(action, "actionaction");
         state.Loader = false;
         state.error = action.payload;
         state.GetMisDataByRange = null;
@@ -61,7 +60,6 @@ const WatchListSlice = createSlice({
       })
       // Fulfilled state (while the API call is being made GetDashboardData)
       .addCase(GetDashboardDataAPI.fulfilled, (state, { payload }) => {
-        console.log(payload.response, "globalStateWatchlistCardData");
         state.Loader = false;
         state.GettheDashboardData = payload?.response;
         state.error = null;
@@ -69,7 +67,6 @@ const WatchListSlice = createSlice({
       })
       // Rejected state (while the API call is fail GetDashboardData)
       .addCase(GetDashboardDataAPI.rejected, (state, action) => {
-        console.log(action, "actionaction");
         state.Loader = false;
         state.error = action.payload;
         state.GettheDashboardData = null;

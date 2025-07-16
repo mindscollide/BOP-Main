@@ -4,7 +4,6 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import CustomButton from "@/components/common/globalButton/button";
 import { Checkbox, Popover } from "antd";
-import IconElement from "@/components/common/IconElement/IconElement";
 import CommentModal from "../commentModal/CommentModal";
 import { useNavigate } from "react-router-dom";
 import {
@@ -18,14 +17,15 @@ import {
 } from "../BlotterActions";
 import { formatDateTimeToUTCTime } from "@/components/utils/timeFunction";
 import { useTableScrollBottom } from "@/utils/useTableScrollBottom";
-import DealViewModal from "@/container/pages/mainCorporate/rfqModal/DealViewModal/DealViewModal";
-import { setViewDealModal } from "@/store/modalSlice/modalSlicer";
+import {
+  setDiscountingQuoteModal,
+  setForwardQuoteModal,
+  setViewDealModal,
+} from "@/store/modalSlice/modalSlicer";
 import { RFQTImer } from "@/components/utils/Timer";
 import {
-  convertDateTimeIntoGMT,
   convertDateTimeIntoLocal,
 } from "@/utils/formatters";
-import { useMqttClient } from "@/components/utils/mqttConnection";
 import {
   BlotterTransactionAccepted,
   BlotterTransactionAdded,
@@ -38,6 +38,11 @@ import {
 } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { getAllChatByTransactionId } from "@/components/features/chatBox/ChatActions";
 import CancelReasonModal from "../cancelReasonModal/cancelReasonModal";
+import {
+  setDiscountingQuoteModalData,
+  setForwardQuoteModalData,
+  setSpotQuoteModalData,
+} from "@/store/BlotterSlicer/BlotterSlicer";
 
 /**
  * OutstandingDeals component displays a list of outstanding deals in the blotter.
@@ -221,7 +226,6 @@ const OutstandingDeals = () => {
   //Status Filter State
   const [openStatus, setOpenStatus] = useState(false);
   const [selectedItemsStatus, setSelectedItemsStatus] = useState([]);
-  const [dealData, setDealData] = useState(null);
 
   const [cancelReasonModal, setCancelReasonModal] = useState(false);
   const [cancelReasonComment, setCancelReasonComment] = useState("");
@@ -1035,9 +1039,20 @@ const OutstandingDeals = () => {
     dispatch(AssignTransactionAPI({ navigate, Data }));
   };
 
-  const openViewDeal = (record) => {
-    dispatch(setViewDealModal(true));
-    setDealData(record);
+  const openViewDeal = (record, natureTypeId) => {
+    if (natureTypeId === 1) {
+      //  For Spot
+      dispatch(setViewDealModal(true));
+      dispatch(setSpotQuoteModalData(record));
+    } else if (natureTypeId === 2) {
+      // For Forwards
+      dispatch(setForwardQuoteModal(true));
+      dispatch(setForwardQuoteModalData(record));
+    } else if (natureTypeId === 3) {
+      dispatch(setDiscountingQuoteModal(true));
+      dispatch(setDiscountingQuoteModalData(record));
+      // For Fe And Non Fe Discounting
+    }
   };
   const acceptTransaction = (record) => {
     dispatch(
@@ -1603,9 +1618,7 @@ const OutstandingDeals = () => {
             {record.statusID === 2 ? (
               <>
                 <CustomButton
-                  icon={
-                    <i className='icon-user-check  '></i>
-                  }
+                  icon={<i className='icon-user-check  '></i>}
                   size={"small"}
                   className='btn  btn-primary btn-sm'
                   onClick={() => handleClickAssignTransaction(record)}
@@ -1648,6 +1661,13 @@ const OutstandingDeals = () => {
                         onClick={() => openViewDeal(record)}
                       />
                     </>
+                  ) : record.natureType === 2 ? (
+                    <CustomButton
+                      icon={<i className='icon-open '></i>}
+                      size={"small"}
+                      className='btn btn-sm btn-primary'
+                      onClick={() => openViewDeal(record, record.natureType)}
+                    />
                   ) : (
                     <>
                       <CustomButton
