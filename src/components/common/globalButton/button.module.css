@@ -163,12 +163,18 @@
 }
 .publishForwardsBtn:disabled {
   background-color: var(---color-light-gray) !important;
-  border-color: var(---color-light-gray) !important; 
+  border-color: var(---color-light-gray) !important;
   cursor: default !important ;
 }
-.publishForwardsBtn:disabled:is(:hover, :focus, :focus-visible, :visited, :active) {
+.publishForwardsBtn:disabled:is(
+    :hover,
+    :focus,
+    :focus-visible,
+    :visited,
+    :active
+  ) {
   background-color: var(---color-light-gray) !important;
-  border-color: var(---color-light-gray) !important; 
+  border-color: var(---color-light-gray) !important;
 }
 /* End Publish Forwards Button */
 
@@ -575,7 +581,7 @@
   border-radius: 4px !important;
   font-size: 14px !important;
   font-weight: 500 !important;
-  -webkit-transition: all 0.3s ease-in !important;
+  /* -webkit-transition: all 0.3s ease-in !important; */
   color: #fff !important;
   background-color: #157347 !important;
   border-color: #146c43 !important;
@@ -585,7 +591,7 @@
   border-radius: 4px !important;
   font-size: 14px !important;
   font-weight: 500 !important;
-  -webkit-transition: all 0.3s ease-in !important;
+  /* -webkit-transition: all 0.3s ease-in !important; */
   color: #fff !important;
   background-color: #157347 !important;
   border-color: #146c43 !important;
@@ -698,7 +704,7 @@
 /* End Save Button Setting Modaln */
 
 /* Start Accept Button View Deal Box */
-.AcceptBtnDealBox {
+.SubmitButtonFowardDealBox {
   border-radius: 4px !important;
   font-weight: 500 !important;
   position: relative !important;
@@ -707,14 +713,35 @@
   -webkit-transition: all 0.3s ease-in !important;
   background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
   border-color: #feac78 !important;
+
+  /* border-color: #feac78 !important; */
+  background: var(--color-secondary);
+  border-color: var(--color-secondary);
+  font-size: 1.25rem !important;
+  height: 44px;
+}
+.SubmitButtonFowardDealBox:is(:hover) {
+  background: var(--color-secondary) !important;
+  border-color: var(--color-secondary) !important;
+}
+.AcceptBtnDealBox {
+  border-radius: 4px !important;
+  font-weight: 500 !important;
+  position: relative !important;
+  transition: all 0.3s ease-in !important;
+  font-family: "Poppins", sans-serif;
+  -webkit-transition: all 0.3s ease-in !important;
+  background: var(--color-secondary) !important;
+  border-color: var(--color-secondary) !important;
+  /* border-color: #feac78 !important; */
   background: var(--color-secondary);
   border-color: var(--color-secondary);
   font-size: 1.25rem !important;
   height: 44px;
 }
 .AcceptBtnDealBox:is(:hover) {
-  background: var(--color-secondary) !important;
-  border-color: var(--color-secondar) !important;
+  background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
+  border-color: #feac78 !important;
 }
 /* Stop Accept Button View Deal Box */
 
@@ -727,13 +754,14 @@
   font-family: "Poppins", sans-serif;
   -webkit-transition: all 0.3s ease-in !important;
   -webkit-transition: all 0.3s ease-in !important;
-  background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
+  background: #dc3545 !important;
+  border-color: #dc3545 !important;
   font-size: 1.25rem !important;
   height: 44px;
 }
 .RejectBtnDealBox:is(:hover) {
-  background: var(--color-secondary) !important;
-  border-color: var(--color-secondar) !important;
+  background: #f85e35 !important;
+  border-color: #f85e35 !important;
 }
 /* Stop Reject Button View Deal Box */
 .ActionButton .ant-btn.ant-btn-icon-only {

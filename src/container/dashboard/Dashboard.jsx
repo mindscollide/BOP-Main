@@ -195,7 +195,6 @@ const Dashboard = () => {
     },
   });
 
-  console.log(isConnected, "clientRef in dashboard");
 
   useEffect(() => {
     connectToMqtt({ subscribeID, userID });
@@ -216,17 +215,15 @@ const Dashboard = () => {
     }
   }, []);
   return (
-    <Layout className="roboto-13">
+    <Layout className='roboto-13'>
       {!location.pathname.includes("calculator") && <Header />}
 
       <GlobalNavbar />
       <Content>
-        <main className="px-3">
+        <main className='px-3'>
           <Outlet />
           <AnimatePresence>
-            {blotterTransactionAdded && isTreasury && dealMoalRequest && (
-              <DealBox />
-            )}
+            {blotterTransactionAdded && isTreasury && <DealBox />}
           </AnimatePresence>
 
           {chatModal && <ChatBox />}

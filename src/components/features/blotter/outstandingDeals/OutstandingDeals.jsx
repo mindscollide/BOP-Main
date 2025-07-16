@@ -1766,7 +1766,7 @@ const OutstandingDeals = () => {
         columns={columns}
         scroll={{ x: "max-content", y: 500 }}
       />
-      <DealViewModal dealData={dealData} />
+      {/* <DealViewModal dealData={dealData} /> */}
       {cancelReasonModal && (
         <CancelReasonModal
           cancelReasonModal={cancelReasonModal}
