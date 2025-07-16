@@ -28,6 +28,9 @@ import {
   GetCategoryWiseForwardRatesApi,
   GetCategoryWiseSpotRatesApi,
 } from "@/container/pages/mainCategory/categoryActions";
+import DealViewModal from "@/container/pages/mainCorporate/rfqModal/DealViewModal/DealViewModal";
+import DiscountingRFQQuoteModal from "@/container/pages/mainCorporate/rfqModal/DiscountingRFQQuoteModal/DiscountingRFQQuoteModal";
+import ForwardRFQQuoteModal from "@/container/pages/mainCorporate/rfqModal/ForwardRFQQuoteModal/ForwardRFQQuoteModal";
 
 const GlobalNavbar = () => {
   const getAllCategoriesData = useSelector(
@@ -340,6 +343,9 @@ const GlobalNavbar = () => {
       </div>
 
       {isRfqModalOpen && <RFQModal />}
+      {/* <DealViewModal /> */}
+      {/* <DiscountingRFQQuoteModal /> */}
+      {/* <ForwardRFQQuoteModal /> */}
 
       {/* Forwards RFQ Modal  */}
       {openRfqModalForwardCorporateComponent && (

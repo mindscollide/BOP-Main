@@ -127,9 +127,8 @@ const RFQForwardCorporateModal = ({
       const regex = /^[0-9]*$/;
       if (regex.test(value)) {
         const numericValue = parseInt(value, 10);
-        if (value === "" || (numericValue >= 1 && numericValue <= 1000)) {
-          setAmountData(value);
-        }
+
+        setAmountData(numericValue);
       }
     }
   };
@@ -329,8 +328,8 @@ const RFQForwardCorporateModal = ({
                 </Col>
               </Row>
 
-              <Row className='mt-2 position-relative'>
-                <Col lg={9} md={9} sm={9}>
+              <Row className='mt-2 '>
+                <Col lg={7} md={7} sm={7} className="pe-0">
                   <div className='d-flex flex-column flex-wrap'>
                     <label className='LabelRFQTransactionModal'>Tenor</label>
                     <InputFIeld
@@ -341,7 +340,7 @@ const RFQForwardCorporateModal = ({
                     />
                   </div>
                 </Col>
-                <Col lg={3} md={3} sm={3}>
+                <Col lg={5} md={5} sm={5} className="d-flex align-items-end justify-content-start px-0">
                   <span className='DateColumnTenorForwardTabRFQModal'>
                     {tenoreDate}
                   </span>
