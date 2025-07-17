@@ -7,62 +7,92 @@ import InputFIeld from "@/components/common/inputField/InputField";
 import CustomButton from "@/components/common/globalButton/button";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { setViewDealModal } from "@/store/modalSlice/modalSlicer";
-import { RFQTransactionQuotation } from "@/components/features/blotter/BlotterActions";
+import {
+  setForwardQuoteModal,
+  setViewDealModal,
+} from "@/store/modalSlice/modalSlicer";
+import { RFQForwardTransactionQuotation, RFQTransactionQuotation } from "@/components/features/blotter/BlotterActions";
 import { useNavigate } from "react-router-dom";
+import { setForwardQuoteModalData } from "@/store/BlotterSlicer/BlotterSlicer";
 
 const ForwardRFQQuoteModal = ({ dealData }) => {
   console.log(dealData, "dealDatadealData");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [bid, setBid] = useState("");
-  const [offer, setOffer] = useState("");
-  const forwardRFQQuoteModal = useSelector(
-    (state) => state.modalReducer.forwardRFQQuoteModal
+  const [readyValue, setReadyValue] = useState("");
+  const [swapValue, setSwapValue] = useState("");
+  const [forwardQuoteData, setForwardQuoteData] = useState(null);
+  const forwardQuoteModal = useSelector(
+    (state) => state.modalReducer.forwardQuoteModal
+  );
+  const forwardQuoteModalData = useSelector(
+    (state) => state.BlotterSlicer.forwardQuoteModalData
   );
 
+  console.log(
+    forwardQuoteModalData,
+    "forwardQuoteModalDataforwardQuoteModalData"
+  );
   const closeModal = () => {
-    dispatch(setViewDealModal(false));
+    dispatch(setForwardQuoteModalData(null));
+    dispatch(setForwardQuoteModal(false));
   };
   useEffect(() => {
-    if (dealData !== null) {
-      setBid(dealData?.bid);
-      setOffer(dealData?.offer);
+    if (forwardQuoteModalData !== null) {
+      try {
+        setForwardQuoteData(forwardQuoteModalData);
+      } catch (error) {
+        console.log(error);
+      }
     }
     return () => {
-      setBid("");
-      setOffer("");
+      dispatch(setForwardQuoteModalData(null));
+      setReadyValue("");
+      setSwapValue("");
     };
-  }, [dealData]);
+  }, [forwardQuoteModalData]);
 
   const handleChangeRate = (event, type) => {
-    if (type === "bid") {
-      setBid(event.target.value);
+    if (type === "readyValue") {
+      setReadyValue(event.target.value);
     } else {
-      setOffer(event.target.value);
+      setSwapValue(event.target.value);
     }
   };
 
   const handleSubmit = () => {
     // scenario is if side is "buy" then bid should be disabled and offer should be enabled
+
     // RFQTransactionQuotation naturetype 1
     // RFQForwardTransactionQuotation naturetype 2
     // RFQFEDiscountingTransactionQuotation naturetype 3
     // RFQNonFEDiscountingTransactionQuotation naturetype 4
-    let Data = {
-      PK_TransactionID: dealData?.pK_TransactionID,
-      Rate:
-        dealData.side.toLowerCase() === "sell" ? Number(bid) : Number(offer),
-    };
-    dispatch(RFQTransactionQuotation({ navigate, Data }));
+    if (readyValue !== "" && swapValue !== "") {
+      let Data = {
+        PK_TransactionID: forwardQuoteData.pK_TransactionID,
+        Ready: Number(readyValue),
+        Swap: Number(swapValue),
+      };
+      dispatch(RFQForwardTransactionQuotation({ navigate, Data }));
+    }
   };
 
   const handleCancel = () => {};
   // if (!viewDealModal && !dealData) return null;
+
+  const calculateNewReadyValue = (instrumentName, ready, swap) => {
+    const numReady = parseFloat(ready) || 0;
+    const numSwap = parseFloat(swap) || 0;
+    const adjustedSwap =
+      instrumentName?.toUpperCase() === "USD" ? numSwap / 100.0 : numSwap;
+    return (numReady + adjustedSwap).toFixed(2); // return formatted string for view
+  };
+
   return (
     <GlobalModal
-      show={true}
+      show={forwardQuoteModal}
       size={"md"}
+      centered={true}
       bodyClassName={styles["DealViewModal__body"]}
       modalBody={
         <>
@@ -76,7 +106,7 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                 <Col sm={12} md={12} lg={12}>
                   <label className={styles["DealViewModal__label"]}>Side</label>
                   <p className={styles["DealViewModal__value"]}>
-                    {dealData?.side}
+                    {forwardQuoteData?.side}
                   </p>
                 </Col>
                 <Col sm={12} md={12} lg={12}>
@@ -84,13 +114,13 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                     Nature
                   </label>
                   <p className={styles["DealViewModal__value"]}>
-                    {dealData?.nature}
+                    {forwardQuoteData?.nature}
                   </p>
                 </Col>
                 <Col sm={12} md={12} lg={12}>
                   <label className={styles["DealViewModal__label"]}>CCY1</label>
                   <p className={styles["DealViewModal__value"]}>
-                    {dealData?.ccY1}
+                    {forwardQuoteData?.ccY1}
                   </p>
                 </Col>
                 <Col sm={12} md={12} lg={12}>
@@ -98,7 +128,7 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                     Amount
                   </label>
                   <p className={styles["DealViewModal__value"]}>
-                    {dealData?.quantity}
+                    {forwardQuoteData?.quantity}
                   </p>
                 </Col>
                 <Col sm={12} md={12} lg={12}>
@@ -110,7 +140,7 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                     Amount
                   </label>
                   <p className={styles["DealViewModal__value"]}>
-                    {dealData?.amount}
+                    {forwardQuoteData?.amount.toFixed(2)}
                   </p>
                 </Col>
                 <Col sm={12} md={12} lg={12}>
@@ -118,7 +148,9 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                     Tenor
                   </label>
                   <p className={styles["DealViewModal__value"]}>
-                    {dealData?.lcNumber}
+                    {forwardQuoteData?.rfqDealDetails !== null
+                      ? forwardQuoteData?.rfqDealDetails.tenorDays
+                      : "N/A"}
                   </p>
                 </Col>
                 <Col sm={12} md={12} lg={12}>
@@ -126,7 +158,9 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                     Maturity Date
                   </label>
                   <p className={styles["DealViewModal__value"]}>
-                    {dealData?.accountNumber}
+                    {forwardQuoteData?.rfqDealDetails !== null
+                      ? forwardQuoteData?.rfqDealDetails.tenorDate
+                      : "N/A"}
                   </p>
                 </Col>
                 <Col sm={12} md={12} lg={12}>
@@ -134,7 +168,9 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                     Option Days
                   </label>
                   <p className={styles["DealViewModal__value"]}>
-                    {dealData?.accountNumber}
+                    {forwardQuoteData?.rfqDealDetails !== null
+                      ? forwardQuoteData?.rfqDealDetails.optionsDays
+                      : "N/A"}
                   </p>
                 </Col>
                 <Col sm={12} md={12} lg={12}>
@@ -142,7 +178,9 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                     Option End Date
                   </label>
                   <p className={styles["DealViewModal__value"]}>
-                    {dealData?.accountNumber}
+                    {forwardQuoteData?.rfqDealDetails !== null
+                      ? forwardQuoteData?.rfqDealDetails.optionsDate
+                      : "N/A"}
                   </p>
                 </Col>
                 <Col sm={12} md={12} lg={12}>
@@ -150,7 +188,7 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                     Account No.
                   </label>
                   <p className={styles["DealViewModal__value"]}>
-                    {dealData?.accountNumber}
+                    {forwardQuoteData?.accountNumber}
                   </p>
                 </Col>
               </Row>
@@ -163,12 +201,18 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
               <Row className='mb-3'>
                 <Col sm={10} md={10} lg={10}>
                   <div className='mb-3 color-black br-detail-hd'>
-                    <span className={styles["company-name"]}>ABC Branch</span>
-                    <span className='br-code fs-sm'>(5002)</span>
+                    <span className={styles["company-name"]}>
+                      {forwardQuoteData?.branchName}
+                    </span>
+                    <span className='br-code fs-sm'>
+                      ({forwardQuoteData?.branchCode})
+                    </span>
                   </div>
-                  <div className={styles["company-name-hd"]}>Gul Ahmed</div>
+                  <div className={styles["company-name-hd"]}>
+                    {forwardQuoteData?.corporateName}
+                  </div>
                   <div className='d-inline-block txn-id fs-normal color-black'>
-                    15-07-2025/cbd9
+                    {forwardQuoteData?.txnid}
                   </div>
                 </Col>
                 <Col
@@ -191,8 +235,8 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                   <label className={styles["DealViewModal_label"]}>Ready</label>
                   <InputFIeld
                     applyClass={"DiscountingQuoteInput"}
-                    value={bid}
-                    onChange={(e) => handleChangeRate(e, "bid")}
+                    value={readyValue}
+                    onChange={(e) => handleChangeRate(e, "readyValue")}
                   />
                 </Col>
                 <Col
@@ -203,8 +247,8 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                   <label className={styles["DealViewModal_label"]}>Swap</label>
                   <InputFIeld
                     applyClass={"DiscountingQuoteInput"}
-                    value={"280"}
-                    onChange={(e) => handleChangeRate(e, "bid")}
+                    value={swapValue}
+                    onChange={(e) => handleChangeRate(e, "swapValue")}
                   />
                 </Col>
                 <Col
@@ -212,15 +256,19 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                   md={12}
                   lg={12}
                   className='d-flex align-items-center gap-2'>
-                  <label className={styles["DealViewModal_label"]}></label>
-                  <InputFIeld
-                    applyClass={"DiscountingQuoteInput"}
-                    value={bid}
-                    disabled={true}
-                    onChange={(e) => handleChangeRate(e, "bid")}
-                  />
+                  <label className={styles["DealViewModal_label"]}>Rate</label>
+                  <span className={styles["CalculateValue"]}>
+                    {forwardQuoteData?.ccY1
+                      ? calculateNewReadyValue(
+                          forwardQuoteData.ccY1,
+                          readyValue,
+                          swapValue
+                        )
+                      : "--"}
+                  </span>
                 </Col>
-                {true ? (
+
+                {forwardQuoteData?.isRFQ ? (
                   <Col
                     sm={12}
                     md={12}

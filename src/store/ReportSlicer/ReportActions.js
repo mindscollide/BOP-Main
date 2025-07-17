@@ -226,7 +226,7 @@ export const DownloadPDFReportBlotterTrasactionBranchAPI = createAsyncThunk(
       );
 
       const response = await getTransactionData(Data, true);
-
+      console.log(response, "responseresponse")
       // 🟢 PDF file response
       if (response?.status === 200) {
         const blob = new Blob([response.data], {

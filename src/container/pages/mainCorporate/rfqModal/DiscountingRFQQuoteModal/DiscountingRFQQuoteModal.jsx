@@ -7,9 +7,10 @@ import InputFIeld from "@/components/common/inputField/InputField";
 import CustomButton from "@/components/common/globalButton/button";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { setViewDealModal } from "@/store/modalSlice/modalSlicer";
+import { setDiscountingQuoteModal } from "@/store/modalSlice/modalSlicer";
 import { RFQTransactionQuotation } from "@/components/features/blotter/BlotterActions";
 import { useNavigate } from "react-router-dom";
+import { setDiscountingQuoteModalData } from "@/store/BlotterSlicer/BlotterSlicer";
 
 const DiscountingRFQQuoteModal = ({ dealData }) => {
   console.log(dealData, "dealDatadealData");
@@ -17,31 +18,33 @@ const DiscountingRFQQuoteModal = ({ dealData }) => {
   const navigate = useNavigate();
   const [bid, setBid] = useState("");
   const [offer, setOffer] = useState("");
-  const discountingRFQQuoteModal = useSelector(
-    (state) => state.modalReducer.discountingRFQQuoteModal
+  const discountingQuoteModalState = useSelector(
+    (state) => state.modalReducer.discountingQuoteModal
   );
-
+  const discountingQuoteModalData = useSelector(
+    (state) => state.BlotterSlicer.discountingQuoteModalData
+  );
+  const [DiscountingQuoteData, setDiscountingQuoteData] = useState(null);
+  console.log(DiscountingQuoteData, "DiscountingQuoteDataDiscountingQuoteData");
   const closeModal = () => {
-    dispatch(setViewDealModal(false));
+    dispatch(setDiscountingQuoteModalData(null));
+    dispatch(setDiscountingQuoteModal(false));
   };
+
   useEffect(() => {
-    if (dealData !== null) {
-      setBid(dealData?.bid);
-      setOffer(dealData?.offer);
+    if (discountingQuoteModalData !== null) {
+      try {
+        setDiscountingQuoteData(discountingQuoteModalData);
+      } catch (error) {
+        console.log(error);
+      }
     }
     return () => {
-      setBid("");
-      setOffer("");
+      dispatch(setDiscountingQuoteModalData(null));
     };
-  }, [dealData]);
+  }, [discountingQuoteModalData]);
 
-  const handleChangeRate = (event, type) => {
-    if (type === "bid") {
-      setBid(event.target.value);
-    } else {
-      setOffer(event.target.value);
-    }
-  };
+  const handleChangeRate = (event, type) => {};
 
   const handleSubmit = () => {
     // scenario is if side is "buy" then bid should be disabled and offer should be enabled
@@ -61,7 +64,7 @@ const DiscountingRFQQuoteModal = ({ dealData }) => {
   // if (!viewDealModal && !dealData) return null;
   return (
     <GlobalModal
-      show={true}
+      show={discountingQuoteModalState}
       size={"md"}
       bodyClassName={styles["DealViewModal__body"]}
       modalBody={
@@ -76,7 +79,7 @@ const DiscountingRFQQuoteModal = ({ dealData }) => {
                 <Col sm={12} md={12} lg={12}>
                   <label className={styles["DealViewModal__label"]}>Side</label>
                   <p className={styles["DealViewModal__value"]}>
-                    {dealData?.side}
+                    {DiscountingQuoteData?.side}
                   </p>
                 </Col>
                 <Col sm={12} md={12} lg={12}>
@@ -84,13 +87,13 @@ const DiscountingRFQQuoteModal = ({ dealData }) => {
                     Nature
                   </label>
                   <p className={styles["DealViewModal__value"]}>
-                    {dealData?.nature}
+                    {DiscountingQuoteData?.nature}
                   </p>
                 </Col>
                 <Col sm={12} md={12} lg={12}>
                   <label className={styles["DealViewModal__label"]}>CCY1</label>
                   <p className={styles["DealViewModal__value"]}>
-                    {dealData?.ccY1}
+                    {DiscountingQuoteData?.ccY1}
                   </p>
                 </Col>
                 <Col sm={12} md={12} lg={12}>
@@ -98,7 +101,7 @@ const DiscountingRFQQuoteModal = ({ dealData }) => {
                     Amount
                   </label>
                   <p className={styles["DealViewModal__value"]}>
-                    {dealData?.quantity}
+                    {DiscountingQuoteData?.quantity}
                   </p>
                 </Col>
                 <Col sm={12} md={12} lg={12}>
@@ -110,15 +113,15 @@ const DiscountingRFQQuoteModal = ({ dealData }) => {
                     Amount
                   </label>
                   <p className={styles["DealViewModal__value"]}>
-                    {dealData?.amount}
+                    {DiscountingQuoteData?.amount.toFixed(2)}
                   </p>
                 </Col>
                 <Col sm={12} md={12} lg={12}>
                   <label className={styles["DealViewModal__label"]}>
-                   Tenor
+                    Tenor
                   </label>
                   <p className={styles["DealViewModal__value"]}>
-                    {dealData?.lcNumber}
+                    {DiscountingQuoteData?.rfqDealDetails?.tenorDays}
                   </p>
                 </Col>
                 <Col sm={12} md={12} lg={12}>
@@ -126,7 +129,7 @@ const DiscountingRFQQuoteModal = ({ dealData }) => {
                     Maturity Date
                   </label>
                   <p className={styles["DealViewModal__value"]}>
-                    {dealData?.accountNumber}
+                    {DiscountingQuoteData?.rfqDealDetails?.tenorDate}
                   </p>
                 </Col>
                 <Col sm={12} md={12} lg={12}>
@@ -134,7 +137,7 @@ const DiscountingRFQQuoteModal = ({ dealData }) => {
                     Account No.
                   </label>
                   <p className={styles["DealViewModal__value"]}>
-                    {dealData?.accountNumber}
+                    {DiscountingQuoteData?.accountNumber}
                   </p>
                 </Col>
               </Row>
@@ -147,12 +150,18 @@ const DiscountingRFQQuoteModal = ({ dealData }) => {
               <Row className='mb-3'>
                 <Col sm={10} md={10} lg={10}>
                   <div className='mb-3 color-black br-detail-hd'>
-                    <span className={styles["company-name"]}>ABC Branch</span>
-                    <span className='br-code fs-sm'>(5002)</span>
+                    <span className={styles["company-name"]}>
+                      {DiscountingQuoteData?.branchName}
+                    </span>
+                    <span className='br-code fs-sm'>
+                      ({DiscountingQuoteData?.branchCode})
+                    </span>
                   </div>
-                  <div className={styles["company-name-hd"]}>Gul Ahmed</div>
+                  <div className={styles["company-name-hd"]}>
+                    {DiscountingQuoteData?.corporateName}
+                  </div>
                   <div className='d-inline-block txn-id fs-normal color-black'>
-                    15-07-2025/cbd9
+                    {DiscountingQuoteData?.txnid}
                   </div>
                 </Col>
                 <Col
@@ -175,7 +184,6 @@ const DiscountingRFQQuoteModal = ({ dealData }) => {
                   <label className={styles["DealViewModal_label"]}>Ready</label>
                   <InputFIeld
                     applyClass={"DiscountingQuoteInput"}
-                    value={bid}
                     onChange={(e) => handleChangeRate(e, "bid")}
                   />
                 </Col>
@@ -187,7 +195,6 @@ const DiscountingRFQQuoteModal = ({ dealData }) => {
                   <label className={styles["DealViewModal_label"]}>Rate</label>
                   <InputFIeld
                     applyClass={"DiscountingQuoteInput"}
-                    value={bid}
                     onChange={(e) => handleChangeRate(e, "bid")}
                   />
                 </Col>
@@ -199,7 +206,6 @@ const DiscountingRFQQuoteModal = ({ dealData }) => {
                   <label className={styles["DealViewModal_label"]}>Swap</label>
                   <InputFIeld
                     applyClass={"DiscountingQuoteInput"}
-                    value={"280"}
                     onChange={(e) => handleChangeRate(e, "bid")}
                   />
                 </Col>
@@ -216,7 +222,7 @@ const DiscountingRFQQuoteModal = ({ dealData }) => {
                     onChange={(e) => handleChangeRate(e, "bid")}
                   />
                 </Col>
-                {true ? (
+                {DiscountingQuoteData?.isRFQ ? (
                   <Col
                     sm={12}
                     md={12}

@@ -8,13 +8,17 @@ import CustomButton from "@/components/common/globalButton/button";
 import { useSelector } from "react-redux";
 import { formatDate } from "@/common/utils";
 import SelectDropdown from "@/components/common/selectDropdown/SelectDropdown";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 const FEDiscountingModal = ({
   feDiscountingModalCall,
   setFeDiscountingModalCall,
 }) => {
-  const natureOfBusinessList = useSelector(
-    (state) => state.authReducer.GetAllNatureOfTransactions
-  );
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+    const natureOfBusinessList = useSelector(
+      (state) => state.authReducer.GetAllNatureOfTransactions
+    );
   const [currencyOptions, setCurrencyOptions] = useState([]);
   const [natureOfBusinessOptions, setNatureOfBusinessOptions] = useState(null);
   const [selectedNature, setSelectedNature] = useState(null);
@@ -61,7 +65,17 @@ const FEDiscountingModal = ({
   };
   const handleClickConfirmFERFQ = () => {
     // SaveFEDiscountingTransactionAPI
-  }
+    let Data = {
+      CorporateID: 7,
+      InstrumentID: 21,
+      Quantity: 15000,
+      AccountNumber: "5678901234568882",
+      NatureOfTransactionID: 13,
+      TenorDays: 12,
+      DiscountingFactor: 2.5,
+    };
+    dispatch(SaveFEDiscountingTransactionAPI({ navigate, Data }));
+  };
   return (
     <div>
       {" "}

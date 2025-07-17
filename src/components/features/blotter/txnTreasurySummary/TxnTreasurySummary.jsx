@@ -69,12 +69,21 @@ const TXNTreasurySummary = () => {
   const GlobalStateGetBlotterData = useSelector(
     (state) => state.BlotterSlicer.getBlotterApiData
   );
+  const tnxTableNewData = useSelector(
+    (state) => state.BlotterSlicer.tnxTableNewData
+  );
+
+  const activeTabBlotter = useSelector(
+    (state) => state.BlotterSlicer.activeTabBlotter
+  );
 
   // Local state
   const [blotterdata, setBlotterdata] = useState([]);
   const [totalRecord, setTotalRecords] = useState(0);
   const [sRow, setRow] = useState(0);
   const [hasReachedBottom, setHasReachedBottom] = useState(false);
+  console.log(GlobalStateGetBlotterData, "GlobalStateGetBlotterData");
+  console.log(blotterdata, "blotterdatablotterdata");
   // Modal states
   const [cancelReasonModal, setCancelReasonModal] = useState(false);
   const [cancelReasonComment, setCancelReasonComment] = useState("");
@@ -125,33 +134,23 @@ const TXNTreasurySummary = () => {
     0,
     "TXNSummary_Table"
   );
-
+  console.log(
+    tnxTableNewData,
+    GlobalStateGetBlotterData,
+    "tnxTableNewDatatnxTableNewData"
+  );
   /**
    * Updates blotter data when API data changes
    */
   useEffect(() => {
-    if (!GlobalStateGetBlotterData) {
-      if (!hasReachedBottom) {
-        setBlotterdata([]);
-        setTotalRecords(0);
-        setRow(0);
-      }
-      return;
+    if (GlobalStateGetBlotterData !== null && tnxTableNewData.length > 0) {
+      console.log(tnxTableNewData, "tnxTableNewDatatnxTableNewData");
+      setBlotterdata(tnxTableNewData);
+      setRow(tnxTableNewData.length);
+      setTotalRecords(GlobalStateGetBlotterData.totalCount);
+      setHasReachedBottom(false);
     }
-
-    if (hasReachedBottom) {
-      setBlotterdata((prev) => [
-        ...prev,
-        ...GlobalStateGetBlotterData.tnxSummary,
-      ]);
-      setRow((prev) => prev + GlobalStateGetBlotterData.tnxSummary.length);
-    } else {
-      setBlotterdata(GlobalStateGetBlotterData.tnxSummary);
-      setRow(GlobalStateGetBlotterData.tnxSummary.length);
-    }
-    setTotalRecords(GlobalStateGetBlotterData.totalCount);
-    setHasReachedBottom(false);
-  }, [GlobalStateGetBlotterData]);
+  }, [GlobalStateGetBlotterData, tnxTableNewData]);
 
   /**
    * Handles real-time updates for different transaction statuses

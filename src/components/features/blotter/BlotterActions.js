@@ -30,10 +30,13 @@ import {
   GetForwardTransactionDetails,
   GetNonFEDiscountingTransactionDetails,
   GetNOPData,
+  CalculateNonFESwapAndDiscountingRM,
 } from "@/common/api_config";
 import { blotterApi, watchListApi } from "@/common/apiend_points";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
+import { setForwardQuoteModalData } from "@/store/BlotterSlicer/BlotterSlicer";
 import {
+  setForwardQuoteModal,
   setRfqModalOpen,
   setTransactionInfoModal,
   setViewDealModal,
@@ -1606,6 +1609,8 @@ export const RFQForwardTransactionQuotation = createAsyncThunk(
                 "Blotter_BlotterServiceManager_RFQForwardTransactionQuotation_01".toLowerCase()
               )
           ) {
+            dispatch(setForwardQuoteModalData(null));
+            dispatch(setForwardQuoteModal(false));
             return {
               response: response.data.responseResult,
               message: "Forward RFQ quotation generated successfully",
@@ -2370,6 +2375,61 @@ export const calculateTenorSwapAndForwardRateApi = createAsyncThunk(
               .toLowerCase()
               .includes(
                 "Blotter_BlotterServiceManager_CalculateTenorSwapAndForwardRate_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else return rejectWithValue;
+        } else {
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      console.log(error, "errorerrorerror");
+      return rejectWithValue("Error calculating forward RFQ data");
+    }
+  }
+);
+export const calculateNonFeSwapAndDiscountingRateApi = createAsyncThunk(
+  "Blotter/calculateNonFeSwapAndDiscountingRate",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      const postAPI = createPostAPI(
+        blotterApi,
+        CalculateNonFESwapAndDiscountingRM.RequestMethod
+      );
+      const response = await postAPI(Data);
+      const { responseCode } = response.data;
+
+      if (responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access");
+      }
+
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(calculateNonFeSwapAndDiscountingRateApi({ navigate, Data }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_CalculateNonFESwapAndDiscounting_01".toLowerCase()
+              )
+          ) {
+            console.log("Checking", response.data.responseResult);
+            return {
+              response: response.data.responseResult,
+              message: "Forward RFQ data calculated successfully",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_CalculateNonFESwapAndDiscounting_02".toLowerCase()
               )
           ) {
             return rejectWithValue("Something went wrong");

@@ -28,12 +28,32 @@ import {
   GetCategoryWiseForwardRatesApi,
   GetCategoryWiseSpotRatesApi,
 } from "@/container/pages/mainCategory/categoryActions";
+import SpotQuoteModal from "@/container/pages/mainCorporate/rfqModal/SpotQuoteModal/SpotQuoteModal";
+import DiscountingRFQQuoteModal from "@/container/pages/mainCorporate/rfqModal/DiscountingRFQQuoteModal/DiscountingRFQQuoteModal";
+import ForwardRFQQuoteModal from "@/container/pages/mainCorporate/rfqModal/ForwardRFQQuoteModal/ForwardRFQQuoteModal";
+
 const GlobalNavbar = () => {
   const getAllCategoriesData = useSelector(
     (state) => state.authReducer.getAllCategories
   );
   const settingModalState = useSelector(
     (state) => state.modalReducer.settingModal
+  );
+  const spotQuoteModalState = useSelector(
+    (state) => state.modalReducer.spotQuoteModal
+  );
+
+  const forwardQuoteModalState = useSelector(
+    (state) => state.modalReducer.forwardQuoteModal
+  );
+  const discountingQuoteModalState = useSelector(
+    (state) => state.modalReducer.discountingQuoteModal
+  );
+  console.log(
+    spotQuoteModalState,
+    forwardQuoteModalState,
+    discountingQuoteModalState,
+    "discountingQuoteModalState"
   );
   const activeTab = useSelector((state) => state.RFQReducer.activeTab);
 
@@ -339,9 +359,9 @@ const GlobalNavbar = () => {
       </div>
 
       {isRfqModalOpen && <RFQModal />}
-      {/* <DealViewModal /> */}
-      {/* <DiscountingRFQQuoteModal /> */}
-      {/* <ForwardRFQQuoteModal /> */}
+      <SpotQuoteModal />
+      <DiscountingRFQQuoteModal />
+      <ForwardRFQQuoteModal />
 
       {/* Forwards RFQ Modal  */}
       {openRfqModalForwardCorporateComponent && (

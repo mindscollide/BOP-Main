@@ -1,7 +1,7 @@
 import GlobalModal from "@/components/common/globalModal/Modal";
 import React, { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
-import styles from "./DealViewModal.module.css";
+import styles from "./SpotQuoteModal.module.css";
 import IconElement from "@/components/common/IconElement/IconElement";
 import InputFIeld from "@/components/common/inputField/InputField";
 import CustomButton from "@/components/common/globalButton/button";
@@ -11,13 +11,13 @@ import { setViewDealModal } from "@/store/modalSlice/modalSlicer";
 import { RFQTransactionQuotation } from "@/components/features/blotter/BlotterActions";
 import { useNavigate } from "react-router-dom";
 
-const DealViewModal = ({ dealData }) => {
+const SpotQuoteModal = ({ dealData }) => {
   console.log(dealData, "dealDatadealData");
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [bid, setBid] = useState("");
   const [offer, setOffer] = useState("");
-  const viewDealModal = useSelector(
+  const spotQuoteModalState = useSelector(
     (state) => state.modalReducer.viewDealModal
   );
 
@@ -61,7 +61,7 @@ const DealViewModal = ({ dealData }) => {
   // if (!viewDealModal && !dealData) return null;
   return (
     <GlobalModal
-      show={true}
+      show={spotQuoteModalState}
       size={"md"}
       bodyClassName={styles["DealViewModal__body"]}
       modalBody={
@@ -215,4 +215,4 @@ const DealViewModal = ({ dealData }) => {
   );
 };
 
-export default DealViewModal;
+export default SpotQuoteModal;
