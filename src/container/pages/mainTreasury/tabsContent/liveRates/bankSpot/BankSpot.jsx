@@ -19,98 +19,8 @@ const BankSpot = () => {
   const TresuaryBankSpotData = useSelector(
     (state) => state.WatchListReducer.GetBankSpotForTreasury
   );
-  console.log("Data For Bank Spot for Treasury: ", {
-    instruments: GetAllInstrumentForTreasury,
-    SPOT_Live_rates: TresuaryBankSpotData,
-  });
 
   const [bankSpotData, setBankSpotData] = useState([]);
-  console.log(bankSpotData, "bankSpotDatabankSpotDatabankSpotData")
-
-  const columns = [
-    {
-      key: "1",
-      title: "Instrument",
-      dataIndex: "instrumentName",
-      width: 80,
-      className: "color-hd fw-bold title-col text-nowrap roboto-13",
-      render: (text, record) => (
-        <span>{`${record?.instrumentName}${record?.secondaryInstrumentName}`}</span>
-      ),
-    },
-    {
-      title: "Bid",
-      dataIndex: "worldCrossBid",
-      width: 80,
-      key: "bid",
-      render: (text, record) => (
-        <BidAmountBox
-          applyClass={"BidCardBox"}
-          spot={false}
-          BidAmountValue={record?.worldCrossBid}
-        />
-      ),
-    },
-    {
-      title: "Offer",
-      dataIndex: "worldCrossOffer",
-      key: "offer",
-      width: 80,
-
-      render: (text, record) => (
-        <BidAmountBox
-          applyClass={"OfferCardBox"}
-          spot={false}
-          BidAmountValue={record?.worldCrossOffer}
-        />
-      ),
-    },
-    {
-      title: "Instrument",
-      dataIndex: "instrumentName",
-      key: "currency",
-      width: 80,
-      className: "roboto-13",
-      // render: (text, record) => record?.worldCrosses?.instrumentName,
-    },
-    {
-      title: "Bid",
-      dataIndex: "worldCurBid",
-      width: 80,
-
-      key: "previousBid",
-      render: (text, record) => (
-        <BidAmountBox
-          applyClass={"BidCardBox"}
-          bankSpot={true}
-          BidAmountValue={record?.worldCurBid}
-        />
-      ),
-    },
-    {
-      title: "Offer",
-      dataIndex: "worldCurOffer",
-      key: "previousOffer",
-      width: 80,
-
-      render: (text, record) => (
-        <BidAmountBox
-          applyClass={"OfferCardBox"}
-          bankSpot={true}
-          BidAmountValue={record?.worldCurOffer}
-        />
-      ),
-    },
-    {
-      title: "Time",
-      dataIndex: "time",
-      key: "time",
-      width: 80,
-
-      className: "roboto-13",
-      render: (text, record) => formatDateTimeToUTCTime(text),
-    },
-  ];
 
   useEffect(() => {
     if (TresuaryBankSpotData && GetAllInstrumentForTreasury) {
@@ -180,22 +90,6 @@ const BankSpot = () => {
           let newData = { ...data2 };
 
           if (
-            instrumentParitySpot &&
-            data2.instrumentID === instrumentParitySpot.instrumentID &&
-            data2.secondaryInstrumentID ===
-              instrumentParitySpot.secondaryInstrumentID
-          ) {
-            if (
-              data2.worldCrossBid !== instrumentParitySpot.bid ||
-              data2.worldCrossOffer !== instrumentParitySpot.ask
-            ) {
-              newData.worldCrossBid = instrumentParitySpot.bid;
-              newData.worldCrossOffer = instrumentParitySpot.ask;
-              isUpdated = true;
-            }
-          }
-
-          if (
             instrumentCrossRate &&
             data2.instrumentID === instrumentCrossRate.instrumentID &&
             data2.secondaryInstrumentID ===
@@ -205,8 +99,34 @@ const BankSpot = () => {
               data2.worldCrossBid !== instrumentCrossRate.bid ||
               data2.worldCrossOffer !== instrumentCrossRate.ask
             ) {
+              console.log("isDiffereent", {
+                stateDatabid: newData.worldCrossBid,
+                realtimeDatabid: instrumentCrossRate.bid,
+              });
+
               newData.worldCrossBid = instrumentCrossRate.bid;
               newData.worldCrossOffer = instrumentCrossRate.ask;
+              isUpdated = true;
+            }
+          }
+
+          if (
+            instrumentParitySpot &&
+            data2.instrumentID === instrumentParitySpot.instrumentID &&
+            data2.secondaryInstrumentID ===
+              instrumentParitySpot.secondaryInstrumentID
+          ) {
+            if (
+              data2.worldCurBid !== instrumentParitySpot.bid ||
+              data2.worldCurOffer !== instrumentParitySpot.ask
+            ) {
+              console.log("isDiffereent", {
+                stateDatabid: newData.worldCurBid,
+                realtimeDatabid: instrumentParitySpot.bid,
+              });
+
+              newData.worldCurBid = instrumentParitySpot.bid;
+              newData.worldCurOffer = instrumentParitySpot.ask;
               isUpdated = true;
             }
           }
@@ -216,12 +136,97 @@ const BankSpot = () => {
 
         return isUpdated ? updatedData : prevData;
       });
-    }, 300);
+    });
 
     update();
 
     return () => update.cancel();
   }, [TreasurySpotRatesFeed]);
+
+  const columns = [
+    {
+      key: "1",
+      title: "Instrument",
+      dataIndex: "instrumentName",
+      width: 80,
+      className: "color-hd fw-bold title-col text-nowrap roboto-13",
+      render: (text, record) => (
+        <span>{`${record?.instrumentName}${record?.secondaryInstrumentName}`}</span>
+      ),
+    },
+    {
+      title: "Bid",
+      dataIndex: "worldCrossBid",
+      width: 80,
+      key: "bid",
+      render: (text, record) => (
+        <BidAmountBox
+          applyClass={"BidCardBox"}
+          bankSpot={true}
+          BidAmountValue={record?.worldCrossBid}
+        />
+      ),
+    },
+    {
+      title: "Offer",
+      dataIndex: "worldCrossOffer",
+      key: "offer",
+      width: 80,
+
+      render: (text, record) => (
+        <BidAmountBox
+          applyClass={"OfferCardBox"}
+          bankSpot={true}
+          BidAmountValue={record?.worldCrossOffer}
+        />
+      ),
+    },
+    {
+      title: "Instrument",
+      dataIndex: "instrumentName",
+      key: "currency",
+      width: 80,
+      className: "roboto-13",
+      // render: (text, record) => record?.worldCrosses?.instrumentName,
+    },
+    {
+      title: "Bid",
+      dataIndex: "worldCurBid",
+      width: 80,
+
+      key: "previousBid",
+      render: (text, record) => (
+        <BidAmountBox
+          applyClass={"BidCardBox"}
+          bankSpot={true}
+          BidAmountValue={record?.worldCurBid}
+        />
+      ),
+    },
+    {
+      title: "Offer",
+      dataIndex: "worldCurOffer",
+      key: "previousOffer",
+      width: 80,
+
+      render: (text, record) => (
+        <BidAmountBox
+          applyClass={"OfferCardBox"}
+          bankSpot={true}
+          BidAmountValue={record?.worldCurOffer}
+        />
+      ),
+    },
+    {
+      title: "Time",
+      dataIndex: "time",
+      key: "time",
+      width: 80,
+
+      className: "roboto-13",
+      render: (text, record) => formatDateTimeToUTCTime(text),
+    },
+  ];
 
   return (
     <div>
@@ -233,6 +238,7 @@ const BankSpot = () => {
         <GlobalTable
           columns={columns}
           dataSource={bankSpotData}
+          rowKey={(record) => record.instrumentID}
           prefixCls={"BankSpot_Table"}
           pagination={false}
           scroll={{ x: "hidden", y: 275 }}
