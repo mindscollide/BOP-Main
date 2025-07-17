@@ -12,16 +12,10 @@ import emailImage from "@/assets/icons/email.png";
 import excelImage from "@/assets/icons/excel.png";
 import printImage from "@/assets/icons/print.png";
 import { useNavigate } from "react-router-dom";
-import CancelReasonModal from "../cancelReasonModal/cancelReasonModal";
 import TXNTreasurySummary from "../txnTreasurySummary/TxnTreasurySummary";
-import { setActiveTab } from "@/container/pages/mainCorporate/rfqModal/RFQSlicer";
 import { useSelector } from "react-redux";
 import { setActiveTreasuryTab } from "@/store/BlotterSlicer/BlotterSlicer";
 import { useDispatch } from "react-redux";
-import {
-  BlotterDataAPI,
-  GetBlotterOutstandingDealsDataAPI,
-} from "../BlotterActions";
 import {
   DownloadExcelReportBlotterTrasactionBranchAPI,
   DownloadExcelReportBlotterTrasactionCorporateAPI,
@@ -46,8 +40,6 @@ const BlotterHeader = () => {
 
   const [isTreasuryVal, setIsTreasuryVal] = useState(0);
 
-  console.log(activeTab, "activeTabactiveTab");
-  console.log(isTreasuryVal, "isTreasuryValisTreasuryVal");
   const tabsData = [
     {
       title: "TXN Summary",

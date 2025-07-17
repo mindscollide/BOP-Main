@@ -387,7 +387,7 @@ const InfoTransaction = () => {
               </Col>
               <Col sm={6} md={6} lg={6}>
                 <p className={styles["transactionInfolabel"]}>
-                  {extractTimeFromCompactDate(InfoRecord?.tradeDateTime)}
+                  {extractTimeFromCompactDate(InfoRecord?.settlementDateTime)}
                 </p>
               </Col>
             </Row>

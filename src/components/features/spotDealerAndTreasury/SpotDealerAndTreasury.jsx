@@ -2,14 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import BidAmountBox from "../../common/bidAmountBox/BidAmountBox";
 import styles from "./spotDealerAndTreasury.module.css";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const SpotDealerAndTreasury = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
   const [spotsData, setSpotsData] = useState([]);
   const allInstrumentForTreasuryData = useSelector(
     (state) => state.WatchListReducer.GetAllInstrumentForTreasury
@@ -70,54 +65,6 @@ const SpotDealerAndTreasury = () => {
       } catch (error) {}
     }
   }, [GetCategoryWiseSpotRatesDaata, allInstrumentForTreasuryData]);
-  console.log(spotsData, "spotDataspotData");
-  // useEffect(() => {
-  //   if (
-  //     GetCategoryWiseSpotRatesDaata !== null &&
-  //     allInstrumentForTreasuryData !== null
-  //   ) {
-  //     try {
-  //       const { instruments } = GetCategoryWiseSpotRatesDaata;
-  //       const { spotInstruments } = allInstrumentForTreasuryData;
-
-  //       console.log(
-  //         {
-  //           GetCategoryWiseSpotRatesDaata: instruments,
-  //           allInstrumentForTreasuryData: spotInstruments,
-  //         },
-  //         "datadatatatata"
-  //       );
-
-  //       if (spotInstruments.length > 0) {
-  //         const spotData = instruments
-  //           .map((spotIns) => {
-  //             const matchedInstrument = spotInstruments.find(
-  //               (insData) =>
-  //                 spotIns.instrumentID === insData.instrumentID &&
-  //                 spotIns.secondaryInstrumentID ===
-  //                   insData.secondaryInstrumentID
-  //             );
-
-  //             if (matchedInstrument) {
-  //               return {
-  //                 ...spotIns,
-  //                 instrumentName: `${matchedInstrument.instrumentName}${matchedInstrument.secondaryInstrumentName}`, // "EURUSD"
-  //                 offer: spotIns.offer,
-  //                 bid: spotIns.bid,
-  //               };
-  //             }
-
-  //             return null;
-  //           })
-  //           .filter(Boolean);
-
-  //         setSpotsData(spotData);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error processing spot data:", error);
-  //     }
-  //   }
-  // }, [GetCategoryWiseSpotRatesDaata, allInstrumentForTreasuryData]);
 
   return (
     <>

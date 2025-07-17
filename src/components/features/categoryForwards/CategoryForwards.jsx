@@ -3,7 +3,6 @@ import GlobalTable from "../../common/table/GlobalTable";
 import { useSelector } from "react-redux";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import { buildForwardsTable } from "@/components/utils/generateColumnsData";
-import { Row, Col } from "antd";
 
 const CategoryForwards = () => {
   const [dataSource, setDataSource] = useState([]);
@@ -66,21 +65,13 @@ const CategoryForwards = () => {
   ]);
   return (
     <>
-      {/* <Row>
-        <Col lg={12} md={12} sm={12} className="heading mb-2"> */}
       <span className="heading mb-2"> Forward</span>
-      {/* </Col>
-      </Row>
-      <Row>
-        <Col lg={12} md={12} sm={12}> */}
       <GlobalTable
         columns={columnsData}
         prefixCls="Dealer_Forwards"
         dataSource={dataSource}
         pagination={false}
       />
-      {/* </Col> */}
-      {/* </Row> */}
     </>
   );
 };

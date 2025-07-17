@@ -28,10 +28,6 @@ import {
   GetCategoryWiseForwardRatesApi,
   GetCategoryWiseSpotRatesApi,
 } from "@/container/pages/mainCategory/categoryActions";
-import DealViewModal from "@/container/pages/mainCorporate/rfqModal/DealViewModal/DealViewModal";
-import DiscountingRFQQuoteModal from "@/container/pages/mainCorporate/rfqModal/DiscountingRFQQuoteModal/DiscountingRFQQuoteModal";
-import ForwardRFQQuoteModal from "@/container/pages/mainCorporate/rfqModal/ForwardRFQQuoteModal/ForwardRFQQuoteModal";
-
 const GlobalNavbar = () => {
   const getAllCategoriesData = useSelector(
     (state) => state.authReducer.getAllCategories
@@ -200,7 +196,7 @@ const GlobalNavbar = () => {
       }
     }
   }, [isCategoryAdded]);
-  
+
   useEffect(() => {
     if (isCategoryUpdated !== null && categoryValue.value !== 0) {
       const {

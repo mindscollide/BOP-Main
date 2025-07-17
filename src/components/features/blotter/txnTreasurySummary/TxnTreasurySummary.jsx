@@ -75,7 +75,6 @@ const TXNTreasurySummary = () => {
   const [totalRecord, setTotalRecords] = useState(0);
   const [sRow, setRow] = useState(0);
   const [hasReachedBottom, setHasReachedBottom] = useState(false);
-  console.log(blotterdata, "blotterdatablotterdata");
   // Modal states
   const [cancelReasonModal, setCancelReasonModal] = useState(false);
   const [cancelReasonComment, setCancelReasonComment] = useState("");
@@ -367,6 +366,7 @@ const TXNTreasurySummary = () => {
   /**
    * Shows comment modal with transaction comment
    */
+
   const handleShowCommentModal = (text) => {
     setShowCommentModal(true);
     setComment(text);
@@ -375,6 +375,7 @@ const TXNTreasurySummary = () => {
   /**
    * Opens transaction info modal
    */
+
   const handleClickInfo = (record) => {
     let Data = {
       PK_TransactionID: record.pK_TransactionID,

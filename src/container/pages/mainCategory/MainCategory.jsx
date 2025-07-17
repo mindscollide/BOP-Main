@@ -9,25 +9,11 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setActiveTab } from "../mainCorporate/rfqModal/RFQSlicer";
 import { getAllTreasuryInstrumentsApi } from "@/components/features/SpotBranch/WatchlistAction";
-import {
-  GetCategoryWiseDiscountingRatesApi,
-  GetCategoryWiseForwardRatesApi,
-  GetCategoryWiseSpotRatesApi,
-} from "./categoryActions";
 import { getAllTenorsAction } from "../mainDealer/dealerActions";
 
 const MainCategory = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const getAllCategories = useSelector(
-    (state) => state.authReducer.getAllCategories
-  );
-
-  // const allInstrumentForTreasuryData = useSelector(
-  //   (state) => state.WatchListReducer.GetAllInstrumentForTreasury
-  // );
-
-  console.log("getAllCategoriesgetAllCategories:", getAllCategories);
 
   useEffect(() => {
     dispatch(getAllCategoriesAction({ navigate }));
