@@ -58,7 +58,7 @@ export const buildDiscountingTable = (
       return row;
     });
     let columnsData = [];
-    if (value === 1) {
+    if (value === 1 || value === 5 ) {
       columnsData = [
         {
           title: "Tenor",

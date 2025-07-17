@@ -58,7 +58,11 @@ const FeDiscountingTable = () => {
   const getAllTenorsData = useSelector(
     (state) => state.dealerReducer.getAllTenors
   );
-  console.log(getAllTenorsData, "getAllTenorsDatagetAllTenorsData");
+  console.log(
+    getAllTenorsData,
+    GetAllInstrumentForTreasury,
+    "getAllTenorsDatagetAllTenorsData"
+  );
 
   useEffect(() => {
     if (
@@ -68,11 +72,14 @@ const FeDiscountingTable = () => {
     ) {
       try {
         const { feDiscountingRates } = getDashboardForwards;
+        const DiscountingInstruments =
+          GetAllInstrumentForTreasury.discountingInstruments;
+        const getAllInstrument = { instruments: DiscountingInstruments };
         const { rowData, columnsData } = buildDiscountingTable(
-          1,
+          5,
           feDiscountingRates,
           getAllTenorsData,
-          GetAllInstrumentForTreasury,
+          getAllInstrument,
           InputCell,
           onInputChange
         );
@@ -96,7 +103,7 @@ const FeDiscountingTable = () => {
       try {
         const { rates } = getFeDiscountingData;
         const { rowData, columnsData } = buildDiscountingTable(
-          1,
+          5,
           rates,
           getAllTenorsData,
           GetAllInstrumentForTreasury,

@@ -3,12 +3,17 @@ import { useSelector } from "react-redux";
 import GlobalTable from "../../../../../../components/common/table/GlobalTable";
 import BidAmountBox from "../../../../../../components/common/bidAmountBox/BidAmountBox";
 import { formatDateTimeToUTCTime } from "../../../../../../components/utils/timeFunction";
+import { useDispatch } from "react-redux";
+import { setTreasurySpotRatesFeed } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 
 const BankSpot = () => {
+  const dispatch = useDispatch();
   const GetAllInstrumentForTreasury = useSelector(
     (state) => state.WatchListReducer.GetAllInstrumentForTreasury
   );
-
+  const TreasurySpotRatesFeed = useSelector(
+    (state) => state.RealtimeActionsSlice.TreasurySpotRatesFeed
+  );
   const TresuaryBankSpotData = useSelector(
     (state) => state.WatchListReducer.GetBankSpotForTreasury
   );
@@ -152,13 +157,63 @@ const BankSpot = () => {
     }
   }, [TresuaryBankSpotData, GetAllInstrumentForTreasury]);
 
+  useEffect(() => {
+    if (!TreasurySpotRatesFeed) return;
+
+    const { instrumentParitySpot, instrumentCrossRate } = TreasurySpotRatesFeed;
+
+    setBankSpotData((prevData) => {
+      let isUpdated = false;
+
+      const updatedData = prevData.map((data2) => {
+        let newData = { ...data2 };
+
+        if (
+          instrumentParitySpot &&
+          data2.instrumentID === instrumentParitySpot.instrumentID &&
+          data2.secondaryInstrumentID ===
+            instrumentParitySpot.secondaryInstrumentID
+        ) {
+          if (
+            data2.worldCrossBid !== instrumentParitySpot.bid ||
+            data2.worldCrossOffer !== instrumentParitySpot.ask
+          ) {
+            newData.worldCrossBid = instrumentParitySpot.bid;
+            newData.worldCrossOffer = instrumentParitySpot.ask;
+            isUpdated = true;
+          }
+        }
+
+        if (
+          instrumentCrossRate &&
+          data2.instrumentID === instrumentCrossRate.instrumentID &&
+          data2.secondaryInstrumentID ===
+            instrumentCrossRate.secondaryInstrumentID
+        ) {
+          if (
+            data2.worldCrossBid !== instrumentCrossRate.bid ||
+            data2.worldCrossOffer !== instrumentCrossRate.ask
+          ) {
+            newData.worldCrossBid = instrumentCrossRate.bid;
+            newData.worldCrossOffer = instrumentCrossRate.ask;
+            isUpdated = true;
+          }
+        }
+
+        return newData;
+      });
+
+      return isUpdated ? updatedData : prevData;
+    });
+  }, [TreasurySpotRatesFeed]);
+
   return (
     <div>
-      <div className="box-header bg-primary-orange px-3">
-        <div className="text-start color-white fw-bold fs-6">Bank Spot</div>
+      <div className='box-header bg-primary-orange px-3'>
+        <div className='text-start color-white fw-bold fs-6'>Bank Spot</div>
       </div>
 
-      <div className="mb-2 px-2">
+      <div className='mb-2 px-2'>
         <GlobalTable
           columns={columns}
           dataSource={bankSpotData}

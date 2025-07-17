@@ -12,6 +12,7 @@ export const useMqttClient = ({
   const clientRef = useRef(null);
   const randomString = secureRandomString();
   const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
+  const isCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
 
   const subscribeToTopics = useCallback(
     (topics = []) => {
@@ -107,8 +108,11 @@ export const useMqttClient = ({
         let newTopic = isBranch
           ? `BRANCH_${subscribeIDNew}`
           : `CORPORATE_${subscribeIDNew}`;
-
-        subscribeToTopics([subscribeID, `BOP_${userID}`, newTopic]);
+        if (isCorporate || isBranch) {
+          subscribeToTopics([subscribeID, `BOP_${userID}`, newTopic]);
+        } else {
+          subscribeToTopics([subscribeID, `BOP_${userID}`]);
+        }
       };
 
       clientRef.current.connect({
