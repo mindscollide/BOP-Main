@@ -68,15 +68,26 @@ const BlotterSlicer = createSlice({
     spotQuoteModalData: null,
     calculateNonFeSwapAndDiscountingRate: null,
     tnxTableNewData: [],
+    OutstandingTableNewData: [],
+    totalCountOutstandingData: 0,
   },
   reducers: {
     updateRealtimeBlotterData: (state, { payload }) => {
-      console.log(payload, "updateRealtimeBlotterDataupdateRealtimeBlotterData")
-      state.getBlotterApiData = payload;
-      state.tnxTableNewData = payload?.tnxSummary;
+      console.log(
+        payload,
+        "updateRealtimeBlotterDataupdateRealtimeBlotterDatasss"
+      );
+      // state.getBlotterApiData = payload;
+      state.tnxTableNewData = payload?.tnxTableNewData;
     },
     updateOutstandingBlotterData: (state, { payload }) => {
-      state.getBlotterOutstandingData = payload;
+      console.log(
+        payload,
+        "updateRealtimeBlotterDataupdateRealtimeBlotterData"
+      );
+      // state.getBlotterOutstandingData = payload;
+      state.OutstandingTableNewData = payload?.OutstandingTableNewData;
+      state.totalCountOutstandingData = payload?.OutstandingTableNewData.length;
     },
     setSpotQuoteModalData: (state, { payload }) => {
       state.spotQuoteModalData = payload;
@@ -147,16 +158,25 @@ const BlotterSlicer = createSlice({
       .addCase(
         GetBlotterOutstandingDealsDataAPI.fulfilled,
         (state, { payload }) => {
+          let newData = [
+            ...state.OutstandingTableNewData,
+            ...payload?.response?.outstandingDeals,
+          ];
+          console.log(payload, "getBlotterApiData");
+          console.log(newData, "getBlotterApiData");
           state.Loader = false;
           state.getBlotterOutstandingData = payload?.response;
+          state.OutstandingTableNewData = newData;
           state.error = null;
           state.responseMessage = payload?.message;
+          state.totalCountOutstandingData = payload.response?.totalCount;
         }
       )
       .addCase(GetBlotterOutstandingDealsDataAPI.rejected, (state, action) => {
         console.log(action, "actionaction");
         state.Loader = false;
         state.error = action.payload;
+        state.OutstandingTableNewData = [];
         state.getBlotterOutstandingData = null;
       })
       .addCase(SaveSpotTransactionAPI.pending, (state) => {
