@@ -20,8 +20,8 @@ import { FeDiscountingPublishedAction } from "@/store/realtimeActionsSlicer/real
 import { InputCell } from "@/components/common/inputField/InputCell";
 
 /**
- * FeDiscountingTable component renders a table for displaying and managing 
- * discounting rates for financial instruments. It fetches data from the Redux 
+ * FeDiscountingTable component renders a table for displaying and managing
+ * discounting rates for financial instruments. It fetches data from the Redux
  * store and allows users to input and publish updated rates.
  *
  * @component
@@ -44,6 +44,9 @@ const FeDiscountingTable = () => {
   const getAllInstrument = useSelector(
     (state) => state.authReducer.getAllInstruments
   );
+  const GetAllInstrumentForTreasury = useSelector(
+    (state) => state.WatchListReducer.GetAllInstrumentForTreasury
+  );
   const getDashboardForwards = useSelector(
     (state) => state.dealerReducer.getDealerDashboardData
   );
@@ -58,14 +61,18 @@ const FeDiscountingTable = () => {
   console.log(getAllTenorsData, "getAllTenorsDatagetAllTenorsData");
 
   useEffect(() => {
-    if (getDashboardForwards !== null) {
+    if (
+      getDashboardForwards !== null &&
+      getAllTenorsData !== null &&
+      GetAllInstrumentForTreasury !== null
+    ) {
       try {
         const { feDiscountingRates } = getDashboardForwards;
         const { rowData, columnsData } = buildDiscountingTable(
           1,
           feDiscountingRates,
           getAllTenorsData,
-          getAllInstrument,
+          GetAllInstrumentForTreasury,
           InputCell,
           onInputChange
         );
@@ -78,17 +85,21 @@ const FeDiscountingTable = () => {
         console.log(error, "Error while building discounting table");
       }
     }
-  }, [getDashboardForwards, getAllTenorsData, getAllInstrument]);
+  }, [getDashboardForwards, getAllTenorsData, GetAllInstrumentForTreasury]);
 
   useEffect(() => {
-    if (getFeDiscountingData !== null) {
+    if (
+      getFeDiscountingData !== null &&
+      getAllTenorsData !== null &&
+      GetAllInstrumentForTreasury !== null
+    ) {
       try {
         const { rates } = getFeDiscountingData;
         const { rowData, columnsData } = buildDiscountingTable(
           1,
           rates,
           getAllTenorsData,
-          getAllInstrument,
+          GetAllInstrumentForTreasury,
           InputCell,
           onInputChange
         );
@@ -110,7 +121,7 @@ const FeDiscountingTable = () => {
     return () => {
       dispatch(FeDiscountingPublishedAction(null));
     };
-  }, [getFeDiscountingData, getAllTenorsData, getAllInstrument]);
+  }, [getFeDiscountingData, getAllTenorsData, GetAllInstrumentForTreasury]);
   const onInputChange = (record, instrumentName, value) => {
     const previousValue = record[instrumentName]; // Get previous value from record
     const validated = isValidNumberUnderMax(value, previousValue, 100);
