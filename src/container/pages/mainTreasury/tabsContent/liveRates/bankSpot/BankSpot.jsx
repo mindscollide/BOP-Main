@@ -73,7 +73,7 @@ const BankSpot = () => {
   const prevFeedRef = useRef();
   useEffect(() => {
     if (!TreasurySpotRatesFeed) return;
-    const update = debounce(() => {
+    const update = () => {
       if (isEqual(prevFeedRef.current, TreasurySpotRatesFeed)) {
         return;
       }
@@ -136,11 +136,11 @@ const BankSpot = () => {
 
         return isUpdated ? updatedData : prevData;
       });
-    });
+    };
 
     update();
 
-    return () => update.cancel();
+    // return () => update.cancel();
   }, [TreasurySpotRatesFeed]);
 
   const columns = [

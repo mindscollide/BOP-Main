@@ -1,5 +1,5 @@
 import { Layout } from "antd";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import Header from "@/components/layout/header/header";
 import GlobalNavbar from "@/components/layout/nav/Navbar";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
@@ -90,8 +90,10 @@ const Dashboard = () => {
     ? "BOP_DEALER"
     : null;
   const userID = localStorage.getItem("userID");
-  const { connectToMqtt, isConnected } = useMqttClient({
-    onMessageArrivedCallback: (data) => {
+
+  // Memoized MQTT message handler
+  const handleMqttMessage = useCallback(
+    (data) => {
       switch (data.payload.message) {
         case "INCOMING_CHAT":
           try {
@@ -198,10 +200,20 @@ const Dashboard = () => {
           break;
       }
     },
-    onConnectionLostCallback: () => {
-      console.warn("MQTT disconnected inside feature");
-    },
-  });
+    [dispatch]
+  );
+
+  // MQTT configuration
+  const mqttConfig = useMemo(
+    () => ({
+      onMessageArrivedCallback: handleMqttMessage,
+      onConnectionLostCallback: () => {
+        console.warn("MQTT disconnected inside feature");
+      },
+    }),
+    [handleMqttMessage]
+  );
+  const { connectToMqtt } = useMqttClient(mqttConfig);
 
   useEffect(() => {
     connectToMqtt({ subscribeID, userID });
