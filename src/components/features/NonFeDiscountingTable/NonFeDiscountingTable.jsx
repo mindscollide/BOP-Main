@@ -19,8 +19,8 @@ import { NonFeDiscountingPublishedAction } from "@/store/realtimeActionsSlicer/r
 import { InputCell } from "@/components/common/inputField/InputCell";
 
 /**
- * NonFeDiscountingTable component renders a table for displaying and managing 
- * non-FE discounting rates. It fetches data from the Redux store and allows 
+ * NonFeDiscountingTable component renders a table for displaying and managing
+ * non-FE discounting rates. It fetches data from the Redux store and allows
  * users to publish updated rates.
  *
  * @component
@@ -43,8 +43,8 @@ const NonFeDiscountingTable = () => {
   const getDashboardForwards = useSelector(
     (state) => state.dealerReducer.getDealerDashboardData
   );
-  const getAllInstrument = useSelector(
-    (state) => state.authReducer.getAllInstruments
+  const GetAllInstrumentForTreasury = useSelector(
+    (state) => state.WatchListReducer.GetAllInstrumentForTreasury
   );
   const NonFeDiscountingPublishedData = useSelector(
     (state) => state.RealtimeActionsSlice.NonFeDiscountingPublished
@@ -54,11 +54,18 @@ const NonFeDiscountingTable = () => {
   );
 
   useEffect(() => {
-    if (getDashboardForwards !== null) {
+    if (
+      getDashboardForwards !== null &&
+      getAllTenorsData !== null &&
+      GetAllInstrumentForTreasury !== null
+    ) {
       try {
         const { nonFEDiscountingRates } = getDashboardForwards;
+        const DiscountingInstruments =
+          GetAllInstrumentForTreasury.discountingInstruments;
+        const getAllInstrument = { instruments: DiscountingInstruments };
         const { rowData, columnsData } = buildDiscountingTable(
-          1,
+          5,
           nonFEDiscountingRates,
           getAllTenorsData,
           getAllInstrument,
@@ -75,12 +82,19 @@ const NonFeDiscountingTable = () => {
         }
       } catch (error) {}
     }
-  }, [getDashboardForwards, getAllTenorsData, getAllInstrument]);
+  }, [getDashboardForwards, getAllTenorsData, GetAllInstrumentForTreasury]);
 
   useEffect(() => {
-    if (NonFeDiscountingPublishedData !== null) {
+    if (
+      getDashboardForwards !== null &&
+      getAllTenorsData !== null &&
+      GetAllInstrumentForTreasury !== null
+    ) {
       try {
         const { rates } = NonFeDiscountingPublishedData;
+        const DiscountingInstruments =
+          GetAllInstrumentForTreasury.discountingInstruments;
+        const getAllInstrument = { instruments: DiscountingInstruments };
         const { rowData, columnsData } = buildDiscountingTable(
           1,
           rates,
@@ -107,7 +121,11 @@ const NonFeDiscountingTable = () => {
     return () => {
       dispatch(NonFeDiscountingPublishedAction(null));
     };
-  }, [NonFeDiscountingPublishedData, getAllTenorsData, getAllInstrument]);
+  }, [
+    NonFeDiscountingPublishedData,
+    getAllTenorsData,
+    GetAllInstrumentForTreasury,
+  ]);
 
   const onInputChange = (record, instrumentName, value) => {
     setTableData((prevState) =>

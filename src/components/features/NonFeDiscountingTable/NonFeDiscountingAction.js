@@ -108,7 +108,7 @@ export const PublishNonFEDiscountingTableApi = createAsyncThunk(
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (!isExecuted) {
-          return rejectWithValue(responseMessage);
+          return rejectWithValue("Something went wrong");
         }
         if (
           responseMessage

@@ -158,7 +158,7 @@ const TXNTreasurySummary = () => {
         updateRealtimeBlotterData({
           ...GlobalStateGetBlotterData,
           tnxSummary: newSummary,
-          tnxTableNewData: newSummary
+          tnxTableNewData: newSummary,
         })
       );
     };
@@ -176,6 +176,7 @@ const TXNTreasurySummary = () => {
         updatedData[existingIndex] = transaction;
       } else {
         updatedData = [transaction, ...updatedData];
+        setTotalRecords((prevTotalCount) => prevTotalCount + 1);
       }
 
       updateGlobalBlotter(updatedData);
@@ -206,7 +207,7 @@ const TXNTreasurySummary = () => {
       const updatedData = (GlobalStateGetBlotterData?.tnxSummary || []).filter(
         (item) => item.pK_TransactionID !== transaction.pK_TransactionID
       );
-
+      setTotalRecords((prevTotalCount) => prevTotalCount - 1);
       updateGlobalBlotter(updatedData);
       dispatch(BlotterTransactionCancellationRequestForTreasury(null));
     }

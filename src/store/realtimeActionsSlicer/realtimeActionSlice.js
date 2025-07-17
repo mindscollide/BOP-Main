@@ -44,8 +44,12 @@ const RealtimeActionsSlice = createSlice({
     BlotterTransactionRejectedForTreasury: null,
 
     TransactionAssignedByTreasury: null,
+    TreasurySpotRatesFeed: null,
   },
   reducers: {
+    setTreasurySpotRatesFeed: (state, { payload }) => {
+      state.TreasurySpotRatesFeed = payload;
+    },
     setDealBoxData(state, { payload }) {
       state.dealBoxData = payload;
     },
@@ -147,6 +151,7 @@ const RealtimeActionsSlice = createSlice({
 });
 
 export const {
+  setTreasurySpotRatesFeed,
   setBlotterTransactionRFQQuotedForTreasuryDealBox,
   BlotterTransactionRFQExpiredForTreasury,
   BlotterTransactionAddedForTreasury,

@@ -42,6 +42,7 @@ import {
   setIncomingChat,
   setMarketTimingsUpdated,
   setTenorsCreated,
+  setTreasurySpotRatesFeed,
   tenorWiseFowardsRatesPublishedActions,
 } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { formatDateToUTC } from "@/utils/formatters";
@@ -189,6 +190,9 @@ const Dashboard = () => {
         case "BLOTTER_TRANSACTION_ASSIGNED_TO_TREASURY":
           dispatch(TransactionAssignedByTreasury(data.payload));
           break;
+        case "TREASURY_SPOT_RATES_FEED":
+          dispatch(setTreasurySpotRatesFeed(data.payload));
+          break;
         default:
           console.warn("No specific handler for this message type");
           break;
@@ -198,7 +202,6 @@ const Dashboard = () => {
       console.warn("MQTT disconnected inside feature");
     },
   });
-
 
   useEffect(() => {
     connectToMqtt({ subscribeID, userID });

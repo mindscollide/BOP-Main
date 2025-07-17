@@ -291,26 +291,7 @@ const GlobalNavbar = () => {
             <SiteLogoComponent />
             <div className="ms-auto">
               <div className="d-flex align-items-center gap-2">
-                {shouldIncludeTreasury &&
-                location.pathname === "/BOP/treasury" &&
-                outStandingData.length !== 0 ? (
-                  <>
-                    <section className="position-relative">
-                      <IconElement
-                        iconClass={
-                          "icon-clock fs-4 color-red px-2 cursor-pointer"
-                        }
-                        onClick={() => setViewCurrentDeals(!viewCurrentDeals)}
-                      />
-                      {viewCurrentDeals && (
-                        <ViewCurrentDeals
-                          setOutStandingData={setOutStandingData}
-                          outStandingData={outStandingData}
-                        />
-                      )}
-                    </section>
-                  </>
-                ) : null}
+          
                 {location.pathname !== "/calculator" ? (
                   <>
                     {(shouldIncludeCorporate || shouldIncludeBranch) && (
