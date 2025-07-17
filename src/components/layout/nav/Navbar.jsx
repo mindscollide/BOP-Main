@@ -155,10 +155,11 @@ const GlobalNavbar = () => {
             value: newCategoryMap[0].value,
             label: newCategoryMap[0].label,
           };
+          console.log(newCategoryMap, "newCategoryMapnewCategoryMap")
           dispatch(setCategoryValue(obj));
 
           let Data = {
-            Category: newCategoryMap[0].value,
+            Category: obj.value,
           };
           setAllCategories(newCategoryMap);
           console.log(Data, "DataData");

@@ -863,7 +863,7 @@ export const getDealerDashboardApi = createAsyncThunk(
           ) {
             return {
               response: response.data.responseResult,
-              message: ".",
+              message: "",
             };
           } else if (
             responseMessage

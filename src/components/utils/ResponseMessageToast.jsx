@@ -14,6 +14,7 @@ export const ResponseMessage = () => {
   const UploadRateResponseMessage = useSelector(
     (state) => state.dealerReducer.responseMessage
   );
+  console.log(UploadRateResponseMessage, 'UploadRateResponseMessage')
   const authResponseMessage = useSelector(
     (state) => state.authReducer.responseMessage
   );

@@ -127,6 +127,7 @@ const dealerReducer = createSlice({
         state.Loader = false;
         state.error = action.payload;
         state.getLastPublishRates = null;
+        state.responseMessage = payload;
       })
       .addCase(PublishNewRatesAction.pending, (state) => {
         state.Loader = true;
