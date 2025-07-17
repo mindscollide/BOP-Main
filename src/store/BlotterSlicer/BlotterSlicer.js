@@ -67,7 +67,6 @@ const BlotterSlicer = createSlice({
     discountingQuoteModalData: null,
     spotQuoteModalData: null,
     calculateNonFeSwapAndDiscountingRate: null,
-    tnxTableNewData: [],
   },
   reducers: {
     setSpotQuoteModalData: (state, { payload }) => {
@@ -112,15 +111,8 @@ const BlotterSlicer = createSlice({
       })
       // Fulfilled state (when the API call succeeds CorporateBlotterDataAPI)
       .addCase(BlotterDataAPI.fulfilled, (state, { payload }) => {
-        let newData = [
-          ...state.tnxTableNewData,
-          ...payload?.response?.tnxSummary,
-        ];
-        console.log(payload, "getBlotterApiData");
-        console.log(newData, "getBlotterApiData");
         state.Loader = false;
         state.getBlotterApiData = payload?.response;
-        state.tnxTableNewData = newData;
         state.error = null;
         state.responseMessage = payload?.message;
       })

@@ -69,13 +69,6 @@ const TXNTreasurySummary = () => {
   const GlobalStateGetBlotterData = useSelector(
     (state) => state.BlotterSlicer.getBlotterApiData
   );
-  const tnxTableNewData = useSelector(
-    (state) => state.BlotterSlicer.tnxTableNewData
-  );
-
-  const activeTabBlotter = useSelector(
-    (state) => state.BlotterSlicer.activeTabBlotter
-  );
 
   // Local state
   const [blotterdata, setBlotterdata] = useState([]);
@@ -134,23 +127,33 @@ const TXNTreasurySummary = () => {
     0,
     "TXNSummary_Table"
   );
-  console.log(
-    tnxTableNewData,
-    GlobalStateGetBlotterData,
-    "tnxTableNewDatatnxTableNewData"
-  );
+
   /**
    * Updates blotter data when API data changes
    */
   useEffect(() => {
-    if (GlobalStateGetBlotterData !== null && tnxTableNewData.length > 0) {
-      console.log(tnxTableNewData, "tnxTableNewDatatnxTableNewData");
-      setBlotterdata(tnxTableNewData);
-      setRow(tnxTableNewData.length);
-      setTotalRecords(GlobalStateGetBlotterData.totalCount);
-      setHasReachedBottom(false);
+    if (!GlobalStateGetBlotterData) {
+      if (!hasReachedBottom) {
+        setBlotterdata([]);
+        setTotalRecords(0);
+        setRow(0);
+      }
+      return;
     }
-  }, [GlobalStateGetBlotterData, tnxTableNewData]);
+
+    if (hasReachedBottom) {
+      setBlotterdata((prev) => [
+        ...prev,
+        ...GlobalStateGetBlotterData.tnxSummary,
+      ]);
+      setRow((prev) => prev + GlobalStateGetBlotterData.tnxSummary.length);
+    } else {
+      setBlotterdata(GlobalStateGetBlotterData.tnxSummary);
+      setRow(GlobalStateGetBlotterData.tnxSummary.length);
+    }
+    setTotalRecords(GlobalStateGetBlotterData.totalCount);
+    setHasReachedBottom(false);
+  }, [GlobalStateGetBlotterData]);
 
   /**
    * Handles real-time updates for different transaction statuses
