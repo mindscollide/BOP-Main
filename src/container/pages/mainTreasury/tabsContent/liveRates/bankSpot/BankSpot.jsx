@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import GlobalTable from "../../../../../../components/common/table/GlobalTable";
 import BidAmountBox from "../../../../../../components/common/bidAmountBox/BidAmountBox";
 import { formatDateTimeToUTCTime } from "../../../../../../components/utils/timeFunction";
 import { useDispatch } from "react-redux";
 import { setTreasurySpotRatesFeed } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
+import { isEqual } from "lodash";
+import { debounce } from "lodash";
 
 const BankSpot = () => {
   const dispatch = useDispatch();
@@ -23,6 +25,7 @@ const BankSpot = () => {
   });
 
   const [bankSpotData, setBankSpotData] = useState([]);
+  console.log(bankSpotData, "bankSpotDatabankSpotDatabankSpotData")
 
   const columns = [
     {
@@ -157,54 +160,67 @@ const BankSpot = () => {
     }
   }, [TresuaryBankSpotData, GetAllInstrumentForTreasury]);
 
+  const prevFeedRef = useRef();
   useEffect(() => {
     if (!TreasurySpotRatesFeed) return;
+    const update = debounce(() => {
+      if (isEqual(prevFeedRef.current, TreasurySpotRatesFeed)) {
+        return;
+      }
 
-    const { instrumentParitySpot, instrumentCrossRate } = TreasurySpotRatesFeed;
+      prevFeedRef.current = TreasurySpotRatesFeed;
 
-    setBankSpotData((prevData) => {
-      let isUpdated = false;
+      const { instrumentParitySpot, instrumentCrossRate } =
+        TreasurySpotRatesFeed;
 
-      const updatedData = prevData.map((data2) => {
-        let newData = { ...data2 };
+      setBankSpotData((prevData) => {
+        let isUpdated = false;
 
-        if (
-          instrumentParitySpot &&
-          data2.instrumentID === instrumentParitySpot.instrumentID &&
-          data2.secondaryInstrumentID ===
-            instrumentParitySpot.secondaryInstrumentID
-        ) {
+        const updatedData = prevData.map((data2) => {
+          let newData = { ...data2 };
+
           if (
-            data2.worldCrossBid !== instrumentParitySpot.bid ||
-            data2.worldCrossOffer !== instrumentParitySpot.ask
+            instrumentParitySpot &&
+            data2.instrumentID === instrumentParitySpot.instrumentID &&
+            data2.secondaryInstrumentID ===
+              instrumentParitySpot.secondaryInstrumentID
           ) {
-            newData.worldCrossBid = instrumentParitySpot.bid;
-            newData.worldCrossOffer = instrumentParitySpot.ask;
-            isUpdated = true;
+            if (
+              data2.worldCrossBid !== instrumentParitySpot.bid ||
+              data2.worldCrossOffer !== instrumentParitySpot.ask
+            ) {
+              newData.worldCrossBid = instrumentParitySpot.bid;
+              newData.worldCrossOffer = instrumentParitySpot.ask;
+              isUpdated = true;
+            }
           }
-        }
 
-        if (
-          instrumentCrossRate &&
-          data2.instrumentID === instrumentCrossRate.instrumentID &&
-          data2.secondaryInstrumentID ===
-            instrumentCrossRate.secondaryInstrumentID
-        ) {
           if (
-            data2.worldCrossBid !== instrumentCrossRate.bid ||
-            data2.worldCrossOffer !== instrumentCrossRate.ask
+            instrumentCrossRate &&
+            data2.instrumentID === instrumentCrossRate.instrumentID &&
+            data2.secondaryInstrumentID ===
+              instrumentCrossRate.secondaryInstrumentID
           ) {
-            newData.worldCrossBid = instrumentCrossRate.bid;
-            newData.worldCrossOffer = instrumentCrossRate.ask;
-            isUpdated = true;
+            if (
+              data2.worldCrossBid !== instrumentCrossRate.bid ||
+              data2.worldCrossOffer !== instrumentCrossRate.ask
+            ) {
+              newData.worldCrossBid = instrumentCrossRate.bid;
+              newData.worldCrossOffer = instrumentCrossRate.ask;
+              isUpdated = true;
+            }
           }
-        }
 
-        return newData;
+          return newData;
+        });
+
+        return isUpdated ? updatedData : prevData;
       });
+    }, 300);
 
-      return isUpdated ? updatedData : prevData;
-    });
+    update();
+
+    return () => update.cancel();
   }, [TreasurySpotRatesFeed]);
 
   return (
