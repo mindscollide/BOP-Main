@@ -200,7 +200,7 @@ const Dashboard = () => {
           break;
       }
     },
-    [dispatch]
+    []
   );
 
   // MQTT configuration

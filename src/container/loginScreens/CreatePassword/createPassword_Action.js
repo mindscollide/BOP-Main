@@ -107,7 +107,7 @@ export const createCorporateCreatePasswordApi = createAsyncThunk(
               roleBasedNavigation(navigate, userRoleID);
               return {
                 response: response.data.responseResult,
-                message: "Successfully Created",
+                message: "",
               };
 
             case "ERM_AuthService_AuthManager_CreateCorporateUserPassword_02".toLowerCase():

@@ -98,10 +98,7 @@ export const DownloadExcelReportBlotterTrasactionBranchAPI = createAsyncThunk(
       }
     } catch (error) {
       console.log("Excel Download Error:", error);
-      if (error?.responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+
       console.log(error, "errorerrorerrorerror");
       console.log(error?.responseCode, "errorerrorerrorerror");
       if (error?.responseCode === 417) {
@@ -150,10 +147,7 @@ export const DownloadExcelReportBlotterTrasactionCorporateAPI =
         }
       } catch (error) {
         console.log("Excel Download Error:", error);
-        if (error?.responseCode === 401) {
-          navigate("/");
-          return rejectWithValue("Unauthorized access, please login again");
-        }
+   
         console.log(error, "errorerrorerrorerror");
         console.log(error?.responseCode, "errorerrorerrorerror");
         if (error?.responseCode === 417) {
@@ -199,10 +193,7 @@ export const DownloadExcelReportBlotterTrasactionTreasuryAPI = createAsyncThunk(
       }
     } catch (error) {
       console.log("Excel Download Error:", error);
-      if (error?.responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+
       console.log(error, "errorerrorerrorerror");
       console.log(error?.responseCode, "errorerrorerrorerror");
       if (error?.responseCode === 417) {
@@ -247,10 +238,7 @@ export const DownloadPDFReportBlotterTrasactionBranchAPI = createAsyncThunk(
       }
     } catch (error) {
       console.log("PDF Download Error:", error);
-      if (error?.responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+ 
 
       if (error?.responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -294,10 +282,7 @@ export const DownloadPDFReportBlotterTrasactionCorporateAPI = createAsyncThunk(
       }
     } catch (error) {
       console.log("PDF Download Error:", error);
-      if (error?.responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+
 
       if (error?.responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -341,10 +326,7 @@ export const DownloadPDFReportBlotterTrasactionTreasuryAPI = createAsyncThunk(
       }
     } catch (error) {
       console.log("PDF Download Error:", error);
-      if (error?.responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+
 
       if (error?.responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));

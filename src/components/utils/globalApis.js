@@ -21,10 +21,7 @@ export const getAllCategoriesAction = createAsyncThunk(
       );
 
       const response = await getBlotterData();
-      if (response.data.responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please log in again.");
-      }
+
       if (response.data.responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(getAllCategoriesAction({ navigate }));
@@ -40,7 +37,7 @@ export const getAllCategoriesAction = createAsyncThunk(
           ) {
             return {
               response: response.data.responseResult,
-              message: "Data available",
+              message: "",
             };
           } else if (
             responseMessage
@@ -49,7 +46,7 @@ export const getAllCategoriesAction = createAsyncThunk(
                 "ERM_AuthService_CommonManager_GetAllCategories_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("No Data available");
+            return rejectWithValue("");
           } else if (
             responseMessage
               .toLowerCase()
@@ -86,10 +83,7 @@ export const getAllInstrumentsApi = createAsyncThunk(
       );
 
       const response = await getInstruments();
-      if (response.data.responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please log in again.");
-      }
+
       if (response.data.responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(getAllInstrumentsApi({ navigate }));
@@ -105,7 +99,7 @@ export const getAllInstrumentsApi = createAsyncThunk(
           ) {
             return {
               response: response.data.responseResult,
-              message: "Data available",
+              message: "",
             };
           } else if (
             responseMessage
@@ -114,7 +108,7 @@ export const getAllInstrumentsApi = createAsyncThunk(
                 "ERM_AuthService_CommonManager_GetAllInstruments_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("No Data available");
+            return rejectWithValue("");
           } else if (
             responseMessage
               .toLowerCase()
@@ -150,10 +144,7 @@ export const getAllActiveCorporatesApi = createAsyncThunk("Auth/getAllActiveCorp
     );
 
     const response = await getActiveCorporates();
-    if (response.data.responseCode === 401) {
-      navigate("/");
-      return rejectWithValue("Unauthorized access, please log in again.");
-    }
+
     if (response.data.responseCode === 417) {
       await dispatch(refreshTokenAction({ navigate }));
       dispatch(getAllActiveCorporatesApi({ navigate }));
@@ -169,7 +160,7 @@ export const getAllActiveCorporatesApi = createAsyncThunk("Auth/getAllActiveCorp
         ) {
           return {
             response: response.data.responseResult,
-            message: "Data available",
+            message: "",
           };
         } else if (
           responseMessage
@@ -178,7 +169,7 @@ export const getAllActiveCorporatesApi = createAsyncThunk("Auth/getAllActiveCorp
               "ERM_AuthService_CommonManager_GetActiveCorporates_02".toLowerCase()
             )
         ) {
-          return rejectWithValue("No Data available");
+          return rejectWithValue("");
         } else if (
           responseMessage
             .toLowerCase()

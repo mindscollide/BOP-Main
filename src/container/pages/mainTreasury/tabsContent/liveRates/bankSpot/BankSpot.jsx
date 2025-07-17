@@ -99,11 +99,6 @@ const BankSpot = () => {
               data2.worldCrossBid !== instrumentCrossRate.bid ||
               data2.worldCrossOffer !== instrumentCrossRate.ask
             ) {
-              console.log("isDiffereent", {
-                stateDatabid: newData.worldCrossBid,
-                realtimeDatabid: instrumentCrossRate.bid,
-              });
-
               newData.worldCrossBid = instrumentCrossRate.bid;
               newData.worldCrossOffer = instrumentCrossRate.ask;
               isUpdated = true;
@@ -120,11 +115,6 @@ const BankSpot = () => {
               data2.worldCurBid !== instrumentParitySpot.bid ||
               data2.worldCurOffer !== instrumentParitySpot.ask
             ) {
-              console.log("isDiffereent", {
-                stateDatabid: newData.worldCurBid,
-                realtimeDatabid: instrumentParitySpot.bid,
-              });
-
               newData.worldCurBid = instrumentParitySpot.bid;
               newData.worldCurOffer = instrumentParitySpot.ask;
               isUpdated = true;

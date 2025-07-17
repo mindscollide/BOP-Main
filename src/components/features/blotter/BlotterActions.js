@@ -56,10 +56,7 @@ export const BlotterDataAPI = createAsyncThunk(
 
       const response = await getBlotterData(Data);
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+    
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(BlotterDataAPI({ navigate, Data }));
@@ -75,7 +72,7 @@ export const BlotterDataAPI = createAsyncThunk(
           ) {
             return {
               response: response.data.responseResult,
-              message: "Successfully Rerieved Data",
+              message: "",
             };
           } else if (
             responseMessage
@@ -84,7 +81,7 @@ export const BlotterDataAPI = createAsyncThunk(
                 "Blotter_BlotterServiceManager_GetBlotterData_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Unsuccessfull");
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -125,10 +122,7 @@ export const GetBlotterOutstandingDealsDataAPI = createAsyncThunk(
 
       const response = await getBlotterOutStandingData(Data);
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+    
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(GetBlotterOutstandingDealsDataAPI({ navigate, Data }));
@@ -144,7 +138,7 @@ export const GetBlotterOutstandingDealsDataAPI = createAsyncThunk(
           ) {
             return {
               response: response.data.responseResult,
-              message: "Successfully Rerieved Data",
+              message: "",
             };
           } else if (
             responseMessage
@@ -153,7 +147,7 @@ export const GetBlotterOutstandingDealsDataAPI = createAsyncThunk(
                 "Blotter_BlotterServiceManager_GetBlotterOutstandingDealsData_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Unsuccessfull");
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -193,10 +187,7 @@ export const SaveSpotTransactionAPI = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+    
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(SaveSpotTransactionAPI({ navigate, Data }));
@@ -222,7 +213,7 @@ export const SaveSpotTransactionAPI = createAsyncThunk(
                 "Blotter_BlotterServiceManager_SaveSpotTransaction_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Unsuccessfull");
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -269,10 +260,7 @@ export const SaveForwardTransactionAPI = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access");
-      }
+    
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(
@@ -304,7 +292,7 @@ export const SaveForwardTransactionAPI = createAsyncThunk(
                 "Blotter_BlotterServiceManager_SaveForwardTransaction_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Unsuccessfull");
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -347,10 +335,7 @@ export const SaveFEDiscountingTransactionAPI = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access");
-      }
+    
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(SaveFEDiscountingTransactionAPI({ navigate, Data }));
@@ -375,7 +360,7 @@ export const SaveFEDiscountingTransactionAPI = createAsyncThunk(
                 "Blotter_BlotterServiceManager_SaveFEDiscountingTransaction_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Unsuccessfull");
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -418,10 +403,7 @@ export const SaveNonFEDiscountingTransactionAPI = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access");
-      }
+    
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(SaveNonFEDiscountingTransactionAPI({ navigate, Data }));
@@ -446,7 +428,7 @@ export const SaveNonFEDiscountingTransactionAPI = createAsyncThunk(
                 "Blotter_BlotterServiceManager_SaveNonFEDiscountingTransaction_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Unsuccessfull");
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -489,10 +471,7 @@ export const AssignTransactionAPI = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access");
-      }
+    
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(AssignTransactionAPI({ navigate, Data }));
@@ -517,7 +496,7 @@ export const AssignTransactionAPI = createAsyncThunk(
                 "Blotter_BlotterServiceManager_AssignTransaction_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Unsuccessfull");
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -555,7 +534,7 @@ export const AssignTransactionAPI = createAsyncThunk(
           }
         } else {
           return rejectWithValue(
-            responseMessage || "Failed to assign transaction"
+            "Failed to assign transaction"
           );
         }
       } else {
@@ -578,10 +557,7 @@ export const AcceptTransactionAPI = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access");
-      }
+    
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(AcceptTransactionAPI({ navigate, Data }));
@@ -606,7 +582,7 @@ export const AcceptTransactionAPI = createAsyncThunk(
                 "Blotter_BlotterServiceManager_AcceptTransaction_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Unsuccessfull");
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -644,7 +620,7 @@ export const AcceptTransactionAPI = createAsyncThunk(
           }
         } else {
           return rejectWithValue(
-            responseMessage || "Failed to accept transaction"
+            "Failed to accept transaction"
           );
         }
       } else {
@@ -670,10 +646,7 @@ export const RejectTransactionAPI = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access");
-      }
+    
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(
@@ -703,7 +676,7 @@ export const RejectTransactionAPI = createAsyncThunk(
                 "Blotter_BlotterServiceManager_RejectTransaction_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Unsuccessfull");
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -762,10 +735,7 @@ export const AcceptTransactionCancellationRequest = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access");
-      }
+    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -778,7 +748,7 @@ export const AcceptTransactionCancellationRequest = createAsyncThunk(
             message: "Cancellation request accepted successfully",
           };
         } else {
-          return rejectWithValue(responseMessage || "Something went wrong");
+          return rejectWithValue("Something went wrong");
         }
       } else {
         return rejectWithValue("Something went wrong");
@@ -803,10 +773,7 @@ export const RejectTransactionCancellationRequest = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access");
-      }
+    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -822,7 +789,7 @@ export const RejectTransactionCancellationRequest = createAsyncThunk(
             message: "Cancellation request rejected successfully",
           };
         } else {
-          return rejectWithValue(responseMessage || "Something went wrong");
+          return rejectWithValue("Something went wrong");
         }
       } else {
         return rejectWithValue("Something went wrong");
@@ -847,10 +814,7 @@ export const CancelTransaction = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access");
-      }
+    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -877,7 +841,7 @@ export const CancelTransaction = createAsyncThunk(
                 "Blotter_BlotterServiceManager_CancelTransaction_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Unsuccessfull");
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -939,10 +903,7 @@ export const RequestCancellation = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access");
-      }
+    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -969,7 +930,7 @@ export const RequestCancellation = createAsyncThunk(
                 "Blotter_BlotterServiceManager_RequestCancellation_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Unsuccessfull");
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -1028,10 +989,7 @@ export const AcceptRFQTransaction = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access");
-      }
+    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -1057,7 +1015,7 @@ export const AcceptRFQTransaction = createAsyncThunk(
                 "Blotter_BlotterServiceManager_AcceptRFQTransaction_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Unsuccessfull");
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -1094,7 +1052,7 @@ export const AcceptRFQTransaction = createAsyncThunk(
             return rejectWithValue("Something went wrong");
           }
         } else {
-          return rejectWithValue(responseMessage || "Something went wrong");
+          return rejectWithValue("Something went wrong");
         }
       } else {
         return rejectWithValue("Something went wrong");
@@ -1119,10 +1077,7 @@ export const RejectRFQTransaction = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access");
-      }
+    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -1151,7 +1106,7 @@ export const RejectRFQTransaction = createAsyncThunk(
                 "Blotter_BlotterServiceManager_RejectRFQTransaction_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Unsuccessfull");
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -1213,10 +1168,7 @@ export const SaveSpotTransactionRFQ = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access");
-      }
+    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -1243,7 +1195,7 @@ export const SaveSpotTransactionRFQ = createAsyncThunk(
                 "Blotter_BlotterServiceManager_SaveSpotTransactionRFQ_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Unsuccessfull");
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -1264,7 +1216,7 @@ export const SaveSpotTransactionRFQ = createAsyncThunk(
             return rejectWithValue("Something went wrong");
           }
         } else {
-          return rejectWithValue(responseMessage || "Something went wrong");
+          return rejectWithValue("Something went wrong");
         }
       } else {
         return rejectWithValue("Something went wrong");
@@ -1286,10 +1238,7 @@ export const SaveForwardTransactionRFQApi = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access");
-      }
+    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -1315,7 +1264,7 @@ export const SaveForwardTransactionRFQApi = createAsyncThunk(
                 "Blotter_BlotterServiceManager_SaveForwardTransactionRFQ_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Unsuccessfull");
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -1358,10 +1307,7 @@ export const SaveFEDiscountingTransactionRFQ = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access");
-      }
+    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -1387,7 +1333,7 @@ export const SaveFEDiscountingTransactionRFQ = createAsyncThunk(
                 "Blotter_BlotterServiceManager_SaveFEDiscountingTransactionRFQ_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Unsuccessfull");
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -1408,7 +1354,7 @@ export const SaveFEDiscountingTransactionRFQ = createAsyncThunk(
             return rejectWithValue("Something went wrong");
           }
         } else {
-          return rejectWithValue(responseMessage || "Something went wrong");
+          return rejectWithValue("Something went wrong");
         }
       } else {
         return rejectWithValue("Something went wrong");
@@ -1430,10 +1376,7 @@ export const SaveNonFEDiscountingTransactionRFQ = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access");
-      }
+    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -1459,7 +1402,7 @@ export const SaveNonFEDiscountingTransactionRFQ = createAsyncThunk(
                 "Blotter_BlotterServiceManager_SaveNonFEDiscountingTransactionRFQ_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Unsuccessfull");
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -1480,7 +1423,7 @@ export const SaveNonFEDiscountingTransactionRFQ = createAsyncThunk(
             return rejectWithValue("Something went wrong");
           }
         } else {
-          return rejectWithValue(responseMessage || "Something went wrong");
+          return rejectWithValue("Something went wrong");
         }
       } else {
         return rejectWithValue("Something went wrong");
@@ -1502,10 +1445,7 @@ export const RFQTransactionQuotation = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access");
-      }
+    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -1532,7 +1472,7 @@ export const RFQTransactionQuotation = createAsyncThunk(
                 "Blotter_BlotterServiceManager_RFQTransactionQuotation_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Unsuccessfull");
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -1569,7 +1509,7 @@ export const RFQTransactionQuotation = createAsyncThunk(
             return rejectWithValue("Something went wrong");
           }
         } else {
-          return rejectWithValue(responseMessage || "Something went wrong");
+          return rejectWithValue("Something went wrong");
         }
       } else {
         return rejectWithValue("Something went wrong");
@@ -1591,10 +1531,7 @@ export const RFQForwardTransactionQuotation = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access");
-      }
+    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -1622,7 +1559,7 @@ export const RFQForwardTransactionQuotation = createAsyncThunk(
                 "Blotter_BlotterServiceManager_RFQForwardTransactionQuotation_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Unsuccessfull");
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -1659,7 +1596,7 @@ export const RFQForwardTransactionQuotation = createAsyncThunk(
             return rejectWithValue("Something went wrong");
           }
         } else {
-          return rejectWithValue(responseMessage || "Something went wrong");
+          return rejectWithValue("Something went wrong");
         }
       } else {
         return rejectWithValue("Something went wrong");
@@ -1681,10 +1618,7 @@ export const RFQFEDiscountingTransactionQuotation = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access");
-      }
+    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -1710,7 +1644,7 @@ export const RFQFEDiscountingTransactionQuotation = createAsyncThunk(
                 "Blotter_BlotterServiceManager_RFQFEDiscountingTransactionQuotation_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Unsuccessfull");
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -1747,7 +1681,7 @@ export const RFQFEDiscountingTransactionQuotation = createAsyncThunk(
             return rejectWithValue("Something went wrong");
           }
         } else {
-          return rejectWithValue(responseMessage || "Something went wrong");
+          return rejectWithValue("Something went wrong");
         }
       } else {
         return rejectWithValue("Something went wrong");
@@ -1769,10 +1703,7 @@ export const RFQNonFEDiscountingTransactionQuotation = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access");
-      }
+    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -1798,7 +1729,7 @@ export const RFQNonFEDiscountingTransactionQuotation = createAsyncThunk(
                 "Blotter_BlotterServiceManager_RFQNonFEDiscountingTransactionQuotation_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Unsuccessfull");
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -1835,7 +1766,7 @@ export const RFQNonFEDiscountingTransactionQuotation = createAsyncThunk(
             return rejectWithValue("Something went wrong");
           }
         } else {
-          return rejectWithValue(responseMessage || "Something went wrong");
+          return rejectWithValue("Something went wrong");
         }
       } else {
         return rejectWithValue("Something went wrong");
@@ -1860,10 +1791,7 @@ export const ExpireRFQTransaction = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access");
-      }
+    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -1889,7 +1817,7 @@ export const ExpireRFQTransaction = createAsyncThunk(
                 "Blotter_BlotterServiceManager_ExpireRFQTransaction_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Unsuccessfull");
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -1930,7 +1858,7 @@ export const ExpireRFQTransaction = createAsyncThunk(
             message: "RFQ transaction expired successfully",
           };
         } else {
-          return rejectWithValue(responseMessage || "Something went wrong");
+          return rejectWithValue("Something went wrong");
         }
       } else {
         return rejectWithValue("Something went wrong");
@@ -1952,10 +1880,7 @@ export const GetSpotTransactionDetailsApi = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access");
-      }
+    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -1983,7 +1908,7 @@ export const GetSpotTransactionDetailsApi = createAsyncThunk(
                 "Blotter_BlotterServiceManager_GetSpotTransactionDetails_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Unsuccessfull");
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -2026,10 +1951,7 @@ export const GetForwardTransactionDetailsApi = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access");
-      }
+    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -2057,7 +1979,7 @@ export const GetForwardTransactionDetailsApi = createAsyncThunk(
                 "Blotter_BlotterServiceManager_GetForwardTransactionDetails_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Unsuccessfull");
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -2100,10 +2022,7 @@ export const GetFEDiscountingTransactionDetailsApi = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access");
-      }
+    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -2131,7 +2050,7 @@ export const GetFEDiscountingTransactionDetailsApi = createAsyncThunk(
                 "Blotter_BlotterServiceManager_GetFEDiscountingTransactionDetails_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Unsuccessfull");
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -2176,10 +2095,7 @@ export const GetNonFEDiscountingTransactionDetailsApi = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access");
-      }
+    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -2208,7 +2124,7 @@ export const GetNonFEDiscountingTransactionDetailsApi = createAsyncThunk(
                 "Blotter_BlotterServiceManager_GetNonFEDiscountingTransactionDetails_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Unsuccessfull");
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -2256,10 +2172,7 @@ export const CancelPendingTransactionApi = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access");
-      }
+    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -2288,7 +2201,7 @@ export const CancelPendingTransactionApi = createAsyncThunk(
                 "Blotter_BlotterServiceManager_CancelPendingRFQTransaction_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Unsuccessfull");
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -2325,7 +2238,7 @@ export const CancelPendingTransactionApi = createAsyncThunk(
             return rejectWithValue("Something went wrong");
           }
         } else {
-          return rejectWithValue(responseMessage || "Something went wrong");
+          return rejectWithValue("Something went wrong");
         }
       } else {
         return rejectWithValue("Something went wrong");
@@ -2347,10 +2260,7 @@ export const calculateTenorSwapAndForwardRateApi = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access");
-      }
+    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -2402,10 +2312,7 @@ export const calculateNonFeSwapAndDiscountingRateApi = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access");
-      }
+    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -2459,10 +2366,7 @@ export const GetSpotRatesForCounterPartyAPI = createAsyncThunk(
 
       const response = await GetSpotRatesForCounterPartyM();
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+    
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(GetSpotRatesForCounterPartyAPI({ navigate }));
@@ -2479,7 +2383,7 @@ export const GetSpotRatesForCounterPartyAPI = createAsyncThunk(
             console.log("", response.data);
             return {
               response: response.data.responseResult,
-              message: "API executed successfully.",
+              message: "",
             };
           } else if (
             responseMessage
@@ -2536,10 +2440,7 @@ export const GetNOPDataAPI = createAsyncThunk(
 
       const response = await GetNOPDataData();
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+    
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(GetNOPDataAPI({ navigate }));
@@ -2555,7 +2456,7 @@ export const GetNOPDataAPI = createAsyncThunk(
           ) {
             return {
               response: response.data.responseResult,
-              message: "API executed successfully.",
+              message: "",
             };
           } else if (
             responseMessage

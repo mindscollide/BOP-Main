@@ -37,7 +37,7 @@ export const refreshTokenAction = createAsyncThunk(
             localStorage.setItem("token", token);
             localStorage.setItem("refreshToken", refreshToken);
             return {
-              message: "Successfully updated",
+              message: "",
               response: response.data.responseResult,
             };
           } else if (
