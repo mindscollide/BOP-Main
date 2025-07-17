@@ -67,8 +67,17 @@ const BlotterSlicer = createSlice({
     discountingQuoteModalData: null,
     spotQuoteModalData: null,
     calculateNonFeSwapAndDiscountingRate: null,
+    tnxTableNewData: [],
   },
   reducers: {
+    updateRealtimeBlotterData: (state, { payload }) => {
+      console.log(payload, "updateRealtimeBlotterDataupdateRealtimeBlotterData")
+      state.getBlotterApiData = payload;
+      state.tnxTableNewData = payload?.tnxSummary;
+    },
+    updateOutstandingBlotterData: (state, { payload }) => {
+      state.getBlotterOutstandingData = payload;
+    },
     setSpotQuoteModalData: (state, { payload }) => {
       state.spotQuoteModalData = payload;
     },
@@ -111,8 +120,15 @@ const BlotterSlicer = createSlice({
       })
       // Fulfilled state (when the API call succeeds CorporateBlotterDataAPI)
       .addCase(BlotterDataAPI.fulfilled, (state, { payload }) => {
+        let newData = [
+          ...state.tnxTableNewData,
+          ...payload?.response?.tnxSummary,
+        ];
+        console.log(payload, "getBlotterApiData");
+        console.log(newData, "getBlotterApiData");
         state.Loader = false;
         state.getBlotterApiData = payload?.response;
+        state.tnxTableNewData = newData;
         state.error = null;
         state.responseMessage = payload?.message;
       })
@@ -121,6 +137,7 @@ const BlotterSlicer = createSlice({
         console.log(action, "actionaction");
         state.Loader = false;
         state.error = action.payload;
+        state.tnxTableNewData = [];
         state.getBlotterApiData = null;
       })
       .addCase(GetBlotterOutstandingDealsDataAPI.pending, (state) => {
@@ -461,6 +478,8 @@ const BlotterSlicer = createSlice({
 });
 
 export const {
+  updateOutstandingBlotterData,
+  updateRealtimeBlotterData,
   setDiscountingQuoteModalData,
   setForwardQuoteModalData,
   setActiveTreasuryTab,
