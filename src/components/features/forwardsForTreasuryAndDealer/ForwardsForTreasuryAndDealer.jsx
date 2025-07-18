@@ -429,6 +429,13 @@ const ForwardsForTreasuryAndDealer = () => {
                       value={"Create Tenor"}
                       applyClass={"createTenorModalFooterBtn"}
                       onClick={handleCreateTenor}
+                      disabled={
+                        Number(createTenor.noOfDays) !== 0 &&
+                        createTenor.noOfDays !== "" &&
+                        createTenor.tenorName !== ""
+                          ? false
+                          : true
+                      }
                     />
                     <CustomButton
                       value={"Cancel"}
