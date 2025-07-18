@@ -815,3 +815,47 @@
   border-color: #0d6efd !important;
   color: #fff !important;
 }
+
+/*  Start Button ConfirmationModalYesDealBox */
+.ConfirmationModalYesDealBox {
+  border-radius: 4px !important;
+  font-weight: 500 !important;
+  min-width: 85px !important;
+  position: relative !important;
+  transition: all 0.3s ease-in !important;
+  font-family: "Poppins", sans-serif;
+  -webkit-transition: all 0.3s ease-in !important;
+  background: var(--color-secondary) !important;
+  border-color: var(--color-secondary) !important;
+
+  font-size: 0.8rem !important;
+  height: 44px;
+}
+.ConfirmationModalYesDealBox:is(:hover) {
+  background: var(--color-secondary) !important;
+  border-color: var(--color-secondary) !important;
+}
+
+/*  End Button ConfirmationModalYesDealBox */
+
+/*  Start Button ConfirmationModalNoDealBox */
+.ConfirmationModalNoDealBox {
+  border-radius: 4px !important;
+  font-weight: 500 !important;
+  min-width: 85px !important;
+  position: relative !important;
+  transition: all 0.3s ease-in !important;
+  font-family: "Poppins", sans-serif;
+  -webkit-transition: all 0.3s ease-in !important;
+  background: #dc3545 !important;
+  border-color: #dc3545 !important;
+
+  font-size: 0.8rem !important;
+  height: 44px;
+}
+.ConfirmationModalNoDealBox:is(:hover) {
+  background: #dc3545 !important;
+  border-color: #dc3545 !important;
+}
+
+/*  End Button ConfirmationModalYesDealBox */

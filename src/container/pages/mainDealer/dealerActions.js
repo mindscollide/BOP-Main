@@ -15,7 +15,7 @@ import {
 } from "@/common/api_config";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
 import createPostAPI from "@/utils/axiosInstance";
-import { setCreateTenorModal } from "@/store/modalSlice/modalSlicer";
+import { setCreateTenorModal, setPublishedSpotRates } from "@/store/modalSlice/modalSlicer";
 
 // Define the login async thunk
 export const clearRatesAction = createAsyncThunk(
@@ -194,6 +194,8 @@ export const PublishNewRatesAction = createAsyncThunk(
                 "UploadRate_UploadRateServiceManager_PublishTheCurrentUSDRates_01".toLowerCase()
               )
           ) {
+            dispatch(setPublishedSpotRates(false));
+
             return {
               response: response.data.responseResult,
               message: "Rates are published",

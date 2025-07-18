@@ -1,4 +1,5 @@
 import NotificationSnackBar from "@/components/common/NotificationSnackbar";
+import GlobalModal from "@/components/common/globalModal/Modal";
 import {
   getTenorWiseForwardsAction,
   PublishTenorWiseForwardsAction,
@@ -10,6 +11,7 @@ import {
 import { tenorWiseFowardsRatesPublishedActions } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { formatCurrencyInput } from "@/utils/formatters";
 import React, { lazy, Suspense, useEffect, useState } from "react";
+import { Col, Row } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -78,7 +80,8 @@ const TenoreWiseCurrentAndLastRates = ({
   const [snackbarData, setSnackbarData] = useState({
     message: "",
   });
-
+  const [confirmationModal, setConfirmationModal] = useState(false)
+  const [TenorRemoveRecord, setTenorRemoveRecord] = useState(null)
   useEffect(() => {
     if (newTenorRecord !== null) {
       let newData = [...forwardsForTreasuryBranch, newTenorRecord];
@@ -178,12 +181,19 @@ const TenoreWiseCurrentAndLastRates = ({
   }, [getTenorWiseForwardsRates]);
 
   const handleDeleteTenorRecord = (record) => {
-    const filteredRecords = forwardsForTreasuryBranch.filter(
-      (item) => item.tenorID !== record.tenorID
+    setTenorRemoveRecord(record)
+    setConfirmationModal(true)
+
+  };
+
+  const handleYesConfirmatonModal = () => {
+        const filteredRecords = forwardsForTreasuryBranch.filter(
+      (item) => item.tenorID !== TenorRemoveRecord.tenorID
     );
 
     dispatch(setForwardsForTreasuryBranch(filteredRecords));
-  };
+    setConfirmationModal(false)
+  }
   const handleChangeCurrentForwards = (record, view, event) => {
     const { value } = event.target;
     try {
@@ -261,7 +271,7 @@ const TenoreWiseCurrentAndLastRates = ({
             InputFIeld ? (
               <Suspense fallback={<div>Loading input...</div>}>
                 <InputFIeld
-                  type="number"
+                  type='number'
                   value={record.currentBid}
                   onChange={(event) =>
                     handleChangeCurrentForwards(record, "bid", event)
@@ -280,7 +290,7 @@ const TenoreWiseCurrentAndLastRates = ({
             InputFIeld ? (
               <Suspense fallback={<div>Loading input...</div>}>
                 <InputFIeld
-                  type="number"
+                  type='number'
                   value={record.currentAsk}
                   onChange={(event) =>
                     handleChangeCurrentForwards(record, "ask", event)
@@ -304,7 +314,7 @@ const TenoreWiseCurrentAndLastRates = ({
             InputFIeld ? (
               <Suspense fallback={<div>Loading input...</div>}>
                 <InputFIeld
-                  type="number"
+                  type='number'
                   value={record.lastBid}
                   disabled={true}
                   applyClass={"DealerTableBitInput"}
@@ -321,7 +331,7 @@ const TenoreWiseCurrentAndLastRates = ({
             InputFIeld ? (
               <Suspense fallback={<div>Loading input...</div>}>
                 <InputFIeld
-                  type="number"
+                  type='number'
                   value={record.lastAsk}
                   disabled={true}
                   applyClass={"DealerTableBitInput"}
@@ -347,11 +357,11 @@ const TenoreWiseCurrentAndLastRates = ({
               IconElement && (
                 <Suspense fallback={<div>Loading button...</div>}>
                   <CustomButton
-                    type="link"
+                    type='link'
                     icon={
                       <Suspense fallback={<div>Loading icon...</div>}>
                         <IconElement
-                          iconClass={"icon-trash color-red fs-6 cursor-pointer"}
+                          iconClass={"icon-close color-red fs-6 cursor-pointer"}
                           onClick={() => handleDeleteTenorRecord(record)}
                         />
                       </Suspense>
@@ -378,15 +388,64 @@ const TenoreWiseCurrentAndLastRates = ({
               pagination={false}
             />
             {CustomButton && (
-              <span className="d-flex justify-content-center mt-4">
+              <span className='d-flex justify-content-center mt-4'>
                 <CustomButton
-                  applyClass="publishForwardsBtn"
+                  applyClass='publishForwardsBtn'
                   value={"Publish Forwards"}
                   onClick={handlePublishForwards}
                   disabled={marketStatus === false ? true : false}
                 />
               </span>
             )}
+            <GlobalModal
+              show={confirmationModal}
+              centered={true}
+              footerClassName={"d-block border-0"}
+              bodyClassName={"b-0"}
+              modalBody={
+                <>
+                  <Row>
+                    <Col
+                      sm={12}
+                      md={12}
+                      lg={12}
+                      className='d-flex justify-content-center'>
+                      <span className='modalDescription'>
+                        Are you sure you want to delete it
+                      </span>
+                    </Col>
+                  </Row>
+                </>
+              }
+              modalFooter={
+                <>
+                  <Row>
+                    <Col
+                      sm={6}
+                      md={6}
+                      lg={6}
+                      className='d-flex justify-content-end'>
+                      <CustomButton
+                        value={"Yes"}
+                        onClick={handleYesConfirmatonModal}
+                        applyClass={"ConfirmationModalYesDealBox"}
+                      />
+                    </Col>
+                    <Col
+                      sm={6}
+                      md={6}
+                      lg={6}
+                      className='d-flex justify-content-start'>
+                      <CustomButton
+                        value={"No"}
+                        onClick={() => setConfirmationModal(false)}
+                        applyClass={"ConfirmationModalNoDealBox"}
+                      />
+                    </Col>
+                  </Row>
+                </>
+              }
+            />
           </Suspense>
         </>
       )}
