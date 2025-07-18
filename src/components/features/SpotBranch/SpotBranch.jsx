@@ -165,7 +165,7 @@ const SpotBranch = () => {
           return data2; // Don't forget this!
         });
       });
-    }, 200) // Adjust throttle duration (in ms) as needed
+    }) // Adjust throttle duration (in ms) as needed
   ).current;
 
   //Column of my watch<list> Table
