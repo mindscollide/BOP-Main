@@ -17,6 +17,7 @@ const SettingusersComponent = () => {
     if (userSettingData !== null) {
       try {
         if (userSettingData.length > 0) {
+          console.log("userSettingData", userSettingData);
           const newSettings = {};
 
           userSettingData.forEach((settingData) => {
@@ -52,20 +53,20 @@ const SettingusersComponent = () => {
 
   console.log(settingsRecord, "settingsRecordsettingsRecord");
   return (
-    <div className='setting-body-content px-3 py-3 h-screen-65'>
-      <label className='form-check border-bottom pb-3 pt-2 mb-2 fs-normal'>
+    <div className="setting-body-content px-3 py-3 h-screen-65">
+      <label className="form-check border-bottom pb-3 pt-2 mb-2 fs-normal">
         <Checkbox
-          className='form-check-input'
-          name='BD_EmailOnEveryMessage'
+          className="form-check-input"
+          name="BD_EmailOnEveryMessage"
           checked={settingsRecord?.BD_EmailOnEveryMessage}
           onChange={handleChange}
         />
         Chat Panel Overlap
       </label>
-      <label className='form-check border-bottom pb-3 pt-2 mb-2 fs-normal'>
+      <label className="form-check border-bottom pb-3 pt-2 mb-2 fs-normal">
         <Checkbox
-          className='form-check-input'
-          name='BD_SoundOnEveryMessage'
+          className="form-check-input"
+          name="BD_SoundOnEveryMessage"
           checked={settingsRecord.BD_SoundOnEveryMessage}
           onChange={handleChange}
         />

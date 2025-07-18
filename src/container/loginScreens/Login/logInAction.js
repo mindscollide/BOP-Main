@@ -167,30 +167,31 @@ export const corporateUserLoginInApi = createAsyncThunk(
               };
 
             case "ERM_AuthService_AuthManager_CorporateUserLogin_15".toLowerCase():
-              var {
-                corporate,
-                employeeID,
-                ldapAccount,
-                userID,
-                firstName,
-                email,
-                contactNumber,
-                userRoleID,
-                userStatusID,
-              } = response.data.responseResult.user;
-              localStorage.setItem("token", token);
-              localStorage.setItem("refreshToken", refreshToken);
-              localStorage.setItem("name", firstName);
-              localStorage.setItem("email", email);
-              localStorage.setItem("roleId", userRoleID);
-              localStorage.setItem("userID", userID);
-              localStorage.setItem("corporate", JSON.stringify(corporate));
-              localStorage.setItem("employeeID", employeeID);
-              localStorage.setItem("ldapAccount", ldapAccount);
-              localStorage.setItem("contactNumber", contactNumber);
-              localStorage.setItem("userStatusID", userStatusID);
+              navigate("/2fa");
+              // var {
+              //   corporate,
+              //   employeeID,
+              //   ldapAccount,
+              //   userID,
+              //   firstName,
+              //   email,
+              //   contactNumber,
+              //   userRoleID,
+              //   userStatusID,
+              // } = response.data.responseResult.user;
+              // localStorage.setItem("token", token);
+              // localStorage.setItem("refreshToken", refreshToken);
+              // localStorage.setItem("name", firstName);
+              // localStorage.setItem("email", email);
+              // localStorage.setItem("roleId", userRoleID);
+              // localStorage.setItem("userID", userID);
+              // localStorage.setItem("corporate", JSON.stringify(corporate));
+              // localStorage.setItem("employeeID", employeeID);
+              // localStorage.setItem("ldapAccount", ldapAccount);
+              // localStorage.setItem("contactNumber", contactNumber);
+              // localStorage.setItem("userStatusID", userStatusID);
 
-              roleBasedNavigation(navigate, userRoleID);
+              // roleBasedNavigation(navigate, userRoleID);
               return {
                 response: response.data.responseResult,
                 message: "",

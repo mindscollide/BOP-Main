@@ -54,9 +54,12 @@ const SettingModal = () => {
   const handeClickSave = () => {
     console.log(settingsRecordData, "settingsRecordsettingsRecord");
     let Data = {
+      //to do
       Settings: [
         {
-          Key: "BD_EmailOnEveryMessage",
+          Key: shouldIncludeCorporateComponents
+            ? "CU_EmailOnEveryMessage"
+            : "BD_EmailOnEveryMessage", //to do
           Value: String(settingsRecordData?.BD_EmailOnEveryMessage),
         },
         {
@@ -71,7 +74,7 @@ const SettingModal = () => {
     };
     dispatch(updateUserSettingDataAPI({ navigate, Data }));
 
-    console.log(Data, "Data2Data2");
+    console.log(settingsRecordData, "Data2Data2");
   };
 
   return (
