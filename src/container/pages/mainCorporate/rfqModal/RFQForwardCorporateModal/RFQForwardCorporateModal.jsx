@@ -140,6 +140,7 @@ const RFQForwardCorporateModal = ({
   //     setAmountData(value);
   //   }
   // };
+
   // handle Change amount
   const handleChangeAmount = (event) => {
     const { name, value } = event.target;
