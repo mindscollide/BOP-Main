@@ -18,12 +18,12 @@ export const buildDiscountingTable = (
     const applicableInstruments =
       value === 1
         ? instruments?.filter((inst) => inst.discountingApplicable) || []
-        : value === 3
+        : value === 3 || value === 5
         ? instruments
         : instruments;
 
     const applicableTenors =
-      value === 1 || value === 3
+      value === 1 || value === 3 || value === 5
         ? tenors?.filter((tenor) => tenor.isDiscountingApplicable) || []
         : tenors;
 
@@ -58,7 +58,7 @@ export const buildDiscountingTable = (
       return row;
     });
     let columnsData = [];
-    if (value === 1) {
+    if (value === 1 || value === 5) {
       columnsData = [
         {
           title: "Tenor",
@@ -307,7 +307,7 @@ export const buildCurrentRatesPayload = (rowData) => {
         if (!isNaN(rate)) {
           currentRates.push({
             TenorID: row.TenorID,
-            InstumentID: row[instrumentIDKey],
+            InstrumentID: row[instrumentIDKey],
             InstrumentName: instrumentName,
             Rate: rate,
           });

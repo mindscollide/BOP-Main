@@ -184,6 +184,13 @@ const MIS = () => {
       alert("Please select both dates.");
     }
   };
+  const handleClickReset = () => {
+    console.log("reset clicked");
+    setMisDate({
+      StartDate: "",
+      EndDate: "",
+    });
+  };
 
   return (
     <>
@@ -244,7 +251,11 @@ const MIS = () => {
                   onClick={handleClickSearch}
                   applyClass="searchBtn"
                 />
-                <CustomButton value="Reset" applyClass="resetBtn" />
+                <CustomButton
+                  value="Reset"
+                  applyClass="resetBtn"
+                  onClick={handleClickReset}
+                />
               </div>
             </div>
           </div>

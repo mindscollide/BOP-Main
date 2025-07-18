@@ -28,6 +28,12 @@ import {
   calculateTenorSwapAndForwardRateApi,
   GetSpotRatesForCounterPartyAPI,
   SaveForwardTransactionRFQApi,
+  GetFEDiscountingTransactionDetailsApi,
+  GetSpotTransactionDetailsApi,
+  GetForwardTransactionDetailsApi,
+  GetNonFEDiscountingTransactionDetailsApi,
+  GetNOPDataAPI,
+  calculateNonFeSwapAndDiscountingRateApi,
 } from "@/components/features/blotter/BlotterActions";
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -52,8 +58,46 @@ const BlotterSlicer = createSlice({
     activeTabBlotter: "TXN Summary",
     GetSpotRatesForCounterParty: null,
     saveForwardRFQTransaction: null,
+    GetFEDiscountingTransactionDetails: null,
+    GetSpotTransactionDetails: null,
+    GetForwardTransactionDetails: null,
+    GetNonFEDiscountingTransactionDetails: null,
+    GetNOPData: null,
+    forwardQuoteModalData: null,
+    discountingQuoteModalData: null,
+    spotQuoteModalData: null,
+    calculateNonFeSwapAndDiscountingRate: null,
+    tnxTableNewData: [],
+    OutstandingTableNewData: [],
+    totalCountOutstandingData: 0,
   },
   reducers: {
+    updateRealtimeBlotterData: (state, { payload }) => {
+      console.log(
+        payload,
+        "updateRealtimeBlotterDataupdateRealtimeBlotterDatasss"
+      );
+      // state.getBlotterApiData = payload;
+      state.tnxTableNewData = payload?.tnxTableNewData;
+    },
+    updateOutstandingBlotterData: (state, { payload }) => {
+      console.log(
+        payload,
+        "updateRealtimeBlotterDataupdateRealtimeBlotterData"
+      );
+      // state.getBlotterOutstandingData = payload;
+      state.OutstandingTableNewData = payload?.OutstandingTableNewData;
+      state.totalCountOutstandingData = payload?.OutstandingTableNewData.length;
+    },
+    setSpotQuoteModalData: (state, { payload }) => {
+      state.spotQuoteModalData = payload;
+    },
+    setDiscountingQuoteModalData: (state, { payload }) => {
+      state.discountingQuoteModalData = payload;
+    },
+    setForwardQuoteModalData: (state, { payload }) => {
+      state.forwardQuoteModalData = payload;
+    },
     setActiveTreasuryTab: (state, { payload }) => {
       console.log(payload, "setActiveTreasuryTabsetActiveTreasuryTab");
       state.activeTabBlotter = payload;
@@ -63,6 +107,19 @@ const BlotterSlicer = createSlice({
     },
     clearCalculateTenorSwapAndForwardRateData: (state) => {
       state.calculateTenorSwapAndForwardRateData = null;
+    },
+
+    clearGetSpotTransactionDetails: (state) => {
+      state.GetSpotTransactionDetails = null;
+    },
+    clearGetFEDiscountingTransactionDetails: (state) => {
+      state.GetFEDiscountingTransactionDetails = null;
+    },
+    clearGetNonFEDiscountingTransactionDetails: (state) => {
+      state.GetNonFEDiscountingTransactionDetails = null;
+    },
+    clearGetForwardTransactionDetails: (state) => {
+      state.GetForwardTransactionDetails = null;
     },
   },
   extraReducers: (builder) => {
@@ -74,8 +131,15 @@ const BlotterSlicer = createSlice({
       })
       // Fulfilled state (when the API call succeeds CorporateBlotterDataAPI)
       .addCase(BlotterDataAPI.fulfilled, (state, { payload }) => {
+        let newData = [
+          ...state.tnxTableNewData,
+          ...payload?.response?.tnxSummary,
+        ];
+        console.log(payload, "getBlotterApiData");
+        console.log(newData, "getBlotterApiData");
         state.Loader = false;
         state.getBlotterApiData = payload?.response;
+        state.tnxTableNewData = newData;
         state.error = null;
         state.responseMessage = payload?.message;
       })
@@ -84,6 +148,7 @@ const BlotterSlicer = createSlice({
         console.log(action, "actionaction");
         state.Loader = false;
         state.error = action.payload;
+        state.tnxTableNewData = [];
         state.getBlotterApiData = null;
       })
       .addCase(GetBlotterOutstandingDealsDataAPI.pending, (state) => {
@@ -93,16 +158,25 @@ const BlotterSlicer = createSlice({
       .addCase(
         GetBlotterOutstandingDealsDataAPI.fulfilled,
         (state, { payload }) => {
+          let newData = [
+            ...state.OutstandingTableNewData,
+            ...payload?.response?.outstandingDeals,
+          ];
+          console.log(payload, "getBlotterApiData");
+          console.log(newData, "getBlotterApiData");
           state.Loader = false;
           state.getBlotterOutstandingData = payload?.response;
+          state.OutstandingTableNewData = newData;
           state.error = null;
           state.responseMessage = payload?.message;
+          state.totalCountOutstandingData = payload.response?.totalCount;
         }
       )
       .addCase(GetBlotterOutstandingDealsDataAPI.rejected, (state, action) => {
         console.log(action, "actionaction");
         state.Loader = false;
         state.error = action.payload;
+        state.OutstandingTableNewData = [];
         state.getBlotterOutstandingData = null;
       })
       .addCase(SaveSpotTransactionAPI.pending, (state) => {
@@ -310,14 +384,132 @@ const BlotterSlicer = createSlice({
         state.Loader = false;
         state.saveForwardRFQTransaction = null;
         state.responseMessage = payload;
-      });
+      })
+      .addCase(GetFEDiscountingTransactionDetailsApi.pending, (state) => {
+        state.Loader = true;
+        // state.error = null;
+      })
+      .addCase(
+        GetFEDiscountingTransactionDetailsApi.fulfilled,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.GetFEDiscountingTransactionDetails = payload.response;
+          // state.error = null;
+          state.responseMessage = payload.message;
+        }
+      )
+      .addCase(
+        GetFEDiscountingTransactionDetailsApi.rejected,
+        (state, action) => {
+          // console.log(action, "actionaction");
+          state.Loader = false;
+          state.error = action.payload;
+          state.GetFEDiscountingTransactionDetails = null;
+          state.responseMessage = payload?.message;
+        }
+      )
+      .addCase(GetSpotTransactionDetailsApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(GetSpotTransactionDetailsApi.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.GetSpotTransactionDetails = payload.response;
+        state.responseMessage = payload.message;
+      })
+      .addCase(GetSpotTransactionDetailsApi.rejected, (state, { payload }) => {
+        state.Loader = false;
+        state.GetSpotTransactionDetails = null;
+        state.responseMessage = payload?.message;
+      })
+      .addCase(GetForwardTransactionDetailsApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(
+        GetForwardTransactionDetailsApi.fulfilled,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.GetForwardTransactionDetails = payload.response;
+          state.responseMessage = payload.message;
+        }
+      )
+      .addCase(
+        GetForwardTransactionDetailsApi.rejected,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.GetForwardTransactionDetails = null;
+          state.responseMessage = payload?.message;
+        }
+      )
+      .addCase(GetNonFEDiscountingTransactionDetailsApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(
+        GetNonFEDiscountingTransactionDetailsApi.fulfilled,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.GetNonFEDiscountingTransactionDetails = payload.response;
+          state.responseMessage = payload.message;
+        }
+      )
+      .addCase(
+        GetNonFEDiscountingTransactionDetailsApi.rejected,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.GetNonFEDiscountingTransactionDetails = null;
+          state.responseMessage = payload?.message;
+        }
+      )
+      .addCase(GetNOPDataAPI.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(GetNOPDataAPI.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.GetNOPData = payload.response;
+        state.responseMessage = payload.message;
+      })
+      .addCase(GetNOPDataAPI.rejected, (state, { payload }) => {
+        state.Loader = false;
+        state.GetNOPData = null;
+        state.responseMessage = payload?.message;
+      })
+      .addCase(
+        calculateNonFeSwapAndDiscountingRateApi.pending,
+        (state, { payload }) => {
+          state.Loader = false;
+        }
+      )
+      .addCase(
+        calculateNonFeSwapAndDiscountingRateApi.fulfilled,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.calculateNonFeSwapAndDiscountingRate = payload?.response;
+          state.responseMessage = payload?.message;
+        }
+      )
+      .addCase(
+        calculateNonFeSwapAndDiscountingRateApi.rejected,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.calculateNonFeSwapAndDiscountingRate = null;
+          state.responseMessage = payload;
+        }
+      );
   },
 });
 
 export const {
+  updateOutstandingBlotterData,
+  updateRealtimeBlotterData,
+  setDiscountingQuoteModalData,
+  setForwardQuoteModalData,
   setActiveTreasuryTab,
   clearBlotterResponseMessage,
   clearCalculateTenorSwapAndForwardRateData,
+  clearGetFEDiscountingTransactionDetails,
+  clearGetSpotTransactionDetails,
+  clearGetNonFEDiscountingTransactionDetails,
+  clearGetForwardTransactionDetails,
+  setSpotQuoteModalData,
 } = BlotterSlicer.actions;
 
 export default BlotterSlicer.reducer;

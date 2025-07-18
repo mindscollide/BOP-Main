@@ -28,6 +28,9 @@ import {
   GetCategoryWiseForwardRatesApi,
   GetCategoryWiseSpotRatesApi,
 } from "@/container/pages/mainCategory/categoryActions";
+import SpotQuoteModal from "@/container/pages/mainCorporate/rfqModal/SpotQuoteModal/SpotQuoteModal";
+import DiscountingRFQQuoteModal from "@/container/pages/mainCorporate/rfqModal/DiscountingRFQQuoteModal/DiscountingRFQQuoteModal";
+import ForwardRFQQuoteModal from "@/container/pages/mainCorporate/rfqModal/ForwardRFQQuoteModal/ForwardRFQQuoteModal";
 
 const GlobalNavbar = () => {
   const getAllCategoriesData = useSelector(
@@ -35,6 +38,22 @@ const GlobalNavbar = () => {
   );
   const settingModalState = useSelector(
     (state) => state.modalReducer.settingModal
+  );
+  const spotQuoteModalState = useSelector(
+    (state) => state.modalReducer.spotQuoteModal
+  );
+
+  const forwardQuoteModalState = useSelector(
+    (state) => state.modalReducer.forwardQuoteModal
+  );
+  const discountingQuoteModalState = useSelector(
+    (state) => state.modalReducer.discountingQuoteModal
+  );
+  console.log(
+    spotQuoteModalState,
+    forwardQuoteModalState,
+    discountingQuoteModalState,
+    "discountingQuoteModalState"
   );
   const activeTab = useSelector((state) => state.RFQReducer.activeTab);
 
@@ -136,10 +155,11 @@ const GlobalNavbar = () => {
             value: newCategoryMap[0].value,
             label: newCategoryMap[0].label,
           };
+          console.log(newCategoryMap, "newCategoryMapnewCategoryMap")
           dispatch(setCategoryValue(obj));
 
           let Data = {
-            Category: newCategoryMap[0].value,
+            Category: obj.value,
           };
           setAllCategories(newCategoryMap);
           console.log(Data, "DataData");
@@ -197,7 +217,7 @@ const GlobalNavbar = () => {
       }
     }
   }, [isCategoryAdded]);
-  
+
   useEffect(() => {
     if (isCategoryUpdated !== null && categoryValue.value !== 0) {
       const {
@@ -272,26 +292,7 @@ const GlobalNavbar = () => {
             <SiteLogoComponent />
             <div className="ms-auto">
               <div className="d-flex align-items-center gap-2">
-                {shouldIncludeTreasury &&
-                location.pathname === "/BOP/treasury" &&
-                outStandingData.length !== 0 ? (
-                  <>
-                    <section className="position-relative">
-                      <IconElement
-                        iconClass={
-                          "icon-clock fs-4 color-red px-2 cursor-pointer"
-                        }
-                        onClick={() => setViewCurrentDeals(!viewCurrentDeals)}
-                      />
-                      {viewCurrentDeals && (
-                        <ViewCurrentDeals
-                          setOutStandingData={setOutStandingData}
-                          outStandingData={outStandingData}
-                        />
-                      )}
-                    </section>
-                  </>
-                ) : null}
+          
                 {location.pathname !== "/calculator" ? (
                   <>
                     {(shouldIncludeCorporate || shouldIncludeBranch) && (
@@ -340,6 +341,9 @@ const GlobalNavbar = () => {
       </div>
 
       {isRfqModalOpen && <RFQModal />}
+      <SpotQuoteModal />
+      <DiscountingRFQQuoteModal />
+      <ForwardRFQQuoteModal />
 
       {/* Forwards RFQ Modal  */}
       {openRfqModalForwardCorporateComponent && (

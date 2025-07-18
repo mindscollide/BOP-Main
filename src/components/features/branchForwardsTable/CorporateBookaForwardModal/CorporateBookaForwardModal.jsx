@@ -245,6 +245,18 @@ const CorporateBookaForwardModal = ({
   };
 
   const handleConfirm = () => {
+    console.log(
+      corporateValue.value !== 0,
+      selectedCurrency.value !== "",
+      typeOptionSelected.value !== 0,
+      forwardRFQState.Amount !== "",
+      forwardRFQState.AccNo !== "",
+      natureOfBusinessSelcted.value !== 0,
+      forwardRFQState.TenorDays !== "",
+      forwardRFQState.Options !== "",
+      forwardRFQState.Swap !== "",
+      "handleConfirmhandleConfirm"
+    );
     if (
       corporateValue.value !== 0 &&
       selectedCurrency.value !== "" &&

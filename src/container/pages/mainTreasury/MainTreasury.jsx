@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import {
   BlotterDataAPI,
   GetBlotterOutstandingDealsDataAPI,
+  GetNOPDataAPI,
 } from "@/components/features/blotter/BlotterActions";
 import LiveRates from "./tabsContent/liveRates/LiveRates";
 import Forwards from "./tabsContent/forwards/Forwards";
@@ -32,6 +33,7 @@ const MainTreasury = () => {
     dispatch(GetBankForwardForTreasuryApi({ navigate }));
     dispatch(getAllTenorsAction({ navigate }));
     dispatch(GetDiscountingRatesForTreasuryApi({ navigate }));
+    dispatch(GetNOPDataAPI({ navigate }));
   }, []);
 
   const tabsData = [

@@ -1,4 +1,3 @@
-import { setCustomHeaders } from "@/common/utils";
 import { authApi } from "@/common/apiend_points";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { sendEmailForResetPaswordRM } from "@/common/api_config";
@@ -26,6 +25,7 @@ export const resetAndForgotPassword = createAsyncThunk(
                 "ERM_AuthService_AuthManager_SendEmailForResetPasword_01".toLowerCase()
               )
           ) {
+            navigate("/emailsent", Data);
             return {
               response: response.data.responseResult,
               message: "Email for Reset Password Sent Successfully",

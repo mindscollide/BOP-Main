@@ -11,7 +11,7 @@ export function formatDateTimeToUTCTime(dateTimeStr) {
   const date = new Date(Date.UTC(year, month, day, hour, minute, second));
 
   // Format the time in HH:MM:SS
-  const formattedTime = date.toTimeString().substring(0, 5); // Extracting the time part from ISO string
+  const formattedTime = date.toTimeString().substring(0, 9); // Extracting the time part from ISO string
 
   return formattedTime;
 }
@@ -29,4 +29,41 @@ export function formatDateUTCToGMT(dateTimeStr) {
   const date = new Date(Date.UTC(year, month, day, hour, minute, second));
 
   return date;
+}
+
+export function formatCompactDateTime(input) {
+  const year = input.slice(0, 4);
+  const month = input.slice(4, 6);
+  const day = input.slice(6, 8);
+  const hour = input.slice(8, 10);
+  const minute = input.slice(10, 12);
+  const second = input.slice(12, 14);
+
+  const date = new Date(`${year}-${month}-${day}T${hour}:${minute}:${second}`);
+
+  return date.toLocaleDateString("en-US", {
+    weekday: "short", // e.g., "Tue"
+    year: "numeric", // e.g., "2025"
+    month: "short", // e.g., "Jul"
+    day: "numeric", // e.g., "15"
+  });
+}
+
+export function extractTimeFromCompactDate(input) {
+  const year = input.slice(0, 4);
+  const month = input.slice(4, 6);
+  const day = input.slice(6, 8);
+  const hour = input.slice(8, 10);
+  const minute = input.slice(10, 12);
+  const second = input.slice(12, 14);
+
+  const date = new Date(`${year}-${month}-${day}T${hour}:${minute}:${second}`);
+
+  return date
+    .toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    })
+    .toLowerCase();
 }

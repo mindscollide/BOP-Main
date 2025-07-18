@@ -1,7 +1,7 @@
 import GlobalModal from "@/components/common/globalModal/Modal";
 import React, { useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
-import styles from "./DealViewModal.module.css";
+import styles from "./SpotQuoteModal.module.css";
 import IconElement from "@/components/common/IconElement/IconElement";
 import InputFIeld from "@/components/common/inputField/InputField";
 import CustomButton from "@/components/common/globalButton/button";
@@ -11,29 +11,33 @@ import { setViewDealModal } from "@/store/modalSlice/modalSlicer";
 import { RFQTransactionQuotation } from "@/components/features/blotter/BlotterActions";
 import { useNavigate } from "react-router-dom";
 
-const DealViewModal = ({ dealData }) => {
+const SpotQuoteModal = ({ dealData }) => {
   console.log(dealData, "dealDatadealData");
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [bid, setBid] = useState("");
   const [offer, setOffer] = useState("");
-  const viewDealModal = useSelector(
-    (state) => state.modalReducer.viewDealModal
+  const spotQuoteModalState = useSelector(
+    (state) => state.modalReducer.spotQuoteModal
+  );
+  const spotQuoteModalData = useSelector(
+    (state) => state.BlotterSlicer.spotQuoteModalData
   );
 
+  console.log(spotQuoteModalData, "spotQuoteModalDataspotQuoteModalData")
   const closeModal = () => {
     dispatch(setViewDealModal(false));
   };
   useEffect(() => {
-    if (dealData !== null) {
-      setBid(dealData?.bid);
-      setOffer(dealData?.offer);
+    if (spotQuoteModalData !== null) {
+      setBid(spotQuoteModalData?.bid);
+      setOffer(spotQuoteModalData?.offer);
     }
     return () => {
       setBid("");
       setOffer("");
     };
-  }, [dealData]);
+  }, [spotQuoteModalData]);
 
   const handleChangeRate = (event, type) => {
     if (type === "bid") {
@@ -50,18 +54,18 @@ const DealViewModal = ({ dealData }) => {
     // RFQFEDiscountingTransactionQuotation naturetype 3
     // RFQNonFEDiscountingTransactionQuotation naturetype 4
     let Data = {
-      PK_TransactionID: dealData?.pK_TransactionID,
+      PK_TransactionID: spotQuoteModalData?.pK_TransactionID,
       Rate:
-        dealData.side.toLowerCase() === "sell" ? Number(bid) : Number(offer),
+      spotQuoteModalData.side.toLowerCase() === "sell" ? Number(bid) : Number(offer),
     };
     dispatch(RFQTransactionQuotation({ navigate, Data }));
   };
 
   const handleCancel = () => {};
-  if (!viewDealModal && !dealData) return null;
+  // if (!viewDealModal && !dealData) return null;
   return (
     <GlobalModal
-      show={viewDealModal}
+      show={spotQuoteModalState}
       size={"md"}
       bodyClassName={styles["DealViewModal__body"]}
       modalBody={
@@ -76,7 +80,7 @@ const DealViewModal = ({ dealData }) => {
                 <Col sm={12} md={12} lg={12}>
                   <label className={styles["DealViewModal__label"]}>Side</label>
                   <p className={styles["DealViewModal__value"]}>
-                    {dealData?.side}
+                    {spotQuoteModalData?.side}
                   </p>
                 </Col>
                 <Col sm={12} md={12} lg={12}>
@@ -84,13 +88,13 @@ const DealViewModal = ({ dealData }) => {
                     Nature
                   </label>
                   <p className={styles["DealViewModal__value"]}>
-                    {dealData?.nature}
+                    {spotQuoteModalData?.nature}
                   </p>
                 </Col>
                 <Col sm={12} md={12} lg={12}>
                   <label className={styles["DealViewModal__label"]}>CCY1</label>
                   <p className={styles["DealViewModal__value"]}>
-                    {dealData?.ccY1}
+                    {spotQuoteModalData?.ccY1}
                   </p>
                 </Col>
                 <Col sm={12} md={12} lg={12}>
@@ -98,7 +102,7 @@ const DealViewModal = ({ dealData }) => {
                     Amount
                   </label>
                   <p className={styles["DealViewModal__value"]}>
-                    {dealData?.quantity}
+                    {spotQuoteModalData?.quantity}
                   </p>
                 </Col>
                 <Col sm={12} md={12} lg={12}>
@@ -110,7 +114,7 @@ const DealViewModal = ({ dealData }) => {
                     Amount
                   </label>
                   <p className={styles["DealViewModal__value"]}>
-                    {dealData?.amount}
+                    {spotQuoteModalData?.amount}
                   </p>
                 </Col>
                 <Col sm={12} md={12} lg={12}>
@@ -118,7 +122,7 @@ const DealViewModal = ({ dealData }) => {
                     LC No.
                   </label>
                   <p className={styles["DealViewModal__value"]}>
-                    {dealData?.lcNumber}
+                    {spotQuoteModalData?.lcNumber}
                   </p>
                 </Col>
                 <Col sm={12} md={12} lg={12}>
@@ -126,7 +130,7 @@ const DealViewModal = ({ dealData }) => {
                     Account No.
                   </label>
                   <p className={styles["DealViewModal__value"]}>
-                    {dealData?.accountNumber}
+                    {spotQuoteModalData?.accountNumber}
                   </p>
                 </Col>
               </Row>
@@ -139,9 +143,9 @@ const DealViewModal = ({ dealData }) => {
               <Row className='mb-5'>
                 <Col sm={10} md={10} lg={10}>
                   <p className={styles["PartyName"]}>
-                    {dealData?.corporateName}
+                    {spotQuoteModalData?.corporateName}
                   </p>
-                  <span>{dealData?.txnid}</span>
+                  <span>{spotQuoteModalData?.txnid}</span>
                 </Col>
                 <Col
                   sm={2}
@@ -161,7 +165,7 @@ const DealViewModal = ({ dealData }) => {
                     <InputFIeld
                       applyClass={"DealBoxBitInput"}
                       disabled={
-                        dealData.side.toLowerCase() === "sell" ? false : true
+                        spotQuoteModalData?.side.toLowerCase() === "sell" ? false : true
                       }
                       value={bid}
                       onChange={(e) => handleChangeRate(e, "bid")}
@@ -176,7 +180,7 @@ const DealViewModal = ({ dealData }) => {
                     <InputFIeld
                       applyClass={"DealBoxOfferInput"}
                       disabled={
-                        dealData.side.toLowerCase() === "buy" ? false : true
+                        spotQuoteModalData?.side.toLowerCase() === "buy" ? false : true
                       }
                       value={offer}
                       onChange={(e) => handleChangeRate(e, "offer")}
@@ -215,4 +219,4 @@ const DealViewModal = ({ dealData }) => {
   );
 };
 
-export default DealViewModal;
+export default SpotQuoteModal;

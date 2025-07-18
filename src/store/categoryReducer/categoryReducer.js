@@ -1,4 +1,3 @@
-import { GetCategoryWiseDiscountingRates } from "@/common/api_config";
 import {
   getAllCategoryTableData,
   GetCategoryWiseDiscountingRatesApi,

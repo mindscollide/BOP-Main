@@ -15,7 +15,7 @@ import {
 } from "@/common/api_config";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
 import createPostAPI from "@/utils/axiosInstance";
-import { setCreateTenorModal } from "@/store/modalSlice/modalSlicer";
+import { setCreateTenorModal, setPublishedSpotRates } from "@/store/modalSlice/modalSlicer";
 
 // Define the login async thunk
 export const clearRatesAction = createAsyncThunk(
@@ -30,10 +30,7 @@ export const clearRatesAction = createAsyncThunk(
       const response = await clearRates(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -108,10 +105,7 @@ export const getLastPublishRatesAction = createAsyncThunk(
       const response = await getLastPublishRates();
 
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -128,7 +122,7 @@ export const getLastPublishRatesAction = createAsyncThunk(
           ) {
             return {
               response: response.data.responseResult,
-              message: "Successfull",
+              message: "",
             };
           } else if (
             responseMessage
@@ -185,15 +179,11 @@ export const PublishNewRatesAction = createAsyncThunk(
 
       const { responseCode } = response.data;
       console.log(responseCode, "responseCoderesponseCode");
-      if (responseCode === 401) {
-        return rejectWithValue("401");
-      }
+    
 
       if (responseCode === 417) {
-        // Inside your thunk
-        return rejectWithValue("417", {
-          originalAction: PublishNewRatesAction({ navigate, Data }),
-        });
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(PublishNewRatesAction({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -204,6 +194,8 @@ export const PublishNewRatesAction = createAsyncThunk(
                 "UploadRate_UploadRateServiceManager_PublishTheCurrentUSDRates_01".toLowerCase()
               )
           ) {
+            dispatch(setPublishedSpotRates(false));
+
             return {
               response: response.data.responseResult,
               message: "Rates are published",
@@ -269,10 +261,7 @@ export const marketOnOffAction = createAsyncThunk(
 
       const response = await marketOnOff(Data);
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -345,11 +334,7 @@ export const getAllTenorsAction = createAsyncThunk(
 
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-
-        return rejectWithValue("Something-went-wrong");
-      }
+   
 
       if (responseCode === 417) {
         dispatch(refreshTokenAction({ navigate }));
@@ -366,7 +351,7 @@ export const getAllTenorsAction = createAsyncThunk(
           ) {
             return {
               response: response.data.responseResult,
-              message: "Successfull",
+              message: "",
             };
           } else if (
             responseMessage
@@ -422,10 +407,7 @@ export const createTenorAction = createAsyncThunk(
       const response = await createTenor(Data);
 
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -518,10 +500,7 @@ export const getTenorWiseForwardsAction = createAsyncThunk(
 
       const response = await getTenorWiseForwards();
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -538,7 +517,7 @@ export const getTenorWiseForwardsAction = createAsyncThunk(
           ) {
             return {
               response: response.data.responseResult,
-              message: "Successfully",
+              message: "",
             };
           } else if (
             responseMessage
@@ -595,10 +574,7 @@ export const PublishTenorWiseForwardsAction = createAsyncThunk(
       const response = await PublishTenorWiseForwards(Data);
 
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -679,10 +655,7 @@ export const getDiscountingRatesAction = createAsyncThunk(
 
       const response = await getDiscountingRates();
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -797,10 +770,7 @@ export const publishDiscountingRatesAction = createAsyncThunk(
       );
       const response = await publishDiscountingRates(Data);
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+    
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(publishDiscountingRatesAction({ navigate, Data }));
@@ -816,7 +786,7 @@ export const publishDiscountingRatesAction = createAsyncThunk(
           ) {
             return {
               response: response.data.responseResult,
-              message: "Successfully",
+              message: "",
             };
           } else if (
             responseMessage
@@ -879,10 +849,7 @@ export const getDealerDashboardApi = createAsyncThunk(
       );
       const response = await DealerDashboardApi();
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+    
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(getDealerDashboardApi({ navigate }));
@@ -898,7 +865,7 @@ export const getDealerDashboardApi = createAsyncThunk(
           ) {
             return {
               response: response.data.responseResult,
-              message: "Successfully.",
+              message: "",
             };
           } else if (
             responseMessage

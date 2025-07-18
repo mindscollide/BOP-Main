@@ -16,6 +16,25 @@ export const formatCurrencyInput = (value) => {
   return cleanVal;
 };
 
+export const formatCurrencyInputForNegativeValAlso = (value) => {
+  if (!value) return "";
+
+  // Allow negative sign and digits only
+  let cleanVal = value.replace(/[^0-9-]/g, "");
+
+  // Automatically add decimal if length is greater than 3 (ignoring minus)
+  const isNegative = cleanVal.startsWith("-");
+  let digitsOnly = cleanVal.replace(/-/g, ""); // Remove minus for slicing
+
+  if (digitsOnly.length > 3) {
+    let integerPart = digitsOnly.slice(0, 3);
+    let decimalPart = digitsOnly.slice(3, 5) || "00";
+    return `${isNegative ? "-" : ""}${integerPart}.${decimalPart}`;
+  }
+
+  return cleanVal;
+};
+
 export const formatPercentageInput = (value) => {
   if (value === "") return ""; // Allow user to clear input
 
@@ -85,7 +104,10 @@ export const convertDateTimeIntoGMT = (date) => {
     date.slice(10, 12) +
     ":" +
     date.slice(12, 14);
-    console.log(moment(date, "YYYY-m-DD HH:MM:ss").toLocaleString(), "dateStringdateStringdateString")
+  console.log(
+    moment(date, "YYYY-m-DD HH:MM:ss").toLocaleString(),
+    "dateStringdateStringdateString"
+  );
   return new Date(dateString);
 };
 
@@ -120,7 +142,49 @@ export function isValidNumberUnderMax(value, previousValue = "", max = 100) {
   return !isNaN(num) && num >= 0 && num <= max;
 }
 
+// allow 4 number after point
+export function isValidMaxFourNumberAfterPoint(
+  value,
+  previousValue = "",
+  max = 100
+) {
+  if (/\s/.test(value)) return false; // Block spaces
+  if (value === "" || value === null) return true;
+  if (value === ".") return true;
 
+  // Replace "05" style with "5"
+  if (previousValue === "0" && /^[1-9]$/.test(value)) {
+    return value;
+  }
+
+  // Allow numbers with up to 4 decimal places
+  const regex = /^\d{1,3}(\.\d{0,4})?$/;
+  if (!regex.test(value)) return false;
+
+  const num = parseFloat(value);
+  return !isNaN(num) && num >= 0 && num <= max;
+}
+
+export function isValidNumberUnderMaxNumber(value, max = 60) {
+  if (typeof value !== "string") return false;
+
+  // Allow empty string to support clearing input
+  if (value === "") return true;
+
+  // Block any decimal input (like ".", "1.5")
+  if (value.includes(".")) return false;
+
+  // Block any non-digit characters (including special chars, letters, whitespace)
+  if (!/^\d+$/.test(value)) return false;
+
+  // Disallow leading zeros like "05", "012", but allow "0"
+  if (value.length > 1 && value.startsWith("0")) return false;
+
+  const num = parseInt(value, 10);
+
+  // Final check: must be between 0 and max
+  return !isNaN(num) && num >= 0 && num <= max;
+}
 
 export const convertDateTimeIntoLocal = (utcDateString) => {
   const year = parseInt(utcDateString.slice(0, 4));
@@ -140,3 +204,61 @@ export const convertDateTimeIntoLocal = (utcDateString) => {
 
   return utcDate;
 };
+
+
+/**
+ * Formats numeric values with Pakistan-style number formatting
+ * @param {number|string} rawValue - The value to format
+ * @param {object} options - Formatting options
+ * @param {number} [options.decimals=2] - Decimal places to show
+ * @param {boolean} [options.allowNegative=true] - Whether to allow negative values
+ * @param {string} [options.emptySymbol=""] - What to return for empty/invalid values
+ * @returns {string} Formatted amount string
+ */
+export const formatPkAmount = (rawValue, options = {}) => {
+  const {
+    decimals = 2,
+    allowNegative = true,
+    emptySymbol = ""
+  } = options;
+
+  // Handle empty/null/undefined cases
+  if (rawValue === null || rawValue === undefined || rawValue === "") {
+    return emptySymbol;
+  }
+
+  // Convert to number
+  let numericValue;
+  if (typeof rawValue === "string") {
+    // Remove any existing formatting
+    const cleanString = rawValue.replace(/[^\d.-]/g, "");
+    numericValue = parseFloat(cleanString);
+  } else {
+    numericValue = Number(rawValue);
+  }
+
+  // Validate the number
+  if (isNaN(numericValue)) {
+    console.warn(`Invalid number value: ${rawValue}`);
+    return emptySymbol;
+  }
+
+  // Handle negative values
+  if (!allowNegative && numericValue < 0) {
+    numericValue = 0;
+  }
+
+  // Format with Pakistan locale
+  return numericValue.toLocaleString("en-PK", {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+    useGrouping: true
+  });
+};
+
+// Usage examples:
+// formatPkAmount(9000) => "9,000.00"
+// formatPkAmount("12345.678") => "12,345.68"
+// formatPkAmount("PKR 12,345.678") => "12,345.68" (strips non-numeric chars)
+// formatPkAmount(null) => "" (returns emptySymbol)
+// formatPkAmount("invalid", {emptySymbol: "N/A"}) => "N/A"

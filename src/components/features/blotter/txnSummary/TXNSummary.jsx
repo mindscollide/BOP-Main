@@ -1,37 +1,36 @@
 import React, { useCallback, useEffect, useState } from "react";
 import GlobalTable from "@/components/common/table/GlobalTable";
-import IconElement from "@/components/common/IconElement/IconElement";
+// import IconElement from "@/components/common/IconElement/IconElement";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { Checkbox, Popover } from "antd";
-import { DownOutlined } from "@ant-design/icons";
+// import { DownOutlined } from "@ant-design/icons";
 import CustomButton from "@/components/common/globalButton/button";
 import CommentModal from "../commentModal/CommentModal";
-import MailModal from "../mailModal/MailModal";
-import pdfImage from "@/assets/icons/pdf.png";
-import emailImage from "@/assets/icons/email.png";
-import excelImage from "@/assets/icons/excel.png";
-import printImage from "@/assets/icons/print.png";
-import { Col, Row } from "react-bootstrap";
+// import MailModal from "../mailModal/MailModal";
+// import pdfImage from "@/assets/icons/pdf.png";
+// import emailImage from "@/assets/icons/email.png";
+// import excelImage from "@/assets/icons/excel.png";
+// import printImage from "@/assets/icons/print.png";
+// import { Col, Row } from "react-bootstrap";
 import { getAllChatByTransactionId } from "@/components/features/chatBox/ChatActions";
 import { useNavigate } from "react-router-dom";
-import InfoTransaction from "../infoTransaction/InfoTransaction";
 import { setTransactionInfoModal } from "@/store/modalSlice/modalSlicer";
 import { formatDateTimeToUTCTime } from "@/components/utils/timeFunction";
 import { useTableScrollBottom } from "@/utils/useTableScrollBottom";
 import {
-  AssignTransactionAPI,
   BlotterDataAPI,
-  AcceptTransactionAPI,
-  RejectTransactionAPI,
   AcceptRFQTransaction,
   RejectRFQTransaction,
   RequestCancellation,
   CancelPendingTransactionApi,
   ExpireRFQTransaction,
+  GetSpotTransactionDetailsApi,
+  GetForwardTransactionDetailsApi,
+  GetFEDiscountingTransactionDetailsApi,
+  GetNonFEDiscountingTransactionDetailsApi,
 } from "../BlotterActions";
 import CancelReasonModal from "../cancelReasonModal/cancelReasonModal";
-import { useMqttClient } from "@/components/utils/mqttConnection";
 import {
   BlotterTransactionAccepted,
   BlotterTransactionAdded,
@@ -429,14 +428,14 @@ const TXNSummary = () => {
 
   const popoverContentTXN = (
     <div style={{ width: 220 }}>
-      <div className='d-flex justify-content-between mb-2'>
+      <div className="d-flex justify-content-between mb-2">
         <CustomButton
-          applyClass='SelectAllButton'
+          applyClass="SelectAllButton"
           value={"Select All"}
           onClick={handleSelectAll}
         />
         <CustomButton
-          applyClass='SelectAllButton'
+          applyClass="SelectAllButton"
           value={"Desselect All"}
           onClick={handleDeselectAll}
         />
@@ -444,7 +443,8 @@ const TXNSummary = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsTXNID}
-        onChange={handleCheckboxChange}>
+        onChange={handleCheckboxChange}
+      >
         {TXN_ID_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -474,14 +474,14 @@ const TXNSummary = () => {
 
   const popoverContentCustomerName = (
     <div style={{ width: 220 }}>
-      <div className='d-flex justify-content-between mb-2'>
+      <div className="d-flex justify-content-between mb-2">
         <CustomButton
-          applyClass='SelectAllButton'
+          applyClass="SelectAllButton"
           value={"Select All"}
           onClick={handleSelectAllCustomerName}
         />
         <CustomButton
-          applyClass='SelectAllButton'
+          applyClass="SelectAllButton"
           value={"Desselect All"}
           onClick={handleDeselectAllCustomerName}
         />
@@ -489,7 +489,8 @@ const TXNSummary = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsCustomerName}
-        onChange={handleCheckboxChangeCustomerName}>
+        onChange={handleCheckboxChangeCustomerName}
+      >
         {CustomerName_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -519,14 +520,14 @@ const TXNSummary = () => {
 
   const popoverContentType = (
     <div style={{ width: 220 }}>
-      <div className='d-flex justify-content-between mb-2'>
+      <div className="d-flex justify-content-between mb-2">
         <CustomButton
-          applyClass='SelectAllButton'
+          applyClass="SelectAllButton"
           value={"Select All"}
           onClick={handleSelectAllType}
         />
         <CustomButton
-          applyClass='SelectAllButton'
+          applyClass="SelectAllButton"
           value={"Desselect All"}
           onClick={handleDeselectAllType}
         />
@@ -534,7 +535,8 @@ const TXNSummary = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsType}
-        onChange={handleCheckboxChangeType}>
+        onChange={handleCheckboxChangeType}
+      >
         {TYPE_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -564,14 +566,14 @@ const TXNSummary = () => {
 
   const popoverContentNature = (
     <div style={{ width: 220 }}>
-      <div className='d-flex justify-content-between mb-2'>
+      <div className="d-flex justify-content-between mb-2">
         <CustomButton
-          applyClass='SelectAllButton'
+          applyClass="SelectAllButton"
           value={"Select All"}
           onClick={handleSelectAllNature}
         />
         <CustomButton
-          applyClass='SelectAllButton'
+          applyClass="SelectAllButton"
           value={"Desselect All"}
           onClick={handleDeselectAllNature}
         />
@@ -579,7 +581,8 @@ const TXNSummary = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsNature}
-        onChange={handleCheckboxChangeNature}>
+        onChange={handleCheckboxChangeNature}
+      >
         {Nature_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -609,14 +612,14 @@ const TXNSummary = () => {
 
   const popoverContentCCY1 = (
     <div style={{ width: 220 }}>
-      <div className='d-flex justify-content-between mb-2'>
+      <div className="d-flex justify-content-between mb-2">
         <CustomButton
-          applyClass='SelectAllButton'
+          applyClass="SelectAllButton"
           value={"Select All"}
           onClick={handleSelectAllCCY1}
         />
         <CustomButton
-          applyClass='SelectAllButton'
+          applyClass="SelectAllButton"
           value={"Desselect All"}
           onClick={handleDeselectAllCCY1}
         />
@@ -624,7 +627,8 @@ const TXNSummary = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsCCY1}
-        onChange={handleCheckboxChangeCCY1}>
+        onChange={handleCheckboxChangeCCY1}
+      >
         {CCY1_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -654,14 +658,14 @@ const TXNSummary = () => {
 
   const popoverContentAmount1 = (
     <div style={{ width: 220 }}>
-      <div className='d-flex justify-content-between mb-2'>
+      <div className="d-flex justify-content-between mb-2">
         <CustomButton
-          applyClass='SelectAllButton'
+          applyClass="SelectAllButton"
           value={"Select All"}
           onClick={handleSelectAllAmount1}
         />
         <CustomButton
-          applyClass='SelectAllButton'
+          applyClass="SelectAllButton"
           value={"Desselect All"}
           onClick={handleDeselectAllAmount1}
         />
@@ -669,7 +673,8 @@ const TXNSummary = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsAmount1}
-        onChange={handleCheckboxChangeAmount1}>
+        onChange={handleCheckboxChangeAmount1}
+      >
         {Amount_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -699,14 +704,14 @@ const TXNSummary = () => {
 
   const popoverContentRate = (
     <div style={{ width: 220 }}>
-      <div className='d-flex justify-content-between mb-2'>
+      <div className="d-flex justify-content-between mb-2">
         <CustomButton
-          applyClass='SelectAllButton'
+          applyClass="SelectAllButton"
           value={"Select All"}
           onClick={handleSelectAllRate}
         />
         <CustomButton
-          applyClass='SelectAllButton'
+          applyClass="SelectAllButton"
           value={"Desselect All"}
           onClick={handleDeselectAllRate}
         />
@@ -714,7 +719,8 @@ const TXNSummary = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsRate}
-        onChange={handleCheckboxChangeRate}>
+        onChange={handleCheckboxChangeRate}
+      >
         {Rate_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -744,14 +750,14 @@ const TXNSummary = () => {
 
   const popoverContentCCY2 = (
     <div style={{ width: 220 }}>
-      <div className='d-flex justify-content-between mb-2'>
+      <div className="d-flex justify-content-between mb-2">
         <CustomButton
-          applyClass='SelectAllButton'
+          applyClass="SelectAllButton"
           value={"Select All"}
           onClick={handleSelectAllCCY2}
         />
         <CustomButton
-          applyClass='SelectAllButton'
+          applyClass="SelectAllButton"
           value={"Desselect All"}
           onClick={handleDeselectAllCCY2}
         />
@@ -759,7 +765,8 @@ const TXNSummary = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsCCY2}
-        onChange={handleCheckboxChangeCCY2}>
+        onChange={handleCheckboxChangeCCY2}
+      >
         {CCY2_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -789,14 +796,14 @@ const TXNSummary = () => {
 
   const popoverContentAmount2 = (
     <div style={{ width: 220 }}>
-      <div className='d-flex justify-content-between mb-2'>
+      <div className="d-flex justify-content-between mb-2">
         <CustomButton
-          applyClass='SelectAllButton'
+          applyClass="SelectAllButton"
           value={"Select All"}
           onClick={handleSelectAllAmount2}
         />
         <CustomButton
-          applyClass='SelectAllButton'
+          applyClass="SelectAllButton"
           value={"Desselect All"}
           onClick={handleDeselectAllAmount2}
         />
@@ -804,7 +811,8 @@ const TXNSummary = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsAmount2}
-        onChange={handleCheckboxChangeAmount2}>
+        onChange={handleCheckboxChangeAmount2}
+      >
         {Amount2_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -834,14 +842,14 @@ const TXNSummary = () => {
 
   const popoverContentTime = (
     <div style={{ width: 220 }}>
-      <div className='d-flex justify-content-between mb-2'>
+      <div className="d-flex justify-content-between mb-2">
         <CustomButton
-          applyClass='SelectAllButton'
+          applyClass="SelectAllButton"
           value={"Select All"}
           onClick={handleSelectAllTime}
         />
         <CustomButton
-          applyClass='SelectAllButton'
+          applyClass="SelectAllButton"
           value={"Desselect All"}
           onClick={handleDeselectAllTime}
         />
@@ -849,7 +857,8 @@ const TXNSummary = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsTime}
-        onChange={handleCheckboxChangeTime}>
+        onChange={handleCheckboxChangeTime}
+      >
         {Time_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -879,14 +888,14 @@ const TXNSummary = () => {
 
   const popoverContentLCno = (
     <div style={{ width: 220 }}>
-      <div className='d-flex justify-content-between mb-2'>
+      <div className="d-flex justify-content-between mb-2">
         <CustomButton
-          applyClass='SelectAllButton'
+          applyClass="SelectAllButton"
           value={"Select All"}
           onClick={handleSelectAllLCno}
         />
         <CustomButton
-          applyClass='SelectAllButton'
+          applyClass="SelectAllButton"
           value={"Desselect All"}
           onClick={handleDeselectAllLCno}
         />
@@ -894,7 +903,8 @@ const TXNSummary = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsLCno}
-        onChange={handleCheckboxChangeLCno}>
+        onChange={handleCheckboxChangeLCno}
+      >
         {LCno_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -924,14 +934,14 @@ const TXNSummary = () => {
 
   const popoverContentAccNO = (
     <div style={{ width: 220 }}>
-      <div className='d-flex justify-content-between mb-2'>
+      <div className="d-flex justify-content-between mb-2">
         <CustomButton
-          applyClass='SelectAllButton'
+          applyClass="SelectAllButton"
           value={"Select All"}
           onClick={handleSelectAllAccNO}
         />
         <CustomButton
-          applyClass='SelectAllButton'
+          applyClass="SelectAllButton"
           value={"Desselect All"}
           onClick={handleDeselectAllAccNO}
         />
@@ -939,7 +949,8 @@ const TXNSummary = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsAccNO}
-        onChange={handleCheckboxChangeAccNO}>
+        onChange={handleCheckboxChangeAccNO}
+      >
         {Accno_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -969,14 +980,14 @@ const TXNSummary = () => {
 
   const popoverContentStatus = (
     <div style={{ width: 220 }}>
-      <div className='d-flex justify-content-between mb-2'>
+      <div className="d-flex justify-content-between mb-2">
         <CustomButton
-          applyClass='SelectAllButton'
+          applyClass="SelectAllButton"
           value={"Select All"}
           onClick={handleSelectAllStatus}
         />
         <CustomButton
-          applyClass='SelectAllButton'
+          applyClass="SelectAllButton"
           value={"Desselect All"}
           onClick={handleDeselectAllStatus}
         />
@@ -984,7 +995,8 @@ const TXNSummary = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsStatus}
-        onChange={handleCheckboxChangeStatus}>
+        onChange={handleCheckboxChangeStatus}
+      >
         {statusOptions.map((item) => (
           <Checkbox key={item} value={item}>
             {item.status}
@@ -1020,8 +1032,26 @@ const TXNSummary = () => {
   };
 
   const handleClickInfo = (record) => {
-    setInfoRecord(record);
-    dispatch(setTransactionInfoModal(true));
+    // console.log(record, "recordrecordrecord");
+    // setInfoRecord(record);
+    // dispatch(setTransactionInfoModal(true));
+
+    let Data = {
+      PK_TransactionID: record.pK_TransactionID,
+    };
+    if (record.natureType === 1) {
+      console.log("Spot");
+      dispatch(GetSpotTransactionDetailsApi({ navigate, Data }));
+    } else if (record.natureType === 2) {
+      console.log("Forward");
+      dispatch(GetForwardTransactionDetailsApi({ navigate, Data }));
+    } else if (record.natureType === 3) {
+      console.log("Fe Discouting");
+      dispatch(GetFEDiscountingTransactionDetailsApi({ navigate, Data }));
+    } else if (record.natureType === 4) {
+      console.log("Non Fe Discouting");
+      dispatch(GetNonFEDiscountingTransactionDetailsApi({ navigate, Data }));
+    }
   };
 
   const handleCheckerAccept = (transactionID, type) => {
@@ -1085,22 +1115,24 @@ const TXNSummary = () => {
   const BranchColumn = [
     {
       title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>TXN ID</span>
+        <div className="d-flex align-items-center justify-content-center gap-1">
+          <span className="ff-poppins fw-bold">TXN ID</span>
           <Popover
             content={popoverContentTXN}
-            trigger='click'
+            trigger="click"
             arrow={false}
-            placement='bottom'
+            placement="bottom"
             open={open}
-            onOpenChange={handleOpenChange}>
+            onOpenChange={handleOpenChange}
+          >
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}>
+              }}
+            >
               ▼
             </span>
           </Popover>
@@ -1114,22 +1146,24 @@ const TXNSummary = () => {
     },
     {
       title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Customer Name</span>
+        <div className="d-flex align-items-center justify-content-center gap-1">
+          <span className="ff-poppins fw-bold">Customer Name</span>
           <Popover
             content={popoverContentCustomerName}
-            trigger='click'
+            trigger="click"
             arrow={false}
-            placement='bottom'
+            placement="bottom"
             open={openCustomername}
-            onOpenChange={handleOpenChangeCustomerName}>
+            onOpenChange={handleOpenChangeCustomerName}
+          >
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}>
+              }}
+            >
               ▼
             </span>
           </Popover>
@@ -1142,22 +1176,24 @@ const TXNSummary = () => {
     },
     {
       title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Type</span>
+        <div className="d-flex align-items-center justify-content-center gap-1">
+          <span className="ff-poppins fw-bold">Type</span>
           <Popover
             content={popoverContentType}
-            trigger='click'
+            trigger="click"
             arrow={false}
-            placement='bottom'
+            placement="bottom"
             open={openType}
-            onOpenChange={handleOpenChangeType}>
+            onOpenChange={handleOpenChangeType}
+          >
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}>
+              }}
+            >
               ▼
             </span>
           </Popover>
@@ -1170,22 +1206,24 @@ const TXNSummary = () => {
     },
     {
       title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Nature</span>
+        <div className="d-flex align-items-center justify-content-center gap-1">
+          <span className="ff-poppins fw-bold">Nature</span>
           <Popover
             content={popoverContentNature}
-            trigger='click'
+            trigger="click"
             arrow={false}
-            placement='bottom'
+            placement="bottom"
             open={openNature}
-            onOpenChange={handleOpenChangeNature}>
+            onOpenChange={handleOpenChangeNature}
+          >
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}>
+              }}
+            >
               ▼
             </span>
           </Popover>
@@ -1198,22 +1236,24 @@ const TXNSummary = () => {
     },
     {
       title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>CCY1</span>
+        <div className="d-flex align-items-center justify-content-center gap-1">
+          <span className="ff-poppins fw-bold">CCY1</span>
           <Popover
             content={popoverContentCCY1}
-            trigger='click'
+            trigger="click"
             arrow={false}
-            placement='bottom'
+            placement="bottom"
             open={openCCY1}
-            onOpenChange={handleOpenChangeCCY1}>
+            onOpenChange={handleOpenChangeCCY1}
+          >
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}>
+              }}
+            >
               ▼
             </span>
           </Popover>
@@ -1226,22 +1266,24 @@ const TXNSummary = () => {
     },
     {
       title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Amount</span>
+        <div className="d-flex align-items-center justify-content-center gap-1">
+          <span className="ff-poppins fw-bold">Amount</span>
           <Popover
             content={popoverContentAmount1}
-            trigger='click'
+            trigger="click"
             arrow={false}
-            placement='bottom'
+            placement="bottom"
             open={openAmount1}
-            onOpenChange={handleOpenChangeAmount1}>
+            onOpenChange={handleOpenChangeAmount1}
+          >
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}>
+              }}
+            >
               ▼
             </span>
           </Popover>
@@ -1254,22 +1296,24 @@ const TXNSummary = () => {
     },
     {
       title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Rate</span>
+        <div className="d-flex align-items-center justify-content-center gap-1">
+          <span className="ff-poppins fw-bold">Rate</span>
           <Popover
             content={popoverContentRate}
-            trigger='click'
+            trigger="click"
             arrow={false}
-            placement='bottom'
+            placement="bottom"
             open={openRate}
-            onOpenChange={handleOpenChangeRate}>
+            onOpenChange={handleOpenChangeRate}
+          >
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}>
+              }}
+            >
               ▼
             </span>
           </Popover>
@@ -1285,22 +1329,24 @@ const TXNSummary = () => {
     },
     {
       title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>CCY2</span>
+        <div className="d-flex align-items-center justify-content-center gap-1">
+          <span className="ff-poppins fw-bold">CCY2</span>
           <Popover
             content={popoverContentCCY2}
-            trigger='click'
+            trigger="click"
             arrow={false}
-            placement='bottom'
+            placement="bottom"
             open={openCCY2}
-            onOpenChange={handleOpenChangeCCY2}>
+            onOpenChange={handleOpenChangeCCY2}
+          >
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}>
+              }}
+            >
               ▼
             </span>
           </Popover>
@@ -1313,22 +1359,24 @@ const TXNSummary = () => {
     },
     {
       title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Amount</span>
+        <div className="d-flex align-items-center justify-content-center gap-1">
+          <span className="ff-poppins fw-bold">Amount</span>
           <Popover
             content={popoverContentAmount2}
-            trigger='click'
+            trigger="click"
             arrow={false}
-            placement='bottom'
+            placement="bottom"
             open={openAmount2}
-            onOpenChange={handleOpenChangeAmount2}>
+            onOpenChange={handleOpenChangeAmount2}
+          >
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}>
+              }}
+            >
               ▼
             </span>
           </Popover>
@@ -1345,22 +1393,24 @@ const TXNSummary = () => {
     },
     {
       title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Time</span>
+        <div className="d-flex align-items-center justify-content-center gap-1">
+          <span className="ff-poppins fw-bold">Time</span>
           <Popover
             content={popoverContentTime}
-            trigger='click'
+            trigger="click"
             arrow={false}
-            placement='bottom'
+            placement="bottom"
             open={openTime}
-            onOpenChange={handleOpenChangeTime}>
+            onOpenChange={handleOpenChangeTime}
+          >
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}>
+              }}
+            >
               ▼
             </span>
           </Popover>
@@ -1406,22 +1456,24 @@ const TXNSummary = () => {
     },
     {
       title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>LC NO.</span>
+        <div className="d-flex align-items-center justify-content-center gap-1">
+          <span className="ff-poppins fw-bold">LC NO.</span>
           <Popover
             content={popoverContentLCno}
-            trigger='click'
+            trigger="click"
             arrow={false}
-            placement='bottom'
+            placement="bottom"
             open={openLCno}
-            onOpenChange={handleOpenChangeLCno}>
+            onOpenChange={handleOpenChangeLCno}
+          >
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}>
+              }}
+            >
               ▼
             </span>
           </Popover>
@@ -1435,22 +1487,24 @@ const TXNSummary = () => {
     },
     {
       title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Acc NO.</span>
+        <div className="d-flex align-items-center justify-content-center gap-1">
+          <span className="ff-poppins fw-bold">Acc NO.</span>
           <Popover
             content={popoverContentAccNO}
-            trigger='click'
+            trigger="click"
             arrow={false}
-            placement='bottom'
+            placement="bottom"
             open={openAccNO}
-            onOpenChange={handleOpenChangeAccNO}>
+            onOpenChange={handleOpenChangeAccNO}
+          >
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}>
+              }}
+            >
               ▼
             </span>
           </Popover>
@@ -1472,21 +1526,21 @@ const TXNSummary = () => {
       render: (text, record) => {
         return (
           <>
-            <div className='col-action text-nowrap text-center'>
+            <div className="col-action text-nowrap text-center">
               {record.statusID === 4 && record.isRFQ === true ? (
                 <>
                   <CustomButton
-                    icon={<i className='icon-check'></i>}
+                    icon={<i className="icon-check"></i>}
                     size={"small"}
-                    className='btn btn-sm btn-success me-1 blotterCheckerButton'
+                    className="btn btn-sm btn-success me-1 blotterCheckerButton"
                     onClick={() =>
                       handleCheckerAccept(record.pK_TransactionID, "Accepted")
                     }
                   />
                   <CustomButton
-                    icon={<i className='icon-close'></i>}
+                    icon={<i className="icon-close"></i>}
                     size={"small"}
-                    className='btn btn-sm btn-danger me-1 blotterCheckerButton '
+                    className="btn btn-sm btn-danger me-1 blotterCheckerButton "
                     onClick={() =>
                       handleCheckerAccept(record.pK_TransactionID, "Rejected")
                     }
@@ -1495,9 +1549,9 @@ const TXNSummary = () => {
               ) : record.statusID === 1 ? (
                 <>
                   <CustomButton
-                    icon={<i className='icon-close'></i>}
+                    icon={<i className="icon-close"></i>}
                     size={"small"}
-                    className='btn btn-sm btn-danger me-1 blotterCheckerButton '
+                    className="btn btn-sm btn-danger me-1 blotterCheckerButton "
                     onClick={() =>
                       handleCheckerAccept(record.pK_TransactionID, "Cancelled")
                     }
@@ -1506,9 +1560,9 @@ const TXNSummary = () => {
               ) : record.statusID === 2 || record.statusID === 5 ? (
                 <>
                   <CustomButton
-                    icon={<i className='icon-close'></i>}
+                    icon={<i className="icon-close"></i>}
                     size={"small"}
-                    className='btn btn-sm btn-danger me-1 blotterCheckerButton '
+                    className="btn btn-sm btn-danger me-1 blotterCheckerButton "
                     onClick={() =>
                       handleCheckerAccept(
                         record.pK_TransactionID,
@@ -1526,22 +1580,24 @@ const TXNSummary = () => {
 
     {
       title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Status</span>
+        <div className="d-flex align-items-center justify-content-center gap-1">
+          <span className="ff-poppins fw-bold">Status</span>
           <Popover
             content={popoverContentStatus}
-            trigger='click'
+            trigger="click"
             arrow={false}
-            placement='bottom'
+            placement="bottom"
             open={openStatus}
-            onOpenChange={handleOpenChangeStatus}>
+            onOpenChange={handleOpenChangeStatus}
+          >
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}>
+              }}
+            >
               ▼
             </span>
           </Popover>
@@ -1570,12 +1626,12 @@ const TXNSummary = () => {
       render: (text, record) => {
         return (
           <>
-            <div className='col-chat text-nowrap text-center'>
+            <div className="col-chat text-nowrap text-center">
               {record.statusID === 5 || record.statusID === 4 ? (
                 <CustomButton
-                  icon={<i className='icon-chat2'></i>}
+                  icon={<i className="icon-chat2"></i>}
                   size={"small"}
-                  className='btn btn-sm btn-danger chat-btn-trigger'
+                  className="btn btn-sm btn-danger chat-btn-trigger"
                   onClick={() =>
                     handleClickChat(
                       record.pK_TransactionID,
@@ -1590,20 +1646,21 @@ const TXNSummary = () => {
                 size={"small"}
                 icon={
                   <svg
-                    id='info_Layer_1'
-                    x='0px'
-                    y='0px'
-                    width='12px'
-                    height='12px'
-                    fill='#ffffff'
-                    viewBox='0 0 55 55'>
+                    id="info_Layer_1"
+                    x="0px"
+                    y="0px"
+                    width="12px"
+                    height="12px"
+                    fill="#ffffff"
+                    viewBox="0 0 55 55"
+                  >
                     <g>
-                      <path d='M41.407,45.858c0.067,0.838,0.156,1.672,0.183,2.508   c0.005,0.152-0.205,0.376-0.37,0.461c-1.347,0.687-2.679,1.416-4.069,2.005c-3.305,1.396-6.715,2.5-10.277,3.009   c-1.447,0.206-2.936,0.154-4.403,0.153c-0.477-0.001-0.968-0.178-1.424-0.345c-1.313-0.481-1.98-1.443-1.948-2.85   c0.015-0.583,0.103-1.179,0.253-1.744c1.863-7.013,3.752-14.02,5.61-21.037c0.199-0.751,0.327-1.543,0.341-2.318   c0.021-1.142-0.615-1.925-1.667-2.331c-1.605-0.618-3.258-0.468-4.89-0.161c-1.764,0.332-3.468,0.873-5.149,1.884   c-0.074-0.978-0.157-1.863-0.187-2.75c-0.005-0.127,0.234-0.307,0.396-0.388c1.334-0.67,2.648-1.389,4.021-1.968   c3.327-1.403,6.755-2.512,10.337-3.021c1.465-0.208,2.994-0.294,4.457-0.125c2.782,0.323,3.808,2.02,3.073,4.73   c-0.94,3.474-1.914,6.941-2.838,10.419c-1.049,3.953-2.087,7.912-3.077,11.879c-0.524,2.107,0.385,3.449,2.526,3.839   c2.048,0.376,4.038-0.017,5.981-0.634C39.313,46.75,40.296,46.295,41.407,45.858z'></path>
-                      <circle cx='27.5' cy='7.608' r='6.609'></circle>
+                      <path d="M41.407,45.858c0.067,0.838,0.156,1.672,0.183,2.508   c0.005,0.152-0.205,0.376-0.37,0.461c-1.347,0.687-2.679,1.416-4.069,2.005c-3.305,1.396-6.715,2.5-10.277,3.009   c-1.447,0.206-2.936,0.154-4.403,0.153c-0.477-0.001-0.968-0.178-1.424-0.345c-1.313-0.481-1.98-1.443-1.948-2.85   c0.015-0.583,0.103-1.179,0.253-1.744c1.863-7.013,3.752-14.02,5.61-21.037c0.199-0.751,0.327-1.543,0.341-2.318   c0.021-1.142-0.615-1.925-1.667-2.331c-1.605-0.618-3.258-0.468-4.89-0.161c-1.764,0.332-3.468,0.873-5.149,1.884   c-0.074-0.978-0.157-1.863-0.187-2.75c-0.005-0.127,0.234-0.307,0.396-0.388c1.334-0.67,2.648-1.389,4.021-1.968   c3.327-1.403,6.755-2.512,10.337-3.021c1.465-0.208,2.994-0.294,4.457-0.125c2.782,0.323,3.808,2.02,3.073,4.73   c-0.94,3.474-1.914,6.941-2.838,10.419c-1.049,3.953-2.087,7.912-3.077,11.879c-0.524,2.107,0.385,3.449,2.526,3.839   c2.048,0.376,4.038-0.017,5.981-0.634C39.313,46.75,40.296,46.295,41.407,45.858z"></path>
+                      <circle cx="27.5" cy="7.608" r="6.609"></circle>
                     </g>
                   </svg>
                 }
-                className='btn btn-sm btn-primary info-btn-trigger ms-1'
+                className="btn btn-sm btn-primary info-btn-trigger ms-1"
               />
             </div>
           </>
@@ -1615,22 +1672,24 @@ const TXNSummary = () => {
   const CorporateColumn = [
     {
       title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>TXN ID</span>
+        <div className="d-flex align-items-center justify-content-center gap-1">
+          <span className="ff-poppins fw-bold">TXN ID</span>
           <Popover
             content={popoverContentTXN}
-            trigger='click'
+            trigger="click"
             arrow={false}
-            placement='bottom'
+            placement="bottom"
             open={open}
-            onOpenChange={handleOpenChange}>
+            onOpenChange={handleOpenChange}
+          >
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}>
+              }}
+            >
               ▼
             </span>
           </Popover>
@@ -1644,22 +1703,24 @@ const TXNSummary = () => {
     },
     {
       title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins text-nowrap fw-bold'>Customer Name</span>
+        <div className="d-flex align-items-center justify-content-center gap-1">
+          <span className="ff-poppins text-nowrap fw-bold">Customer Name</span>
           <Popover
             content={popoverContentCustomerName}
-            trigger='click'
+            trigger="click"
             arrow={false}
-            placement='bottom'
+            placement="bottom"
             open={openCustomername}
-            onOpenChange={handleOpenChangeCustomerName}>
+            onOpenChange={handleOpenChangeCustomerName}
+          >
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}>
+              }}
+            >
               ▼
             </span>
           </Popover>
@@ -1672,22 +1733,24 @@ const TXNSummary = () => {
     },
     {
       title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Type</span>
+        <div className="d-flex align-items-center justify-content-center gap-1">
+          <span className="ff-poppins fw-bold">Type</span>
           <Popover
             content={popoverContentType}
-            trigger='click'
+            trigger="click"
             arrow={false}
-            placement='bottom'
+            placement="bottom"
             open={openType}
-            onOpenChange={handleOpenChangeType}>
+            onOpenChange={handleOpenChangeType}
+          >
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}>
+              }}
+            >
               ▼
             </span>
           </Popover>
@@ -1700,22 +1763,24 @@ const TXNSummary = () => {
     },
     {
       title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Nature</span>
+        <div className="d-flex align-items-center justify-content-center gap-1">
+          <span className="ff-poppins fw-bold">Nature</span>
           <Popover
             content={popoverContentNature}
-            trigger='click'
+            trigger="click"
             arrow={false}
-            placement='bottom'
+            placement="bottom"
             open={openNature}
-            onOpenChange={handleOpenChangeNature}>
+            onOpenChange={handleOpenChangeNature}
+          >
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}>
+              }}
+            >
               ▼
             </span>
           </Popover>
@@ -1728,22 +1793,24 @@ const TXNSummary = () => {
     },
     {
       title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>CCY1</span>
+        <div className="d-flex align-items-center justify-content-center gap-1">
+          <span className="ff-poppins fw-bold">CCY1</span>
           <Popover
             content={popoverContentCCY1}
-            trigger='click'
+            trigger="click"
             arrow={false}
-            placement='bottom'
+            placement="bottom"
             open={openCCY1}
-            onOpenChange={handleOpenChangeCCY1}>
+            onOpenChange={handleOpenChangeCCY1}
+          >
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}>
+              }}
+            >
               ▼
             </span>
           </Popover>
@@ -1756,22 +1823,24 @@ const TXNSummary = () => {
     },
     {
       title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Amount</span>
+        <div className="d-flex align-items-center justify-content-center gap-1">
+          <span className="ff-poppins fw-bold">Amount</span>
           <Popover
             content={popoverContentAmount1}
-            trigger='click'
+            trigger="click"
             arrow={false}
-            placement='bottom'
+            placement="bottom"
             open={openAmount1}
-            onOpenChange={handleOpenChangeAmount1}>
+            onOpenChange={handleOpenChangeAmount1}
+          >
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}>
+              }}
+            >
               ▼
             </span>
           </Popover>
@@ -1784,22 +1853,24 @@ const TXNSummary = () => {
     },
     {
       title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Rate</span>
+        <div className="d-flex align-items-center justify-content-center gap-1">
+          <span className="ff-poppins fw-bold">Rate</span>
           <Popover
             content={popoverContentRate}
-            trigger='click'
+            trigger="click"
             arrow={false}
-            placement='bottom'
+            placement="bottom"
             open={openRate}
-            onOpenChange={handleOpenChangeRate}>
+            onOpenChange={handleOpenChangeRate}
+          >
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}>
+              }}
+            >
               ▼
             </span>
           </Popover>
@@ -1815,22 +1886,24 @@ const TXNSummary = () => {
     },
     {
       title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>CCY2</span>
+        <div className="d-flex align-items-center justify-content-center gap-1">
+          <span className="ff-poppins fw-bold">CCY2</span>
           <Popover
             content={popoverContentCCY2}
-            trigger='click'
+            trigger="click"
             arrow={false}
-            placement='bottom'
+            placement="bottom"
             open={openCCY2}
-            onOpenChange={handleOpenChangeCCY2}>
+            onOpenChange={handleOpenChangeCCY2}
+          >
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}>
+              }}
+            >
               ▼
             </span>
           </Popover>
@@ -1843,22 +1916,24 @@ const TXNSummary = () => {
     },
     {
       title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Amount</span>
+        <div className="d-flex align-items-center justify-content-center gap-1">
+          <span className="ff-poppins fw-bold">Amount</span>
           <Popover
             content={popoverContentAmount2}
-            trigger='click'
+            trigger="click"
             arrow={false}
-            placement='bottom'
+            placement="bottom"
             open={openAmount2}
-            onOpenChange={handleOpenChangeAmount2}>
+            onOpenChange={handleOpenChangeAmount2}
+          >
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}>
+              }}
+            >
               ▼
             </span>
           </Popover>
@@ -1871,22 +1946,24 @@ const TXNSummary = () => {
     },
     {
       title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Time</span>
+        <div className="d-flex align-items-center justify-content-center gap-1">
+          <span className="ff-poppins fw-bold">Time</span>
           <Popover
             content={popoverContentTime}
-            trigger='click'
+            trigger="click"
             arrow={false}
-            placement='bottom'
+            placement="bottom"
             open={openTime}
-            onOpenChange={handleOpenChangeTime}>
+            onOpenChange={handleOpenChangeTime}
+          >
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}>
+              }}
+            >
               ▼
             </span>
           </Popover>
@@ -1929,22 +2006,24 @@ const TXNSummary = () => {
     },
     {
       title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>LC NO.</span>
+        <div className="d-flex align-items-center justify-content-center gap-1">
+          <span className="ff-poppins fw-bold">LC NO.</span>
           <Popover
             content={popoverContentLCno}
-            trigger='click'
+            trigger="click"
             arrow={false}
-            placement='bottom'
+            placement="bottom"
             open={openLCno}
-            onOpenChange={handleOpenChangeLCno}>
+            onOpenChange={handleOpenChangeLCno}
+          >
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}>
+              }}
+            >
               ▼
             </span>
           </Popover>
@@ -1957,22 +2036,24 @@ const TXNSummary = () => {
     },
     {
       title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Acc NO.</span>
+        <div className="d-flex align-items-center justify-content-center gap-1">
+          <span className="ff-poppins fw-bold">Acc NO.</span>
           <Popover
             content={popoverContentAccNO}
-            trigger='click'
+            trigger="click"
             arrow={false}
-            placement='bottom'
+            placement="bottom"
             open={openAccNO}
-            onOpenChange={handleOpenChangeAccNO}>
+            onOpenChange={handleOpenChangeAccNO}
+          >
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}>
+              }}
+            >
               ▼
             </span>
           </Popover>
@@ -1985,22 +2066,24 @@ const TXNSummary = () => {
     },
     {
       title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Status</span>
+        <div className="d-flex align-items-center justify-content-center gap-1">
+          <span className="ff-poppins fw-bold">Status</span>
           <Popover
             content={popoverContentStatus}
-            trigger='click'
+            trigger="click"
             arrow={false}
-            placement='bottom'
+            placement="bottom"
             open={openStatus}
-            onOpenChange={handleOpenChangeStatus}>
+            onOpenChange={handleOpenChangeStatus}
+          >
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}>
+              }}
+            >
               ▼
             </span>
           </Popover>
@@ -2027,21 +2110,21 @@ const TXNSummary = () => {
       render: (text, record) => {
         return (
           <>
-            <div className='col-chat text-nowrap text-center'>
+            <div className="col-chat text-nowrap text-center">
               {record.statusID === 4 && record.isRFQ === true ? (
                 <>
                   <CustomButton
-                    icon={<i className='icon-check'></i>}
+                    icon={<i className="icon-check"></i>}
                     size={"small"}
-                    className='btn btn-sm btn-success me-1 blotterCheckerButton'
+                    className="btn btn-sm btn-success me-1 blotterCheckerButton"
                     onClick={() =>
                       handleCheckerAccept(record.pK_TransactionID, "Accepted")
                     }
                   />
                   <CustomButton
-                    icon={<i className='icon-trash'></i>}
+                    icon={<i className="icon-trash"></i>}
                     size={"small"}
-                    className='btn btn-sm btn-danger me-1 blotterCheckerButton '
+                    className="btn btn-sm btn-danger me-1 blotterCheckerButton "
                     onClick={() =>
                       handleCheckerAccept(record.pK_TransactionID, "Rejected")
                     }
@@ -2050,9 +2133,9 @@ const TXNSummary = () => {
               ) : record.statusID === 1 ? (
                 <>
                   <CustomButton
-                    icon={<i className='icon-close'></i>}
+                    icon={<i className="icon-close"></i>}
                     size={"small"}
-                    className='btn btn-sm btn-danger me-1 blotterCheckerButton '
+                    className="btn btn-sm btn-danger me-1 blotterCheckerButton "
                     onClick={() =>
                       handleCheckerAccept(record.pK_TransactionID, "Cancelled")
                     }
@@ -2061,9 +2144,9 @@ const TXNSummary = () => {
               ) : record.statusID === 2 || record.statusID === 5 ? (
                 <>
                   <CustomButton
-                    icon={<i className='icon-close'></i>}
+                    icon={<i className="icon-close"></i>}
                     size={"small"}
-                    className='btn btn-sm btn-danger me-1 blotterCheckerButton '
+                    className="btn btn-sm btn-danger me-1 blotterCheckerButton "
                     onClick={() =>
                       handleCheckerAccept(
                         record.pK_TransactionID,
@@ -2075,9 +2158,9 @@ const TXNSummary = () => {
               ) : null}
               {record.statusID === 5 || record.statusID === 4 ? (
                 <CustomButton
-                  icon={<i className='icon-chat2'></i>}
+                  icon={<i className="icon-chat2"></i>}
                   size={"small"}
-                  className='btn btn-sm btn-danger chat-btn-trigge blotterCheckerButtonr'
+                  className="btn btn-sm btn-danger chat-btn-trigge blotterCheckerButtonr"
                   onClick={() =>
                     handleClickChat(record.txnid, record.treasuryPersonID)
                   }
@@ -2089,20 +2172,21 @@ const TXNSummary = () => {
                 size={"small"}
                 icon={
                   <svg
-                    id='info_Layer_1'
-                    x='0px'
-                    y='0px'
-                    width='12px'
-                    height='12px'
-                    fill='#ffffff'
-                    viewBox='0 0 55 55'>
+                    id="info_Layer_1"
+                    x="0px"
+                    y="0px"
+                    width="12px"
+                    height="12px"
+                    fill="#ffffff"
+                    viewBox="0 0 55 55"
+                  >
                     <g>
-                      <path d='M41.407,45.858c0.067,0.838,0.156,1.672,0.183,2.508   c0.005,0.152-0.205,0.376-0.37,0.461c-1.347,0.687-2.679,1.416-4.069,2.005c-3.305,1.396-6.715,2.5-10.277,3.009   c-1.447,0.206-2.936,0.154-4.403,0.153c-0.477-0.001-0.968-0.178-1.424-0.345c-1.313-0.481-1.98-1.443-1.948-2.85   c0.015-0.583,0.103-1.179,0.253-1.744c1.863-7.013,3.752-14.02,5.61-21.037c0.199-0.751,0.327-1.543,0.341-2.318   c0.021-1.142-0.615-1.925-1.667-2.331c-1.605-0.618-3.258-0.468-4.89-0.161c-1.764,0.332-3.468,0.873-5.149,1.884   c-0.074-0.978-0.157-1.863-0.187-2.75c-0.005-0.127,0.234-0.307,0.396-0.388c1.334-0.67,2.648-1.389,4.021-1.968   c3.327-1.403,6.755-2.512,10.337-3.021c1.465-0.208,2.994-0.294,4.457-0.125c2.782,0.323,3.808,2.02,3.073,4.73   c-0.94,3.474-1.914,6.941-2.838,10.419c-1.049,3.953-2.087,7.912-3.077,11.879c-0.524,2.107,0.385,3.449,2.526,3.839   c2.048,0.376,4.038-0.017,5.981-0.634C39.313,46.75,40.296,46.295,41.407,45.858z'></path>
-                      <circle cx='27.5' cy='7.608' r='6.609'></circle>
+                      <path d="M41.407,45.858c0.067,0.838,0.156,1.672,0.183,2.508   c0.005,0.152-0.205,0.376-0.37,0.461c-1.347,0.687-2.679,1.416-4.069,2.005c-3.305,1.396-6.715,2.5-10.277,3.009   c-1.447,0.206-2.936,0.154-4.403,0.153c-0.477-0.001-0.968-0.178-1.424-0.345c-1.313-0.481-1.98-1.443-1.948-2.85   c0.015-0.583,0.103-1.179,0.253-1.744c1.863-7.013,3.752-14.02,5.61-21.037c0.199-0.751,0.327-1.543,0.341-2.318   c0.021-1.142-0.615-1.925-1.667-2.331c-1.605-0.618-3.258-0.468-4.89-0.161c-1.764,0.332-3.468,0.873-5.149,1.884   c-0.074-0.978-0.157-1.863-0.187-2.75c-0.005-0.127,0.234-0.307,0.396-0.388c1.334-0.67,2.648-1.389,4.021-1.968   c3.327-1.403,6.755-2.512,10.337-3.021c1.465-0.208,2.994-0.294,4.457-0.125c2.782,0.323,3.808,2.02,3.073,4.73   c-0.94,3.474-1.914,6.941-2.838,10.419c-1.049,3.953-2.087,7.912-3.077,11.879c-0.524,2.107,0.385,3.449,2.526,3.839   c2.048,0.376,4.038-0.017,5.981-0.634C39.313,46.75,40.296,46.295,41.407,45.858z"></path>
+                      <circle cx="27.5" cy="7.608" r="6.609"></circle>
                     </g>
                   </svg>
                 }
-                className='btn btn-sm btn-primary info-btn-trigger ms-1'
+                className="btn btn-sm btn-primary info-btn-trigger ms-1"
               />
             </div>
           </>
@@ -2117,7 +2201,7 @@ const TXNSummary = () => {
         pagination={false}
         dataSource={blotterdata}
         bordered={false}
-        prefixCls='TXNSummary_Table'
+        prefixCls="TXNSummary_Table"
         columns={
           isBranch
             ? BranchColumn
@@ -2142,8 +2226,6 @@ const TXNSummary = () => {
           handleCloseReasonModal={handleCloseReasonModal}
         />
       )}
-
-      <InfoTransaction InfoRecord={InfoRecord} setInfoRecord={setInfoRecord} />
     </>
   );
 };

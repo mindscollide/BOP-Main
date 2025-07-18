@@ -38,7 +38,7 @@ const Header = () => {
                 active={true}
                 to={"dealer"}
                 className={
-                  location.pathname === "/BOP/dealer"
+                  location.pathname.toLowerCase() === "/BOP/dealer".toLowerCase()
                     ? `${styles["nav-link_active"]} `
                     : `${styles["nav-link"]}`
                 }>
@@ -50,7 +50,7 @@ const Header = () => {
                 as={Link}
                 to={"category"}
                 className={
-                  location.pathname === "/BOP/category"
+                  location.pathname.toLowerCase() === "/BOP/category".toLowerCase()
                     ? `${styles["nav-link_active"]} `
                     : `${styles["nav-link"]}`
                 }>
@@ -62,7 +62,7 @@ const Header = () => {
                 as={Link}
                 to={"treasury"}
                 className={
-                  location.pathname === "/BOP/treasury"
+                  location.pathname.toLowerCase() === "/BOP/treasury".toLowerCase()
                     ? `${styles["nav-link_active"]}`
                     : `${styles["nav-link"]}`
                 }>

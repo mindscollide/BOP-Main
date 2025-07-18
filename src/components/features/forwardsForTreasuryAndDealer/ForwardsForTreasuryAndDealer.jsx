@@ -18,6 +18,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setCreateTenorModal } from "@/store/modalSlice/modalSlicer";
 import { setTenorsCreated } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
+import NotificationSnackBar from "@/components/common/NotificationSnackbar";
 const shouldIncludeComponents =
   import.meta.env.VITE_APP_INCLUDE_DEALER === "true" ||
   import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
@@ -91,6 +92,10 @@ const ForwardsForTreasuryAndDealer = () => {
   const getTenorWiseForwardsRates = useSelector(
     (state) => state.dealerReducer.getTenorWiseForwardsRates
   );
+  console.log(
+    tenorsCreated,
+    "forwardsForTreasuryBranchforwardsForTreasuryBranch"
+  );
   const getAllTenorsData = useSelector(
     (state) => state.dealerReducer.getAllTenors
   );
@@ -99,15 +104,30 @@ const ForwardsForTreasuryAndDealer = () => {
     tenorName: "",
     noOfDays: 0,
   });
+
+  console.log(createTenor, "tenorNametenorName");
+
   const [error, setError] = useState({ tenorName: "", noOfDays: "" });
   const [tenorValue, setTenorValue] = useState({
     value: 0,
     label: "",
   });
+
+  // state for NotificationSnackbar
+  const [snackbarData, setSnackbarData] = useState({
+    message: "",
+  });
+  console.log(snackbarData, "snackbarDatasnackbarData");
   useEffect(() => {
-    dispatch(getAllTenorsAction({ navigate }));
-    dispatch(getDealerDashboardApi({ navigate }));
-  }, []);
+    if (snackbarData.message !== "") {
+      const timer = setTimeout(() => {
+        setSnackbarData({ message: "" });
+      }, 3000); // 3 seconds
+
+      return () => clearTimeout(timer);
+    }
+  }, [snackbarData.message]);
+
   const handleOpenModal = () => {
     // Wrap the state update in startTransition
     startTransition(() => {
@@ -124,37 +144,49 @@ const ForwardsForTreasuryAndDealer = () => {
 
     // Restrict input length
     if (name === "tenorName" && value.length > 10) return;
-    if (name === "noOfDays" && value.length > 4) return;
+    if (name === "noOfDays") {
+      // Reject non-digits (no points, no special chars, no minus/plus)
+      const cleanValue = value.replace(/\D/g, "");
+      if (cleanValue.length > 4) return;
+      setCreateTenor({ ...createTenor, [name]: cleanValue });
+      return;
+    }
     setCreateTenor({ ...createTenor, [name]: value });
   };
-
+  console.log(getAllTenorsList, "getAllTenorsListgetAllTenorsList");
   const handleCreateTenor = () => {
-    if (createTenor.tenorName !== "" && createTenor.noOfDays !== 0) {
-      const { tenors } = getAllTenorsData;
-      if (tenors.length > 0) {
-        const isExistTenorName = tenors.some(
-          (item) => item.tenorName === createTenor.tenorName
+    const { tenorName, noOfDays } = createTenor;
+
+    if (tenorName !== "" && noOfDays !== 0) {
+      if (getAllTenorsList.length > 0) {
+        const isExistTenorName = getAllTenorsList.some(
+          (item) => item.tenorName === tenorName
         );
-        const isExistTenorDays = tenors.some(
-          (item) => item.tenorDays === createTenor.noOfDays
+        const isExistTenorDays = getAllTenorsList.some(
+          (item) => item.tenorDays === Number(noOfDays)
         );
+
         if (isExistTenorName) {
-          setError({
-            ...error,
-            tenorName: "Tenor name already exists",
+          setSnackbarData({
+            message: "Tenor name already exists",
           });
+          return;
         }
+
         if (isExistTenorDays) {
-          setError({
-            ...error,
-            noOfDays: "No of days already exists",
+          setSnackbarData({
+            message: "No of days already exists",
           });
+          return;
         }
       }
+
+      // ✅ No duplicates, continue dispatch
       let Data = {
-        Tenor: createTenor.tenorName,
-        NoOfDays: Number(createTenor.noOfDays),
+        Tenor: tenorName,
+        NoOfDays: Number(noOfDays),
       };
+
       dispatch(
         createTenorAction({
           Data,
@@ -162,13 +194,21 @@ const ForwardsForTreasuryAndDealer = () => {
           setCreateTenor,
         })
       );
+    } else {
+      setSnackbarData({
+        message: newError,
+      });
+      return;
     }
   };
 
   const handleAddTenor = () => {
     try {
       if (!tenorValue?.value || !tenorValue?.label) {
-        alert("Invalid tenor selection");
+        // alert("Invalid tenor selection");
+        setSnackbarData({
+          message: "Invalid tenor selection",
+        });
         return;
       }
 
@@ -188,7 +228,9 @@ const ForwardsForTreasuryAndDealer = () => {
       );
 
       if (isExist) {
-        alert("Already exists");
+        setSnackbarData({
+          message: "Already exists",
+        });
         return;
       }
 
@@ -197,22 +239,27 @@ const ForwardsForTreasuryAndDealer = () => {
     } catch (error) {}
   };
   console.log(getAllTenorsData, "getAllTenorsDatagetAllTenorsData");
+
   useEffect(() => {
-    if (getAllTenorsData !== null) {
+    if (getAllTenorsData?.tenors?.length) {
       try {
-        let tenorsList = getAllTenorsData.tenors.map((tenor) => {
-          return {
+        let tenorsList = [...getAllTenorsData.tenors]
+          .sort((a, b) => a.tenorDays - b.tenorDays) // ascending
+          .map((tenor) => ({
             ...tenor,
             label: tenor.tenorName,
             value: tenor.tenorID,
-          };
-        });
+          }));
+
         setTenorValue({
           value: tenorsList[0].value,
           label: tenorsList[0].label,
         });
+
         setAllTenorsList(tenorsList);
-      } catch (error) {}
+      } catch (error) {
+        console.error("Error processing tenors", error);
+      }
     }
   }, [getAllTenorsData]);
 
@@ -272,7 +319,7 @@ const ForwardsForTreasuryAndDealer = () => {
                       onChange={handleChangeTenors}
                       options={getAllTenorsList}
                       classNamePrefix={"DealerDropDown"}
-                      
+
                       // menuPosition="bottom"
                     />
                   </Suspense>
@@ -356,7 +403,7 @@ const ForwardsForTreasuryAndDealer = () => {
               <Col sm={12} md={12} lg={12} className="mb-2">
                 <label># Of Days</label>
                 <InputFIeld
-                  type="number"
+                  type="text"
                   value={createTenor.noOfDays}
                   name="noOfDays"
                   onChange={handleChangeCreateTenor}
@@ -382,6 +429,13 @@ const ForwardsForTreasuryAndDealer = () => {
                       value={"Create Tenor"}
                       applyClass={"createTenorModalFooterBtn"}
                       onClick={handleCreateTenor}
+                      disabled={
+                        Number(createTenor.noOfDays) !== 0 &&
+                        createTenor.noOfDays !== "" &&
+                        createTenor.tenorName !== ""
+                          ? false
+                          : true
+                      }
                     />
                     <CustomButton
                       value={"Cancel"}
@@ -402,6 +456,7 @@ const ForwardsForTreasuryAndDealer = () => {
           </>
         }
       />
+      <NotificationSnackBar message={snackbarData.message} />
     </>
   );
 };

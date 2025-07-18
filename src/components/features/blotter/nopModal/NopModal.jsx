@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { Radio, Space } from "antd";
 import { Col, Row } from "react-bootstrap";
@@ -7,8 +7,16 @@ import Modal from "@/components/common/globalModal/Modal";
 import GlobalTable from "@/components/common/table/GlobalTable";
 import DatePickerCom from "@/components/common/datePicker/DatePicker";
 import "./NopModal.css";
+import { useSelector } from "react-redux";
 
 const NopModal = ({ openNopModal, setOpenNopModal }) => {
+  const [dataSource, setDataSource] = useState(null);
+  const GetNOPData = useSelector((state) => state.BlotterSlicer.GetNOPData);
+  console.log("GetNOPDataGetNOPData: ", GetNOPData);
+
+  const GetAllInstrumentForTreasury = useSelector(
+    (state) => state.WatchListReducer.GetAllInstrumentForTreasury
+  );
   const [openDownloadTab, setOpenDownloadTab] = useState(false);
 
   const [value, setValue] = useState(1);
@@ -29,40 +37,50 @@ const NopModal = ({ openNopModal, setOpenNopModal }) => {
     setOpenNopModal(false);
   };
 
-  const dataSource = [
-    {
-      key: "1",
-      name: <p className="fw-bold m-0">USD</p>,
-      InflowData: "55,000.00",
-      OutflowData: "-",
-      NetData: "55,000.00",
-      ConversionData: "55,000.00",
-    },
-    {
-      key: "2",
-      name: <p className="fw-bold m-0">EUR</p>,
-      InflowData: "-",
-      OutflowData: "55,000.00",
-      NetData: "(5,000.00)",
-      ConversionData: "(5,234.00)",
-    },
-    {
-      key: "3",
-      name: <p className="fw-bold m-0">GBP</p>,
-      InflowData: "-",
-      OutflowData: "52,000.00",
-      NetData: "(2,000.00)",
-      ConversionData: "(2,472.00)",
-    },
-    {
-      key: "4",
-      name: <p className="fw-bold m-0">NOP</p>,
-      InflowData: "",
-      OutflowData: "",
-      NetData: "",
-      ConversionData: <p className="fw-bold m-0">46,765.70</p>,
-    },
-  ];
+  useEffect(() => {
+    if (
+      GetNOPData !== null &&
+      GetNOPData?.listOfInstruments &&
+      GetAllInstrumentForTreasury !== null
+    ) {
+      console.log(
+        GetAllInstrumentForTreasury,
+        "GetAllInstrumentForTreasuryGetAllInstrumentForTreasuryGetAllInstrumentForTreasury"
+      );
+      const NOPData = GetNOPData.listOfInstruments.map((data, index) => ({
+        key: index.toString(),
+        name: <p className="fw-bold m-0">{data.instrumentName}</p>,
+        InflowData: data.inflow,
+        OutflowData: data.outflow,
+        NetData: `${data.net < 0 ? `(${Math.abs(data.net)})` : data.net}`,
+        ConversionData: (
+          <p className="fw-bold m-0">
+            {data.conversionToDollar < 0
+              ? `(${Math.abs(data.conversionToDollar)})`
+              : data.conversionToDollar}
+          </p>
+        ),
+      }));
+
+      // Append the NOP summary row
+      NOPData.push({
+        key: (NOPData.length + 1).toString(),
+        name: <p className="fw-bold m-0">NOP</p>,
+        InflowData: "",
+        OutflowData: "",
+        NetData: "",
+        ConversionData: (
+          <p className="fw-bold m-0">
+            {GetNOPData.nop < 0
+              ? `(${Math.abs(GetNOPData.nop)})`
+              : GetNOPData.nop}
+          </p>
+        ),
+      });
+
+      setDataSource(NOPData);
+    }
+  }, [GetNOPData]);
 
   const columns = [
     {

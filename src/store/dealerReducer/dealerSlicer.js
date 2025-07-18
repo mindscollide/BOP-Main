@@ -19,7 +19,7 @@ import {
   marketOnOffAction,
   publishDiscountingRatesAction,
 } from "@/container/pages/mainDealer/dealerActions";
-import { formatCurrencyInput } from "@/utils/formatters";
+import { formatCurrencyInputForNegativeValAlso } from "@/utils/formatters";
 import { createSlice } from "@reduxjs/toolkit";
 
 const dealerReducer = createSlice({
@@ -69,9 +69,13 @@ const dealerReducer = createSlice({
             return {
               ...item,
               currentBid:
-                view === "bid" ? formatCurrencyInput(value) : item.currentBid,
+                view === "bid"
+                  ? formatCurrencyInputForNegativeValAlso(value)
+                  : item.currentBid,
               currentAsk:
-                view === "ask" ? formatCurrencyInput(value) : item.currentAsk,
+                view === "ask"
+                  ? formatCurrencyInputForNegativeValAlso(value)
+                  : item.currentAsk,
             };
           }
           return item;
@@ -123,6 +127,7 @@ const dealerReducer = createSlice({
         state.Loader = false;
         state.error = action.payload;
         state.getLastPublishRates = null;
+        state.responseMessage = payload;
       })
       .addCase(PublishNewRatesAction.pending, (state) => {
         state.Loader = true;
@@ -130,6 +135,7 @@ const dealerReducer = createSlice({
       .addCase(PublishNewRatesAction.fulfilled, (state, { payload }) => {
         state.Loader = false;
         state.getCurrentPublishRate = payload?.response;
+        state.getLastPublishRates = payload?.response;
         state.responseMessage = payload?.message;
       })
       .addCase(PublishNewRatesAction.rejected, (state, { payload }) => {

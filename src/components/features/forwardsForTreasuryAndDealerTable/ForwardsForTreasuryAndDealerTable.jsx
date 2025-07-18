@@ -1,3 +1,5 @@
+import NotificationSnackBar from "@/components/common/NotificationSnackbar";
+import GlobalModal from "@/components/common/globalModal/Modal";
 import {
   getTenorWiseForwardsAction,
   PublishTenorWiseForwardsAction,
@@ -9,6 +11,7 @@ import {
 import { tenorWiseFowardsRatesPublishedActions } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { formatCurrencyInput } from "@/utils/formatters";
 import React, { lazy, Suspense, useEffect, useState } from "react";
+import { Col, Row } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -73,6 +76,12 @@ const TenoreWiseCurrentAndLastRates = ({
     (state) => state.RealtimeActionsSlice.tenorWiseForwardsRates
   );
 
+  // state for NotificationSnackbar
+  const [snackbarData, setSnackbarData] = useState({
+    message: "",
+  });
+  const [confirmationModal, setConfirmationModal] = useState(false)
+  const [TenorRemoveRecord, setTenorRemoveRecord] = useState(null)
   useEffect(() => {
     if (newTenorRecord !== null) {
       let newData = [...forwardsForTreasuryBranch, newTenorRecord];
@@ -81,6 +90,16 @@ const TenoreWiseCurrentAndLastRates = ({
       setNewTenorRecord(null);
     }
   }, [newTenorRecord]);
+
+  useEffect(() => {
+    if (snackbarData.message !== "") {
+      const timer = setTimeout(() => {
+        setSnackbarData({ message: "" });
+      }, 3000); // 3 seconds
+
+      return () => clearTimeout(timer);
+    }
+  }, [snackbarData.message]);
 
   useEffect(() => {
     if (getDashboardForwards !== null) {
@@ -162,12 +181,19 @@ const TenoreWiseCurrentAndLastRates = ({
   }, [getTenorWiseForwardsRates]);
 
   const handleDeleteTenorRecord = (record) => {
-    const filteredRecords = forwardsForTreasuryBranch.filter(
-      (item) => item.tenorID !== record.tenorID
+    setTenorRemoveRecord(record)
+    setConfirmationModal(true)
+
+  };
+
+  const handleYesConfirmatonModal = () => {
+        const filteredRecords = forwardsForTreasuryBranch.filter(
+      (item) => item.tenorID !== TenorRemoveRecord.tenorID
     );
 
     dispatch(setForwardsForTreasuryBranch(filteredRecords));
-  };
+    setConfirmationModal(false)
+  }
   const handleChangeCurrentForwards = (record, view, event) => {
     const { value } = event.target;
     try {
@@ -187,21 +213,38 @@ const TenoreWiseCurrentAndLastRates = ({
     let checkDoNotempty = forwardsForTreasuryBranch.every(
       (item) => item.currentAsk !== "" && item.currentBid !== ""
     );
-    if (checkDoNotempty) {
-      let Data = {
-        CurrentTenorWiseForwardRates: forwardsForTreasuryBranch.map((item) => {
-          return {
-            TenorID: item.tenorID,
-            Bid: Number(item.currentBid),
-            Ask: Number(item.currentAsk),
-            DateTime: item.dateTime,
-          };
-        }),
-      };
-      dispatch(PublishTenorWiseForwardsAction({ Data, navigate }));
-    } else {
-      alert("Please fill all the fields");
+
+    if (!checkDoNotempty) {
+      setSnackbarData({
+        message: "Please fill all required fields.",
+      });
+      return;
     }
+
+    let checkAskValue = forwardsForTreasuryBranch.find(
+      (item) => Number(item.currentAsk) <= Number(item.currentBid)
+    );
+
+    console.log(checkAskValue, "Checkerchecker");
+
+    if (checkAskValue !== undefined) {
+      setSnackbarData({
+        message: "Ask value must be greater than Bid value.",
+      });
+      return;
+    }
+
+    let Data = {
+      CurrentTenorWiseForwardRates: forwardsForTreasuryBranch.map((item) => {
+        return {
+          TenorID: item.tenorID,
+          Bid: Number(item.currentBid),
+          Ask: Number(item.currentAsk),
+          DateTime: item.dateTime,
+        };
+      }),
+    };
+    dispatch(PublishTenorWiseForwardsAction({ Data, navigate }));
   };
 
   const columns = [
@@ -318,7 +361,7 @@ const TenoreWiseCurrentAndLastRates = ({
                     icon={
                       <Suspense fallback={<div>Loading icon...</div>}>
                         <IconElement
-                          iconClass={"icon-trash color-red fs-6 cursor-pointer"}
+                          iconClass={"icon-close color-red fs-6 cursor-pointer"}
                           onClick={() => handleDeleteTenorRecord(record)}
                         />
                       </Suspense>
@@ -354,9 +397,60 @@ const TenoreWiseCurrentAndLastRates = ({
                 />
               </span>
             )}
+            <GlobalModal
+              show={confirmationModal}
+              centered={true}
+              footerClassName={"d-block border-0"}
+              bodyClassName={"b-0"}
+              modalBody={
+                <>
+                  <Row>
+                    <Col
+                      sm={12}
+                      md={12}
+                      lg={12}
+                      className='d-flex justify-content-center'>
+                      <span className='modalDescription'>
+                        Are you sure you want to delete it
+                      </span>
+                    </Col>
+                  </Row>
+                </>
+              }
+              modalFooter={
+                <>
+                  <Row>
+                    <Col
+                      sm={6}
+                      md={6}
+                      lg={6}
+                      className='d-flex justify-content-end'>
+                      <CustomButton
+                        value={"Yes"}
+                        onClick={handleYesConfirmatonModal}
+                        applyClass={"ConfirmationModalYesDealBox"}
+                      />
+                    </Col>
+                    <Col
+                      sm={6}
+                      md={6}
+                      lg={6}
+                      className='d-flex justify-content-start'>
+                      <CustomButton
+                        value={"No"}
+                        onClick={() => setConfirmationModal(false)}
+                        applyClass={"ConfirmationModalNoDealBox"}
+                      />
+                    </Col>
+                  </Row>
+                </>
+              }
+            />
           </Suspense>
         </>
       )}
+
+      <NotificationSnackBar message={snackbarData.message} />
     </>
   );
 };

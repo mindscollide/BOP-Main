@@ -31,19 +31,19 @@ export const loginInApi = createAsyncThunk(
             case "ERM_AuthService_AuthManager_Login_02".toLowerCase():
             case "ERM_AuthService_AuthManager_Login_04".toLowerCase():
             case "ERM_AuthService_AuthManager_Login_05".toLowerCase():
-              return rejectWithValue("User is Locked")
+              return rejectWithValue("User is Locked");
             case "ERM_AuthService_AuthManager_Login_06".toLowerCase():
-              return rejectWithValue("User is Disabled")
+              return rejectWithValue("User is Disabled");
             case "ERM_AuthService_AuthManager_Login_07".toLowerCase():
-              return rejectWithValue("User is Closed")
+              return rejectWithValue("User is Closed");
             case "ERM_AuthService_AuthManager_Login_08".toLowerCase():
-              return rejectWithValue("User is Dormant")
+              return rejectWithValue("User is Dormant");
             case "ERM_AuthService_AuthManager_Login_09".toLowerCase():
-              return rejectWithValue("Login Failed")
+              return rejectWithValue("Login Failed");
             case "ERM_AuthService_AuthManager_Login_10".toLowerCase():
-              return rejectWithValue("Login Failed")
+              return rejectWithValue("Login Failed");
             case "ERM_AuthService_AuthManager_Login_11".toLowerCase():
-              return rejectWithValue("Someting went wrong")
+              return rejectWithValue("Someting went wrong");
             case "ERM_AuthService_AuthManager_Login_12".toLowerCase():
               console.log("", response.data);
               return rejectWithValue("Not A valid role to login");
@@ -81,7 +81,7 @@ export const loginInApi = createAsyncThunk(
 
               return {
                 response: response.data.responseResult,
-                message: "Successfully logged In",
+                message: "",
               };
 
             default:
@@ -113,12 +113,8 @@ export const corporateUserLoginInApi = createAsyncThunk(
 
       const response = await corporateUserLoginIn(Data);
       if (response.data.responseCode === 200) {
-        const {
-          isExecuted,
-          responseMessage,
-          token,
-          refreshToken,
-        } = response.data.responseResult;
+        const { isExecuted, responseMessage, token, refreshToken } =
+          response.data.responseResult;
 
         if (isExecuted) {
           switch (responseMessage.toLowerCase()) {
@@ -127,6 +123,7 @@ export const corporateUserLoginInApi = createAsyncThunk(
             case "ERM_AuthService_AuthManager_CorporateUserLogin_04".toLowerCase():
             case "ERM_AuthService_AuthManager_CorporateUserLogin_05".toLowerCase():
             case "ERM_AuthService_AuthManager_CorporateUserLogin_06".toLowerCase():
+              return rejectWithValue("User is Disabled")
             case "ERM_AuthService_AuthManager_CorporateUserLogin_07".toLowerCase():
             case "ERM_AuthService_AuthManager_CorporateUserLogin_08".toLowerCase():
             case "ERM_AuthService_AuthManager_CorporateUserLogin_09".toLowerCase():
@@ -141,7 +138,7 @@ export const corporateUserLoginInApi = createAsyncThunk(
               return rejectWithValue("Corporate is InActive");
 
             case "ERM_AuthService_AuthManager_CorporateUserLogin_03".toLowerCase():
-              const {
+              var {
                 corporate,
                 employeeID,
                 ldapAccount,
@@ -168,6 +165,36 @@ export const corporateUserLoginInApi = createAsyncThunk(
               return {
                 response: response.data.responseResult,
                 message: "Successfully logged In",
+              };
+
+            case "ERM_AuthService_AuthManager_CorporateUserLogin_15".toLowerCase():
+              var {
+                corporate,
+                employeeID,
+                ldapAccount,
+                userID,
+                firstName,
+                email,
+                contactNumber,
+                userRoleID,
+                userStatusID,
+              } = response.data.responseResult.user;
+              localStorage.setItem("token", token);
+              localStorage.setItem("refreshToken", refreshToken);
+              localStorage.setItem("name", firstName);
+              localStorage.setItem("email", email);
+              localStorage.setItem("roleId", userRoleID);
+              localStorage.setItem("userID", userID);
+              localStorage.setItem("corporate", JSON.stringify(corporate));
+              localStorage.setItem("employeeID", employeeID);
+              localStorage.setItem("ldapAccount", ldapAccount);
+              localStorage.setItem("contactNumber", contactNumber);
+              localStorage.setItem("userStatusID", userStatusID);
+
+              roleBasedNavigation(navigate, userRoleID);
+              return {
+                response: response.data.responseResult,
+                message: "",
               };
 
             default:

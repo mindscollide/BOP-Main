@@ -25,10 +25,7 @@ export const getUserSettingDataAPI = createAsyncThunk(
       console.log(result, "result");
       const { responseCode } = result.data;
       console.log(responseCode, "result");
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+    
       if (responseCode === 417) {
         console.log(result, "result");
 
@@ -42,7 +39,7 @@ export const getUserSettingDataAPI = createAsyncThunk(
         if (!isExecuted) {
           console.log(result, "result");
 
-          return rejectWithValue(responseMessage);
+          return rejectWithValue("Something went wrong");
         }
         if (
           responseMessage
@@ -95,10 +92,7 @@ export const updateUserSettingDataAPI = createAsyncThunk(
       console.log(response, "result");
       const { responseCode } = response.data;
       console.log(responseCode, "result");
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+    
       if (responseCode === 417) {
         console.log(response, "result");
 
@@ -111,7 +105,7 @@ export const updateUserSettingDataAPI = createAsyncThunk(
         if (!isExecuted) {
           console.log(response, "result");
 
-          return rejectWithValue(responseMessage);
+          return rejectWithValue("Something went wrong");
         }
         if (
           responseMessage
@@ -120,7 +114,10 @@ export const updateUserSettingDataAPI = createAsyncThunk(
               "Setting_SettingServiceManager_UpdateUserSettings_01".toLowerCase()
             )
         ) {
-          return "Successfully Updated";
+          return {
+            response: response.data.responseResult,
+            message: "Setting Updated Successfully"
+          };
         } else if (
           responseMessage
             .toLowerCase()
@@ -144,7 +141,7 @@ export const updateUserSettingDataAPI = createAsyncThunk(
         return rejectWithValue("Something went wrong");
       }
     } catch (error) {
-      return rejectWithValue(error);
+      return rejectWithValue("Something went wrong");
     }
   }
 );
@@ -163,10 +160,7 @@ export const getMarkingTimingApi = createAsyncThunk(
       console.log(response, "result");
       const { responseCode } = response.data;
       console.log(responseCode, "result");
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+    
       if (responseCode === 417) {
         console.log(response, "result");
 
@@ -181,7 +175,7 @@ export const getMarkingTimingApi = createAsyncThunk(
         console.log(isExecuted, "result");
 
         if (!isExecuted) {
-          return rejectWithValue(responseMessage);
+          return rejectWithValue("Something went wrong");
         }
 
         if (

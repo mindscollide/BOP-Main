@@ -7,7 +7,7 @@ import PassCode from "@/components/features/settingsModal/PasscodeSettingCompone
 import Markettiming from "@/components/features/settingsModal/MarketTimingComponent/MarketTIming";
 import CustomButton from "@/components/common/globalButton/button";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   getMarkingTimingApi,
   updateUserSettingDataAPI,
@@ -21,10 +21,12 @@ const SettingModal = () => {
     (state) => state.modalReducer.settingsRecord
   );
   const settingModal = useSelector((state) => state.modalReducer.settingModal);
-  console.log(settingModal, "settingModalsettingModalsettingModal")
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const [tabActive, setTabActive] = useState(1);
+  console.log({ location, tabActive }, "settingModalsettingModalsettingModal");
+  console.log(typeof tabActive, "settingModalsettingModalsettingModal");
 
   useEffect(() => {
     dispatch(getMarkingTimingApi({ navigate }));
@@ -77,7 +79,7 @@ const SettingModal = () => {
       {" "}
       <GlobalModal
         show={settingModal}
-        backdrop='static'
+        backdrop="static"
         onHide={HandleOnHideModal}
         centered={true}
         className={"ModalClassNameSettings"}
@@ -95,7 +97,8 @@ const SettingModal = () => {
                     sm={8}
                     md={8}
                     lg={8}
-                    className='d-flex justify-content-start gap-1'>
+                    className="d-flex justify-content-start gap-1"
+                  >
                     <CustomButton
                       applyClass={
                         tabActive === 1 ? "tabsButton_active" : "tabsButton"
@@ -125,7 +128,8 @@ const SettingModal = () => {
                     sm={4}
                     md={4}
                     lg={4}
-                    className='d-flex justify-content-end align-items-center '>
+                    className="d-flex justify-content-end align-items-center "
+                  >
                     <IconElement
                       applyClass={"icon-close"}
                       iconClass={"cursor-pointer"}
@@ -133,7 +137,7 @@ const SettingModal = () => {
                     />
                   </Col>
                 </Row>
-                <Row className='mt-3 d-flex justify-content-start'>
+                <Row className="mt-3 d-flex justify-content-start">
                   <Col sm={12} md={12} lg={12}>
                     {tabActive === 1 ? (
                       <UserSetting />
@@ -160,12 +164,15 @@ const SettingModal = () => {
                 sm={12}
                 md={12}
                 lg={12}
-                className='d-flex justify-content-center'>
-                <CustomButton
-                  applyClass={"saveSettingBtn"}
-                  value={"Save"}
-                  onClick={handeClickSave}
-                />
+                className="d-flex justify-content-center"
+              >
+                {!(tabActive === 3) && (
+                  <CustomButton
+                    applyClass="saveSettingBtn"
+                    value="Save"
+                    onClick={handeClickSave}
+                  />
+                )}
               </Col>
             </Row>
           </>

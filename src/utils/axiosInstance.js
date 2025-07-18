@@ -38,6 +38,10 @@ const createPostAPI =
       }
 
       const response = await axios(axiosConfig);
+      if (response.data.responseCode === 401) {
+        window.location.href = "/";
+        return;
+      }
       return response;
     } catch (error) {
       console.error(`Error calling ${url}:`, error);

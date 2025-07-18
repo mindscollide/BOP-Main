@@ -25,10 +25,7 @@ export const getAllChatByTransactionId = createAsyncThunk(
       );
       const response = await getUserChat(Data);
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -42,7 +39,7 @@ export const getAllChatByTransactionId = createAsyncThunk(
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (!isExecuted) {
-          return rejectWithValue(responseMessage);
+          return rejectWithValue("Something went wrong");
         }
 
         if (
@@ -57,7 +54,7 @@ export const getAllChatByTransactionId = createAsyncThunk(
           dispatch(setTreasuryPersonID(treasuryPersonID))
           return {
             response: response.data.responseResult,
-            message: "Data Found",
+            message: "",
           };
         } else if (
           responseMessage
@@ -117,10 +114,7 @@ export const saveChatApi = createAsyncThunk(
       let getUserChat = createPostAPI(chatApi, saveChatRM.RequestMethod);
       const response = await getUserChat(Data);
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+    
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(
@@ -137,7 +131,7 @@ export const saveChatApi = createAsyncThunk(
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (!isExecuted) {
-          return rejectWithValue(responseMessage);
+          return rejectWithValue("Something went wrong");
         }
 
         if (
@@ -185,7 +179,7 @@ export const saveChatApi = createAsyncThunk(
 
           return {
             response: response.data.responseResult,
-            message: "Data Found",
+            message: "",
           };
         } else if (
           responseMessage
@@ -241,17 +235,14 @@ export const uploadDocumentApi = createAsyncThunk(
       );
       const response = await uploadDocument(file, true);
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+    
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(uploadDocumentApi({ Data, navigate }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (!isExecuted) {
-          return rejectWithValue(responseMessage);
+          return rejectWithValue("Something went wrong");
         }
 
         if (
