@@ -220,11 +220,11 @@ const BankSpot = () => {
 
   return (
     <div>
-      <div className='box-header bg-primary-orange px-3'>
-        <div className='text-start color-white fw-bold fs-6'>Bank Spot</div>
+      <div className="box-header bg-primary-orange px-3">
+        <div className="text-start color-white fw-bold fs-6">Bank Spot</div>
       </div>
 
-      <div className='mb-2 px-2'>
+      <div className="mb-2 px-2">
         <GlobalTable
           columns={columns}
           dataSource={bankSpotData}
