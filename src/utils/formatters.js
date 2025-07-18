@@ -204,3 +204,61 @@ export const convertDateTimeIntoLocal = (utcDateString) => {
 
   return utcDate;
 };
+
+
+/**
+ * Formats numeric values with Pakistan-style number formatting
+ * @param {number|string} rawValue - The value to format
+ * @param {object} options - Formatting options
+ * @param {number} [options.decimals=2] - Decimal places to show
+ * @param {boolean} [options.allowNegative=true] - Whether to allow negative values
+ * @param {string} [options.emptySymbol=""] - What to return for empty/invalid values
+ * @returns {string} Formatted amount string
+ */
+export const formatPkAmount = (rawValue, options = {}) => {
+  const {
+    decimals = 2,
+    allowNegative = true,
+    emptySymbol = ""
+  } = options;
+
+  // Handle empty/null/undefined cases
+  if (rawValue === null || rawValue === undefined || rawValue === "") {
+    return emptySymbol;
+  }
+
+  // Convert to number
+  let numericValue;
+  if (typeof rawValue === "string") {
+    // Remove any existing formatting
+    const cleanString = rawValue.replace(/[^\d.-]/g, "");
+    numericValue = parseFloat(cleanString);
+  } else {
+    numericValue = Number(rawValue);
+  }
+
+  // Validate the number
+  if (isNaN(numericValue)) {
+    console.warn(`Invalid number value: ${rawValue}`);
+    return emptySymbol;
+  }
+
+  // Handle negative values
+  if (!allowNegative && numericValue < 0) {
+    numericValue = 0;
+  }
+
+  // Format with Pakistan locale
+  return numericValue.toLocaleString("en-PK", {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+    useGrouping: true
+  });
+};
+
+// Usage examples:
+// formatPkAmount(9000) => "9,000.00"
+// formatPkAmount("12345.678") => "12,345.68"
+// formatPkAmount("PKR 12,345.678") => "12,345.68" (strips non-numeric chars)
+// formatPkAmount(null) => "" (returns emptySymbol)
+// formatPkAmount("invalid", {emptySymbol: "N/A"}) => "N/A"

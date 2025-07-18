@@ -97,7 +97,7 @@ const MainBranch = () => {
           <Suspense fallback={<>Loading Discounting...</>}>
             <BranchDiscountingTable />
             <section className="bg-white p-2">
-              <TXNSummary />
+              <BlotterHeader />
             </section>
           </Suspense>
         ) : null,

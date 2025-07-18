@@ -18,12 +18,12 @@ export const buildDiscountingTable = (
     const applicableInstruments =
       value === 1
         ? instruments?.filter((inst) => inst.discountingApplicable) || []
-        : value === 3
+        : value === 3 || value === 5
         ? instruments
         : instruments;
 
     const applicableTenors =
-      value === 1 || value === 3
+      value === 1 || value === 3 || value === 5
         ? tenors?.filter((tenor) => tenor.isDiscountingApplicable) || []
         : tenors;
 
