@@ -141,5 +141,6 @@ export const useMqttClient = ({
     unsubscribeFromTopics,
     onMessageArrived,
     onConnectionLost,
+    setSubscribedTopics
   };
 };

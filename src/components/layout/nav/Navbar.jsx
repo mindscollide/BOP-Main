@@ -31,8 +31,10 @@ import {
 import SpotQuoteModal from "@/container/pages/mainCorporate/rfqModal/SpotQuoteModal/SpotQuoteModal";
 import DiscountingRFQQuoteModal from "@/container/pages/mainCorporate/rfqModal/DiscountingRFQQuoteModal/DiscountingRFQQuoteModal";
 import ForwardRFQQuoteModal from "@/container/pages/mainCorporate/rfqModal/ForwardRFQQuoteModal/ForwardRFQQuoteModal";
+import { useMqttClient } from "@/components/utils/mqttConnection";
 
 const GlobalNavbar = () => {
+  const { unsubscribeFromTopics, subscribeToTopics } = useMqttClient({});
   const getAllCategoriesData = useSelector(
     (state) => state.authReducer.getAllCategories
   );
@@ -155,14 +157,15 @@ const GlobalNavbar = () => {
             value: newCategoryMap[0].value,
             label: newCategoryMap[0].label,
           };
-          console.log(newCategoryMap, "newCategoryMapnewCategoryMap")
+          console.log(newCategoryMap, "newCategoryMapnewCategoryMap");
           dispatch(setCategoryValue(obj));
 
           let Data = {
-            Category: obj.value,
+            CategoryID: obj.value,
           };
           setAllCategories(newCategoryMap);
           console.log(Data, "DataData");
+  
           dispatch(GetCategoryWiseSpotRatesApi({ navigate, Data }));
           dispatch(GetCategoryWiseForwardRatesApi({ navigate, Data }));
           dispatch(GetCategoryWiseDiscountingRatesApi({ navigate, Data }));
@@ -286,21 +289,20 @@ const GlobalNavbar = () => {
 
   return (
     <>
-      <div className="site-header pt-1">
-        <div className="container-fluid page-gutter">
-          <div className="header-inner d-flex align-items-center">
+      <div className='site-header pt-1'>
+        <div className='container-fluid page-gutter'>
+          <div className='header-inner d-flex align-items-center'>
             <SiteLogoComponent />
-            <div className="ms-auto">
-              <div className="d-flex align-items-center gap-2">
-          
+            <div className='ms-auto'>
+              <div className='d-flex align-items-center gap-2'>
                 {location.pathname !== "/calculator" ? (
                   <>
                     {(shouldIncludeCorporate || shouldIncludeBranch) && (
                       <Suspense fallback={<>Loading RFQ...</>}>
                         <CustomButton
-                          applyClass="rfqBtn"
-                          value="RFQ"
-                          size="small"
+                          applyClass='rfqBtn'
+                          value='RFQ'
+                          size='small'
                           icon={<IconElement iconClass={"icon-list fs-6"} />}
                           onClick={onClickRFQ}
                         />
@@ -309,9 +311,9 @@ const GlobalNavbar = () => {
                     {location.pathname.includes("treasury") &&
                     (shouldIncludeDealer || shouldIncludeTreasury) ? (
                       <CustomButton
-                        applyClass="calcBtn"
-                        value="Calculators"
-                        size="large"
+                        applyClass='calcBtn'
+                        value='Calculators'
+                        size='large'
                         onClick={handleCalculatorClick}
                       />
                     ) : null}

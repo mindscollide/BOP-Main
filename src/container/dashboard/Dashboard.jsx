@@ -1,5 +1,5 @@
 import { Layout } from "antd";
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import Header from "@/components/layout/header/header";
 import GlobalNavbar from "@/components/layout/nav/Navbar";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
@@ -39,6 +39,7 @@ import {
   setBlotterTransactionAddedForTreasuryDealBox,
   setBlotterTransactionRFQExpiredForTreasuryDealBox,
   setBlotterTransactionRFQQuotedForTreasuryDealBox,
+  setCategorySpotRates,
   setCounterPartySpotRates,
   setIncomingChat,
   setMarketTimingsUpdated,
@@ -63,7 +64,11 @@ const Dashboard = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const prevTopicRef = useRef(null);
   const chatModal = useSelector((state) => state.modalReducer.chatModal);
+  const categoryValue = useSelector(
+    (state) => state.dealerReducer.categoryValue
+  );
   const blotterTransactionAdded = useSelector(
     (state) =>
       state.RealtimeActionsSlice.BlotterTransactionAddedForTreasuryDealBox
@@ -94,6 +99,7 @@ const Dashboard = () => {
 
   // Memoized MQTT message handler
   const handleMqttMessage = useCallback((data) => {
+    // console.log(data, "datadatadatadata");
     switch (data.payload.message) {
       case "INCOMING_CHAT":
         try {
@@ -198,6 +204,12 @@ const Dashboard = () => {
         console.log(data.payload, "DISPATCHER_SPOT_RATES");
         dispatch(setCounterPartySpotRates(data.payload));
         break;
+      case "DISPATCHER_CATEGORY_SPOT_RATES_FOR_TREASURY":
+        dispatch(setCategorySpotRates(data.payload));
+        console.log(
+          "DISPATCHER_CATEGORY_SPOT_RATES_FOR_TREASURY",
+          data.payload
+        );
       default:
         console.warn("No specific handler for this message type");
         break;
@@ -214,7 +226,31 @@ const Dashboard = () => {
     }),
     [handleMqttMessage]
   );
-  const { connectToMqtt } = useMqttClient(mqttConfig);
+  const { connectToMqtt, subscribeToTopics, unsubscribeFromTopics } =
+    useMqttClient(mqttConfig);
+
+  useEffect(() => {
+    if (!categoryValue) return;
+
+    const newTopic = `BOP_TREASURY_CATEGORY_RATES_${categoryValue.value}`;
+
+    // Subscribe to the new topic
+    subscribeToTopics([newTopic]);
+    console.log("Subscribed to:", newTopic);
+
+    // Store this topic as previous for next run
+    if (prevTopicRef.current !== newTopic) {
+      prevTopicRef.current = newTopic;
+    }
+
+    // Cleanup to unsubscribe the previous topic
+    return () => {
+      if (prevTopicRef.current) {
+        unsubscribeFromTopics([prevTopicRef.current]);
+        console.log("Unsubscribed from:", prevTopicRef.current);
+      }
+    };
+  }, [categoryValue]);
 
   useEffect(() => {
     connectToMqtt({ subscribeID, userID });

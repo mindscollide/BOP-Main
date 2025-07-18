@@ -3,6 +3,7 @@ import { Col, Row } from "react-bootstrap";
 import BidAmountBox from "../../common/bidAmountBox/BidAmountBox";
 import styles from "./spotDealerAndTreasury.module.css";
 import { useSelector } from "react-redux";
+import { throttle } from "lodash";
 
 const SpotDealerAndTreasury = () => {
   const [spotsData, setSpotsData] = useState([]);
@@ -11,6 +12,10 @@ const SpotDealerAndTreasury = () => {
   );
   const GetCategoryWiseSpotRatesDaata = useSelector(
     (state) => state.categoryReducer.GetCategoryWiseSpotRates
+  );
+
+  const categorySpotRates = useSelector(
+    (state) => state.RealtimeActionsSlice.CategorySpotRates
   );
 
   useEffect(() => {
@@ -22,24 +27,11 @@ const SpotDealerAndTreasury = () => {
         const { instruments } = GetCategoryWiseSpotRatesDaata;
         const { spotInstruments } = allInstrumentForTreasuryData;
 
-        console.log(
-          {
-            GetCategoryWiseSpotRatesDaata: instruments,
-            allInstrumentForTreasuryData: spotInstruments,
-          },
-          "datadatatatata"
-        );
-
         if (instruments.length > 0) {
           const spotData = instruments
             .map((spotIns) => {
               const matchedInstrument = spotInstruments.find(
                 (insData) => spotIns.instrumentID === insData.instrumentID
-              );
-
-              console.log(
-                { matchedInstrument, instruments, spotInstruments },
-                "matchedInstrument"
               );
 
               if (matchedInstrument) {
@@ -66,17 +58,47 @@ const SpotDealerAndTreasury = () => {
     }
   }, [GetCategoryWiseSpotRatesDaata, allInstrumentForTreasuryData]);
 
+  useEffect(() => {
+    if (!categorySpotRates) return;
+
+    const throttledUpdate = throttle((spotRates) => {
+      const { instrumentSpotData } = spotRates;
+
+      setSpotsData((prevData) =>
+        prevData.map((data) => {
+          const matched = instrumentSpotData.find(
+            (d) =>
+              d.instrumentID === data.instrumentID &&
+              d.secondaryInstrumentID === data.secondaryInstrumentID
+          );
+
+          return matched
+            ? { ...data, bid: matched.bid, offer: matched.ask }
+            : data;
+        })
+      );
+    }, 300); // Update max every 300ms
+
+    throttledUpdate(categorySpotRates);
+
+    return () => {
+      throttledUpdate.cancel();
+    };
+  }, [categorySpotRates]);
+
   return (
     <>
       <Row>
         {spotsData.length > 0 &&
           spotsData.map((spotCardsData, index) => {
             return (
-              <Col sm={6} md={3} className="px-1" key={spotCardsData}>
-                <div className={styles["SpotBoxCard"]}>
+              <Col sm={6} md={3} className='px-1'>
+                <div
+                  className={styles["SpotBoxCard"]}
+                  key={spotCardsData.instrumentID}>
                   <div>
                     {/*box header*/}
-                    <div className="mb-3 ">
+                    <div className='mb-3'>
                       <span className={styles["SpotCurrentHeading"]}>
                         {spotCardsData.instrumentName.split("/")[0]}
                       </span>
@@ -85,7 +107,7 @@ const SpotDealerAndTreasury = () => {
                       </span>
                     </div>
                     {/*box content*/}
-                    <div className="d-flex gap-2 mt-2">
+                    <div className='d-flex gap-2 mt-2'>
                       <Col>
                         <BidAmountBox
                           spot={true}
