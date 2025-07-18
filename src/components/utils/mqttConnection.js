@@ -106,8 +106,8 @@ export const useMqttClient = ({
         let subscribeIDNew = userData?.branchID || userData?.corporateID;
 
         let newTopic = isBranch
-          ? `BRANCH_${subscribeIDNew}`
-          : `CORPORATE_${subscribeIDNew}`;
+          ? `BOP_BRANCH_${subscribeIDNew}`
+          : `BOP_CORPORATE_${subscribeIDNew}`;
         if (isCorporate || isBranch) {
           subscribeToTopics([subscribeID, `BOP_${userID}`, newTopic]);
         } else {

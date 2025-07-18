@@ -39,6 +39,7 @@ import {
   setBlotterTransactionAddedForTreasuryDealBox,
   setBlotterTransactionRFQExpiredForTreasuryDealBox,
   setBlotterTransactionRFQQuotedForTreasuryDealBox,
+  setCounterPartySpotRates,
   setIncomingChat,
   setMarketTimingsUpdated,
   setTenorsCreated,
@@ -195,6 +196,7 @@ const Dashboard = () => {
         break;
       case "DISPATCHER_SPOT_RATES":
         console.log(data.payload, "DISPATCHER_SPOT_RATES");
+        dispatch(setCounterPartySpotRates(data.payload));
         break;
       default:
         console.warn("No specific handler for this message type");

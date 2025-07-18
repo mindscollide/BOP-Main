@@ -10,10 +10,12 @@
   display: inline-block !important;
 }
 
-
-
 .ForwardRFQModalHeadingCorporate {
   font-size: 1.25rem !important;
   font-weight: 800 !important;
   color: #f26522 !important;
+}
+.rfq-error_message {
+  font-size: 12px;
+  color: red;
 }

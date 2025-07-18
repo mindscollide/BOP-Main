@@ -24,10 +24,14 @@ const RFQForwardCorporateModal = ({
   );
 
   //Local States
-  const [amountData, setAmountData] = useState("");
+  const [amountData, setAmountData] = useState("0");
   const [Tenor, setTenor] = useState("");
   const [options, setOptions] = useState("");
   console.log(Tenor, "TenorTenorTenor");
+  const [accountError, setAccountError] = useState({
+    message: "",
+    status: false,
+  });
 
   const [natureOfBusinessOptions, setNatureOfBusinessOptions] = useState(null);
   console.log(
@@ -117,18 +121,33 @@ const RFQForwardCorporateModal = ({
     // Accept only alphanumeric characters
     if (/^[a-zA-Z0-9]*$/.test(value)) {
       setAcNumberData(value);
+      setAccountError({
+        message: "",
+        status: false,
+      });
     }
   };
 
+  // // handle Change amount
+  // const handleChangeAccount = (event) => {
+  //   const { name, value } = event.target;
+  //   if (name === "Amount") {
+  //     const regex = /^[0-9]*$/;
+  //     if (regex.test(value)) {
+  //       setAmountData(value);
+  //     }
+  //   } else {
+  //     setAmountData(value);
+  //   }
+  // };
   // handle Change amount
   const handleChangeAmount = (event) => {
     const { name, value } = event.target;
     if (name === "Amount") {
       const regex = /^[0-9]*$/;
       if (regex.test(value)) {
-        const numericValue = parseInt(value, 10);
-
-        setAmountData(numericValue);
+        // If input is empty, set to "0", otherwise use the value (which replaces initial 0)
+        setAmountData(value === "" ? "0" : value.replace(/^0+/, "") || "0");
       }
     }
   };
@@ -188,20 +207,28 @@ const RFQForwardCorporateModal = ({
   };
 
   const handleConfirmButton = () => {
-    let Data = {
-      CorporateID: corporateValue.value,
-      InstrumentID: selectedCurrency.value,
-      SecondaryInstrumentID: 0,
-      IsBuySide: typeOptionSelected.value === 1 ? true : false,
-      Quantity: Number(amountData),
-      AccountNumber: accountNumber,
-      NatureOfTransactionID:
-        natureOfBusinessOptions !== null && natureOfBusinessOptions?.id,
-      TenorDays: Number(Tenor),
-      OptionDays: Number(options),
-      // Swap: 0.3,
-    };
-    dispatch(SaveForwardTransactionRFQApi({ navigate, Data }));
+    if (accountNumber !== "") {
+      setAccountError({ status: false, message: "" });
+      let Data = {
+        CorporateID: corporateValue.value,
+        InstrumentID: selectedCurrency.value,
+        SecondaryInstrumentID: 0,
+        IsBuySide: typeOptionSelected.value === 1 ? true : false,
+        Quantity: Number(amountData),
+        AccountNumber: accountNumber,
+        NatureOfTransactionID:
+          natureOfBusinessOptions !== null && natureOfBusinessOptions?.id,
+        TenorDays: Number(Tenor),
+        OptionDays: Number(options),
+        // Swap: 0.3,
+      };
+      dispatch(SaveForwardTransactionRFQApi({ navigate, Data }));
+    } else if (accountNumber === "") {
+      setAccountError({
+        message: "Account Number is Required",
+        status: true,
+      });
+    }
   };
 
   return (
@@ -308,10 +335,14 @@ const RFQForwardCorporateModal = ({
                       applyClass="CalculatorTextfield"
                       onChange={handleChangeAcNo}
                       type="text"
-                      maxLength={25}
                       value={accountNumber}
                     />
                   </div>
+                  {accountError.status === true && (
+                    <div className="rfq-error_message">
+                      Account Number is required
+                    </div>
+                  )}
                 </Col>
               </Row>
 
@@ -324,6 +355,7 @@ const RFQForwardCorporateModal = ({
                       name="Amount"
                       onChange={handleChangeAmount}
                       applyClass="CalculatorTextfield"
+                      maxLength={10}
                     />
                   </div>
                 </Col>
@@ -338,6 +370,7 @@ const RFQForwardCorporateModal = ({
                       name="Tenor"
                       onChange={handleChangeTenor}
                       applyClass="CalculatorTextfield"
+                      maxLength={4}
                     />
                   </div>
                 </Col>
