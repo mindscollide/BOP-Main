@@ -17,6 +17,10 @@ import {
 } from "@/container/loginScreens/CreatePassword/createPassword_Action";
 import { LogoutApi } from "@/container/loginScreens/authActions/logoutAction";
 import { GetAllNatureOfTransactionsApi } from "@/container/pages/mainCorporate/rfqModal/RFQActions";
+import {
+  CreateCorporateUserForgotPasswordApi,
+  ResetPasswordCorporateApi,
+} from "@/container/loginScreens/ChangePassword/changePasswordActions";
 
 const authSlice = createSlice({
   name: "auth",
@@ -34,6 +38,8 @@ const authSlice = createSlice({
     getAllInstruments: null,
     GetAllNatureOfTransactions: null,
     GetAllActiveCorproates: null,
+    ResetPasswordCorporate: null,
+    CreateCorporateUserForgotPassword: null,
   },
   reducers: {
     clearAuthResponseMessage: (state) => {
@@ -216,7 +222,41 @@ const authSlice = createSlice({
         state.Loader = false;
         state.GetAllActiveCorproates = null;
         state.responseMessage = payload;
-      });
+      })
+      .addCase(ResetPasswordCorporateApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(ResetPasswordCorporateApi.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.ResetPasswordCorporate = payload?.response;
+        state.responseMessage = payload?.message;
+      })
+      .addCase(ResetPasswordCorporateApi.rejected, (state, { payload }) => {
+        console.log(payload);
+        state.Loader = false;
+        state.ResetPasswordCorporate = null;
+        state.responseMessage = payload;
+      })
+      .addCase(CreateCorporateUserForgotPasswordApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(
+        CreateCorporateUserForgotPasswordApi.fulfilled,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.CreateCorporateUserForgotPassword = payload?.response;
+          state.responseMessage = payload?.message;
+        }
+      )
+      .addCase(
+        CreateCorporateUserForgotPasswordApi.rejected,
+        (state, { payload }) => {
+          console.log(payload);
+          state.Loader = false;
+          state.CreateCorporateUserForgotPassword = null;
+          state.responseMessage = payload;
+        }
+      );
   },
 });
 export const { clearAuthResponseMessage } = authSlice.actions;

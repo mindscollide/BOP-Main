@@ -78,12 +78,8 @@ export const createCorporateCreatePasswordApi = createAsyncThunk(
 
       const response = await createCorporateCreatePassword(Data);
       if (response.data.responseCode === 200) {
-        const {
-          isExecuted,
-          responseMessage,
-          token,
-          refreshToken,
-        } = response.data.responseResult;
+        const { isExecuted, responseMessage, token, refreshToken } =
+          response.data.responseResult;
 
         if (isExecuted) {
           const msg = responseMessage.toLowerCase();
@@ -91,15 +87,13 @@ export const createCorporateCreatePasswordApi = createAsyncThunk(
           switch (msg) {
             case "ERM_AuthService_AuthManager_CreateCorporateUserPassword_01".toLowerCase():
               const {
-                user: {
-                  corporate,
-                  userID,
-                  firstName,
-                  email,
-                  contactNumber,
-                  userRoleID,
-                  userStatusID,
-                },
+                corporate,
+                userID,
+                firstName,
+                email,
+                contactNumber,
+                userRoleID,
+                userStatusID,
               } = response.data.responseResult.user;
               localStorage.setItem("token", token);
               localStorage.setItem("refreshToken", refreshToken);

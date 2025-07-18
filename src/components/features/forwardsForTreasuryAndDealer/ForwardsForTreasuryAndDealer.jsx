@@ -104,7 +104,7 @@ const ForwardsForTreasuryAndDealer = () => {
     tenorName: "",
     noOfDays: 0,
   });
-
+  console.log(createTenor, "createTenor");
   const [error, setError] = useState({ tenorName: "", noOfDays: "" });
   const [tenorValue, setTenorValue] = useState({
     value: 0,
@@ -275,18 +275,18 @@ const ForwardsForTreasuryAndDealer = () => {
 
   return (
     <>
-      <Row className='mt-4 mb-2'>
+      <Row className="mt-4 mb-2">
         <Col sm={12} md={6} lg={6}>
-          <h6 className='fs-4 fw-bold color-primary'>
+          <h6 className="fs-4 fw-bold color-primary">
             Forwards For Treasury & Branch
           </h6>
         </Col>
-        <Col sm={12} md={6} lg={6} className='flex-fill text-end'>
+        <Col sm={12} md={6} lg={6} className="flex-fill text-end">
           {CustomButton && (
             <Suspense fallback={<div>Loading button...</div>}>
               <CustomButton
                 value={"Create Tenor"}
-                applyClass='createTenorBtn'
+                applyClass="createTenorBtn"
                 onClick={handleOpenModal}
               />
             </Suspense>
@@ -294,10 +294,11 @@ const ForwardsForTreasuryAndDealer = () => {
         </Col>
         <Col sm={12} md={12} lg={12}>
           <div
-            className='d-flex select-br-days flex-wrap justify-content-center'
-            data-select2-id='6'>
-            <div className='w-fix-350'>
-              <div className='input-group'>
+            className="d-flex select-br-days flex-wrap justify-content-center"
+            data-select2-id="6"
+          >
+            <div className="w-fix-350">
+              <div className="input-group">
                 {SelectDropdown && (
                   <Suspense fallback={<div>Loading dropdown...</div>}>
                     <SelectDropdown
@@ -316,7 +317,7 @@ const ForwardsForTreasuryAndDealer = () => {
                       value={"Add"}
                       iconPosition={"start"}
                       onClick={handleAddTenor}
-                      applyClass='PlusButton'
+                      applyClass="PlusButton"
                       icon={
                         <IconElement iconClass={"icon-add-circle-fill fs-4"} />
                       }
@@ -328,7 +329,7 @@ const ForwardsForTreasuryAndDealer = () => {
           </div>
         </Col>
         {TenoreWiseCurrentAndLastRates && (
-          <Col sm={12} md={12} lg={12} className='mt-3'>
+          <Col sm={12} md={12} lg={12} className="mt-3">
             <Suspense fallback={<div>Loading table...</div>}>
               <TenoreWiseCurrentAndLastRates
                 newTenorRecord={newTenorRecord}
@@ -338,17 +339,17 @@ const ForwardsForTreasuryAndDealer = () => {
           </Col>
         )}
         {DealeAndTreasuryFeDiscountingTable && (
-          <Col sm={12} md={12} lg={12} className='mt-3'>
+          <Col sm={12} md={12} lg={12} className="mt-3">
             <Suspense fallback={<div>Loading table...</div>}>
-              <h6 className='fs-4 fw-bold color-primary'>FE Discounting %</h6>
+              <h6 className="fs-4 fw-bold color-primary">FE Discounting %</h6>
               <DealeAndTreasuryFeDiscountingTable />
             </Suspense>
           </Col>
         )}
         {DealeAndTreasuryNonFeDiscountingTable && (
-          <Col sm={12} md={12} lg={12} className='mt-3'>
+          <Col sm={12} md={12} lg={12} className="mt-3">
             <Suspense fallback={<div>Loading table...</div>}>
-              <h6 className='fs-4 fw-bold color-primary'>
+              <h6 className="fs-4 fw-bold color-primary">
                 Non-FE Discounting %
               </h6>
               <DealeAndTreasuryNonFeDiscountingTable />
@@ -358,7 +359,7 @@ const ForwardsForTreasuryAndDealer = () => {
       </Row>
       <GlobalModal
         show={createTenorModal}
-        backdrop='static'
+        backdrop="static"
         onHide={() => {
           dispatch(setCreateTenorModal(false));
           setError({ tenorName: "", noOfDays: "" });
@@ -368,30 +369,30 @@ const ForwardsForTreasuryAndDealer = () => {
           });
         }}
         centered={true}
-        footerClassName='d-block border-0'
+        footerClassName="d-block border-0"
         modalBody={
           <>
             <Row>
-              <Col sm={12} md={12} lg={12} className='mb-4'>
-                <div className='color-blue fw-bold fs-5'>Create Tenor</div>
+              <Col sm={12} md={12} lg={12} className="mb-4">
+                <div className="color-blue fw-bold fs-5">Create Tenor</div>
               </Col>
-              <Col sm={12} md={12} lg={12} className='mb-4'>
-                <label className='mb-1'>Tenor</label>
+              <Col sm={12} md={12} lg={12} className="mb-4">
+                <label className="mb-1">Tenor</label>
                 <InputFIeld
-                  type='text'
+                  type="text"
                   value={createTenor.tenorName}
-                  name='tenorName'
+                  name="tenorName"
                   onChange={handleChangeCreateTenor}
                   className={"form-control"}
                 />
                 {error.tenorName && <span>{error.tenorName}</span>}
               </Col>
-              <Col sm={12} md={12} lg={12} className='mb-2'>
+              <Col sm={12} md={12} lg={12} className="mb-2">
                 <label># Of Days</label>
                 <InputFIeld
-                  type='number'
+                  type="number"
                   value={createTenor.noOfDays}
-                  name='noOfDays'
+                  name="noOfDays"
                   onChange={handleChangeCreateTenor}
                   className={"form-control"}
                 />
@@ -407,13 +408,21 @@ const ForwardsForTreasuryAndDealer = () => {
                 sm={12}
                 md={12}
                 lg={12}
-                className='d-flex justify-content-center gap-2'>
+                className="d-flex justify-content-center gap-2"
+              >
                 {CustomButton && (
                   <Suspense fallback={<div>Loading button...</div>}>
                     <CustomButton
                       value={"Create Tenor"}
                       applyClass={"createTenorModalFooterBtn"}
                       onClick={handleCreateTenor}
+                      disabled={
+                        Number(createTenor.noOfDays) !== 0 &&
+                        createTenor.noOfDays !== "" &&
+                        createTenor.tenorName !== ""
+                          ? false
+                          : true
+                      }
                     />
                     <CustomButton
                       value={"Cancel"}

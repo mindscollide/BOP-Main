@@ -379,3 +379,11 @@ export const CalculateNonFESwapAndDiscountingRM = {
 export const GetNOPData = {
   RequestMethod: "ServiceManager.GetNOPData",
 };
+
+export const ResetPasswordCorporate = {
+  RequestMethod: "ServiceManager.ResetPasswordCorporate",
+};
+
+export const CreateCorporateUserForgotPassword = {
+  RequestMethod: "ServiceManager.CreateCorporateUserForgotPassword",
+};
