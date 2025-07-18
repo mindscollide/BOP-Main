@@ -142,6 +142,29 @@ export function isValidNumberUnderMax(value, previousValue = "", max = 100) {
   return !isNaN(num) && num >= 0 && num <= max;
 }
 
+// allow 4 number after point
+export function isValidMaxFourNumberAfterPoint(
+  value,
+  previousValue = "",
+  max = 100
+) {
+  if (/\s/.test(value)) return false; // Block spaces
+  if (value === "" || value === null) return true;
+  if (value === ".") return true;
+
+  // Replace "05" style with "5"
+  if (previousValue === "0" && /^[1-9]$/.test(value)) {
+    return value;
+  }
+
+  // Allow numbers with up to 4 decimal places
+  const regex = /^\d{1,3}(\.\d{0,4})?$/;
+  if (!regex.test(value)) return false;
+
+  const num = parseFloat(value);
+  return !isNaN(num) && num >= 0 && num <= max;
+}
+
 export const convertDateTimeIntoLocal = (utcDateString) => {
   const year = parseInt(utcDateString.slice(0, 4));
   const month = parseInt(utcDateString.slice(4, 6)) - 1; // JS months are 0-based

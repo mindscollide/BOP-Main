@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { publishDiscountingRatesAction } from "@/container/pages/mainDealer/dealerActions";
 import { useSelector } from "react-redux";
-import { formatPercentageInput } from "@/utils/formatters";
+import { formatPercentageInput, isValidMaxFourNumberAfterPoint, isValidNumberUnderMax } from "@/utils/formatters";
 import {
   GetNonFEDiscountingTableApi,
   PublishNonFEDiscountingTableApi,
@@ -128,21 +128,29 @@ const NonFeDiscountingTable = () => {
   ]);
 
   const onInputChange = (record, instrumentName, value) => {
-    setTableData((prevState) =>
-      prevState.map((stateData) => {
-        // Match by TenorID only, since each row contains all instruments
-        if (
-          stateData.TenorID === record.TenorID &&
-          stateData.instrumentName === record.instrumentName
-        ) {
-          return {
-            ...stateData,
-            [`${instrumentName}`]: formatPercentageInput(value),
-          };
-        }
-        return stateData;
-      })
-    );
+    const previousValue = record[instrumentName]; // Get previous value from record
+    const validated = isValidMaxFourNumberAfterPoint(value, previousValue, 100);
+
+    // Only update if valid or corrected (not false)
+    if (validated !== false) {
+      const finalValue = typeof validated === "string" ? validated : value;
+
+      setTableData((prevState) =>
+        prevState.map((stateData) => {
+          // Match by TenorID only, since each row contains all instruments
+          if (
+            stateData.TenorID === record.TenorID &&
+            stateData.instrumentName === record.instrumentName
+          ) {
+            return {
+              ...stateData,
+              [`${instrumentName}`]: finalValue,
+            };
+          }
+          return stateData;
+        })
+      );
+    }
   };
 
   const handlePublishDiscount = () => {
@@ -153,15 +161,15 @@ const NonFeDiscountingTable = () => {
   return (
     <>
       <GlobalTable
-        prefixCls='DealerAndTreasuryDiscountTable'
+        prefixCls="DealerAndTreasuryDiscountTable"
         columns={columnsData}
         dataSource={tableData}
         pagination={false}
       />
 
-      <span className='d-flex justify-content-center mt-4'>
+      <span className="d-flex justify-content-center mt-4">
         <CustomButton
-          applyClass='publishForwardsBtn'
+          applyClass="publishForwardsBtn"
           value={"Publish Non FE Discounting"}
           onClick={handlePublishDiscount}
           disabled={marketStatus === false ? true : false}

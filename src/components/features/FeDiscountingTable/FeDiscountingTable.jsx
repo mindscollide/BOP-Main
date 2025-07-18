@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { publishDiscountingRatesAction } from "@/container/pages/mainDealer/dealerActions";
 import { useSelector } from "react-redux";
-import { isValidNumberUnderMax } from "@/utils/formatters";
+import { isValidMaxFourNumberAfterPoint, isValidNumberUnderMax } from "@/utils/formatters";
 import {
   GetFEDiscountingTableApi,
   PublishFEDiscountingTableApi,
@@ -131,7 +131,7 @@ const FeDiscountingTable = () => {
   }, [getFeDiscountingData, getAllTenorsData, GetAllInstrumentForTreasury]);
   const onInputChange = (record, instrumentName, value) => {
     const previousValue = record[instrumentName]; // Get previous value from record
-    const validated = isValidNumberUnderMax(value, previousValue, 100);
+    const validated = isValidMaxFourNumberAfterPoint(value, previousValue, 100);
 
     // Only update if valid or corrected (not false)
     if (validated !== false) {
