@@ -123,6 +123,7 @@ export const corporateUserLoginInApi = createAsyncThunk(
             case "ERM_AuthService_AuthManager_CorporateUserLogin_04".toLowerCase():
             case "ERM_AuthService_AuthManager_CorporateUserLogin_05".toLowerCase():
             case "ERM_AuthService_AuthManager_CorporateUserLogin_06".toLowerCase():
+              return rejectWithValue("User is Disabled")
             case "ERM_AuthService_AuthManager_CorporateUserLogin_07".toLowerCase():
             case "ERM_AuthService_AuthManager_CorporateUserLogin_08".toLowerCase():
             case "ERM_AuthService_AuthManager_CorporateUserLogin_09".toLowerCase():

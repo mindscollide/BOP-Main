@@ -96,7 +96,7 @@ const NonFeDiscountingTable = () => {
           GetAllInstrumentForTreasury.discountingInstruments;
         const getAllInstrument = { instruments: DiscountingInstruments };
         const { rowData, columnsData } = buildDiscountingTable(
-          1,
+          5,
           rates,
           getAllTenorsData,
           getAllInstrument,
