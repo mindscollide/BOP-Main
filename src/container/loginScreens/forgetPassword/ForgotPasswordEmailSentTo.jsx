@@ -30,6 +30,7 @@ const ForgotPasswordEmailSentTo = () => {
             <h4 className={styles["Heading-passwordResetEMailSentTo"]}>
               Email has been sent to
             </h4>
+            {/* <h4>{localStorage.getItem.email}</h4> */}
             <span className="d-block text-center mb-4">
               Please check your email and click on the Password Reset Link
             </span>
