@@ -39,6 +39,7 @@ import {
   setBlotterTransactionAddedForTreasuryDealBox,
   setBlotterTransactionRFQExpiredForTreasuryDealBox,
   setBlotterTransactionRFQQuotedForTreasuryDealBox,
+  setCounterPartySpotRates,
   setIncomingChat,
   setMarketTimingsUpdated,
   setTenorsCreated,
@@ -92,116 +93,116 @@ const Dashboard = () => {
   const userID = localStorage.getItem("userID");
 
   // Memoized MQTT message handler
-  const handleMqttMessage = useCallback(
-    (data) => {
-      switch (data.payload.message) {
-        case "INCOMING_CHAT":
-          try {
-            const chatObj = {
-              ...data.payload.chat,
-              creationDateTime: formatDateToUTC(new Date()),
-            };
-            dispatch(setIncomingChat(chatObj));
-          } catch (error) {
-            console.log(error);
-          }
-          break;
-        case "TENOR_CREATED":
-          dispatch(setTenorsCreated(data.payload));
-          break;
-        case "MARKET_TIME_UPDATED":
-          dispatch(setMarketTimingsUpdated(data.payload));
-          break;
-        case "CURRENT_USD_RATES_PUBLISHED":
-          dispatch(currentRatePublishedAction(data.payload));
-          break;
-        case "FE_DISCOUNTING_RATES_PUBLISHED":
-          dispatch(FeDiscountingPublishedAction(data.payload));
-          break;
-        case "TENOR_WISE_FORWARD_RATES_PUBLISHED":
-          dispatch(tenorWiseFowardsRatesPublishedActions(data.payload));
-          break;
-        case "NONFE_DISCOUNTING_RATES_PUBLISHED":
-          dispatch(NonFeDiscountingPublishedAction(data.payload));
-          break;
-        case "MARKET_STATUS_UPDATED":
-          dispatch(marketStatusUpdated(data.payload.marketStatus.isMarketOn));
-          break;
-        case "BRANCH_STATUS_INACTIVE":
-        case "CORPORATE_STATUS_INACTIVE":
-          dispatch(LogoutApi({ navigate }));
-          break;
-        case "CATEGORY_ADDED":
-          dispatch(categoryisAdded(data.payload));
-          break;
-        case "CATEGORY_UPDATED":
-          dispatch(categoryisUpdated(data.payload));
-          break;
-        case "CATEGORY_DELETED":
-          dispatch(categoryisDeleted(data.payload));
-          break;
-        case "BLOTTER_RFQ_TRANSACTION_EXPIRED":
-          dispatch(BlotterTransactionRFQExpired(data.payload));
-          dispatch(
-            setBlotterTransactionRFQExpiredForTreasuryDealBox(data.payload)
-          );
+  const handleMqttMessage = useCallback((data) => {
+    switch (data.payload.message) {
+      case "INCOMING_CHAT":
+        try {
+          const chatObj = {
+            ...data.payload.chat,
+            creationDateTime: formatDateToUTC(new Date()),
+          };
+          dispatch(setIncomingChat(chatObj));
+        } catch (error) {
+          console.log(error);
+        }
+        break;
+      case "TENOR_CREATED":
+        dispatch(setTenorsCreated(data.payload));
+        break;
+      case "MARKET_TIME_UPDATED":
+        dispatch(setMarketTimingsUpdated(data.payload));
+        break;
+      case "CURRENT_USD_RATES_PUBLISHED":
+        dispatch(currentRatePublishedAction(data.payload));
+        break;
+      case "FE_DISCOUNTING_RATES_PUBLISHED":
+        dispatch(FeDiscountingPublishedAction(data.payload));
+        break;
+      case "TENOR_WISE_FORWARD_RATES_PUBLISHED":
+        dispatch(tenorWiseFowardsRatesPublishedActions(data.payload));
+        break;
+      case "NONFE_DISCOUNTING_RATES_PUBLISHED":
+        dispatch(NonFeDiscountingPublishedAction(data.payload));
+        break;
+      case "MARKET_STATUS_UPDATED":
+        dispatch(marketStatusUpdated(data.payload.marketStatus.isMarketOn));
+        break;
+      case "BRANCH_STATUS_INACTIVE":
+      case "CORPORATE_STATUS_INACTIVE":
+        dispatch(LogoutApi({ navigate }));
+        break;
+      case "CATEGORY_ADDED":
+        dispatch(categoryisAdded(data.payload));
+        break;
+      case "CATEGORY_UPDATED":
+        dispatch(categoryisUpdated(data.payload));
+        break;
+      case "CATEGORY_DELETED":
+        dispatch(categoryisDeleted(data.payload));
+        break;
+      case "BLOTTER_RFQ_TRANSACTION_EXPIRED":
+        dispatch(BlotterTransactionRFQExpired(data.payload));
+        dispatch(
+          setBlotterTransactionRFQExpiredForTreasuryDealBox(data.payload)
+        );
 
-          if (
-            chatModal &&
-            chatModalTransactionId ===
-              data.payload?.transaction?.pK_TransactionID
-          ) {
-            console.log(first);
-            dispatch(setChatModal(false));
-          }
-          break;
-        case "BLOTTER_TRANSACTION_ADDED":
-          dispatch(BlotterTransactionAdded(data.payload));
-          dispatch(BlotterTransactionAddedForTreasury(data.payload));
-          dispatch(setBlotterTransactionAddedForTreasuryDealBox(data.payload));
-          break;
-        case "BLOTTER_TRANSACTION_ASSIGNED":
-          dispatch(BlotterTransactionAssigned(data.payload));
-          dispatch(BlotterTransactionAssignedForTreasury(data.payload));
-          break;
-        case "BLOTTER_TRANSACTION_ACCEPTED":
-          dispatch(BlotterTransactionAccepted(data.payload));
-          dispatch(BlotterTransactionAcceptedForTreasury(data.payload));
-          break;
-        case "BLOTTER_TRANSACTION_RFQ_QUOTED":
-          dispatch(BlotterTransactionRFQQuoted(data.payload));
-          dispatch(BlotterTransactionRFQQuotedForTreasury(data.payload));
-          dispatch(
-            setBlotterTransactionRFQQuotedForTreasuryDealBox(data.payload)
-          );
-          break;
-        case "BLOTTER_TRANSACTION_CANCELLATION_REQUEST":
-          dispatch(BlotterTransactionCancellationRequest(data.payload));
-          dispatch(
-            BlotterTransactionCancellationRequestForTreasury(data.payload)
-          );
-          break;
-        case "BLOTTER_TRANSACTION_CANCELLED":
-          dispatch(BlotterTranscationCancelled(data.payload));
-          dispatch(BlotterTranscationCancelledForTreasury(data.payload));
-          break;
-        case "BLOTTER_TRANSACTION_REJECTED":
-          dispatch(BlotterTransactionRejected(data.payload));
-          dispatch(BlotterTransactionRejectedForTreasury(data.payload));
-          break;
-        case "BLOTTER_TRANSACTION_ASSIGNED_TO_TREASURY":
-          dispatch(TransactionAssignedByTreasury(data.payload));
-          break;
-        case "TREASURY_SPOT_RATES_FEED":
-          dispatch(setTreasurySpotRatesFeed(data.payload));
-          break;
-        default:
-          console.warn("No specific handler for this message type");
-          break;
-      }
-    },
-    []
-  );
+        if (
+          chatModal &&
+          chatModalTransactionId === data.payload?.transaction?.pK_TransactionID
+        ) {
+          console.log(first);
+          dispatch(setChatModal(false));
+        }
+        break;
+      case "BLOTTER_TRANSACTION_ADDED":
+        dispatch(BlotterTransactionAdded(data.payload));
+        dispatch(BlotterTransactionAddedForTreasury(data.payload));
+        dispatch(setBlotterTransactionAddedForTreasuryDealBox(data.payload));
+        break;
+      case "BLOTTER_TRANSACTION_ASSIGNED":
+        dispatch(BlotterTransactionAssigned(data.payload));
+        dispatch(BlotterTransactionAssignedForTreasury(data.payload));
+        break;
+      case "BLOTTER_TRANSACTION_ACCEPTED":
+        dispatch(BlotterTransactionAccepted(data.payload));
+        dispatch(BlotterTransactionAcceptedForTreasury(data.payload));
+        break;
+      case "BLOTTER_TRANSACTION_RFQ_QUOTED":
+        dispatch(BlotterTransactionRFQQuoted(data.payload));
+        dispatch(BlotterTransactionRFQQuotedForTreasury(data.payload));
+        dispatch(
+          setBlotterTransactionRFQQuotedForTreasuryDealBox(data.payload)
+        );
+        break;
+      case "BLOTTER_TRANSACTION_CANCELLATION_REQUEST":
+        dispatch(BlotterTransactionCancellationRequest(data.payload));
+        dispatch(
+          BlotterTransactionCancellationRequestForTreasury(data.payload)
+        );
+        break;
+      case "BLOTTER_TRANSACTION_CANCELLED":
+        dispatch(BlotterTranscationCancelled(data.payload));
+        dispatch(BlotterTranscationCancelledForTreasury(data.payload));
+        break;
+      case "BLOTTER_TRANSACTION_REJECTED":
+        dispatch(BlotterTransactionRejected(data.payload));
+        dispatch(BlotterTransactionRejectedForTreasury(data.payload));
+        break;
+      case "BLOTTER_TRANSACTION_ASSIGNED_TO_TREASURY":
+        dispatch(TransactionAssignedByTreasury(data.payload));
+        break;
+      case "TREASURY_SPOT_RATES_FEED":
+        dispatch(setTreasurySpotRatesFeed(data.payload));
+        break;
+      case "DISPATCHER_SPOT_RATES":
+        console.log(data.payload, "DISPATCHER_SPOT_RATES");
+        dispatch(setCounterPartySpotRates(data.payload));
+        break;
+      default:
+        console.warn("No specific handler for this message type");
+        break;
+    }
+  }, []);
 
   // MQTT configuration
   const mqttConfig = useMemo(

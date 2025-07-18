@@ -28,12 +28,12 @@ const MainTreasury = () => {
       let Data = { sRow: 0, Length: 10 };
       dispatch(GetBlotterOutstandingDealsDataAPI({ navigate, Data }));
       dispatch(BlotterDataAPI({ navigate, Data }));
+      dispatch(GetNOPDataAPI({ navigate }));
     }
     dispatch(getAllTreasuryInstrumentsApi({ navigate }));
     dispatch(GetBankForwardForTreasuryApi({ navigate }));
     dispatch(getAllTenorsAction({ navigate }));
     dispatch(GetDiscountingRatesForTreasuryApi({ navigate }));
-    dispatch(GetNOPDataAPI({ navigate }));
   }, []);
 
   const tabsData = [

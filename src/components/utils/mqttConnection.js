@@ -106,8 +106,8 @@ export const useMqttClient = ({
         let subscribeIDNew = userData?.branchID || userData?.corporateID;
 
         let newTopic = isBranch
-          ? `BRANCH_${subscribeIDNew}`
-          : `CORPORATE_${subscribeIDNew}`;
+          ? `BOP_BRANCH_${subscribeIDNew}`
+          : `BOP_CORPORATE_${subscribeIDNew}`;
         if (isCorporate || isBranch) {
           subscribeToTopics([subscribeID, `BOP_${userID}`, newTopic]);
         } else {
@@ -127,7 +127,7 @@ export const useMqttClient = ({
         userName: import.meta.env.VITE_MQTT_USERNAME,
         password: import.meta.env.VITE_MQTT_PASSWORD,
         cleanSession: true,
-        useSSL: false,
+        useSSL: import.meta.env.VITE_MQTT_PORT === "8883" ? true : false,
       });
     },
     [onMessageArrived, onConnectionLost, randomString, subscribeToTopics]

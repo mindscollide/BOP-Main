@@ -132,6 +132,7 @@ const BlotterHeader = () => {
                             src={pdfImage}
                             width={30}
                             height={30}
+                            className="cursor-pointer"
                             alt="pdf"
                             onClick={HandlePDFDownloadFunc}
                           />
@@ -140,18 +141,21 @@ const BlotterHeader = () => {
                             width={30}
                             height={30}
                             alt="excel"
+                            className="cursor-pointer"
                             onClick={HandleExcelDownloadFunc}
                           />
                           <img
                             src={emailImage}
                             width={30}
                             height={30}
+                            className="cursor-pointer"
                             alt="email"
                             onClick={onClickMailModal}
                           />
                           <img
                             src={printImage}
                             width={30}
+                            className="cursor-pointer"
                             height={30}
                             alt="print"
                           />
@@ -188,12 +192,14 @@ const BlotterHeader = () => {
                             src={pdfImage}
                             width={30}
                             height={30}
+                            className="cursor-pointer"
                             alt="pdf"
                             onClick={HandlePDFDownloadFunc}
                           />
                           <img
                             src={excelImage}
                             width={30}
+                            className="cursor-pointer"
                             height={30}
                             alt="excel"
                             onClick={HandleExcelDownloadFunc}
@@ -201,12 +207,14 @@ const BlotterHeader = () => {
                           <img
                             src={emailImage}
                             width={30}
+                            className="cursor-pointer"
                             height={30}
                             alt="email"
                             onClick={onClickMailModal}
                           />
                           <img
                             src={printImage}
+                            className="cursor-pointer"
                             width={30}
                             height={30}
                             alt="print"

@@ -11,7 +11,7 @@ export function formatDateTimeToUTCTime(dateTimeStr) {
   const date = new Date(Date.UTC(year, month, day, hour, minute, second));
 
   // Format the time in HH:MM:SS
-  const formattedTime = date.toTimeString().substring(0, 5); // Extracting the time part from ISO string
+  const formattedTime = date.toTimeString().substring(0, 9); // Extracting the time part from ISO string
 
   return formattedTime;
 }

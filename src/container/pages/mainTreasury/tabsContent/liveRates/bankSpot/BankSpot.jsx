@@ -101,6 +101,7 @@ const BankSpot = () => {
             ) {
               newData.worldCrossBid = instrumentCrossRate.bid;
               newData.worldCrossOffer = instrumentCrossRate.ask;
+              newData.time = instrumentCrossRate.updateDateTime;
               isUpdated = true;
             }
           }

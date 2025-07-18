@@ -45,10 +45,14 @@ const RealtimeActionsSlice = createSlice({
 
     TransactionAssignedByTreasury: null,
     TreasurySpotRatesFeed: null,
+    CounterPartySpotRates: null,
   },
   reducers: {
+    setCounterPartySpotRates: (state, { payload }) => {
+      state.CounterPartySpotRates = {...payload};
+    },
     setTreasurySpotRatesFeed: (state, { payload }) => {
-      state.TreasurySpotRatesFeed = payload;
+      state.TreasurySpotRatesFeed = {...payload};
     },
     setDealBoxData(state, { payload }) {
       state.dealBoxData = payload;
@@ -184,6 +188,7 @@ export const {
   setBlotterTransactionRFQExpiredForTreasuryDealBox,
   setBlotterTransactionAddedForTreasuryDealBox,
   setDealBoxData,
+  setCounterPartySpotRates
 } = RealtimeActionsSlice.actions;
 
 export default RealtimeActionsSlice.reducer;
