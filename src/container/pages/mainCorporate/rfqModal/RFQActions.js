@@ -19,10 +19,7 @@ export const ViewAllNatureOfBussinessAPI = createAsyncThunk(
 
       const response = await ViewAllNatureOfBussiness(Data);
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+    
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(ViewAllNatureOfBussinessAPI({ Data, navigate }));
@@ -39,7 +36,7 @@ export const ViewAllNatureOfBussinessAPI = createAsyncThunk(
             console.log("", response.data);
             return {
               response: response.data.responseResult,
-              message: "Successfully Rerieved Data",
+              message: "",
             };
           } else if (
             responseMessage
@@ -48,7 +45,7 @@ export const ViewAllNatureOfBussinessAPI = createAsyncThunk(
                 "ERM_AuthService_CommonManager_ViewAllNatureOfBussiness_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Unsuccessfull");
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -84,10 +81,7 @@ export const GetAllNatureOfTransactionsApi = createAsyncThunk(
       );
 
       const response = await getNatureOfTransactions();
-      if (response.data.responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please log in again.");
-      }
+ 
       if (response.data.responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(GetAllNatureOfTransactionsApi({ navigate }));
@@ -103,7 +97,7 @@ export const GetAllNatureOfTransactionsApi = createAsyncThunk(
           ) {
             return {
               response: response.data.responseResult,
-              message: "Data available",
+              message: "",
             };
           } else if (
             responseMessage
@@ -112,7 +106,7 @@ export const GetAllNatureOfTransactionsApi = createAsyncThunk(
                 "ERM_AuthService_CommonManager_GetAllNatureOfTransactions_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("No Data available");
+            return rejectWithValue("");
           } else if (
             responseMessage
               .toLowerCase()
@@ -145,10 +139,7 @@ export const SaveTransactionRFQAPI = createAsyncThunk(
     try {
       const response = await SaveTransactionRFQ(Data);
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+    
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
       } else if (response.data.responseCode === 200) {
@@ -164,7 +155,7 @@ export const SaveTransactionRFQAPI = createAsyncThunk(
             console.log("", response.data);
             return {
               response: response.data.responseResult,
-              message: "Successfully Rerieved Data",
+              message: "",
             };
           } else if (
             responseMessage
@@ -173,7 +164,7 @@ export const SaveTransactionRFQAPI = createAsyncThunk(
                 "ERM_AuthService_CommonManager_ViewAllNatureOfBussiness_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Unsuccessfull");
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()

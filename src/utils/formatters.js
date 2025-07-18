@@ -142,6 +142,50 @@ export function isValidNumberUnderMax(value, previousValue = "", max = 100) {
   return !isNaN(num) && num >= 0 && num <= max;
 }
 
+// allow 4 number after point
+export function isValidMaxFourNumberAfterPoint(
+  value,
+  previousValue = "",
+  max = 100
+) {
+  if (/\s/.test(value)) return false; // Block spaces
+  if (value === "" || value === null) return true;
+  if (value === ".") return true;
+
+  // Replace "05" style with "5"
+  if (previousValue === "0" && /^[1-9]$/.test(value)) {
+    return value;
+  }
+
+  // Allow numbers with up to 4 decimal places
+  const regex = /^\d{1,3}(\.\d{0,4})?$/;
+  if (!regex.test(value)) return false;
+
+  const num = parseFloat(value);
+  return !isNaN(num) && num >= 0 && num <= max;
+}
+
+export function isValidNumberUnderMaxNumber(value, max = 60) {
+  if (typeof value !== "string") return false;
+
+  // Allow empty string to support clearing input
+  if (value === "") return true;
+
+  // Block any decimal input (like ".", "1.5")
+  if (value.includes(".")) return false;
+
+  // Block any non-digit characters (including special chars, letters, whitespace)
+  if (!/^\d+$/.test(value)) return false;
+
+  // Disallow leading zeros like "05", "012", but allow "0"
+  if (value.length > 1 && value.startsWith("0")) return false;
+
+  const num = parseInt(value, 10);
+
+  // Final check: must be between 0 and max
+  return !isNaN(num) && num >= 0 && num <= max;
+}
+
 export const convertDateTimeIntoLocal = (utcDateString) => {
   const year = parseInt(utcDateString.slice(0, 4));
   const month = parseInt(utcDateString.slice(4, 6)) - 1; // JS months are 0-based

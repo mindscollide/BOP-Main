@@ -104,7 +104,9 @@ const ForwardsForTreasuryAndDealer = () => {
     tenorName: "",
     noOfDays: 0,
   });
-  console.log(createTenor, "createTenor");
+
+  console.log(createTenor, "tenorNametenorName");
+
   const [error, setError] = useState({ tenorName: "", noOfDays: "" });
   const [tenorValue, setTenorValue] = useState({
     value: 0,
@@ -142,7 +144,13 @@ const ForwardsForTreasuryAndDealer = () => {
 
     // Restrict input length
     if (name === "tenorName" && value.length > 10) return;
-    if (name === "noOfDays" && value.length > 4) return;
+    if (name === "noOfDays") {
+      // Reject non-digits (no points, no special chars, no minus/plus)
+      const cleanValue = value.replace(/\D/g, "");
+      if (cleanValue.length > 4) return;
+      setCreateTenor({ ...createTenor, [name]: cleanValue });
+      return;
+    }
     setCreateTenor({ ...createTenor, [name]: value });
   };
   console.log(getAllTenorsList, "getAllTenorsListgetAllTenorsList");
@@ -231,22 +239,27 @@ const ForwardsForTreasuryAndDealer = () => {
     } catch (error) {}
   };
   console.log(getAllTenorsData, "getAllTenorsDatagetAllTenorsData");
+
   useEffect(() => {
-    if (getAllTenorsData !== null) {
+    if (getAllTenorsData?.tenors?.length) {
       try {
-        let tenorsList = getAllTenorsData.tenors.map((tenor) => {
-          return {
+        let tenorsList = [...getAllTenorsData.tenors]
+          .sort((a, b) => a.tenorDays - b.tenorDays) // ascending
+          .map((tenor) => ({
             ...tenor,
             label: tenor.tenorName,
             value: tenor.tenorID,
-          };
-        });
+          }));
+
         setTenorValue({
           value: tenorsList[0].value,
           label: tenorsList[0].label,
         });
+
         setAllTenorsList(tenorsList);
-      } catch (error) {}
+      } catch (error) {
+        console.error("Error processing tenors", error);
+      }
     }
   }, [getAllTenorsData]);
 
@@ -390,7 +403,7 @@ const ForwardsForTreasuryAndDealer = () => {
               <Col sm={12} md={12} lg={12} className="mb-2">
                 <label># Of Days</label>
                 <InputFIeld
-                  type="number"
+                  type="text"
                   value={createTenor.noOfDays}
                   name="noOfDays"
                   onChange={handleChangeCreateTenor}

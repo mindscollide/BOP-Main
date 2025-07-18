@@ -39,6 +39,7 @@ import {
   BlotterTransactionRejectedForTreasury,
 } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { setTransactionInfoModal } from "@/store/modalSlice/modalSlicer";
+import { updateRealtimeBlotterData } from "@/store/BlotterSlicer/BlotterSlicer";
 
 /**
  * TXNTreasurySummary component that manages and displays the treasury transaction summary.
@@ -69,12 +70,8 @@ const TXNTreasurySummary = () => {
   const GlobalStateGetBlotterData = useSelector(
     (state) => state.BlotterSlicer.getBlotterApiData
   );
-  const tnxTableNewData = useSelector(
+  const tnxTableDisplayData = useSelector(
     (state) => state.BlotterSlicer.tnxTableNewData
-  );
-
-  const activeTabBlotter = useSelector(
-    (state) => state.BlotterSlicer.activeTabBlotter
   );
 
   // Local state
@@ -134,52 +131,61 @@ const TXNTreasurySummary = () => {
     0,
     "TXNSummary_Table"
   );
-  console.log(
-    tnxTableNewData,
-    GlobalStateGetBlotterData,
-    "tnxTableNewDatatnxTableNewData"
-  );
+
   /**
    * Updates blotter data when API data changes
    */
   useEffect(() => {
-    if (GlobalStateGetBlotterData !== null && tnxTableNewData.length > 0) {
-      console.log(tnxTableNewData, "tnxTableNewDatatnxTableNewData");
-      setBlotterdata(tnxTableNewData);
-      setRow(tnxTableNewData.length);
+    if (GlobalStateGetBlotterData !== null && tnxTableDisplayData.length > 0) {
+      console.log(tnxTableDisplayData, "tnxTableNewDatatnxTableNewData");
+      setBlotterdata(tnxTableDisplayData);
+      setRow(tnxTableDisplayData.length);
       setTotalRecords(GlobalStateGetBlotterData.totalCount);
       setHasReachedBottom(false);
     }
-  }, [GlobalStateGetBlotterData, tnxTableNewData]);
+  }, [GlobalStateGetBlotterData, tnxTableDisplayData]);
 
   /**
    * Handles real-time updates for different transaction statuses
    */
+  console.log(
+    { GlobalStateGetBlotterData, tnxTableDisplayData },
+    "GlobalStateGetBlotterDataGlobalStateGetBlotterData"
+  );
   useEffect(() => {
-    const handleTransactionUpdate = (transaction, action) => {
+    const updateGlobalBlotter = (newSummary) => {
+      console.log(newSummary, "newSummarynewSummary")
+      dispatch(
+        updateRealtimeBlotterData({
+          ...GlobalStateGetBlotterData,
+          // tnxSummary: newSummary,
+          tnxTableNewData: newSummary,
+        })
+      );
+    };
+
+    const handleTransactionUpdate = (transaction, clearAction) => {
       if (!transaction) return;
 
-      const existingIndex = blotterdata.findIndex(
+      let updatedData = [...(tnxTableDisplayData || [])];
+      console.log(updatedData, "newSummarynewSummary")
+
+      const existingIndex = updatedData.findIndex(
         (item) => item.pK_TransactionID === transaction.pK_TransactionID
       );
 
       if (existingIndex !== -1) {
-        // Update existing transaction
-        setBlotterdata((prev) =>
-          prev.map((item) =>
-            item.pK_TransactionID === transaction.pK_TransactionID
-              ? transaction
-              : item
-          )
-        );
+        updatedData[existingIndex] = transaction;
       } else {
-        // Add new transaction at the top
-        setBlotterdata((prev) => [transaction, ...prev]);
+        updatedData = [transaction, ...updatedData];
+        setTotalRecords((prevTotalCount) => prevTotalCount + 1);
       }
 
-      dispatch(action(null));
+      updateGlobalBlotter(updatedData);
+      dispatch(clearAction(null));
     };
 
+    // RFQ Expired
     if (blotterTransactionRFQExpiredForTreasury) {
       handleTransactionUpdate(
         blotterTransactionRFQExpiredForTreasury.transaction,
@@ -187,6 +193,7 @@ const TXNTreasurySummary = () => {
       );
     }
 
+    // Transaction Accepted
     if (blotterTransactionAcceptedForTreasury) {
       handleTransactionUpdate(
         blotterTransactionAcceptedForTreasury.transaction,
@@ -194,17 +201,20 @@ const TXNTreasurySummary = () => {
       );
     }
 
+    // Transaction Cancel Request (delete from list)
     if (blotterTransactionCancellationRequestDataForTreasury) {
       const { transaction } =
         blotterTransactionCancellationRequestDataForTreasury;
-      setBlotterdata((prev) =>
-        prev.filter(
-          (item) => item.pK_TransactionID !== transaction.pK_TransactionID
-        )
+
+      const updatedData = (tnxTableDisplayData || []).filter(
+        (item) => item.pK_TransactionID !== transaction.pK_TransactionID
       );
+      setTotalRecords((prevTotalCount) => prevTotalCount - 1);
+      updateGlobalBlotter(updatedData);
       dispatch(BlotterTransactionCancellationRequestForTreasury(null));
     }
 
+    // Transaction Cancelled
     if (blotterTranscationCancelledForTreasury) {
       handleTransactionUpdate(
         blotterTranscationCancelledForTreasury.transaction,
@@ -212,6 +222,7 @@ const TXNTreasurySummary = () => {
       );
     }
 
+    // Transaction Rejected
     if (blotterTransactionRejectedForTreasury) {
       handleTransactionUpdate(
         blotterTransactionRejectedForTreasury.transaction,
@@ -224,6 +235,7 @@ const TXNTreasurySummary = () => {
     blotterTransactionCancellationRequestDataForTreasury,
     blotterTranscationCancelledForTreasury,
     blotterTransactionRejectedForTreasury,
+    tnxTableDisplayData, // required to ensure it reflects latest data
   ]);
 
   /**

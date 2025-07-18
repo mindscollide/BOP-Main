@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { publishDiscountingRatesAction } from "@/container/pages/mainDealer/dealerActions";
 import { useSelector } from "react-redux";
-import { isValidNumberUnderMax } from "@/utils/formatters";
+import { isValidMaxFourNumberAfterPoint, isValidNumberUnderMax } from "@/utils/formatters";
 import {
   GetFEDiscountingTableApi,
   PublishFEDiscountingTableApi,
@@ -58,7 +58,11 @@ const FeDiscountingTable = () => {
   const getAllTenorsData = useSelector(
     (state) => state.dealerReducer.getAllTenors
   );
-  console.log(getAllTenorsData, "getAllTenorsDatagetAllTenorsData");
+  console.log(
+    getAllTenorsData,
+    GetAllInstrumentForTreasury,
+    "getAllTenorsDatagetAllTenorsData"
+  );
 
   useEffect(() => {
     if (
@@ -68,11 +72,14 @@ const FeDiscountingTable = () => {
     ) {
       try {
         const { feDiscountingRates } = getDashboardForwards;
+        const DiscountingInstruments =
+          GetAllInstrumentForTreasury.discountingInstruments;
+        const getAllInstrument = { instruments: DiscountingInstruments };
         const { rowData, columnsData } = buildDiscountingTable(
-          1,
+          5,
           feDiscountingRates,
           getAllTenorsData,
-          GetAllInstrumentForTreasury,
+          getAllInstrument,
           InputCell,
           onInputChange
         );
@@ -96,7 +103,7 @@ const FeDiscountingTable = () => {
       try {
         const { rates } = getFeDiscountingData;
         const { rowData, columnsData } = buildDiscountingTable(
-          1,
+          5,
           rates,
           getAllTenorsData,
           GetAllInstrumentForTreasury,
@@ -124,7 +131,7 @@ const FeDiscountingTable = () => {
   }, [getFeDiscountingData, getAllTenorsData, GetAllInstrumentForTreasury]);
   const onInputChange = (record, instrumentName, value) => {
     const previousValue = record[instrumentName]; // Get previous value from record
-    const validated = isValidNumberUnderMax(value, previousValue, 100);
+    const validated = isValidMaxFourNumberAfterPoint(value, previousValue, 100);
 
     // Only update if valid or corrected (not false)
     if (validated !== false) {

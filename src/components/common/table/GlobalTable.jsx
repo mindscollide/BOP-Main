@@ -22,6 +22,7 @@ const GlobalTable = ({
   rowHoverBg,
   components,
   sticky,
+  rowKey,
   onRow, // Add this line to accept the onRow prop
 }) => {
   return (
@@ -32,7 +33,7 @@ const GlobalTable = ({
       bordered={bordered}
       pagination={pagination}
       footer={footer}
-      size="middle"
+      size='middle'
       style={style}
       rowClassName={rowClassName}
       dropdownPrefixCls={dropdownPrefixCls}
@@ -43,11 +44,12 @@ const GlobalTable = ({
       locale={locale}
       scroll={scroll}
       onScroll={onScroll}
-      tableLayout="auto"
+      tableLayout='auto'
       rowHoverBg={rowHoverBg}
       components={components} // Pass the components prop to Table
       onRow={onRow} // Pass the onRow prop to Table
       sticky={sticky}
+      rowKey={rowKey}
     />
   );
 };

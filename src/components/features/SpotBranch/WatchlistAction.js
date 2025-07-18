@@ -28,10 +28,7 @@ export const GetDashboardDataAPI = createAsyncThunk(
       const response = await GetDashboardDataAction();
       const { responseCode } = response.data;
       console.log(responseCode, "responseCoderesponseCode");
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+    
       if (responseCode === 417) {
         console.log(responseCode, "responseCoderesponseCode");
         await dispatch(refreshTokenAction({ navigate }));
@@ -52,7 +49,7 @@ export const GetDashboardDataAPI = createAsyncThunk(
 
             return {
               response: response.data.responseResult,
-              message: "Successfully Rerieved Data",
+              message: "",
             };
           } else if (
             responseMessage
@@ -61,7 +58,7 @@ export const GetDashboardDataAPI = createAsyncThunk(
                 "WatchList_WatchListServiceManager_GetDashboardData_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Unsuccessfull");
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -102,10 +99,7 @@ export const SaveUserDashboardAPI = createAsyncThunk(
 
       const response = await SaveUserDashboard(Data);
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+    
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(SaveUserDashboardAPI({ Data, navigate }));
@@ -122,7 +116,7 @@ export const SaveUserDashboardAPI = createAsyncThunk(
             console.log("", response.data);
             return {
               response: response.data.responseResult,
-              message: "Successfully Rerieved Data",
+              message: "",
             };
           } else if (
             responseMessage
@@ -131,7 +125,7 @@ export const SaveUserDashboardAPI = createAsyncThunk(
                 "ERM_WatchlistService_GetFXInstrumentsAPI_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Unsuccessfull");
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -172,10 +166,7 @@ export const getAllTreasuryInstrumentsApi = createAsyncThunk(
 
       const response = await getAllInstruments();
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+    
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(getAllTreasuryInstrumentsApi({ navigate }));
@@ -249,10 +240,7 @@ export const GetForwardRatesForCounterPartyApi = createAsyncThunk(
 
       const response = await GetForwardRatesForCounterPartyData();
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+    
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(GetForwardRatesForCounterPartyApi({ navigate }));
@@ -326,10 +314,7 @@ export const GetDiscountingRatesForCounterPartyApi = createAsyncThunk(
 
       const response = await GetDiscountingRatesForCounterPartyData();
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+    
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(GetDiscountingRatesForCounterPartyApi({ navigate }));
@@ -402,10 +387,7 @@ export const GetBankSpotForTreasuryApi = createAsyncThunk(
 
       const response = await GetBankSpotForTreasuryData(Data);
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+    
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(GetBankSpotForTreasuryApi({ navigate, Data }));
@@ -421,7 +403,7 @@ export const GetBankSpotForTreasuryApi = createAsyncThunk(
           ) {
             return {
               response: response.data.responseResult,
-              message: "API executed successfully.",
+              message: "",
             };
           } else if (
             responseMessage
@@ -475,10 +457,7 @@ export const GetBankForwardForTreasuryApi = createAsyncThunk(
 
       const response = await GetBankForwardForTreasuryData();
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+    
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(GetBankForwardForTreasuryApi({ navigate }));
@@ -494,7 +473,7 @@ export const GetBankForwardForTreasuryApi = createAsyncThunk(
           ) {
             return {
               response: response.data.responseResult,
-              message: "API executed successfully.",
+              message: "",
             };
           } else if (
             responseMessage
@@ -548,10 +527,7 @@ export const GetMisDataByRangeAPI = createAsyncThunk(
 
       const response = await GetFXInstruGetMisDataByRange(Data);
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+    
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(GetMisDataByRangeAPI({ navigate, Data }));
@@ -568,7 +544,7 @@ export const GetMisDataByRangeAPI = createAsyncThunk(
             console.log("", response.data);
             return {
               response: response.data.responseResult,
-              message: "Successfully Rerieved Data",
+              message: "",
             };
           } else if (
             responseMessage
@@ -577,7 +553,7 @@ export const GetMisDataByRangeAPI = createAsyncThunk(
                 "WatchList_WatchListServiceManager_GetMisDataByRange_04".toLowerCase()
               )
           ) {
-            return rejectWithValue("Unsuccessfull");
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -617,10 +593,7 @@ export const GetDiscountingRatesForTreasuryApi = createAsyncThunk(
 
       const response = await GetDiscountingRatesForTreasuryData();
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+    
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(GetDiscountingRatesForTreasuryApi({ navigate }));

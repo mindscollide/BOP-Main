@@ -81,7 +81,7 @@ export const loginInApi = createAsyncThunk(
 
               return {
                 response: response.data.responseResult,
-                message: "Successfully logged In",
+                message: "",
               };
 
             default:
@@ -193,7 +193,7 @@ export const corporateUserLoginInApi = createAsyncThunk(
               roleBasedNavigation(navigate, userRoleID);
               return {
                 response: response.data.responseResult,
-                message: "Successfully logged In",
+                message: "",
               };
 
             default:

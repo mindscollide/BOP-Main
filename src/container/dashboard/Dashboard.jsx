@@ -1,5 +1,5 @@
 import { Layout } from "antd";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import Header from "@/components/layout/header/header";
 import GlobalNavbar from "@/components/layout/nav/Navbar";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
@@ -42,6 +42,7 @@ import {
   setIncomingChat,
   setMarketTimingsUpdated,
   setTenorsCreated,
+  setTreasurySpotRatesFeed,
   tenorWiseFowardsRatesPublishedActions,
 } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { formatDateToUTC } from "@/utils/formatters";
@@ -89,8 +90,10 @@ const Dashboard = () => {
     ? "BOP_DEALER"
     : null;
   const userID = localStorage.getItem("userID");
-  const { connectToMqtt, isConnected } = useMqttClient({
-    onMessageArrivedCallback: (data) => {
+
+  // Memoized MQTT message handler
+  const handleMqttMessage = useCallback(
+    (data) => {
       switch (data.payload.message) {
         case "INCOMING_CHAT":
           try {
@@ -189,16 +192,28 @@ const Dashboard = () => {
         case "BLOTTER_TRANSACTION_ASSIGNED_TO_TREASURY":
           dispatch(TransactionAssignedByTreasury(data.payload));
           break;
+        case "TREASURY_SPOT_RATES_FEED":
+          dispatch(setTreasurySpotRatesFeed(data.payload));
+          break;
         default:
           console.warn("No specific handler for this message type");
           break;
       }
     },
-    onConnectionLostCallback: () => {
-      console.warn("MQTT disconnected inside feature");
-    },
-  });
+    []
+  );
 
+  // MQTT configuration
+  const mqttConfig = useMemo(
+    () => ({
+      onMessageArrivedCallback: handleMqttMessage,
+      onConnectionLostCallback: () => {
+        console.warn("MQTT disconnected inside feature");
+      },
+    }),
+    [handleMqttMessage]
+  );
+  const { connectToMqtt } = useMqttClient(mqttConfig);
 
   useEffect(() => {
     connectToMqtt({ subscribeID, userID });
