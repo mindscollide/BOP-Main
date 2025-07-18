@@ -58,7 +58,7 @@ export const buildDiscountingTable = (
       return row;
     });
     let columnsData = [];
-    if (value === 1 || value === 5 ) {
+    if (value === 1 || value === 5) {
       columnsData = [
         {
           title: "Tenor",
@@ -307,7 +307,7 @@ export const buildCurrentRatesPayload = (rowData) => {
         if (!isNaN(rate)) {
           currentRates.push({
             TenorID: row.TenorID,
-            InstumentID: row[instrumentIDKey],
+            InstrumentID: row[instrumentIDKey],
             InstrumentName: instrumentName,
             Rate: rate,
           });
