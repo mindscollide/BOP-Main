@@ -18,6 +18,7 @@ import {
   convertDateTimeIntoGMT,
   formatCurrencyInput,
   isValidNumberUnderMax,
+  isValidNumberUnderMaxNumber,
 } from "@/utils/formatters";
 import moment from "moment";
 import {
@@ -198,7 +199,7 @@ const SpotRates = () => {
         askValue: formatCurrencyInput(value),
       });
     } else if (name === "refreshInterval") {
-      const validated = isValidNumberUnderMax(value, "", 100);
+      const validated = isValidNumberUnderMaxNumber(value, 30);
       if (validated) {
         setRefreshInterval(value);
       }
