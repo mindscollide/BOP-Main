@@ -181,12 +181,12 @@ const NonFEDiscountingModal = ({
         footerClassName={"BookaforwardCorporateFooterClassname"}
         headerClassName={"BookaforwardCorporateHeaderClassname"}
         bodyClassName={"BookaforwardCorporateBodyClassname"}
-        className=''
+        className=""
         modalHeader={
           <>
             <Row>
               <Col lg={12} md={12} sm={12}>
-                <span className='HeaderHeadingName'>
+                <span className="HeaderHeadingName">
                   {branchDetais !== null ? branchDetais.branchName : ""}
                 </span>
               </Col>
@@ -198,13 +198,13 @@ const NonFEDiscountingModal = ({
             <Row>
               <Col lg={12} md={12} sm={12}>
                 {shouldIncludeBranch && (
-                  <Row className='mb-2'>
+                  <Row className="mb-2">
                     <Col lg={12} md={12} sm={12}>
-                      <div className='d-flex flex-column flex-wrap'>
-                        <span className='SubHeadings'>Client name</span>
+                      <div className="d-flex flex-column flex-wrap">
+                        <span className="SubHeadings">Client name</span>
                         <SelectDropdown
                           options={getAllCorporates}
-                          placeholder='Please Select Corporate'
+                          placeholder="Please Select Corporate"
                           isSearchable={true}
                           value={
                             corporateValue?.value !== 0 ? corporateValue : null
@@ -218,20 +218,20 @@ const NonFEDiscountingModal = ({
 
                 <Row>
                   <Col lg={12} md={12} sm={12}>
-                    <div className='d-flex flex-column flex-wrap'>
-                      <span className='SubHeadings'>Currency</span>
+                    <div className="d-flex flex-column flex-wrap">
+                      <span className="SubHeadings">Currency</span>
                       <SelectDropdown
                         options={[]}
-                        placeholder=''
+                        placeholder=""
                         value={selectedCurrency}
                       />
                     </div>
                   </Col>
                 </Row>
-                <Row className='mt-2'>
+                <Row className="mt-2">
                   <Col lg={6} md={6} sm={6}>
-                    <div className='d-flex flex-column flex-wrap'>
-                      <span className='SubHeadings'>Nature</span>
+                    <div className="d-flex flex-column flex-wrap">
+                      <span className="SubHeadings">Nature</span>
                       <InputFIeld
                         applyClass={"BookaForwardCorporateInputFields"}
                         value={selectedNature?.name}
@@ -239,8 +239,8 @@ const NonFEDiscountingModal = ({
                     </div>
                   </Col>
                   <Col lg={6} md={6} sm={6}>
-                    <div className='d-flex flex-column flex-wrap'>
-                      <span className='SubHeadings'>A/c No*</span>
+                    <div className="d-flex flex-column flex-wrap">
+                      <span className="SubHeadings">A/c No*</span>
                       <InputFIeld
                         applyClass={"BookaForwardCorporateInputFields"}
                         value={accNo}
@@ -249,11 +249,11 @@ const NonFEDiscountingModal = ({
                     </div>
                   </Col>
                 </Row>
-                <Row className='mt-2'>
+                <Row className="mt-2">
                   <Col lg={6} md={6} sm={6}>
-                    <div className='d-flex align-items-end '>
+                    <div className="d-flex align-items-end ">
                       <div>
-                        <p className='SubHeadings m-0'>Tenor</p>
+                        <p className="SubHeadings m-0">Tenor</p>
                         <InputFIeld
                           onChange={handleChangeTenor}
                           value={tenorValue}
@@ -263,14 +263,14 @@ const NonFEDiscountingModal = ({
                           }
                         />
                       </div>
-                      <span className='dateSpanNonFeDiscoutingmodal'>
+                      <span className="dateSpanNonFeDiscoutingmodal">
                         {tenoreDate}
                       </span>
                     </div>
                   </Col>
                   <Col lg={6} md={6} sm={6}>
-                    <div className='d-flex flex-column flex-wrap'>
-                      <span className='SubHeadings'>Amount</span>
+                    <div className="d-flex flex-column flex-wrap">
+                      <span className="SubHeadings">Amount</span>
                       <InputFIeld
                         applyClass={"BookaForwardCorporateInputFields"}
                         value={amount}
@@ -280,21 +280,21 @@ const NonFEDiscountingModal = ({
                   </Col>
                 </Row>
 
-                <Row className='mt-2'>
+                <Row className="mt-2">
                   <Col lg={6} md={6} sm={6}>
                     <Col lg={12} md={12} sm={12}>
-                      <div className='d-flex flex-column flex-wrap'>
-                        <span className='SubHeadings'>Ready</span>
+                      <div className="d-flex flex-column flex-wrap">
+                        <span className="SubHeadings">Ready</span>
                         <InputFIeld
                           applyClass={"BookaForwardCorporateInputFields"}
                           disabled={true}
                         />
                       </div>
                     </Col>
-                    <Row className='mt-2 '>
-                      <Col lg={10} md={10} sm={10} className='pe-0'>
-                        <div className='d-flex flex-column flex-wrap'>
-                          <span className='SubHeadings'>KIBOR</span>
+                    <Row className="mt-2 ">
+                      <Col lg={10} md={10} sm={10} className="pe-0">
+                        <div className="d-flex flex-column flex-wrap">
+                          <span className="SubHeadings">KIBOR</span>
                           <InputFIeld
                             applyClass={"BookaForwardCorporateInputFields"}
                             value={calculatedData.kiborValue}
@@ -306,14 +306,15 @@ const NonFEDiscountingModal = ({
                         lg={2}
                         md={2}
                         sm={2}
-                        className='d-flex align-items-end justify-content-start ps-0'>
-                        <span className='SofrPercentSignBoxNonFE'>%</span>
+                        className="d-flex align-items-end justify-content-start ps-0"
+                      >
+                        <span className="SofrPercentSignBoxNonFE">%</span>
                       </Col>
                     </Row>
-                    <Row className='mt-2 position-relative'>
+                    <Row className="mt-2 position-relative">
                       <Col lg={12} md={12} sm={12}>
-                        <div className='d-flex flex-column flex-wrap'>
-                          <span className='SubHeadings'>Swap</span>
+                        <div className="d-flex flex-column flex-wrap">
+                          <span className="SubHeadings">Swap</span>
                           <InputFIeld
                             applyClass={"BookaForwardCorporateInputFields"}
                             value={calculatedData.swapValue}
@@ -323,8 +324,8 @@ const NonFEDiscountingModal = ({
                       </Col>
                     </Row>
                   </Col>
-                  <Col lg={5} md={5} sm={5} className='mt-4'>
-                    <span className='BlueBackGroundboxNon_FEDiscountingModal'>
+                  <Col lg={5} md={5} sm={5} className="mt-4">
+                    <span className="BlueBackGroundboxNon_FEDiscountingModal">
                       {calculatedData.nonFeRate !== ""
                         ? Number(calculatedData.nonFeRate).toFixed(2)
                         : 0}
@@ -342,7 +343,8 @@ const NonFEDiscountingModal = ({
                 lg={12}
                 md={12}
                 sm={12}
-                className='d-flex justify-content-center'>
+                className="d-flex justify-content-center"
+              >
                 <CustomButton
                   value={"Confirm"}
                   applyClass={"ConfirmButtonBookaForward"}

@@ -25,7 +25,7 @@ export const resetAndForgotPassword = createAsyncThunk(
                 "ERM_AuthService_AuthManager_SendEmailForResetPasword_01".toLowerCase()
               )
           ) {
-            navigate("/emailsent", Data);
+            navigate("/emailsent", { state: Data });
             return {
               response: response.data.responseResult,
               message: "Email for Reset Password Sent Successfully",

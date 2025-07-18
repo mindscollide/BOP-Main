@@ -13,8 +13,8 @@ import { useSelector } from "react-redux";
 const ForgotPassword = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const state = useSelector(state => state.authReducer) 
-  console.log(state, "statestatestate")
+  const state = useSelector((state) => state.authReducer);
+  console.log(state, "statestatestate");
   const [email, setEmail] = useState("");
 
   const handleClickResetBtn = (e) => {
@@ -34,6 +34,7 @@ const ForgotPassword = () => {
       if (value !== "") {
         setEmail(value);
       } else {
+        setEmail("");
       }
     } else {
     }
@@ -47,44 +48,45 @@ const ForgotPassword = () => {
           sm={12}
           md={12}
           lg={12}
-          className='d-flex justify-content-center mt-5 '>
+          className="d-flex justify-content-center mt-5 "
+        >
           <img
             src={BOPLogo}
             style={{ maxWidth: "100%" }}
-            width='300'
-            className='img-fluid'
-            alt='BOP Logo'
+            width="300"
+            className="img-fluid"
+            alt="BOP Logo"
           />
         </Col>
         <Col sm={12} md={12} lg={12}>
           <section className={styles["LoginCard"]}>
             <h4 className={styles["Heading-js"]}>Forgot Passowrd?</h4>
-            <span className='mb-4'>Please type your full email</span>
-            <InputGroup className='mb-3'>
+            <span className="mb-4">Please type your full email</span>
+            <InputGroup className="mb-3">
               <InputGroup.Text className={styles["Icon-Field-class"]}>
                 <IconElement iconClass={"icon-user"} />
               </InputGroup.Text>
               <Form.Control
-                name='email'
-                autoComplete='off'
+                name="email"
+                autoComplete="off"
                 className={styles["form-comtrol-textfield"]}
-                placeholder='Email ID'
+                placeholder="Email ID"
                 onChange={handleChangeEmailInput}
                 value={email}
                 required={true}
-                pattern='^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-                aria-label='Username'
-                aria-describedby='basic-addon1'
+                pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                aria-label="Username"
+                aria-describedby="basic-addon1"
               />
             </InputGroup>
 
             <CustomButton
               value={"Recover"}
-              type='submit'
+              type="submit"
               onClick={handleClickResetBtn}
               applyClass={"authLoginBtn"}
             />
-            <span className='mt-2'>
+            <span className="mt-2">
               <Link className={styles["forgotPasswordLink"]} to={"/"}>
                 Back to Login
               </Link>
