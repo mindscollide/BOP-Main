@@ -243,7 +243,9 @@ const BlotterSlicer = createSlice({
     // New actions
 
     setBlotterTransactionCounterPartyAdded: (state, action) => {
+      // state.txnCounterPartyTableData
       state.transactionCounterPartyAdded = action.payload;
+      // state.
     },
     setBlotterTransactionOutstandingAdded: (state, action) => {
       console.log(action, "setBlotterTransactionOutstandingAdded")
