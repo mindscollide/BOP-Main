@@ -7,6 +7,7 @@ import { throttle } from "lodash";
 
 const SpotDealerAndTreasury = () => {
   const [spotsData, setSpotsData] = useState([]);
+  console.log(spotsData, "spotsDataspotsData");
   const allInstrumentForTreasuryData = useSelector(
     (state) => state.WatchListReducer.GetAllInstrumentForTreasury
   );
@@ -31,7 +32,10 @@ const SpotDealerAndTreasury = () => {
           const spotData = instruments
             .map((spotIns) => {
               const matchedInstrument = spotInstruments.find(
-                (insData) => spotIns.instrumentID === insData.instrumentID
+                (insData) =>
+                  spotIns.instrumentID === insData.instrumentID &&
+                  spotIns.secondaryInstrumentID ===
+                    insData.secondaryInstrumentID
               );
 
               if (matchedInstrument) {
@@ -39,7 +43,7 @@ const SpotDealerAndTreasury = () => {
                   ...spotIns,
                   offer: spotIns.offer, // as expected by UI
                   bid: spotIns.bid,
-                  instrumentName: `${matchedInstrument.instrumentName}${matchedInstrument.secondaryInstrumentName}`, // e.g. EURUSD
+                  instrumentName: `${matchedInstrument.instrumentName}`, // e.g. EURUSD
                   instrumentID: matchedInstrument.instrumentID,
                   secondaryInstrumentID:
                     matchedInstrument.secondaryInstrumentID,
@@ -100,10 +104,10 @@ const SpotDealerAndTreasury = () => {
                     {/*box header*/}
                     <div className='mb-3'>
                       <span className={styles["SpotCurrentHeading"]}>
-                        {spotCardsData.instrumentName.split("/")[0]}
+                        {spotCardsData.instrumentName}
                       </span>
                       <span className={styles["SpotCurrentValue"]}>
-                        {spotCardsData.instrumentName.split("/")[1]}
+                        {spotCardsData.secondaryInstrumentName}
                       </span>
                     </div>
                     {/*box content*/}

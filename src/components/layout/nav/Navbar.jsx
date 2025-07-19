@@ -62,7 +62,7 @@ const GlobalNavbar = () => {
   const categoryValue = useSelector(
     (state) => state.dealerReducer.categoryValue
   );
-
+  console.log(categoryValue, "categoryValuecategoryValue")
   const isCategoryAdded = useSelector(
     (state) => state.RealtimeActionsSlice.categoryisAdded
   );
@@ -115,15 +115,16 @@ const GlobalNavbar = () => {
   const handleChangeCategory = (event) => {
     console.log(event);
     let Data = { CategoryID: event.value };
-    dispatch(GetCategoryWiseSpotRatesApi({ navigate, Data }));
-    dispatch(GetCategoryWiseForwardRatesApi({ navigate, Data }));
-    dispatch(GetCategoryWiseDiscountingRatesApi({ navigate, Data }));
-
     let obj = {
       value: event.value,
       label: event.label,
     };
     dispatch(setCategoryValue(obj));
+    dispatch(GetCategoryWiseSpotRatesApi({ navigate, Data }));
+    dispatch(GetCategoryWiseForwardRatesApi({ navigate, Data }));
+    dispatch(GetCategoryWiseDiscountingRatesApi({ navigate, Data }));
+
+ 
   };
 
   //handle RFQ Condition Under Certain tabs

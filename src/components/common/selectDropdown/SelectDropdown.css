@@ -46,7 +46,7 @@
   outline: none !important;
 }
 
-.Category-Dropdown__option--is-focused {
+.Category-Dropdown__option--is-focused, .Category-Dropdown__option--is-selected {
   background-color: #096fed !important;
   color: #fff !important;
   outline: none !important;
