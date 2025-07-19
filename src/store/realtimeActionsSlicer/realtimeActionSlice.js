@@ -94,88 +94,88 @@ const RealtimeActionsSlice = createSlice({
     categoryisDeleted(state, { payload }) {
       state.categoryisDeleted = payload;
     },
-    BlotterTransactionRFQExpired(state, { payload }) {
-      state.BlotterTransactionRFQExpired = payload;
-    },
-    BlotterTransactionRFQExpiredForTreasury(state, { payload }) {
-      state.BlotterTransactionRFQExpiredForTreasury = payload;
-    },
-    setBlotterTransactionRFQExpiredForTreasuryDealBox(state, { payload }) {
-      state.BlotterTransactionRFQExpiredForTreasuryDealBox = payload;
-    },
-    BlotterTransactionAdded(state, { payload }) {
-      state.BlotterTransactionAdded = payload;
-    },
-    BlotterTransactionAddedForTreasury(state, { payload }) {
-      state.BlotterTransactionAddedForTreasury = payload;
-    },
-    setBlotterTransactionAddedForTreasuryDealBox(state, { payload }) {
-      state.BlotterTransactionAddedForTreasuryDealBox = payload;
-    },
-    BlotterTransactionAssigned(state, { payload }) {
-      state.BlotterTransactionAssigned = payload;
-    },
-    BlotterTransactionAssignedForTreasury(state, { payload }) {
-      state.BlotterTransactionAssignedForTreasury = payload;
-    },
-    BlotterTransactionAccepted(state, { payload }) {
-      state.BlotterTransactionAccepted = payload;
-    },
-    BlotterTransactionAcceptedForTreasury(state, { payload }) {
-      state.BlotterTransactionAcceptedForTreasury = payload;
-    },
-    BlotterTransactionRFQQuoted(state, { payload }) {
-      state.BlotterTransactionRFQQuoted = payload;
-    },
-    BlotterTransactionRFQQuotedForTreasury(state, { payload }) {
-      state.BlotterTransactionRFQQuotedForTreasury = payload;
-    },
-    setBlotterTransactionRFQQuotedForTreasuryDealBox(state, { payload }) {
-      state.BlotterTransactionRFQQuotedForTreasuryDealBox = payload;
-    },
-    BlotterTransactionCancellationRequest(state, { payload }) {
-      state.BlotterTransactionCancellationRequestData = payload;
-    },
-    BlotterTransactionCancellationRequestForTreasury(state, { payload }) {
-      state.BlotterTransactionCancellationRequestDataForTreasury = payload;
-    },
-    BlotterTranscationCancelled(state, { payload }) {
-      state.BlotterTranscationCancelled = payload;
-    },
-    BlotterTranscationCancelledForTreasury(state, { payload }) {
-      state.BlotterTranscationCancelledForTreasury = payload;
-    },
-    BlotterTransactionRejected(state, { payload }) {
-      state.BlotterTransactionRejected = payload;
-    },
-    BlotterTransactionRejectedForTreasury(state, { payload }) {
-      state.BlotterTransactionRejectedForTreasury = payload;
-    },
+    // BlotterTransactionRFQExpired(state, { payload }) {
+    //   state.BlotterTransactionRFQExpired = payload;
+    // },
+    // BlotterTransactionRFQExpiredForTreasury(state, { payload }) {
+    //   state.BlotterTransactionRFQExpiredForTreasury = payload;
+    // },
+    // setBlotterTransactionRFQExpiredForTreasuryDealBox(state, { payload }) {
+    //   state.BlotterTransactionRFQExpiredForTreasuryDealBox = payload;
+    // },
+    // BlotterTransactionAdded(state, { payload }) {
+    //   state.BlotterTransactionAdded = payload;
+    // },
+    // BlotterTransactionAddedForTreasury(state, { payload }) {
+    //   state.BlotterTransactionAddedForTreasury = payload;
+    // },
+    // setBlotterTransactionAddedForTreasuryDealBox(state, { payload }) {
+    //   state.BlotterTransactionAddedForTreasuryDealBox = payload;
+    // },
+    // BlotterTransactionAssigned(state, { payload }) {
+    //   state.BlotterTransactionAssigned = payload;
+    // },
+    // BlotterTransactionAssignedForTreasury(state, { payload }) {
+    //   state.BlotterTransactionAssignedForTreasury = payload;
+    // },
+    // BlotterTransactionAccepted(state, { payload }) {
+    //   state.BlotterTransactionAccepted = payload;
+    // },
+    // BlotterTransactionAcceptedForTreasury(state, { payload }) {
+    //   state.BlotterTransactionAcceptedForTreasury = payload;
+    // },
+    // BlotterTransactionRFQQuoted(state, { payload }) {
+    //   state.BlotterTransactionRFQQuoted = payload;
+    // },
+    // BlotterTransactionRFQQuotedForTreasury(state, { payload }) {
+    //   state.BlotterTransactionRFQQuotedForTreasury = payload;
+    // },
+    // setBlotterTransactionRFQQuotedForTreasuryDealBox(state, { payload }) {
+    //   state.BlotterTransactionRFQQuotedForTreasuryDealBox = payload;
+    // },
+    // BlotterTransactionCancellationRequest(state, { payload }) {
+    //   state.BlotterTransactionCancellationRequestData = payload;
+    // },
+    // BlotterTransactionCancellationRequestForTreasury(state, { payload }) {
+    //   state.BlotterTransactionCancellationRequestDataForTreasury = payload;
+    // },
+    // BlotterTranscationCancelled(state, { payload }) {
+    //   state.BlotterTranscationCancelled = payload;
+    // },
+    // BlotterTranscationCancelledForTreasury(state, { payload }) {
+    //   state.BlotterTranscationCancelledForTreasury = payload;
+    // },
+    // BlotterTransactionRejected(state, { payload }) {
+    //   state.BlotterTransactionRejected = payload;
+    // },
+    // BlotterTransactionRejectedForTreasury(state, { payload }) {
+    //   state.BlotterTransactionRejectedForTreasury = payload;
+    // },
 
-    TransactionAssignedByTreasury(state, { payload }) {
-      state.TransactionAssignedByTreasury = payload;
-    },
+    // TransactionAssignedByTreasury(state, { payload }) {
+    //   state.TransactionAssignedByTreasury = payload;
+    // },
   },
 });
 
 export const {
   setTreasurySpotRatesFeed,
   setBlotterTransactionRFQQuotedForTreasuryDealBox,
-  BlotterTransactionRFQExpiredForTreasury,
-  BlotterTransactionAddedForTreasury,
-  BlotterTransactionAssignedForTreasury,
-  BlotterTransactionAcceptedForTreasury,
-  BlotterTransactionRFQQuotedForTreasury,
-  BlotterTransactionCancellationRequestForTreasury,
-  BlotterTranscationCancelledForTreasury,
-  BlotterTransactionRejectedForTreasury,
-  TransactionAssignedByTreasury,
-  BlotterTransactionRejected,
-  BlotterTranscationCancelled,
-  BlotterTransactionCancellationRequest,
-  BlotterTransactionAccepted,
-  BlotterTransactionAssigned,
-  BlotterTransactionAdded,
+  // BlotterTransactionRFQExpiredForTreasury,
+  // BlotterTransactionAddedForTreasury,
+  // BlotterTransactionAssignedForTreasury,
+  // BlotterTransactionAcceptedForTreasury,
+  // BlotterTransactionRFQQuotedForTreasury,
+  // BlotterTransactionCancellationRequestForTreasury,
+  // BlotterTranscationCancelledForTreasury,
+  // BlotterTransactionRejectedForTreasury,
+  // TransactionAssignedByTreasury,
+  // BlotterTransactionRejected,
+  // BlotterTranscationCancelled,
+  // BlotterTransactionCancellationRequest,
+  // BlotterTransactionAccepted,
+  // BlotterTransactionAssigned,
+  // BlotterTransactionAdded,
   categoryisAdded,
   categoryisUpdated,
   categoryisDeleted,

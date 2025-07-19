@@ -1,58 +1,78 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { Checkbox, Popover } from "antd";
-import { Col, Row } from "react-bootstrap";
-
-// Components
 import GlobalTable from "@/components/common/table/GlobalTable";
+import IconElement from "@/components/common/IconElement/IconElement";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { Checkbox, Popover } from "antd";
+import { DownOutlined } from "@ant-design/icons";
 import CustomButton from "@/components/common/globalButton/button";
 import CommentModal from "../commentModal/CommentModal";
-import CancelReasonModal from "../cancelReasonModal/cancelReasonModal";
-
-// Utils
+import MailModal from "../mailModal/MailModal";
+import pdfImage from "@/assets/icons/pdf.png";
+import emailImage from "@/assets/icons/email.png";
+import excelImage from "@/assets/icons/excel.png";
+import printImage from "@/assets/icons/print.png";
+import { Col, Row } from "react-bootstrap";
+import { getAllChatByTransactionId } from "@/components/features/chatBox/ChatActions";
+import { useNavigate } from "react-router-dom";
+import InfoTransaction from "../infoTransaction/InfoTransaction";
+import { setTransactionInfoModal } from "@/store/modalSlice/modalSlicer";
 import { formatDateTimeToUTCTime } from "@/components/utils/timeFunction";
 import { useTableScrollBottom } from "@/utils/useTableScrollBottom";
-
-// Actions
 import {
+  AssignTransactionAPI,
   BlotterDataAPI,
-  GetFEDiscountingTransactionDetailsApi,
-  GetForwardTransactionDetailsApi,
-  GetNonFEDiscountingTransactionDetailsApi,
-  GetSpotTransactionDetailsApi,
-} from "../BlotterActions";
-import {
+  AcceptTransactionAPI,
+  RejectTransactionAPI,
   AcceptRFQTransaction,
   RejectRFQTransaction,
-  CancelTransaction,
+  RequestCancellation,
   CancelPendingTransactionApi,
+  ExpireRFQTransaction,
+  GetSpotTransactionDetailsApi,
+  GetForwardTransactionDetailsApi,
+  GetFEDiscountingTransactionDetailsApi,
+  GetNonFEDiscountingTransactionDetailsApi,
 } from "../BlotterActions";
-// import { setTransactionInfoModal } from "@/store/modalSlice/modalSlicer";
-
-// Realtime Actions
-import {
-  BlotterTransactionAcceptedForTreasury,
-  BlotterTransactionRFQExpired,
-  BlotterTransactionCancellationRequestForTreasury,
-  BlotterTranscationCancelledForTreasury,
-  BlotterTransactionRejectedForTreasury,
-} from "@/store/realtimeActionsSlicer/realtimeActionSlice";
-import { setTransactionInfoModal } from "@/store/modalSlice/modalSlicer";
-import { updateRealtimeBlotterData } from "@/store/BlotterSlicer/BlotterSlicer";
-
+import CancelReasonModal from "../cancelReasonModal/cancelReasonModal";
+import { useMqttClient } from "@/components/utils/mqttConnection";
+// import {
+//   BlotterTransactionAccepted,
+//   BlotterTransactionAcceptedForTreasury,
+//   BlotterTransactionAdded,
+//   BlotterTransactionCancellationRequest,
+//   BlotterTransactionCancellationRequestForTreasury,
+//   BlotterTransactionRFQExpired,
+//   BlotterTransactionRFQQuoted,
+//   BlotterTransactionRFQQuotedForTreasury,
+//   BlotterTransactionRejectedForTreasury,
+//   BlotterTranscationCancelledForTreasury,
+// } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
+import { RFQTImer } from "@/components/utils/Timer";
+import { convertDateTimeIntoLocal } from "@/utils/formatters";
 /**
  * TXNTreasurySummary component that manages and displays the treasury transaction summary.
- * It connects to the Redux store to fetch and manage the state of various transaction types.
+ * It connects to the Redux store to fetch and manage the state of various transaction types,
+ * including RFQ expired, quoted, accepted, cancellation requests, added, cancelled, and rejected transactions.
+ *
+ * This component also handles local state for various filters and modals, and implements infinite scrolling
+ * to load more transaction data as the user scrolls down.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered component.
  */
 const TXNTreasurySummary = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  // Redux selectors
   const blotterTransactionRFQExpiredForTreasury = useSelector(
     (state) =>
       state.RealtimeActionsSlice.BlotterTransactionRFQExpiredForTreasury
   );
+
+  const blotterTransactionRFQQuotedForTreasury = useSelector(
+    (state) => state.RealtimeActionsSlice.BlotterTransactionRFQQuotedForTreasury
+  );
+
   const blotterTransactionAcceptedForTreasury = useSelector(
     (state) => state.RealtimeActionsSlice.BlotterTransactionAcceptedForTreasury
   );
@@ -61,68 +81,134 @@ const TXNTreasurySummary = () => {
       state.RealtimeActionsSlice
         .BlotterTransactionCancellationRequestDataForTreasury
   );
+  const blotterTransactionAddedForTreasury = useSelector(
+    (state) => state.RealtimeActionsSlice.BlotterTransactionAddedForTreasury
+  );
+
   const blotterTranscationCancelledForTreasury = useSelector(
     (state) => state.RealtimeActionsSlice.BlotterTranscationCancelledForTreasury
   );
   const blotterTransactionRejectedForTreasury = useSelector(
     (state) => state.RealtimeActionsSlice.BlotterTransactionRejectedForTreasury
   );
-  const GlobalStateGetBlotterData = useSelector(
-    (state) => state.BlotterSlicer.getBlotterApiData
+  const txnTreasuryTableData = useSelector(
+    (state) => state.BlotterSlicer.txnTreasuryTableData
   );
-  const tnxTableDisplayData = useSelector(
-    (state) => state.BlotterSlicer.tnxTableNewData
+  const txnTreasuryTableCount = useSelector(
+    (state) => state.BlotterSlicer.txnTreasuryTableDataCount
   );
 
-  // Local state
-  const [blotterdata, setBlotterdata] = useState([]);
-  const [totalRecord, setTotalRecords] = useState(0);
-  const [sRow, setRow] = useState(0);
-  const [hasReachedBottom, setHasReachedBottom] = useState(false);
-  console.log(GlobalStateGetBlotterData, "GlobalStateGetBlotterData");
-  console.log(blotterdata, "blotterdatablotterdata");
-  // Modal states
+  console.log(
+    txnTreasuryTableData,
+    txnTreasuryTableCount,
+    "txnTreasuryTableDatatxnTreasuryTableData"
+  );
   const [cancelReasonModal, setCancelReasonModal] = useState(false);
   const [cancelReasonComment, setCancelReasonComment] = useState("");
   const [cancelType, setCancelType] = useState("");
   const [cancelTransactionID, setCancelTransactionID] = useState(0);
-  const [showCommentModal, setShowCommentModal] = useState(false);
-  const [comment, setComment] = useState("");
 
-  // Filter options (simplified for demo)
-  const FILTER_OPTIONS = {
-    TXN_ID: ["09-09-2024/0568", "09-09-2024/4798"],
-    CUSTOMER_NAME: ["Gul Ahmed"],
-    TYPE: ["Buy", "Sell"],
-    NATURE: ["1", "6"],
-    CCY1: ["USD"],
-    AMOUNT: ["098,098", "234,234"],
-    RATE: ["288.00", "289.00"],
-    CCY2: ["PKR"],
-    AMOUNT2: ["NaN"],
-    TIME: ["16:33 pm", "16:47 pm"],
-    LC_NO: ["098098", "234234"],
-    ACC_NO: ["234234234234234234234234"],
-    STATUS: ["Pending"],
-  };
+  //HardCoded Filter Values start
+  const TXN_ID_OPTIONS = [
+    "09-09-2024/0568",
+    "09-09-2024/4798",
+    "09-09-2024/bd2e",
+    "09-09-2024/d1f2",
+  ];
 
-  // Filter states
-  const [filterStates, setFilterStates] = useState(
-    Object.keys(FILTER_OPTIONS).reduce((acc, key) => {
-      acc[key] = {
-        open: false,
-        selectedItems: [],
-      };
-      return acc;
-    }, {})
+  const CustomerName_OPTIONS = ["Gul Ahmed"];
+  const TYPE_OPTIONS = ["Buy", "Sell"];
+  const Nature_OPTIONS = ["1", "6"];
+  const CCY1_OPTIONS = ["USD"];
+  const Amount_OPTIONS = ["098,098", "234,234"];
+  const Rate_OPTIONS = ["288.00", "289.00"];
+  const CCY2_OPTIONS = ["PKR"];
+  const Amount2_OPTIONS = ["NaN"];
+  const Time_OPTIONS = ["16:33 pm", "16:47 pm", "16:48 pm", "16:50 pm"];
+  const LCno_OPTIONS = ["098098", "234234"];
+  const Accno_OPTIONS = ["234234234234234234234234"];
+  const Status_OPTIONS = ["Pending"];
+
+  const [statusOptions, setStatusOptions] = useState([]);
+  console.log(statusOptions, "statusOptionsstatusOptions");
+  //HardCoded Filter Values Ended
+
+  //Global State For Blotter Data
+  const GlobalStateGetBlotterData = useSelector(
+    (state) => state.BlotterSlicer.getBlotterApiData
   );
 
-  /**
-   * Handles infinite scroll for table data
-   */
+  //local states
+  const [blotterdata, setBlotterdata] = useState([]);
+  const [totalRecord, setTotalRecords] = useState(0);
+  const [sRow, setRow] = useState(0);
+  const [hasReachedBottom, setHasReachedBottom] = useState(false);
+  //TXNID Filter State
+  const [open, setOpen] = useState(false);
+  const [selectedItemsTXNID, setSelectedItemsTXNID] = useState([]);
+  // Show and Hide Comment Modal and commentState
+  const [showCommentModal, setShowCommentModal] = useState(false);
+  const [comment, setComment] = useState("");
+  //Customer Name Filter State
+  const [openCustomername, setOpenCustomername] = useState(false);
+  const [selectedItemsCustomerName, setSelectedItemsCustomerName] = useState(
+    []
+  );
+  //Type Filter State
+  const [openType, setOpenType] = useState(false);
+  const [selectedItemsType, setSelectedItemsType] = useState([]);
+  //Nature Filter State
+  const [openNature, setOpenNature] = useState(false);
+  const [selectedItemsNature, setSelectedItemsNature] = useState([]);
+  //CCY1 Filter State
+  const [openCCY1, setOpenCCY1] = useState(false);
+  const [selectedItemsCCY1, setSelectedItemsCCY1] = useState([]);
+  //Amount1 Filter State
+  const [openAmount1, setOpenAmount1] = useState(false);
+  const [selectedItemsAmount1, setSelectedItemsAmount1] = useState([]);
+  //Rate Filter State
+  const [openRate, setOpenRate] = useState(false);
+  const [selectedItemsRate, setSelectedItemsRate] = useState([]);
+  //CCY2 Filter State
+  const [openCCY2, setOpenCCY2] = useState(false);
+  const [selectedItemsCCY2, setSelectedItemsCCY2] = useState([]);
+  //Amount2 Filter State
+  const [openAmount2, setOpenAmount2] = useState(false);
+  const [selectedItemsAmount2, setSelectedItemsAmount2] = useState([]);
+  //Time Filter State
+  const [openTime, setOpenTime] = useState(false);
+  const [selectedItemsTime, setSelectedItemsTime] = useState([]);
+  //LCno Filter State
+  const [openLCno, setOpenLCno] = useState(false);
+  const [selectedItemsLCno, setSelectedItemsLCno] = useState([]);
+  //AccNO Filter State
+  const [openAccNO, setOpenAccNO] = useState(false);
+  const [selectedItemsAccNO, setSelectedItemsAccNO] = useState([]);
+  //Status Filter State
+  const [openStatus, setOpenStatus] = useState(false);
+  const [selectedItemsStatus, setSelectedItemsStatus] = useState([]);
+
+  const [openExportDiv, setOpenExportDiv] = useState(false);
+
+  const [InfoRecord, setInfoRecord] = useState(null);
+
+  const isTreasury = import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
+  const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
+
+  const isCorproate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
+
   useTableScrollBottom(
     () => {
       if (totalRecord !== blotterdata.length) {
+        console.log(
+          {
+            isShouldTrue: totalRecord !== blotterdata.length,
+            totalRecord,
+            blotterLength: blotterdata.length,
+            sRow,
+          },
+          "totalRecordtotalRecord"
+        );
         setHasReachedBottom(true);
         let Data = { sRow: sRow, Length: 10 };
         dispatch(BlotterDataAPI({ navigate, Data }));
@@ -131,170 +217,195 @@ const TXNTreasurySummary = () => {
     0,
     "TXNSummary_Table"
   );
-
-  /**
-   * Updates blotter data when API data changes
-   */
+  //Extracting Out the Blotter Data API
   useEffect(() => {
-    if (GlobalStateGetBlotterData !== null && tnxTableDisplayData.length > 0) {
-      console.log(tnxTableDisplayData, "tnxTableNewDatatnxTableNewData");
-      setBlotterdata(tnxTableDisplayData);
-      setRow(tnxTableDisplayData.length);
-      setTotalRecords(GlobalStateGetBlotterData.totalCount);
-      setHasReachedBottom(false);
-    }
-  }, [GlobalStateGetBlotterData, tnxTableDisplayData]);
-
-  /**
-   * Handles real-time updates for different transaction statuses
-   */
-  console.log(
-    { GlobalStateGetBlotterData, tnxTableDisplayData },
-    "GlobalStateGetBlotterDataGlobalStateGetBlotterData"
-  );
-  useEffect(() => {
-    const updateGlobalBlotter = (newSummary) => {
-      console.log(newSummary, "newSummarynewSummary")
-      dispatch(
-        updateRealtimeBlotterData({
-          ...GlobalStateGetBlotterData,
-          // tnxSummary: newSummary,
-          tnxTableNewData: newSummary,
-        })
-      );
-    };
-
-    const handleTransactionUpdate = (transaction, clearAction) => {
-      if (!transaction) return;
-
-      let updatedData = [...(tnxTableDisplayData || [])];
-      console.log(updatedData, "newSummarynewSummary")
-
-      const existingIndex = updatedData.findIndex(
-        (item) => item.pK_TransactionID === transaction.pK_TransactionID
-      );
-
-      if (existingIndex !== -1) {
-        updatedData[existingIndex] = transaction;
-      } else {
-        updatedData = [transaction, ...updatedData];
-        setTotalRecords((prevTotalCount) => prevTotalCount + 1);
+    try {
+      if (
+        GlobalStateGetBlotterData !== null &&
+        txnTreasuryTableData.length > 0 && txnTreasuryTableCount !== 0
+      ) {
+        setHasReachedBottom(false);
+        setBlotterdata(txnTreasuryTableData);
+        setTotalRecords(txnTreasuryTableCount);
+        setRow(txnTreasuryTableData.length);
+        F;
+      } else if (GlobalStateGetBlotterData === null) {
+        if (!hasReachedBottom) {
+          setHasReachedBottom(false);
+          setBlotterdata([]);
+          setTotalRecords(0);
+          setRow(0);
+        }
       }
-
-      updateGlobalBlotter(updatedData);
-      dispatch(clearAction(null));
-    };
-
-    // RFQ Expired
-    if (blotterTransactionRFQExpiredForTreasury) {
-      handleTransactionUpdate(
-        blotterTransactionRFQExpiredForTreasury.transaction,
-        BlotterTransactionRFQExpired
-      );
+    } catch (error) {
+      console.log(error, "error");
     }
+  }, [GlobalStateGetBlotterData]);
 
-    // Transaction Accepted
-    if (blotterTransactionAcceptedForTreasury) {
-      handleTransactionUpdate(
-        blotterTransactionAcceptedForTreasury.transaction,
-        BlotterTransactionAcceptedForTreasury
-      );
-    }
+  // useEffect(() => {
+  //   if (blotterTransactionRFQExpiredForTreasury !== null) {
+  //     console.log("Checking");
 
-    // Transaction Cancel Request (delete from list)
-    if (blotterTransactionCancellationRequestDataForTreasury) {
-      const { transaction } =
-        blotterTransactionCancellationRequestDataForTreasury;
+  //     try {
+  //       const { transaction } = blotterTransactionRFQExpiredForTreasury;
+  //       let isAlreadyExist = blotterdata.find(
+  //         (data2, index) =>
+  //           data2.pK_TransactionID === transaction.pK_TransactionID
+  //       );
+  //       if (isAlreadyExist === undefined) {
+  //         setBlotterdata((prev) => [transaction, ...prev]);
+  //         dispatch(BlotterTransactionRFQExpired(null));
+  //       }
+  //     } catch (error) {
+  //       console.log(error, "error in blotterTransactionRFQExpired");
+  //     }
+  //   }
+  // }, [blotterTransactionRFQExpiredForTreasury]);
 
-      const updatedData = (tnxTableDisplayData || []).filter(
-        (item) => item.pK_TransactionID !== transaction.pK_TransactionID
-      );
-      setTotalRecords((prevTotalCount) => prevTotalCount - 1);
-      updateGlobalBlotter(updatedData);
-      dispatch(BlotterTransactionCancellationRequestForTreasury(null));
-    }
+  // useEffect(() => {
+  //   if (blotterTransactionAcceptedForTreasury !== null) {
+  //     console.log("Checking");
 
-    // Transaction Cancelled
-    if (blotterTranscationCancelledForTreasury) {
-      handleTransactionUpdate(
-        blotterTranscationCancelledForTreasury.transaction,
-        BlotterTranscationCancelledForTreasury
-      );
-    }
+  //     try {
+  //       const { transaction } = blotterTransactionAcceptedForTreasury;
+  //       let isAlreadyExist = blotterdata.find(
+  //         (data2, index) =>
+  //           data2.pK_TransactionID === transaction.pK_TransactionID
+  //       );
+  //       if (isAlreadyExist !== undefined) {
+  //         setBlotterdata((prevBlotterData) =>
+  //           prevBlotterData.map((item) =>
+  //             item.pK_TransactionID === transaction.pK_TransactionID
+  //               ? transaction
+  //               : item
+  //           )
+  //         );
+  //       } else {
+  //         setBlotterdata((prev) => [transaction, ...prev]);
+  //       }
 
-    // Transaction Rejected
-    if (blotterTransactionRejectedForTreasury) {
-      handleTransactionUpdate(
-        blotterTransactionRejectedForTreasury.transaction,
-        BlotterTransactionRejectedForTreasury
-      );
-    }
-  }, [
-    blotterTransactionRFQExpiredForTreasury,
-    blotterTransactionAcceptedForTreasury,
-    blotterTransactionCancellationRequestDataForTreasury,
-    blotterTranscationCancelledForTreasury,
-    blotterTransactionRejectedForTreasury,
-    tnxTableDisplayData, // required to ensure it reflects latest data
-  ]);
+  //       dispatch(BlotterTransactionAcceptedForTreasury(null));
+  //     } catch (error) {
+  //       console.log(error, "error in blotterTransactionRFQExpired");
+  //     }
+  //   }
+  // }, [blotterTransactionAcceptedForTreasury]);
 
-  /**
-   * Generic filter handler functions
-   */
-  const handleFilterOpenChange = (filterKey, newOpen) => {
-    setFilterStates((prev) => ({
-      ...prev,
-      [filterKey]: { ...prev[filterKey], open: newOpen },
-    }));
+  // useEffect(() => {
+  //   if (blotterTransactionCancellationRequestDataForTreasury !== null) {
+  //     console.log("Checking");
+
+  //     try {
+  //       const { transaction } =
+  //         blotterTransactionCancellationRequestDataForTreasury;
+  //       let isAlreadyExist = blotterdata.find(
+  //         (data2, index) =>
+  //           data2.pK_TransactionID === transaction.pK_TransactionID
+  //       );
+  //       if (isAlreadyExist !== undefined) {
+  //         setBlotterdata((prevBlotterData) =>
+  //           prevBlotterData.filter(
+  //             (item) => item.pK_TransactionID !== transaction.pK_TransactionID
+  //           )
+  //         );
+  //       }
+  //       dispatch(BlotterTransactionCancellationRequestForTreasury(null));
+  //     } catch (error) {
+  //       console.log(error, "error in blotterTransactionCancellationRequest");
+  //     }
+  //   }
+  // }, [blotterTransactionCancellationRequestDataForTreasury]);
+
+  // useEffect(() => {
+  //   if (blotterTranscationCancelledForTreasury !== null) {
+  //     console.log("Checking");
+
+  //     try {
+  //       const { transaction } = blotterTranscationCancelledForTreasury;
+  //       let isAlreadyExist = blotterdata.find(
+  //         (data2, index) =>
+  //           data2.pK_TransactionID === transaction.pK_TransactionID
+  //       );
+  //       if (isAlreadyExist !== undefined) {
+  //         setBlotterdata((prevBlotterData) =>
+  //           prevBlotterData.map((item) =>
+  //             item.pK_TransactionID === transaction.pK_TransactionID
+  //               ? transaction
+  //               : item
+  //           )
+  //         );
+  //       } else {
+  //         setBlotterdata((prev) => [transaction, ...prev]);
+  //       }
+  //       dispatch(BlotterTranscationCancelledForTreasury(null));
+  //     } catch (error) {}
+  //   }
+  // }, [blotterTranscationCancelledForTreasury]);
+
+  // useEffect(() => {
+  //   if (blotterTransactionRejectedForTreasury !== null) {
+  //     console.log("Checking");
+
+  //     try {
+  //       const { transaction } = blotterTransactionRejectedForTreasury;
+  //       let isAlreadyExist = blotterdata.find(
+  //         (data2, index) =>
+  //           data2.pK_TransactionID === transaction.pK_TransactionID
+  //       );
+  //       if (isAlreadyExist !== undefined) {
+  //         setBlotterdata((prevBlotterData) =>
+  //           prevBlotterData.map((item) =>
+  //             item.pK_TransactionID === transaction.pK_TransactionID
+  //               ? transaction
+  //               : item
+  //           )
+  //         );
+  //       } else {
+  //         setBlotterdata((prev) => [transaction, ...prev]);
+  //       }
+  //       dispatch(BlotterTransactionRejectedForTreasury(null));
+  //     } catch (error) {
+  //       console.log(error, "error in blotterTransactionRejectedForTreasury");
+  //     }
+  //   }
+  // }, [blotterTransactionRejectedForTreasury]);
+
+  //TXN ID PopOver Functions Starts
+  const handleOpenChange = (newOpen) => {
+    setOpen(newOpen);
   };
 
-  const handleSelectAll = (filterKey) => {
-    setFilterStates((prev) => ({
-      ...prev,
-      [filterKey]: {
-        ...prev[filterKey],
-        selectedItems: FILTER_OPTIONS[filterKey],
-      },
-    }));
+  const handleSelectAll = () => {
+    setSelectedItemsTXNID(TXN_ID_OPTIONS);
   };
 
-  const handleDeselectAll = (filterKey) => {
-    setFilterStates((prev) => ({
-      ...prev,
-      [filterKey]: { ...prev[filterKey], selectedItems: [] },
-    }));
+  const handleDeselectAll = () => {
+    setSelectedItemsTXNID([]);
   };
 
-  const handleCheckboxChange = (filterKey, checkedValues) => {
-    setFilterStates((prev) => ({
-      ...prev,
-      [filterKey]: { ...prev[filterKey], selectedItems: checkedValues },
-    }));
+  const handleCheckboxChange = (checkedValues) => {
+    setSelectedItemsTXNID(checkedValues);
   };
 
-  /**
-   * Creates a popover content component for filters
-   */
-  const createFilterPopoverContent = (filterKey) => (
+  const popoverContentTXN = (
     <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
+      <div className='d-flex justify-content-between mb-2'>
         <CustomButton
-          applyClass="SelectAllButton"
-          value="Select All"
-          onClick={() => handleSelectAll(filterKey)}
+          applyClass='SelectAllButton'
+          value={"Select All"}
+          onClick={handleSelectAll}
         />
         <CustomButton
-          applyClass="SelectAllButton"
-          value="Deselect All"
-          onClick={() => handleDeselectAll(filterKey)}
+          applyClass='SelectAllButton'
+          value={"Desselect All"}
+          onClick={handleDeselectAll}
         />
       </div>
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
-        value={filterStates[filterKey].selectedItems}
-        onChange={(checked) => handleCheckboxChange(filterKey, checked)}
-      >
-        {FILTER_OPTIONS[filterKey].map((item) => (
+        value={selectedItemsTXNID}
+        onChange={handleCheckboxChange}>
+        {TXN_ID_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
           </Checkbox>
@@ -302,90 +413,633 @@ const TXNTreasurySummary = () => {
       </Checkbox.Group>
     </div>
   );
+  //TXN ID PopOver Functions Ends
 
-  /**
-   * Creates a table column with filter dropdown
-   */
-  const createFilterColumn = (title, filterKey, dataIndex, width, render) => ({
-    title: (
-      <div className="d-flex align-items-center justify-content-center gap-1">
-        <span className="ff-poppins fw-bold">{title}</span>
-        <Popover
-          content={createFilterPopoverContent(filterKey)}
-          trigger="click"
-          arrow={false}
-          placement="bottom"
-          open={filterStates[filterKey].open}
-          onOpenChange={(newOpen) => handleFilterOpenChange(filterKey, newOpen)}
-        >
-          <span className="filter-dropdown-trigger">▼</span>
-        </Popover>
+  //Customer Name PopOver Functions Starts
+  const handleOpenChangeCustomerName = (newOpen) => {
+    setOpenCustomername(newOpen);
+  };
+
+  const handleSelectAllCustomerName = () => {
+    setSelectedItemsCustomerName(CustomerName_OPTIONS);
+  };
+
+  const handleDeselectAllCustomerName = () => {
+    setSelectedItemsCustomerName([]);
+  };
+
+  const handleCheckboxChangeCustomerName = (checkedValues) => {
+    setSelectedItemsCustomerName(checkedValues);
+  };
+
+  const popoverContentCustomerName = (
+    <div style={{ width: 220 }}>
+      <div className='d-flex justify-content-between mb-2'>
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Select All"}
+          onClick={handleSelectAllCustomerName}
+        />
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Desselect All"}
+          onClick={handleDeselectAllCustomerName}
+        />
       </div>
-    ),
-    key: dataIndex,
-    dataIndex,
-    className: "ff-poppins fw-bold",
-    width,
-    render,
-  });
+      <Checkbox.Group
+        style={{ display: "flex", flexDirection: "column" }}
+        value={selectedItemsCustomerName}
+        onChange={handleCheckboxChangeCustomerName}>
+        {CustomerName_OPTIONS.map((item) => (
+          <Checkbox key={item} value={item}>
+            {item}
+          </Checkbox>
+        ))}
+      </Checkbox.Group>
+    </div>
+  );
+  //Customer Name PopOver Functions Ends
 
-  /**
-   * Handles transaction actions (accept/reject/cancel)
-   */
-  const handleTransactionAction = (transactionID, type) => {
+  //Type PopOver Functions Starts
+  const handleOpenChangeType = (newOpen) => {
+    setOpenType(newOpen);
+  };
+
+  const handleSelectAllType = () => {
+    setSelectedItemsType(TYPE_OPTIONS);
+  };
+
+  const handleDeselectAllType = () => {
+    setSelectedItemsType([]);
+  };
+
+  const handleCheckboxChangeType = (checkedValues) => {
+    setSelectedItemsType(checkedValues);
+  };
+
+  const popoverContentType = (
+    <div style={{ width: 220 }}>
+      <div className='d-flex justify-content-between mb-2'>
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Select All"}
+          onClick={handleSelectAllType}
+        />
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Desselect All"}
+          onClick={handleDeselectAllType}
+        />
+      </div>
+      <Checkbox.Group
+        style={{ display: "flex", flexDirection: "column" }}
+        value={selectedItemsType}
+        onChange={handleCheckboxChangeType}>
+        {TYPE_OPTIONS.map((item) => (
+          <Checkbox key={item} value={item}>
+            {item}
+          </Checkbox>
+        ))}
+      </Checkbox.Group>
+    </div>
+  );
+  //Type PopOver Functions Ends
+
+  //Nature PopOver Functions Starts
+  const handleOpenChangeNature = (newOpen) => {
+    setOpenNature(newOpen);
+  };
+
+  const handleSelectAllNature = () => {
+    setSelectedItemsNature(Nature_OPTIONS);
+  };
+
+  const handleDeselectAllNature = () => {
+    setSelectedItemsNature([]);
+  };
+
+  const handleCheckboxChangeNature = (checkedValues) => {
+    setSelectedItemsNature(checkedValues);
+  };
+
+  const popoverContentNature = (
+    <div style={{ width: 220 }}>
+      <div className='d-flex justify-content-between mb-2'>
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Select All"}
+          onClick={handleSelectAllNature}
+        />
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Desselect All"}
+          onClick={handleDeselectAllNature}
+        />
+      </div>
+      <Checkbox.Group
+        style={{ display: "flex", flexDirection: "column" }}
+        value={selectedItemsNature}
+        onChange={handleCheckboxChangeNature}>
+        {Nature_OPTIONS.map((item) => (
+          <Checkbox key={item} value={item}>
+            {item}
+          </Checkbox>
+        ))}
+      </Checkbox.Group>
+    </div>
+  );
+  //Nature PopOver Functions Ends
+
+  //CCY1 PopOver Functions Starts
+  const handleOpenChangeCCY1 = (newOpen) => {
+    setOpenCCY1(newOpen);
+  };
+
+  const handleSelectAllCCY1 = () => {
+    setSelectedItemsCCY1(CCY1_OPTIONS);
+  };
+
+  const handleDeselectAllCCY1 = () => {
+    setSelectedItemsCCY1([]);
+  };
+
+  const handleCheckboxChangeCCY1 = (checkedValues) => {
+    setSelectedItemsCCY1(checkedValues);
+  };
+
+  const popoverContentCCY1 = (
+    <div style={{ width: 220 }}>
+      <div className='d-flex justify-content-between mb-2'>
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Select All"}
+          onClick={handleSelectAllCCY1}
+        />
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Desselect All"}
+          onClick={handleDeselectAllCCY1}
+        />
+      </div>
+      <Checkbox.Group
+        style={{ display: "flex", flexDirection: "column" }}
+        value={selectedItemsCCY1}
+        onChange={handleCheckboxChangeCCY1}>
+        {CCY1_OPTIONS.map((item) => (
+          <Checkbox key={item} value={item}>
+            {item}
+          </Checkbox>
+        ))}
+      </Checkbox.Group>
+    </div>
+  );
+  //CCY1 PopOver Functions Ends
+
+  //Amount1 PopOver Functions Starts
+  const handleOpenChangeAmount1 = (newOpen) => {
+    setOpenAmount1(newOpen);
+  };
+
+  const handleSelectAllAmount1 = () => {
+    setSelectedItemsAmount1(Amount_OPTIONS);
+  };
+
+  const handleDeselectAllAmount1 = () => {
+    setSelectedItemsAmount1([]);
+  };
+
+  const handleCheckboxChangeAmount1 = (checkedValues) => {
+    setSelectedItemsAmount1(checkedValues);
+  };
+
+  const popoverContentAmount1 = (
+    <div style={{ width: 220 }}>
+      <div className='d-flex justify-content-between mb-2'>
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Select All"}
+          onClick={handleSelectAllAmount1}
+        />
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Desselect All"}
+          onClick={handleDeselectAllAmount1}
+        />
+      </div>
+      <Checkbox.Group
+        style={{ display: "flex", flexDirection: "column" }}
+        value={selectedItemsAmount1}
+        onChange={handleCheckboxChangeAmount1}>
+        {Amount_OPTIONS.map((item) => (
+          <Checkbox key={item} value={item}>
+            {item}
+          </Checkbox>
+        ))}
+      </Checkbox.Group>
+    </div>
+  );
+  //CCY1 PopOver Functions Ends
+
+  //Rate PopOver Functions Starts
+  const handleOpenChangeRate = (newOpen) => {
+    setOpenRate(newOpen);
+  };
+
+  const handleSelectAllRate = () => {
+    setSelectedItemsRate(Rate_OPTIONS);
+  };
+
+  const handleDeselectAllRate = () => {
+    setSelectedItemsRate([]);
+  };
+
+  const handleCheckboxChangeRate = (checkedValues) => {
+    setSelectedItemsRate(checkedValues);
+  };
+
+  const popoverContentRate = (
+    <div style={{ width: 220 }}>
+      <div className='d-flex justify-content-between mb-2'>
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Select All"}
+          onClick={handleSelectAllRate}
+        />
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Desselect All"}
+          onClick={handleDeselectAllRate}
+        />
+      </div>
+      <Checkbox.Group
+        style={{ display: "flex", flexDirection: "column" }}
+        value={selectedItemsRate}
+        onChange={handleCheckboxChangeRate}>
+        {Rate_OPTIONS.map((item) => (
+          <Checkbox key={item} value={item}>
+            {item}
+          </Checkbox>
+        ))}
+      </Checkbox.Group>
+    </div>
+  );
+  //Rate PopOver Functions Ends
+
+  //CCY2 PopOver Functions Starts
+  const handleOpenChangeCCY2 = (newOpen) => {
+    setOpenCCY2(newOpen);
+  };
+
+  const handleSelectAllCCY2 = () => {
+    setSelectedItemsCCY2(CCY2_OPTIONS);
+  };
+
+  const handleDeselectAllCCY2 = () => {
+    setSelectedItemsCCY2([]);
+  };
+
+  const handleCheckboxChangeCCY2 = (checkedValues) => {
+    setSelectedItemsCCY2(checkedValues);
+  };
+
+  const popoverContentCCY2 = (
+    <div style={{ width: 220 }}>
+      <div className='d-flex justify-content-between mb-2'>
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Select All"}
+          onClick={handleSelectAllCCY2}
+        />
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Desselect All"}
+          onClick={handleDeselectAllCCY2}
+        />
+      </div>
+      <Checkbox.Group
+        style={{ display: "flex", flexDirection: "column" }}
+        value={selectedItemsCCY2}
+        onChange={handleCheckboxChangeCCY2}>
+        {CCY2_OPTIONS.map((item) => (
+          <Checkbox key={item} value={item}>
+            {item}
+          </Checkbox>
+        ))}
+      </Checkbox.Group>
+    </div>
+  );
+  //CCY2 PopOver Functions Ends
+
+  //Amount2 PopOver Functions Starts
+  const handleOpenChangeAmount2 = (newOpen) => {
+    setOpenAmount2(newOpen);
+  };
+
+  const handleSelectAllAmount2 = () => {
+    setSelectedItemsAmount2(Amount2_OPTIONS);
+  };
+
+  const handleDeselectAllAmount2 = () => {
+    setSelectedItemsAmount2([]);
+  };
+
+  const handleCheckboxChangeAmount2 = (checkedValues) => {
+    setSelectedItemsAmount2(checkedValues);
+  };
+
+  const popoverContentAmount2 = (
+    <div style={{ width: 220 }}>
+      <div className='d-flex justify-content-between mb-2'>
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Select All"}
+          onClick={handleSelectAllAmount2}
+        />
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Desselect All"}
+          onClick={handleDeselectAllAmount2}
+        />
+      </div>
+      <Checkbox.Group
+        style={{ display: "flex", flexDirection: "column" }}
+        value={selectedItemsAmount2}
+        onChange={handleCheckboxChangeAmount2}>
+        {Amount2_OPTIONS.map((item) => (
+          <Checkbox key={item} value={item}>
+            {item}
+          </Checkbox>
+        ))}
+      </Checkbox.Group>
+    </div>
+  );
+  //Amount2 PopOver Functions Ends
+
+  //Time PopOver Functions Starts
+  const handleOpenChangeTime = (newOpen) => {
+    setOpenTime(newOpen);
+  };
+
+  const handleSelectAllTime = () => {
+    setSelectedItemsTime(Time_OPTIONS);
+  };
+
+  const handleDeselectAllTime = () => {
+    setSelectedItemsTime([]);
+  };
+
+  const handleCheckboxChangeTime = (checkedValues) => {
+    setSelectedItemsTime(checkedValues);
+  };
+
+  const popoverContentTime = (
+    <div style={{ width: 220 }}>
+      <div className='d-flex justify-content-between mb-2'>
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Select All"}
+          onClick={handleSelectAllTime}
+        />
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Desselect All"}
+          onClick={handleDeselectAllTime}
+        />
+      </div>
+      <Checkbox.Group
+        style={{ display: "flex", flexDirection: "column" }}
+        value={selectedItemsTime}
+        onChange={handleCheckboxChangeTime}>
+        {Time_OPTIONS.map((item) => (
+          <Checkbox key={item} value={item}>
+            {item}
+          </Checkbox>
+        ))}
+      </Checkbox.Group>
+    </div>
+  );
+  //Time PopOver Functions Ends
+
+  //LCno PopOver Functions Starts
+  const handleOpenChangeLCno = (newOpen) => {
+    setOpenLCno(newOpen);
+  };
+
+  const handleSelectAllLCno = () => {
+    setSelectedItemsLCno(LCno_OPTIONS);
+  };
+
+  const handleDeselectAllLCno = () => {
+    setSelectedItemsLCno([]);
+  };
+
+  const handleCheckboxChangeLCno = (checkedValues) => {
+    setSelectedItemsLCno(checkedValues);
+  };
+
+  const popoverContentLCno = (
+    <div style={{ width: 220 }}>
+      <div className='d-flex justify-content-between mb-2'>
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Select All"}
+          onClick={handleSelectAllLCno}
+        />
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Desselect All"}
+          onClick={handleDeselectAllLCno}
+        />
+      </div>
+      <Checkbox.Group
+        style={{ display: "flex", flexDirection: "column" }}
+        value={selectedItemsLCno}
+        onChange={handleCheckboxChangeLCno}>
+        {LCno_OPTIONS.map((item) => (
+          <Checkbox key={item} value={item}>
+            {item}
+          </Checkbox>
+        ))}
+      </Checkbox.Group>
+    </div>
+  );
+  //LCno PopOver Functions Ends
+
+  //ACCno PopOver Functions Starts
+  const handleOpenChangeAccNO = (newOpen) => {
+    setOpenAccNO(newOpen);
+  };
+
+  const handleSelectAllAccNO = () => {
+    setSelectedItemsAccNO(Accno_OPTIONS);
+  };
+
+  const handleDeselectAllAccNO = () => {
+    setSelectedItemsAccNO([]);
+  };
+
+  const handleCheckboxChangeAccNO = (checkedValues) => {
+    setSelectedItemsAccNO(checkedValues);
+  };
+
+  const popoverContentAccNO = (
+    <div style={{ width: 220 }}>
+      <div className='d-flex justify-content-between mb-2'>
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Select All"}
+          onClick={handleSelectAllAccNO}
+        />
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Desselect All"}
+          onClick={handleDeselectAllAccNO}
+        />
+      </div>
+      <Checkbox.Group
+        style={{ display: "flex", flexDirection: "column" }}
+        value={selectedItemsAccNO}
+        onChange={handleCheckboxChangeAccNO}>
+        {Accno_OPTIONS.map((item) => (
+          <Checkbox key={item} value={item}>
+            {item}
+          </Checkbox>
+        ))}
+      </Checkbox.Group>
+    </div>
+  );
+  //ACCno PopOver Functions Ends
+
+  //status PopOver Functions Starts
+  const handleOpenChangeStatus = (newOpen) => {
+    setOpenStatus(newOpen);
+  };
+
+  const handleSelectAllStatus = () => {
+    setSelectedItemsStatus(statusOptions);
+  };
+
+  const handleDeselectAllStatus = () => {
+    setSelectedItemsStatus([]);
+  };
+
+  const handleCheckboxChangeStatus = (checkedValues) => {
+    setSelectedItemsStatus(checkedValues);
+  };
+
+  const popoverContentStatus = (
+    <div style={{ width: 220 }}>
+      <div className='d-flex justify-content-between mb-2'>
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Select All"}
+          onClick={handleSelectAllStatus}
+        />
+        <CustomButton
+          applyClass='SelectAllButton'
+          value={"Desselect All"}
+          onClick={handleDeselectAllStatus}
+        />
+      </div>
+      <Checkbox.Group
+        style={{ display: "flex", flexDirection: "column" }}
+        value={selectedItemsStatus}
+        onChange={handleCheckboxChangeStatus}>
+        {statusOptions.map((item) => (
+          <Checkbox key={item} value={item}>
+            {item.status}
+          </Checkbox>
+        ))}
+      </Checkbox.Group>
+    </div>
+  );
+  //status PopOver Functions Ends
+  // Show and Hide Comment Modal and Update Comment Value
+  const handleShowCommentModal = (text) => {
+    setShowCommentModal(true);
+    setComment(text);
+  };
+
+  const onClickOpenExport = () => {
+    setOpenExportDiv(!openExportDiv);
+  };
+
+  const handleClickChat = (record) => {
+    let Data = {
+      TranscationID: 123456789,
+    };
+
+    dispatch(
+      getAllChatByTransactionId({
+        navigate,
+        Data,
+      })
+    );
+    // setChatModalTransactionId(record);
+  };
+
+  // const handleClickInfo = (record) => {
+  //   setInfoRecord(record);
+  //   dispatch(setTransactionInfoModal(true));
+  // };
+
+  const handleCheckerAccept = (transactionID, type) => {
     if (type === "Accepted") {
-      dispatch(
-        AcceptRFQTransaction({ PK_TransactionID: transactionID }, navigate)
-      );
-    } else {
+      let Data = { PK_TransactionID: transactionID };
+      dispatch(AcceptRFQTransaction({ Data, navigate }));
+    } else if (type === "Rejected") {
+      setCancelReasonModal(true);
+      setCancelType(type);
+      setCancelTransactionID(transactionID);
+      // let Data = { PK_TransactionID: transactionID, Comment: "Hello" };
+      // dispatch(RejectRFQTransaction({ Data, navigate }));
+    } else if (type === "Cancelled") {
+      setCancelReasonModal(true);
+      setCancelType(type);
+      setCancelTransactionID(transactionID);
+    } else if (type === "CancelTransaction") {
       setCancelReasonModal(true);
       setCancelType(type);
       setCancelTransactionID(transactionID);
     }
   };
 
-  /**
-   * Submits the cancellation/rejection reason
-   */
   const handleClickReasonSubmit = useCallback(() => {
-    const Data = {
-      PK_TransactionID: cancelTransactionID,
-      Comment: cancelReasonComment,
-    };
-
-    const actions = {
-      Cancelled: CancelTransaction,
-      CancelTransaction: CancelPendingTransactionApi,
-      Rejected: RejectRFQTransaction,
-    };
-
-    if (actions[cancelType]) {
-      dispatch(actions[cancelType]({ Data, navigate, setCancelReasonModal }));
+    if (cancelType === "Cancelled") {
+      let Data = {
+        PK_TransactionID: cancelTransactionID,
+        Comment: cancelReasonComment,
+      };
+      dispatch(RejectTransactionAPI({ Data, navigate, setCancelReasonModal }));
+    } else if (cancelType === "CancelTransaction") {
+      let Data = {
+        PK_TransactionID: cancelTransactionID,
+        Comment: cancelReasonComment,
+      };
+      dispatch(
+        CancelPendingTransactionApi({ navigate, Data, setCancelReasonModal })
+      );
+    } else if (cancelType === "Rejected") {
+      let Data = {
+        PK_TransactionID: cancelTransactionID,
+        Comment: cancelReasonComment,
+      };
+      dispatch(RejectRFQTransaction({ Data, navigate, setCancelReasonModal }));
     }
-  }, [cancelType, cancelTransactionID, cancelReasonComment]);
+  }, [
+    cancelType,
+    cancelTransactionID,
+    cancelReasonModal,
+    cancelReasonComment,
+    setCancelReasonModal,
+  ]);
 
-  /**
-   * Closes the reason modal and resets state
-   */
   const handleCloseReasonModal = useCallback(() => {
     setCancelReasonModal(false);
     setCancelType("");
     setCancelTransactionID(0);
     setCancelReasonComment("");
-  }, []);
-
-  /**
-   * Shows comment modal with transaction comment
-   */
-
-  const handleShowCommentModal = (text) => {
-    setShowCommentModal(true);
-    setComment(text);
-  };
-
-  /**
-   * Opens transaction info modal
-   */
+  }, [cancelType, cancelTransactionID, cancelReasonModal, cancelReasonComment]);
 
   const handleClickInfo = (record) => {
     let Data = {
@@ -405,90 +1059,525 @@ const TXNTreasurySummary = () => {
       dispatch(GetNonFEDiscountingTransactionDetailsApi({ navigate, Data }));
     }
   };
-
-  // Table columns configuration
   const Treasurycolumns = [
-    createFilterColumn("TXN ID", "TXN_ID", "txnid", 120),
-    createFilterColumn("Client", "CUSTOMER_NAME", "corporateName", 120),
-    createFilterColumn("Branch Code", "CUSTOMER_NAME", "branchCode", 120),
-    createFilterColumn("Type", "TYPE", "side", 70),
-    createFilterColumn("Nature", "NATURE", "nature", 120),
-    createFilterColumn("CCY1", "CCY1", "ccY1", 80),
-    createFilterColumn("Amount", "AMOUNT", "quantity", 80),
-    createFilterColumn("Rate", "RATE", "rate", 120, (text) => text.toFixed(2)),
-    createFilterColumn("CCY2", "CCY2", "ccY2", 60),
-    createFilterColumn("Amount", "AMOUNT2", "amount", 120, (text) =>
-      text.toFixed(2)
-    ),
-    createFilterColumn("Time", "TIME", "tradeDateTime", 80, (text) =>
-      text !== "" ? formatDateTimeToUTCTime(text) : ""
-    ),
-    createFilterColumn("LC NO.", "LC_NO", "lcNumber", 120),
-    createFilterColumn("Acc NO.", "ACC_NO", "accountNumber", 120),
     {
-      ...createFilterColumn("Status", "STATUS", "status", 80),
-      render: (text) => (
-        <span className={text === "Accepted" ? "color-green" : "color-red"}>
-          {text}
-        </span>
+      title: (
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>TXN ID</span>
+          <Popover
+            content={popoverContentTXN}
+            trigger='click'
+            arrow={false}
+            placement='bottom'
+            open={open}
+            onOpenChange={handleOpenChange}>
+            <span
+              style={{
+                cursor: "pointer",
+                color: "white",
+                background: "#f56600",
+                borderRadius: "4px",
+              }}>
+              ▼
+            </span>
+          </Popover>
+        </div>
+      ),
+      key: "txnid",
+      dataIndex: "txnid",
+      align: "center",
+      className: "ff-poppins fw-bold",
+      width: 120,
+      ellipsis: {
+        showTitle: false,
+      },
+    },
+    {
+      title: (
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Client</span>
+          <Popover
+            content={popoverContentCustomerName}
+            trigger='click'
+            arrow={false}
+            placement='bottom'
+            open={openCustomername}
+            onOpenChange={handleOpenChangeCustomerName}>
+            <span
+              style={{
+                cursor: "pointer",
+                color: "white",
+                background: "#f56600",
+                borderRadius: "4px",
+              }}>
+              ▼
+            </span>
+          </Popover>
+        </div>
+      ),
+      key: "counterPartyName",
+      dataIndex: "corporateName",
+      className: "ff-poppins fw-bold",
+      width: 120,
+      ellipsis: {
+        showTitle: false,
+      },
+    },
+    {
+      title: (
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Branch Code</span>
+          <Popover
+            content={popoverContentCustomerName}
+            trigger='click'
+            arrow={false}
+            placement='bottom'
+            open={openCustomername}
+            onOpenChange={handleOpenChangeCustomerName}>
+            <span
+              style={{
+                cursor: "pointer",
+                color: "white",
+                background: "#f56600",
+                borderRadius: "4px",
+              }}>
+              ▼
+            </span>
+          </Popover>
+        </div>
+      ),
+      key: "counterPartyName",
+      dataIndex: "branchCode",
+      className: "ff-poppins fw-bold",
+      width: 120,
+    },
+    {
+      title: (
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Type</span>
+          <Popover
+            content={popoverContentType}
+            trigger='click'
+            arrow={false}
+            placement='bottom'
+            open={openType}
+            onOpenChange={handleOpenChangeType}>
+            <span
+              style={{
+                cursor: "pointer",
+                color: "white",
+                background: "#f56600",
+                borderRadius: "4px",
+              }}>
+              ▼
+            </span>
+          </Popover>
+        </div>
+      ),
+      key: "side",
+      dataIndex: "side",
+      className: "ff-poppins fw-bold",
+      width: 70,
+    },
+    {
+      title: (
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Nature</span>
+          <Popover
+            content={popoverContentNature}
+            trigger='click'
+            arrow={false}
+            placement='bottom'
+            open={openNature}
+            onOpenChange={handleOpenChangeNature}>
+            <span
+              style={{
+                cursor: "pointer",
+                color: "white",
+                background: "#f56600",
+                borderRadius: "4px",
+              }}>
+              ▼
+            </span>
+          </Popover>
+        </div>
+      ),
+      key: "nature",
+      dataIndex: "nature",
+      className: "ff-poppins fw-bold",
+      width: 120,
+    },
+    {
+      title: (
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>CCY1</span>
+          <Popover
+            content={popoverContentCCY1}
+            trigger='click'
+            arrow={false}
+            placement='bottom'
+            open={openCCY1}
+            onOpenChange={handleOpenChangeCCY1}>
+            <span
+              style={{
+                cursor: "pointer",
+                color: "white",
+                background: "#f56600",
+                borderRadius: "4px",
+              }}>
+              ▼
+            </span>
+          </Popover>
+        </div>
+      ),
+      key: "ccY1",
+      dataIndex: "ccY1",
+      className: "ff-poppins fw-bold",
+      width: 80,
+    },
+    {
+      title: (
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Amount</span>
+          <Popover
+            content={popoverContentAmount1}
+            trigger='click'
+            arrow={false}
+            placement='bottom'
+            open={openAmount1}
+            onOpenChange={handleOpenChangeAmount1}>
+            <span
+              style={{
+                cursor: "pointer",
+                color: "white",
+                background: "#f56600",
+                borderRadius: "4px",
+              }}>
+              ▼
+            </span>
+          </Popover>
+        </div>
+      ),
+      key: "amount1",
+      dataIndex: "quantity",
+      className: "ff-poppins fw-bold",
+      width: 80,
+    },
+    {
+      title: (
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Rate</span>
+          <Popover
+            content={popoverContentRate}
+            trigger='click'
+            arrow={false}
+            placement='bottom'
+            open={openRate}
+            onOpenChange={handleOpenChangeRate}>
+            <span
+              style={{
+                cursor: "pointer",
+                color: "white",
+                background: "#f56600",
+                borderRadius: "4px",
+              }}>
+              ▼
+            </span>
+          </Popover>
+        </div>
+      ),
+      key: "rate1",
+      dataIndex: "rate",
+      className: "ff-poppins fw-bold",
+      width: 120,
+      render: (text, record) => {
+        return text.toFixed(2);
+      },
+    },
+    {
+      title: (
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>CCY2</span>
+          <Popover
+            content={popoverContentCCY2}
+            trigger='click'
+            arrow={false}
+            placement='bottom'
+            open={openCCY2}
+            onOpenChange={handleOpenChangeCCY2}>
+            <span
+              style={{
+                cursor: "pointer",
+                color: "white",
+                background: "#f56600",
+                borderRadius: "4px",
+              }}>
+              ▼
+            </span>
+          </Popover>
+        </div>
+      ),
+      key: "ccY2",
+      dataIndex: "ccY2",
+      className: "ff-poppins fw-bold",
+      width: 60,
+    },
+    {
+      title: (
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Amount</span>
+          <Popover
+            content={popoverContentAmount2}
+            trigger='click'
+            arrow={false}
+            placement='bottom'
+            open={openAmount2}
+            onOpenChange={handleOpenChangeAmount2}>
+            <span
+              style={{
+                cursor: "pointer",
+                color: "white",
+                background: "#f56600",
+                borderRadius: "4px",
+              }}>
+              ▼
+            </span>
+          </Popover>
+        </div>
+      ),
+      key: "amount2",
+      dataIndex: "amount",
+      className: "ff-poppins fw-bold",
+      width: 120,
+      render: (text, record) => {
+        return text.toFixed(2);
+      },
+    },
+    {
+      title: (
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Time</span>
+          <Popover
+            content={popoverContentTime}
+            trigger='click'
+            arrow={false}
+            placement='bottom'
+            open={openTime}
+            onOpenChange={handleOpenChangeTime}>
+            <span
+              style={{
+                cursor: "pointer",
+                color: "white",
+                background: "#f56600",
+                borderRadius: "4px",
+              }}>
+              ▼
+            </span>
+          </Popover>
+        </div>
+      ),
+      key: "time",
+      dataIndex: "tradeDateTime",
+      className: "ff-poppins fw-bold",
+      width: 80,
+      render: (text, record) => {
+        return text !== "" && formatDateTimeToUTCTime(text);
+      },
+    },
+    {
+      title: (
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>LC NO.</span>
+          <Popover
+            content={popoverContentLCno}
+            trigger='click'
+            arrow={false}
+            placement='bottom'
+            open={openLCno}
+            onOpenChange={handleOpenChangeLCno}>
+            <span
+              style={{
+                cursor: "pointer",
+                color: "white",
+                background: "#f56600",
+                borderRadius: "4px",
+              }}>
+              ▼
+            </span>
+          </Popover>
+        </div>
+      ),
+      key: "lC_No",
+      dataIndex: "lcNumber",
+      className: "ff-poppins fw-bold",
+      width: 120,
+    },
+    {
+      title: (
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Acc NO.</span>
+          <Popover
+            content={popoverContentAccNO}
+            trigger='click'
+            arrow={false}
+            placement='bottom'
+            open={openAccNO}
+            onOpenChange={handleOpenChangeAccNO}>
+            <span
+              style={{
+                cursor: "pointer",
+                color: "white",
+                background: "#f56600",
+                borderRadius: "4px",
+              }}>
+              ▼
+            </span>
+          </Popover>
+        </div>
+      ),
+      key: "accountNumber",
+      dataIndex: "accountNumber",
+      className: "ff-poppins fw-bold",
+      width: 120,
+    },
+
+    {
+      title: (
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Status</span>
+          <Popover
+            content={popoverContentStatus}
+            trigger='click'
+            arrow={false}
+            placement='bottom'
+            open={openStatus}
+            onOpenChange={handleOpenChangeStatus}>
+            <span
+              style={{
+                cursor: "pointer",
+                color: "white",
+                background: "#f56600",
+                borderRadius: "4px",
+              }}>
+              ▼
+            </span>
+          </Popover>
+        </div>
+      ),
+      key: "14",
+      dataIndex: "status",
+      className: "ff-poppins fw-bold",
+      width: 80,
+      render: (text, record) => (
+        <>
+          <span className={text === "Accepted" ? "color-green" : "color-red"}>
+            {text}
+          </span>
+        </>
       ),
     },
     {
       title: "Action",
-      key: "action",
+      key: "Checker",
+      dataIndex: "",
+      className: "comment-class text-center",
       width: 80,
       align: "center",
-      render: (_, record) => (
-        <div className="col-action text-nowrap text-center d-flex gap-1 justify-content-center">
-          {record.statusID === 1 && (
-            <CustomButton
-              icon={<i className="icon-close blotterTableIconSize" />}
-              size="small"
-              applyClass="ActionButton"
-              onClick={() =>
-                handleTransactionAction(record.pK_TransactionID, "Cancelled")
-              }
-            />
-          )}
-        </div>
-      ),
+      render: (text, record) => {
+        console.log(record, "record in action column");
+        return (
+          <>
+            <div className='col-action text-nowrap text-center d-flex gap-1 justify-content-center'>
+              {/* Check  */}
+              {record.statusID === 1 ? (
+                <CustomButton
+                  icon={<i className='icon-close blotterTableIconSize '></i>}
+                  // className='btn btn-danger '
+                  size={"small"}
+                  applyClass={"ActionButton"}
+                  onClick={() =>
+                    handleCheckerAccept(record.pK_TransactionID, "Cancelled")
+                  }
+                />
+              ) : null}
+              {/* <CustomButton
+                icon={<i className='icon-check blotterTableIconSize'></i>}
+                className='btn btn-success '
+              />
+              <CustomButton
+                icon={<i className='icon-trash blotterTableIconSize '></i>}
+                className='btn  btn-danger  '
+              />
+
+              <CustomButton
+                icon={<i className='icon-user-check blotterTableIconSize '></i>}
+                className='btn  btn-primary  '
+              />
+              <CustomButton
+                icon={<i className='icon-open  blotterTableIconSize'></i>}
+                className='btn  btn-primary  '
+              />
+              <CustomButton
+                icon={
+                  <i className='icon-view-comment blotterTableIconSize'></i>
+                }
+                className='btn  btn-primary'
+              /> */}
+            </div>
+          </>
+        );
+      },
     },
     {
-      key: "actions",
+      key: "",
       title: "",
+      dataIndex: "chat",
+      className: "comment-class ",
       width: 80,
       align: "center",
-      render: (_, record) => (
-        <div className="d-flex gap-1 justify-content-start">
-          {record.statusID === 3 && (
-            <CustomButton
-              icon={<i className="icon-view-comment blotterTableIconSize" />}
-              className="btn btn-primary"
-              onClick={() => handleShowCommentModal(record.comment)}
-            />
-          )}
-          <CustomButton
-            onClick={() => handleClickInfo(record)}
-            icon={
-              <svg
-                id="info_Layer_1"
-                x="0px"
-                y="0px"
-                width="12px"
-                height="12px"
-                fill="#ffffff"
-                viewBox="0 0 55 55"
-              >
-                <g>
-                  <path d="M41.407,45.858c0.067,0.838,0.156,1.672,0.183,2.508   c0.005,0.152-0.205,0.376-0.37,0.461c-1.347,0.687-2.679,1.416-4.069,2.005c-3.305,1.396-6.715,2.5-10.277,3.009   c-1.447,0.206-2.936,0.154-4.403,0.153c-0.477-0.001-0.968-0.178-1.424-0.345c-1.313-0.481-1.98-1.443-1.948-2.85   c0.015-0.583,0.103-1.179,0.253-1.744c1.863-7.013,3.752-14.02,5.61-21.037c0.199-0.751,0.327-1.543,0.341-2.318   c0.021-1.142-0.615-1.925-1.667-2.331c-1.605-0.618-3.258-0.468-4.89-0.161c-1.764,0.332-3.468,0.873-5.149,1.884   c-0.074-0.978-0.157-1.863-0.187-2.75c-0.005-0.127,0.234-0.307,0.396-0.388c1.334-0.67,2.648-1.389,4.021-1.968   c3.327-1.403,6.755-2.512,10.337-3.021c1.465-0.208,2.994-0.294,4.457-0.125c2.782,0.323,3.808,2.02,3.073,4.73   c-0.94,3.474-1.914,6.941-2.838,10.419c-1.049,3.953-2.087,7.912-3.077,11.879c-0.524,2.107,0.385,3.449,2.526,3.839   c2.048,0.376,4.038-0.017,5.981-0.634C39.313,46.75,40.296,46.295,41.407,45.858z"></path>
-                  <circle cx="27.5" cy="7.608" r="6.609"></circle>
-                </g>
-              </svg>
-            }
-            className="btn btn-sm btn-primary info-btn-trigger ms-1"
-          />
-        </div>
-      ),
+      render: (text, record) => {
+        return (
+          <>
+            <div className='d-flex gap-1 justify-content-start'>
+              {record.statusID === 3 ? (
+                <CustomButton
+                  icon={
+                    <i className='icon-view-comment blotterTableIconSize '></i>
+                  }
+                  className='btn  btn-primary'
+                  onClick={() => handleShowCommentModal(record.comment)}
+                />
+              ) : (
+                <span className='w-30'></span>
+              )}
+              {/* <CustomButton
+                icon={<i className='icon-chat2 '></i>}
+                className='btn btn-sm btn-danger chat-btn-trigger'
+                onClick={() => handleClickChat(record.txnid)}
+              /> */}
+              <CustomButton
+                onClick={() => handleClickInfo(record)}
+                icon={
+                  <svg
+                    id='info_Layer_1'
+                    x='0px'
+                    y='0px'
+                    width='12px'
+                    height='12px'
+                    fill='#ffffff'
+                    viewBox='0 0 55 55'>
+                    <g>
+                      <path d='M41.407,45.858c0.067,0.838,0.156,1.672,0.183,2.508   c0.005,0.152-0.205,0.376-0.37,0.461c-1.347,0.687-2.679,1.416-4.069,2.005c-3.305,1.396-6.715,2.5-10.277,3.009   c-1.447,0.206-2.936,0.154-4.403,0.153c-0.477-0.001-0.968-0.178-1.424-0.345c-1.313-0.481-1.98-1.443-1.948-2.85   c0.015-0.583,0.103-1.179,0.253-1.744c1.863-7.013,3.752-14.02,5.61-21.037c0.199-0.751,0.327-1.543,0.341-2.318   c0.021-1.142-0.615-1.925-1.667-2.331c-1.605-0.618-3.258-0.468-4.89-0.161c-1.764,0.332-3.468,0.873-5.149,1.884   c-0.074-0.978-0.157-1.863-0.187-2.75c-0.005-0.127,0.234-0.307,0.396-0.388c1.334-0.67,2.648-1.389,4.021-1.968   c3.327-1.403,6.755-2.512,10.337-3.021c1.465-0.208,2.994-0.294,4.457-0.125c2.782,0.323,3.808,2.02,3.073,4.73   c-0.94,3.474-1.914,6.941-2.838,10.419c-1.049,3.953-2.087,7.912-3.077,11.879c-0.524,2.107,0.385,3.449,2.526,3.839   c2.048,0.376,4.038-0.017,5.981-0.634C39.313,46.75,40.296,46.295,41.407,45.858z'></path>
+                      <circle cx='27.5' cy='7.608' r='6.609'></circle>
+                    </g>
+                  </svg>
+                }
+                className='btn btn-sm btn-primary info-btn-trigger ms-1'
+              />
+            </div>
+          </>
+        );
+      },
     },
   ];
 
@@ -498,18 +1587,16 @@ const TXNTreasurySummary = () => {
         pagination={false}
         dataSource={blotterdata}
         bordered={false}
-        prefixCls="TXNSummary_Table"
+        prefixCls='TXNSummary_Table'
         columns={Treasurycolumns}
         scroll={{ x: "max-content", y: 500 }}
         rowClassName={(record) => (record.statusID === 7 ? "isCancelled" : "")}
       />
-
       <CommentModal
         comment={comment}
         setShowCommentModal={setShowCommentModal}
         showCommentModal={showCommentModal}
       />
-
       {cancelReasonModal && (
         <CancelReasonModal
           cancelReasonModal={cancelReasonModal}
@@ -520,6 +1607,8 @@ const TXNTreasurySummary = () => {
           handleCloseReasonModal={handleCloseReasonModal}
         />
       )}
+
+      {/* <InfoTransaction InfoRecord={InfoRecord} setInfoRecord={setInfoRecord} /> */}
     </>
   );
 };

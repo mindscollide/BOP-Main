@@ -61,7 +61,7 @@ export const useMqttClient = ({
     (message) => {
       try {
         const parsed = JSON.parse(message.payloadString);
-        // console.log("MQTT message arrived:", parsed);
+        console.log("MQTT message arrived:", parsed);
         if (onMessageArrivedCallback) onMessageArrivedCallback(parsed);
       } catch (err) {
         console.error("Failed to parse message:", err);

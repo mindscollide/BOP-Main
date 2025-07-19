@@ -68,26 +68,144 @@ const BlotterSlicer = createSlice({
     spotQuoteModalData: null,
     calculateNonFeSwapAndDiscountingRate: null,
     tnxTableNewData: [],
+    txnCouterPartyData: [],
     OutstandingTableNewData: [],
     totalCountOutstandingData: 0,
+
+    // TXN Treasury Data
+    txnTreasuryTableData: [],
+    txnTreasuryTableDataCount: 0,
+
+    // TXN CounterParty  Data
+    txnCounterPartyTableData: [],
+    txnCounterPartyTableDataCount: 0,
+
+    // Outstanding Table Data
+    OutstandingTableData: [],
+    OutstandingTableDataCount: 0,
+
+    BlotterTransactionRFQExpired: null,
+    BlotterTransactionRFQExpiredForTreasury: null,
+    BlotterTransactionRFQExpiredForTreasuryDealBox: null,
+
+    BlotterTransactionAdded: null,
+    BlotterTransactionAddedForTreasury: null,
+    BlotterTransactionAddedForTreasuryDealBox: null,
+
+    BlotterTransactionAssigned: null,
+    BlotterTransactionAssignedForTreasury: null,
+
+    BlotterTransactionAccepted: null,
+    BlotterTransactionAcceptedForTreasury: null,
+
+    BlotterTransactionRFQQuoted: null,
+    BlotterTransactionRFQQuotedForTreasury: null,
+    BlotterTransactionRFQQuotedForTreasuryDealBox: null,
+
+    BlotterTransactionCancellationRequestData: null,
+    BlotterTransactionCancellationRequestDataForTreasury: null,
+
+    BlotterTranscationCancelled: null,
+    BlotterTranscationCancelledForTreasury: null,
+
+    BlotterTransactionRejected: null,
+    BlotterTransactionRejectedForTreasury: null,
+
+    TransactionAssignedByTreasury: null,
+
+    // New Status for Blotter Transactions
+
+    transactionCounterPartyAdded: null,
+    transactionOutstandingAdded: null,
+
+    transactionCounterPartyAssigned: null,
+    transactionOutstandingAssigned: null,
+
+    transactionCounterPartyExpired: null,
+    transactionOutstandingExpired: null,
+
+    transactionCounterpartyAccepted: null,
+    transactionOutstandingAccepted: null,
+    transactionTreasuryAccepted: null,
+
+    transactionCounterPartyQuoted: null,
+    transactionOutstandingQuoted: null,
+
+    transactionCounterPartyCancellationRequest: null,
+    transactionOutstandingCancellationRequest: null,
+    transactionTreasuryCancellationRequest: null,
+
+    transactionCounterPartyCancelled: null,
+    transactionOutstandingCancelled: null,
+    transactionTreasuryCancelled: null,
+
+    transactionCounterPartyRejected: null,
+    transactionOutstandingRejected: null,
+    transactionTreasuryRejected: null,
+
+    transactionCounterPartyByTreasuryAssigned: null,
   },
   reducers: {
-    updateRealtimeBlotterData: (state, { payload }) => {
-      console.log(
-        payload,
-        "updateRealtimeBlotterDataupdateRealtimeBlotterDatasss"
-      );
-      // state.getBlotterApiData = payload;
-      state.tnxTableNewData = payload?.tnxTableNewData;
+    setBlotterTransactionRFQExpired(state, { payload }) {
+      state.BlotterTransactionRFQExpired = payload;
     },
-    updateOutstandingBlotterData: (state, { payload }) => {
-      console.log(
-        payload,
-        "updateRealtimeBlotterDataupdateRealtimeBlotterData"
-      );
-      // state.getBlotterOutstandingData = payload;
-      state.OutstandingTableNewData = payload?.OutstandingTableNewData;
-      state.totalCountOutstandingData = payload?.OutstandingTableNewData.length;
+    setBlotterTransactionRFQExpiredForTreasury(state, { payload }) {
+      state.BlotterTransactionRFQExpiredForTreasury = payload;
+    },
+    setBlotterTransactionRFQExpiredForTreasuryDealBox(state, { payload }) {
+      state.BlotterTransactionRFQExpiredForTreasuryDealBox = payload;
+    },
+    setBlotterTransactionAdded(state, { payload }) {
+      state.BlotterTransactionAdded = payload;
+    },
+    setBlotterTransactionAddedForTreasury(state, { payload }) {
+      state.BlotterTransactionAddedForTreasury = payload;
+    },
+    setBlotterTransactionAddedForTreasuryDealBox(state, { payload }) {
+      state.BlotterTransactionAddedForTreasuryDealBox = payload;
+    },
+    setBlotterTransactionAssigned(state, { payload }) {
+      state.BlotterTransactionAssigned = payload;
+    },
+    setBlotterTransactionAssignedForTreasury(state, { payload }) {
+      state.BlotterTransactionAssignedForTreasury = payload;
+    },
+    setBlotterTransactionAccepted(state, { payload }) {
+      state.BlotterTransactionAccepted = payload;
+    },
+    setBlotterTransactionAcceptedForTreasury(state, { payload }) {
+      state.BlotterTransactionAcceptedForTreasury = payload;
+    },
+    setBlotterTransactionRFQQuoted(state, { payload }) {
+      state.BlotterTransactionRFQQuoted = payload;
+    },
+    setBlotterTransactionRFQQuotedForTreasury(state, { payload }) {
+      state.BlotterTransactionRFQQuotedForTreasury = payload;
+    },
+    setBlotterTransactionRFQQuotedForTreasuryDealBox(state, { payload }) {
+      state.BlotterTransactionRFQQuotedForTreasuryDealBox = payload;
+    },
+    BlotterTransactionCancellationRequest(state, { payload }) {
+      state.BlotterTransactionCancellationRequestData = payload;
+    },
+    BlotterTransactionCancellationRequestForTreasury(state, { payload }) {
+      state.BlotterTransactionCancellationRequestDataForTreasury = payload;
+    },
+    BlotterTranscationCancelled(state, { payload }) {
+      state.BlotterTranscationCancelled = payload;
+    },
+    BlotterTranscationCancelledForTreasury(state, { payload }) {
+      state.BlotterTranscationCancelledForTreasury = payload;
+    },
+    BlotterTransactionRejected(state, { payload }) {
+      state.BlotterTransactionRejected = payload;
+    },
+    BlotterTransactionRejectedForTreasury(state, { payload }) {
+      state.BlotterTransactionRejectedForTreasury = payload;
+    },
+
+    TransactionAssignedByTreasury(state, { payload }) {
+      state.TransactionAssignedByTreasury = payload;
     },
     setSpotQuoteModalData: (state, { payload }) => {
       state.spotQuoteModalData = payload;
@@ -121,6 +239,80 @@ const BlotterSlicer = createSlice({
     clearGetForwardTransactionDetails: (state) => {
       state.GetForwardTransactionDetails = null;
     },
+
+    // New actions
+
+    setBlotterTransactionCounterPartyAdded: (state, action) => {
+      state.transactionCounterPartyAdded = action.payload;
+    },
+    setBlotterTransactionOutstandingAdded: (state, action) => {
+      console.log(action, "setBlotterTransactionOutstandingAdded")
+      const newTransaction = action.payload.transaction;
+      const isAlreadyExist = state.OutstandingTableData.some(
+        (item) => item.pK_TransactionID === newTransaction.pK_TransactionID
+      );
+
+      if (!isAlreadyExist) {
+        state.OutstandingTableData.unshift(newTransaction);
+      }
+    },
+    setBlotterTransactionCounterPartyAssigned: (state, action) => {
+      state.transactionCounterPartyAssigned = action.payload;
+    },
+    setBlotterTransactionOutstandingAssigned: (state, action) => {
+      state.transactionOutstandingAssigned = action.payload;
+    },
+    setBlotterTransactionCounterPartyExpired: (state, action) => {
+      state.transactionCounterPartyExpired = action.payload;
+    },
+    setBlotterTransactionOutstandingExpired: (state, action) => {
+      state.transactionOutstandingExpired = action.payload;
+    },
+    setBlotterTransactionCounterpartyAccepted: (state, action) => {
+      state.transactionCounterpartyAccepted = action.payload;
+    },
+    setBlotterTransactionOutstandingAccepted: (state, action) => {
+      state.transactionOutstandingAccepted = action.payload;
+    },
+    setBlotterTransactionTreasuryAccepted: (state, action) => {
+      state.transactionTreasuryAccepted = action.payload;
+    },
+    setBlotterTransactionCounterPartyQuoted: (state, action) => {
+      state.transactionCounterPartyQuoted = action.payload;
+    },
+    setBlotterTransactionOutstandingQuoted: (state, action) => {
+      state.transactionOutstandingQuoted = action.payload;
+    },
+    setBlotterTransactionCounterPartyCancellationRequest: (state, action) => {
+      state.transactionCounterPartyCancellationRequest = action.payload;
+    },
+    setBlotterTransactionOutstandingCancellationRequest: (state, action) => {
+      state.transactionOutstandingCancellationRequest = action.payload;
+    },
+    setBlotterTransactionTreasuryCancellationRequest: (state, action) => {
+      state.transactionTreasuryCancellationRequest = action.payload;
+    },
+    setBlotterTransactionCounterPartyCancelled: (state, action) => {
+      state.transactionCounterPartyCancelled = action.payload;
+    },
+    setBlotterTransactionOutstandingCancelled: (state, action) => {
+      state.transactionOutstandingCancelled = action.payload;
+    },
+    setBlotterTransactionTreasuryCancelled: (state, action) => {
+      state.transactionTreasuryCancelled = action.payload;
+    },
+    setBlotterTransactionCounterPartyRejected: (state, action) => {
+      state.transactionCounterPartyRejected = action.payload;
+    },
+    setBlotterTransactionOutstandingRejected: (state, action) => {
+      state.transactionOutstandingRejected = action.payload;
+    },
+    setBlotterTransactionTreasuryRejected: (state, action) => {
+      state.transactionTreasuryRejected = action.payload;
+    },
+    setBlotterTransactionCounterPartyByTreasuryAssigned: (state, action) => {
+      state.transactionCounterPartyByTreasuryAssigned = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -131,15 +323,17 @@ const BlotterSlicer = createSlice({
       })
       // Fulfilled state (when the API call succeeds CorporateBlotterDataAPI)
       .addCase(BlotterDataAPI.fulfilled, (state, { payload }) => {
-        let newData = [
-          ...state.tnxTableNewData,
-          ...payload?.response?.tnxSummary,
+        let tableData = [
+          ...state.txnTreasuryTableData,
+          ...payload.response.tnxSummary,
         ];
-        console.log(payload, "getBlotterApiData");
-        console.log(newData, "getBlotterApiData");
+        console.log(tableData, payload, state, "BlotterDataAPIBlotterDataAPI");
         state.Loader = false;
         state.getBlotterApiData = payload?.response;
-        state.tnxTableNewData = newData;
+        state.txnTreasuryTableData = tableData;
+        state.txnTreasuryTableDataCount = payload?.response?.totalCount;
+        state.txnCounterPartyTableData = tableData;
+        state.txnCounterPartyTableDataCount = payload.response?.totalCount;
         state.error = null;
         state.responseMessage = payload?.message;
       })
@@ -148,8 +342,11 @@ const BlotterSlicer = createSlice({
         console.log(action, "actionaction");
         state.Loader = false;
         state.error = action.payload;
-        state.tnxTableNewData = [];
         state.getBlotterApiData = null;
+        state.txnTreasuryTableData = [];
+        state.txnTreasuryTableDataCount = 0;
+        state.txnCounterPartyTableData = [];
+        state.txnCounterPartyTableDataCount = 0;
       })
       .addCase(GetBlotterOutstandingDealsDataAPI.pending, (state) => {
         state.Loader = true;
@@ -158,26 +355,21 @@ const BlotterSlicer = createSlice({
       .addCase(
         GetBlotterOutstandingDealsDataAPI.fulfilled,
         (state, { payload }) => {
-          let newData = [
-            ...state.OutstandingTableNewData,
-            ...payload?.response?.outstandingDeals,
-          ];
-          console.log(payload, "getBlotterApiData");
-          console.log(newData, "getBlotterApiData");
           state.Loader = false;
           state.getBlotterOutstandingData = payload?.response;
-          state.OutstandingTableNewData = newData;
           state.error = null;
           state.responseMessage = payload?.message;
-          state.totalCountOutstandingData = payload.response?.totalCount;
+          state.OutstandingTableData = payload?.response?.outstandingDeals;
+          state.OutstandingTableDataCount = payload?.response?.totalCount;
         }
       )
       .addCase(GetBlotterOutstandingDealsDataAPI.rejected, (state, action) => {
         console.log(action, "actionaction");
         state.Loader = false;
         state.error = action.payload;
-        state.OutstandingTableNewData = [];
         state.getBlotterOutstandingData = null;
+        state.OutstandingTableData = [];
+        state.OutstandingTableDataCount = 0;
       })
       .addCase(SaveSpotTransactionAPI.pending, (state) => {
         state.Loader = true;
@@ -498,8 +690,6 @@ const BlotterSlicer = createSlice({
 });
 
 export const {
-  updateOutstandingBlotterData,
-  updateRealtimeBlotterData,
   setDiscountingQuoteModalData,
   setForwardQuoteModalData,
   setActiveTreasuryTab,
@@ -510,6 +700,47 @@ export const {
   clearGetNonFEDiscountingTransactionDetails,
   clearGetForwardTransactionDetails,
   setSpotQuoteModalData,
+  setBlotterTransactionRFQExpiredForTreasury,
+  setBlotterTransactionAddedForTreasury,
+  setBlotterTransactionAssignedForTreasury,
+  setBlotterTransactionAcceptedForTreasury,
+  setBlotterTransactionRFQQuotedForTreasury,
+  setBlotterTransactionCancellationRequestForTreasury,
+  setBlotterTranscationCancelledForTreasury,
+  setBlotterTransactionRejectedForTreasury,
+  setTransactionAssignedByTreasury,
+  setBlotterTransactionRejected,
+  setBlotterTranscationCancelled,
+  setBlotterTransactionCancellationRequest,
+  setBlotterTransactionAccepted,
+  setBlotterTransactionAssigned,
+  setBlotterTransactionAdded,
+  setBlotterTransactionRFQExpired,
+  setBlotterTransactionRFQQuoted,
+
+  // New Actions
+
+  setBlotterTransactionCounterPartyAdded,
+  setBlotterTransactionOutstandingAdded,
+  setBlotterTransactionCounterPartyAssigned,
+  setBlotterTransactionOutstandingAssigned,
+  setBlotterTransactionCounterPartyExpired,
+  setBlotterTransactionOutstandingExpired,
+  setBlotterTransactionCounterpartyAccepted,
+  setBlotterTransactionOutstandingAccepted,
+  setBlotterTransactionTreasuryAccepted,
+  setBlotterTransactionCounterPartyQuoted,
+  setBlotterTransactionOutstandingQuoted,
+  setBlotterTransactionCounterPartyCancellationRequest,
+  setBlotterTransactionOutstandingCancellationRequest,
+  setBlotterTransactionTreasuryCancellationRequest,
+  setBlotterTransactionCounterPartyCancelled,
+  setBlotterTransactionOutstandingCancelled,
+  setBlotterTransactionTreasuryCancelled,
+  setBlotterTransactionCounterPartyRejected,
+  setBlotterTransactionOutstandingRejected,
+  setBlotterTransactionTreasuryRejected,
+  setBlotterTransactionCounterPartyByTreasuryAssigned,
 } = BlotterSlicer.actions;
 
 export default BlotterSlicer.reducer;

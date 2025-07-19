@@ -13,24 +13,8 @@ import {
 import { useMqttClient } from "@/components/utils/mqttConnection";
 
 import {
-  BlotterTransactionAccepted,
-  BlotterTransactionAcceptedForTreasury,
-  BlotterTransactionAdded,
-  BlotterTransactionAddedForTreasury,
-  BlotterTransactionAssigned,
-  BlotterTransactionAssignedForTreasury,
-  BlotterTransactionCancellationRequest,
-  BlotterTransactionCancellationRequestForTreasury,
-  BlotterTransactionRFQExpired,
-  BlotterTransactionRFQQuoted,
-  BlotterTransactionRFQQuotedForTreasury,
-  BlotterTransactionRejected,
-  BlotterTransactionRejectedForTreasury,
-  BlotterTranscationCancelled,
-  BlotterTranscationCancelledForTreasury,
   FeDiscountingPublishedAction,
   NonFeDiscountingPublishedAction,
-  TransactionAssignedByTreasury,
   categoryisAdded,
   categoryisDeleted,
   categoryisUpdated,
@@ -47,6 +31,7 @@ import {
   setTreasurySpotRatesFeed,
   tenorWiseFowardsRatesPublishedActions,
 } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
+
 import { formatDateToUTC } from "@/utils/formatters";
 import { LogoutApi } from "../loginScreens/authActions/logoutAction";
 import DealBox from "@/components/features/dealbox/DealBox";
@@ -58,6 +43,27 @@ import {
 import { AnimatePresence } from "framer-motion";
 import { GetAllNatureOfTransactionsApi } from "../pages/mainCorporate/rfqModal/RFQActions";
 import InfoTransaction from "@/components/features/blotter/infoTransaction/InfoTransaction";
+import {
+  setBlotterTransactionRFQExpiredForTreasury,
+  setBlotterTransactionAddedForTreasury,
+  setBlotterTransactionAssignedForTreasury,
+  setBlotterTransactionAcceptedForTreasury,
+  setBlotterTransactionRFQQuotedForTreasury,
+  setBlotterTransactionCancellationRequestForTreasury,
+  setBlotterTranscationCancelledForTreasury,
+  setBlotterTransactionRejectedForTreasury,
+  setTransactionAssignedByTreasury,
+  setBlotterTransactionRejected,
+  setBlotterTranscationCancelled,
+  setBlotterTransactionCancellationRequest,
+  setBlotterTransactionAccepted,
+  setBlotterTransactionAssigned,
+  setBlotterTransactionAdded,
+  setBlotterTransactionRFQExpired,
+  setBlotterTransactionRFQQuoted,
+  setBlotterTransactionOutstandingAdded,
+  // TransactionAssignedByTreasury,
+} from "@/store/BlotterSlicer/BlotterSlicer";
 const Dashboard = () => {
   const { Content } = Layout;
   const dispatch = useDispatch();
@@ -161,41 +167,43 @@ const Dashboard = () => {
         }
         break;
       case "BLOTTER_TRANSACTION_ADDED":
-        dispatch(BlotterTransactionAdded(data.payload));
-        dispatch(BlotterTransactionAddedForTreasury(data.payload));
-        dispatch(setBlotterTransactionAddedForTreasuryDealBox(data.payload));
+        dispatch(setBlotterTransactionOutstandingAdded(data.payload))
+        // dispatch(setBlotterTransactionAdded(data.payload));
+        // dispatch(setBlotterTransactionAddedForTreasury(data.payload));
+        // dispatch(setBlotterTransactionAddedForTreasuryDealBox(data.payload));
         break;
       case "BLOTTER_TRANSACTION_ASSIGNED":
-        dispatch(BlotterTransactionAssigned(data.payload));
-        dispatch(BlotterTransactionAssignedForTreasury(data.payload));
+        
+        dispatch(setBlotterTransactionAssigned(data.payload));
+        dispatch(setBlotterTransactionAssignedForTreasury(data.payload));
         break;
       case "BLOTTER_TRANSACTION_ACCEPTED":
-        dispatch(BlotterTransactionAccepted(data.payload));
-        dispatch(BlotterTransactionAcceptedForTreasury(data.payload));
+        dispatch(setBlotterTransactionAccepted(data.payload));
+        dispatch(setBlotterTransactionAcceptedForTreasury(data.payload));
         break;
       case "BLOTTER_TRANSACTION_RFQ_QUOTED":
-        dispatch(BlotterTransactionRFQQuoted(data.payload));
-        dispatch(BlotterTransactionRFQQuotedForTreasury(data.payload));
+        dispatch(setBlotterTransactionRFQQuoted(data.payload));
+        dispatch(setBlotterTransactionRFQQuotedForTreasury(data.payload));
         dispatch(
           setBlotterTransactionRFQQuotedForTreasuryDealBox(data.payload)
         );
         break;
       case "BLOTTER_TRANSACTION_CANCELLATION_REQUEST":
-        dispatch(BlotterTransactionCancellationRequest(data.payload));
+        dispatch(setBlotterTransactionCancellationRequest(data.payload));
         dispatch(
-          BlotterTransactionCancellationRequestForTreasury(data.payload)
+          setBlotterTransactionCancellationRequestForTreasury(data.payload)
         );
         break;
       case "BLOTTER_TRANSACTION_CANCELLED":
-        dispatch(BlotterTranscationCancelled(data.payload));
-        dispatch(BlotterTranscationCancelledForTreasury(data.payload));
+        dispatch(setBlotterTranscationCancelled(data.payload));
+        dispatch(setBlotterTranscationCancelledForTreasury(data.payload));
         break;
       case "BLOTTER_TRANSACTION_REJECTED":
-        dispatch(BlotterTransactionRejected(data.payload));
-        dispatch(BlotterTransactionRejectedForTreasury(data.payload));
+        dispatch(setBlotterTransactionRejected(data.payload));
+        dispatch(setBlotterTransactionRejectedForTreasury(data.payload));
         break;
       case "BLOTTER_TRANSACTION_ASSIGNED_TO_TREASURY":
-        dispatch(TransactionAssignedByTreasury(data.payload));
+        dispatch(setTransactionAssignedByTreasury(data.payload));
         break;
       case "TREASURY_SPOT_RATES_FEED":
         dispatch(setTreasurySpotRatesFeed(data.payload));
