@@ -19,43 +19,7 @@ const BankForwards = () => {
   const GetAllInstrumentForTreasury = useSelector(
     (state) => state.WatchListReducer.GetAllInstrumentForTreasury
   );
-  console.log(
-    {
-      tenor: getAllTenorsRecords,
-      Forward: GetBankForwardForTreasury,
-      instrument: GetAllInstrumentForTreasury,
-    },
-    "Datadtatatataat"
-  );
 
-  // useEffect(() => {
-  //   if (GetAllFowardsAndDiscountsRatesData !== null) {
-  //     try {
-  //       if (
-  //         GetAllFowardsAndDiscountsRatesData.forwardRates.length > 0 &&
-  //         GetAllFowardsAndDiscountsRatesData.instruments.length > 0 &&
-  //         GetAllFowardsAndDiscountsRatesData.tenors.length > 0
-  //       ) {
-  //         const { forwardRates, tenors, instruments } =
-  //           GetAllFowardsAndDiscountsRatesData;
-
-  //         const { forwardsRates } = generateData(
-  //           4,
-  //           tenors,
-  //           instruments,
-  //           forwardRates
-  //         );
-  //         if (forwardsRates.length > 0) {
-  //           setDataSource(forwardsRates);
-  //           const forwardsColumns = createColumns(forwardsRates, 3);
-  //           setColumnsData(forwardsColumns);
-  //         }
-  //       }
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   }
-  // }, [GetAllFowardsAndDiscountsRatesData]);
   useEffect(() => {
     if (
       GetBankForwardForTreasury !== null &&
@@ -74,28 +38,11 @@ const BankForwards = () => {
           getAllInstrument,
           IndexCell
         );
-        // console.log(rowData, columnsData, "columnsDatacolumnsData");
         if (rowData.length > 0) {
           setDataSource(rowData);
           setColumnsData(columnsData);
         }
-        //********************************************** */
-        // const { tenors, forwardRates, instruments } =
-        //   GetAllFowardsAndDiscountsRatesAPIData;
-        // let getAllTenorsData = { tenors };
-        // let getAllInstrument = { instruments };
-        // const { rowData, columnsData } = buildForwardsTable(
-        //   2,
-        //   forwardRates,
-        //   getAllTenorsData,
-        //   getAllInstrument,
-        //   IndexCell
-        // );
-        // console.log(rowData, columnsData, "columnsDatacolumnsData");
-        // if (rowData.length > 0) {
-        //   setDataSource(rowData);
-        //   setColumnsData(columnsData);
-        // }
+    
       } catch (error) {
         console.log(error, "Error while building discounting table");
       }
@@ -107,7 +54,7 @@ const BankForwards = () => {
   ]);
   return (
     <>
-      <div className="flex-fill mt-3 fs-4 fw-bold color-black mb-1 ff-roboto">
+      <div className='flex-fill mt-3 fs-4 fw-bold color-black mb-1 ff-roboto'>
         Bank Forwards
       </div>
 

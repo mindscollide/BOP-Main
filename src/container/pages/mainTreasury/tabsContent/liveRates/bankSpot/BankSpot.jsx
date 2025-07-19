@@ -150,6 +150,8 @@ const BankSpot = () => {
       dataIndex: "worldCrossBid",
       width: 80,
       key: "bid",
+      align: "center",
+
       render: (text, record) => (
         <BidAmountBox
           applyClass={"BidCardBox"}
@@ -163,13 +165,16 @@ const BankSpot = () => {
       dataIndex: "worldCrossOffer",
       key: "offer",
       width: 80,
+      align: "center",
 
       render: (text, record) => (
-        <BidAmountBox
-          applyClass={"OfferCardBox"}
-          bankSpot={true}
-          BidAmountValue={record?.worldCrossOffer}
-        />
+        <span className='d-flex justify-content-center'>
+          <BidAmountBox
+            applyClass={"OfferCardBox"}
+            bankSpot={true}
+            BidAmountValue={record?.worldCrossOffer}
+          />
+        </span>
       ),
     },
     {
@@ -184,6 +189,7 @@ const BankSpot = () => {
       title: "Bid",
       dataIndex: "worldCurBid",
       width: 80,
+      align: "center",
 
       key: "previousBid",
       render: (text, record) => (
@@ -199,6 +205,7 @@ const BankSpot = () => {
       dataIndex: "worldCurOffer",
       key: "previousOffer",
       width: 80,
+      align: "center",
 
       render: (text, record) => (
         <BidAmountBox
@@ -221,11 +228,11 @@ const BankSpot = () => {
 
   return (
     <div>
-      <div className="box-header bg-primary-orange px-3">
-        <div className="text-start color-white fw-bold fs-6">Bank Spot</div>
+      <div className='box-header bg-primary-orange px-3'>
+        <div className='text-start color-white fw-bold fs-6'>Bank Spot</div>
       </div>
 
-      <div className="mb-2 px-2">
+      <div className='mb-2 px-2'>
         <GlobalTable
           columns={columns}
           dataSource={bankSpotData}

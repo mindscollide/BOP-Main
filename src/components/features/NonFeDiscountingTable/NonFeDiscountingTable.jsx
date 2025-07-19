@@ -6,7 +6,11 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { publishDiscountingRatesAction } from "@/container/pages/mainDealer/dealerActions";
 import { useSelector } from "react-redux";
-import { formatPercentageInput, isValidMaxFourNumberAfterPoint, isValidNumberUnderMax } from "@/utils/formatters";
+import {
+  formatPercentageInput,
+  isValidMaxFourNumberAfterPoint,
+  isValidNumberUnderMax,
+} from "@/utils/formatters";
 import {
   GetNonFEDiscountingTableApi,
   PublishNonFEDiscountingTableApi,
@@ -86,9 +90,9 @@ const NonFeDiscountingTable = () => {
 
   useEffect(() => {
     if (
-      getDashboardForwards !== null &&
       getAllTenorsData !== null &&
-      GetAllInstrumentForTreasury !== null
+      GetAllInstrumentForTreasury !== null &&
+      NonFeDiscountingPublishedData !== null
     ) {
       try {
         const { rates } = NonFeDiscountingPublishedData;
@@ -161,15 +165,15 @@ const NonFeDiscountingTable = () => {
   return (
     <>
       <GlobalTable
-        prefixCls="DealerAndTreasuryDiscountTable"
+        prefixCls='DealerAndTreasuryDiscountTable'
         columns={columnsData}
         dataSource={tableData}
         pagination={false}
       />
 
-      <span className="d-flex justify-content-center mt-4">
+      <span className='d-flex justify-content-center mt-4'>
         <CustomButton
-          applyClass="publishForwardsBtn"
+          applyClass='publishForwardsBtn'
           value={"Publish Non FE Discounting"}
           onClick={handlePublishDiscount}
           disabled={marketStatus === false ? true : false}

@@ -262,3 +262,15 @@ export const formatPkAmount = (rawValue, options = {}) => {
 // formatPkAmount("PKR 12,345.678") => "12,345.68" (strips non-numeric chars)
 // formatPkAmount(null) => "" (returns emptySymbol)
 // formatPkAmount("invalid", {emptySymbol: "N/A"}) => "N/A"
+
+
+export const formatNumberWithCommas = (value) => {
+  if (!value) return "";
+  const parts = value.toString().split(".");
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return parts.join(".");
+}
+
+export const removeCommas = (value) => {
+  return value?.toString().replace(/,/g, "") || "";
+}

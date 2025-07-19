@@ -6,7 +6,7 @@
 .BookaforwardCorporateHeaderClassname {
   margin: 0 !important;
   border: none !important;
-  padding: 10px 15px;
+  padding: 10px 15px 5px 15px;
   position: relative;
 }
 
@@ -15,11 +15,18 @@
   height: 100% !important;
 }
 
-.HeaderHeadingName {
+.Header_BranchName {
   font-weight: 700 !important;
   color: #f26522 !important;
   font-size: 1.25rem !important;
   font-family: "Roboto", sans-serif !important;
+}
+.Header_BranchCode {
+  font-weight: 700 !important;
+  color: #5a5a5a !important;
+  font-size: 09.em !important;
+  font-family: "Roboto", sans-serif !important;
+  margin: 0 ;
 }
 
 .SubHeadings {
