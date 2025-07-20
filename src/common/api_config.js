@@ -387,3 +387,8 @@ export const ResetPasswordCorporate = {
 export const CreateCorporateUserForgotPassword = {
   RequestMethod: "ServiceManager.CreateCorporateUserForgotPassword",
 };
+
+
+export const CalculateFESwapAndDiscountingRM = {
+  RequestMethod: "ServiceManager.CalculateFEDiscounting",
+}

@@ -19,6 +19,7 @@ import {
 } from "@/store/modalSlice/modalSlicer";
 import { useNotification } from "@/context/NotificationProvider";
 import { GlobalConfirmatioModal } from "@/components/common/globalModal/ConfirmationModal";
+import { NumericFormat } from "react-number-format";
 
 const RFQModal = () => {
   const dispatch = useDispatch();
@@ -39,6 +40,14 @@ const RFQModal = () => {
   );
 
   const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
+  const isCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
+
+  const counterPartyDetails =
+    isBranch && localStorage.getItem("branch") !== null
+      ? JSON.parse(localStorage.getItem("branch"))
+      : isCorporate && localStorage.getItem("corporate") !== null
+      ? JSON.parse(localStorage.getItem("corporate"))
+      : null;
   console.log(
     GetAllActiveCorproates,
     "GetAllActiveCorproatesGetAllActiveCorproates"
@@ -71,7 +80,7 @@ const RFQModal = () => {
     value: 21,
     label: "USDPKR",
   });
-  const [amountData, setAmountData] = useState("0");
+  const [amountData, setAmountData] = useState("");
   const [acNumberData, setAcNumberData] = useState("");
   const [lcNumberData, setLcNumberData] = useState("");
   const [typeOptions] = useState([
@@ -117,7 +126,6 @@ const RFQModal = () => {
 
   useEffect(() => {
     if (natureOfBusinessList !== null) {
-
       try {
         const formattedOptions = natureOfBusinessList.natureOfTransactions.map(
           (business) => ({
@@ -197,10 +205,8 @@ const RFQModal = () => {
   const handleChangeAmount = (event) => {
     const { name, value } = event.target;
     if (name === "Amount") {
-      const regex = /^[0-9]*$/;
-      if (regex.test(value)) {
-        // If input is empty, set to "0", otherwise use the value (which replaces initial 0)
-        setAmountData(value === "" ? "0" : value.replace(/^0+/, "") || "0");
+      if (value !== "") {
+        setAmountData(value);
       }
     }
   };
@@ -266,13 +272,14 @@ const RFQModal = () => {
           return;
         }
         //Caliing Save RFQ Trasaction API
+        let amountValue = amountData.replace(/,/g, "");
         let Data = {
-          CorporateID: isBranch ? corporateValue.value : corporate.corporateID,
+          CorporateID: isBranch ? corporateValue.value : counterPartyDetails.corporateID,
           InstrumentID: 21,
           // InstrumentID: selectedCurrency.value,
           SecondaryInstrumentID: 0,
           IsBuySide: typeOptionSelected.value === 1 ? true : false,
-          Quantity: Number(amountData),
+          Quantity: Number(amountValue),
           AccountNumber: acNumberData,
           NatureOfTransactionID: selectedNature.value,
           LCNumber: lcNumberData,
@@ -309,14 +316,16 @@ const RFQModal = () => {
                   {isBranch ? (
                     <>
                       <p className='heading-RfqModal'>
-                        {branchDetails.branchName}
+                        {counterPartyDetails.branchName}
                       </p>
                       <p className='heading-branchCode'>
-                        Branch Code: {branchDetails.branchCode}
+                        Branch Code: {counterPartyDetails.branchCode}
                       </p>
                     </>
-                  ) : (
-                    ""
+                  ) : isCorporate &&  (
+                    <p className='heading-RfqModal'>
+                    {counterPartyDetails.corporateName}
+                  </p>
                   )}
                 </Col>
               </Row>
@@ -386,13 +395,15 @@ const RFQModal = () => {
                   <label className='LabelRFQTransactionModal'>Amount*</label>
                 </Col>
                 <Col lg={4} md={4} sm={4} className='mb-2'>
-                  <InputFIeld
+                  <NumericFormat
+                    customInput={InputFIeld}
+                    thousandSeparator=','
+                    allowNegative={false}
                     onChange={handleChangeAmount}
+                    maxLength={10}
                     value={amountData}
                     name='Amount'
-                    applyClass='CalculatorTextfield'
-                    maxLength={10}
-                    min='0'
+                    applyClass={"CalculatorTextfield"}
                   />
                 </Col>
                 <Col lg={2} md={2} sm={2}>

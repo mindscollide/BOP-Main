@@ -10,6 +10,7 @@ import { formatDate } from "@/common/utils";
 import { useDispatch } from "react-redux";
 import { SaveForwardTransactionRFQApi } from "@/components/features/blotter/BlotterActions";
 import { useNavigate } from "react-router-dom";
+import { NumericFormat } from "react-number-format";
 const RFQForwardCorporateModal = ({
   openRfqModalForwardCorporateComponent,
   setOpenRfqModalForwardCorporateComponent,
@@ -24,7 +25,9 @@ const RFQForwardCorporateModal = ({
   );
 
   //Local States
-  const [amountData, setAmountData] = useState("0");
+  const [amountData, setAmountData] = useState("");
+  console.log(amountData, "amountDataamountDataamountData")
+  const [amountForView, setAmountForView] = useState("0");
   const [Tenor, setTenor] = useState("");
   const [options, setOptions] = useState("");
   console.log(Tenor, "TenorTenorTenor");
@@ -145,10 +148,8 @@ const RFQForwardCorporateModal = ({
   const handleChangeAmount = (event) => {
     const { name, value } = event.target;
     if (name === "Amount") {
-      const regex = /^[0-9]*$/;
-      if (regex.test(value)) {
-        // If input is empty, set to "0", otherwise use the value (which replaces initial 0)
-        setAmountData(value === "" ? "0" : value.replace(/^0+/, "") || "0");
+      if (value !== "") {
+        setAmountData(value)
       }
     }
   };
@@ -209,13 +210,15 @@ const RFQForwardCorporateModal = ({
 
   const handleConfirmButton = () => {
     if (accountNumber !== "") {
-      setAccountError({ status: false, message: "" });
+      setAccountError({ status: false, message: "" })
+      let amountValue = amountData.replace(/,/g, "");
+      console.log(amountValue, "amountValueamountValue")
       let Data = {
         CorporateID: corporateValue.value,
         InstrumentID: selectedCurrency.value,
         SecondaryInstrumentID: 0,
         IsBuySide: typeOptionSelected.value === 1 ? true : false,
-        Quantity: Number(amountData),
+        Quantity: Number(amountValue),
         AccountNumber: accountNumber,
         NatureOfTransactionID:
           natureOfBusinessOptions !== null && natureOfBusinessOptions?.id,
@@ -240,25 +243,25 @@ const RFQForwardCorporateModal = ({
         setShow={openRfqModalForwardCorporateComponent}
         onHide={() => setOpenRfqModalForwardCorporateComponent(false)}
         closeButton
-        headerClassName="RFQModalHeaderForwardTabCorporate"
-        footerClassName="RFQModalFooterForwardTabCorporate"
-        bodyClassName="RFQModalBodyForwardTabCorporate"
-        className=""
+        headerClassName='RFQModalHeaderForwardTabCorporate'
+        footerClassName='RFQModalFooterForwardTabCorporate'
+        bodyClassName='RFQModalBodyForwardTabCorporate'
+        className=''
         modalHeader={
           <>
             <Row>
               <Col lg={12} md={12} sm={12}>
                 {isBranch ? (
                   <>
-                    <p className="heading-RfqModal">
+                    <p className='heading-RfqModal'>
                       {titleDetails.branchName}
                     </p>
-                    <p className="heading-branchCode">
+                    <p className='heading-branchCode'>
                       Branch Code: {titleDetails.branchCode}
                     </p>
                   </>
                 ) : (
-                  <p className="heading-RfqModal">
+                  <p className='heading-RfqModal'>
                     {titleDetails.corporateName}
                   </p>
                 )}
@@ -273,13 +276,13 @@ const RFQForwardCorporateModal = ({
                 {isBranch && (
                   <>
                     {" "}
-                    <Col lg={12} md={12} sm={12} className="mb-2">
-                      <label className="LabelRFQTransactionModal">
+                    <Col lg={12} md={12} sm={12} className='mb-2'>
+                      <label className='LabelRFQTransactionModal'>
                         Company Name*
                       </label>
                       <SelectDropdown
-                        classNamePrefix="TransactionModal"
-                        placeholder=""
+                        classNamePrefix='TransactionModal'
+                        placeholder=''
                         options={getAllCorporates}
                         onChange={handleChangeCorporate}
                         isSearchable={true}
@@ -289,24 +292,24 @@ const RFQForwardCorporateModal = ({
                   </>
                 )}
                 <Col lg={6} md={6} sm={6}>
-                  <div className="d-flex flex-column flex-wrap">
-                    <label className="LabelRFQTransactionModal">
+                  <div className='d-flex flex-column flex-wrap'>
+                    <label className='LabelRFQTransactionModal'>
                       Currency*
                     </label>
                     <SelectDropdown
-                      classNamePrefix="bookaForwardCorporate"
-                      placeholder=""
+                      classNamePrefix='bookaForwardCorporate'
+                      placeholder=''
                       value={selectedCurrency}
                     />
                   </div>
                 </Col>
 
                 <Col lg={6} md={6} sm={6}>
-                  <div className="d-flex flex-column flex-wrap">
-                    <label className="LabelRFQTransactionModal">Type*</label>
+                  <div className='d-flex flex-column flex-wrap'>
+                    <label className='LabelRFQTransactionModal'>Type*</label>
                     <SelectDropdown
-                      placeholder=""
-                      classNamePrefix="bookaForwardCorporate"
+                      placeholder=''
+                      classNamePrefix='bookaForwardCorporate'
                       options={typeOptions}
                       value={typeOptionSelected}
                       onChange={handleChangeType}
@@ -315,12 +318,12 @@ const RFQForwardCorporateModal = ({
                 </Col>
               </Row>
 
-              <Row className="mt-2">
+              <Row className='mt-2'>
                 <Col lg={6} md={6} sm={6}>
-                  <div className="d-flex flex-column flex-wrap">
-                    <label className="LabelRFQTransactionModal">Nature</label>
+                  <div className='d-flex flex-column flex-wrap'>
+                    <label className='LabelRFQTransactionModal'>Nature</label>
                     <InputFIeld
-                      applyClass="CalculatorTextfield"
+                      applyClass='CalculatorTextfield'
                       value={
                         natureOfBusinessOptions !== null
                           ? natureOfBusinessOptions?.name
@@ -330,47 +333,56 @@ const RFQForwardCorporateModal = ({
                   </div>
                 </Col>
                 <Col lg={6} md={6} sm={6}>
-                  <div className="d-flex flex-column flex-wrap">
-                    <label className="LabelRFQTransactionModal">A/c No*</label>
+                  <div className='d-flex flex-column flex-wrap'>
+                    <label className='LabelRFQTransactionModal'>A/c No*</label>
                     <InputFIeld
-                      applyClass="CalculatorTextfield"
+                      applyClass='CalculatorTextfield'
                       onChange={handleChangeAcNo}
-                      type="text"
+                      type='text'
                       value={accountNumber}
                     />
                   </div>
                   {accountError.status === true && (
-                    <div className="rfq-error_message">
+                    <div className='rfq-error_message'>
                       Account Number is required
                     </div>
                   )}
                 </Col>
               </Row>
 
-              <Row className="mt-2">
+              <Row className='mt-2'>
                 <Col lg={12} md={12} sm={12}>
-                  <div className="d-flex flex-column flex-wrap">
-                    <label className="LabelRFQTransactionModal">Amount</label>
-                    <InputFIeld
-                      value={amountData}
-                      name="Amount"
-                      onChange={handleChangeAmount}
-                      applyClass="CalculatorTextfield"
+                  <div className='d-flex flex-column flex-wrap'>
+                    <label className='LabelRFQTransactionModal'>Amount</label>
+                    <NumericFormat
                       maxLength={10}
+                      allowNegative={false}
+                      name={"Amount"}
+                      applyClass={"CalculatorTextfield"}
+                      customInput={InputFIeld}
+                      onChange={handleChangeAmount}
+                      thousandSeparator=','
                     />
+                    {/* <InputFIeld
+                      value={amountData}
+                      name='Amount'
+                      onChange={handleChangeAmount}
+                      applyClass='CalculatorTextfield'
+                      maxLength={10}
+                    /> */}
                   </div>
                 </Col>
               </Row>
 
-              <Row className="mt-2 ">
-                <Col lg={7} md={7} sm={7} className="pe-0">
-                  <div className="d-flex flex-column flex-wrap">
-                    <label className="LabelRFQTransactionModal">Tenor</label>
+              <Row className='mt-2 '>
+                <Col lg={7} md={7} sm={7} className='pe-0'>
+                  <div className='d-flex flex-column flex-wrap'>
+                    <label className='LabelRFQTransactionModal'>Tenor</label>
                     <InputFIeld
                       value={Tenor}
-                      name="Tenor"
+                      name='Tenor'
                       onChange={handleChangeTenor}
-                      applyClass="CalculatorTextfield"
+                      applyClass='CalculatorTextfield'
                       maxLength={4}
                     />
                   </div>
@@ -379,28 +391,27 @@ const RFQForwardCorporateModal = ({
                   lg={5}
                   md={5}
                   sm={5}
-                  className="d-flex align-items-end justify-content-start px-0"
-                >
-                  <span className="DateColumnTenorForwardTabRFQModal">
+                  className='d-flex align-items-end justify-content-start ps-0 '>
+                  <span className='DateColumnTenorForwardTabRFQModal'>
                     {tenoreDate}
                   </span>
                 </Col>
               </Row>
 
-              <Row className="mt-2 position-relative">
-                <Col lg={9} md={9} sm={9}>
-                  <div className="d-flex flex-column flex-wrap">
-                    <label className="LabelRFQTransactionModal">Options</label>
+              <Row className='mt-2 '>
+                <Col lg={7} md={7} sm={7} className="pe-0">
+                  <div className='d-flex flex-column flex-wrap'>
+                    <label className='LabelRFQTransactionModal'>Options</label>
                     <InputFIeld
                       value={options}
                       onChange={handleChangeOptions}
-                      name="Options"
-                      applyClass="CalculatorTextfield"
+                      name='Options'
+                      applyClass='CalculatorTextfield'
                     />
                   </div>
                 </Col>
-                <Col lg={3} md={3} sm={3}>
-                  <span className="DateColumnTenorForwardTabRFQModal">
+                <Col lg={5} md={5} sm={5} className="d-flex align-items-end ps-0">
+                  <span className='DateColumnTenorForwardTabRFQModal'>
                     {optionsDate}
                   </span>
                 </Col>
@@ -415,11 +426,10 @@ const RFQForwardCorporateModal = ({
                 lg={12}
                 md={12}
                 sm={12}
-                className="d-flex justify-content-center"
-              >
+                className='d-flex justify-content-center'>
                 <CustomButton
-                  value="Confirm"
-                  applyClass="ConfirmButtonBookaForward"
+                  value='Confirm'
+                  applyClass='ConfirmButtonBookaForward'
                   onClick={handleConfirmButton}
                 />
               </Col>

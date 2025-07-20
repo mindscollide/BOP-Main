@@ -31,6 +31,8 @@ import {
   GetNonFEDiscountingTransactionDetails,
   GetNOPData,
   CalculateNonFESwapAndDiscountingRM,
+  CalculateFESwapAndDiscountingRM,
+  SaveFEDiscountingTransactionRM,
 } from "@/common/api_config";
 import { blotterApi, watchListApi } from "@/common/apiend_points";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
@@ -56,7 +58,7 @@ export const BlotterDataAPI = createAsyncThunk(
 
       const response = await getBlotterData(Data);
       const { responseCode } = response.data;
-    
+
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(BlotterDataAPI({ navigate, Data }));
@@ -122,7 +124,7 @@ export const GetBlotterOutstandingDealsDataAPI = createAsyncThunk(
 
       const response = await getBlotterOutStandingData(Data);
       const { responseCode } = response.data;
-    
+
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(GetBlotterOutstandingDealsDataAPI({ navigate, Data }));
@@ -187,7 +189,6 @@ export const SaveSpotTransactionAPI = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-    
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(SaveSpotTransactionAPI({ navigate, Data }));
@@ -260,7 +261,6 @@ export const SaveForwardTransactionAPI = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-    
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(
@@ -326,7 +326,10 @@ export const SaveForwardTransactionAPI = createAsyncThunk(
 
 export const SaveFEDiscountingTransactionAPI = createAsyncThunk(
   "Blotter/SaveFEDiscounting",
-  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+  async (
+    { navigate, Data, setFeDiscountingModalCall },
+    { dispatch, rejectWithValue }
+  ) => {
     try {
       const postAPI = createPostAPI(
         blotterApi,
@@ -335,10 +338,15 @@ export const SaveFEDiscountingTransactionAPI = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-    
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(SaveFEDiscountingTransactionAPI({ navigate, Data }));
+        dispatch(
+          SaveFEDiscountingTransactionAPI({
+            navigate,
+            Data,
+            setFeDiscountingModalCall,
+          })
+        );
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -349,6 +357,7 @@ export const SaveFEDiscountingTransactionAPI = createAsyncThunk(
                 "Blotter_BlotterServiceManager_SaveFEDiscountingTransaction_01".toLowerCase()
               )
           ) {
+            setFeDiscountingModalCall(false);
             return {
               response: response.data.responseResult,
               message: "FE Discounting transaction saved successfully",
@@ -394,7 +403,7 @@ export const SaveFEDiscountingTransactionAPI = createAsyncThunk(
 
 export const SaveNonFEDiscountingTransactionAPI = createAsyncThunk(
   "Blotter/SaveNonFEDiscounting",
-  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+  async ({ navigate, Data, setNonfeDiscountingModalCall }, { dispatch, rejectWithValue }) => {
     try {
       const postAPI = createPostAPI(
         blotterApi,
@@ -403,10 +412,9 @@ export const SaveNonFEDiscountingTransactionAPI = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-    
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(SaveNonFEDiscountingTransactionAPI({ navigate, Data }));
+        dispatch(SaveNonFEDiscountingTransactionAPI({ navigate, Data, setNonfeDiscountingModalCall }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -417,6 +425,7 @@ export const SaveNonFEDiscountingTransactionAPI = createAsyncThunk(
                 "Blotter_BlotterServiceManager_SaveNonFEDiscountingTransaction_01".toLowerCase()
               )
           ) {
+            setNonfeDiscountingModalCall(false)
             return {
               response: response.data.responseResult,
               message: "Non-FE Discounting transaction saved successfully",
@@ -471,7 +480,6 @@ export const AssignTransactionAPI = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-    
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(AssignTransactionAPI({ navigate, Data }));
@@ -533,9 +541,7 @@ export const AssignTransactionAPI = createAsyncThunk(
             return rejectWithValue("Something went wrong");
           }
         } else {
-          return rejectWithValue(
-            "Failed to assign transaction"
-          );
+          return rejectWithValue("Failed to assign transaction");
         }
       } else {
         return rejectWithValue("Something went wrong");
@@ -557,7 +563,6 @@ export const AcceptTransactionAPI = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-    
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(AcceptTransactionAPI({ navigate, Data }));
@@ -619,9 +624,7 @@ export const AcceptTransactionAPI = createAsyncThunk(
             return rejectWithValue("Something went wrong");
           }
         } else {
-          return rejectWithValue(
-            "Failed to accept transaction"
-          );
+          return rejectWithValue("Failed to accept transaction");
         }
       } else {
         return rejectWithValue("Something went wrong");
@@ -646,7 +649,6 @@ export const RejectTransactionAPI = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-    
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(
@@ -735,8 +737,6 @@ export const AcceptTransactionCancellationRequest = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-    
-
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(AcceptTransactionCancellationRequest({ navigate, Data }));
@@ -772,8 +772,6 @@ export const RejectTransactionCancellationRequest = createAsyncThunk(
       );
       const response = await postAPI(Data);
       const { responseCode } = response.data;
-
-    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -813,8 +811,6 @@ export const CancelTransaction = createAsyncThunk(
       );
       const response = await postAPI(Data);
       const { responseCode } = response.data;
-
-    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -903,8 +899,6 @@ export const RequestCancellation = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-    
-
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(RequestCancellation({ navigate, Data, setCancelReasonModal }));
@@ -988,8 +982,6 @@ export const AcceptRFQTransaction = createAsyncThunk(
       );
       const response = await postAPI(Data);
       const { responseCode } = response.data;
-
-    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -1076,8 +1068,6 @@ export const RejectRFQTransaction = createAsyncThunk(
       );
       const response = await postAPI(Data);
       const { responseCode } = response.data;
-
-    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -1168,8 +1158,6 @@ export const SaveSpotTransactionRFQ = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-    
-
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(SaveSpotTransactionRFQ({ navigate, Data, setOpenRfqModal }));
@@ -1238,8 +1226,6 @@ export const SaveForwardTransactionRFQApi = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-    
-
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(SaveForwardTransactionRFQApi({ navigate, Data }));
@@ -1253,6 +1239,7 @@ export const SaveForwardTransactionRFQApi = createAsyncThunk(
                 "Blotter_BlotterServiceManager_SaveForwardTransactionRFQ_01".toLowerCase()
               )
           ) {
+            dispatch(setOpenRfqModalForwardCorporateComponent(false));
             return {
               response: response.data.responseResult,
               message: "Forward RFQ transaction saved successfully",
@@ -1306,8 +1293,6 @@ export const SaveFEDiscountingTransactionRFQ = createAsyncThunk(
       );
       const response = await postAPI(Data);
       const { responseCode } = response.data;
-
-    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -1376,8 +1361,6 @@ export const SaveNonFEDiscountingTransactionRFQ = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-    
-
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(SaveNonFEDiscountingTransactionRFQ({ navigate, Data }));
@@ -1444,8 +1427,6 @@ export const RFQTransactionQuotation = createAsyncThunk(
       );
       const response = await postAPI(Data);
       const { responseCode } = response.data;
-
-    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -1530,8 +1511,6 @@ export const RFQForwardTransactionQuotation = createAsyncThunk(
       );
       const response = await postAPI(Data);
       const { responseCode } = response.data;
-
-    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -1618,8 +1597,6 @@ export const RFQFEDiscountingTransactionQuotation = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-    
-
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(RFQFEDiscountingTransactionQuotation({ navigate, Data }));
@@ -1702,8 +1679,6 @@ export const RFQNonFEDiscountingTransactionQuotation = createAsyncThunk(
       );
       const response = await postAPI(Data);
       const { responseCode } = response.data;
-
-    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -1790,8 +1765,6 @@ export const ExpireRFQTransaction = createAsyncThunk(
       );
       const response = await postAPI(Data);
       const { responseCode } = response.data;
-
-    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -1880,8 +1853,6 @@ export const GetSpotTransactionDetailsApi = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-    
-
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(GetSpotTransactionDetailsApi({ navigate, Data }));
@@ -1951,8 +1922,6 @@ export const GetForwardTransactionDetailsApi = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-    
-
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(GetForwardTransactionDetailsApi({ navigate, Data }));
@@ -2021,8 +1990,6 @@ export const GetFEDiscountingTransactionDetailsApi = createAsyncThunk(
       );
       const response = await postAPI(Data);
       const { responseCode } = response.data;
-
-    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -2094,8 +2061,6 @@ export const GetNonFEDiscountingTransactionDetailsApi = createAsyncThunk(
       );
       const response = await postAPI(Data);
       const { responseCode } = response.data;
-
-    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -2171,8 +2136,6 @@ export const CancelPendingTransactionApi = createAsyncThunk(
       );
       const response = await postAPI(Data);
       const { responseCode } = response.data;
-
-    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -2260,8 +2223,6 @@ export const calculateTenorSwapAndForwardRateApi = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-    
-
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(calculateTenorSwapAndForwardRateApi({ navigate, Data }));
@@ -2312,8 +2273,6 @@ export const calculateNonFeSwapAndDiscountingRateApi = createAsyncThunk(
       const response = await postAPI(Data);
       const { responseCode } = response.data;
 
-    
-
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(calculateNonFeSwapAndDiscountingRateApi({ navigate, Data }));
@@ -2354,6 +2313,56 @@ export const calculateNonFeSwapAndDiscountingRateApi = createAsyncThunk(
   }
 );
 
+export const CalculateFESwapAndDiscountingApi = createAsyncThunk(
+  "Blotter/CalculateFESwapAndDiscountingApi",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      const postAPI = createPostAPI(
+        blotterApi,
+        CalculateFESwapAndDiscountingRM.RequestMethod
+      );
+      const response = await postAPI(Data);
+      const { responseCode } = response.data;
+
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(CalculateFESwapAndDiscountingApi({ navigate, Data }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_CalculateFEDiscounting_01".toLowerCase()
+              )
+          ) {
+            console.log("Checking", response.data.responseResult);
+            return {
+              response: response.data.responseResult,
+              message: "FE Swap and Discounting data calculated successfully",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_CalculateFEDiscounting_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else return rejectWithValue;
+        } else {
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      console.log(error, "errorerrorerror");
+      return rejectWithValue("Error calculating FE Swap and Discounting data");
+    }
+  }
+);
 // Define the GetSpotRatesForCounterPartyAPI async thunk
 export const GetSpotRatesForCounterPartyAPI = createAsyncThunk(
   "watchlist/GetSpotRatesForCounterParty", // A unique action type string
@@ -2366,7 +2375,7 @@ export const GetSpotRatesForCounterPartyAPI = createAsyncThunk(
 
       const response = await GetSpotRatesForCounterPartyM();
       const { responseCode } = response.data;
-    
+
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(GetSpotRatesForCounterPartyAPI({ navigate }));
@@ -2440,7 +2449,7 @@ export const GetNOPDataAPI = createAsyncThunk(
 
       const response = await GetNOPDataData();
       const { responseCode } = response.data;
-    
+
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(GetNOPDataAPI({ navigate }));

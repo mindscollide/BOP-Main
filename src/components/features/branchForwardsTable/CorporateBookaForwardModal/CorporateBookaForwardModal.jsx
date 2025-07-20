@@ -18,17 +18,23 @@ import {
   SaveForwardTransactionAPI,
   calculateTenorSwapAndForwardRateApi,
 } from "../../blotter/BlotterActions";
-import { formatPkAmount } from "@/utils/formatters";
+
+import { NumericFormat } from "react-number-format";
 const CorporateBookaForwardModal = ({
   bookaForwardModalCall,
   setBookaForwardModalCall,
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const branchData = localStorage.getItem("branch");
   const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
-  const branchDetails = isBranch && branchData ? JSON.parse(branchData) : null;
-  console.log(branchDetails, "branchDetailsbranchDetails");
+  const isCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
+
+  const counterPartyDetails =
+    isBranch && localStorage.getItem("branch") !== null
+      ? JSON.parse(localStorage.getItem("branch"))
+      : isCorporate && localStorage.getItem("corporate") !== null
+      ? JSON.parse(localStorage.getItem("corporate"))
+      : null;
   const natureOfBusinessList = useSelector(
     (state) => state.authReducer.GetAllNatureOfTransactions
   );
@@ -64,10 +70,9 @@ const CorporateBookaForwardModal = ({
   });
   const [forwardRFQState, setForwardRFQState] = useState({
     AccNo: "",
-    Amount: "0",
-    AmountForView: "",
-    TenorDays: "0",
-    Options: "0",
+    Amount: "",
+    TenorDays: "",
+    Options: "",
     Ready: 290.11,
     Swap: "",
     CalculateRate: 0,
@@ -167,12 +172,10 @@ const CorporateBookaForwardModal = ({
   const handleChangeValues = (event) => {
     const { name, value } = event.target;
     if (name === "Amount") {
-      const regex = /^[0-9]*$/;
-      if (regex.test(value)) {
+      if (value !== "") {
         setForwardRFQState({
           ...forwardRFQState,
-          [name]: value === "" ? "0" : value.replace(/^0+/, "") || "0",
-          AmountForView: Number(value).toLocaleString("en-PK"),
+          [name]: value,
         });
       }
     } else if (name === "Options") {
@@ -272,12 +275,15 @@ const CorporateBookaForwardModal = ({
       forwardRFQState.Options !== "" &&
       forwardRFQState.Swap !== ""
     ) {
+      let amountValue = forwardRFQState.Amount.replace(/,/g, "");
       let Data = {
-        CorporateID: Number(corporateValue.value),
+        CorporateID: isBranch
+          ? Number(corporateValue.value)
+          : Number(counterPartyDetails?.corporateID),
         InstrumentID: Number(selectedCurrency.value),
         SecondaryInstrumentID: 0,
         IsBuySide: typeOptionSelected.value === 1 ? true : false,
-        Quantity: Number(forwardRFQState.Amount),
+        Quantity: Number(amountValue),
         AccountNumber: forwardRFQState.AccNo,
         NatureOfTransactionID: Number(natureOfBusinessSelcted.value),
         TenorDays: Number(forwardRFQState.TenorDays),
@@ -305,20 +311,28 @@ const CorporateBookaForwardModal = ({
         bodyClassName={"BookaforwardCorporateBodyClassname"}
         className=''
         modalHeader={
-          import.meta.env.VITE_APP_INCLUDE_BRANCH && (
+          isBranch ? (
             <>
               <Row>
                 <Col lg={12} md={12} sm={12}>
                   <span className='Header_BranchName'>
-                    {branchDetails?.branchName}
+                    {counterPartyDetails?.branchName}
                   </span>
                   <p className='Header_BranchCode'>
-                    {branchDetails?.branchCode}
+                    {counterPartyDetails?.branchCode}
                   </p>
                 </Col>
               </Row>
             </>
-          )
+          ) : isCorporate ? (
+            <Row>
+              <Col lg={12} md={12} sm={12}>
+                <span className='Header_BranchName'>
+                  {counterPartyDetails?.corporateName}
+                </span>
+              </Col>
+            </Row>
+          ) : null
         }
         modalBody={
           <>
@@ -400,11 +414,15 @@ const CorporateBookaForwardModal = ({
                   <Col lg={12} md={12} sm={12}>
                     <div className='d-flex flex-column flex-wrap'>
                       <span className='SubHeadings'>Amount</span>
-                      <InputFIeld
-                        applyClass={"BookaForwardCorporateInputFields"}
-                        value={forwardRFQState.AmountForView}
+                      <NumericFormat
+                        value={forwardRFQState.Amount}
                         name={"Amount"}
                         onChange={handleChangeValues}
+                        customInput={InputFIeld}
+                        thousandSeparator=','
+                        maxLength={10}
+                        allowNegative={false}
+                        applyClass={"BookaForwardCorporateInputFields"}
                       />
                     </div>
                   </Col>

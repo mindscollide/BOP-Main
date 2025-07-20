@@ -9,18 +9,29 @@ import { useSelector } from "react-redux";
 import { formatDate } from "@/common/utils";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { SaveFEDiscountingTransactionRFQ, SaveNonFEDiscountingTransactionRFQ } from "@/components/features/blotter/BlotterActions";
+import {
+  CalculateFESwapAndDiscountingApi,
+  SaveFEDiscountingTransactionRFQ,
+  SaveNonFEDiscountingTransactionRFQ,
+  calculateNonFeSwapAndDiscountingRateApi,
+} from "@/components/features/blotter/BlotterActions";
+import { NumericFormat } from "react-number-format";
 const RFQDiscountingCorporateModal = ({
   openRfqModalDiscountingCorporateComponent,
   setOpenRfqModalDiscountingCorporateComponent,
 }) => {
   //Local States
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const natureOfBusinessList = useSelector(
     (state) => state.authReducer.GetAllNatureOfTransactions
   );
-
+  const CalculateFESwapAndDiscountingRate = useSelector(
+    (state) => state.BlotterSlicer.CalculateFESwapAndDiscountingRate
+  );
+  const calculateNonFeSwapAndDiscountingRate = useSelector(
+    (state) => state.BlotterSlicer.calculateNonFeSwapAndDiscountingRate
+  );
   const GetAllActiveCorproates = useSelector(
     (state) => state.authReducer.GetAllActiveCorproates
   );
@@ -52,6 +63,14 @@ const RFQDiscountingCorporateModal = ({
   const [typeOptionSelected, setTypeOptionSelected] = useState({
     value: 0,
     label: "",
+  });
+
+  const [calculatedData, setCalulatedData] = useState({
+    kiborValue: "",
+    swapValue: "",
+    nonFeRate: "",
+    feRate: "",
+    DiscountingFactor: "",
   });
   console.log(typeOptionSelected, "typeOptionSelectedtypeOptionSelected");
   useEffect(() => {
@@ -101,12 +120,55 @@ const RFQDiscountingCorporateModal = ({
       }
     }
   }, [GetAllActiveCorproates]);
+
+  useEffect(() => {
+    if (CalculateFESwapAndDiscountingRate !== null) {
+      try {
+        const { feRate, discountingFactor } = CalculateFESwapAndDiscountingRate;
+
+        // Validate the received data
+        if (
+          typeof feRate !== "number" ||
+          typeof discountingFactor !== "number"
+        ) {
+          throw new Error(
+            "Invalid data format received from CalculateFESwapAndDiscountingRate"
+          );
+        }
+
+        // Update state with the calculated values
+        setCalulatedData({
+          DiscountingFactor: discountingFactor,
+          feRate: feRate,
+        });
+      } catch (error) {
+        console.error(
+          "Error while calculating FE Swap and Discounting Rate:",
+          error.message
+        );
+        // Optionally set some error state or show user notification
+        // setErrorState(error.message);
+      }
+    }
+  }, [CalculateFESwapAndDiscountingRate]);
+
+  useEffect(() => {
+    if (calculateNonFeSwapAndDiscountingRate !== null) {
+      try {
+        const { kibor, nonFERate, swap } = calculateNonFeSwapAndDiscountingRate;
+        setCalulatedData({
+          kiborValue: kibor,
+          nonFeRate: nonFERate,
+          swapValue: swap,
+        });
+      } catch (error) {}
+    }
+  }, [calculateNonFeSwapAndDiscountingRate]);
   // handle Change amount
   const handleChangeAmount = (event) => {
     const { name, value } = event.target;
     if (name === "Amount") {
-      const regex = /^[0-9]*$/;
-      if (regex.test(value)) {
+      if (value !== "") {
         setAmountData(value);
       }
     }
@@ -153,36 +215,53 @@ const RFQDiscountingCorporateModal = ({
     setCorporateValue(selectedOption);
     console.log("selectedOption", selectedOption);
   };
-  const handleClickConfirm = () => {
-    // SaveFEDiscountingTransactionAPI
-    // SaveNonFEDiscountingTransactionAPI
- 
-    if (typeOptionSelected.value === 14) {
-      let Data = {
-        CorporateID: corporateValue.value,
-        InstrumentID: selectedCurrency.value,
-        Quantity: Number(amountData),
-        AccountNumber: AccountNumber,
-        NatureOfTransactionID: Number(typeOptionSelected.value),
-        TenorDays: Number(Tenor),
-        // Kibor: 1.5,
-        // Swap: 0.3,
-      };
-      dispatch(SaveNonFEDiscountingTransactionRFQ({Data, navigate}))
-      // SaveNonFEDiscountingTransactionRFQ
-    } else {
-      let Data = {
-        CorporateID: corporateValue.value,
-        InstrumentID: selectedCurrency.value,
-        Quantity: Number(amountData),
-        AccountNumber: AccountNumber,
-        NatureOfTransactionID: Number(typeOptionSelected.value),
-        TenorDays: Number(Tenor),
-        // DiscountingFactor: 2.5,
-      };
-      dispatch(SaveFEDiscountingTransactionRFQ({Data, navigate}))
 
-      // SaveFEDiscountingTransactionRFQ
+  const handleBlurTenor = () => {
+    if (Tenor !== "" && selectedCurrency.value !== 0) {
+      if (typeOptionSelected.value === 14) {
+        let Data = {
+          TenorDays: Number(Tenor),
+          InstrumentName: selectedCurrency.label,
+          InstrumentID: Number(selectedCurrency.value),
+        };
+        dispatch(calculateNonFeSwapAndDiscountingRateApi({ Data, navigate }));
+      } else {
+        let Data = {
+          TenorDays: Number(Tenor),
+          InstrumentName: selectedCurrency.label,
+          InstrumentID: Number(selectedCurrency.value),
+        };
+        dispatch(CalculateFESwapAndDiscountingApi({ Data, navigate }));
+      }
+    }
+  };
+  const handleClickConfirm = () => {
+    if (typeOptionSelected.value === 14) {
+      let AmountValue = amountData.replace(/,/g, "");
+      let Data = {
+        CorporateID: corporateValue.value,
+        InstrumentID: selectedCurrency.value,
+        Quantity: Number(AmountValue),
+        AccountNumber: AccountNumber,
+        NatureOfTransactionID: Number(typeOptionSelected.value),
+        TenorDays: Number(Tenor),
+        Kibor: Number(calculatedData.kiborValue),
+        Swap: Number(calculatedData.swapValue),
+      };
+      dispatch(SaveNonFEDiscountingTransactionRFQ({ Data, navigate }));
+    } else {
+      let AmountValue = amountData.replace(/,/g, "");
+
+      let Data = {
+        CorporateID: corporateValue.value,
+        InstrumentID: selectedCurrency.value,
+        Quantity: Number(AmountValue),
+        AccountNumber: AccountNumber,
+        NatureOfTransactionID: Number(typeOptionSelected.value),
+        TenorDays: Number(Tenor),
+        DiscountingFactor: Number(calculatedData.DiscountingFactor),
+      };
+      dispatch(SaveFEDiscountingTransactionRFQ({ Data, navigate }));
     }
   };
   return (
@@ -279,11 +358,14 @@ const RFQDiscountingCorporateModal = ({
                 <Col lg={12} md={12} sm={12}>
                   <div className='d-flex flex-column flex-wrap'>
                     <label className='LabelRFQTransactionModal'>Amount</label>
-                    <InputFIeld
-                      onChange={handleChangeAmount}
+                    <NumericFormat
+                      customInput={InputFIeld}
                       value={amountData}
                       name='Amount'
                       applyClass='CalculatorTextfield'
+                      thousandSeparator={true}
+                      maxLength={10}
+                      onChange={handleChangeAmount}
                     />
                   </div>
                 </Col>
@@ -298,6 +380,7 @@ const RFQDiscountingCorporateModal = ({
                       value={Tenor}
                       name='Tenor'
                       applyClass='CalculatorTextfield'
+                      onBlur={handleBlurTenor}
                     />
                   </div>
                 </Col>
