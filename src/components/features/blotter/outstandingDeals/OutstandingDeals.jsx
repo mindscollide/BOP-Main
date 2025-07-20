@@ -276,7 +276,7 @@ const OutstandingDeals = () => {
     } catch (error) {
       console.log(error, "error");
     }
-  }, [getBlotterOutstandingData,OutstandingTableData]);
+  }, [getBlotterOutstandingData, OutstandingTableData]);
 
   useEffect(() => {
     if (blotterTransactionRFQExpired !== null) {

@@ -87,12 +87,6 @@ const TXNSummary = () => {
   const transactionAssignedByTreasury = useSelector(
     (state) => state.RealtimeActionsSlice.TransactionAssignedByTreasury
   );
-  console.log(
-    cancelReasonComment,
-    cancelType,
-    cancelTransactionID,
-    "cancelTransactionIDcancelTransactionID"
-  );
 
   //HardCoded Filter Values start
   const TXN_ID_OPTIONS = [
@@ -124,6 +118,14 @@ const TXNSummary = () => {
     (state) => state.BlotterSlicer.getBlotterApiData
   );
 
+  // Table State from Reducer it will manage the table data and columns which is api data and realtime Data
+  const txnCounterPartyTableData = useSelector(
+    (state) => state.BlotterSlicer.txnCounterPartyTableData
+  );
+
+  const txnCounterPartyTableDataCount = useSelector(
+    (state) => state.BlotterSlicer.txnCounterPartyTableDataCount
+  );
   //local states
   const [blotterdata, setBlotterdata] = useState([]);
 
@@ -208,23 +210,26 @@ const TXNSummary = () => {
   //Extracting Out the Blotter Data API
   useEffect(() => {
     try {
-      if (GlobalStateGetBlotterData !== null) {
-        if (hasReachedBottom) {
-          setHasReachedBottom(false);
-          setBlotterdata((prevData) => [
-            ...prevData,
-            ...GlobalStateGetBlotterData.tnxSummary,
-          ]);
-          setTotalRecords(GlobalStateGetBlotterData.totalCount);
-          setRow(
-            (prevRow) => prevRow + GlobalStateGetBlotterData.tnxSummary.length
-          );
-        } else {
-          setHasReachedBottom(false);
-          setBlotterdata(GlobalStateGetBlotterData.tnxSummary);
-          setTotalRecords(GlobalStateGetBlotterData.totalCount);
-          setRow(GlobalStateGetBlotterData.tnxSummary.length);
-        }
+      if (
+        GlobalStateGetBlotterData !== null &&
+        txnCounterPartyTableData.length > 0
+      ) {
+        // if (hasReachedBottom) {
+        //   setHasReachedBottom(false);
+        //   setBlotterdata((prevData) => [
+        //     ...prevData,
+        //     ...GlobalStateGetBlotterData.tnxSummary,
+        //   ]);
+        //   setTotalRecords(GlobalStateGetBlotterData.totalCount);
+        //   setRow(
+        //     (prevRow) => prevRow + GlobalStateGetBlotterData.tnxSummary.length
+        //   );
+        // } else {
+        setHasReachedBottom(false);
+        setBlotterdata(txnCounterPartyTableData);
+        setTotalRecords(txnCounterPartyTableDataCount);
+        setRow(txnCounterPartyTableDataCount.length);
+        // }
       } else if (GlobalStateGetBlotterData === null) {
         if (!hasReachedBottom) {
           setHasReachedBottom(false);
@@ -351,8 +356,7 @@ const TXNSummary = () => {
       } else {
         setBlotterdata([transaction, ...blotterdata]);
       }
-      dispatch(setBlotterTransactionCancellationRequest(null))
-
+      dispatch(setBlotterTransactionCancellationRequest(null));
     }
   }, [blotterTranscationCancelled]);
 
@@ -374,7 +378,7 @@ const TXNSummary = () => {
       } else {
         setBlotterdata([transaction, ...blotterdata]);
       }
-      dispatch(setBlotterTransactionRejected(null))
+      dispatch(setBlotterTransactionRejected(null));
     }
   }, [blotterTransactionRejected]);
 

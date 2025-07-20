@@ -228,7 +228,6 @@ const TXNTreasurySummary = () => {
         setBlotterdata(txnTreasuryTableData);
         setTotalRecords(txnTreasuryTableCount);
         setRow(txnTreasuryTableData.length);
-        F;
       } else if (GlobalStateGetBlotterData === null) {
         if (!hasReachedBottom) {
           setHasReachedBottom(false);

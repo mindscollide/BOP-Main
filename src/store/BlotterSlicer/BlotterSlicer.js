@@ -244,25 +244,72 @@ const BlotterSlicer = createSlice({
 
     setBlotterTransactionCounterPartyAdded: (state, action) => {
       // state.txnCounterPartyTableData
-      state.transactionCounterPartyAdded = action.payload;
-      // state.
-    },
-    setBlotterTransactionOutstandingAdded: (state, action) => {
-      console.log(action, "setBlotterTransactionOutstandingAdded")
       const newTransaction = action.payload.transaction;
-      const isAlreadyExist = state.OutstandingTableData.some(
+      // When Counter Party Created any transaction the this action will add transaction top
+      const exists = state.txnCounterPartyTableData.find(
         (item) => item.pK_TransactionID === newTransaction.pK_TransactionID
       );
 
-      if (!isAlreadyExist) {
+      if (!exists) {
+        state.txnCounterPartyTableData.unshift(newTransaction);
+      }
+    },
+    setBlotterTransactionOutstandingAdded: (state, action) => {
+      const newTransaction = action.payload.transaction;
+
+      const exists = state.OutstandingTableData.find(
+        (item) => item.pK_TransactionID === newTransaction.pK_TransactionID
+      );
+
+      if (!exists) {
         state.OutstandingTableData.unshift(newTransaction);
       }
     },
+
     setBlotterTransactionCounterPartyAssigned: (state, action) => {
-      state.transactionCounterPartyAssigned = action.payload;
+      const { transactionID, treasuryPersonID, statusID } =
+        action.payload.transaction;
+
+      state.txnCounterPartyTableData = state.txnCounterPartyTableData.map(
+        (tableData) => {
+          if (tableData.pK_TransactionID === transactionID) {
+            return {
+              ...tableData,
+              statusID: statusID,
+              treasuryPersonID: treasuryPersonID,
+            };
+          }
+          return tableData;
+        }
+      );
     },
     setBlotterTransactionOutstandingAssigned: (state, action) => {
-      state.transactionOutstandingAssigned = action.payload;
+      const {
+        transactionID,
+        treasuryPersonID,
+        statusForAssignedUser,
+        statusForOtherTreasury,
+        statusID,
+      } = action.payload.transaction;
+
+      const userID = Number(localStorage.getItem("userID"));
+
+      state.OutstandingTableData = state.OutstandingTableData.map(
+        (tableData) => {
+          if (tableData.pK_TransactionID === transactionID) {
+            return {
+              ...tableData,
+              status:
+                userID === Number(treasuryPersonID)
+                  ? statusForAssignedUser
+                  : statusForOtherTreasury,
+              statusID: statusID,
+              treasuryPersonID: treasuryPersonID,
+            };
+          }
+          return tableData;
+        }
+      );
     },
     setBlotterTransactionCounterPartyExpired: (state, action) => {
       state.transactionCounterPartyExpired = action.payload;
