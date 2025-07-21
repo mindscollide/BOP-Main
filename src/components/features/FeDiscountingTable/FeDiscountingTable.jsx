@@ -6,7 +6,10 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { publishDiscountingRatesAction } from "@/container/pages/mainDealer/dealerActions";
 import { useSelector } from "react-redux";
-import { isValidMaxFourNumberAfterPoint, isValidNumberUnderMax } from "@/utils/formatters";
+import {
+  isValidMaxFourNumberAfterPoint,
+  isValidNumberUnderMax,
+} from "@/utils/formatters";
 import {
   GetFEDiscountingTableApi,
   PublishFEDiscountingTableApi,
@@ -164,15 +167,15 @@ const FeDiscountingTable = () => {
   return (
     <>
       <GlobalTable
-        prefixCls='DealerAndTreasuryDiscountTable'
+        prefixCls="DealerAndTreasuryDiscountTable"
         columns={columnsData}
         dataSource={rowData}
         pagination={false}
       />
 
-      <span className='d-flex justify-content-center mt-4'>
+      <span className="d-flex justify-content-center mt-4">
         <CustomButton
-          applyClass='publishForwardsBtn'
+          applyClass="publishForwardsBtn"
           value={"Publish FE Discounting"}
           disabled={marketStatus === false ? true : false}
           onClick={handlePublishDiscount}

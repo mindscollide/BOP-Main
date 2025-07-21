@@ -638,7 +638,7 @@ input[type="number"] {
 
 .form-switch .form-check-input {
   height: 21px;
-  width: 45px;
+  width: 45px !important;
 }
 
 .modal-backdrop.show {

@@ -49,7 +49,7 @@ export const getUserSettingDataAPI = createAsyncThunk(
             )
         ) {
           dispatch(setSettingModal(true));
-          return userSettingsList;
+          return { response: userSettingsList, message: "" };
         } else if (
           responseMessage
             .toLowerCase()
@@ -185,7 +185,11 @@ export const getMarkingTimingApi = createAsyncThunk(
               "Setting_SettingServiceManager_GetMarketTimeSettings_01".toLowerCase()
             )
         ) {
-          return response.data.responseResult;
+          return {
+            response: response.data.responseResult,
+            message: "",
+          };
+          // return response.data.responseResult;
         } else if (
           responseMessage
             .toLowerCase()

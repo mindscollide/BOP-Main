@@ -1,6 +1,7 @@
 import {
   corporateUserRequestMethod,
   loginRequestMethod,
+  VerifyOTP,
 } from "@/common/api_config";
 import { authApi } from "@/common/apiend_points";
 import { roleBasedNavigation, setCustomHeaders } from "@/common/utils";
@@ -123,7 +124,7 @@ export const corporateUserLoginInApi = createAsyncThunk(
             case "ERM_AuthService_AuthManager_CorporateUserLogin_04".toLowerCase():
             case "ERM_AuthService_AuthManager_CorporateUserLogin_05".toLowerCase():
             case "ERM_AuthService_AuthManager_CorporateUserLogin_06".toLowerCase():
-              return rejectWithValue("User is Disabled")
+              return rejectWithValue("User is Disabled");
             case "ERM_AuthService_AuthManager_CorporateUserLogin_07".toLowerCase():
             case "ERM_AuthService_AuthManager_CorporateUserLogin_08".toLowerCase():
             case "ERM_AuthService_AuthManager_CorporateUserLogin_09".toLowerCase():
@@ -164,38 +165,98 @@ export const corporateUserLoginInApi = createAsyncThunk(
               roleBasedNavigation(navigate, userRoleID);
               return {
                 response: response.data.responseResult,
-                message: "Successfully logged In",
+                message: "",
               };
 
             case "ERM_AuthService_AuthManager_CorporateUserLogin_15".toLowerCase():
+              // var { email, userID } = response.data.responseResult.user;
+
               navigate("/2fa");
-              // var {
-              //   corporate,
-              //   employeeID,
-              //   ldapAccount,
-              //   userID,
-              //   firstName,
-              //   email,
-              //   contactNumber,
-              //   userRoleID,
-              //   userStatusID,
-              // } = response.data.responseResult.user;
+              var {
+                corporate,
+                // employeeID,
+                // ldapAccount,
+                userID,
+                firstName,
+                email,
+                contactNumber,
+                failedAttemptCount,
+                userRoleID,
+                userStatusID,
+              } = response.data.responseResult.user;
               // localStorage.setItem("token", token);
               // localStorage.setItem("refreshToken", refreshToken);
-              // localStorage.setItem("name", firstName);
-              // localStorage.setItem("email", email);
-              // localStorage.setItem("roleId", userRoleID);
-              // localStorage.setItem("userID", userID);
-              // localStorage.setItem("corporate", JSON.stringify(corporate));
+              localStorage.setItem("name", firstName);
+              localStorage.setItem("email", email);
+              localStorage.setItem("roleId", userRoleID);
+              localStorage.setItem("userID", userID);
+              localStorage.setItem("corporate", JSON.stringify(corporate));
               // localStorage.setItem("employeeID", employeeID);
               // localStorage.setItem("ldapAccount", ldapAccount);
-              // localStorage.setItem("contactNumber", contactNumber);
-              // localStorage.setItem("userStatusID", userStatusID);
+              localStorage.setItem("contactNumber", contactNumber);
+              localStorage.setItem("userStatusID", userStatusID);
+              localStorage.setItem("failedAttemptCount", failedAttemptCount);
 
               // roleBasedNavigation(navigate, userRoleID);
               return {
                 response: response.data.responseResult,
                 message: "",
+              };
+
+            default:
+              console.log("", response.data);
+              return rejectWithValue("Something went wrong");
+          }
+        } else {
+          console.log("", response.data);
+          return rejectWithValue("Something went wrong");
+        }
+      }
+    } catch (error) {
+      // Reject with error message
+      return rejectWithValue("Something went wrong");
+    }
+  }
+);
+
+// Define the login async thunk
+export const VerifyOTPApi = createAsyncThunk(
+  "auth/VerifyOTP", // A unique action type string
+  async ({ navigate, Data }, { rejectWithValue }) => {
+    try {
+      let VerifyOTPMethod = createPostAPI(authApi, VerifyOTP.RequestMethod);
+
+      const response = await VerifyOTPMethod(Data);
+      if (response.data.responseCode === 200) {
+        const { isExecuted, responseMessage, token, refreshToken } =
+          response.data.responseResult;
+
+        if (isExecuted) {
+          switch (responseMessage.toLowerCase()) {
+            case "ERM_AuthService_AuthManager_VerifyOTP_02".toLowerCase():
+              return rejectWithValue("Invalid OTP");
+            case "ERM_AuthService_AuthManager_VerifyOTP_03".toLowerCase():
+              return rejectWithValue("Verification Failed");
+
+            case "ERM_AuthService_AuthManager_VerifyOTP_04".toLowerCase():
+              return rejectWithValue("Verification Failed");
+
+            case "ERM_AuthService_AuthManager_VerifyOTP_05".toLowerCase():
+              return rejectWithValue(
+                "The user has reached the maximum number of wrong attempts"
+              );
+
+            case "ERM_AuthService_AuthManager_VerifyOTP_01".toLowerCase():
+              const { token, refreshToken, loginTime } =
+                response.data.responseResult;
+              localStorage.setItem("token", token);
+              localStorage.setItem("refreshToken", refreshToken);
+              localStorage.setItem("loginTime", loginTime);
+
+              roleBasedNavigation(navigate, 2);
+              return {
+                response: response.data.responseResult,
+                message: "OTP Verified Successfully",
               };
 
             default:

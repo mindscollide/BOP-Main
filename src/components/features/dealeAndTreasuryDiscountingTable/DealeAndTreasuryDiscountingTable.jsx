@@ -1,12 +1,10 @@
-import React, { Suspense, lazy, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import CustomButton from "../../common/globalButton/button";
 import GlobalTable from "../../common/table/GlobalTable";
 import InputFIeld from "../../common/inputField/InputField";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import {
-  publishDiscountingRatesAction,
-} from "@/container/pages/mainDealer/dealerActions";
+import { publishDiscountingRatesAction } from "@/container/pages/mainDealer/dealerActions";
 import { useSelector } from "react-redux";
 import { formatPercentageInput } from "@/utils/formatters";
 
@@ -17,8 +15,7 @@ const DealeAndTreasuryDiscountingTable = () => {
   const getDiscountTableData = useSelector(
     (state) => state.dealerReducer.getDiscountingWiseRates
   );
-  useEffect(() => {
-  }, []);
+  // useEffect(() => {}, []);
 
   useEffect(() => {
     if (getDiscountTableData !== null) {
@@ -53,8 +50,6 @@ const DealeAndTreasuryDiscountingTable = () => {
           setTableData(newRecords);
         }
       } catch (error) {}
-
-   
     }
   }, [getDiscountTableData]);
 
@@ -102,8 +97,8 @@ const DealeAndTreasuryDiscountingTable = () => {
       render: (value, record) => {
         return (
           <InputFIeld
-            type='number'
-            applyClass='DealerTableBitInput'
+            type="number"
+            applyClass="DealerTableBitInput"
             value={value}
             onChange={(event) => handleChangeCurrent(event, record)}
           />
@@ -117,10 +112,10 @@ const DealeAndTreasuryDiscountingTable = () => {
       align: "center",
       render: (value) => (
         <InputFIeld
-          type='number'
+          type="number"
           disabled={true}
           defaultValue={value}
-          applyClass='DealerTableBitInput'
+          applyClass="DealerTableBitInput"
         />
       ),
     },
@@ -137,20 +132,19 @@ const DealeAndTreasuryDiscountingTable = () => {
       }),
     };
     dispatch(publishDiscountingRatesAction({ navigate, Data: newData }));
-
   };
   return (
     <>
       <GlobalTable
-        prefixCls='DealerAndTreasuryDiscountTable'
+        prefixCls="DealerAndTreasuryDiscountTable"
         columns={columns}
         dataSource={tableData}
         pagination={false}
       />
 
-      <span className='d-flex justify-content-center mt-4'>
+      <span className="d-flex justify-content-center mt-4">
         <CustomButton
-          applyClass='publishForwardsBtn'
+          applyClass="publishForwardsBtn"
           value={"Publish Discounting"}
           onClick={handlePublishDiscount}
         />
