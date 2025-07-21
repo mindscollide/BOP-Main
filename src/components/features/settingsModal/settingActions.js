@@ -25,7 +25,7 @@ export const getUserSettingDataAPI = createAsyncThunk(
       console.log(result, "result");
       const { responseCode } = result.data;
       console.log(responseCode, "result");
-    
+
       if (responseCode === 417) {
         console.log(result, "result");
 
@@ -92,7 +92,7 @@ export const updateUserSettingDataAPI = createAsyncThunk(
       console.log(response, "result");
       const { responseCode } = response.data;
       console.log(responseCode, "result");
-    
+
       if (responseCode === 417) {
         console.log(response, "result");
 
@@ -116,7 +116,7 @@ export const updateUserSettingDataAPI = createAsyncThunk(
         ) {
           return {
             response: response.data.responseResult,
-            message: "Setting Updated Successfully"
+            message: "Setting Updated Successfully",
           };
         } else if (
           responseMessage
@@ -160,7 +160,7 @@ export const getMarkingTimingApi = createAsyncThunk(
       console.log(response, "result");
       const { responseCode } = response.data;
       console.log(responseCode, "result");
-    
+
       if (responseCode === 417) {
         console.log(response, "result");
 

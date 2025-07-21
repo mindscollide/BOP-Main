@@ -19,7 +19,7 @@ export const GetFEDiscountingTableApi = createAsyncThunk(
       console.log(response.data.responseCode, "result");
       const { responseCode } = response.data;
       console.log(responseCode, "result");
-    
+
       if (responseCode === 417) {
         console.log(response, "result");
 
@@ -93,7 +93,7 @@ export const PublishFEDiscountingTableApi = createAsyncThunk(
       const response = await publishFeDiscounting(Data);
       console.log(response, "result");
       const { responseCode } = response.data;
-    
+
       if (responseCode === 417) {
         console.log(response, "result");
 
@@ -113,7 +113,7 @@ export const PublishFEDiscountingTableApi = createAsyncThunk(
         ) {
           return {
             response: null,
-            message: "FE Discounting Rates Published Successfully",
+            message: "FE Discounting Rates Publish Successfully",
           };
         } else if (
           responseMessage

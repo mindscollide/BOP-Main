@@ -137,7 +137,9 @@ function App() {
   }, []);
 
   if (!routes.length) {
-    return <div>Loading...</div>; // Better check for array length than null
+    return;
+    // <div>Loading...</div>;
+    // Better check for array length than null
   }
 
   const router = createBrowserRouter(routes);
