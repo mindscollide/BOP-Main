@@ -2,8 +2,8 @@ import React, { startTransition, useCallback, useEffect } from "react";
 import "../settingModal.css";
 import { useSelector } from "react-redux";
 import { Checkbox } from "antd";
-import { setSettingRecords } from "@/store/modalSlice/modalSlicer";
 import { useDispatch } from "react-redux";
+import { setSettingRecords } from "@/store/modalSlice/modalSlicer";
 const SettingusersComponent = () => {
   const dispatch = useDispatch();
   const settingsRecord = useSelector(
@@ -34,31 +34,66 @@ const SettingusersComponent = () => {
     }
   }, [userSettingData]);
 
+  // const handleChange = useCallback(
+  //   (event) => {
+  //     // const { name, checked } = event.target;
+
+  //     console.log({ event }, "valuevaluevaluevalue");
+
+  //     // startTransition(() => {
+  //     //   dispatch(
+  //     //     setSettingRecords({
+  //     //       ...settingsRecord,
+  //     //       [name]: checked,
+  //     //     })
+  //     //   );
+  //     // });
+  //     if (event.target.name === "CU_EmailOnEveryMessage") {
+  //       startTransition(() => {
+  //         dispatch(
+  //           setSettingRecords({
+  //             ...settingsRecord,
+  //             CU_EmailOnEveryMessage: event.target.checked,
+  //           })
+  //         );
+  //       });
+  //     } else if (event.target.name === "CU_SoundOnEveryMessage") {
+  //       startTransition(() => {
+  //         dispatch(
+  //           setSettingRecords({
+  //             ...settingsRecord,
+  //             CU_SoundOnEveryMessage: event.target.checked,
+  //           })
+  //         );
+  //       });
+  //     }
+  //   },
+  //   [dispatch, settingsRecord]
+  // );
+
   const handleChange = useCallback(
     (event) => {
       const { name, checked } = event.target;
 
-      console.log({ event }, "valuevaluevaluevalue");
-
       startTransition(() => {
         dispatch(
           setSettingRecords({
-            [name]: checked,
+            ...settingsRecord, // This spreads the existing state
+            [name]: checked, // This updates only the changed property
           })
         );
       });
     },
-    [dispatch]
+    [dispatch, settingsRecord] // Add settingsRecord as dependency
   );
-
   console.log(settingsRecord, "settingsRecordsettingsRecord");
   return (
     <div className="setting-body-content px-3 py-3 h-screen-65">
       <label className="form-check border-bottom pb-3 pt-2 mb-2 fs-normal">
         <Checkbox
           className="form-check-input"
-          name="BD_EmailOnEveryMessage"
-          checked={settingsRecord?.BD_EmailOnEveryMessage}
+          name="CU_EmailOnEveryMessage"
+          checked={settingsRecord?.CU_EmailOnEveryMessage}
           onChange={handleChange}
         />
         Chat Panel Overlap
@@ -66,8 +101,8 @@ const SettingusersComponent = () => {
       <label className="form-check border-bottom pb-3 pt-2 mb-2 fs-normal">
         <Checkbox
           className="form-check-input"
-          name="BD_SoundOnEveryMessage"
-          checked={settingsRecord.BD_SoundOnEveryMessage}
+          name="CU_SoundOnEveryMessage"
+          checked={settingsRecord.CU_SoundOnEveryMessage}
           onChange={handleChange}
         />
         Sound on every personal message

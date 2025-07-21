@@ -20,6 +20,10 @@ const initialState = {
     BD_Enable2FA: false, // Indicates whether two-factor authentication (2FA) is enabled.
     BD_SoundOnEveryMessage: false, // Indicates whether a sound should play for every message.
     BD_EmailOnEveryMessage: false, // Indicates whether an email should be sent for every message.
+
+    CU_Enable2FA: false, // Indicates whether two-factor authentication (2FA) is enabled.
+    CU_SoundOnEveryMessage: false, // Indicates whether a sound should play for every message.
+    CU_EmailOnEveryMessage: false, // Indicates whether an email should be sent for every message.
   },
   transactionInfoModal: false, // Controls the visibility of the "Transaction Info" modal.
   rfqModalOpen: false, // Controls the visibility of the "Request for Quote (RFQ)" modal.
@@ -84,6 +88,9 @@ const modalSlice = createSlice({
     // Reducer to set the visibility of the "Create Tenor" modal.
     setPublishedSpotRates(state, action) {
       state.publishedSpotRates = action.payload; // Updates the state with the payload value.
+    },
+    setSettingRecords(state, { payload }) {
+      state.settingsRecord = payload;
     },
     // Reducer to reset the modal state to its initial state.
     resetModalState() {

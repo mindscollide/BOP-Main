@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   corporateUserLoginInApi,
   loginInApi,
+  VerifyOTPApi,
 } from "../../container/loginScreens/Login/logInAction";
 import { resetAndForgotPassword } from "../../container/loginScreens/forgetPassword/forgotPassword_Actions";
 import { setCustomHeaders } from "@/common/utils";
@@ -40,6 +41,7 @@ const authSlice = createSlice({
     GetAllActiveCorproates: null,
     ResetPasswordCorporate: null,
     CreateCorporateUserForgotPassword: null,
+    VerifyOTP: null,
   },
   reducers: {
     clearAuthResponseMessage: (state) => {
@@ -256,7 +258,21 @@ const authSlice = createSlice({
           state.CreateCorporateUserForgotPassword = null;
           state.responseMessage = payload;
         }
-      );
+      )
+      .addCase(VerifyOTPApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(VerifyOTPApi.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.VerifyOTP = payload?.response;
+        state.responseMessage = payload?.message;
+      })
+      .addCase(VerifyOTPApi.rejected, (state, { payload }) => {
+        console.log(payload);
+        state.Loader = false;
+        state.VerifyOTP = null;
+        state.responseMessage = payload;
+      });
   },
 });
 export const { clearAuthResponseMessage } = authSlice.actions;

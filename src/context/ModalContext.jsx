@@ -12,6 +12,10 @@ export const GloballyModalProvider = ({ children }) => {
     BD_Enable2FA: false,
     BD_SoundOnEveryMessage: false,
     BD_EmailOnEveryMessage: false,
+
+    CU_Enable2FA: false,
+    CU_SoundOnEveryMessage: false,
+    CU_EmailOnEveryMessage: false,
   });
   const [transactionInfoModal, setTransactionInfoModal] = useState(false);
   const [publishedSpotRates, setPublishedSpotRates] = useState(false);
