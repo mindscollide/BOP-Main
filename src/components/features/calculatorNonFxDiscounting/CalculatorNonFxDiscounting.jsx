@@ -14,10 +14,18 @@ const CalculatorNonFxDiscounting = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  //Drop down Currency Data
-  const CurrencyData = useSelector(
-    (state) => state.CalculatorReducer.calculatorData
+  //Drop down Instruments  Data
+  const InstrumentsData = useSelector(
+    (state) => state.authReducer.getAllInstruments
   );
+
+  //World Crosses Data to Get the Cross Rates Without Spread
+  const WorldCrossesData = useSelector(
+    (state) => state.WatchListReducer.GetBankSpotForTreasury
+  );
+
+  console.log(InstrumentsData, "saif");
+  console.log(WorldCrossesData, "saif");
 
   // //Resulting Calculated value of NonFX Discounting
   const CalculatedNonFxDiscounting = useSelector(
@@ -27,37 +35,65 @@ const CalculatorNonFxDiscounting = () => {
 
   //Local States
   const [selectedOption, setSelectedOption] = useState(null);
-  const [currencyOptions, setCurrencyOptions] = useState([]);
+  const [discountingApplicableList, setDiscountingApplicableList] = useState(
+    []
+  );
   const [price, setPrice] = useState(285.2635);
   const [inputValue, setInputValue] = useState("0");
   const [kiborValue, setKiborValue] = useState(0);
   const [swapValue, setSwapValue] = useState(0);
   const [tagText, setTagText] = useState(formatDate(new Date()));
 
-  //Extracting the currecny Data
   useEffect(() => {
     try {
-      if (CurrencyData && CurrencyData !== null) {
-        // Transform currency data into label/value format
-        const options = CurrencyData.currency.map((item) => {
-          if (item.currency === "USD") {
-            setSelectedOption({
-              label: item.currency,
-              value: item.ready,
-            });
-            setPrice(item.ready);
-          }
-          return {
-            label: item.currency,
-            value: item.ready,
-          };
+      if (
+        InstrumentsData?.instruments &&
+        Array.isArray(InstrumentsData.instruments) &&
+        WorldCrossesData?.worldCrosses
+      ) {
+        const discountings = InstrumentsData.instruments
+          .filter((item) => item.discountingApplicable === true)
+          .map((item) => ({
+            value: item.instrumentID,
+            label: item.instrumentName,
+          }));
+
+        setDiscountingApplicableList(discountings);
+
+        //  Find USD in worldCrosses (this contains bid/offer)
+        const matchedRateUSD = WorldCrossesData.worldCrosses.find((cross) => {
+          const instrument = InstrumentsData.instruments.find(
+            (item) =>
+              item.instrumentID === cross.instrumentID &&
+              item.instrumentName === "USD" &&
+              item.discountingApplicable === true
+          );
+          return instrument !== undefined;
         });
-        setCurrencyOptions(options);
+
+        // If found, match with dropdown option and set selected + price
+        if (matchedRateUSD) {
+          const defaultUSDOption = discountings.find(
+            (item) => item.value === matchedRateUSD.instrumentID
+          );
+
+          if (defaultUSDOption) {
+            setSelectedOption(defaultUSDOption); // or your actual state for selected discounting option
+            setPrice(matchedRateUSD.bid);
+          } else {
+            setPrice(null);
+          }
+        }
       }
     } catch (error) {
-      console.log(error);
+      console.error("Error processing instrument data:", error);
     }
-  }, [CurrencyData]);
+  }, [InstrumentsData, WorldCrossesData]);
+
+  console.log(
+    discountingApplicableList,
+    "InstrumentsDataInstrumentsDataInstrumentsData"
+  );
 
   // Effect to update date whenever inputValue changes
   useEffect(() => {
@@ -72,7 +108,19 @@ const CalculatorNonFxDiscounting = () => {
   //Handle onChange Currency
   const handleChangeCurrencyCalculator = (selected) => {
     setSelectedOption(selected);
-    setPrice(selected.value);
+
+    const selectedInstrumentID = selected?.value;
+
+    // Find the corresponding rate from WorldCrossesData
+    const matchedRate = WorldCrossesData?.worldCrosses?.find(
+      (cross) => cross.instrumentID === selectedInstrumentID
+    );
+
+    if (matchedRate) {
+      setPrice(matchedRate.bid);
+    } else {
+      setPrice(null);
+    }
   };
 
   // Only allow numeric or decimal values handle change Ready
@@ -170,7 +218,7 @@ const CalculatorNonFxDiscounting = () => {
             <div className="flex-fill px-2 p-2">
               <label className="mt-1">Currency</label>
               <SelectDropdown
-                options={currencyOptions}
+                options={discountingApplicableList}
                 value={selectedOption}
                 onChange={handleChangeCurrencyCalculator}
                 placeholder="Select a currency"
@@ -180,7 +228,7 @@ const CalculatorNonFxDiscounting = () => {
               <InputFIeld
                 type="number"
                 name="price"
-                defaultValue="285.2635"
+                defaultValue="0"
                 value={price}
                 applyClass={"CalculatorTextfield"}
                 onChange={handleReadyValue}

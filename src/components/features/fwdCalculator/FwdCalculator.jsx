@@ -14,10 +14,18 @@ const FwdCalculator = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  //Drop down Currency Data
-  const CurrencyData = useSelector(
-    (state) => state.CalculatorReducer.calculatorData
+  //Drop down Instruments  Data
+  const InstrumentsData = useSelector(
+    (state) => state.authReducer.getAllInstruments
   );
+
+  //World Crosses Data to Get the Cross Rates Without Spread
+  const WorldCrossesData = useSelector(
+    (state) => state.WatchListReducer.GetBankSpotForTreasury
+  );
+
+  console.log(InstrumentsData, "WorldCrossesData");
+  console.log(WorldCrossesData, "WorldCrossesData");
 
   // //Resulting Calculated value of Forwads
   const CalculatedForwards = useSelector(
@@ -29,6 +37,7 @@ const FwdCalculator = () => {
   const [selectedOptionImportExport, setSelectedOptionImportExport] =
     useState(null);
   const [swapValue, setSwapValue] = useState(0);
+  const [forwardApplicableList, setForwardApplicableList] = useState([]);
   const [currencyOptions, setCurrencyOptions] = useState([]);
   const [price, setPrice] = useState(285.2635);
   const [inputValue, setInputValue] = useState("0");
@@ -46,30 +55,45 @@ const FwdCalculator = () => {
     },
   ];
 
-  //Extracting the currecny Data
+  //Extracting out the Forward Applicable and nonForward Applicable Instruments
   useEffect(() => {
     try {
-      if (CurrencyData && CurrencyData !== null) {
-        // Transform currency data into label/value format
-        const options = CurrencyData.currency.map((item) => {
-          if (item.currency === "USD") {
-            setSelectedOption({
-              label: item.currency,
-              value: item.ready,
-            });
-            setPrice(item.ready);
+      if (
+        InstrumentsData?.instruments &&
+        Array.isArray(InstrumentsData.instruments) &&
+        WorldCrossesData?.worldCrosses
+      ) {
+        console.log(InstrumentsData, "InstrumentsData");
+        console.log(WorldCrossesData, "InstrumentsData");
+        const Forwards = InstrumentsData.instruments
+          .filter((item) => item.forwardsApplicable === true)
+          .map((item) => ({
+            value: item.instrumentID,
+            label: item.instrumentName,
+          }));
+
+        setForwardApplicableList(Forwards);
+
+        // Automatically select USD by default
+        const defaultUSD = Forwards.find((item) => item.label === "USD");
+        if (defaultUSD) {
+          setSelectedOption(defaultUSD);
+
+          const matchedRate = WorldCrossesData.worldCrosses.find(
+            (cross) => cross.instrumentID === defaultUSD.value
+          );
+
+          if (matchedRate) {
+            setPrice(matchedRate.bid);
+          } else {
+            setPrice(null); // fallback if not found
           }
-          return {
-            label: item.currency,
-            value: item.ready,
-          };
-        });
-        setCurrencyOptions(options);
+        }
       }
     } catch (error) {
-      console.log(error);
+      console.error("Error processing instrument data:", error);
     }
-  }, [CurrencyData]);
+  }, [InstrumentsData, WorldCrossesData]);
 
   // Effect to update date whenever inputValue changes
   useEffect(() => {
@@ -84,7 +108,30 @@ const FwdCalculator = () => {
   //Handle onChange Currency
   const handleChangeCurrencyCalculator = (selected) => {
     setSelectedOption(selected);
-    setPrice(selected.value);
+
+    // Extract selected instrument ID
+    const selectedInstrumentID = selected?.value;
+
+    // Find matching instrument
+    const matchedInstrument = InstrumentsData?.instruments?.find(
+      (item) => item.instrumentID === selectedInstrumentID
+    );
+
+    if (matchedInstrument) {
+      // Find corresponding bid in worldCrosses
+      const matchingRate = WorldCrossesData?.worldCrosses?.find(
+        (cross) => cross.instrumentID === matchedInstrument.instrumentID
+      );
+
+      if (matchingRate) {
+        setPrice(matchingRate.bid);
+      } else {
+        // If not found, you can choose to set price to 0 or null
+        setPrice(null);
+      }
+    } else {
+      setPrice(null);
+    }
   };
 
   //Handle onChange Import Export
@@ -95,24 +142,27 @@ const FwdCalculator = () => {
       return;
     }
 
-    const selectedCurrencyCode = selectedOption.label;
-    const matchedCurrency = CurrencyData?.currency?.find(
-      (item) => item.currency === selectedCurrencyCode
+    const selectedInstrumentID = selectedOption.value;
+
+    // Find matching rate from WorldCrossesData
+    const matchedRate = WorldCrossesData?.worldCrosses?.find(
+      (item) => item.instrumentID === selectedInstrumentID
     );
 
-    //Placing the BID Ask Value rates according to the currency
-    if (matchedCurrency) {
+    if (matchedRate) {
       let price = 0;
 
       if (selected.label === "Import") {
-        price = matchedCurrency.readyBID;
+        price = matchedRate.bid;
       } else if (selected.label === "Export") {
-        price = matchedCurrency.readyASK;
+        price = matchedRate.offer;
       } else {
-        price = matchedCurrency.ready;
+        price = 0; // fallback
       }
 
       setPrice(price);
+    } else {
+      setPrice(null); // if rate not found
     }
   };
 
@@ -202,7 +252,7 @@ const FwdCalculator = () => {
                 <div className="d-flex flex-column flex-fill">
                   <label className="mt-1">Currency</label>
                   <SelectDropdown
-                    options={currencyOptions}
+                    options={forwardApplicableList}
                     value={selectedOption}
                     onChange={handleChangeCurrencyCalculator}
                     placeholder="Select a currency"
@@ -223,7 +273,7 @@ const FwdCalculator = () => {
               <InputFIeld
                 type="number"
                 name="price"
-                defaultValue="285.2635"
+                defaultValue="0"
                 value={price}
                 applyClass={"CalculatorTextfield"}
                 onChange={handleReadyValue}
