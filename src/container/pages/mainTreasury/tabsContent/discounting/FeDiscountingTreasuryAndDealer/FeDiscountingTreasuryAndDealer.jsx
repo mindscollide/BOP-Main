@@ -26,13 +26,11 @@ const FeDiscountingTreasuryAndDealer = () => {
   });
 
   useEffect(() => {
-    if (
-      GetDiscountingRatesForTreasury !== null &&
-      GetAllInstrumentForTreasury !== null &&
-      getAllTenorsRecords !== null
-    ) {
+    if (GetAllInstrumentForTreasury !== null && getAllTenorsRecords !== null) {
       try {
-        const { feDiscountingRates } = GetDiscountingRatesForTreasury;
+        const { feDiscountingRates = [] } =
+          GetDiscountingRatesForTreasury !== null &&
+          GetDiscountingRatesForTreasury;
         let getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
         let getAllInstrument = {
           instruments: GetAllInstrumentForTreasury.discountingInstruments,

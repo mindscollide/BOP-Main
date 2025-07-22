@@ -26,45 +26,37 @@ const BankSpot = () => {
   const [bankSpotData, setBankSpotData] = useState([]);
 
   useEffect(() => {
-    if (TresuaryBankSpotData && GetAllInstrumentForTreasury) {
-      const { worldCrosses, worldCurrencies } = TresuaryBankSpotData;
+    if (GetAllInstrumentForTreasury) {
+      const { worldCrosses = [], worldCurrencies = [] } = TresuaryBankSpotData !== null && TresuaryBankSpotData;
       const { crossInstruments } = GetAllInstrumentForTreasury;
 
-      const enrichedData = worldCrosses
-        .map((worldCross) => {
-          const matchedCurrency = worldCurrencies.find(
-            (worldCur) => worldCur.instrumentID === worldCross.instrumentID
-          );
+      const enrichedData = crossInstruments.map((instrument) => {
+        const matchedCross = worldCrosses.find(
+          (wc) =>
+            wc.instrumentID === instrument.instrumentID &&
+            wc.secondaryInstrumentID === instrument.secondaryInstrumentID
+        );
 
-          let baseData = {
-            worldCrossBid: worldCross.bid,
-            worldCrossOffer: worldCross.offer,
-            worldCurBid: matchedCurrency?.bid ?? 0,
-            worldCurOffer: matchedCurrency?.offer ?? 0,
-            instrumentID: worldCross.instrumentID,
-            secondaryInstrumentID: worldCross.secondaryInstrumentID,
-            time: worldCross.time,
-          };
+        const matchedCurrency = worldCurrencies.find(
+          (wc) => wc.instrumentID === instrument.instrumentID
+        );
 
-          // Match instrumentName from crossInstruments
-          const matchedInstrument = crossInstruments.find(
-            (inst) =>
-              inst.instrumentID === worldCross.instrumentID &&
-              inst.secondaryInstrumentID === worldCross.secondaryInstrumentID
-          );
+        return {
+          instrumentID: instrument.instrumentID,
+          secondaryInstrumentID: instrument.secondaryInstrumentID,
+          instrumentName: instrument.instrumentName,
+          secondaryInstrumentName: instrument.secondaryInstrumentName,
+          time: matchedCross?.time ?? "",
 
-          if (matchedInstrument) {
-            return {
-              ...baseData,
-              instrumentName: matchedInstrument.instrumentName,
-              secondaryInstrumentName:
-                matchedInstrument.secondaryInstrumentName,
-            };
-          }
+          // Bid/Offer from Cross (if available)
+          worldCrossBid: matchedCross?.bid ?? 0,
+          worldCrossOffer: matchedCross?.offer ?? 0,
 
-          return baseData;
-        })
-        .filter(Boolean); // Clean nulls (though unlikely with above logic)
+          // Bid/Offer from Currency (if available)
+          worldCurBid: matchedCurrency?.bid ?? 0,
+          worldCurOffer: matchedCurrency?.offer ?? 0,
+        };
+      });
 
       console.log(enrichedData, "Final Enriched Treasury Bank Spot Data");
       setBankSpotData(enrichedData);
@@ -237,7 +229,7 @@ const BankSpot = () => {
         <div className='text-start color-white fw-bold fs-6'>Bank Spot</div>
       </div>
 
-      <div className='mb-2 position-relative '>
+      <div className='mb-2 h-100 position-relative '>
         <GlobalTable
           columns={columns}
           dataSource={bankSpotData}
@@ -246,7 +238,7 @@ const BankSpot = () => {
           }
           prefixCls={"BankSpot_Table"}
           pagination={false}
-          scroll={{ x: "hidden", y: 275 }}
+          scroll={{ x: "hidden", y: 375 }}
         />
         {TreasuryBankSpotSpinner && <SectionLoader />}
       </div>

@@ -22,18 +22,18 @@ const BankForwards = () => {
 
   useEffect(() => {
     if (
-      GetBankForwardForTreasury !== null &&
       getAllTenorsRecords !== null &&
       GetAllInstrumentForTreasury !== null
     ) {
       try {
+        const { forwardRates = [] } = GetBankForwardForTreasury !== null && GetBankForwardForTreasury
         const { forwardInstruments } = GetAllInstrumentForTreasury;
         let getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
         let getAllInstrument = { instruments: forwardInstruments };
 
         const { rowData, columnsData } = buildForwardsTable(
           3,
-          GetBankForwardForTreasury.forwardRates,
+          forwardRates,
           getAllTenorsData,
           getAllInstrument,
           IndexCell

@@ -33,13 +33,11 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
     useState(false);
 
   useEffect(() => {
-    if (
-      getAllTenorsRecords !== null &&
-      globalStateWatchlistCardData != null &&
-      GetDiscountingRatesForCounterParty
-    ) {
+    if (getAllTenorsRecords !== null && globalStateWatchlistCardData != null) {
       try {
-        const { nonFEDiscountingRates } = GetDiscountingRatesForCounterParty;
+        const { nonFEDiscountingRates = [] } =
+          GetDiscountingRatesForCounterParty !== null &&
+          GetDiscountingRatesForCounterParty;
         let getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
         let getAllInstrument = {
           instruments:
@@ -73,7 +71,7 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
   return (
     <>
       <Row>
-        <Col lg={12} md={12} sm={12} className="heading mb-2">
+        <Col lg={12} md={12} sm={12} className='heading mb-2'>
           Non-FE Discounting
         </Col>
         <Col lg={12} md={12} sm={12}>
@@ -92,15 +90,14 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
         </Col>
       </Row>
 
-      <Row className="my-2">
+      <Row className='my-2'>
         <Col
           lg={12}
           md={12}
           sm={12}
-          className="d-flex justify-content-center align-items-center gap-2"
-        >
+          className='d-flex justify-content-center align-items-center gap-2'>
           <CustomButton
-            value="Non-FE Discounting"
+            value='Non-FE Discounting'
             applyClass={"FowwardBranchBookaForwardBtn"}
             onClick={handleNonFEDiscountingModal}
           />

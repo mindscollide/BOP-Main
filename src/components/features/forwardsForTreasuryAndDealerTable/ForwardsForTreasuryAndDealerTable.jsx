@@ -93,44 +93,44 @@ const TenoreWiseCurrentAndLastRates = ({
   }, [newTenorRecord]);
 
   useEffect(() => {
-    if (getDashboardForwards !== null && getAllTenorsData !== null) {
+    if (getDashboardForwards && getAllTenorsData) {
       try {
-        console.log(getAllTenorsData, "getAllTenorsDatagetAllTenorsData")
-        const { currentTenorWiseForwardRates, lastTenorWiseForwardRates } =
-          getDashboardForwards;
-
-        let newDataMap = currentTenorWiseForwardRates.map((item) => {
-          let findData = lastTenorWiseForwardRates.find(
-            (data) => data.tenorID === item.tenorID
+        console.log(getAllTenorsData, "Filtered Applicable Tenors");
+  
+        const { currentTenorWiseForwardRates, lastTenorWiseForwardRates } = getDashboardForwards;
+  
+        // Step 1: Filter only tenors where forward is applicable
+        const applicableTenors = getAllTenorsData.filter(
+          (tenor) => tenor.isForwardApplicable === true
+        );
+  
+        // Step 2: Map applicable tenors to final formatted data
+        const newDataMap = applicableTenors.map((tenor) => {
+          const current = currentTenorWiseForwardRates.find(
+            (item) => item.tenorID === tenor.tenorID
           );
-          if (findData !== undefined) {
-            return {
-              tenorID: item.tenorID,
-              tenorName: item.tenorName,
-              currentBid: item.bid,
-              currentAsk: item.ask,
-              lastBid: findData.bid,
-              lastAsk: findData.ask,
-              dateTime: item.dateTime,
-            };
-          } else {
-            return {
-              tenorID: item.tenorID,
-              tenorName: item.tenorName,
-              currentBid: item.bid,
-              currentAsk: item.ask,
-              lastBid: "",
-              lastAsk: "",
-              dateTime: item.dateTime,
-            };
-          }
+          const last = lastTenorWiseForwardRates.find(
+            (item) => item.tenorID === tenor.tenorID
+          );
+  
+          return {
+            tenorID: tenor.tenorID,
+            tenorName: tenor.tenorName,
+            currentBid: current?.bid ?? "",
+            currentAsk: current?.ask ?? "",
+            lastBid: last?.bid ?? "",
+            lastAsk: last?.ask ?? "",
+            dateTime: current?.dateTime ?? "",
+          };
         });
+  
         dispatch(setForwardsForTreasuryBranch(newDataMap));
       } catch (error) {
-        console.log(error, "errorerrorerrorerror");
+        console.error("Error processing tenor forwards:", error);
       }
     }
   }, [getDashboardForwards, getAllTenorsData]);
+  
 
   useEffect(() => {
     if (getTenorWiseForwardsRates !== null) {
