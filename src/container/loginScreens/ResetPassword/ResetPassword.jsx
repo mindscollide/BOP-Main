@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Col, Form, InputGroup, Row } from "react-bootstrap";
 import BOPLogo from "@/assets/logo.png";
 import styles from "./ResetPassword.module.css";
@@ -12,35 +12,38 @@ const ResetPassword = () => {
           sm={12}
           md={12}
           lg={12}
-          className='d-flex justify-content-center mt-5 '>
+          className="d-flex justify-content-center mt-5 "
+        >
           <img
             src={BOPLogo}
             style={{ maxWidth: "100%" }}
-            width='300'
-            className='img-fluid'
-            alt='BOP Logo'
+            width="300"
+            className="img-fluid"
+            alt="BOP Logo"
           />
         </Col>
         <Col sm={12} md={12} lg={12}>
           <section className={styles["LoginCard"]}>
             <h4 className={styles["Heading-js"]}>Reset Password</h4>
-            <InputGroup className='mb-3'>
+            <InputGroup className="mb-3">
               <InputGroup.Text
-                id='basic-addon1'
-                className={styles["Icon-Field-class"]}>
+                id="basic-addon1"
+                className={styles["Icon-Field-class"]}
+              >
                 <IconElement iconClass={"icon-lock"} />
               </InputGroup.Text>
               <Form.Control
-                name='passwordText'
-                autoComplete='off'
+                name="passwordText"
+                autoComplete="off"
                 className={styles["form-comtrol-textfield-password"]}
-                placeholder='Password'
-                aria-label='passwordText'
-                aria-describedby='basic-addon2'
+                placeholder="Password"
+                aria-label="passwordText"
+                aria-describedby="basic-addon2"
               />
               <InputGroup.Text
-                id='basic-addon2'
-                className={styles["eyeIcon-Field-class-BOP-login"]}>
+                id="basic-addon2"
+                className={styles["eyeIcon-Field-class-BOP-login"]}
+              >
                 <IconElement iconClass={"icon-eye"} />
                 {/* {showPassword ? (
                   <IconElement iconClass={"icon-eye-slash"} />
@@ -49,23 +52,25 @@ const ResetPassword = () => {
                 )} */}
               </InputGroup.Text>
             </InputGroup>
-            <InputGroup className='mb-3'>
+            <InputGroup className="mb-3">
               <InputGroup.Text
-                id='basic-addon1'
-                className={styles["Icon-Field-class"]}>
+                id="basic-addon1"
+                className={styles["Icon-Field-class"]}
+              >
                 <IconElement iconClass={"icon-lock"} />
               </InputGroup.Text>
               <Form.Control
-                name='passwordText'
-                autoComplete='off'
+                name="passwordText"
+                autoComplete="off"
                 className={styles["form-comtrol-textfield-password"]}
-                placeholder='New Confirm Password'
-                aria-label='passwordText'
-                aria-describedby='basic-addon2'
+                placeholder="New Confirm Password"
+                aria-label="passwordText"
+                aria-describedby="basic-addon2"
               />
               <InputGroup.Text
-                id='basic-addon2'
-                className={styles["eyeIcon-Field-class-BOP-login"]}>
+                id="basic-addon2"
+                className={styles["eyeIcon-Field-class-BOP-login"]}
+              >
                 <IconElement iconClass={"icon-eye"} />
                 {/* {showPassword ? (
                   <IconElement iconClass={"icon-eye-slash"} />
@@ -74,7 +79,7 @@ const ResetPassword = () => {
                 )} */}
               </InputGroup.Text>
             </InputGroup>
-            <div className='d-flex gap-1 align-items-end mb-2'>
+            <div className="d-flex gap-1 align-items-end mb-2">
               <span>
                 <IconElement
                   applyClass={styles["closeIcon"]}
@@ -87,7 +92,7 @@ const ResetPassword = () => {
               </span>{" "}
               <span>Length of at least 8 characters</span>
             </div>
-            <div className='d-flex gap-1 align-items-end mb-2'>
+            <div className="d-flex gap-1 align-items-end mb-2">
               <span>
                 <IconElement
                   applyClass={styles["closeIcon"]}
@@ -100,7 +105,7 @@ const ResetPassword = () => {
               </span>{" "}
               <span>Contains numbers</span>
             </div>
-            <div className='d-flex gap-1 align-items-end mb-2'>
+            <div className="d-flex gap-1 align-items-end mb-2">
               <span>
                 <IconElement
                   applyClass={styles["closeIcon"]}
@@ -113,7 +118,7 @@ const ResetPassword = () => {
               </span>{" "}
               <span>Contains special characters</span>
             </div>
-            <div className='d-flex gap-1 align-items-end mb-2'>
+            <div className="d-flex gap-1 align-items-end mb-2">
               <span>
                 {/* <IconElement
                   applyClass={styles["closeIcon"]}

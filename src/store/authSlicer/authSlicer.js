@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   corporateUserLoginInApi,
+  GenerateOTPApi,
   loginInApi,
   VerifyOTPApi,
 } from "../../container/loginScreens/Login/logInAction";
@@ -42,6 +43,7 @@ const authSlice = createSlice({
     ResetPasswordCorporate: null,
     CreateCorporateUserForgotPassword: null,
     VerifyOTP: null,
+    GenerateOTP: null,
   },
   reducers: {
     clearAuthResponseMessage: (state) => {
@@ -271,6 +273,20 @@ const authSlice = createSlice({
         console.log(payload);
         state.Loader = false;
         state.VerifyOTP = null;
+        state.responseMessage = payload;
+      })
+      .addCase(GenerateOTPApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(GenerateOTPApi.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.GenerateOTP = payload?.response;
+        state.responseMessage = payload?.message;
+      })
+      .addCase(GenerateOTPApi.rejected, (state, { payload }) => {
+        console.log(payload);
+        state.Loader = false;
+        state.GenerateOTP = null;
         state.responseMessage = payload;
       });
   },

@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import styles from "./BopLogin.module.css";
 import { Row, Col, InputGroup, Form } from "react-bootstrap";
 import BOPLogo from "@/assets/logo.png";
@@ -122,6 +122,49 @@ const BopLogin = () => {
     }
   };
 
+  //  if (shouldIsCorporate && crendentials.email.includes("@")){}
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
+  // Handle key down events
+  const handleKeyDown = (e, fieldName) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+
+      // For corporate login (email validation required)
+      if (shouldIsCorporate) {
+        if (fieldName === "email") {
+          // Validate email before moving to password field
+          if (crendentials.email && crendentials.hasEmailisValid) {
+            passwordRef.current.focus();
+          } else {
+            if (!crendentials.email) {
+              setEmailError("Please enter an email address");
+            } else if (
+              !crendentials.email.includes("@") ||
+              !crendentials.hasEmailisValid
+            ) {
+              setEmailError("Enter a valid email address");
+            }
+          }
+        } else if (fieldName === "password") {
+          handleSubmit(e);
+        }
+      }
+      // For non-corporate login (no email validation required)
+      else {
+        if (fieldName === "email") {
+          // Only move to password if username is not empty
+          if (crendentials.email) {
+            passwordRef.current.focus();
+          } else {
+            setUserNameError("Please enter a username");
+          }
+        } else if (fieldName === "password") {
+          handleSubmit(e);
+        }
+      }
+    }
+  };
   return (
     <section className={styles["sign-in"]}>
       <Row>
@@ -153,6 +196,8 @@ const BopLogin = () => {
                     </InputGroup.Text>
                     <Form.Control
                       name="email"
+                      ref={emailRef}
+                      onKeyDown={(e) => handleKeyDown(e, "email")}
                       autoComplete="off"
                       className={styles["form-comtrol-textfield"]}
                       placeholder="Email ID"
@@ -179,6 +224,8 @@ const BopLogin = () => {
                       <IconElement iconClass={"icon-user"} />
                     </InputGroup.Text>
                     <Form.Control
+                      ref={emailRef}
+                      onKeyDown={(e) => handleKeyDown(e, "email")}
                       name="email"
                       autoComplete="off"
                       className={styles["form-comtrol-textfield"]}
@@ -210,6 +257,8 @@ const BopLogin = () => {
                   <IconElement iconClass={"icon-lock"} />
                 </InputGroup.Text>
                 <Form.Control
+                  ref={passwordRef}
+                  onKeyDown={(e) => handleKeyDown(e, "password")}
                   name="password"
                   autoComplete="off"
                   className={styles["form-comtrol-textfield-password"]}
