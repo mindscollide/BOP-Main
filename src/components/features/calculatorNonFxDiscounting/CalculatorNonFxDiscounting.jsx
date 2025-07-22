@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { formatDate } from "@/common/utils";
 import { CalculateNonFxDiscountingAPI } from "@/container/pages/mainCalculator/CalculatorActions";
+import { calculateNonFeSwapAndDiscountingRateApi } from "../blotter/BlotterActions";
 
 const CalculatorNonFxDiscounting = () => {
   const dispatch = useDispatch();
@@ -27,14 +28,17 @@ const CalculatorNonFxDiscounting = () => {
   console.log(InstrumentsData, "saif");
   console.log(WorldCrossesData, "saif");
 
-  // //Resulting Calculated value of NonFX Discounting
+  //Resulting Calculated value of NonFX Discounting
   const CalculatedNonFxDiscounting = useSelector(
-    (state) =>
-      state?.CalculatorReducer?.calculateNonFXDiscountingData?.nonFXRate || 0
+    (state) => state?.BlotterSlicer?.calculateNonFeSwapAndDiscountingRate
   );
+
+  console.log(CalculatedNonFxDiscounting, "CalculatedNonFxDiscounting");
 
   //Local States
   const [selectedOption, setSelectedOption] = useState(null);
+
+  console.log(selectedOption, "selectedOption");
   const [discountingApplicableList, setDiscountingApplicableList] = useState(
     []
   );
@@ -42,6 +46,9 @@ const CalculatorNonFxDiscounting = () => {
   const [inputValue, setInputValue] = useState("0");
   const [kiborValue, setKiborValue] = useState(0);
   const [swapValue, setSwapValue] = useState(0);
+  const [nonFERate, setNonFERate] = useState(0);
+  const [calculatedSwap, setCalculatedSwap] = useState(0);
+  const [calculatedKibor, setCalculatedKibor] = useState(0);
   const [tagText, setTagText] = useState(formatDate(new Date()));
 
   useEffect(() => {
@@ -104,6 +111,19 @@ const CalculatorNonFxDiscounting = () => {
       setTagText(formatDate(newDate));
     }
   }, [inputValue]);
+
+  // Saving Output KIBOR Non -FE Rate and Swap Val
+  useEffect(() => {
+    try {
+      if (CalculatedNonFxDiscounting && CalculatedNonFxDiscounting !== null) {
+        setNonFERate(CalculatedNonFxDiscounting.nonFERate);
+        setCalculatedSwap(CalculatedNonFxDiscounting.swap);
+        setCalculatedKibor(CalculatedNonFxDiscounting.kibor);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, [CalculatedNonFxDiscounting]);
 
   //Handle onChange Currency
   const handleChangeCurrencyCalculator = (selected) => {
@@ -188,13 +208,11 @@ const CalculatorNonFxDiscounting = () => {
   const handleNonFxDiscounting = () => {
     if (selectedOption !== null) {
       let Data = {
-        Ready: Number(price),
-        Tenor: Number(inputValue),
-        Swap: Number(swapValue),
-        Kibor: Number(kiborValue),
-        Currency: selectedOption.label,
+        TenorDays: Number(inputValue),
+        InstrumentName: selectedOption.label,
+        InstrumentID: Number(selectedOption.value),
       };
-      dispatch(CalculateNonFxDiscountingAPI({ Data, navigate }));
+      dispatch(calculateNonFeSwapAndDiscountingRateApi({ Data, navigate }));
     }
   };
 
@@ -253,8 +271,8 @@ const CalculatorNonFxDiscounting = () => {
                 <span className="d-flex flex-column">
                   <label>Swap</label>
                   <InputFIeld
-                    value={swapValue}
-                    onChange={handleInputChangeSwap}
+                    value={calculatedSwap}
+                    // onChange={handleInputChangeSwap}
                     applyClass="CalculatorTextfield-withTagInputfield"
                   />
                 </span>
@@ -263,8 +281,8 @@ const CalculatorNonFxDiscounting = () => {
                   <label>KIBOR</label>
                   <InputFieldWithTag
                     type="text"
-                    value={kiborValue}
-                    onChange={handleInputChangeKibor}
+                    value={calculatedKibor}
+                    // onChange={handleInputChangeKibor}
                     placeholder="Enter value"
                     applyClass="inputField-calculator"
                     applyClassTag="tag-for-calculator"
@@ -279,7 +297,7 @@ const CalculatorNonFxDiscounting = () => {
             </div>
             <div className="px-2 text-center">
               <div className="clc-amount fs-4 fw-bold px-4 py-3 bg-primary color-white">
-                {CalculatedNonFxDiscounting}
+                {nonFERate}
               </div>
             </div>
           </div>

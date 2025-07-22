@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { formatDate } from "@/common/utils";
 import { CalculateForwardsAPI } from "@/container/pages/mainCalculator/CalculatorActions";
+import { calculateTenorSwapAndForwardRateApi } from "../blotter/BlotterActions";
 
 const FwdCalculator = () => {
   const dispatch = useDispatch();
@@ -27,9 +28,9 @@ const FwdCalculator = () => {
   console.log(InstrumentsData, "WorldCrossesData");
   console.log(WorldCrossesData, "WorldCrossesData");
 
-  // //Resulting Calculated value of Forwads
+  //Resulting Calculated value of Forwads
   const CalculatedForwards = useSelector(
-    (state) => state?.CalculatorReducer?.calculateForwardsData?.forwardRate || 0
+    (state) => state?.BlotterSlicer?.calculateTenorSwapAndForwardRateData
   );
 
   //Local States
@@ -38,10 +39,11 @@ const FwdCalculator = () => {
     useState(null);
   const [swapValue, setSwapValue] = useState(0);
   const [forwardApplicableList, setForwardApplicableList] = useState([]);
-  const [currencyOptions, setCurrencyOptions] = useState([]);
   const [price, setPrice] = useState(285.2635);
   const [inputValue, setInputValue] = useState("0");
   const [tagText, setTagText] = useState(formatDate(new Date()));
+  const [resulteForwards, setResulteForwards] = useState(0);
+  const [resulteSwap, setResulteSwap] = useState(0);
 
   // Import Export Options
   const options = [
@@ -104,6 +106,19 @@ const FwdCalculator = () => {
       setTagText(formatDate(newDate));
     }
   }, [inputValue]);
+
+  //Extracting the Calculating forward values
+  useEffect(() => {
+    try {
+      if (CalculatedForwards && CalculatedForwards !== null) {
+        console.log(CalculatedForwards, "CalculatedForwards");
+        setResulteForwards(CalculatedForwards.forwardRate);
+        setResulteSwap(CalculatedForwards.swap);
+      }
+    } catch (error) {
+      console.log(error, "error");
+    }
+  }, [CalculatedForwards]);
 
   //Handle onChange Currency
   const handleChangeCurrencyCalculator = (selected) => {
@@ -191,7 +206,6 @@ const FwdCalculator = () => {
   };
 
   // Only allow numeric input Swap
-  // Only allow numeric input Swap
   const handleInputChangeSwap = (e) => {
     const value = e.target.value;
 
@@ -221,13 +235,12 @@ const FwdCalculator = () => {
 
   const handleCalculateForwardsRate = () => {
     let Data = {
-      Export_Import: Number(selectedOptionImportExport.value),
-      Ready: Number(price),
-      Tenor: Number(inputValue),
-      Swap: Number(swapValue),
+      IsBuySide: selectedOptionImportExport.value === 1 ? true : false,
+      TenorDays: Number(inputValue),
+      InstrumentName: selectedOption.label,
+      InstrumentID: selectedOption.value,
     };
-
-    dispatch(CalculateForwardsAPI({ Data, navigate }));
+    dispatch(calculateTenorSwapAndForwardRateApi({ Data, navigate }));
   };
 
   return (
@@ -296,14 +309,14 @@ const FwdCalculator = () => {
 
               <label className="mt-1">swap</label>
               <InputFIeld
-                value={swapValue}
-                onChange={handleInputChangeSwap}
+                value={resulteSwap}
+                // onChange={handleInputChangeSwap}
                 applyClass="CalculatorTextfield-withTagInputfield"
               />
             </div>
             <div className="px-2 text-center">
               <div className="clc-amount fs-4 fw-bold px-4 py-3 bg-dark-gray color-white">
-                {CalculatedForwards}
+                {resulteForwards}
               </div>
             </div>
           </div>

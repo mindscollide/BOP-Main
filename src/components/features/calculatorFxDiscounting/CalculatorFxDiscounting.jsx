@@ -218,7 +218,7 @@ const CalculatorFxDiscounting = () => {
                 tagClassName="yourTagClass"
               />
 
-              <label className="mt-1">Libor</label>
+              <label className="mt-1">Discounting Factor</label>
               <InputFieldWithTag
                 type="text"
                 value={liborValue}
