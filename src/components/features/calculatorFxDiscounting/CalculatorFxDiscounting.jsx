@@ -221,6 +221,7 @@ const CalculatorFxDiscounting = () => {
               <InputFieldWithTag
                 type="text"
                 value={resultDiscountingFactor}
+                disabled={true}
                 placeholder="Enter value"
                 applyClass="inputField-calculator"
                 applyClassTag="tag-for-calculator"

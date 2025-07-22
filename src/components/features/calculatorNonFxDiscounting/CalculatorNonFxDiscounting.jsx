@@ -230,6 +230,7 @@ const CalculatorNonFxDiscounting = () => {
                   <label>Swap</label>
                   <InputFIeld
                     value={calculatedSwap}
+                    disabled={true}
                     applyClass="CalculatorTextfield-withTagInputfield"
                   />
                 </span>
@@ -239,13 +240,14 @@ const CalculatorNonFxDiscounting = () => {
                   <InputFieldWithTag
                     type="text"
                     value={calculatedKibor}
+                    disabled={true}
                     placeholder="Enter value"
                     applyClass="inputField-calculator"
                     applyClassTag="tag-for-calculator"
-                    width="100%" // width of the entire container
-                    inputWidth="80%" // width of the input field
+                    width="100%"
+                    inputWidth="80%"
                     tagText="%"
-                    tagWidth="20%" // width of the span
+                    tagWidth="20%"
                     tagClassName="yourTagClass"
                   />
                 </span>

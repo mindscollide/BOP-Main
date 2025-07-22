@@ -286,6 +286,7 @@ const FwdCalculator = () => {
               <label className="mt-1">swap</label>
               <InputFIeld
                 value={resulteSwap}
+                disabled={true}
                 applyClass="CalculatorTextfield-withTagInputfield"
               />
             </div>
