@@ -18,6 +18,7 @@ const WatchListSlice = createSlice({
     error: null,
     GettheDashboardData: null,
     GetMisDataByRange: null,
+    GetMisDataByRangeSpinner: false,
     SaveUserDashboardData: null,
     allInstrumentForTreasury: null,
     GetAllFowardsAndDiscountsRatesData: null,
@@ -40,17 +41,22 @@ const WatchListSlice = createSlice({
       .addCase(GetMisDataByRangeAPI.pending, (state) => {
         state.Loader = true;
         state.error = null;
+        state.GetMisDataByRangeSpinner = true;
       })
       // Fulfilled state (while the API call is being made GetMisDataByRange)
       .addCase(GetMisDataByRangeAPI.fulfilled, (state, { payload }) => {
         state.Loader = false;
         state.GetMisDataByRange = payload?.response;
         state.error = null;
+        state.GetMisDataByRangeSpinner = false;
+
         state.responseMessage = payload?.message;
       })
       // Rejected state (while the API call is fail GetMisDataByRange)
       .addCase(GetMisDataByRangeAPI.rejected, (state, action) => {
         state.Loader = false;
+        state.GetMisDataByRangeSpinner = false;
+
         state.error = action.payload;
         state.GetMisDataByRange = null;
       })

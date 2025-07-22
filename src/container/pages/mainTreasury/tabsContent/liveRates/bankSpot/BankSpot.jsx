@@ -232,12 +232,12 @@ const BankSpot = () => {
   ];
 
   return (
-    <div className='position-relative'>
+    <div>
       <div className='box-header bg-primary-orange px-3'>
         <div className='text-start color-white fw-bold fs-6'>Bank Spot</div>
       </div>
 
-      <div className='mb-2 px-2'>
+      <div className='mb-2 position-relative '>
         <GlobalTable
           columns={columns}
           dataSource={bankSpotData}
@@ -248,8 +248,8 @@ const BankSpot = () => {
           pagination={false}
           scroll={{ x: "hidden", y: 275 }}
         />
+        {TreasuryBankSpotSpinner && <SectionLoader />}
       </div>
-      {TreasuryBankSpotSpinner && <SectionLoader />}
     </div>
   );
 };
