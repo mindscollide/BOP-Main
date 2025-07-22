@@ -191,7 +191,7 @@ const MIS = () => {
 
   return (
     <>
-      <div className='card-box position-relative'>
+      <div className='card-box position-relative h-100'>
         <div className='box-header bg-primary-orange px-3'>
           <div className='text-start color-white fw-bold fs-6'>MIS</div>
         </div>
@@ -261,7 +261,6 @@ const MIS = () => {
           {/* {misReducer?.Loader ? <SectionLoader /> : null} */}
           {GetMisDataByRangeSpinner && <SectionLoader />}
         </div>
-
       </div>
     </>
   );
