@@ -15,3 +15,9 @@ export const createTenorSchema = z.object({
     .min(1, "Number of Days is required")
     .max(4, "Max 4 digits allowed"),
 });
+
+// src/common/utils.js
+export const emailValidation = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
