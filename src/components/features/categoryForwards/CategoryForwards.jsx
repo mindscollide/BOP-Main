@@ -3,11 +3,12 @@ import GlobalTable from "../../common/table/GlobalTable";
 import { useSelector } from "react-redux";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import { buildForwardsTable } from "@/components/utils/generateColumnsData";
+import { throttle } from "lodash";
 
 const CategoryForwards = () => {
   const [dataSource, setDataSource] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
-
+  console.log(dataSource, "dataSourxceaskbasds");
   const GetCategoryWiseForwardRatesData = useSelector(
     (state) => state.categoryReducer.GetCategoryWiseForwardRates
   );
@@ -19,6 +20,12 @@ const CategoryForwards = () => {
   const getAllTenorsRecords = useSelector(
     (state) => state.dealerReducer.getAllTenors
   );
+
+  const CategoryForwardRates = useSelector(
+    (state) => state.RealtimeActionsSlice.CategoryForwardRates
+  );
+
+  console.log(CategoryForwardRates, "CategoryForwardRates");
 
   console.log(
     {
@@ -63,6 +70,45 @@ const CategoryForwards = () => {
     getAllTenorsRecords,
     allInstrumentForTreasuryData,
   ]);
+
+  useEffect(() => {
+    if (!CategoryForwardRates) return;
+
+    const throttledUpdate = throttle((forwardRatesUpdate) => {
+      const { instrumentForwardsData } = forwardRatesUpdate;
+
+      setDataSource((prevData) =>
+        prevData.map((row) => {
+          let updatedRow = { ...row };
+
+          instrumentForwardsData.forEach((d) => {
+            // row ke sabhi keys loop karo
+            Object.keys(row).forEach((key) => {
+              if (
+                key.startsWith("InstrumentID_") &&
+                row[key] === d.instrumentID
+              ) {
+                const currency = key.split("_")[1]; // e.g. USD
+                // check karo tenorID match karta hai ya nahi
+                console.log(row.tenorID === d.tenorID, "ahksbdabsdhas");
+                if (row.tenorID === d.tenorID) {
+                  updatedRow[`bid_${currency}`] = d.bidWithSpread;
+                  updatedRow[`ask_${currency}`] = d.askWithSpread;
+                }
+              }
+            });
+          });
+
+          return updatedRow;
+        })
+      );
+    }, 300);
+
+    throttledUpdate(CategoryForwardRates);
+
+    return () => throttledUpdate.cancel();
+  }, [CategoryForwardRates]);
+
   return (
     <>
       <span className="heading mb-2"> Forward</span>
