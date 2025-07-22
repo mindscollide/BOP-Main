@@ -44,7 +44,11 @@ const SpotBranch = () => {
   const [watchlistCardData, setWatchlistCardData] = useState([]);
   const [watchlistTableData, setWatchlistTableData] = useState([]);
   const [watchListDateTime, setWatchListDateTime] = useState(null);
-  console.log(watchListDateTime, "watchlistTableDatawatchlistTableData");
+  console.log(
+    watchListDateTime,
+    watchlistTableData,
+    "watchlistTableDatawatchlistTableData"
+  );
   //Global State for Watchlist Card Data
   const globalStateWatchlistCardData = useSelector(
     (state) => state.WatchListReducer?.GettheDashboardData ?? null
@@ -56,47 +60,58 @@ const SpotBranch = () => {
   console.log(GetSpotRatesForCounterParty, "GetSpotRatesForCounterParty");
 
   const [watchlistData, setWatchlistData] = useState(initialWatchlistData);
-  console.log(watchlistData, "watchlistDatawatchlistDatawatchlistData");
+  console.log(
+    globalStateWatchlistCardData,
+    "watchlistDatawatchlistDatawatchlistData"
+  );
   // Extracting out the Cards Wathlist data in the state
   useEffect(() => {
     try {
-      if (
-        globalStateWatchlistCardData !== null &&
-        GetSpotRatesForCounterParty !== null
-      ) {
+      if (globalStateWatchlistCardData !== null) {
         const { spotApplicableInstruments } = globalStateWatchlistCardData;
-        const { instruments, time } = GetSpotRatesForCounterParty;
+        const { instruments = [], time = "" } =
+          GetSpotRatesForCounterParty !== null && GetSpotRatesForCounterParty;
 
-        let DataTime = formatDateUTCToGMT(time);
-        setWatchListDateTime(DataTime);
+        // // Format time
+        const DataTime = time !== "" && formatDateUTCToGMT(time);
 
+        setWatchListDateTime(time !== "" && DataTime);
+        console.log(
+          spotApplicableInstruments,
+          "watchlistDatawatchlistDatawatchlistData"
+        );
         if (spotApplicableInstruments.length > 0) {
-          const updateData = spotApplicableInstruments.map((item) => {
-            const matchedRate = instruments.find(
+          // Step 1: Map instruments and merge bid/offer
+          const updatedTableData = spotApplicableInstruments.map((item) => {
+            const matched = instruments.find(
               (rate) =>
                 rate.instrumentID === item.instrumentID &&
                 rate.secondaryInstrumentID === item.secondaryInstrumentID
             );
-            console.log("matchedRate", matchedRate);
+
             return {
               ...item,
-              bid: matchedRate ? matchedRate.bid : 0,
-              offer: matchedRate ? matchedRate.offer : 0,
+              bid: matched?.bid ?? 0,
+              offer: matched?.offer ?? 0,
             };
           });
 
-          setWatchlistTableData(updateData);
-          const filterSections = updateData.filter(
-            (list, index) => list.sectionID !== "0"
+          // Update table state
+          setWatchlistTableData(updatedTableData);
+
+          // Step 2: Update section watchlists (1-6) based on sectionID
+          const filteredSections = updatedTableData.filter(
+            (item) => item.sectionID !== "0"
           );
-          if (filterSections.length > 0) {
-            setWatchlistData((prevData) => {
-              const updatedData = { ...prevData };
-              console.log(updatedData, "updatedDataupdatedData");
-              // Reset all watchlists to preserve their tile positions
+
+          if (filteredSections.length > 0) {
+            setWatchlistData((prev) => {
+              const newData = { ...prev };
+
+              // Reset all watchlist sections
               for (let i = 1; i <= 6; i++) {
-                updatedData[`watchlist${i}`] = {
-                  ...prevData[`watchlist${i}`],
+                newData[`watchlist${i}`] = {
+                  ...prev[`watchlist${i}`],
                   currecncyLabel: "",
                   instrumentID: 0,
                   buyValue: "",
@@ -104,14 +119,14 @@ const SpotBranch = () => {
                 };
               }
 
-              // Update only according to SectionID
-              filterSections.forEach((item) => {
-                const sectionID = item.sectionID || item.SectionID; // check for both cases
-                const tileKey = `watchlist${sectionID}`;
+              // Update each section
+              filteredSections.forEach((item) => {
+                const sectionID = item.sectionID || item.SectionID;
+                const key = `watchlist${sectionID}`;
 
-                if (updatedData[tileKey]) {
-                  updatedData[tileKey] = {
-                    ...prevData[tileKey],
+                if (newData[key]) {
+                  newData[key] = {
+                    ...prev[key],
                     currecncyLabel: `${item.instrumentName}${item.secondaryInstrumentName}`,
                     buyValue: item.bid,
                     sellValue: item.offer,
@@ -122,16 +137,16 @@ const SpotBranch = () => {
                 }
               });
 
-              return updatedData;
+              return newData;
             });
           }
         }
       }
     } catch (error) {
-      console.log(error, "error");
+      console.error("Watchlist Error:", error);
     }
   }, [globalStateWatchlistCardData, GetSpotRatesForCounterParty]);
-  console.log(watchlistTableData, "watchlistTableData");
+
   useEffect(() => {
     if (CounterPartySpotRates !== null) {
       throttledUpdateTableData(CounterPartySpotRates);
@@ -180,9 +195,7 @@ const SpotBranch = () => {
         console.log(text, record, "responseresponseresponse");
         return (
           <span className='instrument-column'>
-            {record.secondaryInstrumentID === 0
-              ? text
-              : `${text}${record.secondaryInstrumentName}`}
+            {`${record.instrumentName}${record.secondaryInstrumentName}`}
           </span>
         );
       },
@@ -327,6 +340,7 @@ const SpotBranch = () => {
                 {/* <span>21-11-2022 9:18 PM</span> */}
                 <span>
                   {watchListDateTime !== null &&
+                    watchListDateTime !== false &&
                     moment(watchListDateTime).format("DD-MM-YYYY h:mm A")}
                 </span>
               </Col>

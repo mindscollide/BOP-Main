@@ -32,13 +32,11 @@ const CategoryForwards = () => {
   // Define the columns structure for the Ant Design Table
   // Define the data source for the Ant Design Table
   useEffect(() => {
-    if (
-      getAllTenorsRecords &&
-      allInstrumentForTreasuryData !== null &&
-      GetCategoryWiseForwardRatesData !== null
-    ) {
+    if (getAllTenorsRecords && allInstrumentForTreasuryData !== null) {
       try {
-        const { forwardRates } = GetCategoryWiseForwardRatesData;
+        const { forwardRates = [] } =
+          GetCategoryWiseForwardRatesData !== null &&
+          GetCategoryWiseForwardRatesData;
         let getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
         let getAllInstrument = {
           instruments: allInstrumentForTreasuryData.forwardInstruments,
@@ -65,10 +63,10 @@ const CategoryForwards = () => {
   ]);
   return (
     <>
-      <span className="heading mb-2"> Forward</span>
+      <span className='heading mb-2'> Forward</span>
       <GlobalTable
         columns={columnsData}
-        prefixCls="Dealer_Forwards"
+        prefixCls='Dealer_Forwards'
         dataSource={dataSource}
         pagination={false}
       />

@@ -19,13 +19,11 @@ const NonFeDiscountingTreasuryAndDealer = () => {
   );
 
   useEffect(() => {
-    if (
-      GetDiscountingRatesForTreasury !== null &&
-      GetAllInstrumentForTreasury !== null &&
-      getAllTenorsRecords !== null
-    ) {
+    if (GetAllInstrumentForTreasury !== null && getAllTenorsRecords !== null) {
       try {
-        const { nonFEDiscountingRates } = GetDiscountingRatesForTreasury;
+        const { nonFEDiscountingRates = [] } =
+          GetDiscountingRatesForTreasury !== null &&
+          GetDiscountingRatesForTreasury;
         let getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
         let getAllInstrument = {
           instruments: GetAllInstrumentForTreasury.discountingInstruments,
@@ -51,7 +49,7 @@ const NonFeDiscountingTreasuryAndDealer = () => {
   ]);
   return (
     <>
-      <span className="heading mb-2">Non FE Discounting</span>
+      <span className='heading mb-2'>Non FE Discounting</span>
 
       <GlobalTable
         columns={columnsData}

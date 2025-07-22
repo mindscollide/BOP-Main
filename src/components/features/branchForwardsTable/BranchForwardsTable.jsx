@@ -44,8 +44,8 @@ const BranchForwardsTable = () => {
   useEffect(() => {
     if (
       globalStateWatchlistCardData !== null &&
-      getAllTenorsRecords !== null &&
-      GetForwardRatesForCounterPartyData !== null
+      getAllTenorsRecords !== null
+      // GetForwardRatesForCounterPartyData !== null
     ) {
       try {
         const { forwardApplicableInstruments } = globalStateWatchlistCardData;
@@ -57,13 +57,15 @@ const BranchForwardsTable = () => {
         //********************************************** */
         // const { tenors, forwardRates, instruments } =
         //   GetAllFowardsAndDiscountsRatesAPIData;
-
+        const { forwardRates = [] } =
+          GetForwardRatesForCounterPartyData !== null &&
+          GetForwardRatesForCounterPartyData;
         let getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
         let getAllInstrument = { instruments: forwardApplicableInstruments };
 
         const { rowData, columnsData } = buildForwardsTable(
           3,
-          GetForwardRatesForCounterPartyData.forwardRates,
+          forwardRates,
           getAllTenorsData,
           getAllInstrument,
           IndexCell
@@ -123,15 +125,14 @@ const BranchForwardsTable = () => {
           />
         </Col>
       </Row>
-      <Row className="my-2">
+      <Row className='my-2'>
         <Col
           lg={12}
           md={12}
           sm={12}
-          className="d-flex justify-content-center align-items-center"
-        >
+          className='d-flex justify-content-center align-items-center'>
           <CustomButton
-            value="Book a Forward"
+            value='Book a Forward'
             applyClass={"FowwardBranchBookaForwardBtn"}
             onClick={handleBookaForwardCorporate}
           />

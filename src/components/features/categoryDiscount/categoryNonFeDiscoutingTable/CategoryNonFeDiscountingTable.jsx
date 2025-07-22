@@ -24,13 +24,11 @@ const CategoryNonFeDiscountingTable = () => {
     GetCategoryWiseDiscountingRates
   );
   useEffect(() => {
-    if (
-      getAllTenorsRecords !== null &&
-      GetCategoryWiseDiscountingRates !== null &&
-      allInstrumentForTreasuryData
-    ) {
+    if (getAllTenorsRecords !== null && allInstrumentForTreasuryData) {
       try {
-        const { nonFEDiscountingRates } = GetCategoryWiseDiscountingRates;
+        const { nonFEDiscountingRates = [] } =
+          GetCategoryWiseDiscountingRates !== null &&
+          GetCategoryWiseDiscountingRates;
         let getAllInstrument = {
           instruments: allInstrumentForTreasuryData.discountingInstruments,
         };
@@ -50,18 +48,22 @@ const CategoryNonFeDiscountingTable = () => {
         }
       } catch (error) {}
     }
-  }, []);
+  }, [
+    GetCategoryWiseDiscountingRates,
+    allInstrumentForTreasuryData,
+    getAllTenorsRecords,
+  ]);
 
   return (
     <Row>
-      <Col lg={12} md={12} sm={12} className="heading mb-2">
+      <Col lg={12} md={12} sm={12} className='heading mb-2'>
         Non-FE Discounting
       </Col>
       <Col lg={12} md={12} sm={12}>
         <GlobalTable
           columns={columnsData}
           dataSource={dataSource}
-          prefixCls="Dealer_Discounting"
+          prefixCls='Dealer_Discounting'
           pagination={false}
         />
       </Col>
