@@ -194,7 +194,7 @@ const MIS = () => {
 
   return (
     <>
-      <div className="card-box">
+      <div className="card-box position-relative">
         <div className="box-header bg-primary-orange px-3">
           <div className="text-start color-white fw-bold fs-6">MIS</div>
         </div>
@@ -263,6 +263,7 @@ const MIS = () => {
           </div>
           {/* {misReducer?.Loader ? <SectionLoader /> : null} */}
         </div>
+        
       </div>
     </>
   );

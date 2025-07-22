@@ -47,8 +47,16 @@ const RealtimeActionsSlice = createSlice({
     TreasurySpotRatesFeed: null,
     CounterPartySpotRates: null,
     CategorySpotRates: null,
+    TreasuryFeDiscounting: null,
+    TreasuryNonFeDiscounting: null,
   },
   reducers: {
+    setTreasuryFeDiscounting: (state, { payload }) => {
+      state.TreasuryFeDiscounting = payload;
+    },
+    setTreasuryNonFeDiscounting: (state, { payload }) => {
+      state.TreasuryNonFeDiscounting = payload;
+    },
     setCategorySpotRates: (state, { payload }) => {
       state.CategorySpotRates = payload;
     },
@@ -159,6 +167,8 @@ const RealtimeActionsSlice = createSlice({
 });
 
 export const {
+  setTreasuryFeDiscounting,
+  setTreasuryNonFeDiscounting,
   setTreasurySpotRatesFeed,
   setBlotterTransactionRFQQuotedForTreasuryDealBox,
   BlotterTransactionRFQExpiredForTreasury,

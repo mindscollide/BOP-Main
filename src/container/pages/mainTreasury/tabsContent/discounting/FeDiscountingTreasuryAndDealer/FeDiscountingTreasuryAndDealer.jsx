@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 const FeDiscountingTreasuryAndDealer = () => {
-  const [dataSource, setDataSource] = useState([]);
+  const [feDiscountingData, setFeDiscountingData] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
 
   const GetDiscountingRatesForTreasury = useSelector(
@@ -17,16 +17,13 @@ const FeDiscountingTreasuryAndDealer = () => {
   const GetAllInstrumentForTreasury = useSelector(
     (state) => state.WatchListReducer.GetAllInstrumentForTreasury
   );
-
-  console.log(
-    GetDiscountingRatesForTreasury,
-    "Data For Disscouting for treasury: ",
-    {
-      tenors: getAllTenorsRecords,
-      Instruments: GetAllInstrumentForTreasury,
-      discouting_rates: GetDiscountingRatesForTreasury,
-    }
+  const TreasuryFeDiscounting = useSelector(
+    (state) => state.RealtimeActionsSlice.TreasuryFeDiscounting
   );
+  console.log("Data For Disscouting for treasury: ", {
+    TreasuryFeDiscounting,
+    feDiscountingData,
+  });
 
   useEffect(() => {
     if (
@@ -49,7 +46,7 @@ const FeDiscountingTreasuryAndDealer = () => {
         );
 
         if (rowData.length > 0) {
-          setDataSource(rowData);
+          setFeDiscountingData(rowData);
           setColumnsData(columnsData);
         }
       } catch (error) {}
@@ -59,12 +56,25 @@ const FeDiscountingTreasuryAndDealer = () => {
     GetAllInstrumentForTreasury,
     GetDiscountingRatesForTreasury,
   ]);
+
+  // useEffect(() => {
+  //   if (TreasuryFeDiscounting !== null) {
+  //     try {
+  //       const { nonFeDiscountingRates } = TreasuryFeDiscounting;
+  //       setFeDiscountingData((prevState) => {
+  //         return prevState.map((item) => {});
+  //       });
+  //     } catch (error) {
+  //       console.log("Error while building discounting table", error);
+  //     }
+  //   }
+  // }, [TreasuryFeDiscounting]);
   return (
     <>
-      <span className="heading mb-2">FE Discounting</span>
+      <span className='heading mb-2'>FE Discounting</span>
       <GlobalTable
         columns={columnsData}
-        dataSource={dataSource}
+        dataSource={feDiscountingData}
         prefixCls={"Treasury_Discounting"}
         bordered
         pagination={false}
