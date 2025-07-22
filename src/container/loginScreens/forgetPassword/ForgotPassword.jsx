@@ -9,24 +9,42 @@ import { resetAndForgotPassword } from "./forgotPassword_Actions";
 import { emailValidation } from "@/common/utils";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+import { useNotification } from "@/context/NotificationProvider";
 
 const ForgotPassword = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { showMessage } = useNotification();
+
   const state = useSelector((state) => state.authReducer);
   console.log(state, "statestatestate");
   const [email, setEmail] = useState("");
 
   const handleClickResetBtn = (e) => {
     e.preventDefault();
-    const isValidEmail = emailValidation(email);
-    if (isValidEmail) {
-      let Data = {
-        Email: email,
+
+    if (email.trim() === "") {
+      const handleClick = () => {
+        showMessage("Please enter an email address");
       };
-      dispatch(resetAndForgotPassword({ navigate, Data }));
+      handleClick();
+      return;
     }
+
+    const isValidEmail = emailValidation(email);
+    if (!isValidEmail) {
+      const handleClick = () => {
+        showMessage("Email should be in Valid Format");
+      };
+      handleClick();
+      return;
+    }
+
+    // If valid → hit API
+    let Data = { Email: email };
+    dispatch(resetAndForgotPassword({ navigate, Data }));
   };
+
   const handleChangeEmailInput = (event) => {
     const { name, value } = event.target;
 
