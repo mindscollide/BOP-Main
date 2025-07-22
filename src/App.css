@@ -638,7 +638,7 @@ input[type="number"] {
 
 .form-switch .form-check-input {
   height: 21px;
-  width: 45px;
+  width: 45px !important;
 }
 
 .modal-backdrop.show {
@@ -893,29 +893,35 @@ input[type="number"] {
   -ms-transition: all 0.3s ease-in !important;
 }
 
+/* Default OFF button style */
 .vol-meter.vol-meter-off {
-  background: #e30a0a !important;
-  background: -moz-linear-gradient(top, #fe6565 0%, #e30a0a 100%) !important;
-  background: -webkit-linear-gradient(top, #fe6565 0%, #e30a0a 100%) !important;
-  background: linear-gradient(to bottom, #fe6565 0%, #e30a0a 100%) !important;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fe6565', endColorstr='#e30a0a', GradientType=0);
-  border-color: #e30a0a !important;
+  background: rgb(224, 217, 211) !important;
+  background: linear-gradient(
+    0deg,
+    rgba(224, 217, 211, 1) 0%,
+    rgba(254, 246, 238, 1) 100%
+  ) !important;
+  border-color: #e4e2df !important;
+  color: #a29c95 !important;
+}
+
+/* When "off" button is active, make it red */
+.vol-meter.vol-meter-off.active-vol {
+  background: #ff4d4d !important;
+  background: linear-gradient(to bottom, #ff4d4d 0%, #cc0000 100%) !important;
+  border-color: #ff4d4d !important;
   color: #ffffff !important;
 }
 
-.vol-meter.vol-meter-off:hover,
-.vol-meter.active-vol {
+/* All other buttons when active */
+.vol-meter.active-vol:not(.vol-meter-off) {
   background: #feac78 !important;
-  background: -moz-linear-gradient(top, #feac78 0%, #e97225 100%) !important;
-  background: -webkit-linear-gradient(top, #feac78 0%, #e97225 100%) !important;
   background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#feac78', endColorstr='#e97225', GradientType=0);
   border-color: #feac78 !important;
   color: #ffffff !important;
 }
 
 /*Site Header Style Begin*/
-
 [class^="icon-"],
 [class*=" icon-"] {
   font-size: 17px;

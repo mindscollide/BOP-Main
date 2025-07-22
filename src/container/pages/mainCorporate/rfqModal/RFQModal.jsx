@@ -17,10 +17,21 @@ import {
   setIBuySellData,
   setRfqModalOpen,
 } from "@/store/modalSlice/modalSlicer";
+import { useNotification } from "@/context/NotificationProvider";
+import { GlobalConfirmatioModal } from "@/components/common/globalModal/ConfirmationModal";
+import { NumericFormat } from "react-number-format";
 
 const RFQModal = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { showMessage } = useNotification();
+  const [confirmationModal, setConfirmationModal] = useState(false);
+  const [rfqModal, setRfqModal] = useState(true);
+  console.log(
+    rfqModal,
+    confirmationModal,
+    "confirmationModalconfirmationModal"
+  );
   const natureOfBusinessList = useSelector(
     (state) => state.authReducer.GetAllNatureOfTransactions
   );
@@ -29,6 +40,14 @@ const RFQModal = () => {
   );
 
   const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
+  const isCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
+
+  const counterPartyDetails =
+    isBranch && localStorage.getItem("branch") !== null
+      ? JSON.parse(localStorage.getItem("branch"))
+      : isCorporate && localStorage.getItem("corporate") !== null
+      ? JSON.parse(localStorage.getItem("corporate"))
+      : null;
   console.log(
     GetAllActiveCorproates,
     "GetAllActiveCorproatesGetAllActiveCorproates"
@@ -61,7 +80,7 @@ const RFQModal = () => {
     value: 21,
     label: "USDPKR",
   });
-  const [amountData, setAmountData] = useState("0");
+  const [amountData, setAmountData] = useState("");
   const [acNumberData, setAcNumberData] = useState("");
   const [lcNumberData, setLcNumberData] = useState("");
   const [typeOptions] = useState([
@@ -85,21 +104,28 @@ const RFQModal = () => {
       : null;
 
   const onCloseRfq = () => {
+    // dispatch(setRfqModalOpen(false));
+    setRfqModal(false);
+    setConfirmationModal(true);
+  };
+  const handleConfimationModalYes = () => {
+    setRfqModal(false);
+    setConfirmationModal(false);
+    dispatch(setIBuySellData(null));
     dispatch(setRfqModalOpen(false));
   };
 
   useEffect(() => {
     return () => {
+      setRfqModal(false);
+      setConfirmationModal(false);
       dispatch(setIBuySellData(null));
+      dispatch(setRfqModalOpen(false));
     };
   }, []);
 
   useEffect(() => {
     if (natureOfBusinessList !== null) {
-      console.log(
-        natureOfBusinessList,
-        "natureOfBusinessListnatureOfBusinessList"
-      );
       try {
         const formattedOptions = natureOfBusinessList.natureOfTransactions.map(
           (business) => ({
@@ -179,10 +205,8 @@ const RFQModal = () => {
   const handleChangeAmount = (event) => {
     const { name, value } = event.target;
     if (name === "Amount") {
-      const regex = /^[0-9]*$/;
-      if (regex.test(value)) {
-        // If input is empty, set to "0", otherwise use the value (which replaces initial 0)
-        setAmountData(value === "" ? "0" : value.replace(/^0+/, "") || "0");
+      if (value !== "") {
+        setAmountData(value);
       }
     }
   };
@@ -239,15 +263,23 @@ const RFQModal = () => {
         amountData !== ""
       ) {
         let corporate = JSON.parse(localStorage.getItem("corporate"));
+        if (Number(amountData) < 1) {
+          const handleClick = () => {
+            showMessage("Amount should be greater than 1 ");
+          };
 
+          handleClick();
+          return;
+        }
         //Caliing Save RFQ Trasaction API
+        let amountValue = amountData.replace(/,/g, "");
         let Data = {
-          CorporateID: isBranch ? corporateValue.value : corporate.corporateID,
+          CorporateID: isBranch ? corporateValue.value : counterPartyDetails.corporateID,
           InstrumentID: 21,
           // InstrumentID: selectedCurrency.value,
           SecondaryInstrumentID: 0,
           IsBuySide: typeOptionSelected.value === 1 ? true : false,
-          Quantity: Number(amountData),
+          Quantity: Number(amountValue),
           AccountNumber: acNumberData,
           NatureOfTransactionID: selectedNature.value,
           LCNumber: lcNumberData,
@@ -270,168 +302,221 @@ const RFQModal = () => {
         // setShow={setOpenRfqModal}
         onHide={onCloseRfq}
         closeButton
-        size="lg"
+        centered={true}
+        size={rfqModal ? "lg" : null}
+        footerClassName={"d-block border-0"}
         // footerClassName="RFQ-footer-className"
-        headerClassName="RFQ-header-className"
-        className=""
+        headerClassName='RFQ-header-className'
+        className=''
         modalHeader={
-          <>
-            <Row>
-              <Col lg={12} md={12} sm={12} className="">
-                {isBranch ? (
-                  <>
-                    <p className="heading-RfqModal">
-                      {branchDetails.branchName}
-                    </p>
-                    <p className="heading-branchCode">
-                      Branch Code: {branchDetails.branchCode}
-                    </p>
-                  </>
-                ) : (
-                  ""
-                )}
-              </Col>
-            </Row>
-          </>
+          rfqModal && (
+            <>
+              <Row>
+                <Col lg={12} md={12} sm={12} className=''>
+                  {isBranch ? (
+                    <>
+                      <p className='heading-RfqModal'>
+                        {counterPartyDetails.branchName}
+                      </p>
+                      <p className='heading-branchCode'>
+                        Branch Code: {counterPartyDetails.branchCode}
+                      </p>
+                    </>
+                  ) : isCorporate &&  (
+                    <p className='heading-RfqModal'>
+                    {counterPartyDetails.corporateName}
+                  </p>
+                  )}
+                </Col>
+              </Row>
+            </>
+          )
         }
         modalBody={
-          <>
-            <Row className="m-0 ">
-              {isBranch && (
-                <>
-                  {" "}
-                  <Col lg={2} md={2} sm={2}>
-                    <label className="LabelRFQTransactionModal">
-                      Company Name*
-                    </label>
-                  </Col>
-                  <Col lg={4} md={4} sm={4} className="mb-3">
-                    <SelectDropdown
-                      classNamePrefix="RfqSpot"
-                      placeholder=""
-                      options={getAllCorporates}
-                      onChange={handleChangeCorporate}
-                      isSearchable={true}
-                      value={corporateValue}
-                    />
-                  </Col>
-                  <Col lg={2} md={2} sm={2}></Col>
-                  <Col lg={4} md={4} sm={4} className="mb-2"></Col>
-                </>
-              )}
+          rfqModal ? (
+            <>
+              <Row className='m-0 '>
+                {isBranch && (
+                  <>
+                    {" "}
+                    <Col lg={2} md={2} sm={2}>
+                      <label className='LabelRFQTransactionModal'>
+                        Company Name*
+                      </label>
+                    </Col>
+                    <Col lg={4} md={4} sm={4} className='mb-3'>
+                      <SelectDropdown
+                        classNamePrefix='RfqSpot'
+                        placeholder=''
+                        options={getAllCorporates}
+                        onChange={handleChangeCorporate}
+                        isSearchable={true}
+                        value={corporateValue}
+                      />
+                    </Col>
+                    <Col lg={2} md={2} sm={2}></Col>
+                    <Col lg={4} md={4} sm={4} className='mb-2'></Col>
+                  </>
+                )}
 
-              <Col lg={2} md={2} sm={2}>
-                <label className="LabelRFQTransactionModal">Currency*</label>
-              </Col>
-              <Col lg={4} md={4} sm={4} className="mb-2">
-                <SelectDropdown
-                  classNamePrefix="RfqSpot"
-                  placeholder=""
-                  options={currencyOptions}
-                  onChange={handleCurrencyChange}
-                  value={selectedCurrency}
-                  isDisabled={iBuySellData !== null ? true : false}
-                />
-              </Col>
+                <Col lg={2} md={2} sm={2}>
+                  <label className='LabelRFQTransactionModal'>Currency*</label>
+                </Col>
+                <Col lg={4} md={4} sm={4} className='mb-2'>
+                  <SelectDropdown
+                    classNamePrefix='RfqSpot'
+                    placeholder=''
+                    options={currencyOptions}
+                    onChange={handleCurrencyChange}
+                    value={selectedCurrency}
+                    isDisabled={iBuySellData !== null ? true : false}
+                  />
+                </Col>
 
-              <Col lg={2} md={2} sm={2}>
-                <label className="LabelRFQTransactionModal">Type*</label>
-              </Col>
-              <Col lg={4} md={4} sm={4} className="mb-2">
-                <SelectDropdown
-                  placeholder="Select Type"
-                  classNamePrefix="RfqSpot"
-                  value={
-                    typeOptionSelected.value === 0 ? null : typeOptionSelected
-                  }
-                  onChange={handleChangeType}
-                  options={typeOptions}
-                  isDisabled={iBuySellData !== null ? true : false}
-                />
-              </Col>
-            </Row>
-
-            <Row className="m-0 mt-2">
-              <Col lg={2} md={2} sm={2}>
-                <label className="LabelRFQTransactionModal">Amount*</label>
-              </Col>
-              <Col lg={4} md={4} sm={4} className="mb-2">
-                <InputFIeld
-                  onChange={handleChangeAmount}
-                  value={amountData}
-                  name="Amount"
-                  applyClass="CalculatorTextfield"
-                  maxLength={10}
-                  min="0"
-                />
-              </Col>
-              <Col lg={2} md={2} sm={2}>
-                <label className="LabelRFQTransactionModal">A/c No</label>
-              </Col>
-              <Col lg={4} md={4} sm={4} className="mb-2">
-                <InputFIeld
-                  onChange={handleChangeAcNumber}
-                  value={acNumberData}
-                  name="AcNumber"
-                  applyClass="CalculatorTextfield"
-                />
-              </Col>
-            </Row>
-
-            <Row className="m-0 mt-2">
-              <Col lg={2} md={2} sm={2}>
-                <label className="LabelRFQTransactionModal">Nature*</label>
-              </Col>
-
-              <Col lg={4} md={4} sm={4} className="mb-2">
-                <SelectDropdown
-                  placeholder=""
-                  classNamePrefix="RfqSpot"
-                  options={natureOfBusinessOptions.filter((option) => {
-                    if (typeOptionSelected?.value === 1 && option.isForSpot) {
-                      return option.isForBuy;
+                <Col lg={2} md={2} sm={2}>
+                  <label className='LabelRFQTransactionModal'>Type*</label>
+                </Col>
+                <Col lg={4} md={4} sm={4} className='mb-2'>
+                  <SelectDropdown
+                    placeholder='Select Type'
+                    classNamePrefix='RfqSpot'
+                    value={
+                      typeOptionSelected.value === 0 ? null : typeOptionSelected
                     }
-                    if (typeOptionSelected?.value === 2 && option.isForSpot) {
-                      return option.isForSell;
-                    }
-                    return false; // if value is neither 1 nor 2, show no options
-                  })}
-                  onChange={handleNatureChange}
-                  value={selectedNature}
-                />
-              </Col>
+                    onChange={handleChangeType}
+                    options={typeOptions}
+                    isDisabled={iBuySellData !== null ? true : false}
+                  />
+                </Col>
+              </Row>
 
-              <Col lg={2} md={2} sm={2}>
-                <label className="LabelRFQTransactionModal">LC No</label>
-              </Col>
-              <Col lg={4} md={4} sm={4} className="mb-2">
-                <InputFIeld
-                  onChange={handleChangeLcNumber}
-                  value={lcNumberData}
-                  name="LcNumber"
-                  applyClass="CalculatorTextfield"
-                />
-              </Col>
-            </Row>
-          </>
+              <Row className='m-0 mt-2'>
+                <Col lg={2} md={2} sm={2}>
+                  <label className='LabelRFQTransactionModal'>Amount*</label>
+                </Col>
+                <Col lg={4} md={4} sm={4} className='mb-2'>
+                  <NumericFormat
+                    customInput={InputFIeld}
+                    thousandSeparator=','
+                    allowNegative={false}
+                    onChange={handleChangeAmount}
+                    maxLength={10}
+                    value={amountData}
+                    name='Amount'
+                    applyClass={"CalculatorTextfield"}
+                  />
+                </Col>
+                <Col lg={2} md={2} sm={2}>
+                  <label className='LabelRFQTransactionModal'>A/c No*</label>
+                </Col>
+                <Col lg={4} md={4} sm={4} className='mb-2'>
+                  <InputFIeld
+                    onChange={handleChangeAcNumber}
+                    value={acNumberData}
+                    name='AcNumber'
+                    applyClass='CalculatorTextfield'
+                  />
+                </Col>
+              </Row>
+
+              <Row className='m-0 mt-2'>
+                <Col lg={2} md={2} sm={2}>
+                  <label className='LabelRFQTransactionModal'>Nature*</label>
+                </Col>
+
+                <Col lg={4} md={4} sm={4} className='mb-2'>
+                  <SelectDropdown
+                    placeholder=''
+                    classNamePrefix='RfqSpot'
+                    options={natureOfBusinessOptions.filter((option) => {
+                      if (typeOptionSelected?.value === 1 && option.isForSpot) {
+                        return option.isForBuy;
+                      }
+                      if (typeOptionSelected?.value === 2 && option.isForSpot) {
+                        return option.isForSell;
+                      }
+                      return false; // if value is neither 1 nor 2, show no options
+                    })}
+                    onChange={handleNatureChange}
+                    value={selectedNature}
+                  />
+                </Col>
+
+                <Col lg={2} md={2} sm={2}>
+                  <label className='LabelRFQTransactionModal'>LC No</label>
+                </Col>
+                <Col lg={4} md={4} sm={4} className='mb-2'>
+                  <InputFIeld
+                    onChange={handleChangeLcNumber}
+                    value={lcNumberData}
+                    name='LcNumber'
+                    applyClass='CalculatorTextfield'
+                  />
+                </Col>
+              </Row>
+            </>
+          ) : (
+            confirmationModal && (
+              <Row>
+                <Col
+                  sm={12}
+                  md={12}
+                  lg={12}
+                  className='text-center d-flex justify-content-center align-items-center fs-6'>
+                  Do you want cancel the process
+                </Col>
+              </Row>
+            )
+          )
         }
         modalFooter={
-          <>
-            <Row>
-              <Col
-                lg={12}
-                md={12}
-                sm={12}
-                className="d-flex justify-content-end"
-              >
-                <CustomButton
-                  value="Submit"
-                  className="btn btn-primary ms-auto px-4"
-                  onClick={handleConfirmButton}
-                />
-              </Col>
-            </Row>
-          </>
+          rfqModal ? (
+            <>
+              <Row>
+                <Col
+                  lg={12}
+                  md={12}
+                  sm={12}
+                  className='d-flex justify-content-end'>
+                  <CustomButton
+                    value='Submit'
+                    className='btn btn-primary ms-auto px-4'
+                    onClick={handleConfirmButton}
+                  />
+                </Col>
+              </Row>
+            </>
+          ) : (
+            confirmationModal && (
+              <Row>
+                <Col
+                  lg={6}
+                  md={6}
+                  sm={6}
+                  className='d-flex justify-content-end'>
+                  <CustomButton
+                    value='Yes'
+                    className='btn btn-primary ms-auto px-4'
+                    onClick={handleConfimationModalYes}
+                  />
+                </Col>
+                <Col
+                  lg={6}
+                  md={6}
+                  sm={6}
+                  className='d-flex justify-content-start'>
+                  <CustomButton
+                    value='No'
+                    className='btn btn-primary  px-4'
+                    onClick={() => {
+                      setRfqModal(true);
+                      setConfirmationModal(false);
+                    }}
+                  />
+                </Col>
+              </Row>
+            )
+          )
         }
       />
     </>

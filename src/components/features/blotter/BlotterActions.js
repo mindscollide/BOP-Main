@@ -32,6 +32,8 @@ import {
   GetNOPData,
   CalculateNonFESwapAndDiscountingRM,
   CalculateFEDiscounting,
+  CalculateFESwapAndDiscountingRM,
+  SaveFEDiscountingTransactionRM,
 } from "@/common/api_config";
 import { blotterApi, watchListApi } from "@/common/apiend_points";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
@@ -325,7 +327,10 @@ export const SaveForwardTransactionAPI = createAsyncThunk(
 
 export const SaveFEDiscountingTransactionAPI = createAsyncThunk(
   "Blotter/SaveFEDiscounting",
-  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+  async (
+    { navigate, Data, setFeDiscountingModalCall },
+    { dispatch, rejectWithValue }
+  ) => {
     try {
       const postAPI = createPostAPI(
         blotterApi,
@@ -336,7 +341,13 @@ export const SaveFEDiscountingTransactionAPI = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(SaveFEDiscountingTransactionAPI({ navigate, Data }));
+        dispatch(
+          SaveFEDiscountingTransactionAPI({
+            navigate,
+            Data,
+            setFeDiscountingModalCall,
+          })
+        );
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -347,6 +358,7 @@ export const SaveFEDiscountingTransactionAPI = createAsyncThunk(
                 "Blotter_BlotterServiceManager_SaveFEDiscountingTransaction_01".toLowerCase()
               )
           ) {
+            setFeDiscountingModalCall(false);
             return {
               response: response.data.responseResult,
               message: "FE Discounting transaction saved successfully",
@@ -392,7 +404,10 @@ export const SaveFEDiscountingTransactionAPI = createAsyncThunk(
 
 export const SaveNonFEDiscountingTransactionAPI = createAsyncThunk(
   "Blotter/SaveNonFEDiscounting",
-  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+  async (
+    { navigate, Data, setNonfeDiscountingModalCall },
+    { dispatch, rejectWithValue }
+  ) => {
     try {
       const postAPI = createPostAPI(
         blotterApi,
@@ -403,7 +418,13 @@ export const SaveNonFEDiscountingTransactionAPI = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(SaveNonFEDiscountingTransactionAPI({ navigate, Data }));
+        dispatch(
+          SaveNonFEDiscountingTransactionAPI({
+            navigate,
+            Data,
+            setNonfeDiscountingModalCall,
+          })
+        );
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -414,6 +435,7 @@ export const SaveNonFEDiscountingTransactionAPI = createAsyncThunk(
                 "Blotter_BlotterServiceManager_SaveNonFEDiscountingTransaction_01".toLowerCase()
               )
           ) {
+            setNonfeDiscountingModalCall(false);
             return {
               response: response.data.responseResult,
               message: "Non-FE Discounting transaction saved successfully",
@@ -1227,6 +1249,7 @@ export const SaveForwardTransactionRFQApi = createAsyncThunk(
                 "Blotter_BlotterServiceManager_SaveForwardTransactionRFQ_01".toLowerCase()
               )
           ) {
+            dispatch(setOpenRfqModalForwardCorporateComponent(false));
             return {
               response: response.data.responseResult,
               message: "Forward RFQ transaction saved successfully",
@@ -2300,6 +2323,56 @@ export const calculateNonFeSwapAndDiscountingRateApi = createAsyncThunk(
   }
 );
 
+export const CalculateFESwapAndDiscountingApi = createAsyncThunk(
+  "Blotter/CalculateFESwapAndDiscountingApi",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      const postAPI = createPostAPI(
+        blotterApi,
+        CalculateFESwapAndDiscountingRM.RequestMethod
+      );
+      const response = await postAPI(Data);
+      const { responseCode } = response.data;
+
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(CalculateFESwapAndDiscountingApi({ navigate, Data }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_CalculateFEDiscounting_01".toLowerCase()
+              )
+          ) {
+            console.log("Checking", response.data.responseResult);
+            return {
+              response: response.data.responseResult,
+              message: "FE Swap and Discounting data calculated successfully",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_CalculateFEDiscounting_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else return rejectWithValue;
+        } else {
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      console.log(error, "errorerrorerror");
+      return rejectWithValue("Error calculating FE Swap and Discounting data");
+    }
+  }
+);
 // Define the GetSpotRatesForCounterPartyAPI async thunk
 export const GetSpotRatesForCounterPartyAPI = createAsyncThunk(
   "watchlist/GetSpotRatesForCounterParty", // A unique action type string

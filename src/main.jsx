@@ -8,14 +8,18 @@ import { DragDropContext } from "react-beautiful-dnd";
 import store from "./store/store.js";
 import { GloballyModalProvider } from "./context/ModalContext.jsx";
 import { DealerAndTreasuryProvider } from "./context/DealerAndTreasuryContext.jsx";
+import { NotificationProvider } from "./context/NotificationProvider.jsx";
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>
-    <DealerAndTreasuryProvider>
-      <GloballyModalProvider>
-        <DragDropContext>
-          <App />
-        </DragDropContext>
-      </GloballyModalProvider>
-    </DealerAndTreasuryProvider>
+    <NotificationProvider>
+      <DealerAndTreasuryProvider>
+        <GloballyModalProvider>
+          <DragDropContext>
+            <App />
+            {/* <GlobalNotification /> */}
+          </DragDropContext>
+        </GloballyModalProvider>
+      </DealerAndTreasuryProvider>
+    </NotificationProvider>
   </Provider>
 );

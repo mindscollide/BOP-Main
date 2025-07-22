@@ -51,29 +51,79 @@ const SettingModal = () => {
     dispatch(setSettingModal(false));
   };
 
+  // const handeClickSave = () => {
+  //   console.log(settingsRecordData, "settingsRecordsettingsRecord");
+  //   let Data = {
+  //     //to do
+  //     Settings: [
+  //       {
+  //         Key: shouldIncludeCorporateComponents
+  //           ? "CU_EmailOnEveryMessage"
+  //           : "BD_EmailOnEveryMessage", //to do
+  //         Value: shouldIncludeCorporateComponents
+  //           ? String(settingsRecordData?.CU_EmailOnEveryMessage)
+  //           : String(settingsRecordData?.BD_EmailOnEveryMessage),
+  //       },
+
+  //       {
+  //         Key: shouldIncludeCorporateComponents
+  //           ? "CU_SoundOnEveryMessage"
+  //           : "BD_SoundOnEveryMessage",
+  //         Value: shouldIncludeCorporateComponents
+  //           ? String(settingsRecordData?.CU_SoundOnEveryMessage)
+  //           : String(settingsRecordData?.BD_SoundOnEveryMessage),
+  //       },
+
+  //       {
+  //         Key: shouldIncludeCorporateComponents
+  //           ? "CU_Enable2FA"
+  //           : "BD_Enable2FA",
+  //         Value: shouldIncludeBranchComponents
+  //           ? String(settingsRecordData?.CU_Enable2FA)
+  //           : String(settingsRecordData?.BD_Enable2FA),
+  //       },
+  //     ],
+  //   };
+  //   console.log(Data, "Data2Data2");
+  //   // dispatch(updateUserSettingDataAPI({ navigate, Data }));
+  // };
+
   const handeClickSave = () => {
     console.log(settingsRecordData, "settingsRecordsettingsRecord");
+
     let Data = {
       Settings: [
         {
-          Key: "BD_EmailOnEveryMessage",
-          Value: String(settingsRecordData?.BD_EmailOnEveryMessage),
+          Key: shouldIncludeCorporateComponents
+            ? "CU_EmailOnEveryMessage"
+            : "BD_EmailOnEveryMessage",
+          Value: shouldIncludeCorporateComponents
+            ? String(settingsRecordData?.CU_EmailOnEveryMessage)
+            : String(settingsRecordData?.BD_EmailOnEveryMessage),
         },
         {
-          Key: "BD_SoundOnEveryMessage",
-          Value: String(settingsRecordData?.BD_SoundOnEveryMessage),
+          Key: shouldIncludeCorporateComponents
+            ? "CU_SoundOnEveryMessage"
+            : "BD_SoundOnEveryMessage",
+          Value: shouldIncludeCorporateComponents
+            ? String(settingsRecordData?.CU_SoundOnEveryMessage)
+            : String(settingsRecordData?.BD_SoundOnEveryMessage),
         },
         {
-          Key: "BD_Enable2FA",
-          Value: String(settingsRecordData?.BD_Enable2FA),
+          Key: shouldIncludeCorporateComponents
+            ? "CU_Enable2FA"
+            : "BD_Enable2FA",
+          Value: shouldIncludeCorporateComponents
+            ? String(settingsRecordData?.CU_Enable2FA)
+            : String(settingsRecordData?.BD_Enable2FA),
         },
       ],
     };
-    dispatch(updateUserSettingDataAPI({ navigate, Data }));
 
     console.log(Data, "Data2Data2");
-  };
 
+    dispatch(updateUserSettingDataAPI({ navigate, Data }));
+  };
   return (
     <div>
       {" "}

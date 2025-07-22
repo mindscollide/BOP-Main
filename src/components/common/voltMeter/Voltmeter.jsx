@@ -14,9 +14,9 @@ const Voltmeter = ({ activeValue, onSelect }) => {
   };
 
   return (
-    <div className='vol-meter-container '>
-      <div className='d-flex align-items-center vol-meter-inner-wrapper'>
-        <div className='heading-vol-meter fs-6 fw-semibold ff-poppins'>
+    <div className="vol-meter-container ">
+      <div className="d-flex align-items-center vol-meter-inner-wrapper">
+        <div className="heading-vol-meter fs-6 fw-semibold ff-poppins">
           Vol Meter
         </div>
         {buttons.map((button) => (
@@ -28,7 +28,8 @@ const Voltmeter = ({ activeValue, onSelect }) => {
             aria-pressed={activeValue === button.value}
             value={button.value}
             onClick={() => handleButtonClick(button.value)}
-            tabIndex={0}>
+            tabIndex={0}
+          >
             {button.label}
           </button>
         ))}

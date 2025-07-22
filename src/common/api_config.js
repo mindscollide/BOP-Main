@@ -391,3 +391,10 @@ export const CreateCorporateUserForgotPassword = {
 export const CalculateFEDiscounting = {
   RequestMethod: "ServiceManager.CalculateFEDiscounting",
 };
+export const CalculateFESwapAndDiscountingRM = {
+  RequestMethod: "ServiceManager.CalculateFEDiscounting",
+};
+
+export const VerifyOTP = {
+  RequestMethod: "ServiceManager.VerifyOTP",
+};

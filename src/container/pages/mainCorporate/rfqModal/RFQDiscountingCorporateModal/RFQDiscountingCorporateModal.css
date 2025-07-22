@@ -20,11 +20,11 @@
 
   display: flex !important;
   align-items: center !important;
-  padding: 0.375rem 0.75rem !important;
   font-size: 12px !important;
   font-weight: 400 !important;
   width: 100%;
   text-align: center !important;
+  padding: 5px 10px;
 }
 
 .DiscountingRFQModalHeadingCorporate {

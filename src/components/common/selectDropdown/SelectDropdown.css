@@ -46,7 +46,8 @@
   outline: none !important;
 }
 
-.Category-Dropdown__option--is-focused {
+.Category-Dropdown__option--is-focused,
+.Category-Dropdown__option--is-selected {
   background-color: #096fed !important;
   color: #fff !important;
   outline: none !important;
@@ -172,7 +173,8 @@
 .TransactionModal__menu-list {
   background-color: var(--color-light-gray2);
 }
-.TransactionModal__option--is-focused , .TransactionModal__option--is-selected{
+.TransactionModal__option--is-focused,
+.TransactionModal__option--is-selected {
   background-color: var(--color-blue) !important;
   color: white !important;
 }

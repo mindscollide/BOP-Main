@@ -8,7 +8,7 @@ import CustomButton from "../../../../../../components/common/globalButton/butto
 import { getMisData, loaderInitializeMis } from "./slicer/misSlicer";
 import SectionLoader from "../../../../../../components/common/sectionLoader/SectionLoader";
 import { useNavigate } from "react-router-dom";
-import { formatDateToUTC } from "@/utils/formatters";
+import { formatDateToUTC, formatPkAmount } from "@/utils/formatters";
 import { GetMisDataByRangeAPI } from "@/components/features/SpotBranch/WatchlistAction";
 
 const MIS = () => {
@@ -125,7 +125,7 @@ const MIS = () => {
                 index === 1 ? "mis-profitwise-value" : "mis-volumwise-value"
               } roboto-13`}
             >
-              {record?.value}
+              {formatPkAmount(record?.value)}
             </span>
             {isExpanded ? (
               <div className="d-grid">
@@ -134,14 +134,14 @@ const MIS = () => {
                     index === 1 ? "mis-profitwise-value" : "mis-volumwise-value"
                   } bg-none py-0 roboto-13`}
                 >
-                  {record?.import}
+                  {formatPkAmount(record?.import)}
                 </span>
                 <span
                   className={`${
                     index === 1 ? "mis-profitwise-value" : "mis-volumwise-value"
                   } bg-none py-0 roboto-13`}
                 >
-                  {record?.export}
+                  {formatPkAmount(record?.export)}
                 </span>
               </div>
             ) : null}
@@ -194,7 +194,7 @@ const MIS = () => {
 
   return (
     <>
-      <div className="card-box">
+      <div className="card-box position-relative">
         <div className="box-header bg-primary-orange px-3">
           <div className="text-start color-white fw-bold fs-6">MIS</div>
         </div>
@@ -214,7 +214,9 @@ const MIS = () => {
                   </span>
                 </div>
                 <div className="expanded-column third-column">
-                  <span className="mis-totalprofit-value">{totalProfit}</span>
+                  <span className="mis-totalprofit-value">
+                    {formatPkAmount(totalProfit)}
+                  </span>
                 </div>
               </div>
             </div>
@@ -261,6 +263,7 @@ const MIS = () => {
           </div>
           {/* {misReducer?.Loader ? <SectionLoader /> : null} */}
         </div>
+        
       </div>
     </>
   );

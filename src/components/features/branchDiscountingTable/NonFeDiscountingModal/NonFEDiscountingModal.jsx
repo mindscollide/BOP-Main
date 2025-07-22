@@ -14,17 +14,30 @@ import {
 } from "../../blotter/BlotterActions";
 import { formatDate } from "@/common/utils";
 import { useSelector } from "react-redux";
-const shouldIncludeBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
+import { NumericFormat } from "react-number-format";
+const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
+const isCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
+
+const counterPartyDetails =
+  isBranch && localStorage.getItem("branch") !== null
+    ? JSON.parse(localStorage.getItem("branch"))
+    : isCorporate && localStorage.getItem("corporate") !== null
+    ? JSON.parse(localStorage.getItem("corporate"))
+    : null;
 const NonFEDiscountingModal = ({
   nonfeDiscountingModalCall,
   setNonfeDiscountingModalCall,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  let branchDetais =
+    localStorage.getItem("branch") !== null
+      ? JSON.parse(localStorage.getItem("branch"))
+      : null;
   const natureOfBusinessList = useSelector(
     (state) => state.authReducer.GetAllNatureOfTransactions
   );
-  const calculatedForwardsSwapandRate = useSelector(
+  const calculateNonFeSwapAndDiscountingRate = useSelector(
     (state) => state.BlotterSlicer.calculateNonFeSwapAndDiscountingRate
   );
   const GetAllActiveCorproates = useSelector(
@@ -139,9 +152,9 @@ const NonFEDiscountingModal = ({
   }, [GetAllActiveCorproates]);
 
   useEffect(() => {
-    if (calculatedForwardsSwapandRate !== null) {
+    if (calculateNonFeSwapAndDiscountingRate !== null) {
       try {
-        const { kibor, nonFERate, swap } = calculatedForwardsSwapandRate;
+        const { kibor, nonFERate, swap } = calculateNonFeSwapAndDiscountingRate;
         setCalulatedData({
           kiborValue: kibor,
           nonFeRate: nonFERate,
@@ -149,25 +162,39 @@ const NonFEDiscountingModal = ({
         });
       } catch (error) {}
     }
-  }, [calculatedForwardsSwapandRate]);
+  }, [calculateNonFeSwapAndDiscountingRate]);
 
   const handleConfirm = () => {
-    let Data = {
-      CorporateID: corporateValue.value,
-      InstrumentID: selectedCurrency.value,
-      Quantity: Number(amount),
-      AccountNumber: accNo,
-      NatureOfTransactionID: selectedNature?.id,
-      TenorDays: Number(tenorValue),
-      Kibor: calculatedData.kiborValue,
-      Swap: calculatedData.swapValue,
-    };
-    dispatch(SaveNonFEDiscountingTransactionAPI({ navigate, Data }));
+    if (
+      corporateValue.value !== 0 &&
+      selectedCurrency.value !== 0 &&
+      amount !== "" &&
+      tenorValue !== "" &&
+      accNo !== ""
+    ) {
+      let amountValue = amount.replace(/,/g, "");
+      let Data = {
+        CorporateID: isBranch
+          ? corporateValue.value
+          : counterPartyDetails?.corporateID,
+        InstrumentID: selectedCurrency.value,
+        Quantity: Number(amountValue),
+        AccountNumber: accNo,
+        NatureOfTransactionID: selectedNature?.id,
+        TenorDays: Number(tenorValue),
+        Kibor: calculatedData.kiborValue,
+        Swap: calculatedData.swapValue,
+      };
+      dispatch(
+        SaveNonFEDiscountingTransactionAPI({
+          navigate,
+          Data,
+          setNonfeDiscountingModalCall,
+        })
+      );
+    }
   };
-  let branchDetais =
-    localStorage.getItem("branch") !== null
-      ? JSON.parse(localStorage.getItem("branch"))
-      : null;
+
   return (
     <div>
       {" "}
@@ -186,9 +213,20 @@ const NonFEDiscountingModal = ({
           <>
             <Row>
               <Col lg={12} md={12} sm={12}>
-                <span className='HeaderHeadingName'>
-                  {branchDetais !== null ? branchDetais.branchName : ""}
-                </span>
+                {isBranch ? (
+                  <>
+                    <span className='NonFeDiscountingHeader_BranchName'>
+                      {counterPartyDetails?.branchName}
+                    </span>
+                    <p className='NonFeDiscountingHeader_BranchCode'>
+                      {counterPartyDetails?.branchCode}
+                    </p>
+                  </>
+                ) : isCorporate ? (
+                  <span className='NonFeDiscountingHeader_BranchName'>
+                    {counterPartyDetails?.corporateName}
+                  </span>
+                ) : null}
               </Col>
             </Row>
           </>
@@ -197,7 +235,7 @@ const NonFEDiscountingModal = ({
           <>
             <Row>
               <Col lg={12} md={12} sm={12}>
-                {shouldIncludeBranch && (
+                {isBranch && (
                   <Row className='mb-2'>
                     <Col lg={12} md={12} sm={12}>
                       <div className='d-flex flex-column flex-wrap'>
@@ -250,9 +288,9 @@ const NonFEDiscountingModal = ({
                   </Col>
                 </Row>
                 <Row className='mt-2'>
-                  <Col lg={6} md={6} sm={6}>
+                  <Col lg={12} md={12} sm={12}>
                     <div className='d-flex align-items-end '>
-                      <div>
+                      <div className='w-100'>
                         <p className='SubHeadings m-0'>Tenor</p>
                         <InputFIeld
                           onChange={handleChangeTenor}
@@ -271,9 +309,13 @@ const NonFEDiscountingModal = ({
                   <Col lg={6} md={6} sm={6}>
                     <div className='d-flex flex-column flex-wrap'>
                       <span className='SubHeadings'>Amount</span>
-                      <InputFIeld
-                        applyClass={"BookaForwardCorporateInputFields"}
+                      <NumericFormat
+                        customInput={InputFIeld}
                         value={amount}
+                        applyClass={"BookaForwardCorporateInputFields"}
+                        name={"amount"}
+                        thousandSeparator=','
+                        maxLength={10}
                         onChange={(e) => handleChangeState("amount", e)}
                       />
                     </div>

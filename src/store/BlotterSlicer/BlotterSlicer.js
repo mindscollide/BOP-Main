@@ -35,6 +35,7 @@ import {
   GetNOPDataAPI,
   calculateNonFeSwapAndDiscountingRateApi,
   CalculateFEDiscountingAPI,
+  CalculateFESwapAndDiscountingApi,
 } from "@/components/features/blotter/BlotterActions";
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -72,6 +73,7 @@ const BlotterSlicer = createSlice({
     OutstandingTableNewData: [],
     totalCountOutstandingData: 0,
     CalculateFEDiscountingData: null,
+    CalculateFESwapAndDiscountingRate: null,
   },
   reducers: {
     updateRealtimeBlotterData: (state, { payload }) => {
@@ -126,6 +128,25 @@ const BlotterSlicer = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(CalculateFESwapAndDiscountingApi.pending, (state) => {
+        state.Loader = false;
+      })
+      .addCase(
+        CalculateFESwapAndDiscountingApi.fulfilled,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.CalculateFESwapAndDiscountingRate = payload?.response;
+          state.responseMessage = payload?.message;
+        }
+      )
+      .addCase(
+        CalculateFESwapAndDiscountingApi.rejected,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.CalculateFESwapAndDiscountingRate = null;
+          state.responseMessage = payload;
+        }
+      )
       // Pending state (while the API call is being made CorporateBlotterDataAPI)
       .addCase(BlotterDataAPI.pending, (state) => {
         state.Loader = true;

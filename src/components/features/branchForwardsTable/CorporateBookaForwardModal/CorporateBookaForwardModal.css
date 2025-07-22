@@ -6,7 +6,7 @@
 .BookaforwardCorporateHeaderClassname {
   margin: 0 !important;
   border: none !important;
-  padding: 10px 15px;
+  padding: 10px 15px 5px 15px;
   position: relative;
 }
 
@@ -15,11 +15,18 @@
   height: 100% !important;
 }
 
-.HeaderHeadingName {
+.Header_BranchName {
   font-weight: 700 !important;
   color: #f26522 !important;
   font-size: 1.25rem !important;
   font-family: "Roboto", sans-serif !important;
+}
+.Header_BranchCode {
+  font-weight: 700 !important;
+  color: #5a5a5a !important;
+  font-size: 09.em !important;
+  font-family: "Roboto", sans-serif !important;
+  margin: 0 ;
 }
 
 .SubHeadings {
@@ -90,7 +97,8 @@ span.bookaForwardCorporate__indicator-separator.css-1u9des2-indicatorSeparator {
 .bookaForwardCorporate__menu-list {
   background-color: var(--color-light-gray2);
 }
-.bookaForwardCorporate__option--is-focused , .bookaForwardCorporate__option--is-selected{
+.bookaForwardCorporate__option--is-focused,
+.bookaForwardCorporate__option--is-selected {
   background-color: var(--color-blue) !important;
   color: white !important;
 }
@@ -140,4 +148,8 @@ span.bookaForwardCorporate__indicator-separator.css-1u9des2-indicatorSeparator {
   position: absolute;
   bottom: 0;
   right: 0;
+}
+.rfq-error_message {
+  font-size: 13px;
+  color: red;
 }

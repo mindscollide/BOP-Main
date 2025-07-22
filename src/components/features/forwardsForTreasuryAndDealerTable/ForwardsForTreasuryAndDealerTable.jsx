@@ -15,6 +15,7 @@ import { Col, Row } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { useNotification } from "@/context/NotificationProvider";
 
 // Define condition to include components
 const shouldIncludeComponents =
@@ -60,11 +61,15 @@ const TenoreWiseCurrentAndLastRates = ({
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { showMessage } = useNotification();
 
   const marketStatus = useSelector(
     (state) => state.RealtimeActionsSlice.marketStatus
   );
 
+  const getAllTenorsData = useSelector(
+    (state) => state.dealerReducer.getAllTenors
+  );
   const forwardsForTreasuryBranch = useSelector(
     (state) => state.dealerReducer.forwardsForTreasuryBranch
   );
@@ -76,12 +81,8 @@ const TenoreWiseCurrentAndLastRates = ({
     (state) => state.RealtimeActionsSlice.tenorWiseForwardsRates
   );
 
-  // state for NotificationSnackbar
-  const [snackbarData, setSnackbarData] = useState({
-    message: "",
-  });
-  const [confirmationModal, setConfirmationModal] = useState(false)
-  const [TenorRemoveRecord, setTenorRemoveRecord] = useState(null)
+  const [confirmationModal, setConfirmationModal] = useState(false);
+  const [TenorRemoveRecord, setTenorRemoveRecord] = useState(null);
   useEffect(() => {
     if (newTenorRecord !== null) {
       let newData = [...forwardsForTreasuryBranch, newTenorRecord];
@@ -92,18 +93,9 @@ const TenoreWiseCurrentAndLastRates = ({
   }, [newTenorRecord]);
 
   useEffect(() => {
-    if (snackbarData.message !== "") {
-      const timer = setTimeout(() => {
-        setSnackbarData({ message: "" });
-      }, 3000); // 3 seconds
-
-      return () => clearTimeout(timer);
-    }
-  }, [snackbarData.message]);
-
-  useEffect(() => {
-    if (getDashboardForwards !== null) {
+    if (getDashboardForwards !== null && getAllTenorsData !== null) {
       try {
+        console.log(getAllTenorsData, "getAllTenorsDatagetAllTenorsData")
         const { currentTenorWiseForwardRates, lastTenorWiseForwardRates } =
           getDashboardForwards;
 
@@ -138,7 +130,7 @@ const TenoreWiseCurrentAndLastRates = ({
         console.log(error, "errorerrorerrorerror");
       }
     }
-  }, [getDashboardForwards]);
+  }, [getDashboardForwards, getAllTenorsData]);
 
   useEffect(() => {
     if (getTenorWiseForwardsRates !== null) {
@@ -181,19 +173,18 @@ const TenoreWiseCurrentAndLastRates = ({
   }, [getTenorWiseForwardsRates]);
 
   const handleDeleteTenorRecord = (record) => {
-    setTenorRemoveRecord(record)
-    setConfirmationModal(true)
-
+    setTenorRemoveRecord(record);
+    setConfirmationModal(true);
   };
 
   const handleYesConfirmatonModal = () => {
-        const filteredRecords = forwardsForTreasuryBranch.filter(
+    const filteredRecords = forwardsForTreasuryBranch.filter(
       (item) => item.tenorID !== TenorRemoveRecord.tenorID
     );
 
     dispatch(setForwardsForTreasuryBranch(filteredRecords));
-    setConfirmationModal(false)
-  }
+    setConfirmationModal(false);
+  };
   const handleChangeCurrentForwards = (record, view, event) => {
     const { value } = event.target;
     try {
@@ -215,9 +206,11 @@ const TenoreWiseCurrentAndLastRates = ({
     );
 
     if (!checkDoNotempty) {
-      setSnackbarData({
-        message: "Please fill all required fields.",
-      });
+      const handleClick = () => {
+        showMessage("Please fill all required fields.");
+      };
+
+      handleClick();
       return;
     }
 
@@ -228,9 +221,11 @@ const TenoreWiseCurrentAndLastRates = ({
     console.log(checkAskValue, "Checkerchecker");
 
     if (checkAskValue !== undefined) {
-      setSnackbarData({
-        message: "Ask value must be greater than Bid value.",
-      });
+      const handleClick = () => {
+        showMessage("Ask value must be greater than Bid value.");
+      };
+
+      handleClick();
       return;
     }
 
@@ -449,8 +444,6 @@ const TenoreWiseCurrentAndLastRates = ({
           </Suspense>
         </>
       )}
-
-      <NotificationSnackBar message={snackbarData.message} />
     </>
   );
 };

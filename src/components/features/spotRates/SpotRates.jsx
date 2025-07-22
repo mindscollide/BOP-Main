@@ -32,10 +32,12 @@ import {
 import GlobalModal from "@/components/common/globalModal/Modal";
 import { setPublishedSpotRates } from "@/store/modalSlice/modalSlicer";
 import NotificationSnackBar from "@/components/common/NotificationSnackbar";
+import { useNotification } from "@/context/NotificationProvider";
 
 const SpotRates = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { showMessage } = useNotification();
   const [isMarketOn, setIsMarketOn] = useState(false);
   console.log(isMarketOn, "isMarketOnisMarketOn");
   const getLastPublishRates = useSelector(
@@ -54,11 +56,6 @@ const SpotRates = () => {
     (state) => state.modalReducer.publishedSpotRates
   );
 
-  //state for showing snackbar instead of alert
-  const [snackbarData, setSnackbarData] = useState({
-    message: "",
-  });
-
   const [currentRates, setCurrentRates] = useState({
     askValue: "",
     bidValue: "",
@@ -75,16 +72,6 @@ const SpotRates = () => {
   console.log("currentRates", currentRates);
   const [refreshInterval, setRefreshInterval] = useState(1);
   console.log(refreshInterval, "refreshIntervalrefreshInterval");
-
-  useEffect(() => {
-    if (snackbarData.message !== "") {
-      const timer = setTimeout(() => {
-        setSnackbarData({ message: "" });
-      }, 3000); // 3 seconds
-
-      return () => clearTimeout(timer); // Cleanup on unmount or re-trigger
-    }
-  }, [snackbarData.message]);
 
   useEffect(() => {
     if (getLastPublishRates !== null) {
@@ -229,18 +216,23 @@ const SpotRates = () => {
     // Step 1: Validate required fields
     if (!bid || !ask || !refreshInterval) {
       console.log("Check Value again");
-      setSnackbarData({
-        message: "Please fill all required fields.",
-      });
+
+      const handleClick = () => {
+        showMessage("Please fill all required fields.");
+      };
+
+      handleClick();
       return;
     }
 
     // Step 2: Ask value must be greater than Bid
     if (ask <= bid) {
       console.log("Check Value again");
-      setSnackbarData({
-        message: "Ask value must be greater than Bid value.",
-      });
+      const handleClick = () => {
+        showMessage("Ask value must be greater than Bid value.");
+      };
+
+      handleClick();
       return;
     }
 
@@ -645,8 +637,6 @@ const SpotRates = () => {
           </>
         }
       />
-
-      <NotificationSnackBar message={snackbarData.message} />
     </>
   );
 };

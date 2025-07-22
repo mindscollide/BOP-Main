@@ -25,6 +25,7 @@ const WatchListSlice = createSlice({
     GetDiscountingRatesForCounterParty: null,
     GetAllInstrumentForTreasury: null,
     GetBankSpotForTreasury: null,
+    GetBankSpotForTreasurySpinner: false,
     GetBankForwardForTreasury: null,
     GetDiscountingRatesForTreasury: null,
   },
@@ -45,7 +46,7 @@ const WatchListSlice = createSlice({
         state.Loader = false;
         state.GetMisDataByRange = payload?.response;
         state.error = null;
-        state.responseMessage = payload.message;
+        state.responseMessage = payload?.message;
       })
       // Rejected state (while the API call is fail GetMisDataByRange)
       .addCase(GetMisDataByRangeAPI.rejected, (state, action) => {
@@ -164,15 +165,19 @@ const WatchListSlice = createSlice({
       )
       .addCase(GetBankSpotForTreasuryApi.pending, (state) => {
         state.Loader = true;
+        state.GetBankSpotForTreasurySpinner = true;
       })
       .addCase(GetBankSpotForTreasuryApi.fulfilled, (state, { payload }) => {
         state.Loader = false;
         state.GetBankSpotForTreasury = payload?.response;
+        state.GetBankSpotForTreasurySpinner = false;
         state.responseMessage = payload?.message;
       })
       .addCase(GetBankSpotForTreasuryApi.rejected, (state, { payload }) => {
         state.Loader = false;
         state.GetBankSpotForTreasury = null;
+        state.GetBankSpotForTreasurySpinner = false;
+
         state.responseMessage = payload;
       })
       .addCase(GetBankForwardForTreasuryApi.pending, (state) => {
