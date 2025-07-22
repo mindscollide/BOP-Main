@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { DownloadFileApi, saveChatApi, uploadDocumentApi } from "./ChatActions";
 import { useNavigate } from "react-router-dom";
-import { convertDateTimeIntoGMT, formatDateToUTC } from "@/utils/formatters";
+import { convertDateTimeIntoGMT, convertDateTimeIntoLocal, formatDateToUTC } from "@/utils/formatters";
 import moment from "moment";
 import { Col, Row } from "react-bootstrap";
 import { fileToBase64 } from "@/utils/converts";
@@ -251,8 +251,8 @@ const ChatBox = () => {
                             <div className='ms-auto'>
                               <span className='chat-datetime'>
                                 {moment(
-                                  convertDateTimeIntoGMT(data.creationDateTime)
-                                ).format("MMM DD, YYYY - HH:mm:ss A")}
+                                  convertDateTimeIntoLocal(data.creationDateTime)
+                                ).format("MMM DD, YYYY - hh:mm:ss A")}
                               </span>
                             </div>
                           </div>
@@ -299,8 +299,8 @@ const ChatBox = () => {
                             <div className='ms-auto'>
                               <span className='chat-datetime'>
                                 {moment(
-                                  convertDateTimeIntoGMT(data.creationDateTime)
-                                ).format("MMM DD, YYYY - HH:mm:ss A")}
+                                  convertDateTimeIntoLocal(data.creationDateTime)
+                                ).format("MMM DD, YYYY - hh:mm:ss A")}
                               </span>
                             </div>
                           </div>

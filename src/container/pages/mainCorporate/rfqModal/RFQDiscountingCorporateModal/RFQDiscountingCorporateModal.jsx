@@ -35,6 +35,11 @@ const RFQDiscountingCorporateModal = ({
   const GetAllActiveCorproates = useSelector(
     (state) => state.authReducer.GetAllActiveCorproates
   );
+
+  // Get all instruments for counterparties from Redux store
+  const getAllInstrumentsForCounterPartiesData = useSelector(
+    (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
+  );
   const [amountData, setAmountData] = useState("");
   const [Tenor, setTenor] = useState("");
   const [AccountNumber, setAccountNumber] = useState("");
@@ -46,6 +51,8 @@ const RFQDiscountingCorporateModal = ({
     label: "",
   });
   const [tenoreDate, setTenorDate] = useState(formatDate(new Date()));
+  const [currencyOptions, setCurrencyOptions] = useState([]);
+
   const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
 
   let titleDetails =
@@ -55,10 +62,7 @@ const RFQDiscountingCorporateModal = ({
       ? JSON.parse(localStorage.getItem("corporate"))
       : null;
 
-  const [selectedCurrency, setSelectedCurrency] = useState({
-    value: 21,
-    label: "USDPKR",
-  });
+  const [selectedCurrency, setSelectedCurrency] = useState(null);
 
   const [typeOptionSelected, setTypeOptionSelected] = useState({
     value: 0,
@@ -120,6 +124,76 @@ const RFQDiscountingCorporateModal = ({
       }
     }
   }, [GetAllActiveCorproates]);
+
+  /**
+   * Effect Hook: Initialize Currency Options
+   *
+   * This effect initializes the currency dropdown options by:
+   * 1. Filtering instruments that are applicable for both buy and sell
+   * 2. Formatting them for display in the SelectDropdown component
+   * 3. Setting the default selected currency
+   *
+   * Dependencies:
+   * - getAllInstrumentsForCounterPartiesData: Redux state containing available instruments
+   *
+   * Behavior:
+   * - Only runs when getAllInstrumentsForCounterPartiesData changes
+   * - Filters instruments where both isBuy and isSell are true
+   * - Formats instrument data for dropdown display
+   * - Sets first valid instrument as default selection
+   * - Handles errors gracefully with console logging
+   */
+  useEffect(() => {
+    // Only proceed if instrument data is available
+    if (getAllInstrumentsForCounterPartiesData !== null) {
+      try {
+        // Destructure spot applicable instruments from the data
+        const { spotApplicableInstruments } =
+          getAllInstrumentsForCounterPartiesData;
+
+        // Filter and map instruments to create dropdown options
+        const spotApplicableInstrumentList = spotApplicableInstruments
+          .map((data) => {
+            // Only include instruments that are valid for both buy and sell
+            if (
+              data.isBuy === true &&
+              data.isSell === true &&
+              data.secondaryInstrumentID === 0
+            ) {
+              return {
+                ...data, // Spread all existing instrument properties
+                label: `${data.instrumentName}${data.secondaryInstrumentName}`, // Display name for dropdown
+                value: data.instrumentID, // Unique identifier for selection
+              };
+            }
+            return null; // Explicitly return null for non-matching instruments
+          })
+          .filter(Boolean); // Remove any null values from the array
+
+        // Set the first valid instrument as default selection if available
+        if (spotApplicableInstrumentList.length > 0) {
+          setSelectedCurrency(spotApplicableInstrumentList[0]);
+          setCurrencyOptions(spotApplicableInstrumentList);
+        } else {
+          // Handle case where no valid instruments were found
+          console.warn("No instruments available for both buy and sell");
+          setSelectedCurrency(null);
+          setCurrencyOptions([]);
+        }
+      } catch (error) {
+        // Error handling with detailed error message
+        console.error("Error initializing currency options:", error);
+
+        // Reset currency options to empty array on error
+        setSelectedCurrency(null);
+        setCurrencyOptions([]);
+      }
+    } else {
+      // Handle case where instrument data is not yet loaded
+      setSelectedCurrency(null);
+      setCurrencyOptions([]);
+    }
+  }, [getAllInstrumentsForCounterPartiesData]); // Only re-run when instrument data changes
 
   useEffect(() => {
     if (CalculateFESwapAndDiscountingRate !== null) {
@@ -325,7 +399,14 @@ const RFQDiscountingCorporateModal = ({
                     <label className='LabelRFQTransactionModal'>
                       Currency*
                     </label>
-                    <SelectDropdown placeholder='' value={selectedCurrency} />
+                    <SelectDropdown
+                      placeholder=''
+                      options={currencyOptions}
+                      onChange={(selectCurrency) =>
+                        setSelectedCurrency(selectCurrency)
+                      }
+                      value={selectedCurrency}
+                    />
                   </div>
                 </Col>
               </Row>
