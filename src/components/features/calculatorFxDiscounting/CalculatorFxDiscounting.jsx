@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { CalculateFxDiscountingAPI } from "@/container/pages/mainCalculator/CalculatorActions";
 import { formatDate } from "@/common/utils";
+import { CalculateFEDiscountingAPI } from "../blotter/BlotterActions";
 
 const CalculatorFxDiscounting = () => {
   const dispatch = useDispatch();
@@ -25,7 +26,7 @@ const CalculatorFxDiscounting = () => {
 
   //Resulting Calculated value of FX Discounting
   const CalculatedFxDiscounting = useSelector(
-    (state) => state?.CalculatorReducer?.calculateFXDiscountingData?.fxRate || 0
+    (state) => state?.BlotterSlicer?.CalculateFEDiscountingData
   );
 
   //Local States
@@ -35,7 +36,8 @@ const CalculatorFxDiscounting = () => {
   );
   const [price, setPrice] = useState(285.2635);
   const [inputValue, setInputValue] = useState("0");
-  const [liborValue, setLiborValue] = useState(0);
+  const [resultFeRate, setResultFeRate] = useState(0);
+  const [resultDiscountingFactor, setDiscountingFactor] = useState(0);
   const [tagText, setTagText] = useState(formatDate(new Date()));
 
   //Extracting out the Forward Applicable and nonForward Applicable Instruments
@@ -81,6 +83,19 @@ const CalculatorFxDiscounting = () => {
     }
   }, [InstrumentsData, WorldCrossesData]);
 
+  //Extracting the Calculated FE Values
+
+  useEffect(() => {
+    try {
+      if (CalculatedFxDiscounting && CalculatedFxDiscounting !== null) {
+        setResultFeRate(CalculatedFxDiscounting.feRate);
+        setDiscountingFactor(CalculatedFxDiscounting.discountingFactor);
+      }
+    } catch (error) {
+      console.log(error, "error");
+    }
+  }, [CalculatedFxDiscounting]);
+
   //Handle onChange Currency
   const handleChangeCurrencyCalculator = (selected) => {
     setSelectedOption(selected);
@@ -99,15 +114,7 @@ const CalculatorFxDiscounting = () => {
     }
   };
 
-  // Only allow numeric or decimal values handle change Ready
-  const handleInputChange = (e) => {
-    const val = e.target.value;
-    const regex = /^[0-9]*\.?[0-9]*$/;
-    if (val === "" || regex.test(val)) {
-      setPrice(val);
-    }
-  };
-
+  //Handle onChange Tenor
   const handleInputChangeTenor = (e) => {
     const value = e.target.value;
 
@@ -130,16 +137,6 @@ const CalculatorFxDiscounting = () => {
     }
   };
 
-  // Only allow numeric input
-  const handleInputChangelibor = (e) => {
-    const value = e.target.value;
-
-    // Allow up to 2 digits before decimal and up to 4 digits after decimal
-    if (/^\d{0,2}(\.\d{0,4})?$/.test(value)) {
-      setLiborValue(value);
-    }
-  };
-
   // Handle Change Ready Value
   const handleReadyValue = (e) => {
     const value = e.target.value;
@@ -158,13 +155,15 @@ const CalculatorFxDiscounting = () => {
     }
   };
 
+  //Handle calculate
   const handleCalculateFxDiscountingRate = () => {
     let Data = {
-      Ready: price,
-      Tenor: Number(inputValue),
-      Libor: Number(liborValue),
+      TenorDays: Number(inputValue),
+      InstrumentName: selectedOption.label,
+      InstrumentID: Number(selectedOption.value),
     };
-    dispatch(CalculateFxDiscountingAPI({ Data, navigate }));
+
+    dispatch(CalculateFEDiscountingAPI({ navigate, Data }));
   };
 
   return (
@@ -211,31 +210,30 @@ const CalculatorFxDiscounting = () => {
                 placeholder="Enter value"
                 applyClass="inputField-calculator"
                 applyClassTag="tag-for-calculator"
-                width="100%" // width of the entire container
-                inputWidth="60%" // width of the input field
+                width="100%"
+                inputWidth="60%"
                 tagText={tagText}
-                tagWidth="40%" // width of the span
+                tagWidth="40%"
                 tagClassName="yourTagClass"
               />
 
               <label className="mt-1">Discounting Factor</label>
               <InputFieldWithTag
                 type="text"
-                value={liborValue}
-                onChange={handleInputChangelibor}
+                value={resultDiscountingFactor}
                 placeholder="Enter value"
                 applyClass="inputField-calculator"
                 applyClassTag="tag-for-calculator"
-                width="100%" // width of the entire container
-                inputWidth="90%" // width of the input field
+                width="100%"
+                inputWidth="90%"
                 tagText="%"
-                tagWidth="10%" // width of the span
+                tagWidth="10%"
                 tagClassName="yourTagClass"
               />
             </div>
             <div className="px-2 text-center">
               <div className="clc-amount fs-4 fw-bold px-4 py-3 bg-black color-white">
-                {CalculatedFxDiscounting}
+                {resultFeRate}
               </div>
             </div>
           </div>

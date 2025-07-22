@@ -34,6 +34,7 @@ import {
   GetNonFEDiscountingTransactionDetailsApi,
   GetNOPDataAPI,
   calculateNonFeSwapAndDiscountingRateApi,
+  CalculateFEDiscountingAPI,
 } from "@/components/features/blotter/BlotterActions";
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -70,6 +71,7 @@ const BlotterSlicer = createSlice({
     tnxTableNewData: [],
     OutstandingTableNewData: [],
     totalCountOutstandingData: 0,
+    CalculateFEDiscountingData: null,
   },
   reducers: {
     updateRealtimeBlotterData: (state, { payload }) => {
@@ -493,7 +495,20 @@ const BlotterSlicer = createSlice({
           state.calculateNonFeSwapAndDiscountingRate = null;
           state.responseMessage = payload;
         }
-      );
+      )
+      .addCase(CalculateFEDiscountingAPI.pending, (state, { payload }) => {
+        state.Loader = false;
+      })
+      .addCase(CalculateFEDiscountingAPI.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.CalculateFEDiscountingData = payload?.response;
+        state.responseMessage = payload?.message;
+      })
+      .addCase(CalculateFEDiscountingAPI.rejected, (state, { payload }) => {
+        state.Loader = false;
+        state.CalculateFEDiscountingData = null;
+        state.responseMessage = payload;
+      });
   },
 });
 

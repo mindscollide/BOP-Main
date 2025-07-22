@@ -8,7 +8,6 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { formatDate } from "@/common/utils";
-import { CalculateForwardsAPI } from "@/container/pages/mainCalculator/CalculatorActions";
 import { calculateTenorSwapAndForwardRateApi } from "../blotter/BlotterActions";
 
 const FwdCalculator = () => {
@@ -25,9 +24,6 @@ const FwdCalculator = () => {
     (state) => state.WatchListReducer.GetBankSpotForTreasury
   );
 
-  console.log(InstrumentsData, "WorldCrossesData");
-  console.log(WorldCrossesData, "WorldCrossesData");
-
   //Resulting Calculated value of Forwads
   const CalculatedForwards = useSelector(
     (state) => state?.BlotterSlicer?.calculateTenorSwapAndForwardRateData
@@ -37,7 +33,6 @@ const FwdCalculator = () => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [selectedOptionImportExport, setSelectedOptionImportExport] =
     useState(null);
-  const [swapValue, setSwapValue] = useState(0);
   const [forwardApplicableList, setForwardApplicableList] = useState([]);
   const [price, setPrice] = useState(285.2635);
   const [inputValue, setInputValue] = useState("0");
@@ -181,15 +176,6 @@ const FwdCalculator = () => {
     }
   };
 
-  // Only allow numeric or decimal values handle change Ready
-  const handleInputChange = (e) => {
-    const val = e.target.value;
-    const regex = /^[0-9]*\.?[0-9]*$/;
-    if (val === "" || regex.test(val)) {
-      setPrice(val);
-    }
-  };
-
   // Only allow numeric input Tenor
   const handleInputChangeTenor = (e) => {
     const value = e.target.value;
@@ -202,16 +188,6 @@ const FwdCalculator = () => {
       if (value === "" || (numericValue >= 1 && numericValue <= 1000)) {
         setInputValue(value);
       }
-    }
-  };
-
-  // Only allow numeric input Swap
-  const handleInputChangeSwap = (e) => {
-    const value = e.target.value;
-
-    // Allow optional negative sign, up to 2 digits before decimal, up to 4 digits after decimal
-    if (/^-?\d{0,2}(\.\d{0,4})?$/.test(value)) {
-      setSwapValue(value);
     }
   };
 
@@ -238,7 +214,7 @@ const FwdCalculator = () => {
       IsBuySide: selectedOptionImportExport.value === 1 ? true : false,
       TenorDays: Number(inputValue),
       InstrumentName: selectedOption.label,
-      InstrumentID: selectedOption.value,
+      InstrumentID: Number(selectedOption.value),
     };
     dispatch(calculateTenorSwapAndForwardRateApi({ Data, navigate }));
   };
@@ -300,17 +276,16 @@ const FwdCalculator = () => {
                 placeholder="Enter value"
                 applyClass="inputField-calculator"
                 applyClassTag="tag-for-calculator"
-                width="100%" // width of the entire container
-                inputWidth="60%" // width of the input field
+                width="100%"
+                inputWidth="60%"
                 tagText={tagText}
-                tagWidth="40%" // width of the span
+                tagWidth="40%"
                 tagClassName="yourTagClass"
               />
 
               <label className="mt-1">swap</label>
               <InputFIeld
                 value={resulteSwap}
-                // onChange={handleInputChangeSwap}
                 applyClass="CalculatorTextfield-withTagInputfield"
               />
             </div>

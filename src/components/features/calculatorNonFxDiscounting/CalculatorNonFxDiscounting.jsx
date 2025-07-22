@@ -25,27 +25,18 @@ const CalculatorNonFxDiscounting = () => {
     (state) => state.WatchListReducer.GetBankSpotForTreasury
   );
 
-  console.log(InstrumentsData, "saif");
-  console.log(WorldCrossesData, "saif");
-
   //Resulting Calculated value of NonFX Discounting
   const CalculatedNonFxDiscounting = useSelector(
     (state) => state?.BlotterSlicer?.calculateNonFeSwapAndDiscountingRate
   );
 
-  console.log(CalculatedNonFxDiscounting, "CalculatedNonFxDiscounting");
-
   //Local States
   const [selectedOption, setSelectedOption] = useState(null);
-
-  console.log(selectedOption, "selectedOption");
   const [discountingApplicableList, setDiscountingApplicableList] = useState(
     []
   );
   const [price, setPrice] = useState(285.2635);
   const [inputValue, setInputValue] = useState("0");
-  const [kiborValue, setKiborValue] = useState(0);
-  const [swapValue, setSwapValue] = useState(0);
   const [nonFERate, setNonFERate] = useState(0);
   const [calculatedSwap, setCalculatedSwap] = useState(0);
   const [calculatedKibor, setCalculatedKibor] = useState(0);
@@ -97,11 +88,6 @@ const CalculatorNonFxDiscounting = () => {
     }
   }, [InstrumentsData, WorldCrossesData]);
 
-  console.log(
-    discountingApplicableList,
-    "InstrumentsDataInstrumentsDataInstrumentsData"
-  );
-
   // Effect to update date whenever inputValue changes
   useEffect(() => {
     const num = parseInt(inputValue, 10);
@@ -143,15 +129,6 @@ const CalculatorNonFxDiscounting = () => {
     }
   };
 
-  // Only allow numeric or decimal values handle change Ready
-  const handleInputChange = (e) => {
-    const val = e.target.value;
-    const regex = /^[0-9]*\.?[0-9]*$/;
-    if (val === "" || regex.test(val)) {
-      setPrice(val);
-    }
-  };
-
   // Only allow numeric input Tenor
   const handleInputChangeTenor = (e) => {
     const value = e.target.value;
@@ -164,25 +141,6 @@ const CalculatorNonFxDiscounting = () => {
       if (value === "" || (numericValue >= 1 && numericValue <= 1000)) {
         setInputValue(value);
       }
-    }
-  };
-
-  // Only allow numeric input Kibor
-  const handleInputChangeKibor = (e) => {
-    const value = e.target.value;
-    // 2 digits before and 4 decimal points
-    if (/^\d{0,2}(\.\d{0,4})?$/.test(value)) {
-      setKiborValue(value);
-    }
-  };
-
-  // Only allow numeric input Swap
-  const handleInputChangeSwap = (e) => {
-    const value = e.target.value;
-
-    // Allow up to 2 digits before decimal and up to 4 digits after decimal
-    if (/^\d{0,2}(\.\d{0,4})?$/.test(value)) {
-      setSwapValue(value);
     }
   };
 
@@ -272,7 +230,6 @@ const CalculatorNonFxDiscounting = () => {
                   <label>Swap</label>
                   <InputFIeld
                     value={calculatedSwap}
-                    // onChange={handleInputChangeSwap}
                     applyClass="CalculatorTextfield-withTagInputfield"
                   />
                 </span>
@@ -282,7 +239,6 @@ const CalculatorNonFxDiscounting = () => {
                   <InputFieldWithTag
                     type="text"
                     value={calculatedKibor}
-                    // onChange={handleInputChangeKibor}
                     placeholder="Enter value"
                     applyClass="inputField-calculator"
                     applyClassTag="tag-for-calculator"
