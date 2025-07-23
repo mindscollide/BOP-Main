@@ -198,14 +198,10 @@ const RFQForwardCorporateModal = ({
         const spotApplicableInstrumentList = forwardApplicableInstruments
           .map((data) => {
             // Only include instruments that are valid for both buy and sell
-            if (
-              data.isBuy === true &&
-              data.isSell === true &&
-              data.secondaryInstrumentID === 0
-            ) {
+            if (data.isBuy === true && data.isSell === true) {
               return {
                 ...data, // Spread all existing instrument properties
-                label: `${data.instrumentName}${data.secondaryInstrumentName}`, // Display name for dropdown
+                label: `${data.instrumentName}`, // Display name for dropdown
                 value: data.instrumentID, // Unique identifier for selection
               };
             }

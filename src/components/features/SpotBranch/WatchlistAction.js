@@ -110,7 +110,7 @@ export const SaveUserDashboardAPI = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "ERM_WatchlistService_GetFXInstrumentsAPI_01".toLowerCase()
+                "WatchList_WatchListServiceManager_SaveUserDashboard_01".toLowerCase()
               )
           ) {
             console.log("", response.data);
@@ -122,7 +122,7 @@ export const SaveUserDashboardAPI = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "ERM_WatchlistService_GetFXInstrumentsAPI_02".toLowerCase()
+                "WatchList_WatchListServiceManager_SaveUserDashboard_02".toLowerCase()
               )
           ) {
             return rejectWithValue("Something went wrong");
@@ -130,7 +130,7 @@ export const SaveUserDashboardAPI = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "ERM_WatchlistService_GetFXInstrumentsAPI_03".toLowerCase()
+                "WatchList_WatchListServiceManager_SaveUserDashboard_03".toLowerCase()
               )
           ) {
             return rejectWithValue("Something went wrong");
