@@ -30,12 +30,13 @@ const NonFEDiscountingModal = ({
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  let branchDetais =
-    localStorage.getItem("branch") !== null
-      ? JSON.parse(localStorage.getItem("branch"))
-      : null;
+
   const natureOfBusinessList = useSelector(
     (state) => state.authReducer.GetAllNatureOfTransactions
+  );
+  // Get all instruments for counterparties from Redux store
+  const getAllInstrumentsForCounterPartiesData = useSelector(
+    (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
   );
   const calculateNonFeSwapAndDiscountingRate = useSelector(
     (state) => state.BlotterSlicer.calculateNonFeSwapAndDiscountingRate
@@ -45,10 +46,9 @@ const NonFEDiscountingModal = ({
   );
   const [natureOfBusinessOptions, setNatureOfBusinessOptions] = useState(null);
   const [selectedNature, setSelectedNature] = useState(null);
-  const [selectedCurrency, setSelectedCurrency] = useState({
-    value: 21,
-    label: "USDPKR",
-  });
+  const [selectedCurrency, setSelectedCurrency] = useState(null);
+  const [currencyOptions, setCurrencyOptions] = useState([]);
+
   const [tenoreDate, setTenorDate] = useState(formatDate(new Date()));
   const [tenorValue, setTenorValue] = useState("");
   const [amount, setAmount] = useState("");
@@ -116,6 +116,61 @@ const NonFEDiscountingModal = ({
     }
   };
 
+  useEffect(() => {
+    // Skip if pre-filled transaction data exists or instrument data isn't loaded
+    if (getAllInstrumentsForCounterPartiesData === null) {
+      return;
+    }
+    console.log(
+      getAllInstrumentsForCounterPartiesData,
+      "getAllInstrumentsForCounterPartiesData"
+    );
+    try {
+      const { discountingApplicableInstruments } =
+        getAllInstrumentsForCounterPartiesData;
+      console.log(
+        discountingApplicableInstruments,
+        "getAllInstrumentsForCounterPartiesData"
+      );
+      // Process instruments to create dropdown options
+      const validInstruments = discountingApplicableInstruments
+        .map((instrument) => {
+          // Only include instruments valid for both buy and sell
+          if (instrument.isBuy) {
+            return {
+              ...instrument,
+              // Combine primary and secondary instrument names for display
+              label: `${instrument.instrumentName}`,
+              value: instrument.instrumentID,
+            };
+          }
+          return null; // Explicit return for non-matching instruments
+        })
+        .filter(Boolean); // Remove null entries
+      console.log(validInstruments, "validInstrumentsvalidInstruments");
+      // Update state only if valid instruments were found
+      if (validInstruments.length > 0) {
+        setSelectedCurrency(validInstruments[0]);
+        setCurrencyOptions(validInstruments);
+      } else {
+        // Handle empty state
+        console.warn(
+          "No instruments available for both buy and sell operations"
+        );
+        setSelectedCurrency(null);
+        setCurrencyOptions([]);
+      }
+    } catch (error) {
+      // Comprehensive error handling
+      console.log("Failed to initialize currency options:", {
+        data: getAllInstrumentsForCounterPartiesData,
+      });
+
+      // // Reset to empty state on error
+      // setSelectedCurrency(null);
+      // setCurrencyOptions([]);
+    }
+  }, [getAllInstrumentsForCounterPartiesData]);
   useEffect(() => {
     if (natureOfBusinessList !== null) {
       try {
@@ -259,9 +314,12 @@ const NonFEDiscountingModal = ({
                     <div className='d-flex flex-column flex-wrap'>
                       <span className='SubHeadings'>Currency</span>
                       <SelectDropdown
-                        options={[]}
+                        options={currencyOptions}
                         placeholder=''
                         value={selectedCurrency}
+                        onChange={(selectedOption) =>
+                          setSelectedCurrency(selectedOption)
+                        }
                       />
                     </div>
                   </Col>

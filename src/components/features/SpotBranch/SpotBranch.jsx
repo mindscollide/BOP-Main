@@ -50,8 +50,8 @@ const SpotBranch = () => {
     "watchlistTableDatawatchlistTableData"
   );
   //Global State for Watchlist Card Data
-  const globalStateWatchlistCardData = useSelector(
-    (state) => state.WatchListReducer?.GettheDashboardData ?? null
+  const getAllInstrumentsForCounterPartiesData = useSelector(
+    (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
   );
 
   const GetSpotRatesForCounterParty = useSelector(
@@ -61,14 +61,14 @@ const SpotBranch = () => {
 
   const [watchlistData, setWatchlistData] = useState(initialWatchlistData);
   console.log(
-    globalStateWatchlistCardData,
+    getAllInstrumentsForCounterPartiesData,
     "watchlistDatawatchlistDatawatchlistData"
   );
   // Extracting out the Cards Wathlist data in the state
   useEffect(() => {
     try {
-      if (globalStateWatchlistCardData !== null) {
-        const { spotApplicableInstruments } = globalStateWatchlistCardData;
+      if (getAllInstrumentsForCounterPartiesData !== null) {
+        const { spotApplicableInstruments } = getAllInstrumentsForCounterPartiesData;
         const { instruments = [], time = "" } =
           GetSpotRatesForCounterParty !== null && GetSpotRatesForCounterParty;
 
@@ -145,7 +145,7 @@ const SpotBranch = () => {
     } catch (error) {
       console.error("Watchlist Error:", error);
     }
-  }, [globalStateWatchlistCardData, GetSpotRatesForCounterParty]);
+  }, [getAllInstrumentsForCounterPartiesData, GetSpotRatesForCounterParty]);
 
   useEffect(() => {
     if (CounterPartySpotRates !== null) {

@@ -11,8 +11,8 @@ import { buildDiscountingTable } from "@/components/utils/generateColumnsData";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 
 const BranchAndCorporateNonFeDiscountingTable = () => {
-  const globalStateWatchlistCardData = useSelector(
-    (state) => state.WatchListReducer?.GettheDashboardData ?? null
+  const getAllInstrumentsForCounterPartiesData = useSelector(
+    (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
   );
 
   const GetDiscountingRatesForCounterParty = useSelector(
@@ -33,7 +33,7 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
     useState(false);
 
   useEffect(() => {
-    if (getAllTenorsRecords !== null && globalStateWatchlistCardData != null) {
+    if (getAllTenorsRecords !== null && getAllInstrumentsForCounterPartiesData != null) {
       try {
         const { nonFEDiscountingRates = [] } =
           GetDiscountingRatesForCounterParty !== null &&
@@ -41,7 +41,7 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
         let getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
         let getAllInstrument = {
           instruments:
-            globalStateWatchlistCardData.discountingApplicableInstruments,
+            getAllInstrumentsForCounterPartiesData.discountingApplicableInstruments,
         };
 
         const { columnsData, rowData } = buildDiscountingTable(
@@ -60,7 +60,7 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
     }
   }, [
     getAllTenorsRecords,
-    globalStateWatchlistCardData,
+    getAllInstrumentsForCounterPartiesData,
     GetDiscountingRatesForCounterParty,
   ]);
 

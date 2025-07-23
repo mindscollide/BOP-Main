@@ -398,3 +398,7 @@ export const CalculateFESwapAndDiscountingRM = {
 export const VerifyOTP = {
   RequestMethod: "ServiceManager.VerifyOTP",
 };
+
+export const GenerateOTP = {
+  RequestMethod: "ServiceManager.GenerateOTP",
+};

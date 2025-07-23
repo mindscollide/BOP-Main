@@ -15,8 +15,8 @@ const BranchAndCorporateFeDiscountingTable = () => {
   const [columnsData, setColumnsData] = useState([]);
   const [feDiscountingModalCall, setFeDiscountingModalCall] = useState(false);
 
-  const globalStateWatchlistCardData = useSelector(
-    (state) => state.WatchListReducer?.GettheDashboardData ?? null
+  const getAllInstrumentsForCounterPartiesData = useSelector(
+    (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
   );
 
   const GetDiscountingRatesForCounterParty = useSelector(
@@ -28,7 +28,7 @@ const BranchAndCorporateFeDiscountingTable = () => {
   );
 
   useEffect(() => {
-    if (getAllTenorsRecords !== null && globalStateWatchlistCardData != null) {
+    if (getAllTenorsRecords !== null && getAllInstrumentsForCounterPartiesData != null) {
       try {
         const { feDiscountingRates = [] } =
           GetDiscountingRatesForCounterParty !== null &&
@@ -36,7 +36,7 @@ const BranchAndCorporateFeDiscountingTable = () => {
         let getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
         let getAllInstrument = {
           instruments:
-            globalStateWatchlistCardData.discountingApplicableInstruments,
+            getAllInstrumentsForCounterPartiesData.discountingApplicableInstruments,
         };
 
         const { columnsData, rowData } = buildDiscountingTable(
@@ -55,7 +55,7 @@ const BranchAndCorporateFeDiscountingTable = () => {
     }
   }, [
     getAllTenorsRecords,
-    globalStateWatchlistCardData,
+    getAllInstrumentsForCounterPartiesData,
     GetDiscountingRatesForCounterParty,
   ]);
 

@@ -21,8 +21,8 @@ const BranchForwardsTable = () => {
   const [bookaForwardModalCall, setBookaForwardModalCall] = useState(false);
 
   //Global State for Watchlist Card Data
-  const globalStateWatchlistCardData = useSelector(
-    (state) => state.WatchListReducer?.GettheDashboardData ?? null
+  const getAllInstrumentsForCounterPartiesData = useSelector(
+    (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
   );
 
   const getAllTenorsRecords = useSelector(
@@ -33,22 +33,22 @@ const BranchForwardsTable = () => {
     (state) => state.WatchListReducer.GetForwardRatesForCounterParty
   );
   console.log(
-    globalStateWatchlistCardData !== null &&
+    getAllInstrumentsForCounterPartiesData !== null &&
       getAllTenorsRecords !== null &&
       GetForwardRatesForCounterPartyData !== null,
-    globalStateWatchlistCardData,
+    getAllInstrumentsForCounterPartiesData,
     getAllTenorsRecords,
     GetForwardRatesForCounterPartyData,
     "GetForwardRatesForCounterPartyDataGetForwardRatesForCounterPartyData"
   );
   useEffect(() => {
     if (
-      globalStateWatchlistCardData !== null &&
+      getAllInstrumentsForCounterPartiesData !== null &&
       getAllTenorsRecords !== null
       // GetForwardRatesForCounterPartyData !== null
     ) {
       try {
-        const { forwardApplicableInstruments } = globalStateWatchlistCardData;
+        const { forwardApplicableInstruments } = getAllInstrumentsForCounterPartiesData;
         console.log(
           forwardApplicableInstruments,
           "forwardApplicableInstrumentsforwardApplicableInstruments"
@@ -97,7 +97,7 @@ const BranchForwardsTable = () => {
       }
     }
   }, [
-    globalStateWatchlistCardData,
+    getAllInstrumentsForCounterPartiesData,
     getAllTenorsRecords,
     GetForwardRatesForCounterPartyData,
   ]);

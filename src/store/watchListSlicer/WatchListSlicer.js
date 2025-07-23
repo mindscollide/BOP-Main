@@ -16,7 +16,7 @@ const WatchListSlice = createSlice({
     responseMessage: "",
     Loader: false,
     error: null,
-    GettheDashboardData: null,
+    getAllInstrumentForCounterParties: null,
     GetMisDataByRange: null,
     GetMisDataByRangeSpinner: false,
     SaveUserDashboardData: null,
@@ -68,7 +68,7 @@ const WatchListSlice = createSlice({
       // Fulfilled state (while the API call is being made GetDashboardData)
       .addCase(GetDashboardDataAPI.fulfilled, (state, { payload }) => {
         state.Loader = false;
-        state.GettheDashboardData = payload?.response;
+        state.getAllInstrumentForCounterParties = payload?.response;
         state.error = null;
         state.responseMessage = payload?.message;
       })
@@ -76,7 +76,7 @@ const WatchListSlice = createSlice({
       .addCase(GetDashboardDataAPI.rejected, (state, action) => {
         state.Loader = false;
         state.error = action.payload;
-        state.GettheDashboardData = null;
+        state.getAllInstrumentForCounterParties = null;
       })
 
       // Pending state (while the API call is in Pending State SaveUserDashboard)
@@ -103,7 +103,7 @@ const WatchListSlice = createSlice({
         state.Loader = true;
       })
       .addCase(getAllTreasuryInstrumentsApi.fulfilled, (state, { payload }) => {
-        // console.log(payload.response, "globalStateWatchlistCardData");
+        // console.log(payload.response, "getAllInstrumentsForCounterPartiesData");
         state.Loader = false;
         state.GetAllInstrumentForTreasury = payload?.response;
         state.error = null;
@@ -127,7 +127,7 @@ const WatchListSlice = createSlice({
       .addCase(
         GetForwardRatesForCounterPartyApi.fulfilled,
         (state, { payload }) => {
-          // console.log(payload.response, "globalStateWatchlistCardData");
+          // console.log(payload.response, "getAllInstrumentsForCounterPartiesData");
           state.Loader = false;
           state.GetForwardRatesForCounterParty = payload?.response;
           state.error = null;
@@ -152,7 +152,7 @@ const WatchListSlice = createSlice({
       .addCase(
         GetDiscountingRatesForCounterPartyApi.fulfilled,
         (state, { payload }) => {
-          // console.log(payload.response, "globalStateWatchlistCardData");
+          // console.log(payload.response, "getAllInstrumentsForCounterPartiesData");
           state.Loader = false;
           state.GetDiscountingRatesForCounterParty = payload?.response;
           state.error = null;

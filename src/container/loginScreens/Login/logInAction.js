@@ -1,5 +1,6 @@
 import {
   corporateUserRequestMethod,
+  GenerateOTP,
   loginRequestMethod,
   VerifyOTP,
 } from "@/common/api_config";
@@ -258,6 +259,47 @@ export const VerifyOTPApi = createAsyncThunk(
                 response: response.data.responseResult,
                 message: "OTP Verified Successfully",
               };
+
+            default:
+              console.log("", response.data);
+              return rejectWithValue("Something went wrong");
+          }
+        } else {
+          console.log("", response.data);
+          return rejectWithValue("Something went wrong");
+        }
+      }
+    } catch (error) {
+      // Reject with error message
+      return rejectWithValue("Something went wrong");
+    }
+  }
+);
+
+// Define the login async thunk
+export const GenerateOTPApi = createAsyncThunk(
+  "auth/GenerateOTP", // A unique action type string
+  async ({ navigate, Data }, { rejectWithValue }) => {
+    try {
+      let GenerateOTPMethod = createPostAPI(authApi, GenerateOTP.RequestMethod);
+
+      const response = await GenerateOTPMethod(Data);
+      if (response.data.responseCode === 200) {
+        const { isExecuted, responseMessage, token, refreshToken } =
+          response.data.responseResult;
+
+        if (isExecuted) {
+          switch (responseMessage.toLowerCase()) {
+            case "ERM_AuthService_SignUpManager_GenerateOTP_01".toLowerCase():
+              // navigate("", Data);
+              return {
+                response: response.data.responseResult,
+                message: "OTP Generated Successfully",
+              };
+            case "ERM_AuthService_SignUpManager_GenerateOTP_02".toLowerCase():
+              return rejectWithValue("OTP Not Generated ");
+            case "ERM_AuthService_SignUpManager_GenerateOTP_04".toLowerCase():
+              return rejectWithValue("Something Went Wrong");
 
             default:
               console.log("", response.data);

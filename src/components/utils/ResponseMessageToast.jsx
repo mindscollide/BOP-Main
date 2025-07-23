@@ -14,10 +14,11 @@ export const ResponseMessage = () => {
   const UploadRateResponseMessage = useSelector(
     (state) => state.dealerReducer.responseMessage
   );
-  console.log(UploadRateResponseMessage, 'UploadRateResponseMessage')
+  console.log(UploadRateResponseMessage, "UploadRateResponseMessage");
   const authResponseMessage = useSelector(
     (state) => state.authReducer.responseMessage
   );
+  console.log(authResponseMessage, "UploadRateResponseMessage");
 
   const WatchListResponseMessage = useSelector(
     (state) => state.WatchListReducer.responseMessage

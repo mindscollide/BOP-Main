@@ -41,6 +41,12 @@ const CorporateBookaForwardModal = ({
   const calculatedForwardsSwapandRate = useSelector(
     (state) => state.BlotterSlicer.calculateTenorSwapAndForwardRateData
   );
+
+  // Get all instruments for counterparties from Redux store
+  const getAllInstrumentsForCounterPartiesData = useSelector(
+    (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
+  );
+
   console.log(
     calculatedForwardsSwapandRate,
     "calculatedForwardsSwapandRatecalculatedForwardsSwapandRate"
@@ -57,6 +63,8 @@ const CorporateBookaForwardModal = ({
     label: "",
     SecondaryInstrumentID: 0,
   });
+  const [currencyOptions, setCurrencyOptions] = useState([]);
+
   const [tenorDate, setTenorDate] = useState(formatDate(new Date()));
   const [optionsDate, setOptionsDate] = useState(formatDate(new Date()));
   const [getAllCorporates, setGetAllCorporates] = useState([]);
@@ -78,10 +86,7 @@ const CorporateBookaForwardModal = ({
     CalculateRate: 0,
   });
   console.log(forwardRFQState, "forwardRFQStateforwardRFQStateforwardRFQState");
-  const [selectedCurrency, setSelectedCurrency] = useState({
-    value: 21,
-    label: "USDPKR",
-  });
+  const [selectedCurrency, setSelectedCurrency] = useState(null);
 
   const [typeOptions] = useState([
     { label: "Buy", value: 1 },
@@ -98,6 +103,7 @@ const CorporateBookaForwardModal = ({
     setTypeOptionSelected(selectType);
   };
   const options = [];
+  
 
   useEffect(() => {
     if (natureOfBusinessList !== null) {
@@ -164,6 +170,76 @@ const CorporateBookaForwardModal = ({
       } catch (error) {}
     }
   }, [calculatedForwardsSwapandRate]);
+
+  /**
+   * Effect Hook: Initialize Currency Options
+   *
+   * This effect initializes the currency dropdown options by:
+   * 1. Filtering instruments that are applicable for both buy and sell
+   * 2. Formatting them for display in the SelectDropdown component
+   * 3. Setting the default selected currency
+   *
+   * Dependencies:
+   * - getAllInstrumentsForCounterPartiesData: Redux state containing available instruments
+   *
+   * Behavior:
+   * - Only runs when getAllInstrumentsForCounterPartiesData changes
+   * - Filters instruments where both isBuy and isSell are true
+   * - Formats instrument data for dropdown display
+   * - Sets first valid instrument as default selection
+   * - Handles errors gracefully with console logging
+   */
+  useEffect(() => {
+    // Only proceed if instrument data is available
+    if (getAllInstrumentsForCounterPartiesData !== null) {
+      try {
+        // Destructure spot applicable instruments from the data
+        const { spotApplicableInstruments } =
+          getAllInstrumentsForCounterPartiesData;
+
+        // Filter and map instruments to create dropdown options
+        const spotApplicableInstrumentList = spotApplicableInstruments
+          .map((data) => {
+            // Only include instruments that are valid for both buy and sell
+            if (
+              data.isBuy === true &&
+              data.isSell === true &&
+              data.secondaryInstrumentID === 0
+            ) {
+              return {
+                ...data, // Spread all existing instrument properties
+                label: `${data.instrumentName}${data.secondaryInstrumentName}`, // Display name for dropdown
+                value: data.instrumentID, // Unique identifier for selection
+              };
+            }
+            return null; // Explicitly return null for non-matching instruments
+          })
+          .filter(Boolean); // Remove any null values from the array
+
+        // Set the first valid instrument as default selection if available
+        if (spotApplicableInstrumentList.length > 0) {
+          setSelectedCurrency(spotApplicableInstrumentList[0]);
+          setCurrencyOptions(spotApplicableInstrumentList);
+        } else {
+          // Handle case where no valid instruments were found
+          console.warn("No instruments available for both buy and sell");
+          setSelectedCurrency(null);
+          setCurrencyOptions([]);
+        }
+      } catch (error) {
+        // Error handling with detailed error message
+        console.error("Error initializing currency options:", error);
+
+        // Reset currency options to empty array on error
+        setSelectedCurrency(null);
+        setCurrencyOptions([]);
+      }
+    } else {
+      // Handle case where instrument data is not yet loaded
+      setSelectedCurrency(null);
+      setCurrencyOptions([]);
+    }
+  }, [getAllInstrumentsForCounterPartiesData]); // Only re-run when instrument data changes
   const handleChangeCorporate = (selectedOption) => {
     setCorporateValue(selectedOption);
     console.log("selectedOption", selectedOption);
@@ -358,9 +434,11 @@ const CorporateBookaForwardModal = ({
                     <div className='d-flex flex-column flex-wrap'>
                       <span className='SubHeadings'>Currency</span>
                       <Select
-                        options={options}
+                        options={currencyOptions}
                         placeholder=''
                         value={selectedCurrency}
+                        isSearchable={false}
+                        onChange={(selectCurrenty) => setSelectedCurrency(selectCurrenty)}
                         classNamePrefix='bookaForwardCorporate'
                       />
                     </div>
@@ -371,6 +449,7 @@ const CorporateBookaForwardModal = ({
                       <Select
                         options={typeOptions}
                         placeholder=''
+                        isSearchable={false}
                         value={
                           typeOptionSelected.value === 0
                             ? null

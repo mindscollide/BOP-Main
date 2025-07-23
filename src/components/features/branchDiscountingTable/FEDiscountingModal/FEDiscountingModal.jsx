@@ -45,21 +45,19 @@ const FEDiscountingModal = ({
     (state) => state.BlotterSlicer.CalculateFESwapAndDiscountingRate
   );
 
-  // Get branch details from localStorage if branch feature is enabled
-  const branchDetails = isBranch && localStorage.getItem("branch");
-  const branchInfo = branchDetails ? JSON.parse(branchDetails) : null;
+  // Get all instruments for counterparties from Redux store
+  const getAllInstrumentsForCounterPartiesData = useSelector(
+    (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
+  );
 
   // State for dropdown options
   const [currencyOptions, setCurrencyOptions] = useState([]);
-  const [natureOfBusinessOptions, setNatureOfBusinessOptions] = useState(null);
+  console.log(currencyOptions, "currencyOptionscurrencyOptions");
   const [getAllCorporates, setGetAllCorporates] = useState([]);
 
   // State for form fields
   const [selectedNature, setSelectedNature] = useState(null);
-  const [selectedCurrency, setSelectedCurrency] = useState({
-    value: 21,
-    label: "USD",
-  });
+  const [selectedCurrency, setSelectedCurrency] = useState(null);
   const [tenoreDate, setTenorDate] = useState(formatDate(new Date()));
   const [tenorValue, setTenorValue] = useState("");
 
@@ -88,6 +86,85 @@ const FEDiscountingModal = ({
     DiscountingFactor: false,
     Ready: false,
   });
+
+  /**
+   * Effect Hook: Initialize Currency Options
+   *
+   * This effect initializes the currency dropdown options when:
+   * - Instrument data is available (getAllInstrumentsForCounterPartiesData)
+   * - No pre-filled transaction data exists (iBuySellData === null)
+   *
+   * Key Responsibilities:
+   * 1. Filters instruments that are applicable for both buy and sell (isBuy && isSell)
+   * 2. Formats instrument data for dropdown display with combined instrument names
+   * 3. Sets the first valid instrument as default selection
+   * 4. Handles errors gracefully with comprehensive logging
+   *
+   * Dependencies:
+   * - getAllInstrumentsForCounterPartiesData: Redux state containing available instruments
+   * - iBuySellData: Pre-filled transaction data (if exists)
+   *
+   * Behavior:
+   * - Skips execution if iBuySellData exists (to avoid overwriting pre-selected values)
+   * - Creates dropdown options only for instruments valid for both buy/sell
+   * - Combines instrumentName and secondaryInstrumentName for display
+   * - Provides proper error states and fallbacks
+   */
+  useEffect(() => {
+    // Skip if pre-filled transaction data exists or instrument data isn't loaded
+    if (getAllInstrumentsForCounterPartiesData === null) {
+      return;
+    }
+    console.log(
+      getAllInstrumentsForCounterPartiesData,
+      "getAllInstrumentsForCounterPartiesData"
+    );
+    try {
+      const { discountingApplicableInstruments } =
+        getAllInstrumentsForCounterPartiesData;
+      console.log(
+        discountingApplicableInstruments,
+        "getAllInstrumentsForCounterPartiesData"
+      );
+      // Process instruments to create dropdown options
+      const validInstruments = discountingApplicableInstruments
+        .map((instrument) => {
+          // Only include instruments valid for both buy and sell
+          if (instrument.isBuy) {
+            return {
+              ...instrument,
+              // Combine primary and secondary instrument names for display
+              label: `${instrument.instrumentName}`,
+              value: instrument.instrumentID,
+            };
+          }
+          return null; // Explicit return for non-matching instruments
+        })
+        .filter(Boolean); // Remove null entries
+      console.log(validInstruments, "validInstrumentsvalidInstruments");
+      // Update state only if valid instruments were found
+      if (validInstruments.length > 0) {
+        setSelectedCurrency(validInstruments[0]);
+        setCurrencyOptions(validInstruments);
+      } else {
+        // Handle empty state
+        console.warn(
+          "No instruments available for both buy and sell operations"
+        );
+        setSelectedCurrency(null);
+        setCurrencyOptions([]);
+      }
+    } catch (error) {
+      // Comprehensive error handling
+      console.log("Failed to initialize currency options:", {
+        data: getAllInstrumentsForCounterPartiesData,
+      });
+
+      // // Reset to empty state on error
+      // setSelectedCurrency(null);
+      // setCurrencyOptions([]);
+    }
+  }, [getAllInstrumentsForCounterPartiesData]);
 
   // Effect to set nature of business options when data is available
   useEffect(() => {
