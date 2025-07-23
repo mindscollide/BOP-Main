@@ -46,6 +46,7 @@ import {
   setMarketTimingsUpdated,
   setTenorsCreated,
   setTreasuryFeDiscounting,
+  setTreasuryForwardRates,
   setTreasuryNonFeDiscounting,
   setTreasurySpotRatesFeed,
   tenorWiseFowardsRatesPublishedActions,
@@ -215,6 +216,7 @@ const Dashboard = () => {
         // );
         break;
       case "TREASURY_FORWARD_RATES_FEED":
+        dispatch(setTreasuryForwardRates(data.payload));
         // console.log(data, "TREASURY_FORWARD_RATES_FEED");
         break;
       case "TREASURY_FEDISCOUNTING_RATES_FEED":
