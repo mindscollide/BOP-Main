@@ -113,7 +113,7 @@ const authSlice = createSlice({
       .addCase(refreshTokenAction.fulfilled, (state, { payload }) => {
         state.Loader = false;
         state.refreshTokenResponse = payload?.response;
-        state.responseMessage = payload?.message;
+        state.responseMessage = "";
       })
       .addCase(refreshTokenAction.rejected, (state, { payload }) => {
         state.Loader = false;
