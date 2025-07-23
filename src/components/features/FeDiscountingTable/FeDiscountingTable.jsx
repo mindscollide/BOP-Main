@@ -57,6 +57,7 @@ const FeDiscountingTable = () => {
     (state) => state.RealtimeActionsSlice.FeDiscountingPublished
   );
 
+  console.log("getFeDiscountingDatagetFeDiscountingData");
   console.log(getFeDiscountingData, "getFeDiscountingDatagetFeDiscountingData");
   const getAllTenorsData = useSelector(
     (state) => state.dealerReducer.getAllTenors
