@@ -1880,7 +1880,7 @@ export const GetSpotTransactionDetailsApi = createAsyncThunk(
 
             return {
               response: response.data.responseResult,
-              message: "Spot transaction details retrieved successfully",
+              message: "",
             };
           } else if (
             responseMessage
@@ -1949,7 +1949,7 @@ export const GetForwardTransactionDetailsApi = createAsyncThunk(
 
             return {
               response: response.data.responseResult,
-              message: "Forward transaction details retrieved successfully",
+              message: "",
             };
           } else if (
             responseMessage

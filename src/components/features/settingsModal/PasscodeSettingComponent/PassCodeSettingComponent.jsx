@@ -1,16 +1,10 @@
-import React, {
-  startTransition,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import React, { startTransition, useCallback, useEffect } from "react";
 import "../settingModal.css";
 import { Switch } from "antd";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { setSettingRecords } from "@/store/modalSlice/modalSlicer";
 import { useNavigate } from "react-router-dom";
-import { ResetPasswordCorporateApi } from "@/container/loginScreens/ChangePassword/changePasswordActions";
 import { Form, InputGroup } from "react-bootstrap";
 import styles from "./PassCodeSettingComponent.module.css";
 import IconElement from "@/components/common/IconElement/IconElement";
@@ -20,11 +14,11 @@ const PassCodeSettingComponent = ({
   validations,
   setValidations,
 }) => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const settingsRecord = useSelector(
-    (state) => state.modalReducer.settingsRecord
-  );
+  // const dispatch = useDispatch();
+  // const navigate = useNavigate();
+  // const settingsRecord = useSelector(
+  //   (state) => state.modalReducer.settingsRecord
+  // );
 
   useEffect(() => {
     const lengthValid = createPasswordData.createPassword.length >= 8;
@@ -48,20 +42,20 @@ const PassCodeSettingComponent = ({
 
   // console.log(settingsRecord, "settingsRecordsettingsRecordsettingsRecord");
 
-  const onChangeSwitch = useCallback(
-    (e) => {
-      console.log(e, "statetdtasdtdst");
-      startTransition(() => {
-        dispatch(
-          setSettingRecords({
-            ...settingsRecord, // This spreads the existing state
-            CU_Enable2FA: e, // This updates only the changed property
-          })
-        );
-      });
-    },
-    [dispatch, settingsRecord] // Add settingsRecord as dependency
-  );
+  // const onChangeSwitch = useCallback(
+  //   (e) => {
+  //     console.log(e, "statetdtasdtdst");
+  //     startTransition(() => {
+  //       dispatch(
+  //         setSettingRecords({
+  //           ...settingsRecord, // This spreads the existing state
+  //           CU_Enable2FA: e, // This updates only the changed property
+  //         })
+  //       );
+  //     });
+  //   },
+  //   [settingsRecord] // Add settingsRecord as dependency
+  // );
 
   const handleChangePassword = (fieldName, event) => {
     const { value } = event.target;
@@ -91,22 +85,22 @@ const PassCodeSettingComponent = ({
       }
   };
 
+  const getUserSettingData = useSelector(
+    (state) => state.settingSlicer.settingData.userSettingsList
+  );
+  console.log(getUserSettingData, "getUserSettingDatagetUserSettingData");
   return (
     <div className="setting-body-content px-2 py-3 h-screen-65">
-      <div className="d-flex border-bottom pb-3 pt-2 mb-2 fs-normal">
+      {/* <div className="d-flex border-bottom pb-3 pt-2 mb-2 fs-normal">
         <div>Two Factor Authentication</div>
         <label className="form-check form-switch ms-auto">
           <Switch
-            // className="form-check-input"
-            // type="checkbox"
-            // id="flexSwitchCheckDefault"
             name="CU_Enable2FA"
             onChange={onChangeSwitch}
-            checked={settingsRecord?.CU_Enable2FA}
-            value={settingsRecord?.CU_Enable2FA}
+            checked={settingsRecord.CU_Enable2FA}
           />
         </label>
-      </div>
+      </div> */}
       <div className="pb-3 pt-2 mb-2 fs-normal collapsible">
         <label className="fs-6 fw-bold mb-1 color-primary">
           Change Password
