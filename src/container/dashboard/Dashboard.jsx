@@ -215,11 +215,11 @@ const Dashboard = () => {
         );
         break;
       case "TREASURY_FORWARD_RATES_FEED":
-        // console.log(data, "TREASURY_FORWARD_RATES_FEED");
+        console.log(data, "TREASURY_FORWARD_RATES_FEED");
         break;
       case "TREASURY_FEDISCOUNTING_RATES_FEED":
         dispatch(setTreasuryFeDiscounting(data.payload));
-      // console.log(data, "TREASURY_FEDISCOUNTING_RATES_FEED");
+      console.log(data, "TREASURY_FEDISCOUNTING_RATES_FEED");
       case "TREASURY_NONFEDISCOUNTING_RATES_FEED":
         dispatch(setTreasuryNonFeDiscounting(data.payload));
         // console.log(data, "TREASURY_FEDISCOUNTING_RATES_FEED");
