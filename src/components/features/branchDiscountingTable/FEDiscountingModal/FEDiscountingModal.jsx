@@ -49,10 +49,7 @@ const FEDiscountingModal = ({
   const getAllInstrumentsForCounterPartiesData = useSelector(
     (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
   );
-  console.log(
-    getAllInstrumentsForCounterPartiesData,
-    "getAllInstrumentsForCounterPartiesDatagetAllInstrumentsForCounterPartiesData"
-  );
+
   // State for dropdown options
   const [currencyOptions, setCurrencyOptions] = useState([]);
   console.log(currencyOptions, "currencyOptionscurrencyOptions");
@@ -115,14 +112,20 @@ const FEDiscountingModal = ({
    */
   useEffect(() => {
     // Skip if pre-filled transaction data exists or instrument data isn't loaded
-    if (!getAllInstrumentsForCounterPartiesData !== null) {
+    if (getAllInstrumentsForCounterPartiesData === null) {
       return;
     }
-
+    console.log(
+      getAllInstrumentsForCounterPartiesData,
+      "getAllInstrumentsForCounterPartiesData"
+    );
     try {
       const { discountingApplicableInstruments } =
         getAllInstrumentsForCounterPartiesData;
-
+      console.log(
+        discountingApplicableInstruments,
+        "getAllInstrumentsForCounterPartiesData"
+      );
       // Process instruments to create dropdown options
       const validInstruments = discountingApplicableInstruments
         .map((instrument) => {
@@ -138,7 +141,7 @@ const FEDiscountingModal = ({
           return null; // Explicit return for non-matching instruments
         })
         .filter(Boolean); // Remove null entries
-
+      console.log(validInstruments, "validInstrumentsvalidInstruments");
       // Update state only if valid instruments were found
       if (validInstruments.length > 0) {
         setSelectedCurrency(validInstruments[0]);
@@ -153,14 +156,13 @@ const FEDiscountingModal = ({
       }
     } catch (error) {
       // Comprehensive error handling
-      console.error("Failed to initialize currency options:", {
-        error,
+      console.log("Failed to initialize currency options:", {
         data: getAllInstrumentsForCounterPartiesData,
       });
 
-      // Reset to empty state on error
-      setSelectedCurrency(null);
-      setCurrencyOptions([]);
+      // // Reset to empty state on error
+      // setSelectedCurrency(null);
+      // setCurrencyOptions([]);
     }
   }, [getAllInstrumentsForCounterPartiesData]);
 
