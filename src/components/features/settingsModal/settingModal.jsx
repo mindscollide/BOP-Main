@@ -15,6 +15,7 @@ import {
 import IconElement from "@/components/common/IconElement/IconElement";
 import { setSettingModal } from "@/store/modalSlice/modalSlicer";
 import { useSelector } from "react-redux";
+import { ResetPasswordCorporateApi } from "@/container/loginScreens/ChangePassword/changePasswordActions";
 
 const SettingModal = () => {
   const settingsRecordData = useSelector(
@@ -27,7 +28,19 @@ const SettingModal = () => {
   const [tabActive, setTabActive] = useState(1);
   console.log({ location, tabActive }, "settingModalsettingModalsettingModal");
   console.log(typeof tabActive, "settingModalsettingModalsettingModal");
-
+  const [createPasswordData, setCreatePasswordData] = useState({
+    userID: localStorage.getItem("userID"),
+    createPassword: "",
+    confirmPassowrd: "",
+    showPassword: false,
+    showConfirmPassword: false,
+  });
+  const [validations, setValidations] = useState({
+    isLengthValid: false,
+    hasNumber: false,
+    hasSpecialChar: false,
+    isMatch: false,
+  });
   useEffect(() => {
     dispatch(getMarkingTimingApi({ navigate }));
   }, []);
@@ -119,10 +132,20 @@ const SettingModal = () => {
         },
       ],
     };
-
     console.log(Data, "Data2Data2");
-
     dispatch(updateUserSettingDataAPI({ navigate, Data }));
+
+    let PasswordData = {
+      userID: Number(createPasswordData.userID),
+      Password: createPasswordData.createPassword,
+    };
+    // dispatch(createCorporateCreatePasswordApi({ navigate, Data }));
+    dispatch(ResetPasswordCorporateApi({ navigate, PasswordData }));
+
+    console.log(
+      "handleClickCreatePassword",
+      "handleClickCreatePasswordhandleClickCreatePassword"
+    );
   };
   return (
     <div>
@@ -192,7 +215,12 @@ const SettingModal = () => {
                     {tabActive === 1 ? (
                       <UserSetting />
                     ) : tabActive === 2 ? (
-                      <PassCode />
+                      <PassCode
+                        createPasswordData={createPasswordData}
+                        setCreatePasswordData={setCreatePasswordData}
+                        validations={validations}
+                        setValidations={setValidations}
+                      />
                     ) : (
                       <Markettiming />
                     )}
