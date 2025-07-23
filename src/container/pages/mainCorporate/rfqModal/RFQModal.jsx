@@ -126,7 +126,11 @@ const RFQModal = () => {
     value: 0,
     label: "",
   });
-
+  console.log(
+    typeOptionSelected,
+    natureOfBusinessOptions,
+    "typeOptionSelectedtypeOptionSelected"
+  );
   // Corporate selection (for branch users)
   const [corporateValue, setCorporateValue] = useState({
     value: 0,
@@ -652,21 +656,25 @@ const RFQModal = () => {
                   <SelectDropdown
                     placeholder=''
                     classNamePrefix='RfqSpot'
-                    options={natureOfBusinessOptions.filter((data, index) => {
-                      if (
-                        typeOptionSelected.value === 1 &&
-                        data.isForSpot === true
-                      ) {
-                        return data.isForBuy === true; // Show all options for Buy
-                      }
-                      if (
-                        typeOptionSelected.value === 2 &&
-                        data.isForSpot === true
-                      ) {
-                        return data.isForSell === true; // Show all options for Buy
-                      }
-                      return data;
-                    })}
+                    options={
+                      iBuySellData !== null
+                        ? natureOfBusinessOptions.filter((data) => {
+                            if (typeOptionSelected.value === 1) {
+                              return (
+                                data.isForSpot === true &&
+                                data.isForBuy === true
+                              );
+                            }
+                            if (typeOptionSelected.value === 2) {
+                              return (
+                                data.isForSpot === true &&
+                                data.isForSell === true
+                              );
+                            }
+                            return false; // Exclude all by default
+                          })
+                        : natureOfBusinessOptions
+                    }
                     onChange={handleNatureChange}
                     value={selectedNature}
                   />

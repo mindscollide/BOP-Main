@@ -154,6 +154,8 @@ export const corporateUserLoginInApi = createAsyncThunk(
                 contactNumber,
                 userRoleID,
                 userStatusID,
+                isFEEnabled,
+                isNonFEEnabled
               } = response.data.responseResult.user;
               localStorage.setItem("token", token);
               localStorage.setItem("refreshToken", refreshToken);
@@ -166,6 +168,8 @@ export const corporateUserLoginInApi = createAsyncThunk(
               localStorage.setItem("ldapAccount", ldapAccount);
               localStorage.setItem("contactNumber", contactNumber);
               localStorage.setItem("userStatusID", userStatusID);
+              localStorage.setItem("isFEEnabled", isFEEnabled)
+              localStorage.setItem("isNonFEEnabled", isNonFEEnabled)
 
               roleBasedNavigation(navigate, userRoleID);
               return {
