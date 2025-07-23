@@ -1,7 +1,7 @@
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import GlobalTable from "@/components/common/table/GlobalTable";
 import { buildDiscountingTable } from "@/components/utils/generateColumnsData";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { throttle } from "lodash";
 
@@ -52,40 +52,40 @@ const FeDiscountingTreasuryAndDealer = () => {
     GetDiscountingRatesForTreasury,
   ]);
 
-  useEffect(() => {
-    if (!TreasuryFeDiscounting) return;
+  const throttledUpdate = useMemo(
+    () =>
+      throttle((discountingUpdate) => {
+        const { feDiscountingRates } = discountingUpdate;
 
-    const throttledUpdate = throttle((discountingUpdate) => {
-      const { feDiscountingRates } = discountingUpdate;
+        setFeDiscountingData((prevData) =>
+          prevData.map((row) => {
+            let updatedRow = { ...row };
 
-      setFeDiscountingData((prevData) =>
-        prevData.map((row) => {
-          let updatedRow = { ...row };
-
-          feDiscountingRates.forEach((d) => {
-            // row ke sabhi keys loop karo
-            Object.keys(row).forEach((key) => {
-              if (
-                key.startsWith("InstrumentID_") &&
-                row[key] === d.instrumentID &&
-                row.TenorID === d.tenorID
-              ) {
-                const currency = key.split("_")[1]; // e.g. USD
-                // isma sirf bid ati hain ask nahi
-                updatedRow[`rate_${currency}`] = d.bidWithSpread;
-              }
+            feDiscountingRates.forEach((d) => {
+              Object.keys(row).forEach((key) => {
+                if (
+                  key.startsWith("InstrumentID_") &&
+                  row[key] === d.instrumentID &&
+                  row.TenorID === d.tenorID
+                ) {
+                  const currency = key.split("_")[1];
+                  updatedRow[`rate_${currency}`] = d.bidWithSpread;
+                }
+              });
             });
-          });
 
-          return updatedRow;
-        })
-      );
-    });
+            return updatedRow;
+          })
+        );
+      }, 20),
+    []
+  );
 
-    throttledUpdate(TreasuryFeDiscounting);
-
-    return () => throttledUpdate.cancel();
-  }, [TreasuryFeDiscounting]);
+  useEffect(() => {
+    if (TreasuryFeDiscounting) {
+      throttledUpdate(TreasuryFeDiscounting);
+    }
+  }, [TreasuryFeDiscounting, throttledUpdate]);
 
   // useEffect(() => {
   //   if (TreasuryFeDiscounting !== null) {
