@@ -5,30 +5,51 @@ import styles from "./TwoFaVerification.module.css";
 import CustomButton from "@/components/common/globalButton/button";
 import OtpInput from "react-otp-input";
 import { Link, useNavigate } from "react-router-dom";
-import { VerifyOTPApi } from "../Login/logInAction";
+import { GenerateOTPApi, VerifyOTPApi } from "../Login/logInAction";
 import { useDispatch } from "react-redux";
 const TwoFaVerification = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [errorState, setErrorState] = useState(false);
   const [otpValue, setOtpValue] = useState("");
-  const [timeLeft, setTimeLeft] = useState(300); // 5 minutes in seconds
-  const [canResend, setCanResend] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(() => {
+    // Check for existing expiry time
+    let storedExpireTime = localStorage.getItem("otpExpireTime");
 
+    // If not present, create one now
+    if (!storedExpireTime) {
+      const newExpireTime = Date.now() + 5 * 60 * 1000; // 5 minutes
+      localStorage.setItem("otpExpireTime", newExpireTime.toString());
+      storedExpireTime = newExpireTime;
+    }
+
+    // Calculate remaining seconds
+    const remaining = Math.floor(
+      (Number(storedExpireTime) - Date.now()) / 1000
+    );
+    return remaining > 0 ? remaining : 0;
+  });
+
+  const [canResend, setCanResend] = useState(false);
   useEffect(() => {
-    // Exit early when we reach 0
     if (timeLeft <= 0) {
       setCanResend(true);
       return;
     }
 
-    // Save intervalId to clear the interval when the component unmounts
     const timerId = setInterval(() => {
-      setTimeLeft(timeLeft - 1);
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timerId);
+          setCanResend(true);
+          return 0;
+        }
+        return prev - 1;
+      });
     }, 1000);
 
     return () => clearInterval(timerId);
-  }, [timeLeft]);
+  }, []);
 
   const handleSaveOtp = () => {
     try {
@@ -56,14 +77,20 @@ const TwoFaVerification = () => {
 
   const handleResendCode = () => {
     if (!canResend) return;
+    let userEmail = localStorage.getItem("email");
+    if (userEmail !== "" || userEmail !== undefined) {
+      const Data = { Email: userEmail };
+      dispatch(GenerateOTPApi({ navigate, Data }));
+      console.log("Resending code...");
 
-    // Add your resend code logic here
-    console.log("Resending code...");
+      const newExpireTime = Date.now() + 300000; // 5 minutes
+      localStorage.setItem("otpExpireTime", newExpireTime.toString());
 
-    // Reset the timer
-    setTimeLeft(300);
-    setCanResend(false);
+      setTimeLeft(300);
+      setCanResend(false);
+    }
   };
+
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
