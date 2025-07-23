@@ -46,7 +46,6 @@ const CreatePassword = () => {
       console.log(location, "validateLinkForCorporateCreatePasswordApi");
     }
   }, [location]);
-
   useEffect(() => {
     const lengthValid = createPasswordData.createPassword.length >= 8;
     const numberValid = /\d/.test(createPasswordData.createPassword);
