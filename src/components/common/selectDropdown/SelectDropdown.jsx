@@ -49,15 +49,15 @@ const SelectDropdown = ({
   components,
   closeMenuOnSelect,
   closeMenuOnScroll,
-  maxMenuHeight = 300, // Set default max height
+  maxMenuHeight, // Set default max height
   isDisabled,
   placeholder,
   value,
   isSearchable,
-  menuPlacement = "bottom",
+  menuPlacement ,
   filterOptions,
   menuIsOpen,
-  menuPosition = "absolute", // Changed from 'fixed' to 'absolute' for better positioning
+  menuPosition = "fixed", // Changed from 'fixed' to 'absolute' for better positioning
   onChange,
 }) => {
   return (

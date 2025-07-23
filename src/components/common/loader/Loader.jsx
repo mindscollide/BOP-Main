@@ -9,7 +9,9 @@ const Loader = () => {
   const bankSpotReducerLoader = useSelector(
     (state) => state.bankSpotReducer.Loader
   );
-  const blotterReducerLoader = useSelector((state) => state.BlotterSlicer.Loader) 
+  const blotterReducerLoader = useSelector(
+    (state) => state.BlotterSlicer.Loader
+  );
   const misReducerLoader = useSelector((state) => state.misReducer.Loader);
   const WatchListReducerLoader = useSelector(
     (state) => state.WatchListReducer.Loader
@@ -48,7 +50,7 @@ const Loader = () => {
     settingSlicerLoader,
     chatSlicerLoader,
     dealerSliceLoader,
-    blotterReducerLoader
+    blotterReducerLoader,
   ].some((loading) => loading);
 
   useEffect(() => {
@@ -67,17 +69,18 @@ const Loader = () => {
   }, [isLoading]);
 
   return (
-    isLoader && !window.location.pathname.includes("BOP")  && (
-      <div className='body-loader overflow-hidden'>
-        <div className='body-loader-inner'>
-          <div className='logo-loader-wrapper'>
+    isLoader &&
+    !window.location.pathname.includes("BOP") && (
+      <div className="body-loader overflow-hidden">
+        <div className="body-loader-inner">
+          <div className="logo-loader-wrapper">
             <img
-              className='img-fluid'
+              className="img-fluid"
               src={LoaderImage}
-              alt='Section-Loader'
+              alt="Section-Loader"
               width={200}
             />
-            <div className='loader-line-highlight' />
+            <div className="loader-line-highlight" />
           </div>
         </div>
       </div>

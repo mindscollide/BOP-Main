@@ -18,6 +18,10 @@ const SpotDealerAndTreasury = () => {
   const categorySpotRates = useSelector(
     (state) => state.RealtimeActionsSlice.CategorySpotRates
   );
+  console.log(
+    GetCategoryWiseSpotRatesDaata,
+    "GetCategoryWiseSpotRatesDaataGetCategoryWiseSpotRatesDaata"
+  );
   useEffect(() => {
     if (allInstrumentForTreasuryData) {
       try {
@@ -36,29 +40,16 @@ const SpotDealerAndTreasury = () => {
               spotIns.secondaryInstrumentID === insData.secondaryInstrumentID
           );
 
-          return matchedInstrument
-            ? {
-                ...spotIns,
-                offer: spotIns.offer,
-                bid: spotIns.bid,
-                instrumentName: matchedInstrument.instrumentName,
-                instrumentID: matchedInstrument.instrumentID,
-                secondaryInstrumentID: matchedInstrument.secondaryInstrumentID,
-                secondaryInstrumentName:
-                  matchedInstrument.secondaryInstrumentName,
-              }
-            : {
-                ...spotIns,
-                offer: 0,
-                bid: 0,
-                instrumentName: spotIns.instrumentName,
-                instrumentID: spotIns.instrumentID,
-                secondaryInstrumentID: spotIns.secondaryInstrumentID,
-                secondaryInstrumentName:
-                spotIns.secondaryInstrumentName,
-              };
+          return {
+            ...spotIns,
+            offer: matchedInstrument ? spotIns.offer : 0,
+            bid: matchedInstrument ? spotIns.bid : 0,
+            instrumentName: spotIns.instrumentName,
+            instrumentID: spotIns.instrumentID,
+            secondaryInstrumentID: spotIns.secondaryInstrumentID,
+            secondaryInstrumentName: spotIns.secondaryInstrumentName,
+          };
         });
-        console.log(enrichedData, "enrichedDataenrichedData");
         setSpotsData(enrichedData);
       } catch (error) {
         console.error("Error while setting spot data:", error);
@@ -85,7 +76,7 @@ const SpotDealerAndTreasury = () => {
             : data;
         })
       );
-    }, 300); // Update max every 300ms
+    }); // Update max every 300ms
 
     throttledUpdate(categorySpotRates);
 
@@ -98,46 +89,50 @@ const SpotDealerAndTreasury = () => {
     <>
       <Row>
         {spotsData.length > 0 &&
-          spotsData.map((spotCardsData, index) => {
-            return (
-              <Col sm={6} md={3} className='px-1'>
-                <div
-                  className={styles["SpotBoxCard"]}
+          [...spotsData] // create a shallow copy to avoid mutating original array
+            .sort((a, b) => a.instrumentID - b.instrumentID)
+            .map((spotCardsData, index) => {
+              return (
+                <Col
+                  sm={6}
+                  md={3}
+                  className='px-1'
                   key={spotCardsData.instrumentID}>
-                  <div>
-                    {/*box header*/}
-                    <div className='mb-3'>
-                      <span className={styles["SpotCurrentHeading"]}>
-                        {spotCardsData.instrumentName}
-                      </span>
-                      <span className={styles["SpotCurrentValue"]}>
-                        {spotCardsData.secondaryInstrumentName}
-                      </span>
-                    </div>
-                    {/*box content*/}
-                    <div className='d-flex gap-2 mt-2'>
-                      <Col>
-                        <BidAmountBox
-                          spot={true}
-                          BidBoxHeading={"I Sell"}
-                          BidAmountValue={spotCardsData.offer}
-                          applyClass={"SellCard"}
-                        />
-                      </Col>
-                      <Col>
-                        <BidAmountBox
-                          spot={true}
-                          BidBoxHeading={"I Buy"}
-                          BidAmountValue={spotCardsData.bid}
-                          applyClass={"BuyCard"}
-                        />
-                      </Col>
+                  <div className={styles["SpotBoxCard"]}>
+                    <div>
+                      {/* box header */}
+                      <div className='mb-3'>
+                        <span className={styles["SpotCurrentHeading"]}>
+                          {spotCardsData.instrumentName}
+                        </span>
+                        <span className={styles["SpotCurrentValue"]}>
+                          {spotCardsData.secondaryInstrumentName}
+                        </span>
+                      </div>
+                      {/* box content */}
+                      <div className='d-flex gap-2 mt-2'>
+                        <Col>
+                          <BidAmountBox
+                            spot={true}
+                            BidBoxHeading={"I Sell"}
+                            BidAmountValue={spotCardsData.offer}
+                            applyClass={"SellCard"}
+                          />
+                        </Col>
+                        <Col>
+                          <BidAmountBox
+                            spot={true}
+                            BidBoxHeading={"I Buy"}
+                            BidAmountValue={spotCardsData.bid}
+                            applyClass={"BuyCard"}
+                          />
+                        </Col>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Col>
-            );
-          })}
+                </Col>
+              );
+            })}
       </Row>
     </>
   );

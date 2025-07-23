@@ -1,14 +1,50 @@
-import React, { startTransition, useCallback } from "react";
+import React, {
+  startTransition,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import "../settingModal.css";
 import { Switch } from "antd";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { setSettingRecords } from "@/store/modalSlice/modalSlicer";
-const PassCodeSettingComponent = () => {
+import { useNavigate } from "react-router-dom";
+import { ResetPasswordCorporateApi } from "@/container/loginScreens/ChangePassword/changePasswordActions";
+import { Form, InputGroup } from "react-bootstrap";
+import styles from "./PassCodeSettingComponent.module.css";
+import IconElement from "@/components/common/IconElement/IconElement";
+const PassCodeSettingComponent = ({
+  createPasswordData,
+  setCreatePasswordData,
+  validations,
+  setValidations,
+}) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const settingsRecord = useSelector(
     (state) => state.modalReducer.settingsRecord
   );
+
+  useEffect(() => {
+    const lengthValid = createPasswordData.createPassword.length >= 8;
+    const numberValid = /\d/.test(createPasswordData.createPassword);
+    const specialCharValid = /[!@#$%^&*(),.?":{}|<>]/.test(
+      createPasswordData.createPassword
+    );
+    const matchValid =
+      createPasswordData.createPassword !== "" &&
+      createPasswordData.createPassword === createPasswordData.confirmPassowrd;
+
+    setValidations({
+      isLengthValid: lengthValid,
+      hasNumber: numberValid,
+      hasSpecialChar: specialCharValid,
+      isMatch: matchValid,
+    });
+  }, [createPasswordData.createPassword, createPasswordData.confirmPassowrd]);
+
+  console.log(createPasswordData, "validateLinkForCorporateCreatePasswordApi");
 
   // console.log(settingsRecord, "settingsRecordsettingsRecordsettingsRecord");
 
@@ -26,6 +62,35 @@ const PassCodeSettingComponent = () => {
     },
     [dispatch, settingsRecord] // Add settingsRecord as dependency
   );
+
+  const handleChangePassword = (fieldName, event) => {
+    const { value } = event.target;
+    if (fieldName === "createPassword") {
+      if (value !== "") {
+        setCreatePasswordData({
+          ...createPasswordData,
+          createPassword: value,
+        });
+      } else {
+        setCreatePasswordData({
+          ...createPasswordData,
+          createPassword: "",
+        });
+      }
+    } else if (fieldName === "confirmPassword")
+      if (value !== "") {
+        setCreatePasswordData({
+          ...createPasswordData,
+          confirmPassowrd: value,
+        });
+      } else {
+        setCreatePasswordData({
+          ...createPasswordData,
+          confirmPassowrd: "",
+        });
+      }
+  };
+
   return (
     <div className="setting-body-content px-2 py-3 h-screen-65">
       <div className="d-flex border-bottom pb-3 pt-2 mb-2 fs-normal">
@@ -46,32 +111,185 @@ const PassCodeSettingComponent = () => {
         <label className="fs-6 fw-bold mb-1 color-primary">
           Change Password
         </label>
-        <div
-          className="collapsible-conent collapse show mt-2"
-          id="ChangepasswordUserSetitng"
-        >
-          <div className="form-group d-flex">
-            <label className="col-form-label col-4">Enter New Password*</label>
-            <div className="col-8">
-              <input
-                type="password"
-                name="new-password"
-                className="form-control form-control-sm Position-input"
+        <InputGroup className="mb-3">
+          <InputGroup.Text
+            id="basic-addon1"
+            className={styles["Icon-Field-class"]}
+          >
+            <IconElement iconClass={"icon-lock"} />
+          </InputGroup.Text>
+          <Form.Control
+            name="passwordText"
+            autoComplete="off"
+            onChange={(event) => handleChangePassword("createPassword", event)}
+            className={styles["form-comtrol-textfield-password"]}
+            placeholder="Password"
+            type={createPasswordData.showPassword ? "text" : "password"}
+            aria-label="passwordText"
+            aria-describedby="basic-addon2"
+          />
+          <InputGroup.Text
+            id="basic-addon2"
+            className={styles["eyeIcon-Field-class-BOP-login"]}
+          >
+            {/* <IconElement iconClass={"icon-eye"} /> */}
+            {createPasswordData.showPassword ? (
+              <IconElement
+                onClick={() => {
+                  setCreatePasswordData({
+                    ...createPasswordData,
+                    showPassword: !createPasswordData.showPassword,
+                  });
+                }}
+                iconClass={"icon-eye-slash"}
               />
-            </div>
-          </div>
-          <div className="form-group d-flex">
-            <label className="col-form-label col-4">
-              Confirm New Password*
-            </label>
-            <div className="col-8">
-              <input
-                type="password"
-                name="re-password"
-                className="form-control form-control-sm Position-input"
+            ) : (
+              <IconElement
+                iconClass={"icon-eye"}
+                onClick={() => {
+                  setCreatePasswordData({
+                    ...createPasswordData,
+                    showPassword: !createPasswordData.showPassword,
+                  });
+                }}
               />
-            </div>
-          </div>
+            )}
+            {/* {showPassword ? (
+                 
+                ) : (
+                  <IconElement iconClass={"icon-eye"} />
+                )} */}
+          </InputGroup.Text>
+        </InputGroup>
+        <InputGroup className="mb-3">
+          <InputGroup.Text
+            id="basic-addon1"
+            className={styles["Icon-Field-class"]}
+          >
+            <IconElement iconClass={"icon-lock"} />
+          </InputGroup.Text>
+          <Form.Control
+            name="passwordText"
+            autoComplete="off"
+            type={createPasswordData.showConfirmPassword ? "text" : "password"}
+            onChange={(event) => handleChangePassword("confirmPassword", event)}
+            className={styles["form-comtrol-textfield-password"]}
+            placeholder="Confirm Password"
+            aria-label="passwordText"
+            aria-describedby="basic-addon2"
+          />
+          <InputGroup.Text
+            id="basic-addon2"
+            className={styles["eyeIcon-Field-class-BOP-login"]}
+          >
+            {createPasswordData.showConfirmPassword ? (
+              <IconElement
+                onClick={() => {
+                  setCreatePasswordData({
+                    ...createPasswordData,
+                    showConfirmPassword:
+                      !createPasswordData.showConfirmPassword,
+                  });
+                }}
+                iconClass={"icon-eye-slash"}
+              />
+            ) : (
+              <IconElement
+                iconClass={"icon-eye"}
+                onClick={() => {
+                  setCreatePasswordData({
+                    ...createPasswordData,
+                    showConfirmPassword:
+                      !createPasswordData.showConfirmPassword,
+                  });
+                }}
+              />
+            )}
+            {/* {showPassword ? (
+                  <IconElement iconClass={"icon-eye-slash"} />
+                ) : (
+                  <IconElement iconClass={"icon-eye"} />
+                )} */}
+          </InputGroup.Text>
+        </InputGroup>
+        <div className="d-flex gap-1 align-items-end mb-2">
+          <span>
+            {validations.isLengthValid ? (
+              <IconElement
+                applyClass={styles["checkIcon"]}
+                iconClass={"icon-check"}
+              />
+            ) : (
+              <IconElement
+                applyClass={styles["closeIcon"]}
+                iconClass={"icon-close"}
+              ></IconElement>
+            )}
+
+            {/* <IconElement
+                  applyClass={styles["checkIcon"]}
+                  iconClass={"icon-check"}
+                /> */}
+          </span>{" "}
+          <span>Length of at least 8 characters</span>
+        </div>
+        <div className="d-flex gap-1 align-items-end mb-2">
+          <span>
+            {validations.hasNumber ? (
+              <IconElement
+                applyClass={styles["checkIcon"]}
+                iconClass={"icon-check"}
+              />
+            ) : (
+              <IconElement
+                applyClass={styles["closeIcon"]}
+                iconClass={"icon-close"}
+              />
+            )}
+
+            {/* <IconElement
+                  applyClass={styles["checkIcon"]}
+                  iconClass={"icon-check"}
+                /> */}
+          </span>{" "}
+          <span>Contains numbers</span>
+        </div>
+        <div className="d-flex gap-1 align-items-end mb-2">
+          <span>
+            {validations.hasSpecialChar ? (
+              <IconElement
+                applyClass={styles["checkIcon"]}
+                iconClass={"icon-check"}
+              />
+            ) : (
+              <IconElement
+                applyClass={styles["closeIcon"]}
+                iconClass={"icon-close"}
+              />
+            )}
+
+            {/* <IconElement
+                  applyClass={styles["checkIcon"]}
+                  iconClass={"icon-check"}
+                /> */}
+          </span>{" "}
+          <span>Contains special characters</span>
+        </div>
+        <div className="d-flex gap-1 align-items-end mb-2">
+          <span>
+            {validations.isMatch ? (
+              <IconElement
+                applyClass={styles["checkIcon"]}
+                iconClass={"icon-check"}
+              />
+            ) : (
+              <IconElement
+                applyClass={styles["closeIcon"]}
+                iconClass={"icon-close"}
+              />
+            )}
+          </span>{" "}
+          <span>Password match</span>
         </div>
       </div>
     </div>

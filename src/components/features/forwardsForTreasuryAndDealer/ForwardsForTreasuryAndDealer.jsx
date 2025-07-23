@@ -316,6 +316,7 @@ const ForwardsForTreasuryAndDealer = () => {
                   <Suspense fallback={<div>Loading dropdown...</div>}>
                     <SelectDropdown
                       value={tenorValue}
+                      menuPosition="bottom"
                       onChange={handleChangeTenors}
                       options={getAllTenorsList}
                       classNamePrefix={"DealerDropDown"}

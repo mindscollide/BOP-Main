@@ -42,6 +42,7 @@ import {
   setCategoryForwardRates,
   setCategorySpotRates,
   setCounterPartySpotRates,
+  setFxTradingCards,
   setIncomingChat,
   setMarketTimingsUpdated,
   setTenorsCreated,
@@ -221,6 +222,7 @@ const Dashboard = () => {
         break;
       case "TREASURY_FEDISCOUNTING_RATES_FEED":
         dispatch(setTreasuryFeDiscounting(data.payload));
+        break;
       // console.log(data, "TREASURY_FEDISCOUNTING_RATES_FEED");
       case "TREASURY_NONFEDISCOUNTING_RATES_FEED":
         dispatch(setTreasuryNonFeDiscounting(data.payload));
@@ -233,6 +235,14 @@ const Dashboard = () => {
         //   "DISPATCHER_CATEGORY_FORWARD_RATES_FOR_TREASURY"
         // );
         break;
+      case "DISPATCHER_NONFEDISCOUNTING_RATES":
+        console.log(data.payload, "DISPATCHER_NONFEDISCOUNTING_RATES");
+        break;
+      case "SAVE_DASHBOARD":
+        console.log(data.payload, "SAVE_DASHBOARD");
+        dispatch(setFxTradingCards(data.payload));
+        break;
+
       default:
         // console.warn(
         //   "No specific handler for this message type",
@@ -297,12 +307,12 @@ const Dashboard = () => {
     }
   }, []);
   return (
-    <Layout className="roboto-13">
+    <Layout className='roboto-13'>
       {!location.pathname.includes("calculator") && <Header />}
 
       <GlobalNavbar />
       <Content>
-        <main className="px-3">
+        <main className='px-3'>
           <Outlet />
           <AnimatePresence>
             {blotterTransactionAdded && isTreasury && <DealBox />}
