@@ -41,7 +41,11 @@ import {
   setBlotterTransactionRFQQuotedForTreasuryDealBox,
   setCategoryFeDiscounting,
   setCategoryForwardRates,
+  setCategoryNonFeDiscounting,
   setCategorySpotRates,
+  setCounterPartyFeDiscounting,
+  setCounterPartyForwardRates,
+  setCounterPartyNonFeDiscounting,
   setCounterPartySpotRates,
   setFxTradingCards,
   setIncomingChat,
@@ -212,8 +216,8 @@ const Dashboard = () => {
         break;
       case "DISPATCHER_CATEGORY_SPOT_RATES_FOR_TREASURY":
         dispatch(setCategorySpotRates(data.payload));
-      console.log(data, "DISPATCHER_CATEGORY_SPOT_RATES_FOR_TREASURY");
-  
+        console.log(data, "DISPATCHER_CATEGORY_SPOT_RATES_FOR_TREASURY");
+
         break;
       case "TREASURY_FORWARD_RATES_FEED":
         dispatch(setTreasuryForwardRates(data.payload));
@@ -238,13 +242,22 @@ const Dashboard = () => {
         break;
 
       case "DISPATCHER_NONFEDISCOUNTING_RATES":
+        dispatch(setCounterPartyNonFeDiscounting(data.payload));
         console.log(data.payload, "DISPATCHER_NONFEDISCOUNTING_RATES");
         break;
       case "SAVE_DASHBOARD":
         console.log(data.payload, "SAVE_DASHBOARD");
         dispatch(setFxTradingCards(data.payload));
         break;
-
+      case "DISPATCHER_FORWARD_RATES":
+        dispatch(setCounterPartyForwardRates(data.payload));
+        break;
+      case "DISPATCHER_FEDISCOUNTING_RATES":
+        dispatch(setCounterPartyFeDiscounting(data.payload));
+        break;
+      case "DISPATCHER_CATEGORY_NONFEDISCOUNTING_RATES_FOR_TREASURY":
+        dispatch(setCategoryNonFeDiscounting(data.payload));
+        break;
       default:
         // console.warn(
         //   "No specific handler for this message type",
@@ -309,12 +322,12 @@ const Dashboard = () => {
     }
   }, []);
   return (
-    <Layout className="roboto-13">
+    <Layout className='roboto-13'>
       {!location.pathname.includes("calculator") && <Header />}
 
       <GlobalNavbar />
       <Content>
-        <main className="px-3">
+        <main className='px-3'>
           <Outlet />
           <AnimatePresence>
             {blotterTransactionAdded && isTreasury && <DealBox />}

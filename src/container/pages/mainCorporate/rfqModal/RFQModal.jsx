@@ -222,7 +222,7 @@ const RFQModal = () => {
         console.error("Error initializing with buy/sell data:", error);
       }
     }
-  }, [iBuySellData]);
+  }, [iBuySellData, natureOfBusinessList]);
 
   /**
    * Effect for initializing corporate options
@@ -652,7 +652,21 @@ const RFQModal = () => {
                   <SelectDropdown
                     placeholder=''
                     classNamePrefix='RfqSpot'
-                    options={natureOfBusinessOptions}
+                    options={natureOfBusinessOptions.filter((data, index) => {
+                      if (
+                        typeOptionSelected.value === 1 &&
+                        data.isForSpot === true
+                      ) {
+                        return data.isForBuy === true; // Show all options for Buy
+                      }
+                      if (
+                        typeOptionSelected.value === 2 &&
+                        data.isForSpot === true
+                      ) {
+                        return data.isForSell === true; // Show all options for Buy
+                      }
+                      return data;
+                    })}
                     onChange={handleNatureChange}
                     value={selectedNature}
                   />

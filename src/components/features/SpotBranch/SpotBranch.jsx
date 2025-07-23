@@ -45,11 +45,7 @@ const SpotBranch = () => {
   const [watchlistCardData, setWatchlistCardData] = useState([]);
   const [watchlistTableData, setWatchlistTableData] = useState([]);
   const [watchListDateTime, setWatchListDateTime] = useState(null);
-  console.log(
-    watchListDateTime,
-    watchlistTableData,
-    "watchlistTableDatawatchlistTableData"
-  );
+
   //Global State for Watchlist Card Data
   const getAllInstrumentsForCounterPartiesData = useSelector(
     (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
@@ -63,7 +59,6 @@ const SpotBranch = () => {
   );
 
   const [watchlistData, setWatchlistData] = useState(initialWatchlistData);
-  console.log(FxTradingCards, "watchlistDatawatchlistDatawatchlistData");
   // Extracting out the Cards Wathlist data in the state
   useEffect(() => {
     try {
@@ -77,10 +72,7 @@ const SpotBranch = () => {
         const DataTime = time !== "" && formatDateUTCToGMT(time);
 
         setWatchListDateTime(time !== "" && DataTime);
-        console.log(
-          spotApplicableInstruments,
-          "watchlistDatawatchlistDatawatchlistData"
-        );
+    
         if (spotApplicableInstruments.length > 0) {
           // Step 1: Map instruments and merge bid/offer
           const updatedTableData = spotApplicableInstruments.map((item) => {
@@ -184,11 +176,12 @@ const SpotBranch = () => {
     }) // Adjust throttle duration (in ms) as needed
   ).current;
 
+
   useEffect(() => {
     if (FxTradingCards !== null) {
       try {
         const { instrumentID, secondaryInstrumentID, sectionID } =
-          FxTradingCards.dashboardSection;
+          FxTradingCards?.dashboardSection;
 
         const matchingData = watchlistTableData.find(
           (data) =>
@@ -196,7 +189,7 @@ const SpotBranch = () => {
             data.secondaryInstrumentID === secondaryInstrumentID
         );
 
-        if (matchingData && sectionID >= 1 && sectionID <= 6) {
+        if (matchingData && Number(sectionID) >= 1 && Number(sectionID) <= 6) {
           const sectionKey = `watchlist${sectionID}`;
 
           setWatchlistData((prev) => ({
@@ -231,7 +224,6 @@ const SpotBranch = () => {
       width: "160px",
       align: "left",
       render: (text, record) => {
-        console.log(text, record, "responseresponseresponse");
         return (
           <span className='instrument-column'>
             {`${record.instrumentName}${record.secondaryInstrumentName}`}
@@ -277,7 +269,6 @@ const SpotBranch = () => {
   const onDragEnd = (result) => {
     const { source, destination } = result;
 
-    console.log(destination, source, "resultresultresultresult11");
 
     if (!destination) return;
 
@@ -285,7 +276,6 @@ const SpotBranch = () => {
     if (destination.droppableId.startsWith("watchlist")) {
       const item = watchlistTableData[source.index]; // Dragged item
       const findSectionID = watchlistData[destination.droppableId]; // Get correct tile object
-      console.log(findSectionID, "findSectionIDfindSectionID");
       const { instrumentID, secondaryInstrumentID } = item;
 
       const Data = {
@@ -294,7 +284,6 @@ const SpotBranch = () => {
         SecondaryInstrumentID: Number(secondaryInstrumentID),
       };
 
-      console.log(Data, "resultresultresultresult");
 
       dispatch(SaveUserDashboardAPI({ navigate, Data }));
     }
@@ -343,7 +332,6 @@ const SpotBranch = () => {
                 {[...Array(6)].map((_, index) => {
                   const droppableId = `watchlist${index + 1}`;
                   const data = watchlistData[droppableId] || {}; // Get data if available, else empty
-                  console.log(data, "datadatadatadatadata");
                   return (
                     <Col key={index} lg={4} md={4} sm={12}>
                       <Droppable droppableId={droppableId}>

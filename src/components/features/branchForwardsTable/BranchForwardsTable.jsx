@@ -10,6 +10,7 @@ import { Col, Row } from "react-bootstrap";
 import CorporateBookaForwardModal from "./CorporateBookaForwardModal/CorporateBookaForwardModal";
 import { buildForwardsTable } from "@/components/utils/generateColumnsData";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
+import { throttle } from "lodash";
 
 const BranchForwardsTable = () => {
   const dispatch = useDispatch();
@@ -23,6 +24,10 @@ const BranchForwardsTable = () => {
   //Global State for Watchlist Card Data
   const getAllInstrumentsForCounterPartiesData = useSelector(
     (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
+  );
+
+  const CounterPartyForwardRates = useSelector(
+    (state) => state.RealtimeActionsSlice.CounterPartyForwardRates
   );
 
   const getAllTenorsRecords = useSelector(
@@ -48,7 +53,8 @@ const BranchForwardsTable = () => {
       // GetForwardRatesForCounterPartyData !== null
     ) {
       try {
-        const { forwardApplicableInstruments } = getAllInstrumentsForCounterPartiesData;
+        const { forwardApplicableInstruments } =
+          getAllInstrumentsForCounterPartiesData;
         console.log(
           forwardApplicableInstruments,
           "forwardApplicableInstrumentsforwardApplicableInstruments"
@@ -101,6 +107,43 @@ const BranchForwardsTable = () => {
     getAllTenorsRecords,
     GetForwardRatesForCounterPartyData,
   ]);
+  useEffect(() => {
+    if (!CounterPartyForwardRates) return;
+
+    const throttledUpdate = throttle((forwardRatesUpdate) => {
+      const { forwardsInstrumentData } = forwardRatesUpdate;
+
+      setDataSource((prevData) =>
+        prevData.map((row) => {
+          let updatedRow = { ...row };
+
+          forwardsInstrumentData.forEach((d) => {
+            // row ke sabhi keys loop karo
+            Object.keys(row).forEach((key) => {
+              if (
+                key.startsWith("InstrumentID_") &&
+                row[key] === d.instrumentID
+              ) {
+                const currency = key.split("_")[1]; // e.g. USD
+                // check karo tenorID match karta hai ya nahi
+                console.log(row.tenorID === d.tenorID, "ahksbdabsdhas");
+                if (row.tenorID === d.tenorID) {
+                  updatedRow[`bid_${currency}`] = d.bidWithSpread;
+                  updatedRow[`ask_${currency}`] = d.askWithSpread;
+                }
+              }
+            });
+          });
+
+          return updatedRow;
+        })
+      );
+    }, 20);
+
+    throttledUpdate(CounterPartyForwardRates);
+
+    return () => throttledUpdate.cancel();
+  }, [CounterPartyForwardRates]);
 
   const handleBookaForwardCorporate = () => {
     setBookaForwardModalCall(true);

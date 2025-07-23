@@ -218,7 +218,10 @@ const TenoreWiseCurrentAndLastRates = ({
     }
 
     let checkAskValue = forwardsForTreasuryBranch.find(
-      (item) => Number(item.currentAsk) <= Number(item.currentBid)
+      (item) =>
+        Number(item.currentAsk) !== 0 &&
+        Number(item.currentBid) !== 0 &&
+        Number(item.currentAsk) < Number(item.currentBid)
     );
 
     if (checkAskValue !== undefined) {
