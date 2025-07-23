@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 import { formatDateUTCToGMT } from "@/components/utils/timeFunction";
 import moment from "moment";
 import { throttle } from "lodash";
+import { setFxTradingCards } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 
 const initialWatchlistData = Object.fromEntries(
   Array.from({ length: 6 }, (_, i) => [
@@ -57,18 +58,18 @@ const SpotBranch = () => {
   const GetSpotRatesForCounterParty = useSelector(
     (state) => state.BlotterSlicer.GetSpotRatesForCounterParty
   );
-  console.log(GetSpotRatesForCounterParty, "GetSpotRatesForCounterParty");
+  const FxTradingCards = useSelector(
+    (state) => state.RealtimeActionsSlice.FxTradingCards
+  );
 
   const [watchlistData, setWatchlistData] = useState(initialWatchlistData);
-  console.log(
-    getAllInstrumentsForCounterPartiesData,
-    "watchlistDatawatchlistDatawatchlistData"
-  );
+  console.log(FxTradingCards, "watchlistDatawatchlistDatawatchlistData");
   // Extracting out the Cards Wathlist data in the state
   useEffect(() => {
     try {
       if (getAllInstrumentsForCounterPartiesData !== null) {
-        const { spotApplicableInstruments } = getAllInstrumentsForCounterPartiesData;
+        const { spotApplicableInstruments } =
+          getAllInstrumentsForCounterPartiesData;
         const { instruments = [], time = "" } =
           GetSpotRatesForCounterParty !== null && GetSpotRatesForCounterParty;
 
@@ -182,6 +183,44 @@ const SpotBranch = () => {
       });
     }) // Adjust throttle duration (in ms) as needed
   ).current;
+
+  useEffect(() => {
+    if (FxTradingCards !== null) {
+      try {
+        const { instrumentID, secondaryInstrumentID, sectionID } =
+          FxTradingCards.dashboardSection;
+
+        const matchingData = watchlistTableData.find(
+          (data) =>
+            data.instrumentID === instrumentID &&
+            data.secondaryInstrumentID === secondaryInstrumentID
+        );
+
+        if (matchingData && sectionID >= 1 && sectionID <= 6) {
+          const sectionKey = `watchlist${sectionID}`;
+
+          setWatchlistData((prev) => ({
+            ...prev,
+            [sectionKey]: {
+              ...prev[sectionKey],
+              currecncyLabel: `${matchingData.instrumentName}${matchingData.secondaryInstrumentName}`,
+              buyValue: matchingData.bid,
+              sellValue: matchingData.offer,
+              instrumentID: matchingData.instrumentID,
+              isSell: matchingData.isSell,
+              isBuy: matchingData.isBuy,
+            },
+          }));
+        }
+        dispatch(setFxTradingCards(null)); // Clear FxTradingCards after processing
+      } catch (error) {
+        console.error(
+          "Error while setting real-time FxTradingCards data:",
+          error
+        );
+      }
+    }
+  }, [FxTradingCards, watchlistTableData]);
 
   //Column of my watch<list> Table
   const columns = [

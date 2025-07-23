@@ -50,8 +50,12 @@ const RealtimeActionsSlice = createSlice({
     CategoryForwardRates: null,
     TreasuryFeDiscounting: null,
     TreasuryNonFeDiscounting: null,
+    FxTradingCards: null,
   },
   reducers: {
+    setFxTradingCards: (state, { payload }) => {
+      state.FxTradingCards = payload;
+    },
     setTreasuryFeDiscounting: (state, { payload }) => {
       state.TreasuryFeDiscounting = payload;
     },
@@ -171,6 +175,7 @@ const RealtimeActionsSlice = createSlice({
 });
 
 export const {
+  setFxTradingCards,
   setTreasuryFeDiscounting,
   setTreasuryNonFeDiscounting,
   setTreasurySpotRatesFeed,
