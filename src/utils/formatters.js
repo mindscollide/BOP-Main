@@ -216,6 +216,7 @@ export const convertDateTimeIntoLocal = (utcDateString) => {
  * @returns {string} Formatted amount string
  */
 export const formatPkAmount = (rawValue, options = {}) => {
+  console.log(rawValue, "rawValuerawValuerawValue")
   const {
     decimals = 2,
     allowNegative = true,

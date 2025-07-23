@@ -205,11 +205,11 @@ const Dashboard = () => {
         dispatch(setTreasurySpotRatesFeed(data.payload));
         break;
       case "DISPATCHER_SPOT_RATES":
-        // console.log(data.payload, "DISPATCHER_SPOT_RATES");
+        console.log(data.payload, "DISPATCHER_SPOT_RATES");
         dispatch(setCounterPartySpotRates(data.payload));
         break;
       case "DISPATCHER_CATEGORY_SPOT_RATES_FOR_TREASURY":
-        dispatch(setCategorySpotRates(data.payload));
+        // dispatch(setCategorySpotRates(data.payload));
         // console.log(
         //   "DISPATCHER_CATEGORY_SPOT_RATES_FOR_TREASURY",
         //   data.payload
@@ -227,7 +227,7 @@ const Dashboard = () => {
         // console.log(data, "TREASURY_NONFEDISCOUNTING_RATES_FEED");
         break;
       case "DISPATCHER_CATEGORY_FORWARD_RATES_FOR_TREASURY":
-        dispatch(setCategoryForwardRates(data.payload));
+        // dispatch(setCategoryForwardRates(data.payload));
         // console.log(
         //   data.payload,
         //   "DISPATCHER_CATEGORY_FORWARD_RATES_FOR_TREASURY"

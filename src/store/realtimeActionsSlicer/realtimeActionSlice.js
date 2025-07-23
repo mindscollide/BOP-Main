@@ -54,19 +54,19 @@ const RealtimeActionsSlice = createSlice({
   },
   reducers: {
     setFxTradingCards: (state, { payload }) => {
-      state.FxTradingCards = payload;
+      state.FxTradingCards = { ...payload };
     },
     setTreasuryFeDiscounting: (state, { payload }) => {
-      state.TreasuryFeDiscounting = payload;
+      state.TreasuryFeDiscounting = { ...payload };
     },
     setTreasuryNonFeDiscounting: (state, { payload }) => {
-      state.TreasuryNonFeDiscounting = payload;
+      state.TreasuryNonFeDiscounting = { ...payload };
     },
     setCategorySpotRates: (state, { payload }) => {
-      state.CategorySpotRates = payload;
+      state.CategorySpotRates = { ...payload };
     },
     setCategoryForwardRates: (state, { payload }) => {
-      state.CategoryForwardRates = payload;
+      state.CategoryForwardRates = { ...payload };
     },
     setCounterPartySpotRates: (state, { payload }) => {
       state.CounterPartySpotRates = { ...payload };
