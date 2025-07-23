@@ -8,7 +8,7 @@ import React, {
 import { useSelector } from "react-redux";
 import GlobalTable from "../../../../../../components/common/table/GlobalTable";
 import BidAmountBox from "../../../../../../components/common/bidAmountBox/BidAmountBox";
-import { formatDateTimeToUTCTime } from "../../../../../../components/utils/timeFunction";
+import { formatDateTimeToUTCTime, formatDateUTCToGMT } from "../../../../../../components/utils/timeFunction";
 import { useDispatch } from "react-redux";
 import { isEqual, throttle } from "lodash";
 import SectionLoader from "@/components/common/sectionLoader/SectionLoader";
@@ -259,7 +259,7 @@ const BankSpot = () => {
         dataIndex: "time",
         width: 80,
         className: "roboto-13",
-        render: (text) => formatDateTimeToUTCTime(text),
+        render: (text) => formatDateUTCToGMT(text).toTimeString().substring(0, 8), // Format time to HH:MM:SS
       },
     ],
     []

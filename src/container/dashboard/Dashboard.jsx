@@ -210,15 +210,12 @@ const Dashboard = () => {
         dispatch(setCounterPartySpotRates(data.payload));
         break;
       case "DISPATCHER_CATEGORY_SPOT_RATES_FOR_TREASURY":
-        // dispatch(setCategorySpotRates(data.payload));
-        // console.log(
-        //   "DISPATCHER_CATEGORY_SPOT_RATES_FOR_TREASURY",
-        //   data.payload
-        // );
+        dispatch(setCategorySpotRates(data.payload));
+      console.log(data, "DISPATCHER_CATEGORY_SPOT_RATES_FOR_TREASURY");
+  
         break;
       case "TREASURY_FORWARD_RATES_FEED":
         dispatch(setTreasuryForwardRates(data.payload));
-        // console.log(data, "TREASURY_FORWARD_RATES_FEED");
         break;
       case "TREASURY_FEDISCOUNTING_RATES_FEED":
         dispatch(setTreasuryFeDiscounting(data.payload));
@@ -229,7 +226,7 @@ const Dashboard = () => {
         // console.log(data, "TREASURY_NONFEDISCOUNTING_RATES_FEED");
         break;
       case "DISPATCHER_CATEGORY_FORWARD_RATES_FOR_TREASURY":
-        // dispatch(setCategoryForwardRates(data.payload));
+        dispatch(setCategoryForwardRates(data.payload));
         // console.log(
         //   data.payload,
         //   "DISPATCHER_CATEGORY_FORWARD_RATES_FOR_TREASURY"
