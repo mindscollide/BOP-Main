@@ -42,8 +42,8 @@ const SpotDealerAndTreasury = () => {
 
           return {
             ...spotIns,
-            offer: matchedInstrument ? spotIns.offer : 0,
-            bid: matchedInstrument ? spotIns.bid : 0,
+            offer: matchedInstrument ? matchedInstrument.offer : 0,
+            bid: matchedInstrument ? matchedInstrument.bid : 0,
             instrumentName: spotIns.instrumentName,
             instrumentID: spotIns.instrumentID,
             secondaryInstrumentID: spotIns.secondaryInstrumentID,
@@ -76,7 +76,7 @@ const SpotDealerAndTreasury = () => {
             : data;
         })
       );
-    }); // Update max every 300ms
+    },); // Update max every 300ms
 
     throttledUpdate(categorySpotRates);
 
@@ -97,7 +97,7 @@ const SpotDealerAndTreasury = () => {
                   sm={6}
                   md={3}
                   className='px-1'
-                  key={spotCardsData.instrumentID}>
+                  key={index}>
                   <div className={styles["SpotBoxCard"]}>
                     <div>
                       {/* box header */}
