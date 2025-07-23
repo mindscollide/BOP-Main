@@ -28,6 +28,8 @@ import {
 const BlotterHeader = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const GetNOPData = useSelector((state) => state.BlotterSlicer.GetNOPData);
+  console.log("GetNOPDataGetNOPData: ", GetNOPData);
   const [openNopModal, setOpenNopModal] = useState(false);
   const [openExportDiv, setOpenExportDiv] = useState(false);
   const [openMailModal, setOpenMailModal] = useState(false);
@@ -93,6 +95,7 @@ const BlotterHeader = () => {
       dispatch(DownloadExcelReportBlotterTrasactionBranchAPI({ navigate }));
     }
   };
+
   return (
     <>
       <section className="position-relative">
@@ -111,7 +114,11 @@ const BlotterHeader = () => {
                   <>
                     {" "}
                     <span className="hd-txt me-3">NOP (US$)</span>
-                    <span className="hd-cr me-2">46,999</span>
+                    <span className="hd-cr me-2">
+                      {GetNOPData.nop >= 0
+                        ? GetNOPData.nop
+                        : `(${Math.abs(GetNOPData.nop)})`}
+                    </span>
                     <CustomButton
                       applyClass={"NOP-button"}
                       value="+"
