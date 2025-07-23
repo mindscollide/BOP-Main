@@ -11,7 +11,10 @@ import {
   setForwardQuoteModal,
   setViewDealModal,
 } from "@/store/modalSlice/modalSlicer";
-import { RFQForwardTransactionQuotation, RFQTransactionQuotation } from "@/components/features/blotter/BlotterActions";
+import {
+  RFQForwardTransactionQuotation,
+  RFQTransactionQuotation,
+} from "@/components/features/blotter/BlotterActions";
 import { useNavigate } from "react-router-dom";
 import { setForwardQuoteModalData } from "@/store/BlotterSlicer/BlotterSlicer";
 
@@ -52,6 +55,11 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
     };
   }, [forwardQuoteModalData]);
 
+  // Get all instruments for counterparties from Redux store
+  const getAllInstrumentsForCounterPartiesData = useSelector(
+    (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
+  );
+
   const handleChangeRate = (event, type) => {
     if (type === "readyValue") {
       setReadyValue(event.target.value);
@@ -76,9 +84,6 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
       dispatch(RFQForwardTransactionQuotation({ navigate, Data }));
     }
   };
-
-  const handleCancel = () => {};
-  // if (!viewDealModal && !dealData) return null;
 
   const calculateNewReadyValue = (instrumentName, ready, swap) => {
     const numReady = parseFloat(ready) || 0;

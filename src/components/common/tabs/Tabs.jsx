@@ -8,9 +8,10 @@ const GlobalTabs = ({ tabs, activeKey, onTabChange, tabClass }) => {
       activeKey={activeKey}
       onSelect={onTabChange}
       id='uncontrolled-tab-example'
+      
       className={tabClass}>
       {tabs.map((tab, index) => (
-        <Tab eventKey={tab.title} title={tab.title} key={index}>
+        <Tab eventKey={tab.title}  title={tab.title} key={index}>
           {tab.content}
         </Tab>
       ))}

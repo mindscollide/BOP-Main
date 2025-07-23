@@ -18,47 +18,51 @@ const SpotDealerAndTreasury = () => {
   const categorySpotRates = useSelector(
     (state) => state.RealtimeActionsSlice.CategorySpotRates
   );
-
   useEffect(() => {
-    if (
-      GetCategoryWiseSpotRatesDaata !== null &&
-      allInstrumentForTreasuryData !== null
-    ) {
+    if (allInstrumentForTreasuryData) {
       try {
-        const { instruments } = GetCategoryWiseSpotRatesDaata;
-        const { spotInstruments } = allInstrumentForTreasuryData;
+        const { instruments = [] } =
+          GetCategoryWiseSpotRatesDaata !== null &&
+          GetCategoryWiseSpotRatesDaata;
+        const { spotInstruments = [], crossInstruments = [] } =
+          allInstrumentForTreasuryData;
 
-        if (instruments.length > 0) {
-          const spotData = instruments
-            .map((spotIns) => {
-              const matchedInstrument = spotInstruments.find(
-                (insData) =>
-                  spotIns.instrumentID === insData.instrumentID &&
-                  spotIns.secondaryInstrumentID ===
-                    insData.secondaryInstrumentID
-              );
+        const combinedInstruments = [...spotInstruments, ...crossInstruments];
 
-              if (matchedInstrument) {
-                return {
-                  ...spotIns,
-                  offer: spotIns.offer, // as expected by UI
-                  bid: spotIns.bid,
-                  instrumentName: `${matchedInstrument.instrumentName}`, // e.g. EURUSD
-                  instrumentID: matchedInstrument.instrumentID,
-                  secondaryInstrumentID:
-                    matchedInstrument.secondaryInstrumentID,
-                  secondaryInstrumentName:
-                    matchedInstrument.secondaryInstrumentName,
-                };
+        const enrichedData = combinedInstruments.map((spotIns) => {
+          const matchedInstrument = instruments.find(
+            (insData) =>
+              spotIns.instrumentID === insData.instrumentID &&
+              spotIns.secondaryInstrumentID === insData.secondaryInstrumentID
+          );
+
+          return matchedInstrument
+            ? {
+                ...spotIns,
+                offer: spotIns.offer,
+                bid: spotIns.bid,
+                instrumentName: matchedInstrument.instrumentName,
+                instrumentID: matchedInstrument.instrumentID,
+                secondaryInstrumentID: matchedInstrument.secondaryInstrumentID,
+                secondaryInstrumentName:
+                  matchedInstrument.secondaryInstrumentName,
               }
-
-              return null; // return null if no match found
-            })
-            .filter(Boolean); // remove null entries
-
-          setSpotsData(spotData); // Apply the data to state
-        }
-      } catch (error) {}
+            : {
+                ...spotIns,
+                offer: 0,
+                bid: 0,
+                instrumentName: spotIns.instrumentName,
+                instrumentID: spotIns.instrumentID,
+                secondaryInstrumentID: spotIns.secondaryInstrumentID,
+                secondaryInstrumentName:
+                spotIns.secondaryInstrumentName,
+              };
+        });
+        console.log(enrichedData, "enrichedDataenrichedData");
+        setSpotsData(enrichedData);
+      } catch (error) {
+        console.error("Error while setting spot data:", error);
+      }
     }
   }, [GetCategoryWiseSpotRatesDaata, allInstrumentForTreasuryData]);
 

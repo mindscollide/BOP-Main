@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import LoaderImage from "@/assets/logo-hd.png";
 import "./Loader.css";
+import { useLocation } from "react-router-dom";
 
 const Loader = () => {
   const [isLoader, setIsLoading] = useState(false);
@@ -66,7 +67,7 @@ const Loader = () => {
   }, [isLoading]);
 
   return (
-    isLoader && (
+    isLoader && !window.location.pathname.includes("BOP")  && (
       <div className='body-loader overflow-hidden'>
         <div className='body-loader-inner'>
           <div className='logo-loader-wrapper'>

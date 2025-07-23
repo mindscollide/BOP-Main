@@ -39,11 +39,14 @@ import {
   setBlotterTransactionAddedForTreasuryDealBox,
   setBlotterTransactionRFQExpiredForTreasuryDealBox,
   setBlotterTransactionRFQQuotedForTreasuryDealBox,
+  setCategoryForwardRates,
   setCategorySpotRates,
   setCounterPartySpotRates,
   setIncomingChat,
   setMarketTimingsUpdated,
   setTenorsCreated,
+  setTreasuryFeDiscounting,
+  setTreasuryNonFeDiscounting,
   setTreasurySpotRatesFeed,
   tenorWiseFowardsRatesPublishedActions,
 } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
@@ -210,8 +213,29 @@ const Dashboard = () => {
           "DISPATCHER_CATEGORY_SPOT_RATES_FOR_TREASURY",
           data.payload
         );
+        break;
+      case "TREASURY_FORWARD_RATES_FEED":
+        console.log(data, "TREASURY_FORWARD_RATES_FEED");
+        break;
+      case "TREASURY_FEDISCOUNTING_RATES_FEED":
+        dispatch(setTreasuryFeDiscounting(data.payload));
+      console.log(data, "TREASURY_FEDISCOUNTING_RATES_FEED");
+      case "TREASURY_NONFEDISCOUNTING_RATES_FEED":
+        dispatch(setTreasuryNonFeDiscounting(data.payload));
+        // console.log(data, "TREASURY_FEDISCOUNTING_RATES_FEED");
+        break;
+      case "DISPATCHER_CATEGORY_FORWARD_RATES_FOR_TREASURY":
+        dispatch(setCategoryForwardRates(data.payload));
+        console.log(
+          data.payload,
+          "DISPATCHER_CATEGORY_FORWARD_RATES_FOR_TREASURY"
+        );
+        break;
       default:
-        console.warn("No specific handler for this message type");
+        console.warn(
+          "No specific handler for this message type",
+          data.payload.message
+        );
         break;
     }
   }, []);
@@ -271,12 +295,12 @@ const Dashboard = () => {
     }
   }, []);
   return (
-    <Layout className='roboto-13'>
+    <Layout className="roboto-13">
       {!location.pathname.includes("calculator") && <Header />}
 
       <GlobalNavbar />
       <Content>
-        <main className='px-3'>
+        <main className="px-3">
           <Outlet />
           <AnimatePresence>
             {blotterTransactionAdded && isTreasury && <DealBox />}

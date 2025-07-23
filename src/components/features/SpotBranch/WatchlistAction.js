@@ -44,7 +44,7 @@ export const GetDashboardDataAPI = createAsyncThunk(
                 "WatchList_WatchListServiceManager_GetFXTradingSectionAndApplicableInstrument_01".toLowerCase()
               )
           ) {
-            console.log("globalStateWatchlistCardData", response.data);
+            console.log("getAllInstrumentsForCounterPartiesData", response.data);
        
 
             return {

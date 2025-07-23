@@ -31,6 +31,7 @@ import {
   GetNonFEDiscountingTransactionDetails,
   GetNOPData,
   CalculateNonFESwapAndDiscountingRM,
+  CalculateFEDiscounting,
   CalculateFESwapAndDiscountingRM,
   SaveFEDiscountingTransactionRM,
 } from "@/common/api_config";
@@ -403,7 +404,10 @@ export const SaveFEDiscountingTransactionAPI = createAsyncThunk(
 
 export const SaveNonFEDiscountingTransactionAPI = createAsyncThunk(
   "Blotter/SaveNonFEDiscounting",
-  async ({ navigate, Data, setNonfeDiscountingModalCall }, { dispatch, rejectWithValue }) => {
+  async (
+    { navigate, Data, setNonfeDiscountingModalCall },
+    { dispatch, rejectWithValue }
+  ) => {
     try {
       const postAPI = createPostAPI(
         blotterApi,
@@ -414,7 +418,13 @@ export const SaveNonFEDiscountingTransactionAPI = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(SaveNonFEDiscountingTransactionAPI({ navigate, Data, setNonfeDiscountingModalCall }));
+        dispatch(
+          SaveNonFEDiscountingTransactionAPI({
+            navigate,
+            Data,
+            setNonfeDiscountingModalCall,
+          })
+        );
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -425,7 +435,7 @@ export const SaveNonFEDiscountingTransactionAPI = createAsyncThunk(
                 "Blotter_BlotterServiceManager_SaveNonFEDiscountingTransaction_01".toLowerCase()
               )
           ) {
-            setNonfeDiscountingModalCall(false)
+            setNonfeDiscountingModalCall(false);
             return {
               response: response.data.responseResult,
               message: "Non-FE Discounting transaction saved successfully",
@@ -2490,6 +2500,57 @@ export const GetNOPDataAPI = createAsyncThunk(
       // Reject with error message
       console.log("", error);
       return rejectWithValue("Something went wrong");
+    }
+  }
+);
+
+export const CalculateFEDiscountingAPI = createAsyncThunk(
+  "Blotter/CalculateFEDiscountingAPI",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      const postAPI = createPostAPI(
+        blotterApi,
+        CalculateFEDiscounting.RequestMethod
+      );
+      const response = await postAPI(Data);
+      const { responseCode } = response.data;
+
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(CalculateFEDiscountingAPI({ navigate, Data }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_CalculateFEDiscounting_01".toLowerCase()
+              )
+          ) {
+            console.log("Checking", response.data.responseResult);
+            return {
+              response: response.data.responseResult,
+              message: "Forward RFQ data calculated successfully",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_CalculateFEDiscounting_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else return rejectWithValue;
+        } else {
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      console.log(error, "errorerrorerror");
+      return rejectWithValue("Error calculating forward RFQ data");
     }
   }
 );

@@ -6,7 +6,7 @@ import { formatDateTimeToUTCTime } from "../../../../../../components/utils/time
 import { useDispatch } from "react-redux";
 import { setTreasurySpotRatesFeed } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { isEqual } from "lodash";
-import { debounce } from "lodash";
+import SectionLoader from "@/components/common/sectionLoader/SectionLoader";
 
 const BankSpot = () => {
   const dispatch = useDispatch();
@@ -19,49 +19,44 @@ const BankSpot = () => {
   const TresuaryBankSpotData = useSelector(
     (state) => state.WatchListReducer.GetBankSpotForTreasury
   );
+  const TreasuryBankSpotSpinner = useSelector(
+    (state) => state.WatchListReducer.GetBankSpotForTreasurySpinner
+  );
 
   const [bankSpotData, setBankSpotData] = useState([]);
 
   useEffect(() => {
-    if (TresuaryBankSpotData && GetAllInstrumentForTreasury) {
-      const { worldCrosses, worldCurrencies } = TresuaryBankSpotData;
+    if (GetAllInstrumentForTreasury) {
+      const { worldCrosses = [], worldCurrencies = [] } = TresuaryBankSpotData !== null && TresuaryBankSpotData;
       const { crossInstruments } = GetAllInstrumentForTreasury;
 
-      const enrichedData = worldCrosses
-        .map((worldCross) => {
-          const matchedCurrency = worldCurrencies.find(
-            (worldCur) => worldCur.instrumentID === worldCross.instrumentID
-          );
+      const enrichedData = crossInstruments.map((instrument) => {
+        const matchedCross = worldCrosses.find(
+          (wc) =>
+            wc.instrumentID === instrument.instrumentID &&
+            wc.secondaryInstrumentID === instrument.secondaryInstrumentID
+        );
 
-          let baseData = {
-            worldCrossBid: worldCross.bid,
-            worldCrossOffer: worldCross.offer,
-            worldCurBid: matchedCurrency?.bid ?? 0,
-            worldCurOffer: matchedCurrency?.offer ?? 0,
-            instrumentID: worldCross.instrumentID,
-            secondaryInstrumentID: worldCross.secondaryInstrumentID,
-            time: worldCross.time,
-          };
+        const matchedCurrency = worldCurrencies.find(
+          (wc) => wc.instrumentID === instrument.instrumentID
+        );
 
-          // Match instrumentName from crossInstruments
-          const matchedInstrument = crossInstruments.find(
-            (inst) =>
-              inst.instrumentID === worldCross.instrumentID &&
-              inst.secondaryInstrumentID === worldCross.secondaryInstrumentID
-          );
+        return {
+          instrumentID: instrument.instrumentID,
+          secondaryInstrumentID: instrument.secondaryInstrumentID,
+          instrumentName: instrument.instrumentName,
+          secondaryInstrumentName: instrument.secondaryInstrumentName,
+          time: matchedCross?.time ?? "",
 
-          if (matchedInstrument) {
-            return {
-              ...baseData,
-              instrumentName: matchedInstrument.instrumentName,
-              secondaryInstrumentName:
-                matchedInstrument.secondaryInstrumentName,
-            };
-          }
+          // Bid/Offer from Cross (if available)
+          worldCrossBid: matchedCross?.bid ?? 0,
+          worldCrossOffer: matchedCross?.offer ?? 0,
 
-          return baseData;
-        })
-        .filter(Boolean); // Clean nulls (though unlikely with above logic)
+          // Bid/Offer from Currency (if available)
+          worldCurBid: matchedCurrency?.bid ?? 0,
+          worldCurOffer: matchedCurrency?.offer ?? 0,
+        };
+      });
 
       console.log(enrichedData, "Final Enriched Treasury Bank Spot Data");
       setBankSpotData(enrichedData);
@@ -71,67 +66,63 @@ const BankSpot = () => {
   }, [TresuaryBankSpotData, GetAllInstrumentForTreasury]);
 
   const prevFeedRef = useRef();
+
   useEffect(() => {
     if (!TreasurySpotRatesFeed) return;
-    const update = () => {
-      if (isEqual(prevFeedRef.current, TreasurySpotRatesFeed)) {
-        return;
-      }
 
-      prevFeedRef.current = TreasurySpotRatesFeed;
+    const { instrumentParitySpot, instrumentCrossRate } = TreasurySpotRatesFeed;
 
-      const { instrumentParitySpot, instrumentCrossRate } =
-        TreasurySpotRatesFeed;
+    // Avoid updating if feed is identical to previous
+    if (isEqual(prevFeedRef.current, TreasurySpotRatesFeed)) return;
+    prevFeedRef.current = TreasurySpotRatesFeed;
 
-      setBankSpotData((prevData) => {
-        let isUpdated = false;
+    setBankSpotData((prevData) => {
+      let isUpdated = false;
 
-        const updatedData = prevData.map((data2) => {
-          let newData = { ...data2 };
+      const updatedData = prevData.map((data) => {
+        const updated = { ...data };
 
+        // Check and update instrumentCrossRate
+        if (
+          instrumentCrossRate &&
+          data.instrumentID === instrumentCrossRate.instrumentID &&
+          data.secondaryInstrumentID ===
+            instrumentCrossRate.secondaryInstrumentID
+        ) {
           if (
-            instrumentCrossRate &&
-            data2.instrumentID === instrumentCrossRate.instrumentID &&
-            data2.secondaryInstrumentID ===
-              instrumentCrossRate.secondaryInstrumentID
+            data.worldCrossBid !== instrumentCrossRate.bid ||
+            data.worldCrossOffer !== instrumentCrossRate.ask
           ) {
-            if (
-              data2.worldCrossBid !== instrumentCrossRate.bid ||
-              data2.worldCrossOffer !== instrumentCrossRate.ask
-            ) {
-              newData.worldCrossBid = instrumentCrossRate.bid;
-              newData.worldCrossOffer = instrumentCrossRate.ask;
-              newData.time = instrumentCrossRate.updateDateTime;
-              isUpdated = true;
-            }
+            updated.worldCrossBid = instrumentCrossRate.bid;
+            updated.worldCrossOffer = instrumentCrossRate.ask;
+            updated.time = instrumentCrossRate.updateDateTime;
+            isUpdated = true;
           }
+        }
 
+        // Check and update instrumentParitySpot
+        if (
+          instrumentParitySpot &&
+          data.instrumentID === instrumentParitySpot.instrumentID &&
+          data.secondaryInstrumentID ===
+            instrumentParitySpot.secondaryInstrumentID
+        ) {
           if (
-            instrumentParitySpot &&
-            data2.instrumentID === instrumentParitySpot.instrumentID &&
-            data2.secondaryInstrumentID ===
-              instrumentParitySpot.secondaryInstrumentID
+            data.worldCurBid !== instrumentParitySpot.bid ||
+            data.worldCurOffer !== instrumentParitySpot.ask
           ) {
-            if (
-              data2.worldCurBid !== instrumentParitySpot.bid ||
-              data2.worldCurOffer !== instrumentParitySpot.ask
-            ) {
-              newData.worldCurBid = instrumentParitySpot.bid;
-              newData.worldCurOffer = instrumentParitySpot.ask;
-              isUpdated = true;
-            }
+            updated.worldCurBid = instrumentParitySpot.bid;
+            updated.worldCurOffer = instrumentParitySpot.ask;
+            isUpdated = true;
           }
+        }
 
-          return newData;
-        });
-
-        return isUpdated ? updatedData : prevData;
+        return updated;
       });
-    };
 
-    update();
-
-    // return () => update.cancel();
+      // Only return new array if updated
+      return isUpdated ? updatedData : prevData;
+    });
   }, [TreasurySpotRatesFeed]);
 
   const columns = [
@@ -153,11 +144,13 @@ const BankSpot = () => {
       align: "center",
 
       render: (text, record) => (
-        <BidAmountBox
-          applyClass={"BidCardBox"}
-          bankSpot={true}
-          BidAmountValue={record?.worldCrossBid}
-        />
+        <span className='d-flex justify-content-center'>
+          <BidAmountBox
+            applyClass={"BidCardBox"}
+            bankSpot={true}
+            BidAmountValue={record?.worldCrossBid}
+          />
+        </span>
       ),
     },
     {
@@ -193,11 +186,13 @@ const BankSpot = () => {
 
       key: "previousBid",
       render: (text, record) => (
-        <BidAmountBox
-          applyClass={"BidCardBox"}
-          bankSpot={true}
-          BidAmountValue={record?.worldCurBid}
-        />
+        <span className='d-flex justify-content-center'>
+          <BidAmountBox
+            applyClass={"BidCardBox"}
+            bankSpot={true}
+            BidAmountValue={record?.worldCurBid}
+          />
+        </span>
       ),
     },
     {
@@ -208,11 +203,13 @@ const BankSpot = () => {
       align: "center",
 
       render: (text, record) => (
-        <BidAmountBox
-          applyClass={"OfferCardBox"}
-          bankSpot={true}
-          BidAmountValue={record?.worldCurOffer}
-        />
+        <span className='d-flex justify-content-center'>
+          <BidAmountBox
+            applyClass={"OfferCardBox"}
+            bankSpot={true}
+            BidAmountValue={record?.worldCurOffer}
+          />
+        </span>
       ),
     },
     {
@@ -232,15 +229,18 @@ const BankSpot = () => {
         <div className='text-start color-white fw-bold fs-6'>Bank Spot</div>
       </div>
 
-      <div className='mb-2 px-2'>
+      <div className='mb-2 h-100 position-relative '>
         <GlobalTable
           columns={columns}
           dataSource={bankSpotData}
-          rowKey={(record) => record.instrumentID}
+          rowKey={(record) =>
+            `${record.instrumentID}-${record.secondaryInstrumentID}`
+          }
           prefixCls={"BankSpot_Table"}
           pagination={false}
-          scroll={{ x: "hidden", y: 275 }}
+          scroll={{ x: "hidden", y: 375 }}
         />
+        {TreasuryBankSpotSpinner && <SectionLoader />}
       </div>
     </div>
   );

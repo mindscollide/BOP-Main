@@ -95,6 +95,7 @@ export const buildDiscountingTable = (
               title: "Tenor",
               dataIndex: "tenorName",
               key: "tenorName",
+              align: "center",
               width: 250,
             },
           ],
@@ -171,7 +172,8 @@ export const buildForwardsTable = (
       value === 1
         ? instruments?.filter((inst) => inst.discountingApplicable) || []
         : value === 3
-        ? instruments
+        ? // value 3 for when  treasury forwards application is used
+          instruments
         : instruments;
 
     const applicableTenors =
@@ -248,7 +250,7 @@ export const buildForwardsTable = (
         {
           title: "",
           key: "tenorName",
-          width: 120,
+          width: 60,
           children: [
             {
               title: "Tenor",

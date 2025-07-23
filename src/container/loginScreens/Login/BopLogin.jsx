@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { corporateUserLoginInApi, loginInApi } from "./logInAction";
 import { emailValidation } from "@/common/utils";
 import { updateEmail, updatePassword, updateUsername } from "./Loginfunctions";
+import { useNotification } from "@/context/NotificationProvider";
 
 // Conditionally import CustomButton based on the environment variables
 const shouldIsCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
@@ -16,6 +17,8 @@ const shouldIsCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
 const BopLogin = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { showMessage } = useNotification();
+
   useEffect(() => {}, []);
   const [crendentials, setCredentials] = useState({
     email: "",
@@ -73,6 +76,15 @@ const BopLogin = () => {
 
     // Validation for Corporate login (shouldIsCorporate === true)
     if (shouldIsCorporate) {
+      console.log(shouldIsCorporate, "shouldIsCorporateshouldIsCorporate");
+      if (!emailValidation(email) && email !== "") {
+        const handleClick = () => {
+          showMessage("Email should be in Valid Format");
+        };
+        handleClick();
+        return;
+      }
+
       if (email && password && !hasErrorOnEmail && !hasErrorOnPassword) {
         Data = {
           Email: email,
@@ -80,6 +92,10 @@ const BopLogin = () => {
           DeviceID: "1",
           Device: "Browser",
         };
+        // Dispatch the login API action for corporate user
+        dispatch(
+          corporateUserLoginInApi({ Data, navigate, shouldIsCorporate })
+        );
       } else {
         if (password === "") {
           setPasswordError("Please enter a password.");
@@ -89,10 +105,8 @@ const BopLogin = () => {
         }
         return;
       }
-
-      // Dispatch the login API action for corporate user
-      dispatch(corporateUserLoginInApi({ Data, navigate, shouldIsCorporate }));
     } else {
+      console.log("shouldIsCorporateshouldIsCorporate");
       // Validation for non-corporate login
       if (
         email &&
