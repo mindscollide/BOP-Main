@@ -1,11 +1,27 @@
-import React, { startTransition, useCallback } from "react";
+import React, { startTransition, useCallback, useState } from "react";
 import "../settingModal.css";
 import { Switch } from "antd";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { setSettingRecords } from "@/store/modalSlice/modalSlicer";
+import { useNavigate } from "react-router-dom";
 const PassCodeSettingComponent = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [createPasswordData, setCreatePasswordData] = useState({
+    userID: 0,
+    createPassword: "",
+    confirmPassowrd: "",
+    showPassword: false,
+    showConfirmPassword: false,
+  });
+  const [validations, setValidations] = useState({
+    isLengthValid: false,
+    hasNumber: false,
+    hasSpecialChar: false,
+    isMatch: false,
+  });
   const settingsRecord = useSelector(
     (state) => state.modalReducer.settingsRecord
   );

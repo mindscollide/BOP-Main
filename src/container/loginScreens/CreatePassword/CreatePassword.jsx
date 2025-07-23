@@ -46,6 +46,7 @@ const CreatePassword = () => {
       console.log(location, "validateLinkForCorporateCreatePasswordApi");
     }
   }, [location]);
+
   useEffect(() => {
     const lengthValid = createPasswordData.createPassword.length >= 8;
     const numberValid = /\d/.test(createPasswordData.createPassword);
@@ -126,39 +127,42 @@ const CreatePassword = () => {
           sm={12}
           md={12}
           lg={12}
-          className='d-flex justify-content-center mt-5 '>
+          className="d-flex justify-content-center mt-5 "
+        >
           <img
             src={BOPLogo}
             style={{ maxWidth: "100%" }}
-            width='300'
-            className='img-fluid'
-            alt='BOP Logo'
+            width="300"
+            className="img-fluid"
+            alt="BOP Logo"
           />
         </Col>
         <Col sm={12} md={12} lg={12}>
           <section className={styles["LoginCard"]}>
             <h4 className={styles["Heading-js"]}>Create Password</h4>
-            <InputGroup className='mb-3'>
+            <InputGroup className="mb-3">
               <InputGroup.Text
-                id='basic-addon1'
-                className={styles["Icon-Field-class"]}>
+                id="basic-addon1"
+                className={styles["Icon-Field-class"]}
+              >
                 <IconElement iconClass={"icon-lock"} />
               </InputGroup.Text>
               <Form.Control
-                name='passwordText'
-                autoComplete='off'
+                name="passwordText"
+                autoComplete="off"
                 onChange={(event) =>
                   handleChangePassword("createPassword", event)
                 }
                 className={styles["form-comtrol-textfield-password"]}
-                placeholder='Password'
+                placeholder="Password"
                 type={createPasswordData.showPassword ? "text" : "password"}
-                aria-label='passwordText'
-                aria-describedby='basic-addon2'
+                aria-label="passwordText"
+                aria-describedby="basic-addon2"
               />
               <InputGroup.Text
-                id='basic-addon2'
-                className={styles["eyeIcon-Field-class-BOP-login"]}>
+                id="basic-addon2"
+                className={styles["eyeIcon-Field-class-BOP-login"]}
+              >
                 {/* <IconElement iconClass={"icon-eye"} /> */}
                 {createPasswordData.showPassword ? (
                   <IconElement
@@ -188,15 +192,16 @@ const CreatePassword = () => {
                 )} */}
               </InputGroup.Text>
             </InputGroup>
-            <InputGroup className='mb-3'>
+            <InputGroup className="mb-3">
               <InputGroup.Text
-                id='basic-addon1'
-                className={styles["Icon-Field-class"]}>
+                id="basic-addon1"
+                className={styles["Icon-Field-class"]}
+              >
                 <IconElement iconClass={"icon-lock"} />
               </InputGroup.Text>
               <Form.Control
-                name='passwordText'
-                autoComplete='off'
+                name="passwordText"
+                autoComplete="off"
                 type={
                   createPasswordData.showConfirmPassword ? "text" : "password"
                 }
@@ -204,13 +209,14 @@ const CreatePassword = () => {
                   handleChangePassword("confirmPassword", event)
                 }
                 className={styles["form-comtrol-textfield-password"]}
-                placeholder='Confirm Password'
-                aria-label='passwordText'
-                aria-describedby='basic-addon2'
+                placeholder="Confirm Password"
+                aria-label="passwordText"
+                aria-describedby="basic-addon2"
               />
               <InputGroup.Text
-                id='basic-addon2'
-                className={styles["eyeIcon-Field-class-BOP-login"]}>
+                id="basic-addon2"
+                className={styles["eyeIcon-Field-class-BOP-login"]}
+              >
                 {createPasswordData.showConfirmPassword ? (
                   <IconElement
                     onClick={() => {
@@ -241,7 +247,7 @@ const CreatePassword = () => {
                 )} */}
               </InputGroup.Text>
             </InputGroup>
-            <div className='d-flex gap-1 align-items-end mb-2'>
+            <div className="d-flex gap-1 align-items-end mb-2">
               <span>
                 {validations.isLengthValid ? (
                   <IconElement
@@ -251,7 +257,8 @@ const CreatePassword = () => {
                 ) : (
                   <IconElement
                     applyClass={styles["closeIcon"]}
-                    iconClass={"icon-close"}></IconElement>
+                    iconClass={"icon-close"}
+                  ></IconElement>
                 )}
 
                 {/* <IconElement
@@ -261,7 +268,7 @@ const CreatePassword = () => {
               </span>{" "}
               <span>Length of at least 8 characters</span>
             </div>
-            <div className='d-flex gap-1 align-items-end mb-2'>
+            <div className="d-flex gap-1 align-items-end mb-2">
               <span>
                 {validations.hasNumber ? (
                   <IconElement
@@ -282,7 +289,7 @@ const CreatePassword = () => {
               </span>{" "}
               <span>Contains numbers</span>
             </div>
-            <div className='d-flex gap-1 align-items-end mb-2'>
+            <div className="d-flex gap-1 align-items-end mb-2">
               <span>
                 {validations.hasSpecialChar ? (
                   <IconElement
@@ -303,7 +310,7 @@ const CreatePassword = () => {
               </span>{" "}
               <span>Contains special characters</span>
             </div>
-            <div className='d-flex gap-1 align-items-end mb-2'>
+            <div className="d-flex gap-1 align-items-end mb-2">
               <span>
                 {validations.isMatch ? (
                   <IconElement
