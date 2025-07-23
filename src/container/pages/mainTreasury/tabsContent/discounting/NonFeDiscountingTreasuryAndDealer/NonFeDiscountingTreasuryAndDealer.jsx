@@ -2,6 +2,7 @@ import { IndexCell } from "@/components/common/inputField/IndexCell";
 import GlobalTable from "@/components/common/table/GlobalTable";
 import { buildDiscountingTable } from "@/components/utils/generateColumnsData";
 import React, { useEffect, useState } from "react";
+import { throttle } from "lodash";
 import { useSelector } from "react-redux";
 
 const NonFeDiscountingTreasuryAndDealer = () => {
@@ -17,6 +18,12 @@ const NonFeDiscountingTreasuryAndDealer = () => {
   const GetAllInstrumentForTreasury = useSelector(
     (state) => state.WatchListReducer.GetAllInstrumentForTreasury
   );
+
+  const TreasuryNonFeDiscounting = useSelector(
+    (state) => state.RealtimeActionsSlice.TreasuryNonFeDiscounting
+  );
+
+
 
   useEffect(() => {
     if (GetAllInstrumentForTreasury !== null && getAllTenorsRecords !== null) {
@@ -47,9 +54,46 @@ const NonFeDiscountingTreasuryAndDealer = () => {
     GetAllInstrumentForTreasury,
     GetDiscountingRatesForTreasury,
   ]);
+
+  useEffect(() => {
+    if (!TreasuryNonFeDiscounting) return;
+
+    const throttledUpdate = throttle((discountingUpdate) => {
+      const nonFeDiscountingRates =
+        discountingUpdate?.nonFeDiscountingRates || [];
+
+      if (nonFeDiscountingRates.length === 0) return; // agar empty ya undefined hai to skip
+
+      setDataSource((prevData) =>
+        prevData.map((row) => {
+          let updatedRow = { ...row };
+
+          nonFeDiscountingRates.forEach((d) => {
+            Object.keys(row).forEach((key) => {
+              if (
+                key.startsWith("InstrumentID_") &&
+                row[key] === d.instrumentID &&
+                row.TenorID === d.tenorID
+              ) {
+                const currency = key.split("_")[1];
+                updatedRow[`rate_${currency}`] = d.bidWithSpread;
+              }
+            });
+          });
+
+          return updatedRow;
+        })
+      );
+    });
+
+    throttledUpdate(TreasuryNonFeDiscounting);
+
+    return () => throttledUpdate.cancel();
+  }, [TreasuryNonFeDiscounting]);
+
   return (
     <>
-      <span className='heading mb-2'>Non FE Discounting</span>
+      <span className="heading mb-2">Non FE Discounting</span>
 
       <GlobalTable
         columns={columnsData}

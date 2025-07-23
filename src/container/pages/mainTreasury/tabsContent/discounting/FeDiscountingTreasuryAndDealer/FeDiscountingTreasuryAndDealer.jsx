@@ -3,6 +3,7 @@ import GlobalTable from "@/components/common/table/GlobalTable";
 import { buildDiscountingTable } from "@/components/utils/generateColumnsData";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { throttle } from "lodash";
 
 const FeDiscountingTreasuryAndDealer = () => {
   const [feDiscountingData, setFeDiscountingData] = useState([]);
@@ -20,10 +21,6 @@ const FeDiscountingTreasuryAndDealer = () => {
   const TreasuryFeDiscounting = useSelector(
     (state) => state.RealtimeActionsSlice.TreasuryFeDiscounting
   );
-  console.log("Data For Disscouting for treasury: ", {
-    TreasuryFeDiscounting,
-    feDiscountingData,
-  });
 
   useEffect(() => {
     if (GetAllInstrumentForTreasury !== null && getAllTenorsRecords !== null) {
@@ -55,6 +52,41 @@ const FeDiscountingTreasuryAndDealer = () => {
     GetDiscountingRatesForTreasury,
   ]);
 
+  useEffect(() => {
+    if (!TreasuryFeDiscounting) return;
+
+    const throttledUpdate = throttle((discountingUpdate) => {
+      const { feDiscountingRates } = discountingUpdate;
+
+      setFeDiscountingData((prevData) =>
+        prevData.map((row) => {
+          let updatedRow = { ...row };
+
+          feDiscountingRates.forEach((d) => {
+            // row ke sabhi keys loop karo
+            Object.keys(row).forEach((key) => {
+              if (
+                key.startsWith("InstrumentID_") &&
+                row[key] === d.instrumentID &&
+                row.TenorID === d.tenorID
+              ) {
+                const currency = key.split("_")[1]; // e.g. USD
+                // isma sirf bid ati hain ask nahi
+                updatedRow[`rate_${currency}`] = d.bidWithSpread;
+              }
+            });
+          });
+
+          return updatedRow;
+        })
+      );
+    });
+
+    throttledUpdate(TreasuryFeDiscounting);
+
+    return () => throttledUpdate.cancel();
+  }, [TreasuryFeDiscounting]);
+
   // useEffect(() => {
   //   if (TreasuryFeDiscounting !== null) {
   //     try {
@@ -69,7 +101,7 @@ const FeDiscountingTreasuryAndDealer = () => {
   // }, [TreasuryFeDiscounting]);
   return (
     <>
-      <span className='heading mb-2'>FE Discounting</span>
+      <span className="heading mb-2">FE Discounting</span>
       <GlobalTable
         columns={columnsData}
         dataSource={feDiscountingData}
