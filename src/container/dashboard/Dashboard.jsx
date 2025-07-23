@@ -39,6 +39,7 @@ import {
   setBlotterTransactionAddedForTreasuryDealBox,
   setBlotterTransactionRFQExpiredForTreasuryDealBox,
   setBlotterTransactionRFQQuotedForTreasuryDealBox,
+  setCategoryFeDiscounting,
   setCategoryForwardRates,
   setCategorySpotRates,
   setCounterPartySpotRates,
@@ -232,6 +233,10 @@ const Dashboard = () => {
         //   "DISPATCHER_CATEGORY_FORWARD_RATES_FOR_TREASURY"
         // );
         break;
+      case "DISPATCHER_CATEGORY_FEDISCOUNTING_RATES_FOR_TREASURY":
+        dispatch(setCategoryFeDiscounting(data.payload));
+        break;
+
       case "DISPATCHER_NONFEDISCOUNTING_RATES":
         console.log(data.payload, "DISPATCHER_NONFEDISCOUNTING_RATES");
         break;
@@ -304,12 +309,12 @@ const Dashboard = () => {
     }
   }, []);
   return (
-    <Layout className='roboto-13'>
+    <Layout className="roboto-13">
       {!location.pathname.includes("calculator") && <Header />}
 
       <GlobalNavbar />
       <Content>
-        <main className='px-3'>
+        <main className="px-3">
           <Outlet />
           <AnimatePresence>
             {blotterTransactionAdded && isTreasury && <DealBox />}

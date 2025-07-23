@@ -87,18 +87,6 @@ const FeDiscountingTreasuryAndDealer = () => {
     }
   }, [TreasuryFeDiscounting, throttledUpdate]);
 
-  // useEffect(() => {
-  //   if (TreasuryFeDiscounting !== null) {
-  //     try {
-  //       const { nonFeDiscountingRates } = TreasuryFeDiscounting;
-  //       setFeDiscountingData((prevState) => {
-  //         return prevState.map((item) => {});
-  //       });
-  //     } catch (error) {
-  //       console.log("Error while building discounting table", error);
-  //     }
-  //   }
-  // }, [TreasuryFeDiscounting]);
   return (
     <>
       <span className="heading mb-2">FE Discounting</span>
