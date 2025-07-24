@@ -205,9 +205,7 @@ const BranchForwardsTable = () => {
             applyClass={"FowwardBranchBookaForwardBtn"}
             onClick={handleBookaForwardCorporate}
             disabled={
-              marketStatus !== null && marketStatus === false
-                ? true
-                : false
+              marketStatus !== null && marketStatus === false ? true : false
             }
           />
         </Col>

@@ -111,7 +111,7 @@ const BranchAndCorporateFeDiscountingTable = () => {
     if (CounterPartyFeDiscounting) {
       throttledUpdate(CounterPartyFeDiscounting);
     }
-  }, [CounterPartyFeDiscounting, throttledUpdate, marketStatus]);
+  }, [CounterPartyFeDiscounting, throttledUpdate]);
 
   useEffect(() => {
     if (marketStatus !== null && marketStatus === false) {
@@ -170,9 +170,7 @@ const BranchAndCorporateFeDiscountingTable = () => {
             applyClass={"FEDiscounting"}
             onClick={handleFEDiscountingModal}
             disabled={
-              marketStatus !== null && marketStatus === false
-                ? true
-                : false
+              marketStatus !== null && marketStatus === false ? true : false
             }
           />
         </Col>

@@ -116,7 +116,7 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
     if (CounterPartyNonFeDiscounting) {
       throttledUpdate(CounterPartyNonFeDiscounting);
     }
-  }, [CounterPartyNonFeDiscounting, throttledUpdate, marketStatus]);
+  }, [CounterPartyNonFeDiscounting, throttledUpdate]);
 
   useEffect(() => {
     if (marketStatus !== null && marketStatus === false) {
@@ -172,9 +172,7 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
             applyClass={"FowwardBranchBookaForwardBtn"}
             onClick={handleNonFEDiscountingModal}
             disabled={
-              marketStatus !== null && marketStatus === false
-                ? true
-                : false
+              marketStatus !== null && marketStatus === false ? true : false
             }
           />
         </Col>

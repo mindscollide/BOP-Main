@@ -21,11 +21,6 @@ const FeDiscountingTreasuryAndDealer = () => {
   const TreasuryFeDiscounting = useSelector(
     (state) => state.RealtimeActionsSlice.TreasuryFeDiscounting
   );
-  const marketStatus = useSelector(
-    (state) => state.WatchListReducer.getMarketStatus
-  );
-  // console.log("checkcheck342343");
-  // console.log(typeof marketStatus, marketStatus, "marketStatus type check");
 
   useEffect(() => {
     if (GetAllInstrumentForTreasury !== null && getAllTenorsRecords !== null) {
@@ -90,23 +85,7 @@ const FeDiscountingTreasuryAndDealer = () => {
     if (TreasuryFeDiscounting) {
       throttledUpdate(TreasuryFeDiscounting);
     }
-  }, [TreasuryFeDiscounting, throttledUpdate, marketStatus]);
-
-  useEffect(() => {
-    if (marketStatus !== null && marketStatus === false) {
-      setFeDiscountingData((prevData) =>
-        prevData.map((row) => {
-          const updatedRow = { ...row };
-          Object.keys(updatedRow).forEach((key) => {
-            if (key.startsWith("rate_")) {
-              updatedRow[key] = 0;
-            }
-          });
-          return updatedRow;
-        })
-      );
-    }
-  }, [marketStatus]);
+  }, [TreasuryFeDiscounting, throttledUpdate]);
 
   return (
     <>
