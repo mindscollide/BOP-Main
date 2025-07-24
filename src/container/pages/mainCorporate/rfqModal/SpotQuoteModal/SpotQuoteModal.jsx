@@ -24,7 +24,7 @@ const SpotQuoteModal = ({ dealData }) => {
     (state) => state.BlotterSlicer.spotQuoteModalData
   );
 
-  console.log(spotQuoteModalData, "spotQuoteModalDataspotQuoteModalData")
+  console.log(spotQuoteModalData, "spotQuoteModalDataspotQuoteModalData");
   const closeModal = () => {
     dispatch(setViewDealModal(false));
   };
@@ -56,7 +56,9 @@ const SpotQuoteModal = ({ dealData }) => {
     let Data = {
       PK_TransactionID: spotQuoteModalData?.pK_TransactionID,
       Rate:
-      spotQuoteModalData.side.toLowerCase() === "sell" ? Number(bid) : Number(offer),
+        spotQuoteModalData.side.toLowerCase() === "sell"
+          ? Number(bid)
+          : Number(offer),
     };
     dispatch(RFQTransactionQuotation({ navigate, Data }));
   };
@@ -75,7 +77,8 @@ const SpotQuoteModal = ({ dealData }) => {
               sm={3}
               md={3}
               lg={3}
-              className={styles["DealViewModal_oneSide"]}>
+              className={styles["DealViewModal_oneSide"]}
+            >
               <Row>
                 <Col sm={12} md={12} lg={12}>
                   <label className={styles["DealViewModal__label"]}>Side</label>
@@ -139,8 +142,28 @@ const SpotQuoteModal = ({ dealData }) => {
               sm={9}
               md={9}
               lg={9}
-              className={styles["DealViewModal_SecondSide"]}>
-              <Row className='mb-5'>
+              className={styles["DealViewModal_SecondSide"]}
+            >
+              <Row>
+                <Col sm={10} md={10} lg={10}>
+                  <p className={styles["PartyName"]}>
+                    {spotQuoteModalData?.branchName}
+                  </p>
+                  <span>{spotQuoteModalData?.branchCode}</span>
+                </Col>
+                <Col
+                  sm={2}
+                  md={2}
+                  lg={2}
+                  className="d-flex justify-content-center"
+                >
+                  <IconElement
+                    onClick={closeModal}
+                    iconClass={"icon-close fs-4 cursor-pointer"}
+                  />
+                </Col>
+              </Row>
+              <Row>
                 <Col sm={10} md={10} lg={10}>
                   <p className={styles["PartyName"]}>
                     {spotQuoteModalData?.corporateName}
@@ -151,28 +174,26 @@ const SpotQuoteModal = ({ dealData }) => {
                   sm={2}
                   md={2}
                   lg={2}
-                  className='d-flex justify-content-center'>
-                  <IconElement
-                    onClick={closeModal}
-                    iconClass={"icon-close fs-4 cursor-pointer"}
-                  />
-                </Col>
+                  className="d-flex justify-content-center"
+                ></Col>
               </Row>
-              <Row className='mt-5'>
-                <Col sm={6} md={6} lg={6} className='mt-4'>
+              <Row className="mt-5">
+                <Col sm={6} md={6} lg={6} className="mt-4">
                   <div className={styles["DealViewModal_Input"]}>
                     <label className={styles["DealViewModal_label"]}>Bid</label>
                     <InputFIeld
                       applyClass={"DealBoxBitInput"}
                       disabled={
-                        spotQuoteModalData?.side.toLowerCase() === "sell" ? false : true
+                        spotQuoteModalData?.side.toLowerCase() === "sell"
+                          ? false
+                          : true
                       }
                       value={bid}
                       onChange={(e) => handleChangeRate(e, "bid")}
                     />
                   </div>
                 </Col>
-                <Col sm={6} md={6} lg={6} className='mt-4'>
+                <Col sm={6} md={6} lg={6} className="mt-4">
                   <div className={styles["DealViewModal_Input"]}>
                     <label className={styles["DealViewModal_label"]}>
                       Offer
@@ -180,7 +201,9 @@ const SpotQuoteModal = ({ dealData }) => {
                     <InputFIeld
                       applyClass={"DealBoxOfferInput"}
                       disabled={
-                        spotQuoteModalData?.side.toLowerCase() === "buy" ? false : true
+                        spotQuoteModalData?.side.toLowerCase() === "buy"
+                          ? false
+                          : true
                       }
                       value={offer}
                       onChange={(e) => handleChangeRate(e, "offer")}
@@ -193,7 +216,8 @@ const SpotQuoteModal = ({ dealData }) => {
                   sm={12}
                   md={12}
                   lg={12}
-                  className='d-flex justify-content-center gap-3 mt-5'>
+                  className="d-flex justify-content-center gap-3 mt-5"
+                >
                   <CustomButton
                     icon={<IconElement iconClass={"icon-send  fs-5"} />}
                     iconPosition={"left"}

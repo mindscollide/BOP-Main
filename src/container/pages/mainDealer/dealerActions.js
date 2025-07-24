@@ -15,7 +15,10 @@ import {
 } from "@/common/api_config";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
 import createPostAPI from "@/utils/axiosInstance";
-import { setCreateTenorModal, setPublishedSpotRates } from "@/store/modalSlice/modalSlicer";
+import {
+  setCreateTenorModal,
+  setPublishedSpotRates,
+} from "@/store/modalSlice/modalSlicer";
 
 // Define the login async thunk
 export const clearRatesAction = createAsyncThunk(
@@ -29,8 +32,6 @@ export const clearRatesAction = createAsyncThunk(
 
       const response = await clearRates(Data);
       const { responseCode } = response.data;
-
-    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -105,7 +106,6 @@ export const getLastPublishRatesAction = createAsyncThunk(
       const response = await getLastPublishRates();
 
       const { responseCode } = response.data;
-    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -179,7 +179,6 @@ export const PublishNewRatesAction = createAsyncThunk(
 
       const { responseCode } = response.data;
       console.log(responseCode, "responseCoderesponseCode");
-    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -261,7 +260,6 @@ export const marketOnOffAction = createAsyncThunk(
 
       const response = await marketOnOff(Data);
       const { responseCode } = response.data;
-    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -334,8 +332,6 @@ export const getAllTenorsAction = createAsyncThunk(
 
       const { responseCode } = response.data;
 
-   
-
       if (responseCode === 417) {
         dispatch(refreshTokenAction({ navigate }));
         dispatch(getAllTenorsAction({ navigate }));
@@ -407,7 +403,6 @@ export const createTenorAction = createAsyncThunk(
       const response = await createTenor(Data);
 
       const { responseCode } = response.data;
-    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -500,7 +495,6 @@ export const getTenorWiseForwardsAction = createAsyncThunk(
 
       const response = await getTenorWiseForwards();
       const { responseCode } = response.data;
-    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -574,7 +568,6 @@ export const PublishTenorWiseForwardsAction = createAsyncThunk(
       const response = await PublishTenorWiseForwards(Data);
 
       const { responseCode } = response.data;
-    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -655,7 +648,6 @@ export const getDiscountingRatesAction = createAsyncThunk(
 
       const response = await getDiscountingRates();
       const { responseCode } = response.data;
-    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -770,7 +762,7 @@ export const publishDiscountingRatesAction = createAsyncThunk(
       );
       const response = await publishDiscountingRates(Data);
       const { responseCode } = response.data;
-    
+
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(publishDiscountingRatesAction({ navigate, Data }));
@@ -849,7 +841,7 @@ export const getDealerDashboardApi = createAsyncThunk(
       );
       const response = await DealerDashboardApi();
       const { responseCode } = response.data;
-    
+
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(getDealerDashboardApi({ navigate }));
@@ -898,7 +890,9 @@ export const getDealerDashboardApi = createAsyncThunk(
                 "UploadRate_UploadRateServiceManager_GetDealerDashboardData_05".toLowerCase()
               )
           ) {
-            return rejectWithValue("No Record Found");
+            return rejectWithValue(
+              (import.meta.env.VITE_MQTT_PORT) === "8883" ? "" : "No Record Found"
+            );
           } else {
             console.log("", response.data);
             return rejectWithValue("Something went wrong");

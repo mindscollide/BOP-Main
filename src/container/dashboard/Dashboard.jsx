@@ -224,6 +224,8 @@ const Dashboard = () => {
 
         break;
       case "TREASURY_FORWARD_RATES_FEED":
+        console.log(data.payload, "TREASURY_FORWARD_RATES_FEED");
+
         dispatch(setTreasuryForwardRates(data.payload));
         break;
       case "TREASURY_FEDISCOUNTING_RATES_FEED":
@@ -232,14 +234,10 @@ const Dashboard = () => {
       // console.log(data, "TREASURY_FEDISCOUNTING_RATES_FEED");
       case "TREASURY_NONFEDISCOUNTING_RATES_FEED":
         dispatch(setTreasuryNonFeDiscounting(data.payload));
-        // console.log(data, "TREASURY_NONFEDISCOUNTING_RATES_FEED");
+        console.log(data.payload, "TREASURY_NONFEDISCOUNTING_RATES_FEED");
         break;
       case "DISPATCHER_CATEGORY_FORWARD_RATES_FOR_TREASURY":
         dispatch(setCategoryForwardRates(data.payload));
-        // console.log(
-        //   data.payload,
-        //   "DISPATCHER_CATEGORY_FORWARD_RATES_FOR_TREASURY"
-        // );
         break;
       case "DISPATCHER_CATEGORY_FEDISCOUNTING_RATES_FOR_TREASURY":
         dispatch(setCategoryFeDiscounting(data.payload));
@@ -257,19 +255,27 @@ const Dashboard = () => {
         dispatch(setFxTradingCards(data.payload));
         break;
       case "DISPATCHER_FORWARD_RATES":
+        console.log("DISPATCHER_FORWARD_RATES", data.payload);
         dispatch(setCounterPartyForwardRates(data.payload));
         break;
       case "DISPATCHER_FEDISCOUNTING_RATES":
+        console.log("DISPATCHER_FEDISCOUNTING_RATES", data.payload);
+
         dispatch(setCounterPartyFeDiscounting(data.payload));
         break;
       case "DISPATCHER_CATEGORY_NONFEDISCOUNTING_RATES_FOR_TREASURY":
+        console.log(
+          "DISPATCHER_CATEGORY_NONFEDISCOUNTING_RATES_FOR_TREASURY",
+          data.payload
+        );
+
         dispatch(setCategoryNonFeDiscounting(data.payload));
         break;
       default:
-        // console.warn(
-        //   "No specific handler for this message type",
-        //   data.payload.message
-        // );
+        console.warn(
+          "No specific handler for this message type",
+          data.payload.message
+        );
         break;
     }
   }, []);
@@ -288,17 +294,19 @@ const Dashboard = () => {
     useMqttClient(mqttConfig);
 
   useEffect(() => {
-    if (!categoryValue) return;
+    if (IsBranch || IsCorporate) {
+      if (!categoryValue) return;
 
-    const newTopic = `BOP_TREASURY_CATEGORY_RATES_${categoryValue.value}`;
+      const newTopic = `BOP_TREASURY_CATEGORY_RATES_${categoryValue.value}`;
 
-    // Subscribe to the new topic
-    subscribeToTopics([newTopic]);
-    console.log("Subscribed to:", newTopic);
+      // Subscribe to the new topic
+      subscribeToTopics([newTopic]);
+      console.log("Subscribed to:", newTopic);
 
-    // Store this topic as previous for next run
-    if (prevTopicRef.current !== newTopic) {
-      prevTopicRef.current = newTopic;
+      // Store this topic as previous for next run
+      if (prevTopicRef.current !== newTopic) {
+        prevTopicRef.current = newTopic;
+      }
     }
 
     // Cleanup to unsubscribe the previous topic

@@ -29,12 +29,10 @@ export const buildDiscountingTable = (
 
     // Step 2: Create a map using composite key (instrumentID-tenorID)
     const rateMap = {};
-    console.log(Data, "DataDataDataData");
     Data?.forEach((rate) => {
       const key = `${rate.instrumentID}-${rate.tenorID}`;
       rateMap[key] = rate.rate;
     });
-    console.log(rateMap, "DataDataDataData");
 
     // Step 3: Build the row data
     const rowData = applicableTenors.map((tenor) => {
@@ -146,7 +144,6 @@ export const buildDiscountingTable = (
         })),
       ];
     }
-    console.log(columnsData, "columnsDatacolumnsDatacolumnsData");
     // Step 4: Build the column definitions
 
     return { rowData, columnsData };

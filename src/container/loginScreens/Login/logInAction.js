@@ -133,7 +133,7 @@ export const corporateUserLoginInApi = createAsyncThunk(
             case "ERM_AuthService_AuthManager_CorporateUserLogin_01".toLowerCase():
             case "ERM_AuthService_AuthManager_CorporateUserLogin_02".toLowerCase():
             case "ERM_AuthService_AuthManager_CorporateUserLogin_04".toLowerCase():
-              return rejectWithValue("LDAP Auth Failed");
+              return rejectWithValue("Incorrect Password");
 
             case "ERM_AuthService_AuthManager_CorporateUserLogin_05".toLowerCase():
               return rejectWithValue("User is Locked");
