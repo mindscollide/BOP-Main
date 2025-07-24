@@ -114,7 +114,7 @@ const BranchAndCorporateFeDiscountingTable = () => {
   }, [CounterPartyFeDiscounting, throttledUpdate, marketStatus]);
 
   useEffect(() => {
-    if (marketStatus !== null && JSON.parse(marketStatus) === false) {
+    if (marketStatus !== null && marketStatus === false) {
       setDataSource((prevData) =>
         prevData.map((row) => {
           const updatedRow = { ...row };
@@ -170,7 +170,7 @@ const BranchAndCorporateFeDiscountingTable = () => {
             applyClass={"FEDiscounting"}
             onClick={handleFEDiscountingModal}
             disabled={
-              marketStatus !== null && JSON.parse(marketStatus) === false
+              marketStatus !== null && marketStatus === false
                 ? true
                 : false
             }

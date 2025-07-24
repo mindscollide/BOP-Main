@@ -119,7 +119,7 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
   }, [CounterPartyNonFeDiscounting, throttledUpdate, marketStatus]);
 
   useEffect(() => {
-    if (marketStatus !== null && JSON.parse(marketStatus) === false) {
+    if (marketStatus !== null && marketStatus === false) {
       setDataSource((prevData) =>
         prevData.map((row) => {
           const updatedRow = { ...row };
@@ -172,7 +172,7 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
             applyClass={"FowwardBranchBookaForwardBtn"}
             onClick={handleNonFEDiscountingModal}
             disabled={
-              marketStatus !== null && JSON.parse(marketStatus) === false
+              marketStatus !== null && marketStatus === false
                 ? true
                 : false
             }

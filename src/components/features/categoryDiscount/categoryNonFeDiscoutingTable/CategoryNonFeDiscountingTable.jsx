@@ -23,10 +23,12 @@ const CategoryNonFeDiscountingTable = () => {
   const CategoryNonFeDiscouting = useSelector(
     (state) => state.RealtimeActionsSlice.CategoryNonFeDiscouting
   );
-  console.log(
-    "GetCategoryWiseDiscountingRates: ",
-    CategoryNonFeDiscouting
+
+  const marketStatus = useSelector(
+    (state) => state.WatchListReducer.getMarketStatus
   );
+
+  console.log("marketStatusmarketStatus2434: ", marketStatus);
   useEffect(() => {
     if (getAllTenorsRecords !== null && allInstrumentForTreasuryData) {
       try {
@@ -93,16 +95,32 @@ const CategoryNonFeDiscountingTable = () => {
     }
   }, [CategoryNonFeDiscouting, throttledUpdate]);
 
+  useEffect(() => {
+    if (marketStatus !== null && marketStatus === false) {
+      setDataSource((prevData) =>
+        prevData.map((row) => {
+          const updatedRow = { ...row };
+          Object.keys(updatedRow).forEach((key) => {
+            if (key.startsWith("rate_")) {
+              updatedRow[key] = 0;
+            }
+          });
+          return updatedRow;
+        })
+      );
+    }
+  }, [marketStatus]);
+
   return (
     <Row>
-      <Col lg={12} md={12} sm={12} className='heading mb-2'>
+      <Col lg={12} md={12} sm={12} className="heading mb-2">
         Non-FE Discounting
       </Col>
       <Col lg={12} md={12} sm={12}>
         <GlobalTable
           columns={columnsData}
           dataSource={dataSource}
-          prefixCls='Dealer_Discounting'
+          prefixCls="Dealer_Discounting"
           pagination={false}
         />
       </Col>

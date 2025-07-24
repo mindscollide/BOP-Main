@@ -42,7 +42,6 @@ const BranchForwardsTable = () => {
     (state) => state.WatchListReducer.getMarketStatus
   );
 
-
   console.log(
     { CounterPartyForwardRates, marketStatus },
     "CounterPartyForwardRates"
@@ -156,7 +155,7 @@ const BranchForwardsTable = () => {
   }, [CounterPartyForwardRates, throttledForwardUpdate, marketStatus]);
 
   useEffect(() => {
-    if (marketStatus !== null && JSON.parse(marketStatus) === false) {
+    if (marketStatus !== null && marketStatus === false) {
       setDataSource((prevData) =>
         prevData.map((row) => {
           const updatedRow = { ...row };
@@ -206,7 +205,7 @@ const BranchForwardsTable = () => {
             applyClass={"FowwardBranchBookaForwardBtn"}
             onClick={handleBookaForwardCorporate}
             disabled={
-              marketStatus !== null && JSON.parse(marketStatus) === false
+              marketStatus !== null && marketStatus === false
                 ? true
                 : false
             }

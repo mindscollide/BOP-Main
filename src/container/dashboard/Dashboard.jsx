@@ -111,7 +111,7 @@ const Dashboard = () => {
 
   // Memoized MQTT message handler
   const handleMqttMessage = useCallback((data) => {
-    console.log(data, "datadatadatadata");
+    // console.log(data, "datadatadatadata");
     switch (data.payload.message) {
       case "INCOMING_CHAT":
         try {
@@ -219,11 +219,11 @@ const Dashboard = () => {
         break;
       case "DISPATCHER_CATEGORY_SPOT_RATES_FOR_TREASURY":
         dispatch(setCategorySpotRates(data.payload));
-        console.log(data, "DISPATCHER_CATEGORY_SPOT_RATES_FOR_TREASURY");
+        // console.log(data, "DISPATCHER_CATEGORY_SPOT_RATES_FOR_TREASURY");
 
         break;
       case "TREASURY_FORWARD_RATES_FEED":
-        console.log(data.payload, "TREASURY_FORWARD_RATES_FEED");
+        // console.log(data.payload, "TREASURY_FORWARD_RATES_FEED");
 
         dispatch(setTreasuryForwardRates(data.payload));
         break;
@@ -233,40 +233,40 @@ const Dashboard = () => {
       // console.log(data, "TREASURY_FEDISCOUNTING_RATES_FEED");
       case "TREASURY_NONFEDISCOUNTING_RATES_FEED":
         dispatch(setTreasuryNonFeDiscounting(data.payload));
-        console.log(data.payload, "TREASURY_NONFEDISCOUNTING_RATES_FEED");
+        // console.log(data.payload, "TREASURY_NONFEDISCOUNTING_RATES_FEED");
         break;
       case "DISPATCHER_CATEGORY_FORWARD_RATES_FOR_TREASURY":
         dispatch(setCategoryForwardRates(data.payload));
         break;
       case "DISPATCHER_CATEGORY_FEDISCOUNTING_RATES_FOR_TREASURY":
         dispatch(setCategoryFeDiscounting(data.payload));
-        console.log(
-          data.payload,
-          "DISPATCHER_CATEGORY_FEDISCOUNTING_RATES_FOR_TREASURY"
-        );
+        // console.log(
+        //   data.payload,
+        //   "DISPATCHER_CATEGORY_FEDISCOUNTING_RATES_FOR_TREASURY"
+        // );
         break;
 
       case "DISPATCHER_NONFEDISCOUNTING_RATES":
         dispatch(setCounterPartyNonFeDiscounting(data.payload));
-        console.log(data.payload, "DISPATCHER_NONFEDISCOUNTING_RATES");
+        // console.log(data.payload, "DISPATCHER_NONFEDISCOUNTING_RATES");
         break;
       case "SAVE_DASHBOARD":
         dispatch(setFxTradingCards(data.payload));
         break;
       case "DISPATCHER_FORWARD_RATES":
-        console.log("DISPATCHER_FORWARD_RATES", data.payload);
+        // console.log("DISPATCHER_FORWARD_RATES", data.payload);
         dispatch(setCounterPartyForwardRates(data.payload));
         break;
       case "DISPATCHER_FEDISCOUNTING_RATES":
-        console.log("DISPATCHER_FEDISCOUNTING_RATES", data.payload);
+        // console.log("DISPATCHER_FEDISCOUNTING_RATES", data.payload);
 
         dispatch(setCounterPartyFeDiscounting(data.payload));
         break;
       case "DISPATCHER_CATEGORY_NONFEDISCOUNTING_RATES_FOR_TREASURY":
-        console.log(
-          "DISPATCHER_CATEGORY_NONFEDISCOUNTING_RATES_FOR_TREASURY",
-          data.payload
-        );
+        // console.log(
+        //   "DISPATCHER_CATEGORY_NONFEDISCOUNTING_RATES_FOR_TREASURY",
+        //   data.payload
+        // );
 
         dispatch(setCategoryNonFeDiscounting(data.payload));
         break;
@@ -337,12 +337,12 @@ const Dashboard = () => {
     }
   }, []);
   return (
-    <Layout className='roboto-13'>
+    <Layout className="roboto-13">
       {!location.pathname.includes("calculator") && <Header />}
 
       <GlobalNavbar />
       <Content>
-        <main className='px-3'>
+        <main className="px-3">
           <Outlet />
           <AnimatePresence>
             {blotterTransactionAdded && isTreasury && <DealBox />}

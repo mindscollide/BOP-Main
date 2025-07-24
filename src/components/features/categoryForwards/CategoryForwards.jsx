@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import GlobalTable from "../../common/table/GlobalTable";
 import { useSelector } from "react-redux";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
@@ -22,6 +22,10 @@ const CategoryForwards = () => {
 
   const CategoryForwardRates = useSelector(
     (state) => state.RealtimeActionsSlice.CategoryForwardRates
+  );
+
+  const marketStatus = useSelector(
+    (state) => state.WatchListReducer.getMarketStatus
   );
 
   console.log(CategoryForwardRates, "CategoryForwardRates");
@@ -68,49 +72,64 @@ const CategoryForwards = () => {
     allInstrumentForTreasuryData,
   ]);
 
-  useEffect(() => {
-    if (!CategoryForwardRates) return;
+  const throttledCategoryForwardUpdate = useMemo(
+    () =>
+      throttle((forwardRatesUpdate) => {
+        const { instrumentForwardsData } = forwardRatesUpdate;
 
-    const throttledUpdate = throttle((forwardRatesUpdate) => {
-      const { instrumentForwardsData } = forwardRatesUpdate;
+        setDataSource((prevData) =>
+          prevData.map((row) => {
+            let updatedRow = { ...row };
 
-      setDataSource((prevData) =>
-        prevData.map((row) => {
-          let updatedRow = { ...row };
-
-          instrumentForwardsData.forEach((d) => {
-            // row ke sabhi keys loop karo
-            Object.keys(row).forEach((key) => {
-              if (
-                key.startsWith("InstrumentID_") &&
-                row[key] === d.instrumentID
-              ) {
-                const currency = key.split("_")[1]; // e.g. USD
-                // check karo tenorID match karta hai ya nahi
-                if (row.tenorID === d.tenorID) {
+            instrumentForwardsData.forEach((d) => {
+              Object.keys(row).forEach((key) => {
+                if (
+                  key.startsWith("InstrumentID_") &&
+                  row[key] === d.instrumentID &&
+                  row.tenorID === d.tenorID
+                ) {
+                  const currency = key.split("_")[1]; // e.g., USD
                   updatedRow[`bid_${currency}`] = d.bidWithSpread;
                   updatedRow[`ask_${currency}`] = d.askWithSpread;
                 }
-              }
+              });
             });
-          });
 
+            return updatedRow;
+          })
+        );
+      }, 300),
+    []
+  );
+
+  useEffect(() => {
+    if (CategoryForwardRates) {
+      throttledCategoryForwardUpdate(CategoryForwardRates);
+    }
+  }, [CategoryForwardRates, throttledCategoryForwardUpdate, marketStatus]);
+
+  useEffect(() => {
+    if (marketStatus !== null && marketStatus === false) {
+      setDataSource((prevData) =>
+        prevData.map((row) => {
+          const updatedRow = { ...row };
+          Object.keys(row).forEach((key) => {
+            if (key.startsWith("bid_") || key.startsWith("ask_")) {
+              updatedRow[key] = 0;
+            }
+          });
           return updatedRow;
         })
       );
-    }, 300);
-
-    throttledUpdate(CategoryForwardRates);
-
-    return () => throttledUpdate.cancel();
-  }, [CategoryForwardRates]);
+    }
+  }, [marketStatus]);
 
   return (
     <>
-      <span className='heading mb-2'> Forward</span>
+      <span className="heading mb-2"> Forward</span>
       <GlobalTable
         columns={columnsData}
-        prefixCls='Dealer_Forwards'
+        prefixCls="Dealer_Forwards"
         dataSource={dataSource}
         pagination={false}
       />

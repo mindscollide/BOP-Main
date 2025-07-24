@@ -25,7 +25,9 @@ const BankForwards = () => {
     (state) => state.RealtimeActionsSlice.TreasuryForwardRates
   );
 
-
+  const marketStatus = useSelector(
+    (state) => state.WatchListReducer.getMarketStatus
+  );
 
   useEffect(() => {
     if (getAllTenorsRecords !== null && GetAllInstrumentForTreasury !== null) {
@@ -96,7 +98,23 @@ const BankForwards = () => {
     if (TreasuryForwardRates) {
       updateForwardRates(TreasuryForwardRates, setDataSource);
     }
-  }, [TreasuryForwardRates, updateForwardRates]);
+  }, [TreasuryForwardRates, updateForwardRates, marketStatus]);
+
+  useEffect(() => {
+    if (marketStatus !== null && marketStatus === false) {
+      setDataSource((prevData) =>
+        prevData.map((row) => {
+          const updatedRow = { ...row };
+          Object.keys(row).forEach((key) => {
+            if (key.startsWith("bid_") || key.startsWith("ask_")) {
+              updatedRow[key] = 0;
+            }
+          });
+          return updatedRow;
+        })
+      );
+    }
+  }, [marketStatus]);
 
   return (
     <>
