@@ -54,8 +54,12 @@ const dealerReducer = createSlice({
     },
     GetVoltMeterStatus: null,
     UpdateVoltMeterStatus: null,
+    GetVoltMeterStatusRealtime: null,
   },
   reducers: {
+    setUpdateVolMeterRealtime: (state, action) => {
+      state.GetVoltMeterStatusRealtime = action.payload;
+    },
     clearDealerResponseMessage: (state) => {
       state.responseMessage = "";
     },
@@ -345,5 +349,6 @@ export const {
   setForwardsForTreasuryBranch,
   setCategoryValue,
   updateForwardItem,
+  setUpdateVolMeterRealtime,
 } = dealerReducer.actions;
 export default dealerReducer.reducer;

@@ -84,6 +84,8 @@ const RFQModal = () => {
   // Get pre-filled buy/sell data from Redux store (if any)
   const iBuySellData = useSelector((state) => state.modalReducer.IBuySellData);
 
+  console.log(iBuySellData, "iBuySellDataiBuySellData");
+
   /**
    * Environment Configuration
    */
@@ -216,7 +218,12 @@ const RFQModal = () => {
       try {
         setTypeOptionSelected({
           value: iBuySellData.type === "buy" ? 1 : 2,
-          label: iBuySellData.type === "buy" ? "Buy" : "Sell",
+          label:
+            iBuySellData.type === "buy"
+              ? ` Buy ${iBuySellData.currencyLabel.slice(0, 3)}`
+              : iBuySellData.type === "sell"
+              ? ` Sell ${iBuySellData.currencyLabel.slice(3, 6)}`
+              : iBuySellData.type === "buy",
         });
         setSelectedCurrency({
           value: iBuySellData.instrumentID,
@@ -487,7 +494,11 @@ const RFQModal = () => {
             : counterPartyDetails.corporateID,
           InstrumentID: 21, // TODO: Should this be selectedCurrency.value?
           SecondaryInstrumentID: 0,
-          IsBuySide: typeOptionSelected.value === 1 ? true : false,
+          IsBuyType: typeOptionSelected.value === 1 ? true : false,
+          IsBuySide:
+            iBuySellData !== null && iBuySellData?.type === "buy"
+              ? true
+              : false,
           Quantity: Number(amountValue),
           AccountNumber: acNumberData,
           NatureOfTransactionID: selectedNature.value,
