@@ -1,9 +1,10 @@
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import GlobalTable from "@/components/common/table/GlobalTable";
 import { buildDiscountingTable } from "@/components/utils/generateColumnsData";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import { useSelector } from "react-redux";
+import { throttle } from "lodash";
 
 const CategoryFeDiscountingTable = () => {
   const [dataSource, setDataSource] = useState([]);
@@ -18,6 +19,10 @@ const CategoryFeDiscountingTable = () => {
   );
   const allInstrumentForTreasuryData = useSelector(
     (state) => state.WatchListReducer.GetAllInstrumentForTreasury
+  );
+
+  const CategoryFeDiscounting = useSelector(
+    (state) => state.RealtimeActionsSlice.CategoryFeDiscounting
   );
 
   useEffect(() => {
@@ -51,16 +56,51 @@ const CategoryFeDiscountingTable = () => {
     GetCategoryWiseDiscountingRates,
   ]);
 
+  const throttledUpdate = useMemo(
+    () =>
+      throttle((discountingUpdate) => {
+        const { instrumentFEDiscountingData } = discountingUpdate;
+
+        setDataSource((prevData) =>
+          prevData.map((row) => {
+            let updatedRow = { ...row };
+
+            instrumentFEDiscountingData.forEach((d) => {
+              Object.keys(row).forEach((key) => {
+                if (
+                  key.startsWith("InstrumentID_") &&
+                  row[key] === d.instrumentID &&
+                  row.TenorID === d.tenorID
+                ) {
+                  const currency = key.split("_")[1];
+                  updatedRow[`rate_${currency}`] = d.bidWithSpread;
+                }
+              });
+            });
+
+            return updatedRow;
+          })
+        );
+      }, 20),
+    []
+  );
+
+  useEffect(() => {
+    if (CategoryFeDiscounting) {
+      throttledUpdate(CategoryFeDiscounting);
+    }
+  }, [CategoryFeDiscounting, throttledUpdate]);
+
   return (
     <Row>
-      <Col lg={12} md={12} sm={12} className='heading mb-2'>
+      <Col lg={12} md={12} sm={12} className="heading mb-2">
         FE Discounting
       </Col>
       <Col lg={12} md={12} sm={12}>
         <GlobalTable
           columns={columnsData}
           dataSource={dataSource}
-          prefixCls='Dealer_Discounting'
+          prefixCls="Dealer_Discounting"
           pagination={false}
         />
       </Col>

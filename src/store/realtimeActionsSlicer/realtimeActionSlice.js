@@ -50,23 +50,47 @@ const RealtimeActionsSlice = createSlice({
     CategoryForwardRates: null,
     TreasuryFeDiscounting: null,
     TreasuryNonFeDiscounting: null,
+    TreasuryForwardRates: null,
     FxTradingCards: null,
+    CategoryFeDiscounting: null,
+    CounterPartyNonFeDiscounting: null,
+    CounterPartyForwardRates: null,
+    CounterPartyFeDiscounting: null,
+    CategoryNonFeDiscouting: null,
   },
   reducers: {
+    setCategoryNonFeDiscounting: (state, { payload }) => {
+      state.CategoryNonFeDiscouting = { ...payload };
+    },
+    setCounterPartyFeDiscounting: (state, { payload }) => {
+      state.CounterPartyFeDiscounting = { ...payload };
+    },
+    setCounterPartyForwardRates: (state, { payload }) => {
+      state.CounterPartyForwardRates = { ...payload };
+    },
+    setCounterPartyNonFeDiscounting: (state, { payload }) => {
+      state.CounterPartyNonFeDiscounting = { ...payload };
+    },
+    setCategoryFeDiscounting: (state, { payload }) => {
+      state.CategoryFeDiscounting = payload;
+    },
     setFxTradingCards: (state, { payload }) => {
       state.FxTradingCards = payload;
     },
     setTreasuryFeDiscounting: (state, { payload }) => {
-      state.TreasuryFeDiscounting = payload;
+      state.TreasuryFeDiscounting = { ...payload };
     },
     setTreasuryNonFeDiscounting: (state, { payload }) => {
-      state.TreasuryNonFeDiscounting = payload;
+      state.TreasuryNonFeDiscounting = { ...payload };
+    },
+    setTreasuryForwardRates: (state, { payload }) => {
+      state.TreasuryForwardRates = payload;
     },
     setCategorySpotRates: (state, { payload }) => {
-      state.CategorySpotRates = payload;
+      state.CategorySpotRates = { ...payload };
     },
     setCategoryForwardRates: (state, { payload }) => {
-      state.CategoryForwardRates = payload;
+      state.CategoryForwardRates = { ...payload };
     },
     setCounterPartySpotRates: (state, { payload }) => {
       state.CounterPartySpotRates = { ...payload };
@@ -175,10 +199,12 @@ const RealtimeActionsSlice = createSlice({
 });
 
 export const {
+  setCategoryFeDiscounting,
   setFxTradingCards,
   setTreasuryFeDiscounting,
   setTreasuryNonFeDiscounting,
   setTreasurySpotRatesFeed,
+  setTreasuryForwardRates,
   setBlotterTransactionRFQQuotedForTreasuryDealBox,
   BlotterTransactionRFQExpiredForTreasury,
   BlotterTransactionAddedForTreasury,
@@ -214,6 +240,10 @@ export const {
   setCounterPartySpotRates,
   setCategorySpotRates,
   setCategoryForwardRates,
+  setCounterPartyNonFeDiscounting,
+  setCounterPartyForwardRates,
+  setCounterPartyFeDiscounting,
+  setCategoryNonFeDiscounting,
 } = RealtimeActionsSlice.actions;
 
 export default RealtimeActionsSlice.reducer;

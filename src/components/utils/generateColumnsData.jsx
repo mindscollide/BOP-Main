@@ -29,12 +29,10 @@ export const buildDiscountingTable = (
 
     // Step 2: Create a map using composite key (instrumentID-tenorID)
     const rateMap = {};
-    console.log(Data, "DataDataDataData");
     Data?.forEach((rate) => {
       const key = `${rate.instrumentID}-${rate.tenorID}`;
       rateMap[key] = rate.rate;
     });
-    console.log(rateMap, "DataDataDataData");
 
     // Step 3: Build the row data
     const rowData = applicableTenors.map((tenor) => {
@@ -96,7 +94,7 @@ export const buildDiscountingTable = (
               dataIndex: "tenorName",
               key: "tenorName",
               align: "center",
-              width: 250,
+              width: 80,
             },
           ],
         },
@@ -110,6 +108,8 @@ export const buildDiscountingTable = (
               title: "Value",
               dataIndex: `rate_${inst.instrumentName}`,
               align: "center",
+              width: 60,
+
               render: (text, record) => (
                 <InputFIeld value={text} record={record} />
               ),
@@ -134,6 +134,8 @@ export const buildDiscountingTable = (
             {
               title: "value",
               dataIndex: `rate_${inst.instrumentName}`,
+              width: 60,
+
               render: (text, record) => (
                 <InputFIeld value={text} record={record} />
               ),
@@ -142,7 +144,6 @@ export const buildDiscountingTable = (
         })),
       ];
     }
-    console.log(columnsData, "columnsDatacolumnsDatacolumnsData");
     // Step 4: Build the column definitions
 
     return { rowData, columnsData };
@@ -256,6 +257,8 @@ export const buildForwardsTable = (
               title: "Tenor",
               dataIndex: `tenorName`,
               key: "tenorName",
+              width: 120,
+
               align: "center",
             },
           ],
@@ -270,6 +273,8 @@ export const buildForwardsTable = (
               title: "Bid",
               dataIndex: `bid_${inst.instrumentName}`,
               key: `bid_${inst.instrumentName}`,
+              width: 60,
+
               align: "center",
               render: (text, record) => (
                 <InputFIeld value={text} record={record} />
@@ -279,6 +284,8 @@ export const buildForwardsTable = (
               title: "Ask",
               dataIndex: `ask_${inst.instrumentName}`,
               key: `ask_${inst.instrumentName}`,
+              width: 60,
+
               align: "center",
               render: (text, record) => (
                 <InputFIeld value={text} record={record} />

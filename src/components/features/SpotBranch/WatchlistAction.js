@@ -28,7 +28,7 @@ export const GetDashboardDataAPI = createAsyncThunk(
       const response = await GetDashboardDataAction();
       const { responseCode } = response.data;
       console.log(responseCode, "responseCoderesponseCode");
-    
+
       if (responseCode === 417) {
         console.log(responseCode, "responseCoderesponseCode");
         await dispatch(refreshTokenAction({ navigate }));
@@ -44,8 +44,10 @@ export const GetDashboardDataAPI = createAsyncThunk(
                 "WatchList_WatchListServiceManager_GetFXTradingSectionAndApplicableInstrument_01".toLowerCase()
               )
           ) {
-            console.log("getAllInstrumentsForCounterPartiesData", response.data);
-       
+            console.log(
+              "getAllInstrumentsForCounterPartiesData",
+              response.data
+            );
 
             return {
               response: response.data.responseResult,
@@ -99,7 +101,7 @@ export const SaveUserDashboardAPI = createAsyncThunk(
 
       const response = await SaveUserDashboard(Data);
       const { responseCode } = response.data;
-    
+
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(SaveUserDashboardAPI({ Data, navigate }));
@@ -166,7 +168,7 @@ export const getAllTreasuryInstrumentsApi = createAsyncThunk(
 
       const response = await getAllInstruments();
       const { responseCode } = response.data;
-    
+
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(getAllTreasuryInstrumentsApi({ navigate }));
@@ -191,7 +193,9 @@ export const getAllTreasuryInstrumentsApi = createAsyncThunk(
                 "WatchList_WatchListServiceManager_GetAllInstrumentForTreasury_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("No Record found");
+            return rejectWithValue(
+              import.meta.env.VITE_MQTT_PORT === "8883" ? "" : "No Record Found"
+            );
           } else if (
             responseMessage
               .toLowerCase()
@@ -240,7 +244,7 @@ export const GetForwardRatesForCounterPartyApi = createAsyncThunk(
 
       const response = await GetForwardRatesForCounterPartyData();
       const { responseCode } = response.data;
-    
+
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(GetForwardRatesForCounterPartyApi({ navigate }));
@@ -265,7 +269,9 @@ export const GetForwardRatesForCounterPartyApi = createAsyncThunk(
                 "WatchList_WatchListServiceManager_GetForwardRatesForCounterParty_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("No Record found");
+            return rejectWithValue(
+              import.meta.env.VITE_MQTT_PORT === "8883" ? "" : "No Record Found"
+            );
           } else if (
             responseMessage
               .toLowerCase()
@@ -314,7 +320,7 @@ export const GetDiscountingRatesForCounterPartyApi = createAsyncThunk(
 
       const response = await GetDiscountingRatesForCounterPartyData();
       const { responseCode } = response.data;
-    
+
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(GetDiscountingRatesForCounterPartyApi({ navigate }));
@@ -339,7 +345,9 @@ export const GetDiscountingRatesForCounterPartyApi = createAsyncThunk(
                 "WatchList_WatchListServiceManager_GetDiscountingRatesForCounterParty_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("No Record found");
+            return rejectWithValue(
+              import.meta.env.VITE_MQTT_PORT === "8883" ? "" : "No Record Found"
+            );
           } else if (
             responseMessage
               .toLowerCase()
@@ -387,7 +395,7 @@ export const GetBankSpotForTreasuryApi = createAsyncThunk(
 
       const response = await GetBankSpotForTreasuryData(Data);
       const { responseCode } = response.data;
-    
+
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(GetBankSpotForTreasuryApi({ navigate, Data }));
@@ -412,7 +420,9 @@ export const GetBankSpotForTreasuryApi = createAsyncThunk(
                 "WatchList_WatchListServiceManager_GetBankSpotForTreasury_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("No Record Found");
+            return rejectWithValue(
+              import.meta.env.VITE_MQTT_PORT === "8883" ? "" : "No Record Found"
+            );
           } else if (
             responseMessage
               .toLowerCase()
@@ -457,7 +467,7 @@ export const GetBankForwardForTreasuryApi = createAsyncThunk(
 
       const response = await GetBankForwardForTreasuryData();
       const { responseCode } = response.data;
-    
+
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(GetBankForwardForTreasuryApi({ navigate }));
@@ -482,7 +492,9 @@ export const GetBankForwardForTreasuryApi = createAsyncThunk(
                 "WatchList_WatchListServiceManager_GetBankForwardForTreasury_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("No Record Found");
+            return rejectWithValue(
+              import.meta.env.VITE_MQTT_PORT === "8883" ? "" : "No Record Found"
+            );
           } else if (
             responseMessage
               .toLowerCase()
@@ -527,7 +539,7 @@ export const GetMisDataByRangeAPI = createAsyncThunk(
 
       const response = await GetFXInstruGetMisDataByRange(Data);
       const { responseCode } = response.data;
-    
+
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(GetMisDataByRangeAPI({ navigate, Data }));
@@ -593,7 +605,7 @@ export const GetDiscountingRatesForTreasuryApi = createAsyncThunk(
 
       const response = await GetDiscountingRatesForTreasuryData();
       const { responseCode } = response.data;
-    
+
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(GetDiscountingRatesForTreasuryApi({ navigate }));
@@ -618,7 +630,9 @@ export const GetDiscountingRatesForTreasuryApi = createAsyncThunk(
                 "WatchList_WatchListServiceManager_GetDiscountingRatesForTreasury_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("No Record found");
+            return rejectWithValue(
+              import.meta.env.VITE_MQTT_PORT === "8883" ? "" : "No Record Found"
+            );
           } else if (
             responseMessage
               .toLowerCase()

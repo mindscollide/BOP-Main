@@ -1,7 +1,7 @@
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import GlobalTable from "@/components/common/table/GlobalTable";
 import { buildDiscountingTable } from "@/components/utils/generateColumnsData";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { throttle } from "lodash";
 import { useSelector } from "react-redux";
 
@@ -22,8 +22,6 @@ const NonFeDiscountingTreasuryAndDealer = () => {
   const TreasuryNonFeDiscounting = useSelector(
     (state) => state.RealtimeActionsSlice.TreasuryNonFeDiscounting
   );
-
-
 
   useEffect(() => {
     if (GetAllInstrumentForTreasury !== null && getAllTenorsRecords !== null) {
@@ -55,41 +53,43 @@ const NonFeDiscountingTreasuryAndDealer = () => {
     GetDiscountingRatesForTreasury,
   ]);
 
-  useEffect(() => {
-    if (!TreasuryNonFeDiscounting) return;
+  const throttledUpdate = useMemo(
+    () =>
+      throttle((discountingUpdate) => {
+        const nonFeDiscountingRates =
+          discountingUpdate?.nonFeDiscountingRates || [];
 
-    const throttledUpdate = throttle((discountingUpdate) => {
-      const nonFeDiscountingRates =
-        discountingUpdate?.nonFeDiscountingRates || [];
+        if (nonFeDiscountingRates.length === 0) return;
 
-      if (nonFeDiscountingRates.length === 0) return; // agar empty ya undefined hai to skip
+        setDataSource((prevData) =>
+          prevData.map((row) => {
+            let updatedRow = { ...row };
 
-      setDataSource((prevData) =>
-        prevData.map((row) => {
-          let updatedRow = { ...row };
-
-          nonFeDiscountingRates.forEach((d) => {
-            Object.keys(row).forEach((key) => {
-              if (
-                key.startsWith("InstrumentID_") &&
-                row[key] === d.instrumentID &&
-                row.TenorID === d.tenorID
-              ) {
-                const currency = key.split("_")[1];
-                updatedRow[`rate_${currency}`] = d.bidWithSpread;
-              }
+            nonFeDiscountingRates.forEach((d) => {
+              Object.keys(row).forEach((key) => {
+                if (
+                  key.startsWith("InstrumentID_") &&
+                  row[key] === d.instrumentID &&
+                  row.TenorID === d.tenorID
+                ) {
+                  const currency = key.split("_")[1];
+                  updatedRow[`rate_${currency}`] = d.bidWithSpread;
+                }
+              });
             });
-          });
 
-          return updatedRow;
-        })
-      );
-    });
+            return updatedRow;
+          })
+        );
+      }, 20),
+    []
+  ); // 300ms throttle
 
-    throttledUpdate(TreasuryNonFeDiscounting);
-
-    return () => throttledUpdate.cancel();
-  }, [TreasuryNonFeDiscounting]);
+  useEffect(() => {
+    if (TreasuryNonFeDiscounting) {
+      throttledUpdate(TreasuryNonFeDiscounting);
+    }
+  }, [TreasuryNonFeDiscounting, throttledUpdate]);
 
   return (
     <>

@@ -126,6 +126,7 @@ export const createCorporateCreatePasswordApi = createAsyncThunk(
               return rejectWithValue("Something went wrong");
 
             case "ERM_AuthService_AuthManager_CreateCorporateUserPassword_07".toLowerCase():
+              navigate("/");
               return rejectWithValue("Password Created but is InActive");
 
             case "ERM_AuthService_AuthManager_CreateCorporateUserPassword_08".toLowerCase():

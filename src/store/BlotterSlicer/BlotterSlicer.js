@@ -36,6 +36,7 @@ import {
   calculateNonFeSwapAndDiscountingRateApi,
   CalculateFEDiscountingAPI,
   CalculateFESwapAndDiscountingApi,
+  SaveSpotTransactionRFQ,
 } from "@/components/features/blotter/BlotterActions";
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -528,6 +529,18 @@ const BlotterSlicer = createSlice({
       .addCase(CalculateFEDiscountingAPI.rejected, (state, { payload }) => {
         state.Loader = false;
         state.CalculateFEDiscountingData = null;
+        state.responseMessage = payload;
+      })
+
+      .addCase(SaveSpotTransactionRFQ.pending, (state) => {
+        state.Loader = false;
+      })
+      .addCase(SaveSpotTransactionRFQ.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.responseMessage = payload?.message;
+      })
+      .addCase(SaveSpotTransactionRFQ.rejected, (state, { payload }) => {
+        state.Loader = false;
         state.responseMessage = payload;
       });
   },

@@ -1,8 +1,9 @@
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import GlobalTable from "@/components/common/table/GlobalTable";
 import { buildForwardsTable } from "@/components/utils/generateColumnsData";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
+import { throttle } from "lodash";
 
 const BankForwards = () => {
   const [dataSource, setDataSource] = useState([]);
@@ -20,13 +21,17 @@ const BankForwards = () => {
     (state) => state.WatchListReducer.GetAllInstrumentForTreasury
   );
 
+  const TreasuryForwardRates = useSelector(
+    (state) => state.RealtimeActionsSlice.TreasuryForwardRates
+  );
+
+
+
   useEffect(() => {
-    if (
-      getAllTenorsRecords !== null &&
-      GetAllInstrumentForTreasury !== null
-    ) {
+    if (getAllTenorsRecords !== null && GetAllInstrumentForTreasury !== null) {
       try {
-        const { forwardRates = [] } = GetBankForwardForTreasury !== null && GetBankForwardForTreasury
+        const { forwardRates = [] } =
+          GetBankForwardForTreasury !== null && GetBankForwardForTreasury;
         const { forwardInstruments } = GetAllInstrumentForTreasury;
         let getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
         let getAllInstrument = { instruments: forwardInstruments };
@@ -42,7 +47,6 @@ const BankForwards = () => {
           setDataSource(rowData);
           setColumnsData(columnsData);
         }
-    
       } catch (error) {
         console.log(error, "Error while building discounting table");
       }
@@ -52,9 +56,51 @@ const BankForwards = () => {
     getAllTenorsRecords,
     GetAllInstrumentForTreasury,
   ]);
+
+  const updateForwardRates = useMemo(
+    () =>
+      throttle(
+        (treasuryForwardRates, setDataSource) => {
+          const { forwardRates = [] } = treasuryForwardRates;
+          if (forwardRates.length === 0) return;
+
+          setDataSource((prevData) =>
+            prevData.map((row) => {
+              let updatedRow = { ...row };
+
+              forwardRates.forEach((d) => {
+                Object.keys(row).forEach((key) => {
+                  if (
+                    key.startsWith("InstrumentID_") &&
+                    row[key] === d.instrumentID &&
+                    row.tenorID === d.tenorID // fallback
+                  ) {
+                    const currency = key.split("_")[1];
+                    updatedRow[`bid_${currency}`] = d.bidWithSpread;
+                    updatedRow[`ask_${currency}`] = d.askWithSpread;
+                  }
+                });
+              });
+
+              return updatedRow;
+            })
+          );
+        },
+        50,
+        { leading: true, trailing: true }
+      ),
+    [] // sirf ek baar banega
+  );
+
+  useEffect(() => {
+    if (TreasuryForwardRates) {
+      updateForwardRates(TreasuryForwardRates, setDataSource);
+    }
+  }, [TreasuryForwardRates, updateForwardRates]);
+
   return (
     <>
-      <div className='flex-fill mt-3 fs-4 fw-bold color-black mb-1 ff-roboto'>
+      <div className="flex-fill mt-3 fs-4 fw-bold color-black mb-1 ff-roboto">
         Bank Forwards
       </div>
 

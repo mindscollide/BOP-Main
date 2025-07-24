@@ -41,6 +41,19 @@ const MainCorporate = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const activeTab = useSelector((state) => state.RFQReducer.activeTab);
+  let isFeDiscountingEnabled =
+    localStorage.getItem("isFEEnabled") !== null
+      ? localStorage.getItem("isFEEnabled")
+      : false;
+  let isNonFeDiscountingEnabled =
+    localStorage.getItem("isNonFEEnabled") !== null
+      ? localStorage.getItem("isNonFEEnabled")
+      : false;
+  console.log(
+    isFeDiscountingEnabled,
+    isNonFeDiscountingEnabled,
+    "isNonFeDiscountingEnabledisNonFeDiscountingEnabled"
+  );
   const handleTabChange = (tabTitle) => {
     dispatch(setActiveTab(tabTitle));
   };
@@ -65,7 +78,7 @@ const MainCorporate = () => {
         SpotBranch && activeTab === "Spot" ? (
           <Suspense fallback={<>Loading Spot...</>}>
             <SpotBranch />
-            <section className="bg-white mt-2 p-2">
+            <section className='bg-white mt-2 p-2'>
               <BlotterHeader />
             </section>
           </Suspense>
@@ -77,7 +90,7 @@ const MainCorporate = () => {
         ForwardTableBranchComponent && activeTab === "Forwards" ? (
           <Suspense fallback={<>Loading Forwards...</>}>
             <ForwardTableBranchComponent />
-            <section className="bg-white p-2">
+            <section className='bg-white p-2'>
               <BlotterHeader />
             </section>
           </Suspense>
@@ -89,20 +102,27 @@ const MainCorporate = () => {
         BranchDiscountingTable && activeTab === "Discounting" ? (
           <Suspense fallback={<>Loading Discounting...</>}>
             <BranchDiscountingTable />
-            <section className="bg-white p-2">
+            <section className='bg-white p-2'>
               <BlotterHeader />
             </section>
           </Suspense>
         ) : null,
     },
   ];
+  let filterTabs = tabsData;
+
+  if (isFeDiscountingEnabled === false && isNonFeDiscountingEnabled === false) {
+    filterTabs = tabsData.filter((tab) => tab.title !== "Discounting");
+  }
+
+  console.log(filterTabs, "filterTabs");
 
   return (
     <GlobalTabs
-      tabs={tabsData}
+      tabs={filterTabs}
       activeKey={activeTab}
       onTabChange={handleTabChange}
-      tabClass="mb-4"
+      tabClass='mb-4'
     />
   );
 };

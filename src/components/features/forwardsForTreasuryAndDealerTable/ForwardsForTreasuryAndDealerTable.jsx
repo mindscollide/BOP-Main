@@ -93,16 +93,19 @@ const TenoreWiseCurrentAndLastRates = ({
   }, [newTenorRecord]);
 
   useEffect(() => {
-    if (getDashboardForwards && getAllTenorsData) {
+    if (getAllTenorsData !== null) {
       try {
         console.log(getAllTenorsData, "Filtered Applicable Tenors");
 
-        const { currentTenorWiseForwardRates, lastTenorWiseForwardRates } =
-          getDashboardForwards;
+        const {
+          currentTenorWiseForwardRates = [],
+          lastTenorWiseForwardRates = [],
+        } = getDashboardForwards !== null && getDashboardForwards;
+        const { tenors } = getAllTenorsData;
 
         // Step 1: Filter only tenors where forward is applicable
-        const applicableTenors = getAllTenorsData.filter(
-          (tenor) => tenor.isForwardApplicable === true
+        const applicableTenors = tenors.filter(
+          (tenor) => tenor.isForwardingApplicable === true
         );
 
         // Step 2: Map applicable tenors to final formatted data
@@ -117,10 +120,10 @@ const TenoreWiseCurrentAndLastRates = ({
           return {
             tenorID: tenor.tenorID,
             tenorName: tenor.tenorName,
-            currentBid: current?.bid ?? "",
-            currentAsk: current?.ask ?? "",
-            lastBid: last?.bid ?? "",
-            lastAsk: last?.ask ?? "",
+            currentBid: current?.bid ?? "0",
+            currentAsk: current?.ask ?? "0",
+            lastBid: last?.bid ?? "0",
+            lastAsk: last?.ask ?? "0",
             dateTime: current?.dateTime ?? "",
           };
         });
@@ -216,10 +219,11 @@ const TenoreWiseCurrentAndLastRates = ({
     }
 
     let checkAskValue = forwardsForTreasuryBranch.find(
-      (item) => Number(item.currentAsk) <= Number(item.currentBid)
+      (item) =>
+        Number(item.currentAsk) !== 0 &&
+        Number(item.currentBid) !== 0 &&
+        Number(item.currentAsk) < Number(item.currentBid)
     );
-
-    console.log(checkAskValue, "Checkerchecker");
 
     if (checkAskValue !== undefined) {
       const handleClick = () => {
@@ -267,7 +271,7 @@ const TenoreWiseCurrentAndLastRates = ({
             InputFIeld ? (
               <Suspense fallback={<div>Loading input...</div>}>
                 <InputFIeld
-                  type="number"
+                  type='number'
                   value={record.currentBid}
                   onChange={(event) =>
                     handleChangeCurrentForwards(record, "bid", event)
@@ -286,7 +290,7 @@ const TenoreWiseCurrentAndLastRates = ({
             InputFIeld ? (
               <Suspense fallback={<div>Loading input...</div>}>
                 <InputFIeld
-                  type="number"
+                  type='number'
                   value={record.currentAsk}
                   onChange={(event) =>
                     handleChangeCurrentForwards(record, "ask", event)
@@ -310,7 +314,7 @@ const TenoreWiseCurrentAndLastRates = ({
             InputFIeld ? (
               <Suspense fallback={<div>Loading input...</div>}>
                 <InputFIeld
-                  type="number"
+                  type='number'
                   value={record.lastBid}
                   disabled={true}
                   applyClass={"DealerTableBitInput"}
@@ -327,7 +331,7 @@ const TenoreWiseCurrentAndLastRates = ({
             InputFIeld ? (
               <Suspense fallback={<div>Loading input...</div>}>
                 <InputFIeld
-                  type="number"
+                  type='number'
                   value={record.lastAsk}
                   disabled={true}
                   applyClass={"DealerTableBitInput"}
@@ -353,7 +357,7 @@ const TenoreWiseCurrentAndLastRates = ({
               IconElement && (
                 <Suspense fallback={<div>Loading button...</div>}>
                   <CustomButton
-                    type="link"
+                    type='link'
                     icon={
                       <Suspense fallback={<div>Loading icon...</div>}>
                         <IconElement
@@ -384,9 +388,9 @@ const TenoreWiseCurrentAndLastRates = ({
               pagination={false}
             />
             {CustomButton && (
-              <span className="d-flex justify-content-center mt-4">
+              <span className='d-flex justify-content-center mt-4'>
                 <CustomButton
-                  applyClass="publishForwardsBtn"
+                  applyClass='publishForwardsBtn'
                   value={"Publish Forwards"}
                   onClick={handlePublishForwards}
                   disabled={marketStatus === false ? true : false}
@@ -405,9 +409,8 @@ const TenoreWiseCurrentAndLastRates = ({
                       sm={12}
                       md={12}
                       lg={12}
-                      className="d-flex justify-content-center"
-                    >
-                      <span className="modalDescription">
+                      className='d-flex justify-content-center'>
+                      <span className='modalDescription'>
                         Are you sure you want to delete it
                       </span>
                     </Col>
@@ -421,8 +424,7 @@ const TenoreWiseCurrentAndLastRates = ({
                       sm={6}
                       md={6}
                       lg={6}
-                      className="d-flex justify-content-end"
-                    >
+                      className='d-flex justify-content-end'>
                       <CustomButton
                         value={"Yes"}
                         onClick={handleYesConfirmatonModal}
@@ -433,8 +435,7 @@ const TenoreWiseCurrentAndLastRates = ({
                       sm={6}
                       md={6}
                       lg={6}
-                      className="d-flex justify-content-start"
-                    >
+                      className='d-flex justify-content-start'>
                       <CustomButton
                         value={"No"}
                         onClick={() => setConfirmationModal(false)}
