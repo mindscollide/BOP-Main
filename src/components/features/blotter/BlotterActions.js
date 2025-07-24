@@ -2411,7 +2411,7 @@ export const GetSpotRatesForCounterPartyAPI = createAsyncThunk(
                 "WatchList_WatchListServiceManager_GetSpotRatesForCounterParty_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("No Record Found.");
+            return rejectWithValue("");
           } else if (
             responseMessage
               .toLowerCase()
