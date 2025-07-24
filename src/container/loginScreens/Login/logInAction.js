@@ -132,6 +132,7 @@ export const corporateUserLoginInApi = createAsyncThunk(
           switch (responseMessage.toLowerCase()) {
             case "ERM_AuthService_AuthManager_CorporateUserLogin_01".toLowerCase():
             case "ERM_AuthService_AuthManager_CorporateUserLogin_02".toLowerCase():
+              return rejectWithValue("Something Went Wrong");
             case "ERM_AuthService_AuthManager_CorporateUserLogin_04".toLowerCase():
               return rejectWithValue("Incorrect Password");
 
@@ -140,8 +141,10 @@ export const corporateUserLoginInApi = createAsyncThunk(
             case "ERM_AuthService_AuthManager_CorporateUserLogin_06".toLowerCase():
               return rejectWithValue("User is Disabled");
             case "ERM_AuthService_AuthManager_CorporateUserLogin_07".toLowerCase():
+              return rejectWithValue("User is Closed");
             case "ERM_AuthService_AuthManager_CorporateUserLogin_08".toLowerCase():
               return rejectWithValue("User is Dormant");
+
             case "ERM_AuthService_AuthManager_CorporateUserLogin_09".toLowerCase():
             case "ERM_AuthService_AuthManager_CorporateUserLogin_10".toLowerCase():
             case "ERM_AuthService_AuthManager_CorporateUserLogin_11".toLowerCase():
