@@ -1,78 +1,126 @@
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
 import { UpdateVoltMeterStatusApi } from "@/container/pages/mainDealer/dealerActions";
 import { useDispatch } from "react-redux";
+import { setUpdateVolMeterRealtime } from "@/store/dealerReducer/dealerSlicer";
 
-// const Voltmeter = ({ activeValue, onSelect }) => {
+/**
+ * Voltmeter Component
+ * 
+ * A control panel for managing voltmeter status with interactive buttons.
+ * Displays current voltmeter status and allows changing between channels or turning off.
+ * Integrates with Redux for state management and API communication.
+ */
 const Voltmeter = () => {
+  // Initialize Redux dispatch hook
   const dispatch = useDispatch();
-  const buttons = [
-    { value: 1, label: "01" },
-    { value: 2, label: "02" },
-    { value: 3, label: "03" },
-    { value: 0, label: "off" },
-  ];
-  const [activeValue, setActiveValue] = useState(1);
 
-  const handleButtonClick = (value) => {
-    setActiveValue(value);
-
-    // Prepare payload
-    const Data = {
-      VoltMeterID: value,
-    };
-
-    // Dispatch API action
-    dispatch(UpdateVoltMeterStatusApi({ Data }));
-  };
-
+  // Get current voltmeter status from Redux store
   const GetVoltMeterStatus = useSelector(
     (state) => state.dealerReducer.GetVoltMeterStatus
   );
+  
+  // Get realtime voltmeter updates from Redux store
+  const GetVoltMeterStatusRealtime = useSelector(
+    (state) => state.dealerReducer.GetVoltMeterStatusRealtime
+  );
 
+  // Button configuration for the voltmeter control
+  const buttons = [
+    { value: 1, label: "01" },  // Channel 1
+    { value: 2, label: "02" },  // Channel 2
+    { value: 3, label: "03" },  // Channel 3
+    { value: 0, label: "off" }, // Off state
+  ];
+
+  // Local state to track the currently active voltmeter value
+  const [activeValue, setActiveValue] = useState(1);
+
+  /**
+   * Handles button clicks on voltmeter controls
+   * @param {number} value - The selected voltmeter value (0-3)
+   */
+  const handleButtonClick = (value) => {
+    // Update local state immediately for responsive UI
+    setActiveValue(value);
+
+    // Prepare payload for API call
+    const Data = {
+      VoltMeterID: value,  // Send the selected voltmeter ID
+    };
+
+    // Dispatch API action to update voltmeter status on server
+    dispatch(UpdateVoltMeterStatusApi({ Data }));
+  };
+
+  /**
+   * Effect hook to handle realtime voltmeter status updates
+   * Runs whenever GetVoltMeterStatusRealtime changes
+   */
+  useEffect(() => {
+    if (GetVoltMeterStatusRealtime !== null) {
+      try {
+        // Find the currently active voltmeter in realtime data
+        const active = GetVoltMeterStatusRealtime.statuses.find(
+          (item) => item.isVolMeterActive === true
+        );
+        
+        // If active voltmeter found, update local state
+        if (active?.volMeterID) {
+          setActiveValue(active.voltMeterID);
+        }
+        
+        // Reset realtime update flag in Redux store
+        dispatch(setUpdateVolMeterRealtime(null));
+      } catch (error) {
+        console.error("Error processing realtime voltmeter update:", error);
+      }
+    }
+  }, [GetVoltMeterStatusRealtime]);
+
+  /**
+   * Effect hook to handle initial voltmeter status
+   * Runs when GetVoltMeterStatus changes (initial load)
+   */
   useEffect(() => {
     if (GetVoltMeterStatus !== null) {
+      // Find the currently active voltmeter in initial status data
       const active = GetVoltMeterStatus.voltMeterStatuses.find(
         (item) => item.isVolMeterActive === true
       );
 
+      // If active voltmeter found, update local state
       if (active?.volMeterID) {
         setActiveValue(active.voltMeterID);
       }
     }
   }, [GetVoltMeterStatus]);
 
-  console.log(GetVoltMeterStatus, "GetVoltMeterStatus");
   return (
-    <div className="vol-meter-container ">
-      <div className="d-flex align-items-center vol-meter-inner-wrapper">
-        <div className="heading-vol-meter fs-6 fw-semibold ff-poppins">
+    <div className='vol-meter-container'>
+      <div className='d-flex align-items-center vol-meter-inner-wrapper'>
+        {/* Voltmeter title/heading */}
+        <div className='heading-vol-meter fs-6 fw-semibold ff-poppins'>
           Vol Meter
         </div>
+        
+        {/* Render voltmeter control buttons */}
         {buttons.map((button) => (
           <button
             key={button.value}
             className={`btn btn-default vol-meter ms-1 ${
               activeValue === button.value ? "active-vol" : ""
-            } ${button.value === "off" ? "vol-meter-off" : ""}`}
+            } ${button.value === 0 ? "vol-meter-off" : ""}`}  // Special class for 'off' button
             aria-pressed={activeValue === button.value}
             value={GetVoltMeterStatus?.voltMeterStatuses[0]?.isVolMeterActive}
             onClick={() => handleButtonClick(button.value)}
-            tabIndex={0}
-          >
+            tabIndex={0}>
             {button.label}
           </button>
         ))}
       </div>
     </div>
   );
-};
-
-Voltmeter.propTypes = {
-  activeValue: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
-    .isRequired,
-  onSelect: PropTypes.func.isRequired,
 };
 
 export default Voltmeter;

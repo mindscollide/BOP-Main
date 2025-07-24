@@ -62,7 +62,6 @@ const SpotBranch = () => {
     (state) => state.WatchListReducer.getMarketStatus
   );
 
-  console.log(marketStatus, "marketStatusmarketStatus");
 
   const [watchlistData, setWatchlistData] = useState(initialWatchlistData);
   // Extracting out the Cards Wathlist data in the state
@@ -413,6 +412,8 @@ const SpotBranch = () => {
                               sellValue={data.sellValue || ""}
                               isSellDisabled={data.isSell}
                               isBuyDisabled={data.isBuy}
+                              instrumentID={data.instrumentID || 0}
+                              secondaryInstrumentID={data.secondaryInstrumentID || 0}
                             />
                             {provided.placeholder}
                           </div>
