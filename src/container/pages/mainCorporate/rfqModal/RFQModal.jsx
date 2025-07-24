@@ -119,7 +119,7 @@ const RFQModal = () => {
   const [lcNumberData, setLcNumberData] = useState("");
 
   // Transaction type options (Buy/Sell)
-  const [typeOptions] = useState([
+  const [typeOptions, setTypeOptions] = useState([
     { label: "Buy", value: 1 },
     { label: "Sell", value: 2 },
   ]);
@@ -214,21 +214,41 @@ const RFQModal = () => {
    * Runs when iBuySellData changes
    */
   useEffect(() => {
-    if (iBuySellData !== null) {
+    if (iBuySellData !== null && natureOfBusinessList?.natureOfTransactions) {
       try {
-        setTypeOptionSelected({
-          value: iBuySellData.type === "buy" ? 1 : 2,
-          label:
-            iBuySellData.type === "buy"
-              ? ` Buy ${iBuySellData.currencyLabel.slice(0, 3)}`
-              : iBuySellData.type === "sell"
-              ? ` Sell ${iBuySellData.currencyLabel.slice(3, 6)}`
-              : iBuySellData.type === "buy",
-        });
-        setSelectedCurrency({
-          value: iBuySellData.instrumentID,
-          label: iBuySellData.currencyLabel,
-        });
+        const isBuy = iBuySellData.type === "buy";
+        const typeValue = isBuy ? 1 : 2;
+        const baseCurrency = iBuySellData.currencyLabel.slice(0, 3);
+        const quoteCurrency = iBuySellData.currencyLabel.slice(3, 6);
+
+        const newTypesData = [
+          {
+            label: `Sell ${isBuy ? quoteCurrency : baseCurrency}`,
+            value: isBuy ? 2 : 1,
+          },
+          {
+            label: `Buy ${isBuy ? baseCurrency : quoteCurrency}`,
+            value: isBuy ? 1 : 2,
+          },
+        ];
+
+        const filteredOptions = natureOfBusinessList.natureOfTransactions
+          .filter(
+            (business) =>
+              business.isForSpot &&
+              (typeValue === 1 ? business.isForBuy : business.isForSell)
+          )
+          .map((business) => ({
+            ...business,
+            label: business.name,
+            value: business.id,
+          }));
+
+        setNatureOfBusinessOptions(filteredOptions);
+        setTypeOptions(newTypesData);
+
+        const selected = newTypesData.find((opt) => opt.value === typeValue);
+        setTypeOptionSelected(selected);
       } catch (error) {
         console.error("Error initializing with buy/sell data:", error);
       }
@@ -285,7 +305,7 @@ const RFQModal = () => {
    */
   useEffect(() => {
     // Skip if pre-filled transaction data exists or instrument data isn't loaded
-    if (!getAllInstrumentsForCounterPartiesData || iBuySellData !== null) {
+    if (!getAllInstrumentsForCounterPartiesData && iBuySellData === null) {
       return;
     }
 
@@ -330,9 +350,9 @@ const RFQModal = () => {
         data: getAllInstrumentsForCounterPartiesData,
       });
 
-      // Reset to empty state on error
-      setSelectedCurrency(null);
-      setCurrencyOptions([]);
+      // // Reset to empty state on error
+      // setSelectedCurrency(null);
+      // setCurrencyOptions([]);
     }
   }, [getAllInstrumentsForCounterPartiesData, iBuySellData]);
   /**
@@ -622,7 +642,7 @@ const RFQModal = () => {
                     }
                     onChange={handleChangeType}
                     options={typeOptions}
-                    isDisabled={iBuySellData !== null ? true : false}
+                    // isDisabled={iBuySellData !== null ? true : false}
                   />
                 </Col>
               </Row>

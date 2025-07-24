@@ -144,6 +144,7 @@ const Dashboard = () => {
         dispatch(NonFeDiscountingPublishedAction(data.payload));
         break;
       case "MARKET_STATUS_UPDATED":
+        console.log(data.payload, "MARKET_STATUS_UPDATEDMARKET_STATUS_UPDATED")
         dispatch(marketStatusUpdated(data.payload.marketStatus.isMarketOn));
         dispatch(setMarketStatus(data.payload.marketStatus.isMarketOn));
         break;
@@ -230,6 +231,7 @@ const Dashboard = () => {
         dispatch(setTreasuryNonFeDiscounting(data.payload));
         break;
       case "DISPATCHER_CATEGORY_FORWARD_RATES_FOR_TREASURY":
+        console.log("DISPATCHER_CATEGORY_FORWARD_RATES_FOR_TREASURY", data.payload)
         dispatch(setCategoryForwardRates(data.payload));
         break;
       case "DISPATCHER_CATEGORY_FEDISCOUNTING_RATES_FOR_TREASURY":
