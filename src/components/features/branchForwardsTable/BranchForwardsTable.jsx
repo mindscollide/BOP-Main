@@ -152,7 +152,7 @@ const BranchForwardsTable = () => {
     if (CounterPartyForwardRates) {
       throttledForwardUpdate(CounterPartyForwardRates);
     }
-  }, [CounterPartyForwardRates, throttledForwardUpdate, marketStatus]);
+  }, [CounterPartyForwardRates, throttledForwardUpdate]);
 
   useEffect(() => {
     if (marketStatus !== null && marketStatus === false) {

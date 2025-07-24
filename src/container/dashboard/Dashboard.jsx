@@ -144,7 +144,7 @@ const Dashboard = () => {
         dispatch(NonFeDiscountingPublishedAction(data.payload));
         break;
       case "MARKET_STATUS_UPDATED":
-        console.log(data.payload, "MARKET_STATUS_UPDATEDMARKET_STATUS_UPDATED")
+        console.log(data.payload, "MARKET_STATUS_UPDATEDMARKET_STATUS_UPDATED");
         dispatch(marketStatusUpdated(data.payload.marketStatus.isMarketOn));
         dispatch(setMarketStatus(data.payload.marketStatus.isMarketOn));
         break;
@@ -231,10 +231,18 @@ const Dashboard = () => {
         dispatch(setTreasuryNonFeDiscounting(data.payload));
         break;
       case "DISPATCHER_CATEGORY_FORWARD_RATES_FOR_TREASURY":
-        console.log("DISPATCHER_CATEGORY_FORWARD_RATES_FOR_TREASURY", data.payload)
+        console.log(
+          "DISPATCHER_CATEGORY_FORWARD_RATES_FOR_TREASURY",
+          data.payload
+        );
         dispatch(setCategoryForwardRates(data.payload));
         break;
       case "DISPATCHER_CATEGORY_FEDISCOUNTING_RATES_FOR_TREASURY":
+        console.log(
+          "DISPATCHER_CATEGORY_FEDISCOUNTING_RATES_FOR_TREASURY MQTT",
+          data.payload
+        );
+
         dispatch(setCategoryFeDiscounting(data.payload));
         break;
       case "DISPATCHER_NONFEDISCOUNTING_RATES":
@@ -253,7 +261,7 @@ const Dashboard = () => {
         dispatch(setCategoryNonFeDiscounting(data.payload));
         break;
       case "UPDATED_VOLTMETER_STATUS":
-        dispatch(setUpdateVolMeterRealtime(data.payload))
+        dispatch(setUpdateVolMeterRealtime(data.payload));
         console.log(data.payload, "Updated Voltmeter Status");
       default:
         console.warn("No specific handler for this message type", data.payload);
@@ -319,12 +327,12 @@ const Dashboard = () => {
     }
   }, []);
   return (
-    <Layout className="roboto-13">
+    <Layout className='roboto-13'>
       {!location.pathname.includes("calculator") && <Header />}
 
       <GlobalNavbar />
       <Content>
-        <main className="px-3">
+        <main className='px-3'>
           <Outlet />
           <AnimatePresence>
             {blotterTransactionAdded && isTreasury && <DealBox />}

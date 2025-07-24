@@ -76,7 +76,7 @@ const SpotDealerAndTreasury = () => {
             : data;
         })
       );
-    },); // Update max every 300ms
+    },20); // Update max every 300ms
 
     throttledUpdate(categorySpotRates);
 
