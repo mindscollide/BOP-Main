@@ -25,6 +25,13 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
   const getAllTenorsRecords = useSelector(
     (state) => state.dealerReducer.getAllTenors
   );
+
+  const marketStatus = localStorage.getItem("marketStatus");
+  console.log(
+    typeof marketStatus,
+    typeof JSON.parse(marketStatus),
+    "marketStatusmarketStatus"
+  );
   const dispatch = useDispatch();
   const navigate = useNavigate();
   //local states
@@ -107,7 +114,23 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
     if (CounterPartyNonFeDiscounting) {
       throttledUpdate(CounterPartyNonFeDiscounting);
     }
-  }, [CounterPartyNonFeDiscounting, throttledUpdate]);
+  }, [CounterPartyNonFeDiscounting, throttledUpdate, marketStatus]);
+
+  useEffect(() => {
+    if (marketStatus !== null && JSON.parse(marketStatus) === false) {
+      setDataSource((prevData) =>
+        prevData.map((row) => {
+          const updatedRow = { ...row };
+          Object.keys(updatedRow).forEach((key) => {
+            if (key.startsWith("rate_")) {
+              updatedRow[key] = 0;
+            }
+          });
+          return updatedRow;
+        })
+      );
+    }
+  }, [marketStatus]);
 
   const handleNonFEDiscountingModal = () => {
     setNonfeDiscountingModalCall(true);
@@ -116,7 +139,7 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
   return (
     <>
       <Row>
-        <Col lg={12} md={12} sm={12} className='heading mb-2'>
+        <Col lg={12} md={12} sm={12} className="heading mb-2">
           Non-FE Discounting
         </Col>
         <Col lg={12} md={12} sm={12}>
@@ -135,16 +158,22 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
         </Col>
       </Row>
 
-      <Row className='my-2'>
+      <Row className="my-2">
         <Col
           lg={12}
           md={12}
           sm={12}
-          className='d-flex justify-content-center align-items-center gap-2'>
+          className="d-flex justify-content-center align-items-center gap-2"
+        >
           <CustomButton
-            value='Non-FE Discounting'
+            value="Non-FE Discounting"
             applyClass={"FowwardBranchBookaForwardBtn"}
             onClick={handleNonFEDiscountingModal}
+            disabled={
+              marketStatus !== null && JSON.parse(marketStatus) === false
+                ? true
+                : false
+            }
           />
         </Col>
       </Row>

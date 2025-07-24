@@ -14,6 +14,7 @@ const BranchAndCorporateFeDiscountingTable = () => {
   //local states
   const [dataSource, setDataSource] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
+  const [originalDataSource, setOriginalDataSource] = useState([]);
   const [feDiscountingModalCall, setFeDiscountingModalCall] = useState(false);
 
   const getAllInstrumentsForCounterPartiesData = useSelector(
@@ -30,8 +31,17 @@ const BranchAndCorporateFeDiscountingTable = () => {
     (state) => state.dealerReducer.getAllTenors
   );
 
+  const marketStatus = localStorage.getItem("marketStatus");
+
+  console.log(CounterPartyFeDiscounting, "CounterPartyFeDiscounting");
+
+  console.log(dataSource, "dataSource");
+
   useEffect(() => {
-    if (getAllTenorsRecords !== null && getAllInstrumentsForCounterPartiesData != null) {
+    if (
+      getAllTenorsRecords !== null &&
+      getAllInstrumentsForCounterPartiesData != null
+    ) {
       try {
         const { feDiscountingRates = [] } =
           GetDiscountingRatesForCounterParty !== null &&
@@ -99,7 +109,26 @@ const BranchAndCorporateFeDiscountingTable = () => {
     if (CounterPartyFeDiscounting) {
       throttledUpdate(CounterPartyFeDiscounting);
     }
-  }, [CounterPartyFeDiscounting, throttledUpdate]);
+  }, [CounterPartyFeDiscounting, throttledUpdate, marketStatus]);
+
+  useEffect(() => {
+    if (marketStatus !== null && JSON.parse(marketStatus) === false) {
+      setDataSource((prevData) =>
+        prevData.map((row) => {
+          const updatedRow = { ...row };
+
+          Object.keys(row).forEach((key) => {
+            if (key.startsWith("InstrumentID_")) {
+              const currency = key.split("_")[1];
+              updatedRow[`rate_${currency}`] = 0;
+            }
+          });
+
+          return updatedRow;
+        })
+      );
+    }
+  }, [marketStatus]);
 
   const handleFEDiscountingModal = () => {
     setFeDiscountingModalCall(true);
@@ -108,7 +137,7 @@ const BranchAndCorporateFeDiscountingTable = () => {
   return (
     <>
       <Row>
-        <Col lg={12} md={12} sm={12} className='heading mb-2'>
+        <Col lg={12} md={12} sm={12} className="heading mb-2">
           FE Discounting
         </Col>
         <Col lg={12} md={12} sm={12}>
@@ -127,16 +156,22 @@ const BranchAndCorporateFeDiscountingTable = () => {
         </Col>
       </Row>
 
-      <Row className='my-2'>
+      <Row className="my-2">
         <Col
           lg={12}
           md={12}
           sm={12}
-          className='d-flex justify-content-center align-items-center gap-2'>
+          className="d-flex justify-content-center align-items-center gap-2"
+        >
           <CustomButton
-            value='FE Discounting'
+            value="FE Discounting"
             applyClass={"FEDiscounting"}
             onClick={handleFEDiscountingModal}
+            disabled={
+              marketStatus !== null && JSON.parse(marketStatus) === false
+                ? true
+                : false
+            }
           />
         </Col>
       </Row>

@@ -25,7 +25,7 @@ const BranchDiscountingTable = () => {
       ) : (
         <>
           <BranchAndCorporateFeDiscountingTable />
-          <isNonFeDiscountingEnabled />
+          <BranchAndCorporateNonFeDiscountingTable />
         </>
       )}
     </>

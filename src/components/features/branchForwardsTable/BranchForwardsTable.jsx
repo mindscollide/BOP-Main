@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import GlobalTable from "../../common/table/GlobalTable";
 import { createColumns, generateData } from "../../utils/generateData";
 import { useDispatch } from "react-redux";
@@ -37,6 +37,14 @@ const BranchForwardsTable = () => {
   const GetForwardRatesForCounterPartyData = useSelector(
     (state) => state.WatchListReducer.GetForwardRatesForCounterParty
   );
+
+  const marketStatus = localStorage.getItem("marketStatus");
+
+  console.log(
+    { CounterPartyForwardRates, marketStatus },
+    "CounterPartyForwardRates"
+  );
+
   console.log(
     getAllInstrumentsForCounterPartiesData !== null &&
       getAllTenorsRecords !== null &&
@@ -107,42 +115,58 @@ const BranchForwardsTable = () => {
     getAllTenorsRecords,
     GetForwardRatesForCounterPartyData,
   ]);
-  useEffect(() => {
-    if (!CounterPartyForwardRates) return;
 
-    const throttledUpdate = throttle((forwardRatesUpdate) => {
-      const { forwardsInstrumentData } = forwardRatesUpdate;
+  const throttledForwardUpdate = useMemo(
+    () =>
+      throttle((forwardRatesUpdate) => {
+        const { forwardsInstrumentData } = forwardRatesUpdate;
 
-      setDataSource((prevData) =>
-        prevData.map((row) => {
-          let updatedRow = { ...row };
+        setDataSource((prevData) =>
+          prevData.map((row) => {
+            let updatedRow = { ...row };
 
-          forwardsInstrumentData.forEach((d) => {
-            // row ke sabhi keys loop karo
-            Object.keys(row).forEach((key) => {
-              if (
-                key.startsWith("InstrumentID_") &&
-                row[key] === d.instrumentID
-              ) {
-                const currency = key.split("_")[1]; // e.g. USD
-                // check karo tenorID match karta hai ya nahi
-                if (row.tenorID === d.tenorID) {
+            forwardsInstrumentData.forEach((d) => {
+              Object.keys(row).forEach((key) => {
+                if (
+                  key.startsWith("InstrumentID_") &&
+                  row[key] === d.instrumentID &&
+                  row.tenorID === d.tenorID
+                ) {
+                  const currency = key.split("_")[1];
                   updatedRow[`bid_${currency}`] = d.bidWithSpread;
                   updatedRow[`ask_${currency}`] = d.askWithSpread;
                 }
-              }
+              });
             });
-          });
 
+            return updatedRow;
+          })
+        );
+      }, 20),
+    []
+  );
+
+  useEffect(() => {
+    if (CounterPartyForwardRates) {
+      throttledForwardUpdate(CounterPartyForwardRates);
+    }
+  }, [CounterPartyForwardRates, throttledForwardUpdate, marketStatus]);
+
+  useEffect(() => {
+    if (marketStatus !== null && JSON.parse(marketStatus) === false) {
+      setDataSource((prevData) =>
+        prevData.map((row) => {
+          const updatedRow = { ...row };
+          Object.keys(row).forEach((key) => {
+            if (key.startsWith("bid_") || key.startsWith("ask_")) {
+              updatedRow[key] = 0;
+            }
+          });
           return updatedRow;
         })
       );
-    }, 20);
-
-    throttledUpdate(CounterPartyForwardRates);
-
-    return () => throttledUpdate.cancel();
-  }, [CounterPartyForwardRates]);
+    }
+  }, [marketStatus]);
 
   const handleBookaForwardCorporate = () => {
     setBookaForwardModalCall(true);
@@ -167,16 +191,22 @@ const BranchForwardsTable = () => {
           />
         </Col>
       </Row>
-      <Row className='my-2'>
+      <Row className="my-2">
         <Col
           lg={12}
           md={12}
           sm={12}
-          className='d-flex justify-content-center align-items-center'>
+          className="d-flex justify-content-center align-items-center"
+        >
           <CustomButton
-            value='Book a Forward'
+            value="Book a Forward"
             applyClass={"FowwardBranchBookaForwardBtn"}
             onClick={handleBookaForwardCorporate}
+            disabled={
+              marketStatus !== null && JSON.parse(marketStatus) === false
+                ? true
+                : false
+            }
           />
         </Col>
       </Row>

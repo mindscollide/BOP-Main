@@ -21,8 +21,13 @@ export const loginInApi = createAsyncThunk(
 
       const response = await getBlotterData(Data);
       if (response.data.responseCode === 200) {
-        const { isExecuted, responseMessage, token, refreshToken } =
-          response.data.responseResult;
+        const {
+          isExecuted,
+          responseMessage,
+          marketStatus,
+          token,
+          refreshToken,
+        } = response.data.responseResult;
         console.log(isExecuted, "messageKeymessageKey");
 
         if (isExecuted) {
@@ -66,7 +71,7 @@ export const loginInApi = createAsyncThunk(
                 userRoleID,
                 userStatusID,
               } = response.data.responseResult.user;
-
+              localStorage.setItem("marketStatus", JSON.parse(marketStatus));
               localStorage.setItem("token", token);
               localStorage.setItem("refreshToken", refreshToken);
               localStorage.setItem("name", firstName);
@@ -115,8 +120,13 @@ export const corporateUserLoginInApi = createAsyncThunk(
 
       const response = await corporateUserLoginIn(Data);
       if (response.data.responseCode === 200) {
-        const { isExecuted, responseMessage, token, refreshToken } =
-          response.data.responseResult;
+        const {
+          isExecuted,
+          responseMessage,
+          marketStatus,
+          token,
+          refreshToken,
+        } = response.data.responseResult;
 
         if (isExecuted) {
           switch (responseMessage.toLowerCase()) {
@@ -190,6 +200,7 @@ export const corporateUserLoginInApi = createAsyncThunk(
                 "isNonFEEnabled",
                 JSON.parse(response.data.responseResult.user.isNonFEEnabled)
               );
+              localStorage.setItem("marketStatus", JSON.parse(marketStatus));
 
               roleBasedNavigation(
                 navigate,
@@ -247,6 +258,8 @@ export const corporateUserLoginInApi = createAsyncThunk(
                 "isNonFEEnabled",
                 JSON.parse(response.data.responseResult.user.isNonFEEnabled)
               );
+              localStorage.setItem("marketStatus", JSON.parse(marketStatus));
+
               navigate("/2fa");
               // roleBasedNavigation(navigate, userRoleID);
               return {
