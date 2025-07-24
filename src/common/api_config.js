@@ -410,3 +410,7 @@ export const GetVoltMeterStatus = {
 export const UpdateVoltMeterStatus = {
   RequestMethod: "ServiceManager.UpdateVoltMeterStatus",
 };
+
+export const getMarketStatusRM = {
+  RequestMethod: "ServiceManager.GetMarketStatus",
+};

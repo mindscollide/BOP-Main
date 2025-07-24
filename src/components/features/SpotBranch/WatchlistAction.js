@@ -8,6 +8,7 @@ import {
   GetForwardRatesForCounterParty,
   GetMisDataByRange,
   SaveUserDashboardRM,
+  getMarketStatusRM,
 } from "@/common/api_config";
 import { watchListApi } from "@/common/apiend_points";
 import { setCustomHeaders } from "@/common/utils";
@@ -663,6 +664,56 @@ export const GetDiscountingRatesForTreasuryApi = createAsyncThunk(
       }
     } catch (error) {
       // Reject with error message
+      console.log("", error);
+      return rejectWithValue("Something went wrong");
+    }
+  }
+);
+
+export const getMarketStatusApi = createAsyncThunk(
+  "watchlist/getMarketStatus",
+  async ({ navigate }, { rejectWithValue, dispatch }) => {
+    try {
+      let getMarketStatusPost = createPostAPI(
+        watchListApi,
+        getMarketStatusRM.RequestMethod
+      );
+
+      const response = await getMarketStatusPost();
+      const { responseCode } = response.data;
+
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(getMarketStatus({ navigate }));
+      } else if (response.data.responseCode === 200) {
+        const { isExecuted, responseMessage, marketStatus } =
+          response.data.responseResult;
+        if (isExecuted) {
+          switch (responseMessage.toLowerCase()) {
+            case "WatchList_WatchListServiceManager_GetMarketStatus_01".toLowerCase():
+              return {
+                response: marketStatus,
+                message: "",
+              };
+              break;
+            case "WatchList_WatchListServiceManager_GetMarketStatus_02".toLowerCase():
+              return rejectWithValue(
+                import.meta.env.VITE_MQTT_PORT === "8883"
+                  ? ""
+                  : "No Record Found"
+              );
+
+            default:
+              break;
+          }
+          console.log(responseMessage, "responseMessage");
+        } else {
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
       console.log("", error);
       return rejectWithValue("Something went wrong");
     }

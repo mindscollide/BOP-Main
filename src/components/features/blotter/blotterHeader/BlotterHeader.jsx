@@ -29,7 +29,7 @@ const BlotterHeader = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const GetNOPData = useSelector((state) => state.BlotterSlicer.GetNOPData);
-  console.log("GetNOPDataGetNOPData: ", GetNOPData);
+  console.log("vvv: ", GetNOPData);
   const [openNopModal, setOpenNopModal] = useState(false);
   const [openExportDiv, setOpenExportDiv] = useState(false);
   const [openMailModal, setOpenMailModal] = useState(false);
@@ -115,7 +115,7 @@ const BlotterHeader = () => {
                     {" "}
                     <span className="hd-txt me-3">NOP (US$)</span>
                     <span className="hd-cr me-2">
-                      {GetNOPData.nop >= 0
+                      {GetNOPData !== null && GetNOPData !== undefined  
                         ? GetNOPData.nop
                         : `(${Math.abs(GetNOPData.nop)})`}
                     </span>

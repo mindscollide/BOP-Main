@@ -31,7 +31,9 @@ const BranchAndCorporateFeDiscountingTable = () => {
     (state) => state.dealerReducer.getAllTenors
   );
 
-  const marketStatus = localStorage.getItem("marketStatus");
+  const marketStatus = useSelector(
+    (state) => state.WatchListReducer.getMarketStatus
+  );
 
   console.log(CounterPartyFeDiscounting, "CounterPartyFeDiscounting");
 

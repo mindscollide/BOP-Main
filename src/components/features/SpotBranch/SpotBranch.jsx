@@ -58,7 +58,12 @@ const SpotBranch = () => {
   const FxTradingCards = useSelector(
     (state) => state.RealtimeActionsSlice.FxTradingCards
   );
-  const marketStatus = localStorage.getItem("marketStatus");
+  const marketStatus = useSelector(
+    (state) => state.WatchListReducer.getMarketStatus
+  );
+
+  console.log(marketStatus, "marketStatusmarketStatus");
+
   const [watchlistData, setWatchlistData] = useState(initialWatchlistData);
   // Extracting out the Cards Wathlist data in the state
   useEffect(() => {

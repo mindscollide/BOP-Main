@@ -38,7 +38,10 @@ const BranchForwardsTable = () => {
     (state) => state.WatchListReducer.GetForwardRatesForCounterParty
   );
 
-  const marketStatus = localStorage.getItem("marketStatus");
+  const marketStatus = useSelector(
+    (state) => state.WatchListReducer.getMarketStatus
+  );
+
 
   console.log(
     { CounterPartyForwardRates, marketStatus },

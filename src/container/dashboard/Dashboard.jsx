@@ -68,6 +68,8 @@ import {
 import { AnimatePresence } from "framer-motion";
 import { GetAllNatureOfTransactionsApi } from "../pages/mainCorporate/rfqModal/RFQActions";
 import InfoTransaction from "@/components/features/blotter/infoTransaction/InfoTransaction";
+import { getMarketStatusApi } from "@/components/features/SpotBranch/WatchlistAction";
+import { setMarketStatus } from "@/store/watchListSlicer/WatchListSlicer";
 const Dashboard = () => {
   const { Content } = Layout;
   const dispatch = useDispatch();
@@ -142,10 +144,7 @@ const Dashboard = () => {
         break;
       case "MARKET_STATUS_UPDATED":
         dispatch(marketStatusUpdated(data.payload.marketStatus.isMarketOn));
-        localStorage.setItem(
-          "marketStatus",
-          data.payload.marketStatus.isMarketOn
-        );
+        dispatch(setMarketStatus(data.payload.marketStatus.isMarketOn));
         break;
       case "BRANCH_STATUS_INACTIVE":
       case "CORPORATE_STATUS_INACTIVE":
@@ -327,6 +326,7 @@ const Dashboard = () => {
       }, 5000);
     }
     if (IsCorporate || IsBranch) {
+      dispatch(getMarketStatusApi({ navigate }));
       dispatch(GetAllNatureOfTransactionsApi({ navigate }));
       if (IsBranch) {
         dispatch(getAllActiveCorporatesApi({ navigate }));
@@ -337,12 +337,12 @@ const Dashboard = () => {
     }
   }, []);
   return (
-    <Layout className="roboto-13">
+    <Layout className='roboto-13'>
       {!location.pathname.includes("calculator") && <Header />}
 
       <GlobalNavbar />
       <Content>
-        <main className="px-3">
+        <main className='px-3'>
           <Outlet />
           <AnimatePresence>
             {blotterTransactionAdded && isTreasury && <DealBox />}

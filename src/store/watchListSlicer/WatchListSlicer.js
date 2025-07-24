@@ -9,6 +9,7 @@ import {
   GetMisDataByRangeAPI,
   SaveUserDashboardAPI,
   getAllTreasuryInstrumentsApi,
+  getMarketStatusApi,
 } from "../../components/features/SpotBranch/WatchlistAction";
 const WatchListSlice = createSlice({
   name: "WatchList",
@@ -29,10 +30,14 @@ const WatchListSlice = createSlice({
     GetBankSpotForTreasurySpinner: false,
     GetBankForwardForTreasury: null,
     GetDiscountingRatesForTreasury: null,
+    getMarketStatus: null,
   },
   reducers: {
     clearWatchListResponseMessage: (state) => {
       state.responseMessage = "";
+    },
+    setMarketStatus: (state, action) => {
+      state.getMarketStatus = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -217,9 +222,23 @@ const WatchListSlice = createSlice({
           state.GetDiscountingRatesForTreasury = null;
           state.responseMessage = payload;
         }
-      );
+      )
+      .addCase(getMarketStatusApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(getMarketStatusApi.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.getMarketStatus = payload?.response;
+        state.responseMessage = payload?.message;
+      })
+      .addCase(getMarketStatusApi.rejected, (state, { payload }) => {
+        state.Loader = false;
+        state.getMarketStatus = null;
+        state.responseMessage = payload;
+      });
   },
 });
 
-export const { clearWatchListResponseMessage } = WatchListSlice.actions;
+export const { clearWatchListResponseMessage, setMarketStatus } =
+  WatchListSlice.actions;
 export default WatchListSlice.reducer;

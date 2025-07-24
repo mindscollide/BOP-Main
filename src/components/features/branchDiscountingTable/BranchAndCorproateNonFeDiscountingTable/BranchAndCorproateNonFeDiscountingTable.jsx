@@ -25,8 +25,10 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
   const getAllTenorsRecords = useSelector(
     (state) => state.dealerReducer.getAllTenors
   );
+  const marketStatus = useSelector(
+    (state) => state.WatchListReducer.getMarketStatus
+  );
 
-  const marketStatus = localStorage.getItem("marketStatus");
   console.log(
     typeof marketStatus,
     typeof JSON.parse(marketStatus),
