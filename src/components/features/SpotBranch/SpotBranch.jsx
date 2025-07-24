@@ -72,7 +72,7 @@ const SpotBranch = () => {
         const DataTime = time !== "" && formatDateUTCToGMT(time);
 
         setWatchListDateTime(time !== "" && DataTime);
-    
+
         if (spotApplicableInstruments.length > 0) {
           // Step 1: Map instruments and merge bid/offer
           const updatedTableData = spotApplicableInstruments.map((item) => {
@@ -176,7 +176,6 @@ const SpotBranch = () => {
     }) // Adjust throttle duration (in ms) as needed
   ).current;
 
-
   useEffect(() => {
     if (FxTradingCards !== null) {
       try {
@@ -189,7 +188,7 @@ const SpotBranch = () => {
             data.secondaryInstrumentID === secondaryInstrumentID
         );
 
-        if (matchingData && Number(sectionID) >= 1 && Number(sectionID) <= 6) {
+        if (matchingData && sectionID >= 1 && sectionID <= 6) {
           const sectionKey = `watchlist${sectionID}`;
 
           setWatchlistData((prev) => ({
@@ -213,7 +212,7 @@ const SpotBranch = () => {
         );
       }
     }
-  }, [FxTradingCards, watchlistTableData]);
+  }, [FxTradingCards]);
 
   //Column of my watch<list> Table
   const columns = [
@@ -269,7 +268,6 @@ const SpotBranch = () => {
   const onDragEnd = (result) => {
     const { source, destination } = result;
 
-
     if (!destination) return;
 
     // Only proceed if item is dropped into one of the watchlist tiles
@@ -283,7 +281,6 @@ const SpotBranch = () => {
         InstrumentID: Number(instrumentID),
         SecondaryInstrumentID: Number(secondaryInstrumentID),
       };
-
 
       dispatch(SaveUserDashboardAPI({ navigate, Data }));
     }
