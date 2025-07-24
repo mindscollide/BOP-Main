@@ -250,7 +250,6 @@ const Dashboard = () => {
         console.log(data.payload, "DISPATCHER_NONFEDISCOUNTING_RATES");
         break;
       case "SAVE_DASHBOARD":
-        console.log(data.payload, "SAVE_DASHBOARD");
         dispatch(setFxTradingCards(data.payload));
         break;
       case "DISPATCHER_FORWARD_RATES":
