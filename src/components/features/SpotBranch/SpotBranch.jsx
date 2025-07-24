@@ -379,7 +379,7 @@ const SpotBranch = () => {
                       <div ref={provided.innerRef} {...provided.droppableProps}>
                         <GlobalTable
                           columns={columns}
-                          // dataSource={watchlistTableData}
+                          dataSource={watchlistTableData}
                           prefixCls={"WatchList_table"}
                           pagination={false}
                           bordered={false}
