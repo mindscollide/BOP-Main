@@ -233,7 +233,7 @@ const SpotBranch = () => {
       render: (text, record) => {
         console.log(text, record, "responseresponseresponse");
         return (
-          <span className='instrument-column'>
+          <span className="instrument-column">
             {`${record.instrumentName}${record.secondaryInstrumentName}`}
           </span>
         );
@@ -246,12 +246,12 @@ const SpotBranch = () => {
       width: "120px",
       align: "center",
       render: (text, record) => (
-        <div className='d-flex justify-content-center'>
+        <div className="d-flex justify-content-center">
           <BidAmountBox
             // spot={true}
             bankSpot={true}
             BidAmountValue={text}
-            applyClass='BidCardBox'
+            applyClass="BidCardBox"
           />
         </div>
       ),
@@ -263,11 +263,11 @@ const SpotBranch = () => {
       align: "center",
       width: "120px",
       render: (text, record) => (
-        <div className='d-flex justify-content-center'>
+        <div className="d-flex justify-content-center">
           <BidAmountBox
             bankSpot={true}
             BidAmountValue={text}
-            applyClass='OfferCardBox'
+            applyClass="OfferCardBox"
           />
         </div>
       ),
@@ -320,7 +320,8 @@ const SpotBranch = () => {
               ...style,
               ...provided.draggableProps.style,
             }}
-            className={className}>
+            className={className}
+          >
             {children}
           </tr>
         )}
@@ -330,16 +331,16 @@ const SpotBranch = () => {
   return (
     <section>
       <DragDropContext onDragEnd={onDragEnd}>
-        <Row className='px-2'>
+        <Row className="px-2">
           <Col lg={9} md={9} sm={12}>
-            <span className='FxTradingOuterBox'>
-              <Row className='mt-2'>
+            <span className="FxTradingOuterBox">
+              <Row className="mt-2">
                 <Col lg={12} md={12} sm={12}>
-                  <span className='FxTradingLabel'>FX Trading</span>
+                  <span className="FxTradingLabel">FX Trading</span>
                 </Col>
               </Row>
 
-              <Row className='mt-3'>
+              <Row className="mt-3">
                 {[...Array(6)].map((_, index) => {
                   const droppableId = `watchlist${index + 1}`;
                   const data = watchlistData[droppableId] || {}; // Get data if available, else empty
@@ -350,11 +351,12 @@ const SpotBranch = () => {
                         {(provided) => (
                           <div
                             ref={provided.innerRef}
-                            {...provided.droppableProps}>
+                            {...provided.droppableProps}
+                          >
                             <BranchRateCardsOfWatchList
                               currencyLabel={data.currecncyLabel || ""}
-                              buyHeading='I Buy'
-                              sellHeading='I Sell'
+                              buyHeading="I Buy"
+                              sellHeading="I Sell"
                               buyValue={data.buyValue || ""}
                               sellValue={data.sellValue || ""}
                               isSellDisabled={data.isSell}
@@ -370,12 +372,12 @@ const SpotBranch = () => {
               </Row>
             </span>
           </Col>
-          <Col lg={3} md={3} sm={12} className='WatchListOuterBox'>
+          <Col lg={3} md={3} sm={12} className="WatchListOuterBox">
             <Row>
               <Col lg={6} md={6} sm={12}>
-                <span className='WatchlistLabel'>Watchlist</span>
+                <span className="WatchlistLabel">Watchlist</span>
               </Col>
-              <Col lg={6} md={6} sm={12} className='d-flex justify-content-end'>
+              <Col lg={6} md={6} sm={12} className="d-flex justify-content-end">
                 {/* <span>21-11-2022 9:18 PM</span> */}
                 <span>
                   {watchListDateTime !== null &&
@@ -387,7 +389,7 @@ const SpotBranch = () => {
             <Row>
               <Col lg={12} md={12} sm={12}>
                 {watchlistTableData.length > 0 ? (
-                  <Droppable droppableId='droppable' direction='vertical'>
+                  <Droppable droppableId="droppable" direction="vertical">
                     {(provided) => (
                       <div ref={provided.innerRef} {...provided.droppableProps}>
                         <GlobalTable
