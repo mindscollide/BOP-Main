@@ -22,11 +22,12 @@ const SettingModal = () => {
     (state) => state.modalReducer.settingsRecord
   );
   const settingModal = useSelector((state) => state.modalReducer.settingModal);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const [tabActive, setTabActive] = useState(1);
-  console.log({ location, tabActive }, "settingModalsettingModalsettingModal");
+  console.log({ settingsRecordData }, "Checking Reducer State");
   console.log(typeof tabActive, "settingModalsettingModalsettingModal");
   const [createPasswordData, setCreatePasswordData] = useState({
     userID: localStorage.getItem("userID"),
@@ -41,6 +42,8 @@ const SettingModal = () => {
     hasSpecialChar: false,
     isMatch: false,
   });
+
+  console.log(validations, "validationsvalidations");
   useEffect(() => {
     dispatch(getMarkingTimingApi({ navigate }));
   }, []);
@@ -103,49 +106,56 @@ const SettingModal = () => {
 
   const handeClickSave = () => {
     console.log(settingsRecordData, "settingsRecordsettingsRecord");
-
-    let Data = {
-      Settings: [
-        {
-          Key: shouldIncludeCorporateComponents
-            ? "CU_EmailOnEveryMessage"
-            : "BD_EmailOnEveryMessage",
-          Value: shouldIncludeCorporateComponents
-            ? String(settingsRecordData?.CU_EmailOnEveryMessage)
-            : String(settingsRecordData?.BD_EmailOnEveryMessage),
-        },
-        {
-          Key: shouldIncludeCorporateComponents
-            ? "CU_SoundOnEveryMessage"
-            : "BD_SoundOnEveryMessage",
-          Value: shouldIncludeCorporateComponents
-            ? String(settingsRecordData?.CU_SoundOnEveryMessage)
-            : String(settingsRecordData?.BD_SoundOnEveryMessage),
-        },
-        {
-          Key: shouldIncludeCorporateComponents
-            ? "CU_Enable2FA"
-            : "BD_Enable2FA",
-          Value: shouldIncludeCorporateComponents
-            ? String(settingsRecordData?.CU_Enable2FA)
-            : String(settingsRecordData?.BD_Enable2FA),
-        },
-      ],
-    };
-    console.log(Data, "Data2Data2");
-    dispatch(updateUserSettingDataAPI({ navigate, Data }));
-
-    let PasswordData = {
-      userID: Number(createPasswordData.userID),
-      Password: createPasswordData.createPassword,
-    };
-    // dispatch(createCorporateCreatePasswordApi({ navigate, Data }));
-    dispatch(ResetPasswordCorporateApi({ navigate, PasswordData }));
-
     console.log(
-      "handleClickCreatePassword",
-      "handleClickCreatePasswordhandleClickCreatePassword"
+      shouldIncludeCorporateComponents,
+      "shouldIncludeCorporateComponentsshouldIncludeCorporateComponents"
     );
+
+    if (shouldIncludeCorporateComponents) {
+      let Data = {
+        Settings: [
+          {
+            Key: "CU_EmailOnEveryMessage",
+            Value: String(settingsRecordData?.CU_EmailOnEveryMessage),
+          },
+          {
+            Key: "CU_SoundOnEveryMessage",
+            Value: String(settingsRecordData?.CU_SoundOnEveryMessage),
+          },
+          {
+            Key: "CU_Enable2FA",
+            Value: String(settingsRecordData?.CU_Enable2FA),
+          },
+        ],
+      };
+      dispatch(updateUserSettingDataAPI({ navigate, Data }));
+      if (
+        validations.hasNumber &&
+        validations.hasSpecialChar &&
+        validations.isLengthValid &&
+        validations.isMatch
+      ) {
+        let PasswordData = {
+          userID: Number(createPasswordData.userID),
+          Password: createPasswordData.createPassword,
+        };
+        dispatch(ResetPasswordCorporateApi({ navigate, PasswordData }));
+      }
+    } else {
+      let Data = {
+        Settings: [
+          {
+            Key: "BD_EmailOnEveryMessage",
+            Value: String(settingsRecordData?.BD_EmailOnEveryMessage),
+          },
+          {
+            Key: "BD_SoundOnEveryMessage",
+            Value: String(settingsRecordData?.BD_SoundOnEveryMessage),
+          },
+        ],
+      };
+      dispatch(updateUserSettingDataAPI({ navigate, Data }));
+    }
   };
   return (
     <div>
@@ -179,13 +189,13 @@ const SettingModal = () => {
                       value={"User Settings"}
                       onClick={() => setTabActive(1)}
                     />
-                    {shouldIncludeCorporateComponents && (
+                    {shouldIncludeCorporateComponents === true && (
                       <CustomButton
                         applyClass={
                           tabActive === 2 ? "tabsButton_active" : "tabsButton"
                         }
                         onClick={() => setTabActive(2)}
-                        value={"PassCode Setting"}
+                        value={"Change Password"}
                       />
                     )}
 

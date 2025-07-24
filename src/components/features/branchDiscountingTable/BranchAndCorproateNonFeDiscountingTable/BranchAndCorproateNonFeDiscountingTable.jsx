@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import GlobalTable from "@/components/common/table/GlobalTable";
 import { createColumns, generateData } from "@/components/utils/generateData";
 import { useDispatch } from "react-redux";
@@ -9,6 +9,7 @@ import CustomButton from "@/components/common/globalButton/button";
 import NonFEDiscountingModal from "../NonFeDiscountingModal/NonFEDiscountingModal";
 import { buildDiscountingTable } from "@/components/utils/generateColumnsData";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
+import { throttle } from "lodash";
 
 const BranchAndCorporateNonFeDiscountingTable = () => {
   const getAllInstrumentsForCounterPartiesData = useSelector(
@@ -18,7 +19,9 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
   const GetDiscountingRatesForCounterParty = useSelector(
     (state) => state.WatchListReducer.GetDiscountingRatesForCounterParty
   );
-
+  const CounterPartyNonFeDiscounting = useSelector(
+    (state) => state.RealtimeActionsSlice.CounterPartyNonFeDiscounting
+  );
   const getAllTenorsRecords = useSelector(
     (state) => state.dealerReducer.getAllTenors
   );
@@ -33,7 +36,10 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
     useState(false);
 
   useEffect(() => {
-    if (getAllTenorsRecords !== null && getAllInstrumentsForCounterPartiesData != null) {
+    if (
+      getAllTenorsRecords !== null &&
+      getAllInstrumentsForCounterPartiesData != null
+    ) {
       try {
         const { nonFEDiscountingRates = [] } =
           GetDiscountingRatesForCounterParty !== null &&
@@ -63,6 +69,45 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
     getAllInstrumentsForCounterPartiesData,
     GetDiscountingRatesForCounterParty,
   ]);
+
+  const throttledUpdate = useMemo(
+    () =>
+      throttle((discountingUpdate) => {
+        const { nonFEDiscountingInstrumentData } = discountingUpdate;
+
+        setDataSource((prevData) =>
+          prevData.map((row) => {
+            const updatedRow = { ...row };
+
+            Object.keys(row).forEach((key) => {
+              if (key.startsWith("InstrumentID_")) {
+                const currency = key.split("_")[1];
+                const instrumentID = row[key];
+                const tenorID = row.TenorID;
+
+                const match = nonFEDiscountingInstrumentData.find(
+                  (d) =>
+                    d.instrumentID === instrumentID && d.tenorID === tenorID
+                );
+
+                if (match) {
+                  updatedRow[`rate_${currency}`] = match.bidWithSpread;
+                }
+              }
+            });
+
+            return updatedRow;
+          })
+        );
+      }, 20),
+    []
+  );
+
+  useEffect(() => {
+    if (CounterPartyNonFeDiscounting) {
+      throttledUpdate(CounterPartyNonFeDiscounting);
+    }
+  }, [CounterPartyNonFeDiscounting, throttledUpdate]);
 
   const handleNonFEDiscountingModal = () => {
     setNonfeDiscountingModalCall(true);

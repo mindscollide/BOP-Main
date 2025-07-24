@@ -93,17 +93,21 @@ const TenoreWiseCurrentAndLastRates = ({
   }, [newTenorRecord]);
 
   useEffect(() => {
-    if (getDashboardForwards && getAllTenorsData) {
+    if (getAllTenorsData !== null) {
       try {
         console.log(getAllTenorsData, "Filtered Applicable Tenors");
-  
-        const { currentTenorWiseForwardRates, lastTenorWiseForwardRates } = getDashboardForwards;
-  
+
+        const {
+          currentTenorWiseForwardRates = [],
+          lastTenorWiseForwardRates = [],
+        } = getDashboardForwards !== null && getDashboardForwards;
+        const { tenors } = getAllTenorsData;
+
         // Step 1: Filter only tenors where forward is applicable
-        const applicableTenors = getAllTenorsData.filter(
-          (tenor) => tenor.isForwardApplicable === true
+        const applicableTenors = tenors.filter(
+          (tenor) => tenor.isForwardingApplicable === true
         );
-  
+
         // Step 2: Map applicable tenors to final formatted data
         const newDataMap = applicableTenors.map((tenor) => {
           const current = currentTenorWiseForwardRates.find(
@@ -112,25 +116,24 @@ const TenoreWiseCurrentAndLastRates = ({
           const last = lastTenorWiseForwardRates.find(
             (item) => item.tenorID === tenor.tenorID
           );
-  
+
           return {
             tenorID: tenor.tenorID,
             tenorName: tenor.tenorName,
-            currentBid: current?.bid ?? "",
-            currentAsk: current?.ask ?? "",
-            lastBid: last?.bid ?? "",
-            lastAsk: last?.ask ?? "",
+            currentBid: current?.bid ?? "0",
+            currentAsk: current?.ask ?? "0",
+            lastBid: last?.bid ?? "0",
+            lastAsk: last?.ask ?? "0",
             dateTime: current?.dateTime ?? "",
           };
         });
-  
+
         dispatch(setForwardsForTreasuryBranch(newDataMap));
       } catch (error) {
         console.error("Error processing tenor forwards:", error);
       }
     }
   }, [getDashboardForwards, getAllTenorsData]);
-  
 
   useEffect(() => {
     if (getTenorWiseForwardsRates !== null) {
@@ -186,6 +189,7 @@ const TenoreWiseCurrentAndLastRates = ({
     setConfirmationModal(false);
   };
   const handleChangeCurrentForwards = (record, view, event) => {
+    console.log({ record, view, event }, "handleChangeCurrentForwards");
     const { value } = event.target;
     try {
       dispatch(
@@ -215,10 +219,11 @@ const TenoreWiseCurrentAndLastRates = ({
     }
 
     let checkAskValue = forwardsForTreasuryBranch.find(
-      (item) => Number(item.currentAsk) <= Number(item.currentBid)
+      (item) =>
+        Number(item.currentAsk) !== 0 &&
+        Number(item.currentBid) !== 0 &&
+        Number(item.currentAsk) < Number(item.currentBid)
     );
-
-    console.log(checkAskValue, "Checkerchecker");
 
     if (checkAskValue !== undefined) {
       const handleClick = () => {

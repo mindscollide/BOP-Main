@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import GlobalTable from "@/components/common/table/GlobalTable";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +8,7 @@ import CustomButton from "@/components/common/globalButton/button";
 import FEDiscountingModal from "../FEDiscountingModal/FEDiscountingModal";
 import { buildDiscountingTable } from "@/components/utils/generateColumnsData";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
+import { throttle } from "lodash";
 
 const BranchAndCorporateFeDiscountingTable = () => {
   //local states
@@ -18,7 +19,9 @@ const BranchAndCorporateFeDiscountingTable = () => {
   const getAllInstrumentsForCounterPartiesData = useSelector(
     (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
   );
-
+  const CounterPartyFeDiscounting = useSelector(
+    (state) => state.RealtimeActionsSlice.CounterPartyFeDiscounting
+  );
   const GetDiscountingRatesForCounterParty = useSelector(
     (state) => state.WatchListReducer.GetDiscountingRatesForCounterParty
   );
@@ -58,6 +61,45 @@ const BranchAndCorporateFeDiscountingTable = () => {
     getAllInstrumentsForCounterPartiesData,
     GetDiscountingRatesForCounterParty,
   ]);
+
+  const throttledUpdate = useMemo(
+    () =>
+      throttle((discountingUpdate) => {
+        const { feDiscountingInstrumentData } = discountingUpdate;
+
+        setDataSource((prevData) =>
+          prevData.map((row) => {
+            const updatedRow = { ...row };
+
+            Object.keys(row).forEach((key) => {
+              if (key.startsWith("InstrumentID_")) {
+                const currency = key.split("_")[1];
+                const instrumentID = row[key];
+                const tenorID = row.TenorID;
+
+                const match = feDiscountingInstrumentData.find(
+                  (d) =>
+                    d.instrumentID === instrumentID && d.tenorID === tenorID
+                );
+
+                if (match) {
+                  updatedRow[`rate_${currency}`] = match.bidWithSpread;
+                }
+              }
+            });
+
+            return updatedRow;
+          })
+        );
+      }, 20),
+    []
+  );
+
+  useEffect(() => {
+    if (CounterPartyFeDiscounting) {
+      throttledUpdate(CounterPartyFeDiscounting);
+    }
+  }, [CounterPartyFeDiscounting, throttledUpdate]);
 
   const handleFEDiscountingModal = () => {
     setFeDiscountingModalCall(true);

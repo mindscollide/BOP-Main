@@ -25,10 +25,7 @@ const BankForwards = () => {
     (state) => state.RealtimeActionsSlice.TreasuryForwardRates
   );
 
-  console.log(
-    { TreasuryForwardRates, dataSource },
-    "dataSourcedataSourcedataSource"
-  );
+
 
   useEffect(() => {
     if (getAllTenorsRecords !== null && GetAllInstrumentForTreasury !== null) {

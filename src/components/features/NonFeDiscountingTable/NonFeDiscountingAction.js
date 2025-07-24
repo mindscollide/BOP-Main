@@ -19,7 +19,7 @@ export const GetNonFEDiscountingTableApi = createAsyncThunk(
       console.log(response, "result");
       const { responseCode } = response.data;
       console.log(responseCode, "result");
-    
+
       if (responseCode === 417) {
         console.log(response, "result");
 
@@ -43,7 +43,7 @@ export const GetNonFEDiscountingTableApi = createAsyncThunk(
         ) {
           return {
             response: response.data.responseResult,
-            message: "Get Non Fe Discounting Data",
+            message: "",
           };
         } else if (
           responseMessage
@@ -93,7 +93,7 @@ export const PublishNonFEDiscountingTableApi = createAsyncThunk(
       const response = await publishNonFeDiscounting(Data);
       console.log(response, "result");
       const { responseCode } = response.data;
-    
+
       if (responseCode === 417) {
         console.log(response, "result");
 
@@ -113,7 +113,7 @@ export const PublishNonFEDiscountingTableApi = createAsyncThunk(
         ) {
           return {
             response: response.data.responseResult,
-            message: "Publish Non Discounting Rates Published Successfully",
+            message: "Non Discounting Rates Published Successfully",
           };
         } else if (
           responseMessage

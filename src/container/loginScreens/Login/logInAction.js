@@ -144,64 +144,110 @@ export const corporateUserLoginInApi = createAsyncThunk(
               return rejectWithValue("Corporate is InActive");
 
             case "ERM_AuthService_AuthManager_CorporateUserLogin_03".toLowerCase():
-              var {
-                corporate,
-                employeeID,
-                ldapAccount,
-                userID,
-                firstName,
-                email,
-                contactNumber,
-                userRoleID,
-                userStatusID,
-              } = response.data.responseResult.user;
               localStorage.setItem("token", token);
               localStorage.setItem("refreshToken", refreshToken);
-              localStorage.setItem("name", firstName);
-              localStorage.setItem("email", email);
-              localStorage.setItem("roleId", userRoleID);
-              localStorage.setItem("userID", userID);
-              localStorage.setItem("corporate", JSON.stringify(corporate));
-              localStorage.setItem("employeeID", employeeID);
-              localStorage.setItem("ldapAccount", ldapAccount);
-              localStorage.setItem("contactNumber", contactNumber);
-              localStorage.setItem("userStatusID", userStatusID);
+              localStorage.setItem(
+                "name",
+                response.data.responseResult.user.firstName
+              );
+              localStorage.setItem(
+                "email",
+                response.data.responseResult.user.email
+              );
+              localStorage.setItem(
+                "roleId",
+                response.data.responseResult.user.userRoleID
+              );
+              localStorage.setItem(
+                "userID",
+                response.data.responseResult.user.userID
+              );
+              localStorage.setItem(
+                "corporate",
+                JSON.stringify(response.data.responseResult.user.corporate)
+              );
+              localStorage.setItem(
+                "employeeID",
+                response.data.responseResult.user.employeeID
+              );
+              localStorage.setItem(
+                "ldapAccount",
+                response.data.responseResult.user.ldapAccount
+              );
+              localStorage.setItem(
+                "contactNumber",
+                response.data.responseResult.user.contactNumber
+              );
+              localStorage.setItem(
+                "userStatusID",
+                response.data.responseResult.user.userStatusID
+              );
+              localStorage.setItem(
+                "isFEEnabled",
+                JSON.parse(response.data.responseResult.user.isFEEnabled)
+              );
+              localStorage.setItem(
+                "isNonFEEnabled",
+                JSON.parse(response.data.responseResult.user.isNonFEEnabled)
+              );
 
-              roleBasedNavigation(navigate, userRoleID);
+              roleBasedNavigation(
+                navigate,
+                response.data.responseResult.user.userRoleID
+              );
               return {
                 response: response.data.responseResult,
                 message: "",
               };
 
             case "ERM_AuthService_AuthManager_CorporateUserLogin_15".toLowerCase():
-              // var { email, userID } = response.data.responseResult.user;
-
+              localStorage.setItem("token", token);
+              localStorage.setItem("refreshToken", refreshToken);
+              localStorage.setItem(
+                "name",
+                response.data.responseResult.user.firstName
+              );
+              localStorage.setItem(
+                "email",
+                response.data.responseResult.user.email
+              );
+              localStorage.setItem(
+                "roleId",
+                response.data.responseResult.user.userRoleID
+              );
+              localStorage.setItem(
+                "userID",
+                response.data.responseResult.user.userID
+              );
+              localStorage.setItem(
+                "corporate",
+                JSON.stringify(response.data.responseResult.user.corporate)
+              );
+              localStorage.setItem(
+                "employeeID",
+                response.data.responseResult.user.employeeID
+              );
+              localStorage.setItem(
+                "ldapAccount",
+                response.data.responseResult.user.ldapAccount
+              );
+              localStorage.setItem(
+                "contactNumber",
+                response.data.responseResult.user.contactNumber
+              );
+              localStorage.setItem(
+                "userStatusID",
+                response.data.responseResult.user.userStatusID
+              );
+              localStorage.setItem(
+                "isFEEnabled",
+                JSON.parse(response.data.responseResult.user.isFEEnabled)
+              );
+              localStorage.setItem(
+                "isNonFEEnabled",
+                JSON.parse(response.data.responseResult.user.isNonFEEnabled)
+              );
               navigate("/2fa");
-              var {
-                corporate,
-                // employeeID,
-                // ldapAccount,
-                userID,
-                firstName,
-                email,
-                contactNumber,
-                failedAttemptCount,
-                userRoleID,
-                userStatusID,
-              } = response.data.responseResult.user;
-              // localStorage.setItem("token", token);
-              // localStorage.setItem("refreshToken", refreshToken);
-              localStorage.setItem("name", firstName);
-              localStorage.setItem("email", email);
-              localStorage.setItem("roleId", userRoleID);
-              localStorage.setItem("userID", userID);
-              localStorage.setItem("corporate", JSON.stringify(corporate));
-              // localStorage.setItem("employeeID", employeeID);
-              // localStorage.setItem("ldapAccount", ldapAccount);
-              localStorage.setItem("contactNumber", contactNumber);
-              localStorage.setItem("userStatusID", userStatusID);
-              localStorage.setItem("failedAttemptCount", failedAttemptCount);
-
               // roleBasedNavigation(navigate, userRoleID);
               return {
                 response: response.data.responseResult,

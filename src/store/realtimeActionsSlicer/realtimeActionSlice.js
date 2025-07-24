@@ -53,14 +53,29 @@ const RealtimeActionsSlice = createSlice({
     TreasuryForwardRates: null,
     FxTradingCards: null,
     CategoryFeDiscounting: null,
+    CounterPartyNonFeDiscounting: null,
+    CounterPartyForwardRates: null,
+    CounterPartyFeDiscounting: null,
+    CategoryNonFeDiscouting: null,
   },
   reducers: {
+    setCategoryNonFeDiscounting: (state, { payload }) => {
+      state.CategoryNonFeDiscouting = { ...payload };
+    },
+    setCounterPartyFeDiscounting: (state, { payload }) => {
+      state.CounterPartyFeDiscounting = { ...payload };
+    },
+    setCounterPartyForwardRates: (state, { payload }) => {
+      state.CounterPartyForwardRates = { ...payload };
+    },
+    setCounterPartyNonFeDiscounting: (state, { payload }) => {
+      state.CounterPartyNonFeDiscounting = { ...payload };
+    },
     setCategoryFeDiscounting: (state, { payload }) => {
       state.CategoryFeDiscounting = payload;
     },
-
     setFxTradingCards: (state, { payload }) => {
-      state.FxTradingCards = { ...payload };
+      state.FxTradingCards = payload;
     },
     setTreasuryFeDiscounting: (state, { payload }) => {
       state.TreasuryFeDiscounting = { ...payload };
@@ -225,6 +240,10 @@ export const {
   setCounterPartySpotRates,
   setCategorySpotRates,
   setCategoryForwardRates,
+  setCounterPartyNonFeDiscounting,
+  setCounterPartyForwardRates,
+  setCounterPartyFeDiscounting,
+  setCategoryNonFeDiscounting,
 } = RealtimeActionsSlice.actions;
 
 export default RealtimeActionsSlice.reducer;

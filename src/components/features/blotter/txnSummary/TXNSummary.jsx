@@ -40,7 +40,7 @@ import {
   TransactionAssignedByTreasury,
 } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { RFQTImer } from "@/components/utils/Timer";
-import { convertDateTimeIntoLocal } from "@/utils/formatters";
+import { convertDateTimeIntoLocal, formatPkAmount } from "@/utils/formatters";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 const TXNSummary = () => {
   const dispatch = useDispatch();

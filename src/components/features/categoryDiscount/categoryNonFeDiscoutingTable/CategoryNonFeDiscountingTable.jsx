@@ -1,7 +1,8 @@
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import GlobalTable from "@/components/common/table/GlobalTable";
 import { buildDiscountingTable } from "@/components/utils/generateColumnsData";
-import React, { useEffect, useState } from "react";
+import { throttle } from "lodash";
+import React, { useEffect, useMemo, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import { useSelector } from "react-redux";
 
@@ -19,9 +20,12 @@ const CategoryNonFeDiscountingTable = () => {
   const allInstrumentForTreasuryData = useSelector(
     (state) => state.WatchListReducer.GetAllInstrumentForTreasury
   );
+  const CategoryNonFeDiscouting = useSelector(
+    (state) => state.RealtimeActionsSlice.CategoryNonFeDiscouting
+  );
   console.log(
     "GetCategoryWiseDiscountingRates: ",
-    GetCategoryWiseDiscountingRates
+    CategoryNonFeDiscouting
   );
   useEffect(() => {
     if (getAllTenorsRecords !== null && allInstrumentForTreasuryData) {
@@ -53,6 +57,41 @@ const CategoryNonFeDiscountingTable = () => {
     allInstrumentForTreasuryData,
     getAllTenorsRecords,
   ]);
+
+  const throttledUpdate = useMemo(
+    () =>
+      throttle((discountingUpdate) => {
+        const { instrumentNonFEDiscountingData } = discountingUpdate;
+
+        setDataSource((prevData) =>
+          prevData.map((row) => {
+            let updatedRow = { ...row };
+
+            instrumentNonFEDiscountingData.forEach((d) => {
+              Object.keys(row).forEach((key) => {
+                if (
+                  key.startsWith("InstrumentID_") &&
+                  row[key] === d.instrumentID &&
+                  row.TenorID === d.tenorID
+                ) {
+                  const currency = key.split("_")[1];
+                  updatedRow[`rate_${currency}`] = d.bidWithSpread;
+                }
+              });
+            });
+
+            return updatedRow;
+          })
+        );
+      }, 20),
+    []
+  );
+
+  useEffect(() => {
+    if (CategoryNonFeDiscouting !== null) {
+      throttledUpdate(CategoryNonFeDiscouting);
+    }
+  }, [CategoryNonFeDiscouting, throttledUpdate]);
 
   return (
     <Row>
