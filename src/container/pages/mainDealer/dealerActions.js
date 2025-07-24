@@ -12,6 +12,8 @@ import {
   publishTenorWiseForwardRatesRM,
   getDiscountingRatesRM,
   getDealerDasboardDataRM,
+  GetVoltMeterStatus,
+  UpdateVoltMeterStatus,
 } from "@/common/api_config";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
 import createPostAPI from "@/utils/axiosInstance";
@@ -891,8 +893,158 @@ export const getDealerDashboardApi = createAsyncThunk(
               )
           ) {
             return rejectWithValue(
-              (import.meta.env.VITE_MQTT_PORT) === "8883" ? "" : "No Record Found"
+              import.meta.env.VITE_MQTT_PORT === "8883" ? "" : "No Record Found"
             );
+          } else {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          console.log("", response.data);
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      console.log(error);
+      // Reject with error message
+      return rejectWithValue("Something went wrong");
+    }
+  }
+);
+
+export const GetVoltMeterStatusApi = createAsyncThunk(
+  "uploadRates/GetVoltMeterStatus",
+  async ({ navigate }, { rejectWithValue, dispatch }) => {
+    try {
+      let GetVoltMeterStatusData = createPostAPI(
+        uploadRatesApi,
+        GetVoltMeterStatus.RequestMethod
+      );
+      const response = await GetVoltMeterStatusData();
+      const { responseCode } = response.data;
+
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(GetVoltMeterStatusApi({ navigate }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_GetVoltMeterStatus_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message: "",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_GetVoltMeterStatus_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Role doesn’t matched");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_GetVoltMeterStatus_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_GetVoltMeterStatus_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          console.log("", response.data);
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      console.log(error);
+      // Reject with error message
+      return rejectWithValue("Something went wrong");
+    }
+  }
+);
+
+export const UpdateVoltMeterStatusApi = createAsyncThunk(
+  "uploadRate/UpdateVoltMeterStatus",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      let UpdateVoltMeterStatusData = createPostAPI(
+        uploadRatesApi,
+        UpdateVoltMeterStatus.RequestMethod
+      );
+      const response = await UpdateVoltMeterStatusData(Data);
+      const { responseCode } = response.data;
+
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(UpdateVoltMeterStatusApi({ navigate, Data }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_UpdateVoltMeterStatus_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message: "",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_UpdateVoltMeterStatus_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_UpdateVoltMeterStatus_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_UpdateVoltMeterStatus_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_UpdateVoltMeterStatus_05".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
           } else {
             console.log("", response.data);
             return rejectWithValue("Something went wrong");

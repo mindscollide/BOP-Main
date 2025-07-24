@@ -62,7 +62,7 @@ const GlobalNavbar = () => {
   const categoryValue = useSelector(
     (state) => state.dealerReducer.categoryValue
   );
-  console.log(categoryValue, "categoryValuecategoryValue")
+  console.log(categoryValue, "categoryValuecategoryValue");
   const isCategoryAdded = useSelector(
     (state) => state.RealtimeActionsSlice.categoryisAdded
   );
@@ -77,7 +77,6 @@ const GlobalNavbar = () => {
   );
   console.log(isRfqModalOpen, "isRfqModalOpenisRfqModalOpen");
   const dispatch = useDispatch();
-  const [selectedValue, setSelectedValue] = useState(1);
   const [
     openRfqModalForwardCorporateComponent,
     setOpenRfqModalForwardCorporateComponent,
@@ -123,8 +122,6 @@ const GlobalNavbar = () => {
     dispatch(GetCategoryWiseSpotRatesApi({ navigate, Data }));
     dispatch(GetCategoryWiseForwardRatesApi({ navigate, Data }));
     dispatch(GetCategoryWiseDiscountingRatesApi({ navigate, Data }));
-
- 
   };
 
   //handle RFQ Condition Under Certain tabs
@@ -166,7 +163,7 @@ const GlobalNavbar = () => {
           };
           setAllCategories(newCategoryMap);
           console.log(Data, "DataData");
-  
+
           dispatch(GetCategoryWiseSpotRatesApi({ navigate, Data }));
           dispatch(GetCategoryWiseForwardRatesApi({ navigate, Data }));
           dispatch(GetCategoryWiseDiscountingRatesApi({ navigate, Data }));
@@ -290,20 +287,20 @@ const GlobalNavbar = () => {
 
   return (
     <>
-      <div className='site-header pt-1'>
-        <div className='container-fluid page-gutter'>
-          <div className='header-inner d-flex align-items-center'>
+      <div className="site-header pt-1">
+        <div className="container-fluid page-gutter">
+          <div className="header-inner d-flex align-items-center">
             <SiteLogoComponent />
-            <div className='ms-auto'>
-              <div className='d-flex align-items-center gap-2'>
+            <div className="ms-auto">
+              <div className="d-flex align-items-center gap-2">
                 {location.pathname !== "/calculator" ? (
                   <>
                     {(shouldIncludeCorporate || shouldIncludeBranch) && (
                       <Suspense fallback={<>Loading RFQ...</>}>
                         <CustomButton
-                          applyClass='rfqBtn'
-                          value='RFQ'
-                          size='small'
+                          applyClass="rfqBtn"
+                          value="RFQ"
+                          size="small"
                           icon={<IconElement iconClass={"icon-list fs-6"} />}
                           onClick={onClickRFQ}
                         />
@@ -312,17 +309,17 @@ const GlobalNavbar = () => {
                     {location.pathname.includes("treasury") &&
                     (shouldIncludeDealer || shouldIncludeTreasury) ? (
                       <CustomButton
-                        applyClass='calcBtn'
-                        value='Calculators'
-                        size='large'
+                        applyClass="calcBtn"
+                        value="Calculators"
+                        size="large"
                         onClick={handleCalculatorClick}
                       />
                     ) : null}
                     {shouldIncludeTreasury &&
                     location.pathname.includes("treasury") ? (
                       <Voltmeter
-                        activeValue={selectedValue}
-                        onSelect={(value) => setSelectedValue(value)}
+                      // activeValue={selectedValue}
+                      // onSelect={(value) => setSelectedValue(value)}
                       />
                     ) : null}
                     {location.pathname.includes("category") && (

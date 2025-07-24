@@ -402,3 +402,11 @@ export const VerifyOTP = {
 export const GenerateOTP = {
   RequestMethod: "ServiceManager.GenerateOTP",
 };
+
+export const GetVoltMeterStatus = {
+  RequestMethod: "ServiceManager.GetVoltMeterStatus",
+};
+
+export const UpdateVoltMeterStatus = {
+  RequestMethod: "ServiceManager.UpdateVoltMeterStatus",
+};

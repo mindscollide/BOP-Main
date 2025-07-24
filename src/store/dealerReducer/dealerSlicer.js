@@ -7,8 +7,10 @@ import {
   PublishNonFEDiscountingTableApi,
 } from "@/components/features/NonFeDiscountingTable/NonFeDiscountingAction";
 import {
+  GetVoltMeterStatusApi,
   PublishNewRatesAction,
   PublishTenorWiseForwardsAction,
+  UpdateVoltMeterStatusApi,
   clearRatesAction,
   createTenorAction,
   getAllTenorsAction,
@@ -50,6 +52,8 @@ const dealerReducer = createSlice({
       value: 0,
       label: "",
     },
+    GetVoltMeterStatus: null,
+    UpdateVoltMeterStatus: null,
   },
   reducers: {
     clearDealerResponseMessage: (state) => {
@@ -303,6 +307,34 @@ const dealerReducer = createSlice({
       .addCase(getDealerDashboardApi.rejected, (state, { payload }) => {
         state.Loader = false;
         state.getDealerDashboardData = null;
+        state.error = payload;
+        state.responseMessage = payload;
+      })
+      .addCase(GetVoltMeterStatusApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(GetVoltMeterStatusApi.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.GetVoltMeterStatus = payload?.response;
+        state.responseMessage = payload?.message;
+      })
+      .addCase(GetVoltMeterStatusApi.rejected, (state, { payload }) => {
+        state.Loader = false;
+        state.GetVoltMeterStatus = null;
+        state.error = payload;
+        state.responseMessage = payload;
+      })
+      .addCase(UpdateVoltMeterStatusApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(UpdateVoltMeterStatusApi.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.UpdateVoltMeterStatus = payload?.response;
+        state.responseMessage = payload?.message;
+      })
+      .addCase(UpdateVoltMeterStatusApi.rejected, (state, { payload }) => {
+        state.Loader = false;
+        state.UpdateVoltMeterStatus = null;
         state.error = payload;
         state.responseMessage = payload;
       });

@@ -16,7 +16,10 @@ import {
   GetBankSpotForTreasuryApi,
   GetDiscountingRatesForTreasuryApi,
 } from "@/components/features/SpotBranch/WatchlistAction";
-import { getAllTenorsAction } from "../mainDealer/dealerActions";
+import {
+  getAllTenorsAction,
+  GetVoltMeterStatusApi,
+} from "../mainDealer/dealerActions";
 
 const MainTreasury = () => {
   const dispatch = useDispatch();
@@ -34,6 +37,7 @@ const MainTreasury = () => {
     dispatch(GetBankForwardForTreasuryApi({ navigate }));
     dispatch(getAllTenorsAction({ navigate }));
     dispatch(GetDiscountingRatesForTreasuryApi({ navigate }));
+    dispatch(GetVoltMeterStatusApi({ navigate }));
   }, []);
 
   const tabsData = [
