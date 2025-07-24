@@ -44,6 +44,8 @@ export const ResponseMessage = () => {
   const BlotterResponseMessage = useSelector(
     (state) => state.BlotterSlicer.responseMessage
   );
+
+  console.log(BlotterResponseMessage, "BlotterResponseMessage");
   const chatResponseMessage = useSelector(
     (state) => state.chatSlicer.responseMessage
   );
