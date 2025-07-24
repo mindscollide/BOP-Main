@@ -105,7 +105,7 @@ const Dashboard = () => {
 
   // Memoized MQTT message handler
   const handleMqttMessage = useCallback((data) => {
-    // console.log(data, "datadatadatadata");
+    console.log(data, "datadatadatadata");
     switch (data.payload.message) {
       case "INCOMING_CHAT":
         try {
@@ -238,6 +238,10 @@ const Dashboard = () => {
         break;
       case "DISPATCHER_CATEGORY_FEDISCOUNTING_RATES_FOR_TREASURY":
         dispatch(setCategoryFeDiscounting(data.payload));
+        console.log(
+          data.payload,
+          "DISPATCHER_CATEGORY_FEDISCOUNTING_RATES_FOR_TREASURY"
+        );
         break;
 
       case "DISPATCHER_NONFEDISCOUNTING_RATES":

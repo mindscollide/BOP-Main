@@ -37,7 +37,7 @@
   /* color: #002650 !important; */
   box-shadow: none !important;
   border: 1px solid #ced4da !important;
-  font-weight: 600 !important;
+  font-weight: 500 !important;
 }
 
 .form-comtrol-textfield::placeholder {
@@ -56,7 +56,7 @@
   /* color: #002650 !important; */
   box-shadow: none !important;
   border: 1px solid #ced4da !important;
-  font-weight: 600 !important;
+  font-weight: 500 !important;
   border-right: 0px !important;
 }
 
