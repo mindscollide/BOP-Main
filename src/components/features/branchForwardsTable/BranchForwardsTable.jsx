@@ -126,7 +126,6 @@ const BranchForwardsTable = () => {
               ) {
                 const currency = key.split("_")[1]; // e.g. USD
                 // check karo tenorID match karta hai ya nahi
-                console.log(row.tenorID === d.tenorID, "ahksbdabsdhas");
                 if (row.tenorID === d.tenorID) {
                   updatedRow[`bid_${currency}`] = d.bidWithSpread;
                   updatedRow[`ask_${currency}`] = d.askWithSpread;

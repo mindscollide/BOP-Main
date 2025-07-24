@@ -111,10 +111,7 @@ const MainCorporate = () => {
   ];
   let filterTabs = tabsData;
 
-  if (
-    isFeDiscountingEnabled === "false" &&
-    isNonFeDiscountingEnabled === "false"
-  ) {
+  if (isFeDiscountingEnabled === false && isNonFeDiscountingEnabled === false) {
     filterTabs = tabsData.filter((tab) => tab.title !== "Discounting");
   }
 

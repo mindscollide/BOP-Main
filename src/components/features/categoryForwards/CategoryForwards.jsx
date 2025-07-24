@@ -8,7 +8,6 @@ import { throttle } from "lodash";
 const CategoryForwards = () => {
   const [dataSource, setDataSource] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
-  console.log(dataSource, "dataSourxceaskbasds");
   const GetCategoryWiseForwardRatesData = useSelector(
     (state) => state.categoryReducer.GetCategoryWiseForwardRates
   );
@@ -88,7 +87,6 @@ const CategoryForwards = () => {
               ) {
                 const currency = key.split("_")[1]; // e.g. USD
                 // check karo tenorID match karta hai ya nahi
-                console.log(row.tenorID === d.tenorID, "ahksbdabsdhas");
                 if (row.tenorID === d.tenorID) {
                   updatedRow[`bid_${currency}`] = d.bidWithSpread;
                   updatedRow[`ask_${currency}`] = d.askWithSpread;

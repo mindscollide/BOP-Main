@@ -96,7 +96,7 @@ export const buildDiscountingTable = (
               dataIndex: "tenorName",
               key: "tenorName",
               align: "center",
-              width: 250,
+              width: 80,
             },
           ],
         },
@@ -110,6 +110,8 @@ export const buildDiscountingTable = (
               title: "Value",
               dataIndex: `rate_${inst.instrumentName}`,
               align: "center",
+              width: 60,
+
               render: (text, record) => (
                 <InputFIeld value={text} record={record} />
               ),
@@ -134,6 +136,8 @@ export const buildDiscountingTable = (
             {
               title: "value",
               dataIndex: `rate_${inst.instrumentName}`,
+              width: 60,
+
               render: (text, record) => (
                 <InputFIeld value={text} record={record} />
               ),
@@ -256,6 +260,8 @@ export const buildForwardsTable = (
               title: "Tenor",
               dataIndex: `tenorName`,
               key: "tenorName",
+              width: 120,
+
               align: "center",
             },
           ],
@@ -270,6 +276,8 @@ export const buildForwardsTable = (
               title: "Bid",
               dataIndex: `bid_${inst.instrumentName}`,
               key: `bid_${inst.instrumentName}`,
+              width: 60,
+
               align: "center",
               render: (text, record) => (
                 <InputFIeld value={text} record={record} />
@@ -279,6 +287,8 @@ export const buildForwardsTable = (
               title: "Ask",
               dataIndex: `ask_${inst.instrumentName}`,
               key: `ask_${inst.instrumentName}`,
+              width: 60,
+
               align: "center",
               render: (text, record) => (
                 <InputFIeld value={text} record={record} />
