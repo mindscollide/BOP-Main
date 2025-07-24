@@ -22,6 +22,7 @@ const initialWatchlistData = Object.fromEntries(
       tile: String(i + 1),
       currecncyLabel: "",
       instrumentID: 0,
+      secondaryInstrumentID: 0,
       buyValue: "",
       sellValue: "",
     },
@@ -57,7 +58,7 @@ const SpotBranch = () => {
   const FxTradingCards = useSelector(
     (state) => state.RealtimeActionsSlice.FxTradingCards
   );
-
+  const marketStatus = localStorage.getItem("marketStatus");
   const [watchlistData, setWatchlistData] = useState(initialWatchlistData);
   // Extracting out the Cards Wathlist data in the state
   useEffect(() => {
@@ -98,40 +99,56 @@ const SpotBranch = () => {
           );
 
           if (filteredSections.length > 0) {
-            setWatchlistData((prev) => {
-              const newData = { ...prev };
+            // setWatchlistData((prev) => {
+            // const newData = { ...prev };
 
-              // Reset all watchlist sections
-              for (let i = 1; i <= 6; i++) {
-                newData[`watchlist${i}`] = {
-                  ...prev[`watchlist${i}`],
-                  currecncyLabel: "",
-                  instrumentID: 0,
-                  buyValue: "",
-                  sellValue: "",
-                };
-              }
+            // // Reset all watchlist sections
+            // for (let i = 1; i <= 6; i++) {
+            //   newData[`watchlist${i}`] = {
+            //     ...prev[`watchlist${i}`],
+            //     currecncyLabel: "",
+            //     instrumentID: 0,
+            //     buyValue: "",
+            //     sellValue: "",
+            //   };
+            // }
 
-              // Update each section
-              filteredSections.forEach((item) => {
-                const sectionID = item.sectionID || item.SectionID;
-                const key = `watchlist${sectionID}`;
+            // Update each section
+            filteredSections.forEach((item) => {
+              const sectionID = item.sectionID || item.SectionID;
+              // const key = `watchlist${sectionID}`;
 
-                if (newData[key]) {
-                  newData[key] = {
-                    ...prev[key],
-                    currecncyLabel: `${item.instrumentName}${item.secondaryInstrumentName}`,
-                    buyValue: item.bid,
-                    sellValue: item.offer,
-                    instrumentID: item.instrumentID,
-                    isSell: item.isSell,
-                    isBuy: item.isBuy,
-                  };
-                }
-              });
+              const sectionKey = `watchlist${sectionID}`;
 
-              return newData;
+              setWatchlistData((prev) => ({
+                ...prev,
+                [sectionKey]: {
+                  ...prev[sectionKey],
+                  currecncyLabel: `${item.instrumentName}${item.secondaryInstrumentName}`,
+                  buyValue: item.bid,
+                  sellValue: item.offer,
+                  instrumentID: item.instrumentID,
+                  secondaryInstrumentID: item.secondaryInstrumentID,
+                  isSell: item.isSell,
+                  isBuy: item.isBuy,
+                },
+              }));
+
+              // if (newData[key]) {
+              //   newData[key] = {
+              //     ...prev[key],
+              //     currecncyLabel: `${item.instrumentName}${item.secondaryInstrumentName}`,
+              //     buyValue: item.bid,
+              //     sellValue: item.offer,
+              //     instrumentID: item.instrumentID,
+              //     isSell: item.isSell,
+              //     isBuy: item.isBuy,
+              //   };
+              // }
             });
+
+            // return newData;
+            // });
           }
         }
       }
@@ -140,25 +157,18 @@ const SpotBranch = () => {
     }
   }, [getAllInstrumentsForCounterPartiesData, GetSpotRatesForCounterParty]);
 
-  useEffect(() => {
-    if (CounterPartySpotRates !== null) {
-      throttledUpdateTableData(CounterPartySpotRates);
-    }
-  }, [CounterPartySpotRates]);
-
   const throttledUpdateTableData = useRef(
     throttle((CounterPartySpotRates) => {
       const { instrumentSpotData } = CounterPartySpotRates;
 
-      setWatchlistTableData((prevState) => {
-        return prevState.map((data2) => {
+      setWatchlistTableData((prevState) =>
+        prevState.map((data2) => {
           const getData = instrumentSpotData.find(
             (data3) =>
               data2.instrumentID === data3.instrumentID &&
               data2.secondaryInstrumentID === data3.secondaryInstrumentID
           );
 
-          // 🛠 Return new object if update is needed, else return original
           if (
             getData &&
             (data2.bid !== getData.bid || data2.offer !== getData.ask)
@@ -170,11 +180,43 @@ const SpotBranch = () => {
             };
           }
 
-          return data2; // Don't forget this!
+          return data2;
+        })
+      );
+
+      setWatchlistData((prev) => {
+        const updated = { ...prev };
+        Object.keys(prev).forEach((key) => {
+          const sectionData = prev[key];
+          const matchingData = instrumentSpotData.find(
+            (data) =>
+              data.instrumentID === sectionData.instrumentID &&
+              data.secondaryInstrumentID === sectionData.secondaryInstrumentID
+          );
+          console.log(
+            matchingData,
+            instrumentSpotData,
+            sectionData,
+            "matchingDatamatchingData"
+          );
+          if (matchingData) {
+            updated[key] = {
+              ...sectionData,
+              buyValue: matchingData.bid,
+              sellValue: matchingData.ask,
+            };
+          }
         });
+        return updated;
       });
-    }) // Adjust throttle duration (in ms) as needed
+    }, 500) // 👈 Add throttle duration
   ).current;
+
+  useEffect(() => {
+    if (CounterPartySpotRates?.instrumentSpotData) {
+      throttledUpdateTableData(CounterPartySpotRates);
+    }
+  }, [CounterPartySpotRates]);
 
   useEffect(() => {
     if (FxTradingCards !== null) {
@@ -199,6 +241,7 @@ const SpotBranch = () => {
               buyValue: matchingData.bid,
               sellValue: matchingData.offer,
               instrumentID: matchingData.instrumentID,
+              secondaryInstrumentID: data.secondaryInstrumentID,
               isSell: matchingData.isSell,
               isBuy: matchingData.isBuy,
             },
@@ -214,6 +257,25 @@ const SpotBranch = () => {
     }
   }, [FxTradingCards]);
 
+  useEffect(() => {
+    try {
+      if (marketStatus !== null && JSON.parse(marketStatus) === false) {
+        setWatchlistData(initialWatchlistData);
+        setWatchlistTableData((prev) => {
+          return prev.map((data) => {
+            return {
+              ...data,
+              bid: 0, // Reset bid to 0
+              offer: 0, // Reset offer to 0
+            };
+          });
+        });
+      }
+    } catch (error) {
+      console.error("Invalid marketStatus JSON:", marketStatus);
+    }
+  }, [marketStatus]);
+
   //Column of my watch<list> Table
   const columns = [
     {
@@ -224,7 +286,7 @@ const SpotBranch = () => {
       align: "left",
       render: (text, record) => {
         return (
-          <span className="instrument-column">
+          <span className='instrument-column'>
             {`${record.instrumentName}${record.secondaryInstrumentName}`}
           </span>
         );
@@ -237,12 +299,12 @@ const SpotBranch = () => {
       width: "120px",
       align: "center",
       render: (text, record) => (
-        <div className="d-flex justify-content-center">
+        <div className='d-flex justify-content-center'>
           <BidAmountBox
             // spot={true}
             bankSpot={true}
             BidAmountValue={text}
-            applyClass="BidCardBox"
+            applyClass='BidCardBox'
           />
         </div>
       ),
@@ -254,11 +316,11 @@ const SpotBranch = () => {
       align: "center",
       width: "120px",
       render: (text, record) => (
-        <div className="d-flex justify-content-center">
+        <div className='d-flex justify-content-center'>
           <BidAmountBox
             bankSpot={true}
             BidAmountValue={text}
-            applyClass="OfferCardBox"
+            applyClass='OfferCardBox'
           />
         </div>
       ),
@@ -306,8 +368,7 @@ const SpotBranch = () => {
               ...style,
               ...provided.draggableProps.style,
             }}
-            className={className}
-          >
+            className={className}>
             {children}
           </tr>
         )}
@@ -317,16 +378,16 @@ const SpotBranch = () => {
   return (
     <section>
       <DragDropContext onDragEnd={onDragEnd}>
-        <Row className="px-2">
+        <Row className='px-2'>
           <Col lg={9} md={9} sm={12}>
-            <span className="FxTradingOuterBox">
-              <Row className="mt-2">
+            <span className='FxTradingOuterBox'>
+              <Row className='mt-2'>
                 <Col lg={12} md={12} sm={12}>
-                  <span className="FxTradingLabel">FX Trading</span>
+                  <span className='FxTradingLabel'>FX Trading</span>
                 </Col>
               </Row>
 
-              <Row className="mt-3">
+              <Row className='mt-3'>
                 {[...Array(6)].map((_, index) => {
                   const droppableId = `watchlist${index + 1}`;
                   const data = watchlistData[droppableId] || {}; // Get data if available, else empty
@@ -336,12 +397,11 @@ const SpotBranch = () => {
                         {(provided) => (
                           <div
                             ref={provided.innerRef}
-                            {...provided.droppableProps}
-                          >
+                            {...provided.droppableProps}>
                             <BranchRateCardsOfWatchList
                               currencyLabel={data.currecncyLabel || ""}
-                              buyHeading="I Buy"
-                              sellHeading="I Sell"
+                              buyHeading='I Buy'
+                              sellHeading='I Sell'
                               buyValue={data.buyValue || ""}
                               sellValue={data.sellValue || ""}
                               isSellDisabled={data.isSell}
@@ -357,12 +417,12 @@ const SpotBranch = () => {
               </Row>
             </span>
           </Col>
-          <Col lg={3} md={3} sm={12} className="WatchListOuterBox">
+          <Col lg={3} md={3} sm={12} className='WatchListOuterBox'>
             <Row>
               <Col lg={6} md={6} sm={12}>
-                <span className="WatchlistLabel">Watchlist</span>
+                <span className='WatchlistLabel'>Watchlist</span>
               </Col>
-              <Col lg={6} md={6} sm={12} className="d-flex justify-content-end">
+              <Col lg={6} md={6} sm={12} className='d-flex justify-content-end'>
                 {/* <span>21-11-2022 9:18 PM</span> */}
                 <span>
                   {watchListDateTime !== null &&
@@ -374,7 +434,7 @@ const SpotBranch = () => {
             <Row>
               <Col lg={12} md={12} sm={12}>
                 {watchlistTableData.length > 0 ? (
-                  <Droppable droppableId="droppable" direction="vertical">
+                  <Droppable droppableId='droppable' direction='vertical'>
                     {(provided) => (
                       <div ref={provided.innerRef} {...provided.droppableProps}>
                         <GlobalTable
