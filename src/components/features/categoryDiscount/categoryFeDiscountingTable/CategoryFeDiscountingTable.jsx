@@ -106,7 +106,7 @@ const CategoryFeDiscountingTable = () => {
   }, [CategoryFeDiscounting, throttledUpdate]);
 
   useEffect(() => {
-    if (marketStatus === false) {
+    if (marketStatus !== null && marketStatus === false) {
       // Market closed: set all rates to 0
       setDataSource((prevData) =>
         prevData.map((row) => {

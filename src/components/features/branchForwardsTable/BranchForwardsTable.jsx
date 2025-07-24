@@ -152,7 +152,7 @@ const BranchForwardsTable = () => {
     if (CounterPartyForwardRates) {
       throttledForwardUpdate(CounterPartyForwardRates);
     }
-  }, [CounterPartyForwardRates, throttledForwardUpdate, marketStatus]);
+  }, [CounterPartyForwardRates, throttledForwardUpdate]);
 
   useEffect(() => {
     if (marketStatus !== null && marketStatus === false) {
@@ -205,9 +205,7 @@ const BranchForwardsTable = () => {
             applyClass={"FowwardBranchBookaForwardBtn"}
             onClick={handleBookaForwardCorporate}
             disabled={
-              marketStatus !== null && marketStatus === false
-                ? true
-                : false
+              marketStatus !== null && marketStatus === false ? true : false
             }
           />
         </Col>

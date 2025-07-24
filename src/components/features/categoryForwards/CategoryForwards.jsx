@@ -98,7 +98,7 @@ const CategoryForwards = () => {
             return updatedRow;
           })
         );
-      }, 300),
+      }, 20),
     []
   );
 
@@ -106,7 +106,7 @@ const CategoryForwards = () => {
     if (CategoryForwardRates) {
       throttledCategoryForwardUpdate(CategoryForwardRates);
     }
-  }, [CategoryForwardRates, throttledCategoryForwardUpdate, marketStatus]);
+  }, [CategoryForwardRates, throttledCategoryForwardUpdate]);
 
   useEffect(() => {
     if (marketStatus !== null && marketStatus === false) {
