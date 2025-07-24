@@ -252,11 +252,11 @@ export const PublishNewRatesAction = createAsyncThunk(
 
 // Define the login async thunk
 export const marketOnOffAction = createAsyncThunk(
-  "uploadRate/marketOnOff", // A unique action type string
+  "watchlist/marketOnOff", // A unique action type string
   async ({ navigate, Data }, { rejectWithValue, dispatch }) => {
     try {
       let marketOnOff = createPostAPI(
-        uploadRatesApi,
+        watchListApi,
         marketOnOffRM.RequestMethod
       );
 
@@ -273,7 +273,7 @@ export const marketOnOffAction = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "UploadRate_UploadRateServiceManager_MarketONOFF_01".toLowerCase()
+                "WatchList_WatchListServiceManager_MarketONOFF_01".toLowerCase()
               )
           ) {
             return {
@@ -284,7 +284,7 @@ export const marketOnOffAction = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "UploadRate_UploadRateServiceManager_MarketONOFF_02".toLowerCase()
+                "WatchList_WatchListServiceManager_MarketONOFF_02".toLowerCase()
               )
           ) {
             return rejectWithValue("Something went wrong");
@@ -292,7 +292,7 @@ export const marketOnOffAction = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "UploadRate_UploadRateServiceManager_MarketONOFF_03".toLowerCase()
+                "WatchList_WatchListServiceManager_MarketONOFF_03".toLowerCase()
               )
           ) {
             return rejectWithValue("Something went wrong");
@@ -300,7 +300,7 @@ export const marketOnOffAction = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "UploadRate_UploadRateServiceManager_MarketONOFF_04".toLowerCase()
+                "WatchList_WatchListServiceManager_MarketONOFF_04".toLowerCase()
               )
           ) {
             return rejectWithValue("Something went wrong");
