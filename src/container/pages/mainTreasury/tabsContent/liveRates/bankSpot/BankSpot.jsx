@@ -8,7 +8,7 @@ import React, {
 import { useSelector } from "react-redux";
 import GlobalTable from "../../../../../../components/common/table/GlobalTable";
 import BidAmountBox from "../../../../../../components/common/bidAmountBox/BidAmountBox";
-import { formatDateTimeToUTCTime, formatDateUTCToGMT } from "../../../../../../components/utils/timeFunction";
+import { formatDateUTCToGMT } from "../../../../../../components/utils/timeFunction";
 import { useDispatch } from "react-redux";
 import { isEqual, throttle } from "lodash";
 import SectionLoader from "@/components/common/sectionLoader/SectionLoader";
@@ -189,7 +189,7 @@ const BankSpot = () => {
         width: 80,
         align: "center",
         render: (text, record) => (
-          <span className='d-flex justify-content-center'>
+          <span className="d-flex justify-content-center">
             <BidAmountBox
               applyClass={"BidCardBox"}
               bankSpot={true}
@@ -205,7 +205,7 @@ const BankSpot = () => {
         width: 80,
         align: "center",
         render: (text, record) => (
-          <span className='d-flex justify-content-center'>
+          <span className="d-flex justify-content-center">
             <BidAmountBox
               applyClass={"OfferCardBox"}
               bankSpot={true}
@@ -228,7 +228,7 @@ const BankSpot = () => {
         width: 80,
         align: "center",
         render: (text, record) => (
-          <span className='d-flex justify-content-center'>
+          <span className="d-flex justify-content-center">
             <BidAmountBox
               applyClass={"BidCardBox"}
               bankSpot={true}
@@ -244,7 +244,7 @@ const BankSpot = () => {
         width: 80,
         align: "center",
         render: (text, record) => (
-          <span className='d-flex justify-content-center'>
+          <span className="d-flex justify-content-center">
             <BidAmountBox
               applyClass={"OfferCardBox"}
               bankSpot={true}
@@ -259,7 +259,8 @@ const BankSpot = () => {
         dataIndex: "time",
         width: 80,
         className: "roboto-13",
-        render: (text) => formatDateUTCToGMT(text).toTimeString().substring(0, 8), // Format time to HH:MM:SS
+        render: (text) =>
+          formatDateUTCToGMT(text).toTimeString().substring(0, 8), // Format time to HH:MM:SS
       },
     ],
     []
@@ -268,12 +269,12 @@ const BankSpot = () => {
   return (
     <div>
       {/* Header Section */}
-      <div className='box-header bg-primary-orange px-3'>
-        <div className='text-start color-white fw-bold fs-6'>Bank Spot</div>
+      <div className="box-header bg-primary-orange px-3">
+        <div className="text-start color-white fw-bold fs-6">Bank Spot</div>
       </div>
 
       {/* Table Section */}
-      <div className='mb-2 h-100 position-relative'>
+      <div className="mb-2 h-100 position-relative">
         <GlobalTable
           columns={columns}
           dataSource={bankSpotData}
