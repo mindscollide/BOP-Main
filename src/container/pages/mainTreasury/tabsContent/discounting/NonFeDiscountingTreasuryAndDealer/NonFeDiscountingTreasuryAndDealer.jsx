@@ -23,6 +23,10 @@ const NonFeDiscountingTreasuryAndDealer = () => {
     (state) => state.RealtimeActionsSlice.TreasuryNonFeDiscounting
   );
 
+  const marketStatus = useSelector(
+    (state) => state.WatchListReducer.getMarketStatus
+  );
+
   useEffect(() => {
     if (GetAllInstrumentForTreasury !== null && getAllTenorsRecords !== null) {
       try {
@@ -89,7 +93,23 @@ const NonFeDiscountingTreasuryAndDealer = () => {
     if (TreasuryNonFeDiscounting) {
       throttledUpdate(TreasuryNonFeDiscounting);
     }
-  }, [TreasuryNonFeDiscounting, throttledUpdate]);
+  }, [TreasuryNonFeDiscounting, throttledUpdate, marketStatus]);
+
+  useEffect(() => {
+    if (marketStatus !== null && marketStatus === false) {
+      setDataSource((prevData) =>
+        prevData.map((row) => {
+          const updatedRow = { ...row };
+          Object.keys(updatedRow).forEach((key) => {
+            if (key.startsWith("rate_")) {
+              updatedRow[key] = 0;
+            }
+          });
+          return updatedRow;
+        })
+      );
+    }
+  }, [marketStatus]);
 
   return (
     <>

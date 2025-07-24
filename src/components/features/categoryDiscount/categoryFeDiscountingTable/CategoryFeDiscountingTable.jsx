@@ -25,6 +25,20 @@ const CategoryFeDiscountingTable = () => {
     (state) => state.RealtimeActionsSlice.CategoryFeDiscounting
   );
 
+  const marketStatus = useSelector(
+    (state) => state.WatchListReducer.getMarketStatus
+  );
+  console.log("dataSourcedataSource: ", dataSource);
+
+  console.log("marketStatusmarketStatus2434: ", marketStatus);
+
+  console.log("CategoryFeDiscounting: ", CategoryFeDiscounting);
+
+  console.log(
+    "GetCategoryWiseDiscountingRates: ",
+    GetCategoryWiseDiscountingRates
+  );
+
   useEffect(() => {
     if (getAllTenorsRecords !== null && allInstrumentForTreasuryData !== null) {
       try {
@@ -90,6 +104,23 @@ const CategoryFeDiscountingTable = () => {
       throttledUpdate(CategoryFeDiscounting);
     }
   }, [CategoryFeDiscounting, throttledUpdate]);
+
+  useEffect(() => {
+    if (marketStatus === false) {
+      // Market closed: set all rates to 0
+      setDataSource((prevData) =>
+        prevData.map((row) => {
+          const updatedRow = { ...row };
+          Object.keys(updatedRow).forEach((key) => {
+            if (key.startsWith("rate_")) {
+              updatedRow[key] = 0;
+            }
+          });
+          return updatedRow;
+        })
+      );
+    }
+  }, [marketStatus]);
 
   return (
     <Row>
