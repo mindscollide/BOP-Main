@@ -197,7 +197,7 @@ const MIS = () => {
 
   return (
     <>
-      <div className="card-box position-relative h-100">
+      <div className="card-box position-relative h-100 mis-style">
         <div className="box-header bg-primary-orange px-3">
           <div className="text-start color-white fw-bold fs-6">MIS</div>
         </div>
@@ -207,7 +207,7 @@ const MIS = () => {
               <GlobalTable
                 columns={columns}
                 dataSource={misTableData}
-                scroll={{ y: 300 }}
+                // scroll={{ y: 300 }}
                 prefixCls={"MIS_Table"}
                 pagination={false}
               />

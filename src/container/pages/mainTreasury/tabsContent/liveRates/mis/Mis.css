@@ -18,5 +18,9 @@
 }
 .mis-selectrange-form {
   margin-top: 10px;
-  height: 300px !important;
+  height: 250px !important;
+  width: 100% !important;
+}
+.mis-style {
+  /* overflow: hidden; */
 }
