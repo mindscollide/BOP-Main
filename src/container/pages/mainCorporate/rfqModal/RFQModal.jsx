@@ -114,6 +114,8 @@ const RFQModal = () => {
     label: "",
   });
   const [selectedCurrency, setSelectedCurrency] = useState(null);
+
+  console.log(selectedCurrency, "selectedCurrencyselectedCurrency");
   const [amountData, setAmountData] = useState("");
   const [acNumberData, setAcNumberData] = useState("");
   const [lcNumberData, setLcNumberData] = useState("");
@@ -216,6 +218,7 @@ const RFQModal = () => {
   useEffect(() => {
     if (iBuySellData !== null && natureOfBusinessList?.natureOfTransactions) {
       try {
+        console.log(iBuySellData, "iBuySellDataiBuySellData");
         const isBuy = iBuySellData.type === "buy";
         const typeValue = isBuy ? 1 : 2;
         const baseCurrency = iBuySellData.currencyLabel.slice(0, 3);
@@ -244,6 +247,14 @@ const RFQModal = () => {
           }));
 
         setNatureOfBusinessOptions(filteredOptions);
+        setSelectedCurrency({
+          value: iBuySellData.instrumentID,
+          label: `${iBuySellData.instrumentName}${
+            iBuySellData.secondaryInstrumentName || ""
+          }`,
+          secondaryInstrumentID: iBuySellData.secondaryInstrumentID,
+          secondaryInstrumentName: iBuySellData.secondaryInstrumentName,
+        });
         setTypeOptions(newTypesData);
 
         const selected = newTypesData.find((opt) => opt.value === typeValue);
@@ -332,7 +343,9 @@ const RFQModal = () => {
 
       // Update state only if valid instruments were found
       if (validInstruments.length > 0) {
-        setSelectedCurrency(validInstruments[0]);
+        if (iBuySellData === null) {
+          setSelectedCurrency(validInstruments[0]);
+        }
         setCurrencyOptions(validInstruments);
       } else {
         // Handle empty state
@@ -604,18 +617,19 @@ const RFQModal = () => {
                   <SelectDropdown
                     classNamePrefix='RfqSpot'
                     placeholder=''
-                    options={currencyOptions.filter((option) => {
-                      // For Buy transactions (value === 1), check if option supports buying
-                      if (typeOptionSelected.value === 1) {
-                        return option.isBuy === true;
-                      }
-                      // For Sell transactions (value === 2), check if option supports selling
-                      else if (typeOptionSelected.value === 2) {
-                        return option.isSell === true;
-                      }
-                      // If no transaction type selected (shouldn't normally happen), show all options
-                      return true;
-                    })}
+                    options={currencyOptions}
+                    // options={currencyOptions.filter((option) => {
+                    //   // For Buy transactions (value === 1), check if option supports buying
+                    //   if (typeOptionSelected.value === 1) {
+                    //     return option.isBuy === true;
+                    //   }
+                    //   // For Sell transactions (value === 2), check if option supports selling
+                    //   else if (typeOptionSelected.value === 2) {
+                    //     return option.isSell === true;
+                    //   }
+                    //   // If no transaction type selected (shouldn't normally happen), show all options
+                    //   return true;
+                    // })}
                     onChange={handleCurrencyChange}
                     value={selectedCurrency}
                     isDisabled={iBuySellData !== null ? true : false}

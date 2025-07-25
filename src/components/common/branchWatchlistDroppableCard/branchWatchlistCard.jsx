@@ -19,11 +19,31 @@ const BranchRateCardsOfWatchList = ({
   sellValue,
   isSellDisabled,
   isBuyDisabled,
+  instrumentID,
+  secondaryInstrumentID,
+  instrumentName,
+  secondaryInstrumentName,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleOpenModal = (type) => {
+    console.log(
+      {
+        currencyLabel,
+        buyHeading,
+        sellHeading,
+        buyValue,
+        sellValue,
+        isSellDisabled,
+        isBuyDisabled,
+        instrumentID,
+        secondaryInstrumentID,
+        instrumentName,
+        secondaryInstrumentName,
+      },
+      "handleOpenModalhandleOpenModal "
+    );
     let Data = {
       type: type, // 'buy' or 'sell'
       currencyLabel: currencyLabel,
@@ -31,6 +51,10 @@ const BranchRateCardsOfWatchList = ({
       sellHeading: sellHeading,
       buyValue: buyValue,
       sellValue: sellValue,
+      instrumentID,
+      secondaryInstrumentID,
+      instrumentName,
+      secondaryInstrumentName,
     };
     dispatch(setIBuySellData(Data)); // Dispatch the action to set the data in the Redux store
     dispatch(setRfqModalOpen(true));
