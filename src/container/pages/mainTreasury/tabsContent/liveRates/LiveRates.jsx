@@ -1,6 +1,5 @@
 import React, { Suspense, lazy } from "react";
 import { Row, Col } from "react-bootstrap";
-import BankSpot from "./bankSpot/BankSpot";
 import MIS from "./mis/Mis";
 
 const shouldIncludeComponents =
@@ -10,6 +9,12 @@ const shouldIsDealer = import.meta.env.VITE_APP_INCLUDE_DEALER === "true";
 
 const Blotter = lazy(() => import("@/components/features/blotter/Blotter"));
 
+const BankSpot = lazy(() =>
+  import("./bankSpot/BankSpot")
+);
+const MISComponent = lazy(() =>
+  import("./mis/Mis")
+);
 // if (import.meta.env.VITE_APP_INCLUDE_BRANCH === "true") {
 //     const Branch = (await import("./container/pages/mainBranch/MainBranch"))
 //       .default;
@@ -22,7 +27,7 @@ const LiveRates = () => {
           <BankSpot />
         </Col>
         <Col md={6} className="px-1">
-          <MIS />
+          <MISComponent />
         </Col>
       </Row>
       {Blotter && !shouldIsDealer ? (

@@ -363,11 +363,18 @@ const OutstandingDeals = () => {
           break;
         }
         case "accepted": {
-          console.log(updatedData, "updatedDataupdatedDataupdatedData accepted");
+          console.log(
+            updatedData,
+            transaction,
+            "updatedDataupdatedDataupdatedData accepted"
+          );
           const filteredData = updatedData.filter(
             (item) => item.pK_TransactionID !== transaction.pK_TransactionID
           );
-          console.log(filteredData, "updatedDataupdatedDataupdatedData accepted");
+          console.log(
+            filteredData,
+            "updatedDataupdatedDataupdatedData accepted"
+          );
 
           updateGlobalOutstandingBlotter(filteredData);
           dispatch(BlotterTransactionAccepted(null));
