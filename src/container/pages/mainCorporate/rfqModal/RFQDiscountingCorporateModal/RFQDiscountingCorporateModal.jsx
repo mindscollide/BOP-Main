@@ -16,10 +16,8 @@ import {
   calculateNonFeSwapAndDiscountingRateApi,
 } from "@/components/features/blotter/BlotterActions";
 import { NumericFormat } from "react-number-format";
-const RFQDiscountingCorporateModal = ({
-  openRfqModalDiscountingCorporateComponent,
-  setOpenRfqModalDiscountingCorporateComponent,
-}) => {
+import { setDiscountingRFQModal } from "@/store/modalSlice/modalSlicer";
+const RFQDiscountingCorporateModal = () => {
   //Local States
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -36,6 +34,9 @@ const RFQDiscountingCorporateModal = ({
     (state) => state.authReducer.GetAllActiveCorproates
   );
 
+  const rfqDiscountingModal = useSelector(
+    (state) => state.modalReducer.DiscountingRFQModal
+  );
   // Get all instruments for counterparties from Redux store
   const getAllInstrumentsForCounterPartiesData = useSelector(
     (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
@@ -341,9 +342,8 @@ const RFQDiscountingCorporateModal = ({
   return (
     <div>
       <Modal
-        show={openRfqModalDiscountingCorporateComponent}
-        setShow={openRfqModalDiscountingCorporateComponent}
-        onHide={() => setOpenRfqModalDiscountingCorporateComponent(false)}
+        show={rfqDiscountingModal}
+        onHide={() => dispatch(setDiscountingRFQModal(false))}
         closeButton
         headerClassName='RFQModalHeaderForwardTabCorporate'
         footerClassName='RFQModalFooterForwardTabCorporate'

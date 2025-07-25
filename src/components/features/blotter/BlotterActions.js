@@ -39,7 +39,9 @@ import { blotterApi, watchListApi } from "@/common/apiend_points";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
 import { setForwardQuoteModalData } from "@/store/BlotterSlicer/BlotterSlicer";
 import {
+  setDiscountingRFQModal,
   setForwardQuoteModal,
+  setForwardRFQModal,
   setRfqModalOpen,
   setTransactionInfoModal,
   setViewDealModal,
@@ -1249,7 +1251,7 @@ export const SaveForwardTransactionRFQApi = createAsyncThunk(
                 "Blotter_BlotterServiceManager_SaveForwardTransactionRFQ_01".toLowerCase()
               )
           ) {
-            dispatch(setOpenRfqModalForwardCorporateComponent(false));
+            dispatch(setForwardRFQModal(false))
             return {
               response: response.data.responseResult,
               message: "Forward RFQ transaction saved successfully",
@@ -1317,6 +1319,7 @@ export const SaveFEDiscountingTransactionRFQ = createAsyncThunk(
                 "Blotter_BlotterServiceManager_SaveFEDiscountingTransactionRFQ_01".toLowerCase()
               )
           ) {
+            dispatch(setDiscountingRFQModal(false));
             return {
               response: response.data.responseResult,
               message: "FE Discounting RFQ transaction saved successfully",
@@ -1384,6 +1387,7 @@ export const SaveNonFEDiscountingTransactionRFQ = createAsyncThunk(
                 "Blotter_BlotterServiceManager_SaveNonFEDiscountingTransactionRFQ_01".toLowerCase()
               )
           ) {
+            dispatch(setDiscountingRFQModal(false));
             return {
               response: response.data.responseResult,
               message: "Non-FE Discounting RFQ transaction saved successfully",

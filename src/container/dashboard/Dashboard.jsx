@@ -309,6 +309,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     connectToMqtt({ subscribeID, userID });
+    dispatch(getMarketStatusApi({ navigate }));
 
     if (isTreasury === "true") {
       setTimeout(() => {
@@ -316,7 +317,6 @@ const Dashboard = () => {
       }, 5000);
     }
     if (IsCorporate || IsBranch) {
-      dispatch(getMarketStatusApi({ navigate }));
       dispatch(GetAllNatureOfTransactionsApi({ navigate }));
       if (IsBranch) {
         dispatch(getAllActiveCorporatesApi({ navigate }));

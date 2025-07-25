@@ -114,6 +114,8 @@ const RFQModal = () => {
     label: "",
   });
   const [selectedCurrency, setSelectedCurrency] = useState(null);
+
+  console.log(selectedCurrency, "selectedCurrencyselectedCurrency");
   const [amountData, setAmountData] = useState("");
   const [acNumberData, setAcNumberData] = useState("");
   const [lcNumberData, setLcNumberData] = useState("");
@@ -202,12 +204,26 @@ const RFQModal = () => {
           value: typeOptions[0].value,
           label: typeOptions[0].label,
         });
-        setSelectedNature(formattedOptions[0]);
+        let val = typeOptions[0].value;
+        if (iBuySellData == null && formattedOptions.length > 0) {
+          let getNatureVal = formattedOptions.filter((listData, index) => {
+            if (val === 1) {
+              return listData.isForBuy === true && listData.isForSpot === true;
+            }
+            if (val === 2) {
+              return listData.isForSell === true && listData.isForSpot === true;
+            }
+            return listData;
+          });
+          setSelectedNature(getNatureVal[0]);
+        }
+
+        // setSelectedNature(formattedOptions.);
       } catch (error) {
         console.error("Error initializing nature of business options:", error);
       }
     }
-  }, [natureOfBusinessList]);
+  }, [natureOfBusinessList, iBuySellData]);
 
   /**
    * Effect for initializing form with pre-filled buy/sell data
@@ -216,21 +232,21 @@ const RFQModal = () => {
   useEffect(() => {
     if (iBuySellData !== null && natureOfBusinessList?.natureOfTransactions) {
       try {
+        console.log(iBuySellData, "iBuySellDataiBuySellData");
         const isBuy = iBuySellData.type === "buy";
         const typeValue = isBuy ? 1 : 2;
         const baseCurrency = iBuySellData.currencyLabel.slice(0, 3);
         const quoteCurrency = iBuySellData.currencyLabel.slice(3, 6);
 
-        const newTypesData = [
-          {
-            label: `Sell ${isBuy ? quoteCurrency : baseCurrency}`,
-            value: isBuy ? 2 : 1,
-          },
-          {
-            label: `Buy ${isBuy ? baseCurrency : quoteCurrency}`,
-            value: isBuy ? 1 : 2,
-          },
-        ];
+        const newTypesData = isBuy
+          ? [
+              { label: `Buy ${baseCurrency}`, value: 1 },
+              { label: `Sell ${quoteCurrency}`, value: 2 },
+            ]
+          : [
+              { label: `Sell ${baseCurrency}`, value: 2 },
+              { label: `Buy ${quoteCurrency}`, value: 1 },
+            ];
 
         const filteredOptions = natureOfBusinessList.natureOfTransactions
           .filter(
@@ -245,6 +261,18 @@ const RFQModal = () => {
           }));
 
         setNatureOfBusinessOptions(filteredOptions);
+        setSelectedNature({
+          value: filteredOptions[0].value,
+          label: filteredOptions[0].label,
+        });
+        setSelectedCurrency({
+          value: iBuySellData.instrumentID,
+          label: `${iBuySellData.instrumentName}${
+            iBuySellData.secondaryInstrumentName || ""
+          }`,
+          secondaryInstrumentID: iBuySellData.secondaryInstrumentID,
+          secondaryInstrumentName: iBuySellData.secondaryInstrumentName,
+        });
         setTypeOptions(newTypesData);
 
         const selected = newTypesData.find((opt) => opt.value === typeValue);
@@ -317,23 +345,25 @@ const RFQModal = () => {
       const validInstruments = spotApplicableInstruments
         .map((instrument) => {
           // Only include instruments valid for both buy and sell
-          if (instrument.secondaryInstrumentID === 0) {
-            return {
-              ...instrument,
-              // Combine primary and secondary instrument names for display
-              label: `${instrument.instrumentName}${
-                instrument.secondaryInstrumentName || ""
-              }`,
-              value: instrument.instrumentID,
-            };
-          }
-          return null; // Explicit return for non-matching instruments
+
+          return {
+            ...instrument,
+            // Combine primary and secondary instrument names for display
+            label: `${instrument.instrumentName}${
+              instrument.secondaryInstrumentName || ""
+            }`,
+            value: instrument.instrumentID,
+            secondaryInstrumentID: instrument.secondaryInstrumentID,
+            secondaryInstrumentName: instrument.secondaryInstrumentName,
+          };
         })
         .filter(Boolean); // Remove null entries
 
       // Update state only if valid instruments were found
       if (validInstruments.length > 0) {
-        setSelectedCurrency(validInstruments[0]);
+        if (iBuySellData === null) {
+          setSelectedCurrency(validInstruments[0]);
+        }
         setCurrencyOptions(validInstruments);
       } else {
         // Handle empty state
@@ -460,12 +490,6 @@ const RFQModal = () => {
         label: business.name,
         value: business.id,
       }));
-
-    // Log filtered options for debugging
-    if (process.env.NODE_ENV === "development") {
-      console.log("Filtered nature options:", filteredOptions);
-    }
-
     // Update state with new options and selections
     setNatureOfBusinessOptions(filteredOptions);
 
@@ -505,20 +529,20 @@ const RFQModal = () => {
           showMessage("Amount should be greater than 1 ");
           return;
         }
-
+        const IsBuySide =
+          iBuySellData === null
+            ? typeOptionSelected.value === 1
+            : iBuySellData.type === "buy";
         // Prepare transaction data
         let amountValue = amountData.replace(/,/g, "");
         let Data = {
           CorporateID: isBranch
             ? corporateValue.value
             : counterPartyDetails.corporateID,
-          InstrumentID: 21, // TODO: Should this be selectedCurrency.value?
-          SecondaryInstrumentID: 0,
+          InstrumentID: selectedCurrency?.value, // TODO: Should this be selectedCurrency.value?
+          SecondaryInstrumentID: selectedCurrency?.secondaryInstrumentID,
           IsBuyType: typeOptionSelected.value === 1 ? true : false,
-          IsBuySide:
-            iBuySellData !== null && iBuySellData?.type === "buy"
-              ? true
-              : false,
+          IsBuySide: IsBuySide,
           Quantity: Number(amountValue),
           AccountNumber: acNumberData,
           NatureOfTransactionID: selectedNature.value,
@@ -611,18 +635,19 @@ const RFQModal = () => {
                   <SelectDropdown
                     classNamePrefix='RfqSpot'
                     placeholder=''
-                    options={currencyOptions.filter((option) => {
-                      // For Buy transactions (value === 1), check if option supports buying
-                      if (typeOptionSelected.value === 1) {
-                        return option.isBuy === true;
-                      }
-                      // For Sell transactions (value === 2), check if option supports selling
-                      else if (typeOptionSelected.value === 2) {
-                        return option.isSell === true;
-                      }
-                      // If no transaction type selected (shouldn't normally happen), show all options
-                      return true;
-                    })}
+                    options={currencyOptions}
+                    // options={currencyOptions.filter((option) => {
+                    //   // For Buy transactions (value === 1), check if option supports buying
+                    //   if (typeOptionSelected.value === 1) {
+                    //     return option.isBuy === true;
+                    //   }
+                    //   // For Sell transactions (value === 2), check if option supports selling
+                    //   else if (typeOptionSelected.value === 2) {
+                    //     return option.isSell === true;
+                    //   }
+                    //   // If no transaction type selected (shouldn't normally happen), show all options
+                    //   return true;
+                    // })}
                     onChange={handleCurrencyChange}
                     value={selectedCurrency}
                     isDisabled={iBuySellData !== null ? true : false}
@@ -687,25 +712,19 @@ const RFQModal = () => {
                   <SelectDropdown
                     placeholder=''
                     classNamePrefix='RfqSpot'
-                    options={
-                      iBuySellData !== null
-                        ? natureOfBusinessOptions.filter((data) => {
-                            if (typeOptionSelected.value === 1) {
-                              return (
-                                data.isForSpot === true &&
-                                data.isForBuy === true
-                              );
-                            }
-                            if (typeOptionSelected.value === 2) {
-                              return (
-                                data.isForSpot === true &&
-                                data.isForSell === true
-                              );
-                            }
-                            return false; // Exclude all by default
-                          })
-                        : natureOfBusinessOptions
-                    }
+                    options={natureOfBusinessOptions.filter((data) => {
+                      if (typeOptionSelected.value === 1) {
+                        return (
+                          data.isForSpot === true && data.isForBuy === true
+                        );
+                      }
+                      if (typeOptionSelected.value === 2) {
+                        return (
+                          data.isForSpot === true && data.isForSell === true
+                        );
+                      }
+                      return false; // Exclude all by default
+                    })}
                     onChange={handleNatureChange}
                     value={selectedNature}
                   />

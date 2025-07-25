@@ -359,6 +359,7 @@ const CorporateBookaForwardModal = ({
         InstrumentID: Number(selectedCurrency.value),
         SecondaryInstrumentID: 0,
         IsBuySide: typeOptionSelected.value === 1 ? true : false,
+        IsBuyType: typeOptionSelected.value === 1 ? true : false,
         Quantity: Number(amountValue),
         AccountNumber: forwardRFQState.AccNo,
         NatureOfTransactionID: Number(natureOfBusinessSelcted.value),

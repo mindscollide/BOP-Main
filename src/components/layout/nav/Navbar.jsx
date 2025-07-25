@@ -19,6 +19,8 @@ import {
   categoryisUpdated,
 } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import {
+  setDiscountingRFQModal,
+  setForwardRFQModal,
   setIBuySellData,
   setRfqModalOpen,
 } from "@/store/modalSlice/modalSlicer";
@@ -85,6 +87,15 @@ const GlobalNavbar = () => {
     openRfqModalDiscountingCorporateComponent,
     setOpenRfqModalDiscountingCorporateComponent,
   ] = useState(false);
+
+  const rfqForwardModal = useSelector(
+    (state) => state.modalReducer.forwardRFQModal
+  );
+
+  const rfqDiscountingModal = useSelector(
+    (state) => state.modalReducer.DiscountingRFQModal
+  );
+
   const [allCategories, setAllCategories] = useState([]);
   const [outStandingData, setOutStandingData] = useState([]);
 
@@ -132,9 +143,12 @@ const GlobalNavbar = () => {
       dispatch(setRfqModalOpen(true));
     } else if (activeTab === "Forwards") {
       console.log("Handle Forwards logic");
-      setOpenRfqModalForwardCorporateComponent(true);
+      dispatch(setForwardRFQModal(true));
+      // setOpenRfqModalForwardCorporateComponent(true);
     } else if (activeTab === "Discounting") {
       console.log("Handle Discounting logic");
+      dispatch(setDiscountingRFQModal(true));
+
       setOpenRfqModalDiscountingCorporateComponent(true);
     }
   };
@@ -287,20 +301,20 @@ const GlobalNavbar = () => {
 
   return (
     <>
-      <div className="site-header pt-1">
-        <div className="container-fluid page-gutter">
-          <div className="header-inner d-flex align-items-center">
+      <div className='site-header pt-1'>
+        <div className='container-fluid page-gutter'>
+          <div className='header-inner d-flex align-items-center'>
             <SiteLogoComponent />
-            <div className="ms-auto">
-              <div className="d-flex align-items-center gap-2">
+            <div className='ms-auto'>
+              <div className='d-flex align-items-center gap-2'>
                 {location.pathname !== "/calculator" ? (
                   <>
                     {(shouldIncludeCorporate || shouldIncludeBranch) && (
                       <Suspense fallback={<>Loading RFQ...</>}>
                         <CustomButton
-                          applyClass="rfqBtn"
-                          value="RFQ"
-                          size="small"
+                          applyClass='rfqBtn'
+                          value='RFQ'
+                          size='small'
                           icon={<IconElement iconClass={"icon-list fs-6"} />}
                           onClick={onClickRFQ}
                         />
@@ -309,9 +323,9 @@ const GlobalNavbar = () => {
                     {location.pathname.includes("treasury") &&
                     (shouldIncludeDealer || shouldIncludeTreasury) ? (
                       <CustomButton
-                        applyClass="calcBtn"
-                        value="Calculators"
-                        size="large"
+                        applyClass='calcBtn'
+                        value='Calculators'
+                        size='large'
                         onClick={handleCalculatorClick}
                       />
                     ) : null}
@@ -346,28 +360,10 @@ const GlobalNavbar = () => {
       <ForwardRFQQuoteModal />
 
       {/* Forwards RFQ Modal  */}
-      {openRfqModalForwardCorporateComponent && (
-        <RFQForwardCorporateModal
-          openRfqModalForwardCorporateComponent={
-            openRfqModalForwardCorporateComponent
-          }
-          setOpenRfqModalForwardCorporateComponent={
-            setOpenRfqModalForwardCorporateComponent
-          }
-        />
-      )}
+      {rfqForwardModal && <RFQForwardCorporateModal />}
       {settingModalState && <SettingModal />}
       {/* Discounting RFQ Modal  */}
-      {openRfqModalDiscountingCorporateComponent && (
-        <RFQDiscountingCorporateModal
-          openRfqModalDiscountingCorporateComponent={
-            openRfqModalDiscountingCorporateComponent
-          }
-          setOpenRfqModalDiscountingCorporateComponent={
-            setOpenRfqModalDiscountingCorporateComponent
-          }
-        />
-      )}
+      {rfqDiscountingModal && <RFQDiscountingCorporateModal />}
     </>
   );
 };
