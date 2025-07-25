@@ -285,7 +285,7 @@ const BankSpot = () => {
           pagination={false}
           scroll={{ x: "hidden", y: 375 }}
         />
-        {TreasuryBankSpotSpinner && <SectionLoader />}
+        {/* {TreasuryBankSpotSpinner && <SectionLoader />} */}
       </div>
     </div>
   );

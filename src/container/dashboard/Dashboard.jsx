@@ -334,9 +334,9 @@ const Dashboard = () => {
       <Content>
         <main className='px-3'>
           <Outlet />
-          <AnimatePresence>
+          {/* <AnimatePresence>
             {blotterTransactionAdded && isTreasury && <DealBox />}
-          </AnimatePresence>
+          </AnimatePresence> */}
           {transactionInfoModal && <InfoTransaction />}
 
           {chatModal && <ChatBox />}
