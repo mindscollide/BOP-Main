@@ -197,7 +197,7 @@ const MIS = () => {
 
   return (
     <>
-      <div className="card-box position-relative h-100 mis-style">
+      <div className="card-box position-relative mis-style">
         <div className="box-header bg-primary-orange px-3">
           <div className="text-start color-white fw-bold fs-6">MIS</div>
         </div>
@@ -228,21 +228,22 @@ const MIS = () => {
               <div className="mis-selectrange-form w-fix-210 bg-lighter p-2">
                 <label className="mb-2 fs-6 color-blue">Select Range</label>
                 <div className="form-group">
-                  <label className="mb-1">From</label>
+                  <div className="mb-1">From</div>
                   <DatePickerCom
                     placeholder="Select Date"
-                    applyClass={"DatePickerField"}
+                    applyClass={"DatePickerField-MIS"}
                     value={MisDate.StartDate}
                     onChange={(date) => handleChangeDate(date, "StartDate")}
                   />
                 </div>
                 <div className="form-group">
-                  <label className="mb-1">
+                  <div className="mb-1">
                     To <span className="invisible"> 123</span>
-                  </label>
+                  </div>
                   <DatePickerCom
                     placeholder="Select Date"
-                    applyClass={"DatePickerField"}
+                    applyClass={"DatePickerField-MIS"}
+                    className={"d-block w-100"}
                     value={MisDate.EndDate}
                     minDate={
                       MisDate.StartDate !== ""
