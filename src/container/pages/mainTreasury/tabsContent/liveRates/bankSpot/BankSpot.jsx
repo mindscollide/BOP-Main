@@ -283,7 +283,7 @@ const BankSpot = () => {
           }
           prefixCls={"BankSpot_Table"}
           pagination={false}
-          scroll={{ x: "hidden", y: 375 }}
+          scroll={{ x: "hidden", y: 300 }}
         />
         {/* {TreasuryBankSpotSpinner && <SectionLoader />} */}
       </div>
