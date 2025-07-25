@@ -112,7 +112,7 @@ const Dashboard = () => {
 
   // Memoized MQTT message handler
   const handleMqttMessage = useCallback((data) => {
-    console.log(data, "datadatadatadata");
+    // console.log(data, "datadatadatadata");
     switch (data.payload.message) {
       case "INCOMING_CHAT":
         try {
