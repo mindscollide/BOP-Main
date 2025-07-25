@@ -46,7 +46,8 @@ const SpotRates = () => {
   const currentUpdatedRates = useSelector(
     (state) => state.RealtimeActionsSlice.currentRatesPublished
   );
-  console.log(getLastPublishRates, "currentUpdatedRates");
+
+  console.log("currentUpdatedRatescurrentUpdatedRates");
 
   const marketStatus = useSelector(
     (state) => state.RealtimeActionsSlice.marketStatus
