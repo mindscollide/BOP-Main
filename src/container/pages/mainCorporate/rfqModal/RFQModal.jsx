@@ -221,16 +221,15 @@ const RFQModal = () => {
         const baseCurrency = iBuySellData.currencyLabel.slice(0, 3);
         const quoteCurrency = iBuySellData.currencyLabel.slice(3, 6);
 
-        const newTypesData = [
-          {
-            label: `Sell ${isBuy ? quoteCurrency : baseCurrency}`,
-            value: isBuy ? 2 : 1,
-          },
-          {
-            label: `Buy ${isBuy ? baseCurrency : quoteCurrency}`,
-            value: isBuy ? 1 : 2,
-          },
-        ];
+        const newTypesData = isBuy
+          ? [
+              { label: `Buy ${baseCurrency}`, value: 1 },
+              { label: `Sell ${quoteCurrency}`, value: 2 },
+            ]
+          : [
+              { label: `Sell ${baseCurrency}`, value: 2 },
+              { label: `Buy ${quoteCurrency}`, value: 1 },
+            ];
 
         const filteredOptions = natureOfBusinessList.natureOfTransactions
           .filter(
@@ -317,17 +316,17 @@ const RFQModal = () => {
       const validInstruments = spotApplicableInstruments
         .map((instrument) => {
           // Only include instruments valid for both buy and sell
-          if (instrument.secondaryInstrumentID === 0) {
-            return {
-              ...instrument,
-              // Combine primary and secondary instrument names for display
-              label: `${instrument.instrumentName}${
-                instrument.secondaryInstrumentName || ""
-              }`,
-              value: instrument.instrumentID,
-            };
-          }
-          return null; // Explicit return for non-matching instruments
+
+          return {
+            ...instrument,
+            // Combine primary and secondary instrument names for display
+            label: `${instrument.instrumentName}${
+              instrument.secondaryInstrumentName || ""
+            }`,
+            value: instrument.instrumentID,
+            secondaryInstrumentID: instrument.secondaryInstrumentID,
+            secondaryInstrumentName: instrument.secondaryInstrumentName,
+          };
         })
         .filter(Boolean); // Remove null entries
 
@@ -460,12 +459,6 @@ const RFQModal = () => {
         label: business.name,
         value: business.id,
       }));
-
-    // Log filtered options for debugging
-    if (process.env.NODE_ENV === "development") {
-      console.log("Filtered nature options:", filteredOptions);
-    }
-
     // Update state with new options and selections
     setNatureOfBusinessOptions(filteredOptions);
 
@@ -505,20 +498,20 @@ const RFQModal = () => {
           showMessage("Amount should be greater than 1 ");
           return;
         }
-
+        const IsBuySide =
+          iBuySellData === null
+            ? typeOptionSelected.value === 1
+            : iBuySellData.type === "buy";
         // Prepare transaction data
         let amountValue = amountData.replace(/,/g, "");
         let Data = {
           CorporateID: isBranch
             ? corporateValue.value
             : counterPartyDetails.corporateID,
-          InstrumentID: 21, // TODO: Should this be selectedCurrency.value?
-          SecondaryInstrumentID: 0,
+          InstrumentID: selectedCurrency?.value, // TODO: Should this be selectedCurrency.value?
+          SecondaryInstrumentID: selectedCurrency?.secondaryInstrumentID,
           IsBuyType: typeOptionSelected.value === 1 ? true : false,
-          IsBuySide:
-            iBuySellData !== null && iBuySellData?.type === "buy"
-              ? true
-              : false,
+          IsBuySide: IsBuySide,
           Quantity: Number(amountValue),
           AccountNumber: acNumberData,
           NatureOfTransactionID: selectedNature.value,
