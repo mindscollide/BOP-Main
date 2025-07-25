@@ -17,6 +17,7 @@ import {
 } from "@/components/features/blotter/BlotterActions";
 import { getAllTenorsAction } from "../mainDealer/dealerActions";
 import SectionLoader from "@/components/common/loader/SectionLoader";
+import { setBlotterLoader } from "@/store/BlotterSlicer/BlotterSlicer";
 
 const shouldIncludeComponents =
   import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
@@ -51,6 +52,7 @@ const MainBranch = () => {
     try {
       dispatch(GetSpotRatesForCounterPartyAPI(navigate));
       let Data = { sRow: 0, Length: 10 };
+      dispatch(setBlotterLoader(true)); // Set the blotter loader to true
       dispatch(BlotterDataAPI({ navigate, Data }));
       dispatch(GetDashboardDataAPI({ navigate })); // Fetching the Dashboard Data
       // dispatch(getAllTenorsAction({ navigate }));

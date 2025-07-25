@@ -4,58 +4,76 @@ import React, {
   useRef,
   useMemo,
   useCallback,
+  memo
 } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, shallowEqual } from "react-redux";
+import { isEqual, throttle } from "lodash";
 import GlobalTable from "../../../../../../components/common/table/GlobalTable";
 import BidAmountBox from "../../../../../../components/common/bidAmountBox/BidAmountBox";
 import { formatDateUTCToGMT } from "../../../../../../components/utils/timeFunction";
-import { useDispatch } from "react-redux";
-import { isEqual, throttle } from "lodash";
 import SectionLoader from "@/components/common/sectionLoader/SectionLoader";
 
-const BankSpot = () => {
-  const dispatch = useDispatch();
-  // Option 1: Inline selectors
-  const GetAllInstrumentForTreasury = useSelector(
-    (state) => state.WatchListReducer.GetAllInstrumentForTreasury
+// Memoized selectors outside component
+const selectGetAllInstrumentForTreasury = state => 
+  state.WatchListReducer.GetAllInstrumentForTreasury?.crossInstruments;
+const selectTreasurySpotRatesFeed = state => 
+  state.RealtimeActionsSlice.TreasurySpotRatesFeed;
+const selectWorldCrosses = state => 
+  state.WatchListReducer.GetBankSpotForTreasury?.worldCrosses || [];
+const selectWorldCurrencies = state => 
+  state.WatchListReducer.GetBankSpotForTreasury?.worldCurrencies || [];
+const selectTreasuryBankSpotSpinner = state =>
+  state.WatchListReducer.GetBankSpotForTreasurySpinner;
+
+// Custom comparison for feed data
+const isFeedDifferent = (prevFeed, newFeed) => {
+  if (!prevFeed || !newFeed) return true;
+  
+  const prevCross = prevFeed.instrumentCrossRate;
+  const newCross = newFeed.instrumentCrossRate;
+  const prevSpot = prevFeed.instrumentParitySpot;
+  const newSpot = newFeed.instrumentParitySpot;
+
+  return (
+    (prevCross?.bid !== newCross?.bid) ||
+    (prevCross?.ask !== newCross?.ask) ||
+    (prevCross?.updateDateTime !== newCross?.updateDateTime) ||
+    (prevSpot?.bid !== newSpot?.bid) ||
+    (prevSpot?.ask !== newSpot?.ask)
   );
+};
+
+const BankSpot = memo(() => {
+  // Redux state with optimized selectors
+  const crossInstruments = useSelector(selectGetAllInstrumentForTreasury, shallowEqual);
   const TreasurySpotRatesFeed = useSelector(
-    (state) => state.RealtimeActionsSlice.TreasurySpotRatesFeed
+    selectTreasurySpotRatesFeed,
+    (prev, next) => !isFeedDifferent(prev, next)
   );
-  const TresuaryBankSpotData = useSelector(
-    (state) => state.WatchListReducer.GetBankSpotForTreasury
-  );
-  const TreasuryBankSpotSpinner = useSelector(
-    (state) => state.WatchListReducer.GetBankSpotForTreasurySpinner
-  );
+  const worldCrosses = useSelector(selectWorldCrosses, shallowEqual);
+  const worldCurrencies = useSelector(selectWorldCurrencies, shallowEqual);
+  const isLoading = useSelector(selectTreasuryBankSpotSpinner);
 
-  // State for bank spot data
-  const [bankSpotData, setBankSpotData] = useState([]);
-
-  // Refs for previous feed and throttled function
-  const prevFeedRef = useRef();
-  const throttledUpdateRef = useRef();
-
+  // Local state for processed data
+  const [processedData, setProcessedData] = useState([]);
+// Refs for throttled function and previous feed
+const throttledUpdateRef = useRef();
+const prevFeedRef = useRef();
   /**
    * Enriches instrument data with cross and currency rates
-   * @param {Array} crossInstruments - List of instruments
-   * @param {Object} bankSpotData - Contains worldCrosses and worldCurrencies
-   * @returns {Array} Enriched data array
+   * Memoized to prevent unnecessary recalculations
    */
-  const enrichInstrumentData = useCallback((crossInstruments, bankSpotData) => {
-    if (!crossInstruments || !bankSpotData) return [];
-
-    const { worldCrosses = [], worldCurrencies = [] } = bankSpotData;
+  const enrichedData = useMemo(() => {
+    if (!crossInstruments || !worldCrosses || !worldCurrencies) return [];
 
     return crossInstruments.map((instrument) => {
       const matchedCross = worldCrosses.find(
-        (wc) =>
-          wc.instrumentID === instrument.instrumentID &&
-          wc.secondaryInstrumentID === instrument.secondaryInstrumentID
+        wc => wc.instrumentID === instrument.instrumentID &&
+              wc.secondaryInstrumentID === instrument.secondaryInstrumentID
       );
 
       const matchedCurrency = worldCurrencies.find(
-        (wc) => wc.instrumentID === instrument.instrumentID
+        wc => wc.instrumentID === instrument.instrumentID
       );
 
       return {
@@ -74,197 +92,178 @@ const BankSpot = () => {
         worldCurOffer: matchedCurrency?.offer ?? 0,
       };
     });
-  }, []);
+  }, [crossInstruments, worldCrosses, worldCurrencies]);
 
-  // Effect to initialize data when TresuaryBankSpotData or instruments change
+  // Initialize or update processed data when enriched data changes
   useEffect(() => {
-    if (GetAllInstrumentForTreasury && TresuaryBankSpotData) {
-      const enrichedData = enrichInstrumentData(
-        GetAllInstrumentForTreasury.crossInstruments,
-        TresuaryBankSpotData
-      );
-      setBankSpotData(enrichedData);
-    } else {
-      setBankSpotData([]);
-    }
-  }, [TresuaryBankSpotData, GetAllInstrumentForTreasury, enrichInstrumentData]);
+    setProcessedData(enrichedData);
+  }, [enrichedData]);
 
-  // Effect to initialize the throttled update function
-  useEffect(() => {
-    /**
-     * Updates bank spot data with new feed data in a throttled manner
-     * @param {Object} feed - New feed data containing rates
-     */
-    const updateData = (feed) => {
-      setBankSpotData((prevData) => {
-        let isUpdated = false;
-        const { instrumentCrossRate, instrumentParitySpot } = feed;
+  /**
+   * Updates bank spot data with new feed data in a throttled manner
+   * Memoized to maintain reference stability
+   */
+  const updateData = useCallback((feed) => {
+    setProcessedData(prevData => {
+      let isUpdated = false;
+      const { instrumentCrossRate, instrumentParitySpot } = feed;
 
-        const updatedData = prevData.map((data) => {
-          const updated = { ...data };
+      const updatedData = prevData.map(data => {
+        const updated = { ...data };
 
-          // Check and update instrumentCrossRate
+        // Check and update instrumentCrossRate
+        if (
+          instrumentCrossRate &&
+          data.instrumentID === instrumentCrossRate.instrumentID &&
+          data.secondaryInstrumentID === instrumentCrossRate.secondaryInstrumentID
+        ) {
           if (
-            instrumentCrossRate &&
-            data.instrumentID === instrumentCrossRate.instrumentID &&
-            data.secondaryInstrumentID ===
-              instrumentCrossRate.secondaryInstrumentID
+            data.worldCrossBid !== instrumentCrossRate.bid ||
+            data.worldCrossOffer !== instrumentCrossRate.ask
           ) {
-            if (
-              data.worldCrossBid !== instrumentCrossRate.bid ||
-              data.worldCrossOffer !== instrumentCrossRate.ask
-            ) {
-              updated.worldCrossBid = instrumentCrossRate.bid;
-              updated.worldCrossOffer = instrumentCrossRate.ask;
-              updated.time = instrumentCrossRate.updateDateTime;
-              isUpdated = true;
-            }
+            updated.worldCrossBid = instrumentCrossRate.bid;
+            updated.worldCrossOffer = instrumentCrossRate.ask;
+            updated.time = instrumentCrossRate.updateDateTime;
+            isUpdated = true;
           }
+        }
 
-          // Check and update instrumentParitySpot
+        // Check and update instrumentParitySpot
+        if (
+          instrumentParitySpot &&
+          data.instrumentID === instrumentParitySpot.instrumentID &&
+          data.secondaryInstrumentID === instrumentParitySpot.secondaryInstrumentID
+        ) {
           if (
-            instrumentParitySpot &&
-            data.instrumentID === instrumentParitySpot.instrumentID &&
-            data.secondaryInstrumentID ===
-              instrumentParitySpot.secondaryInstrumentID
+            data.worldCurBid !== instrumentParitySpot.bid ||
+            data.worldCurOffer !== instrumentParitySpot.ask
           ) {
-            if (
-              data.worldCurBid !== instrumentParitySpot.bid ||
-              data.worldCurOffer !== instrumentParitySpot.ask
-            ) {
-              updated.worldCurBid = instrumentParitySpot.bid;
-              updated.worldCurOffer = instrumentParitySpot.ask;
-              isUpdated = true;
-            }
+            updated.worldCurBid = instrumentParitySpot.bid;
+            updated.worldCurOffer = instrumentParitySpot.ask;
+            isUpdated = true;
           }
+        }
 
-          return updated;
-        });
-
-        return isUpdated ? updatedData : prevData;
+        return updated;
       });
-    };
 
-    // Create throttled version (5ms delay)
-    throttledUpdateRef.current = throttle(updateData, 20);
-
-    // Cleanup function to cancel any pending throttled calls
-    return () => {
-      if (throttledUpdateRef.current) {
-        throttledUpdateRef.current.cancel();
-      }
-    };
+      return isUpdated ? updatedData : prevData;
+    });
   }, []);
 
-  // Effect to handle real-time feed updates
+  // Initialize throttled function
   useEffect(() => {
-    if (
-      !TreasurySpotRatesFeed ||
-      isEqual(prevFeedRef.current, TreasurySpotRatesFeed)
-    ) {
+    const throttledUpdate = throttle(updateData, 20);
+    throttledUpdateRef.current = throttledUpdate;
+
+    return () => {
+      throttledUpdate.cancel();
+    };
+  }, [updateData]);
+
+  // Handle real-time feed updates
+  useEffect(() => {
+    if (!TreasurySpotRatesFeed || !isFeedDifferent(prevFeedRef.current, TreasurySpotRatesFeed)) {
       return;
     }
 
     prevFeedRef.current = TreasurySpotRatesFeed;
-    throttledUpdateRef.current(TreasurySpotRatesFeed);
+    throttledUpdateRef.current?.(TreasurySpotRatesFeed);
   }, [TreasurySpotRatesFeed]);
 
   // Memoized table columns configuration
-  const columns = useMemo(
-    () => [
-      {
-        key: "instrument",
-        title: "Instrument",
-        dataIndex: "instrumentName",
-        width: 80,
-        className: "color-hd fw-bold title-col text-nowrap roboto-13",
-        render: (text, record) => (
-          <span>{`${record?.instrumentName}${record?.secondaryInstrumentName}`}</span>
-        ),
-      },
-      {
-        key: "crossBid",
-        title: "Bid",
-        dataIndex: "worldCrossBid",
-        width: 80,
-        align: "center",
-        render: (text, record) => (
-          <span className="d-flex justify-content-center">
-            <BidAmountBox
-              applyClass={"BidCardBox"}
-              bankSpot={true}
-              BidAmountValue={record?.worldCrossBid}
-            />
-          </span>
-        ),
-      },
-      {
-        key: "crossOffer",
-        title: "Offer",
-        dataIndex: "worldCrossOffer",
-        width: 80,
-        align: "center",
-        render: (text, record) => (
-          <span className="d-flex justify-content-center">
-            <BidAmountBox
-              applyClass={"OfferCardBox"}
-              bankSpot={true}
-              BidAmountValue={record?.worldCrossOffer}
-            />
-          </span>
-        ),
-      },
-      {
-        key: "currencyInstrument",
-        title: "Instrument",
-        dataIndex: "instrumentName",
-        width: 80,
-        className: "roboto-13",
-      },
-      {
-        key: "currencyBid",
-        title: "Bid",
-        dataIndex: "worldCurBid",
-        width: 80,
-        align: "center",
-        render: (text, record) => (
-          <span className="d-flex justify-content-center">
-            <BidAmountBox
-              applyClass={"BidCardBox"}
-              bankSpot={true}
-              BidAmountValue={record?.worldCurBid}
-            />
-          </span>
-        ),
-      },
-      {
-        key: "currencyOffer",
-        title: "Offer",
-        dataIndex: "worldCurOffer",
-        width: 80,
-        align: "center",
-        render: (text, record) => (
-          <span className="d-flex justify-content-center">
-            <BidAmountBox
-              applyClass={"OfferCardBox"}
-              bankSpot={true}
-              BidAmountValue={record?.worldCurOffer}
-            />
-          </span>
-        ),
-      },
-      {
-        key: "time",
-        title: "Time",
-        dataIndex: "time",
-        width: 80,
-        className: "roboto-13",
-        render: (text) =>
-          formatDateUTCToGMT(text).toTimeString().substring(0, 8), // Format time to HH:MM:SS
-      },
-    ],
-    []
-  );
+  const columns = useMemo(() => [
+    {
+      key: "instrument",
+      title: "Instrument",
+      dataIndex: "instrumentName",
+      width: 80,
+      className: "color-hd fw-bold title-col text-nowrap roboto-13",
+      render: (text, record) => (
+        <span>{`${record?.instrumentName}${record?.secondaryInstrumentName}`}</span>
+      ),
+    },
+    {
+      key: "crossBid",
+      title: "Bid",
+      dataIndex: "worldCrossBid",
+      width: 80,
+      align: "center",
+      render: (text, record) => (
+        <span className="d-flex justify-content-center">
+          <BidAmountBox
+            applyClass={"BidCardBox"}
+            bankSpot={true}
+            BidAmountValue={record?.worldCrossBid}
+          />
+        </span>
+      ),
+    },
+    {
+      key: "crossOffer",
+      title: "Offer",
+      dataIndex: "worldCrossOffer",
+      width: 80,
+      align: "center",
+      render: (text, record) => (
+        <span className="d-flex justify-content-center">
+          <BidAmountBox
+            applyClass={"OfferCardBox"}
+            bankSpot={true}
+            BidAmountValue={record?.worldCrossOffer}
+          />
+        </span>
+      ),
+    },
+    {
+      key: "currencyInstrument",
+      title: "Instrument",
+      dataIndex: "instrumentName",
+      width: 80,
+      className: "roboto-13",
+    },
+    {
+      key: "currencyBid",
+      title: "Bid",
+      dataIndex: "worldCurBid",
+      width: 80,
+      align: "center",
+      render: (text, record) => (
+        <span className="d-flex justify-content-center">
+          <BidAmountBox
+            applyClass={"BidCardBox"}
+            bankSpot={true}
+            BidAmountValue={record?.worldCurBid}
+          />
+        </span>
+      ),
+    },
+    {
+      key: "currencyOffer",
+      title: "Offer",
+      dataIndex: "worldCurOffer",
+      width: 80,
+      align: "center",
+      render: (text, record) => (
+        <span className="d-flex justify-content-center">
+          <BidAmountBox
+            applyClass={"OfferCardBox"}
+            bankSpot={true}
+            BidAmountValue={record?.worldCurOffer}
+          />
+        </span>
+      ),
+    },
+    {
+      key: "time",
+      title: "Time",
+      dataIndex: "time",
+      width: 80,
+      className: "roboto-13",
+      render: (text) =>
+        formatDateUTCToGMT(text).toTimeString().substring(0, 8),
+    },
+  ], []);
 
   return (
     <div>
@@ -277,7 +276,7 @@ const BankSpot = () => {
       <div className="mb-2 h-100 position-relative">
         <GlobalTable
           columns={columns}
-          dataSource={bankSpotData}
+          dataSource={processedData}
           rowKey={(record) =>
             `${record.instrumentID}-${record.secondaryInstrumentID}`
           }
@@ -285,10 +284,10 @@ const BankSpot = () => {
           pagination={false}
           scroll={{ x: "hidden", y: 300 }}
         />
-        {/* {TreasuryBankSpotSpinner && <SectionLoader />} */}
+        {/* {isLoading && <SectionLoader />} */}
       </div>
     </div>
   );
-};
+});
 
-export default React.memo(BankSpot);
+export default BankSpot;

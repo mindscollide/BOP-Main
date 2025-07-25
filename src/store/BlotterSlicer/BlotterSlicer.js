@@ -126,6 +126,9 @@ const BlotterSlicer = createSlice({
     clearGetForwardTransactionDetails: (state) => {
       state.GetForwardTransactionDetails = null;
     },
+    setBlotterLoader: (state, { payload }) => {
+      state.Loader = payload; // Set the loader state for Blotter operations
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -150,7 +153,7 @@ const BlotterSlicer = createSlice({
       )
       // Pending state (while the API call is being made CorporateBlotterDataAPI)
       .addCase(BlotterDataAPI.pending, (state) => {
-        state.Loader = true;
+        state.Loader = false;
         state.error = null;
       })
       // Fulfilled state (when the API call succeeds CorporateBlotterDataAPI)
@@ -559,6 +562,7 @@ export const {
   clearGetNonFEDiscountingTransactionDetails,
   clearGetForwardTransactionDetails,
   setSpotQuoteModalData,
+  setBlotterLoader
 } = BlotterSlicer.actions;
 
 export default BlotterSlicer.reducer;
