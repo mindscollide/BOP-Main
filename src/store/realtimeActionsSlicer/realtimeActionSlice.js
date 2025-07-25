@@ -57,8 +57,13 @@ const RealtimeActionsSlice = createSlice({
     CounterPartyForwardRates: null,
     CounterPartyFeDiscounting: null,
     CategoryNonFeDiscouting: null,
+    ClearRatesData: null,
   },
   reducers: {
+    setClearRates: (state, { payload }) => {
+      console.log(payload,"checker")
+      state.ClearRatesData = { ...payload };
+    },
     setCategoryNonFeDiscounting: (state, { payload }) => {
       state.CategoryNonFeDiscouting = { ...payload };
     },
@@ -200,6 +205,7 @@ const RealtimeActionsSlice = createSlice({
 });
 
 export const {
+  setClearRates,
   setCategoryFeDiscounting,
   setFxTradingCards,
   setTreasuryFeDiscounting,

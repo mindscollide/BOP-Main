@@ -42,10 +42,11 @@ const BranchForwardsTable = () => {
     (state) => state.WatchListReducer.getMarketStatus
   );
 
-  console.log(
-    { CounterPartyForwardRates, marketStatus },
-    "CounterPartyForwardRates"
+  const ClearRatesData = useSelector(
+    (state) => state.RealtimeActionsSlice.ClearRatesData
   );
+
+  console.log(ClearRatesData, "ClearRatesData");
 
   console.log(
     getAllInstrumentsForCounterPartiesData !== null &&
@@ -91,23 +92,6 @@ const BranchForwardsTable = () => {
           setDataSource(rowData);
           setColumnsData(columnsData);
         }
-        //********************************************** */
-        // const { tenors, forwardRates, instruments } =
-        //   GetAllFowardsAndDiscountsRatesAPIData;
-        // let getAllTenorsData = { tenors };
-        // let getAllInstrument = { instruments };
-        // const { rowData, columnsData } = buildForwardsTable(
-        //   2,
-        //   forwardRates,
-        //   getAllTenorsData,
-        //   getAllInstrument,
-        //   IndexCell
-        // );
-        // console.log(rowData, columnsData, "columnsDatacolumnsData");
-        // if (rowData.length > 0) {
-        //   setDataSource(rowData);
-        //   setColumnsData(columnsData);
-        // }
       } catch (error) {
         console.log(error, "Error while building discounting table");
       }
@@ -169,6 +153,24 @@ const BranchForwardsTable = () => {
       );
     }
   }, [marketStatus]);
+
+  // For clear Rates
+  useEffect(() => {
+    if (ClearRatesData?.areRatesClear) {
+      console.log("Cgcecececec");
+      setDataSource((prevData) =>
+        prevData.map((row) => {
+          const updatedRow = { ...row };
+          Object.keys(updatedRow).forEach((key) => {
+            if (key.startsWith("bid_") || key.startsWith("ask_")) {
+              updatedRow[key] = 0;
+            }
+          });
+          return updatedRow;
+        })
+      );
+    }
+  }, [ClearRatesData]);
 
   const handleBookaForwardCorporate = () => {
     setBookaForwardModalCall(true);

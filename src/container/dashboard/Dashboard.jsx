@@ -43,6 +43,7 @@ import {
   setCategoryForwardRates,
   setCategoryNonFeDiscounting,
   setCategorySpotRates,
+  setClearRates,
   setCounterPartyFeDiscounting,
   setCounterPartyForwardRates,
   setCounterPartyNonFeDiscounting,
@@ -263,6 +264,9 @@ const Dashboard = () => {
       case "UPDATED_VOLTMETER_STATUS":
         dispatch(setUpdateVolMeterRealtime(data.payload));
         console.log(data.payload, "Updated Voltmeter Status");
+      case "RATES_CLEAR":
+        dispatch(setClearRates(data.payload));
+        console.log(data.payload, "RATES_CLEARRATES_CLEAR");
       default:
         console.warn("No specific handler for this message type", data.payload);
         break;
@@ -327,12 +331,12 @@ const Dashboard = () => {
     }
   }, []);
   return (
-    <Layout className='roboto-13'>
+    <Layout className="roboto-13">
       {!location.pathname.includes("calculator") && <Header />}
 
       <GlobalNavbar />
       <Content>
-        <main className='px-3'>
+        <main className="px-3">
           <Outlet />
           <AnimatePresence>
             {blotterTransactionAdded && isTreasury && <DealBox />}

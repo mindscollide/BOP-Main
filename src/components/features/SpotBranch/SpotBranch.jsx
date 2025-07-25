@@ -64,9 +64,15 @@ const SpotBranch = () => {
     (state) => state.WatchListReducer.getMarketStatus
   );
 
+  const ClearRatesData = useSelector(
+    (state) => state.RealtimeActionsSlice.ClearRatesData
+  );
+
+  console.log(ClearRatesData, "ClearRatesDataClearRatesData");
+
   const [watchlistData, setWatchlistData] = useState(initialWatchlistData);
 
-  console.log(watchlistData, "watchlistDatawatchlistData")
+  console.log(watchlistData, "watchlistDatawatchlistData");
   // Extracting out the Cards Wathlist data in the state
   useEffect(() => {
     try {
@@ -106,20 +112,6 @@ const SpotBranch = () => {
           );
 
           if (filteredSections.length > 0) {
-            // setWatchlistData((prev) => {
-            // const newData = { ...prev };
-
-            // // Reset all watchlist sections
-            // for (let i = 1; i <= 6; i++) {
-            //   newData[`watchlist${i}`] = {
-            //     ...prev[`watchlist${i}`],
-            //     currecncyLabel: "",
-            //     instrumentID: 0,
-            //     buyValue: "",
-            //     sellValue: "",
-            //   };
-            // }
-
             // Update each section
             filteredSections.forEach((item) => {
               const sectionID = item.sectionID || item.SectionID;
@@ -142,22 +134,7 @@ const SpotBranch = () => {
                   secondaryInstrumentName: item.secondaryInstrumentName,
                 },
               }));
-
-              // if (newData[key]) {
-              //   newData[key] = {
-              //     ...prev[key],
-              //     currecncyLabel: `${item.instrumentName}${item.secondaryInstrumentName}`,
-              //     buyValue: item.bid,
-              //     sellValue: item.offer,
-              //     instrumentID: item.instrumentID,
-              //     isSell: item.isSell,
-              //     isBuy: item.isBuy,
-              //   };
-              // }
             });
-
-            // return newData;
-            // });
           }
         }
       }
@@ -287,6 +264,39 @@ const SpotBranch = () => {
     }
   }, [marketStatus]);
 
+  useEffect(() => {
+    try {
+      if (ClearRatesData?.areRatesClear) {
+        setWatchlistData((prev) => {
+          const updated = { ...prev };
+          Object.keys(updated).forEach((key) => {
+            if (updated[key]?.secondaryInstrumentName === "PKR") {
+              updated[key] = {
+                ...updated[key],
+                buyValue: 0,
+                sellValue: 0,
+              };
+            }
+          });
+          return updated;
+        });
+
+        setWatchlistTableData((prev) =>
+          prev.map((data) =>
+            data.secondaryInstrumentName === "PKR"
+              ? { ...data, bid: 0, offer: 0 }
+              : data
+          )
+        );
+      }
+    } catch (error) {
+      console.error(
+        "Error clearing PKR rates on ClearRatesData update:",
+        error
+      );
+    }
+  }, [ClearRatesData]);
+
   //Column of my watch<list> Table
   const columns = [
     {
@@ -297,7 +307,7 @@ const SpotBranch = () => {
       align: "left",
       render: (text, record) => {
         return (
-          <span className='instrument-column'>
+          <span className="instrument-column">
             {`${record.instrumentName}${record.secondaryInstrumentName}`}
           </span>
         );
@@ -310,12 +320,12 @@ const SpotBranch = () => {
       width: "120px",
       align: "center",
       render: (text, record) => (
-        <div className='d-flex justify-content-center'>
+        <div className="d-flex justify-content-center">
           <BidAmountBox
             // spot={true}
             bankSpot={true}
             BidAmountValue={text}
-            applyClass='BidCardBox'
+            applyClass="BidCardBox"
           />
         </div>
       ),
@@ -327,11 +337,11 @@ const SpotBranch = () => {
       align: "center",
       width: "120px",
       render: (text, record) => (
-        <div className='d-flex justify-content-center'>
+        <div className="d-flex justify-content-center">
           <BidAmountBox
             bankSpot={true}
             BidAmountValue={text}
-            applyClass='OfferCardBox'
+            applyClass="OfferCardBox"
           />
         </div>
       ),
@@ -379,7 +389,8 @@ const SpotBranch = () => {
               ...style,
               ...provided.draggableProps.style,
             }}
-            className={className}>
+            className={className}
+          >
             {children}
           </tr>
         )}
@@ -389,16 +400,16 @@ const SpotBranch = () => {
   return (
     <section>
       <DragDropContext onDragEnd={onDragEnd}>
-        <Row className='px-2'>
+        <Row className="px-2">
           <Col lg={9} md={9} sm={12}>
-            <span className='FxTradingOuterBox'>
-              <Row className='mt-2'>
+            <span className="FxTradingOuterBox">
+              <Row className="mt-2">
                 <Col lg={12} md={12} sm={12}>
-                  <span className='FxTradingLabel'>FX Trading</span>
+                  <span className="FxTradingLabel">FX Trading</span>
                 </Col>
               </Row>
 
-              <Row className='mt-3'>
+              <Row className="mt-3">
                 {[...Array(6)].map((_, index) => {
                   const droppableId = `watchlist${index + 1}`;
                   const data = watchlistData[droppableId] || {}; // Get data if available, else empty
@@ -408,11 +419,12 @@ const SpotBranch = () => {
                         {(provided) => (
                           <div
                             ref={provided.innerRef}
-                            {...provided.droppableProps}>
+                            {...provided.droppableProps}
+                          >
                             <BranchRateCardsOfWatchList
                               currencyLabel={data.currecncyLabel || ""}
-                              buyHeading='I Buy'
-                              sellHeading='I Sell'
+                              buyHeading="I Buy"
+                              sellHeading="I Sell"
                               buyValue={data.buyValue || ""}
                               sellValue={data.sellValue || ""}
                               isSellDisabled={data.isSell}
@@ -436,12 +448,12 @@ const SpotBranch = () => {
               </Row>
             </span>
           </Col>
-          <Col lg={3} md={3} sm={12} className='WatchListOuterBox'>
+          <Col lg={3} md={3} sm={12} className="WatchListOuterBox">
             <Row>
               <Col lg={6} md={6} sm={12}>
-                <span className='WatchlistLabel'>Watchlist</span>
+                <span className="WatchlistLabel">Watchlist</span>
               </Col>
-              <Col lg={6} md={6} sm={12} className='d-flex justify-content-end'>
+              <Col lg={6} md={6} sm={12} className="d-flex justify-content-end">
                 {/* <span>21-11-2022 9:18 PM</span> */}
                 <span>
                   {watchListDateTime !== null &&
@@ -453,7 +465,7 @@ const SpotBranch = () => {
             <Row>
               <Col lg={12} md={12} sm={12}>
                 {watchlistTableData.length > 0 ? (
-                  <Droppable droppableId='droppable' direction='vertical'>
+                  <Droppable droppableId="droppable" direction="vertical">
                     {(provided) => (
                       <div ref={provided.innerRef} {...provided.droppableProps}>
                         <GlobalTable
