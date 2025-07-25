@@ -204,12 +204,26 @@ const RFQModal = () => {
           value: typeOptions[0].value,
           label: typeOptions[0].label,
         });
-        setSelectedNature(formattedOptions[0]);
+        let val = typeOptions[0].value;
+        if (iBuySellData == null && formattedOptions.length > 0) {
+          let getNatureVal = formattedOptions.filter((listData, index) => {
+            if (val === 1) {
+              return listData.isForBuy === true && listData.isForSpot === true;
+            }
+            if (val === 2) {
+              return listData.isForSell === true && listData.isForSpot === true;
+            }
+            return listData;
+          });
+          setSelectedNature(getNatureVal[0]);
+        }
+
+        // setSelectedNature(formattedOptions.);
       } catch (error) {
         console.error("Error initializing nature of business options:", error);
       }
     }
-  }, [natureOfBusinessList]);
+  }, [natureOfBusinessList, iBuySellData]);
 
   /**
    * Effect for initializing form with pre-filled buy/sell data
@@ -247,6 +261,10 @@ const RFQModal = () => {
           }));
 
         setNatureOfBusinessOptions(filteredOptions);
+        setSelectedNature({
+          value: filteredOptions[0].value,
+          label: filteredOptions[0].label,
+        });
         setSelectedCurrency({
           value: iBuySellData.instrumentID,
           label: `${iBuySellData.instrumentName}${
