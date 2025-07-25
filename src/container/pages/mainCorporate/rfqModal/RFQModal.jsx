@@ -694,25 +694,19 @@ const RFQModal = () => {
                   <SelectDropdown
                     placeholder=''
                     classNamePrefix='RfqSpot'
-                    options={
-                      iBuySellData !== null
-                        ? natureOfBusinessOptions.filter((data) => {
-                            if (typeOptionSelected.value === 1) {
-                              return (
-                                data.isForSpot === true &&
-                                data.isForBuy === true
-                              );
-                            }
-                            if (typeOptionSelected.value === 2) {
-                              return (
-                                data.isForSpot === true &&
-                                data.isForSell === true
-                              );
-                            }
-                            return false; // Exclude all by default
-                          })
-                        : natureOfBusinessOptions
-                    }
+                    options={natureOfBusinessOptions.filter((data) => {
+                      if (typeOptionSelected.value === 1) {
+                        return (
+                          data.isForSpot === true && data.isForBuy === true
+                        );
+                      }
+                      if (typeOptionSelected.value === 2) {
+                        return (
+                          data.isForSpot === true && data.isForSell === true
+                        );
+                      }
+                      return false; // Exclude all by default
+                    })}
                     onChange={handleNatureChange}
                     value={selectedNature}
                   />

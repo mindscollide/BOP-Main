@@ -17,6 +17,7 @@ import {
 } from "@/components/features/blotter/BlotterActions";
 import { useNavigate } from "react-router-dom";
 import { setForwardQuoteModalData } from "@/store/BlotterSlicer/BlotterSlicer";
+import { NumericFormat } from "react-number-format";
 
 const ForwardRFQQuoteModal = ({ dealData }) => {
   console.log(dealData, "dealDatadealData");
@@ -238,9 +239,11 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                   lg={12}
                   className='d-flex align-items-center gap-2'>
                   <label className={styles["DealViewModal_label"]}>Ready</label>
-                  <InputFIeld
-                    applyClass={"DiscountingQuoteInput"}
+                  <NumericFormat
+                    customInput={InputFIeld}
                     value={readyValue}
+                    thousandSeparator=','
+                    maxLength={10}
                     onChange={(e) => handleChangeRate(e, "readyValue")}
                   />
                 </Col>

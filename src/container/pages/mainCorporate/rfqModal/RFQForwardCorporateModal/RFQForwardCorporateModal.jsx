@@ -11,6 +11,7 @@ import { useDispatch } from "react-redux";
 import { SaveForwardTransactionRFQApi } from "@/components/features/blotter/BlotterActions";
 import { useNavigate } from "react-router-dom";
 import { NumericFormat } from "react-number-format";
+import { setForwardRFQModal } from "@/store/modalSlice/modalSlicer";
 
 /**
  * RFQForwardCorporateModal Component
@@ -60,6 +61,10 @@ const RFQForwardCorporateModal = ({
   // Get all instruments for counterparties from Redux store
   const getAllInstrumentsForCounterPartiesData = useSelector(
     (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
+  );
+
+  const rfqForwardModal = useSelector(
+    (state) => state.modalReducer.forwardRFQModal
   );
 
   /**
@@ -352,6 +357,7 @@ const RFQForwardCorporateModal = ({
         InstrumentID: selectedCurrency.value,
         SecondaryInstrumentID: 0,
         IsBuySide: typeOptionSelected.value === 1 ? true : false,
+        IsBuyType: typeOptionSelected.value === 1 ? true : false,
         Quantity: Number(amountValue),
         AccountNumber: accountNumber,
         NatureOfTransactionID:
@@ -377,9 +383,9 @@ const RFQForwardCorporateModal = ({
   return (
     <div>
       <Modal
-        show={openRfqModalForwardCorporateComponent}
-        setShow={openRfqModalForwardCorporateComponent}
-        onHide={() => setOpenRfqModalForwardCorporateComponent(false)}
+        show={rfqForwardModal}
+        // setShow={openRfqModalForwardCorporateComponent}
+        onHide={() => dispatch(setForwardRFQModal(false))}
         closeButton
         headerClassName='RFQModalHeaderForwardTabCorporate'
         footerClassName='RFQModalFooterForwardTabCorporate'
