@@ -18,6 +18,12 @@ const SpotDealerAndTreasury = () => {
   const categorySpotRates = useSelector(
     (state) => state.RealtimeActionsSlice.CategorySpotRates
   );
+
+  const marketStatus = useSelector(
+    (state) => state.WatchListReducer.getMarketStatus
+  );
+  console.log(marketStatus, "marketStatusratesrate");
+
   console.log(
     GetCategoryWiseSpotRatesDaata,
     "GetCategoryWiseSpotRatesDaataGetCategoryWiseSpotRatesDaata"
@@ -76,7 +82,7 @@ const SpotDealerAndTreasury = () => {
             : data;
         })
       );
-    },20); // Update max every 300ms
+    }, 20); // Update max every 300ms
 
     throttledUpdate(categorySpotRates);
 
@@ -85,6 +91,18 @@ const SpotDealerAndTreasury = () => {
     };
   }, [categorySpotRates]);
 
+  useEffect(() => {
+    if (marketStatus === false) {
+      setSpotsData((prevData) =>
+        prevData.map((data) => ({
+          ...data,
+          bid: 0,
+          offer: 0,
+        }))
+      );
+    }
+  }, [marketStatus]);
+
   return (
     <>
       <Row>
@@ -92,16 +110,13 @@ const SpotDealerAndTreasury = () => {
           [...spotsData] // create a shallow copy to avoid mutating original array
             .sort((a, b) => a.instrumentID - b.instrumentID)
             .map((spotCardsData, index) => {
+              console.log(spotCardsData, "spotCardsDataspotCardsDataF");
               return (
-                <Col
-                  sm={6}
-                  md={3}
-                  className='px-1'
-                  key={index}>
+                <Col sm={6} md={3} className="px-1" key={index}>
                   <div className={styles["SpotBoxCard"]}>
                     <div>
                       {/* box header */}
-                      <div className='mb-3'>
+                      <div className="mb-3">
                         <span className={styles["SpotCurrentHeading"]}>
                           {spotCardsData.instrumentName}
                         </span>
@@ -110,7 +125,7 @@ const SpotDealerAndTreasury = () => {
                         </span>
                       </div>
                       {/* box content */}
-                      <div className='d-flex gap-2 mt-2'>
+                      <div className="d-flex gap-2 mt-2">
                         <Col>
                           <BidAmountBox
                             spot={true}

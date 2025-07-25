@@ -146,10 +146,14 @@ const SpotQuoteModal = ({ dealData }) => {
               className={styles["DealViewModal_SecondSide"]}>
               <Row>
                 <Col sm={10} md={10} lg={10}>
-                  <p className={styles["PartyName"]}>
+                  <p className={styles["PartyNamesNew"]}>
                     {spotQuoteModalData?.branchName}
+                    <span className={styles["PartyNamesSubHeading"]}>
+                      {" ("}
+                      {spotQuoteModalData?.branchCode}
+                      {")"}
+                    </span>
                   </p>
-                  <span>{spotQuoteModalData?.branchCode}</span>
                 </Col>
                 <Col
                   sm={2}

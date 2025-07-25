@@ -30,6 +30,20 @@
   font-size: 1.25rem;
   margin: 0;
 }
+
+.PartyNamesNew {
+  color: #000000 !important;
+  font-size: 1.4rem;
+  margin: 0;
+  font-weight: 500 !important;
+}
+
+.PartyNamesSubHeading {
+  margin-left: 4px !important;
+  color: #212529 !important;
+  font-size: 0.7rem;
+  margin: 0;
+}
 .PartyName__Info {
   color: var(--color-black);
   font-size: 13px;

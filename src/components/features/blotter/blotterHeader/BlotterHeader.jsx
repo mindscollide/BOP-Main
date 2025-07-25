@@ -115,9 +115,9 @@ const BlotterHeader = () => {
                     {" "}
                     <span className="hd-txt me-3">NOP (US$)</span>
                     <span className="hd-cr me-2">
-                      {GetNOPData !== null && GetNOPData !== undefined  
-                        ? GetNOPData.nop
-                        : `(${Math.abs(GetNOPData.nop)})`}
+                      {GetNOPData !== null && GetNOPData !== undefined
+                        ? GetNOPData?.nop
+                        : `(${Math.abs(GetNOPData?.nop)})`}
                     </span>
                     <CustomButton
                       applyClass={"NOP-button"}
