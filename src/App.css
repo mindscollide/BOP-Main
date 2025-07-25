@@ -45,6 +45,7 @@ body {
   font-weight: 400;
   overflow-x: hidden !important;
   min-height: 100%;
+  user-select: none !important;
 }
 .ff-roboto {
   font-family: "Roboto", sans-serif !important;
