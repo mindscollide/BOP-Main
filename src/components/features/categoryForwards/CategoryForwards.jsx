@@ -28,6 +28,10 @@ const CategoryForwards = () => {
     (state) => state.WatchListReducer.getMarketStatus
   );
 
+  const ClearRatesData = useSelector(
+    (state) => state.RealtimeActionsSlice.ClearRatesData
+  );
+
   console.log(CategoryForwardRates, "CategoryForwardRates");
 
   console.log(
@@ -123,6 +127,23 @@ const CategoryForwards = () => {
       );
     }
   }, [marketStatus]);
+
+  // For clear Rates
+  useEffect(() => {
+    if (ClearRatesData?.areRatesClear) {
+      setDataSource((prevData) =>
+        prevData.map((row) => {
+          const updatedRow = { ...row };
+          Object.keys(row).forEach((key) => {
+            if (key.startsWith("bid_") || key.startsWith("ask_")) {
+              updatedRow[key] = 0;
+            }
+          });
+          return updatedRow;
+        })
+      );
+    }
+  }, [ClearRatesData]);
 
   return (
     <>

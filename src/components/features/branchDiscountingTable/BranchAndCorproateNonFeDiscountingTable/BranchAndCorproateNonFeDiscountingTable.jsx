@@ -29,6 +29,12 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
     (state) => state.WatchListReducer.getMarketStatus
   );
 
+  const ClearRatesData = useSelector(
+    (state) => state.RealtimeActionsSlice.ClearRatesData
+  );
+
+  console.log(ClearRatesData, "ClearRatesData");
+
   console.log(
     typeof marketStatus,
     typeof JSON.parse(marketStatus),
@@ -133,6 +139,23 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
       );
     }
   }, [marketStatus]);
+
+  // For clear Rates
+  useEffect(() => {
+    if (ClearRatesData?.areRatesClear) {
+      setDataSource((prevData) =>
+        prevData.map((row) => {
+          const updatedRow = { ...row };
+          Object.keys(updatedRow).forEach((key) => {
+            if (key.startsWith("rate_")) {
+              updatedRow[key] = 0;
+            }
+          });
+          return updatedRow;
+        })
+      );
+    }
+  }, [ClearRatesData]);
 
   const handleNonFEDiscountingModal = () => {
     setNonfeDiscountingModalCall(true);

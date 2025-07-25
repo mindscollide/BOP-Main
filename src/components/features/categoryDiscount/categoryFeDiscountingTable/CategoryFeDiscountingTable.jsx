@@ -28,6 +28,7 @@ const CategoryFeDiscountingTable = () => {
   const marketStatus = useSelector(
     (state) => state.WatchListReducer.getMarketStatus
   );
+  
   console.log("dataSourcedataSource: ", dataSource);
 
   console.log("marketStatusmarketStatus2434: ", marketStatus);

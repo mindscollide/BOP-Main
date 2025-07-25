@@ -35,6 +35,11 @@ const BranchAndCorporateFeDiscountingTable = () => {
     (state) => state.WatchListReducer.getMarketStatus
   );
 
+  const ClearRatesData = useSelector(
+    (state) => state.RealtimeActionsSlice.ClearRatesData
+  );
+
+  console.log(ClearRatesData, "ClearRatesData");
   console.log(CounterPartyFeDiscounting, "CounterPartyFeDiscounting");
 
   console.log(dataSource, "dataSource");
@@ -131,6 +136,27 @@ const BranchAndCorporateFeDiscountingTable = () => {
       );
     }
   }, [marketStatus]);
+
+  // For clear Rates
+  useEffect(() => {
+    if (ClearRatesData?.areRatesClear) {
+      console.log("Cgcecececec");
+      setDataSource((prevData) =>
+        prevData.map((row) => {
+          const updatedRow = { ...row };
+
+          Object.keys(row).forEach((key) => {
+            if (key.startsWith("InstrumentID_")) {
+              const currency = key.split("_")[1];
+              updatedRow[`rate_${currency}`] = 0;
+            }
+          });
+
+          return updatedRow;
+        })
+      );
+    }
+  }, [ClearRatesData]);
 
   const handleFEDiscountingModal = () => {
     setFeDiscountingModalCall(true);
