@@ -69,18 +69,17 @@ const Loader = () => {
   }, [isLoading]);
 
   return (
-    isLoader &&
-    !window.location.pathname.includes("BOP") && (
-      <div className="body-loader overflow-hidden">
-        <div className="body-loader-inner">
-          <div className="logo-loader-wrapper">
+    isLoader && (
+      <div className='body-loader overflow-hidden'>
+        <div className='body-loader-inner'>
+          <div className='logo-loader-wrapper'>
             <img
-              className="img-fluid"
+              className='img-fluid'
               src={LoaderImage}
-              alt="Section-Loader"
+              alt='Section-Loader'
               width={200}
             />
-            <div className="loader-line-highlight" />
+            <div className='loader-line-highlight' />
           </div>
         </div>
       </div>

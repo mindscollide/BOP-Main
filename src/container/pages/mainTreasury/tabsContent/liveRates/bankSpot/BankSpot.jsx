@@ -146,7 +146,7 @@ const BankSpot = () => {
     };
 
     // Create throttled version (5ms delay)
-    throttledUpdateRef.current = throttle(updateData, 2);
+    throttledUpdateRef.current = throttle(updateData, 20);
 
     // Cleanup function to cancel any pending throttled calls
     return () => {
@@ -285,7 +285,7 @@ const BankSpot = () => {
           pagination={false}
           scroll={{ x: "hidden", y: 300 }}
         />
-        {TreasuryBankSpotSpinner && <SectionLoader />}
+        {/* {TreasuryBankSpotSpinner && <SectionLoader />} */}
       </div>
     </div>
   );

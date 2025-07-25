@@ -146,10 +146,14 @@ const SpotQuoteModal = ({ dealData }) => {
               className={styles["DealViewModal_SecondSide"]}>
               <Row>
                 <Col sm={10} md={10} lg={10}>
-                  <p className={styles["PartyName"]}>
+                  <p className={styles["PartyNamesNew"]}>
                     {spotQuoteModalData?.branchName}
+                    <span className={styles["PartyNamesSubHeading"]}>
+                      {" ("}
+                      {spotQuoteModalData?.branchCode}
+                      {")"}
+                    </span>
                   </p>
-                  <span>{spotQuoteModalData?.branchCode}</span>
                 </Col>
                 <Col
                   sm={2}
@@ -221,21 +225,35 @@ const SpotQuoteModal = ({ dealData }) => {
                   md={12}
                   lg={12}
                   className='d-flex justify-content-center gap-3 mt-5'>
-                  <CustomButton
-                    icon={<IconElement iconClass={"icon-send  fs-5"} />}
-                    iconPosition={"left"}
-                    value={"Submit"}
-                    applyClass={"AcceptBtnDealBox"}
-                    className={"px-4"}
-                    onClick={handleSubmit}
-                  />
-                  <CustomButton
-                    value={"Cancel"}
-                    icon={<IconElement iconClass={"icon-close fs-4"} />}
-                    iconPosition={"left"}
-                    applyClass={"RejectBtnDealBox"}
-                    className={"px-4"}
-                  />
+                  {spotQuoteModalData?.isRFQ ? (
+                    <CustomButton
+                      icon={<IconElement iconClass={"icon-send  fs-5"} />}
+                      iconPosition={"left"}
+                      value={"Submit"}
+                      applyClass={"SubmitBtnDealBox"}
+                      className={"px-4"}
+                      onClick={handleSubmit}
+                    />
+                  ) : (
+                    <>
+                      {" "}
+                      <CustomButton
+                        icon={<IconElement iconClass={"icon-send  fs-5"} />}
+                        iconPosition={"left"}
+                        value={"Accept"}
+                        applyClass={"AcceptBtnDealBox"}
+                        className={"px-4"}
+                        onClick={handleSubmit}
+                      />
+                      <CustomButton
+                        value={"Reject"}
+                        icon={<IconElement iconClass={"icon-close fs-4"} />}
+                        iconPosition={"left"}
+                        applyClass={"RejectBtnDealBox"}
+                        className={"px-4"}
+                      />{" "}
+                    </>
+                  )}
                 </Col>
               </Row>
             </Col>

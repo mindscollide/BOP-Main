@@ -16,6 +16,7 @@ import {
   GetSpotRatesForCounterPartyAPI,
 } from "@/components/features/blotter/BlotterActions";
 import { getAllTenorsAction } from "../mainDealer/dealerActions";
+import SectionLoader from "@/components/common/loader/SectionLoader";
 
 const shouldIncludeComponents =
   import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
@@ -70,7 +71,7 @@ const MainBranch = () => {
       title: "Spot",
       content:
         SpotBranch && activeTab === "Spot" ? (
-          <Suspense fallback={<>Loading Spot...</>}>
+          <Suspense fallback={<SectionLoader />}>
             <SpotBranch />
             <section className="bg-white mt-2 mb-4 p-2">
               <BlotterHeader />
@@ -110,7 +111,7 @@ const MainBranch = () => {
         onTabChange={handleTabChange}
         activeKey={activeTab}
         defaultActiveKey={"0"}
-        tabClass="mb-4"
+        tabClass="mb-4 position-relative"
       />
     </>
   );

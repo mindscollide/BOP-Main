@@ -151,6 +151,9 @@ const OutstandingDeals = () => {
   const blotterTransactionRejected = useSelector(
     (state) => state.RealtimeActionsSlice.BlotterTransactionRejected
   );
+
+  console.log(blotterTransactionAdded, "CheckerCheckerChecker122121212");
+
   //HardCoded Filter Values start
   const TXN_ID_OPTIONS = [
     "09-09-2024/0568",
@@ -184,6 +187,13 @@ const OutstandingDeals = () => {
 
   const OutstandingTableNewData = useSelector(
     (state) => state.BlotterSlicer.OutstandingTableNewData
+  );
+
+  console.log(
+    OutstandingTableNewData,
+    totalRecordsOutstanding,
+    getBlotterOutstandingData,
+    "OutstandingTableNewDataOutstandingTableNewData"
   );
 
   //local states
@@ -261,9 +271,8 @@ const OutstandingDeals = () => {
 
   useEffect(() => {
     if (
-      getBlotterOutstandingData !== null &&
-      OutstandingTableNewData?.length > 0 &&
-      totalRecordsOutstanding !== 0
+      getBlotterOutstandingData !== null ||
+      Array.isArray(OutstandingTableNewData)
     ) {
       console.log(
         { OutstandingTableNewData, getBlotterOutstandingData },
@@ -295,11 +304,15 @@ const OutstandingDeals = () => {
     const handleTransaction = (transaction, type) => {
       if (!transaction) return;
       let updatedData = [...(OutstandingTableNewData || [])];
+      console.log(updatedData, "updatedDataupdatedDataupdatedData");
       switch (type) {
         case "added":
+          console.log(updatedData, "updatedDataupdatedDataupdatedData");
+
           const existingIndex = updatedData.findIndex(
             (item) => item.pK_TransactionID === transaction.pK_TransactionID
           );
+          console.log(existingIndex, "updatedDataupdatedDataupdatedData");
 
           if (existingIndex !== -1) {
             updatedData[existingIndex] = transaction;
@@ -307,6 +320,7 @@ const OutstandingDeals = () => {
             // setTotalRecords((prevTotal) => prevTotal + 1);
             updatedData = [transaction, ...updatedData];
           }
+          console.log(updatedData, "updatedDataupdatedDataupdatedData");
 
           updateGlobalOutstandingBlotter(updatedData);
           // setBlotterdata(updatedData);
@@ -320,101 +334,74 @@ const OutstandingDeals = () => {
           break;
 
         case "quoted":
-          const findData = updatedData.findIndex(
-            (item) => item.pK_TransactionID === transaction.pK_TransactionID
-          );
-          if (findData !== -1) {
-            updatedData[findData].bid = transaction.bid;
-            updatedData[findData].offer = transaction.offer;
-            updatedData[findData].statusID = transaction.statusID;
-            updatedData[findData].rfqTimerDetails = transaction.rfqTimerDetails;
-            updatedData[findData].amount = transaction.amount;
-          }
-          // setBlotterdata((prev) =>
-          //   prev.map((tblData) =>
-          //     tblData.pK_TransactionID === transaction?.pK_TransactionID
-          //       ? {
-          //           ...tblData,
-          //           bid: transaction.bid,
-          //           offer: transaction.offer,
-          //           statusID: transaction.statusID,
-          //           rfqTimerDetails: transaction.rfqTimerDetails,
-          //           amount: transaction.amount,
-          //         }
-          //       : tblData
-          //   )
-          // );
-          updateGlobalOutstandingBlotter(updatedData);
+          const newUpdatedData = updatedData.map((item) => {
+            if (item.pK_TransactionID === transaction.pK_TransactionID) {
+              return {
+                ...item,
+                bid: transaction?.bid,
+                offer: transaction?.offer,
+                statusID: transaction?.statusID,
+                rfqTimerDetails: {
+                  startTime: transaction?.rfqTimerDetails?.startTime,
+                  endTime: transaction?.rfqTimerDetails?.endTime,
+                  isEnded: transaction?.rfqTimerDetails?.isEnded,
+                },
+                amount: transaction?.amount,
+              };
+            }
+            return item;
+          });
+
+          updateGlobalOutstandingBlotter(newUpdatedData);
           dispatch(BlotterTransactionRFQQuoted(null));
           break;
 
-        case "expired":
-          const findNewIndex = updatedData.findIndex(
-            (item) => item.pK_TransactionID === transaction.pK_TransactionID
+        case "expired": {
+          const filteredData = updatedData.filter(
+            (item) => item.pK_TransactionID !== transaction.pK_TransactionID
           );
-          if (findNewIndex !== -1) {
-            updatedData.splice(findNewIndex, 1);
-          }
-          updateGlobalOutstandingBlotter(updatedData);
-          // setTotalRecords((prevTotal) => prevTotal - 1);
-          // setBlotterdata((prev) =>
-          //   prev.filter(
-          //     (tblData) =>
-          //       tblData.pK_TransactionID !== transaction?.pK_TransactionID
-          //   )
-          // );
+
+          updateGlobalOutstandingBlotter(filteredData);
           dispatch(BlotterTransactionRFQExpired(null));
           break;
-
-        case "accepted":
-          const findIndexNew = updatedData.findIndex(
-            (item) => item.pK_TransactionID === transaction.pK_TransactionID
+        }
+        case "accepted": {
+          console.log(
+            updatedData,
+            transaction,
+            "updatedDataupdatedDataupdatedData accepted"
           );
-          if (findIndexNew !== -1) {
-            updatedData.splice(findIndexNew, 1);
-          }
-          updateGlobalOutstandingBlotter(updatedData);
-          // setTotalRecords((prevTotal) => prevTotal - 1);
-          // setBlotterdata((prev) =>
-          //   prev.filter(
-          //     (tblData) =>
-          //       tblData.pK_TransactionID !== transaction?.pK_TransactionID
-          //   )
-          // );
+          const filteredData = updatedData.filter(
+            (item) => item.pK_TransactionID !== transaction.pK_TransactionID
+          );
+          console.log(
+            filteredData,
+            "updatedDataupdatedDataupdatedData accepted"
+          );
+
+          updateGlobalOutstandingBlotter(filteredData);
           dispatch(BlotterTransactionAccepted(null));
           break;
-
-        case "cancelled":
-          const findIndexData = updatedData.findIndex(
-            (item) => item.pK_TransactionID === transaction.pK_TransactionID
+        }
+        case "cancelled": {
+          const filteredData = updatedData.filter(
+            (item) => item.pK_TransactionID !== transaction.pK_TransactionID
           );
-          if (findIndexData !== -1) {
-            updatedData.splice(findIndexData, 1);
-          }
-          updateGlobalOutstandingBlotter(updatedData);
-          // setTotalRecords((prevTotal) => prevTotal - 1);
 
+          updateGlobalOutstandingBlotter(filteredData);
           dispatch(BlotterTranscationCancelled(null));
           break;
+        }
 
-        case "rejected":
-          const findRejectData = updatedData.findIndex(
-            (item) => item.pK_TransactionID === transaction.pK_TransactionID
+        case "rejected": {
+          const filteredData = updatedData.filter(
+            (item) => item.pK_TransactionID !== transaction.pK_TransactionID
           );
-          if (findRejectData !== -1) {
-            updatedData.splice(findRejectData, 1);
-          }
-          updateGlobalOutstandingBlotter(updatedData);
-          // setTotalRecords((prevTotal) => prevTotal - 1);
 
-          // setBlotterdata((prev) =>
-          //   prev.filter(
-          //     (tblData) =>
-          //       tblData.pK_TransactionID !== transaction?.pK_TransactionID
-          //   )
-          // );
+          updateGlobalOutstandingBlotter(filteredData);
           dispatch(BlotterTransactionRejected(null));
           break;
+        }
 
         default:
           break;
