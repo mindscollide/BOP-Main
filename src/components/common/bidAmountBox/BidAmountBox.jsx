@@ -16,7 +16,7 @@ const BidAmountBox = ({
 
   return (
     <div className={`${styles[applyClass]} roboto-13`} onClick={onClick}>
-      {spot && <p className="m-0">{BidBoxHeading}</p>}
+      {spot && <><p className="m-0">{BidBoxHeading}</p></>}
       <p className="m-0">
         {integerPart}
         {(spot || bankSpot) && (
