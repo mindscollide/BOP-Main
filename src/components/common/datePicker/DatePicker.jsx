@@ -11,12 +11,14 @@ const DatePickerCom = ({
   minDate,
   maxDate,
   className,
+  format = "DD-MM-YYYY",
 }) => {
   return (
     <DatePicker
-      containerClassName="d-block"
+      containerClassName='d-block'
       value={value}
       onChange={onChange}
+      format={format}
       portal={true}
       minDate={minDate}
       className={className}

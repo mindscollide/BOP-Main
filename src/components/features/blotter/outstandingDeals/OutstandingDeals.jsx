@@ -1705,31 +1705,7 @@ const OutstandingDeals = () => {
               </>
             ) : Number(record?.treasuryPersonID) ===
               Number(localStorage.getItem("userID")) ? (
-              record.statusID === 6 ? (
-                <>
-                  <CustomButton
-                    icon={<i className='icon-check '></i>}
-                    className='btn btn-sm btn-danger'
-                    applyClass={"ActionButton"}
-                    size={"small"}
-                    onClick={() =>
-                      handleAcceptTransactionCancellation(
-                        record.pK_TransactionID
-                      )
-                    }
-                  />
-                  <CustomButton
-                    icon={<i className='icon-close '></i>}
-                    className='btn btn-sm  '
-                    size={"small"}
-                    onClick={() =>
-                      handleRejectTransactionCancellation(
-                        record.pK_TransactionID
-                      )
-                    }
-                  />
-                </>
-              ) : record.statusID === 5 ? (
+              record.statusID === 5 ? (
                 <>
                   {record.isRFQ === true ? (
                     <>
@@ -1778,6 +1754,26 @@ const OutstandingDeals = () => {
                   />
                 </>
               ) : null
+            ) : record.statusID === 6 ? (
+              <>
+                <CustomButton
+                  icon={<i className='icon-check '></i>}
+                  className='btn btn-sm btn-danger'
+                  applyClass={"ActionButton"}
+                  size={"small"}
+                  onClick={() =>
+                    handleAcceptTransactionCancellation(record.pK_TransactionID)
+                  }
+                />
+                <CustomButton
+                  icon={<i className='icon-close '></i>}
+                  className='btn btn-sm btn-success '
+                  size={"small"}
+                  onClick={() =>
+                    handleRejectTransactionCancellation(record.pK_TransactionID)
+                  }
+                />
+              </>
             ) : null}
             {/* 
             <CustomButton
