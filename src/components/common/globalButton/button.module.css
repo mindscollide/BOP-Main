@@ -792,6 +792,11 @@
   justify-content: center;
   align-items: center;
 }
+
+.ActionButton_danger {
+  background-color: var(--color-red);
+}
+
 .ActionButton i {
   display: flex;
   justify-content: center;

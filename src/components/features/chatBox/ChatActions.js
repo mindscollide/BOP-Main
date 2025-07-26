@@ -65,6 +65,8 @@ export const getAllChatByTransactionId = createAsyncThunk(
         ) {
           dispatch(setChatModal(true));
           setChatModalTransactionId(Data.TranscationID);
+          dispatch(setTreasuryPersonID(treasuryPersonID))
+
           return rejectWithValue("No Found");
         } else if (
           responseMessage

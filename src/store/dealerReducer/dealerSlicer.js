@@ -76,14 +76,8 @@ const dealerReducer = createSlice({
           if (item.tenorID === tenorID) {
             return {
               ...item,
-              currentBid:
-                view === "bid"
-                  ? formatCurrencyInputForNegativeValAlso(value)
-                  : item.currentBid,
-              currentAsk:
-                view === "ask"
-                  ? formatCurrencyInputForNegativeValAlso(value)
-                  : item.currentAsk,
+              currentBid: view === "bid" ? value : item.currentBid,
+              currentAsk: view === "ask" ? value : item.currentAsk,
             };
           }
           return item;

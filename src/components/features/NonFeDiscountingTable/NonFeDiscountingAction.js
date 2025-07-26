@@ -113,7 +113,7 @@ export const PublishNonFEDiscountingTableApi = createAsyncThunk(
         ) {
           return {
             response: response.data.responseResult,
-            message: "Non Discounting Rates Published Successfully",
+            message: "Non-FE Discounting Rates Published Successfully",
           };
         } else if (
           responseMessage
