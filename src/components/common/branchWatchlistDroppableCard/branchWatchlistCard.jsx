@@ -11,6 +11,9 @@ import {
   setRfqModalOpen,
 } from "@/store/modalSlice/modalSlicer";
 
+const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
+const isCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
+
 const BranchRateCardsOfWatchList = ({
   currencyLabel,
   buyHeading,
@@ -75,32 +78,65 @@ const BranchRateCardsOfWatchList = ({
               </Col>
             </Row>
             <Row className='mt-4'>
-              <Col lg={6} md={6} sm={6}>
-                <BidAmountBox
-                  spot={true}
-                  BidBoxHeading={sellHeading}
-                  BidAmountValue={sellValue}
-                  applyClass={
-                    isBuyDisabled
-                      ? "SellandBuyCardBracnh_disbaled"
-                      : "SellandBuyCardBracnh"
-                  }
-                  onClick={() => handleOpenModal("sell")}
-                />
-              </Col>
-              <Col lg={6} md={6} sm={6}>
-                <BidAmountBox
-                  spot={true}
-                  BidBoxHeading={buyHeading}
-                  BidAmountValue={buyValue}
-                  applyClass={
-                    isSellDisabled
-                      ? "SellandBuyCardBracnh_disbaled"
-                      : "SellandBuyCardBracnh"
-                  }
-                  onClick={() => handleOpenModal("buy")}
-                />
-              </Col>
+              {isBranch ? (
+                <>
+                  <Col lg={6} md={6} sm={6}>
+                    <BidAmountBox
+                      spot={true}
+                      BidBoxHeading={buyHeading}
+                      BidAmountValue={buyValue}
+                      applyClass={
+                        isSellDisabled
+                          ? "SellandBuyCardBracnh_disbaled"
+                          : "SellandBuyCardBracnh"
+                      }
+                      onClick={() => handleOpenModal("buy")}
+                    />
+                  </Col>
+                  <Col lg={6} md={6} sm={6}>
+                    <BidAmountBox
+                      spot={true}
+                      BidBoxHeading={sellHeading}
+                      BidAmountValue={sellValue}
+                      applyClass={
+                        isBuyDisabled
+                          ? "SellandBuyCardBracnh_disbaled"
+                          : "SellandBuyCardBracnh"
+                      }
+                      onClick={() => handleOpenModal("sell")}
+                    />
+                  </Col>
+                </>
+              ) : (
+                <>
+                  <Col lg={6} md={6} sm={6}>
+                    <BidAmountBox
+                      spot={true}
+                      BidBoxHeading={sellHeading}
+                      BidAmountValue={sellValue}
+                      applyClass={
+                        isBuyDisabled
+                          ? "SellandBuyCardBracnh_disbaled"
+                          : "SellandBuyCardBracnh"
+                      }
+                      onClick={() => handleOpenModal("sell")}
+                    />
+                  </Col>
+                  <Col lg={6} md={6} sm={6}>
+                    <BidAmountBox
+                      spot={true}
+                      BidBoxHeading={buyHeading}
+                      BidAmountValue={buyValue}
+                      applyClass={
+                        isSellDisabled
+                          ? "SellandBuyCardBracnh_disbaled"
+                          : "SellandBuyCardBracnh"
+                      }
+                      onClick={() => handleOpenModal("buy")}
+                    />
+                  </Col>
+                </>
+              )}
             </Row>
           </span>
         </>
