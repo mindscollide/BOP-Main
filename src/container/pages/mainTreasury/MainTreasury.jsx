@@ -20,6 +20,7 @@ import {
   getAllTenorsAction,
   GetVoltMeterStatusApi,
 } from "../mainDealer/dealerActions";
+import { setBlotterLoader } from "@/store/BlotterSlicer/BlotterSlicer";
 
 const MainTreasury = () => {
   const dispatch = useDispatch();
@@ -30,6 +31,8 @@ const MainTreasury = () => {
     if (import.meta.env.VITE_APP_INCLUDE_TREASURY === "true") {
       let Data = { sRow: 0, Length: 10 };
       dispatch(GetBlotterOutstandingDealsDataAPI({ navigate, Data }));
+      dispatch(setBlotterLoader(true)); // Set the blotter loader to true
+
       dispatch(BlotterDataAPI({ navigate, Data }));
       dispatch(GetNOPDataAPI({ navigate }));
     }

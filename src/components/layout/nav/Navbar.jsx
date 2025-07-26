@@ -147,7 +147,6 @@ const GlobalNavbar = () => {
       // setOpenRfqModalForwardCorporateComponent(true);
     } else if (activeTab === "Discounting") {
       console.log("Handle Discounting logic");
-      dispatch(setDiscountingRFQModal(true));
 
       setOpenRfqModalDiscountingCorporateComponent(true);
     }
@@ -354,14 +353,15 @@ const GlobalNavbar = () => {
         </div>
       </div>
 
-      {isRfqModalOpen && <RFQModal />}
+   
       <SpotQuoteModal />
       <DiscountingRFQQuoteModal />
       <ForwardRFQQuoteModal />
-
+      {settingModalState && <SettingModal />}
       {/* Forwards RFQ Modal  */}
       {rfqForwardModal && <RFQForwardCorporateModal />}
-      {settingModalState && <SettingModal />}
+      {isRfqModalOpen && <RFQModal />}
+
       {/* Discounting RFQ Modal  */}
       {rfqDiscountingModal && <RFQDiscountingCorporateModal />}
     </>

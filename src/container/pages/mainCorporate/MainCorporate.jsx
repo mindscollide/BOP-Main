@@ -15,6 +15,7 @@ import {
   GetDiscountingRatesForCounterPartyApi,
   GetForwardRatesForCounterPartyApi,
 } from "@/components/features/SpotBranch/WatchlistAction";
+import { setBlotterLoader } from "@/store/BlotterSlicer/BlotterSlicer";
 const shouldIncludeComponents =
   import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
 
@@ -63,6 +64,8 @@ const MainCorporate = () => {
       dispatch(GetDashboardDataAPI({ navigate })); // Fetching the Dashboard Data
 
       let Data = { sRow: 0, Length: 10 };
+      dispatch(setBlotterLoader(true)); // Set the blotter loader to true
+
       dispatch(BlotterDataAPI({ navigate, Data }));
       dispatch(getAllTenorsAction({ navigate }));
       dispatch(GetForwardRatesForCounterPartyApi({ navigate }));

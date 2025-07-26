@@ -8,8 +8,13 @@ import GlobalTable from "@/components/common/table/GlobalTable";
 import DatePickerCom from "@/components/common/datePicker/DatePicker";
 import "./NopModal.css";
 import { useSelector } from "react-redux";
+import { DownloadExcelReportNOPCalculationsAPI } from "@/store/ReportSlicer/ReportActions";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const NopModal = ({ openNopModal, setOpenNopModal }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [dataSource, setDataSource] = useState(null);
   const GetNOPData = useSelector((state) => state.BlotterSlicer.GetNOPData);
   console.log("GetNOPDataGetNOPData: ", GetNOPData);
@@ -147,6 +152,11 @@ const NopModal = ({ openNopModal, setOpenNopModal }) => {
     },
   ];
 
+  const handleDownloadNOPExcelReport = () => {
+    console.log("hello");
+    dispatch(DownloadExcelReportNOPCalculationsAPI({ navigate }));
+  };
+
   return (
     <>
       <Modal
@@ -232,15 +242,16 @@ const NopModal = ({ openNopModal, setOpenNopModal }) => {
                       sm={9}
                       className="d-flex justify-content-end gap-1 px-0"
                     >
-                      <CustomButton
+                      {/* <CustomButton
                         className="btn-sm btn-primary ms-2 download-history-btn-trigger"
                         applyClass={"NopModalBtn"}
                         onClick={onClickDownloadButton}
                         value="Download History"
-                      />
+                      /> */}
                       <CustomButton
                         className="btn-sm btn-primary ms-2 download-history-btn-trigger"
                         applyClass={"NopdownloadButton"}
+                        onClick={handleDownloadNOPExcelReport}
                         icon={<i className="icon-download"></i>}
                       />
                     </Col>
