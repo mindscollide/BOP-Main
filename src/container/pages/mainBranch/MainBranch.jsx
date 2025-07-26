@@ -73,7 +73,7 @@ const MainBranch = () => {
       title: "Spot",
       content:
         SpotBranch && activeTab === "Spot" ? (
-          <Suspense fallback={<SectionLoader />}>
+          <Suspense fallback={<>Loading....</>}>
             <SpotBranch />
             <section className="bg-white mt-2 mb-4 p-2">
               <BlotterHeader />
