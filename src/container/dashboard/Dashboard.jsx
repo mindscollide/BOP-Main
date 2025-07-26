@@ -145,7 +145,6 @@ const Dashboard = () => {
         dispatch(NonFeDiscountingPublishedAction(data.payload));
         break;
       case "MARKET_STATUS_UPDATED":
-        console.log(data.payload, "MARKET_STATUS_UPDATEDMARKET_STATUS_UPDATED");
         dispatch(marketStatusUpdated(data.payload.marketStatus.isMarketOn));
         dispatch(setMarketStatus(data.payload.marketStatus.isMarketOn));
         break;
@@ -232,18 +231,9 @@ const Dashboard = () => {
         dispatch(setTreasuryNonFeDiscounting(data.payload));
         break;
       case "DISPATCHER_CATEGORY_FORWARD_RATES_FOR_TREASURY":
-        console.log(
-          "DISPATCHER_CATEGORY_FORWARD_RATES_FOR_TREASURY",
-          data.payload
-        );
         dispatch(setCategoryForwardRates(data.payload));
         break;
       case "DISPATCHER_CATEGORY_FEDISCOUNTING_RATES_FOR_TREASURY":
-        console.log(
-          "DISPATCHER_CATEGORY_FEDISCOUNTING_RATES_FOR_TREASURY MQTT",
-          data.payload
-        );
-
         dispatch(setCategoryFeDiscounting(data.payload));
         break;
       case "DISPATCHER_NONFEDISCOUNTING_RATES":
@@ -263,10 +253,21 @@ const Dashboard = () => {
         break;
       case "UPDATED_VOLTMETER_STATUS":
         dispatch(setUpdateVolMeterRealtime(data.payload));
-        console.log(data.payload, "Updated Voltmeter Status");
       case "RATES_CLEAR":
         dispatch(setClearRates(data.payload));
-        console.log(data.payload, "RATES_CLEARRATES_CLEAR");
+        break;
+      case "BANK_USER_ROLE_STATUS_CHANGE":
+        // Handle the case where a user role status changes
+        if (Number(data.payload.updatedUser?.userID) === Number(userID)) {
+          dispatch(LogoutApi({ navigate }));
+        }
+        break;
+      case "CORP_USER_ROLE_STATUS_CHANGE":
+        // Handle the case where a corporate user role status changes
+        if (Number(data.payload.updatedUser?.userID) === Number(userID)) {
+          dispatch(LogoutApi({ navigate }));
+        }
+        break;
       default:
         console.warn("No specific handler for this message type", data.payload);
         break;
@@ -331,12 +332,12 @@ const Dashboard = () => {
     }
   }, []);
   return (
-    <Layout className="roboto-13">
+    <Layout className='roboto-13'>
       {!location.pathname.includes("calculator") && <Header />}
 
       <GlobalNavbar />
       <Content>
-        <main className="px-3">
+        <main className='px-3'>
           <Outlet />
           {/* <AnimatePresence>
             {blotterTransactionAdded && isTreasury && <DealBox />}
