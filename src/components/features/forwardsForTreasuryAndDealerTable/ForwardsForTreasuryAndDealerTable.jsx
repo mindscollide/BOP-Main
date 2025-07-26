@@ -124,6 +124,7 @@ const TenoreWiseCurrentAndLastRates = ({
           return {
             tenorID: tenor.tenorID,
             tenorName: tenor.tenorName,
+            tenorDays: tenor.tenorDays,
             currentBid: current?.bid ?? "0",
             currentAsk: current?.ask ?? "0",
             lastBid: last?.bid ?? "0",
@@ -144,32 +145,41 @@ const TenoreWiseCurrentAndLastRates = ({
       try {
         const { currentTenorWiseForwardRates, lastTenorWiseForwardRates } =
           getTenorWiseForwardsRates.tenorWiseForwardRates;
-        let newDataMap = currentTenorWiseForwardRates.map((item) => {
-          let findData = lastTenorWiseForwardRates.find(
-            (data) => data.tenorID === item.tenorID
-          );
-          if (findData !== undefined) {
-            return {
-              tenorID: item.tenorID,
-              tenorName: item.tenorName,
-              currentBid: item.bid,
-              currentAsk: item.ask,
-              lastBid: findData.bid,
-              lastAsk: findData.ask,
-              dateTime: item.dateTime,
-            };
-          } else {
-            return {
-              tenorID: item.tenorID,
-              tenorName: item.tenorName,
-              currentBid: item.bid,
-              currentAsk: item.ask,
-              lastBid: "",
-              lastAsk: "",
-              dateTime: item.dateTime,
-            };
-          }
-        });
+        console.log(
+          currentTenorWiseForwardRates,
+          "currentTenorWiseForwardRates"
+        );
+        let newDataMap = currentTenorWiseForwardRates
+          .sort((data, index) => data.tenorDays - data.tenorDays)
+          .map((item) => {
+            let findData = lastTenorWiseForwardRates.find(
+              (data) => data.tenorID === item.tenorID
+            );
+            if (findData !== undefined) {
+              return {
+                tenorID: item.tenorID,
+                tenorName: item.tenorName,
+                currentBid: item.bid,
+                tenorDays: item.tenorDays,
+
+                currentAsk: item.ask,
+                lastBid: findData.bid,
+                lastAsk: findData.ask,
+                dateTime: item.dateTime,
+              };
+            } else {
+              return {
+                tenorID: item.tenorID,
+                tenorName: item.tenorName,
+                currentBid: item.bid,
+                tenorDays: item.tenorDays,
+                currentAsk: item.ask,
+                lastBid: "",
+                lastAsk: "",
+                dateTime: item.dateTime,
+              };
+            }
+          });
         dispatch(setForwardsForTreasuryBranch(newDataMap));
 
         dispatch(tenorWiseFowardsRatesPublishedActions(null));
@@ -263,6 +273,27 @@ const TenoreWiseCurrentAndLastRates = ({
           key: "tenorName",
           width: 250,
         },
+        {
+          title: "No. of Days",
+          dataIndex: "tenorDays",
+          key: "tenorDays",
+          align: "center",
+          width: 250,
+          render: (text, record) => {
+            const tenor = getAllTenorsData?.tenors?.find(
+              (item) => item.tenorID === record.tenorID
+            );
+            return (
+              tenor && (
+                <InputFIeld
+                  value={tenor.tenorDays}
+                  disabled={true}
+                  applyClass={"DealerTableBitInput"}
+                />
+              )
+            );
+          },
+        },
       ],
     },
     {
@@ -322,7 +353,7 @@ const TenoreWiseCurrentAndLastRates = ({
             InputFIeld ? (
               <Suspense fallback={<div>Loading input...</div>}>
                 <InputFIeld
-                  type="number"
+                  type='number'
                   value={record.lastBid}
                   disabled={true}
                   applyClass={"DealerTableBitInput"}
@@ -339,7 +370,7 @@ const TenoreWiseCurrentAndLastRates = ({
             InputFIeld ? (
               <Suspense fallback={<div>Loading input...</div>}>
                 <InputFIeld
-                  type="number"
+                  type='number'
                   value={record.lastAsk}
                   disabled={true}
                   applyClass={"DealerTableBitInput"}
@@ -365,7 +396,7 @@ const TenoreWiseCurrentAndLastRates = ({
               IconElement && (
                 <Suspense fallback={<div>Loading button...</div>}>
                   <CustomButton
-                    type="link"
+                    type='link'
                     icon={
                       <Suspense fallback={<div>Loading icon...</div>}>
                         <IconElement
@@ -396,9 +427,9 @@ const TenoreWiseCurrentAndLastRates = ({
               pagination={false}
             />
             {CustomButton && (
-              <span className="d-flex justify-content-center mt-4">
+              <span className='d-flex justify-content-center mt-4'>
                 <CustomButton
-                  applyClass="publishForwardsBtn"
+                  applyClass='publishForwardsBtn'
                   value={"Publish Forwards"}
                   onClick={handlePublishForwards}
                   disabled={marketStatus === false ? true : false}
@@ -417,9 +448,8 @@ const TenoreWiseCurrentAndLastRates = ({
                       sm={12}
                       md={12}
                       lg={12}
-                      className="d-flex justify-content-center"
-                    >
-                      <span className="modalDescription">
+                      className='d-flex justify-content-center'>
+                      <span className='modalDescription'>
                         Are you sure you want to delete it ?
                       </span>
                     </Col>
@@ -433,8 +463,7 @@ const TenoreWiseCurrentAndLastRates = ({
                       sm={6}
                       md={6}
                       lg={6}
-                      className="d-flex justify-content-end"
-                    >
+                      className='d-flex justify-content-end'>
                       <CustomButton
                         value={"Yes"}
                         onClick={handleYesConfirmatonModal}
@@ -445,8 +474,7 @@ const TenoreWiseCurrentAndLastRates = ({
                       sm={6}
                       md={6}
                       lg={6}
-                      className="d-flex justify-content-start"
-                    >
+                      className='d-flex justify-content-start'>
                       <CustomButton
                         value={"No"}
                         onClick={() => setConfirmationModal(false)}
