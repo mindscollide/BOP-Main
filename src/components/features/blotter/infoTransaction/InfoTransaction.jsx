@@ -14,7 +14,9 @@ import {
 import {
   extractTimeFromCompactDate,
   formatCompactDateTime,
+  formatDateUTCToGMT,
 } from "@/components/utils/timeFunction";
+import moment from "moment";
 
 const InfoTransaction = () => {
   const dispatch = useDispatch();
@@ -247,7 +249,9 @@ const InfoTransaction = () => {
               </Col>
               <Col sm={6} md={6} lg={6}>
                 <p className={styles["transactionInfolabel"]}>
-                  {formatCompactDateTime(InfoRecord?.tradeDateTime)}
+                  {moment(formatDateUTCToGMT(InfoRecord?.tradeDateTime)).format(
+                    "ddd, MMM DD, YYYY"
+                  )}
                 </p>
               </Col>
             </Row>
@@ -278,7 +282,9 @@ const InfoTransaction = () => {
               </Col>
               <Col sm={6} md={6} lg={6}>
                 <p className={styles["transactionInfolabel"]}>
-                  {formatCompactDateTime(InfoRecord?.tradeDateTime)}
+                  {moment(formatDateUTCToGMT(InfoRecord?.tradeDateTime)).format(
+                    "ddd DD MMM, YYYY"
+                  )}
                 </p>
               </Col>
             </Row>
@@ -311,9 +317,9 @@ const InfoTransaction = () => {
               </Col>
               <Col sm={6} md={6} lg={6}>
                 <p className={styles["transactionInfolabel"]}>
-                  {InfoRecord?.optionsDate
-                    ? formatCompactDateTime(InfoRecord?.optionsDate)
-                    : "N/A"}
+                  {moment(formatDateUTCToGMT(InfoRecord?.optionsDate)).format(
+                    "ddd DD MMM, YYYY"
+                  )}
                 </p>
               </Col>
             </Row>
@@ -386,8 +392,15 @@ const InfoTransaction = () => {
                 </p>
               </Col>
               <Col sm={6} md={6} lg={6}>
-                <p className={styles["transactionInfolabel"]}>
+                {/* <p className={styles["transactionInfolabel"]}>
                   {extractTimeFromCompactDate(InfoRecord?.settlementDateTime)}
+                </p> */}
+                <p className={styles["transactionInfolabel"]}>
+                  {InfoRecord?.settlementDateTime !== "N/A"
+                    ? moment(
+                        formatDateUTCToGMT(InfoRecord?.settlementDateTime)
+                      ).format("hh:mm A")
+                    : InfoRecord?.cancelledTime}
                 </p>
               </Col>
             </Row>
@@ -438,7 +451,9 @@ const InfoTransaction = () => {
               <Col sm={6} md={6} lg={6}>
                 <p className={styles["transactionInfolabel"]}>
                   {InfoRecord?.cancelledTime !== "N/A"
-                    ? extractTimeFromCompactDate(InfoRecord?.cancelledTime)
+                    ? moment(
+                        formatDateUTCToGMT(InfoRecord?.cancelledTime)
+                      ).format("hh:mm A")
                     : InfoRecord?.cancelledTime}
                 </p>
               </Col>
