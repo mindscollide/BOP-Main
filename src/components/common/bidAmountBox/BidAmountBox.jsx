@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./BidAmountBox.module.css";
 
-const BidAmountBox = ({
+const BidAmountBox = React.memo(({
   applyClass,
   BidBoxHeading,
   BidAmountValue,
@@ -14,9 +14,12 @@ const BidAmountBox = ({
   const integerPart = divideTheValue[0] ?? "0";
   const decimalPart = divideTheValue[1]?.substring(0, 4) || valueAfterDot;
 
+  // Debug (optional – comment out in production)
+  // console.log("Rendering BidAmountBox:", integerPart, decimalPart);
+
   return (
     <div className={`${styles[applyClass]} roboto-13`} onClick={onClick}>
-      {spot && <><p className="m-0">{BidBoxHeading}</p></>}
+      {spot && <p className="m-0">{BidBoxHeading}</p>}
       <p className="m-0">
         {integerPart}
         {(spot || bankSpot) && (
@@ -27,19 +30,8 @@ const BidAmountBox = ({
       </p>
     </div>
   );
-};
+});
 
-// ✅ Custom comparison function for React.memo
-function areEqual(prevProps, nextProps) {
-  return (
-    prevProps.applyClass === nextProps.applyClass &&
-    prevProps.BidBoxHeading === nextProps.BidBoxHeading &&
-    prevProps.BidAmountValue === nextProps.BidAmountValue &&
-    prevProps.spot === nextProps.spot &&
-    prevProps.valueAfterDot === nextProps.valueAfterDot &&
-    prevProps.bankSpot === nextProps.bankSpot &&
-    prevProps.onClick === nextProps.onClick // functions compared by reference
-  );
-}
+export default BidAmountBox;
 
-export default React.memo(BidAmountBox, areEqual);
+

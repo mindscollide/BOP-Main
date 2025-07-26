@@ -1546,3 +1546,11 @@ tr.OutStanding_Table-cell-scrollbar {
 .BankSpot_Table-expanded-row-fixed .ant-empty-normal {
   margin-block: 90px !important;
 }
+
+.TXNSummary_Table-row-level-0.Cancelled_Transaction,
+.Cancelled_Transaction.TXNSummary_Table-cell-row-hover
+  .TXNSummary_Table-cell-row-hover
+  .TXNSummary_Table-row-level-0.Cancel_Transaction,
+.Cancel_Transaction .TXNSummary_Table-cell-row-hover {
+  background-color: #ffeeec !important;
+}

@@ -508,7 +508,7 @@ const TXNTreasurySummary = () => {
         prefixCls="TXNSummary_Table"
         columns={Treasurycolumns}
         scroll={{ x: "max-content", y: 300 }}
-        rowClassName={(record) => (record.statusID === 7 ? "isCancelled" : "")}
+        rowClassName={(record) => (record.statusID === 7 ? "Cancelled_Transaction" : "")}
       />
 
       <CommentModal

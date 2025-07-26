@@ -87,9 +87,9 @@ const BranchRateCardsOfWatchList = ({
                       BidBoxHeading={buyHeading}
                       BidAmountValue={buyValue}
                       applyClass={
-                        isSellDisabled
-                          ? "SellandBuyCardBracnh_disbaled"
-                          : "SellandBuyCardBracnh"
+                        isBuyDisabled
+                          ? "SellandBuyCardBracnh"
+                          : "SellandBuyCardBracnh_disbaled"
                       }
                       onClick={() => handleOpenModal("buy")}
                     />
@@ -100,9 +100,9 @@ const BranchRateCardsOfWatchList = ({
                       BidBoxHeading={sellHeading}
                       BidAmountValue={sellValue}
                       applyClass={
-                        isBuyDisabled
-                          ? "SellandBuyCardBracnh_disbaled"
-                          : "SellandBuyCardBracnh"
+                        isSellDisabled
+                          ? "SellandBuyCardBracnh"
+                          : "SellandBuyCardBracnh_disbaled"
                       }
                       onClick={() => handleOpenModal("sell")}
                     />
@@ -116,9 +116,9 @@ const BranchRateCardsOfWatchList = ({
                       BidBoxHeading={sellHeading}
                       BidAmountValue={sellValue}
                       applyClass={
-                        isBuyDisabled
-                          ? "SellandBuyCardBracnh_disbaled"
-                          : "SellandBuyCardBracnh"
+                        isSellDisabled
+                          ? "SellandBuyCardBracnh"
+                          : "SellandBuyCardBracnh_disbaled"
                       }
                       onClick={() => handleOpenModal("sell")}
                     />
@@ -129,9 +129,9 @@ const BranchRateCardsOfWatchList = ({
                       BidBoxHeading={buyHeading}
                       BidAmountValue={buyValue}
                       applyClass={
-                        isSellDisabled
-                          ? "SellandBuyCardBracnh_disbaled"
-                          : "SellandBuyCardBracnh"
+                        isBuyDisabled
+                          ? "SellandBuyCardBracnh"
+                          : "SellandBuyCardBracnh_disbaled"
                       }
                       onClick={() => handleOpenModal("buy")}
                     />

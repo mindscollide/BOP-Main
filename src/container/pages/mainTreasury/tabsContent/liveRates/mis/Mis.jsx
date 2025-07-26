@@ -63,7 +63,7 @@ const MIS = () => {
       dataIndex: "topCustomer",
       key: "topCustomer",
       render: (text, record, index) => {
-        const isExpanded = expandedRowKeys.includes(record.key);
+        const isExpanded = expandedRowKeys.includes(record.corporateName);
         return (
           <>
             <span
@@ -149,11 +149,13 @@ const MIS = () => {
   ];
 
   const handleExpandClick = (record) => {
-    const isExpanded = expandedRowKeys.includes(record.key);
-    const newExpandedRowKeys = isExpanded
-      ? expandedRowKeys.filter((key) => key !== record.key)
-      : [...expandedRowKeys, record.key];
-
+    console.log(
+      expandedRowKeys,
+      record,
+      "expandedRowKeys expandedRowKeys expandedRowKeys"
+    );
+    const isExpanded = expandedRowKeys.includes(record.corporateName);
+    const newExpandedRowKeys = isExpanded ? [] : [record.corporateName]; // 👈 only one row at a time
     setExpandedRowKeys(newExpandedRowKeys);
   };
 
@@ -228,7 +230,6 @@ const MIS = () => {
                     placeholder='Select Date'
                     applyClass={"DatePickerField-MIS"}
                     value={MisDate.StartDate}
-                    
                     onChange={(date) => handleChangeDate(date, "StartDate")}
                   />
                 </div>
