@@ -3,7 +3,7 @@ import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 import "./Tabs.css";
 const GlobalTabs = ({ tabs, activeKey, onTabChange, tabClass, counterValue }) => {
-  console.log(activeKey, "activeKeyactiveKeyactiveKey");
+
   return (
     <Tabs
       activeKey={activeKey}
@@ -13,7 +13,6 @@ const GlobalTabs = ({ tabs, activeKey, onTabChange, tabClass, counterValue }) =>
       className={`${tabClass} ${"position-relative"}`}>
       {tabs.map((tab, index) => (
         <Tab eventKey={tab.title}  title={tab.title} key={index}  >
-          <span>2</span>
           {tab.content}
         </Tab>
       ))}
