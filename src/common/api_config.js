@@ -414,3 +414,7 @@ export const UpdateVoltMeterStatus = {
 export const getMarketStatusRM = {
   RequestMethod: "ServiceManager.GetMarketStatus",
 };
+
+export const NOPCalcuationReports = {
+  RequestMethod: "ServiceManager.DownloadNOPCalculationsExcelReport",
+};
