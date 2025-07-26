@@ -3,6 +3,7 @@ import {
   DownloadExcelReportBlotterTrasactionBranchAPI,
   DownloadExcelReportBlotterTrasactionCorporateAPI,
   DownloadExcelReportBlotterTrasactionTreasuryAPI,
+  DownloadExcelReportNOPCalculationsAPI,
   DownloadFileAPI,
   DownloadPDFReportBlotterTrasactionBranchAPI,
   DownloadPDFReportBlotterTrasactionCorporateAPI,
@@ -205,6 +206,31 @@ const ReportSlicer = createSlice({
         (state, action) => {
           state.Loader = false;
           state.downloadPDFReportBlotterTransactionTreasury = null;
+          state.error = action.payload || "Download failed";
+          state.responseMessage = "";
+        }
+      )
+
+      // Pending state
+      .addCase(DownloadExcelReportNOPCalculationsAPI.pending, (state) => {
+        state.Loader = true;
+        state.error = null;
+        state.responseMessage = "";
+      })
+      // Fulfilled state
+      .addCase(
+        DownloadExcelReportNOPCalculationsAPI.fulfilled,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.error = null;
+          state.responseMessage = payload?.message || "Download successful";
+        }
+      )
+      // Rejected state
+      .addCase(
+        DownloadExcelReportNOPCalculationsAPI.rejected,
+        (state, action) => {
+          state.Loader = false;
           state.error = action.payload || "Download failed";
           state.responseMessage = "";
         }

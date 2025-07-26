@@ -6,6 +6,7 @@ import {
   DownloadPDFReportBlotterTrasactionBranch,
   DownloadPDFReportBlotterTrasactionCorporate,
   DownloadPDFReportBlotterTrasactionTreasury,
+  NOPCalcuationReports,
 } from "@/common/api_config";
 import { reportApi } from "@/common/apiend_points";
 import { setCustomHeaders } from "@/common/utils";
@@ -440,6 +441,68 @@ export const DownloadPDFReportBlotterTrasactionTreasuryAPI = createAsyncThunk(
       }
 
       return rejectWithValue("Something went wrong while downloading PDF");
+    }
+  }
+);
+
+//Excel Report Function Treasury
+export const DownloadExcelReportNOPCalculationsAPI = createAsyncThunk(
+  "Report/DownloadExcelReportNOPCalculationsAPI",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      const getTransactionData = createPostAPI(
+        reportApi,
+        NOPCalcuationReports.RequestMethod
+      );
+
+      const response = await getTransactionData(Data, true);
+      const contentType = response.headers?.["content-type"];
+
+      // 🟡 Check if response contains a JSON error inside arraybuffer
+      if (contentType && contentType.includes("application/json")) {
+        const decodedString = new TextDecoder().decode(
+          new Uint8Array(response.data)
+        );
+        const parsedData = JSON.parse(decodedString);
+
+        if (parsedData.responseCode === 417) {
+          await dispatch(refreshTokenAction({ navigate }));
+          await dispatch(
+            DownloadExcelReportNOPCalculationsAPI({ navigate, Data })
+          );
+          return;
+        }
+
+        return rejectWithValue(parsedData.message || "Something went wrong");
+      }
+
+      // 🟢 Handle valid Excel file
+      if (response?.status === 200) {
+        const blob = new Blob([response.data], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "NOPCalculations.xlsx");
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        return { message: "Excel downloaded successfully" };
+      } else {
+        return rejectWithValue("Something went wrong while downloading Excel");
+      }
+    } catch (error) {
+      console.log("Excel Download Error:", error);
+
+      if (error?.responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
+      }
+
+      return rejectWithValue("Something went wrong while downloading Excel");
     }
   }
 );
