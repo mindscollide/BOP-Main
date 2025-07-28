@@ -130,7 +130,7 @@ const SpotDealerAndTreasury = () => {
                           <BidAmountBox
                             spot={true}
                             BidBoxHeading={"I Sell"}
-                            BidAmountValue={spotCardsData.offer}
+                            BidAmountValue={spotCardsData.bid}
                             applyClass={"SellCard"}
                           />
                         </Col>
@@ -138,7 +138,7 @@ const SpotDealerAndTreasury = () => {
                           <BidAmountBox
                             spot={true}
                             BidBoxHeading={"I Buy"}
-                            BidAmountValue={spotCardsData.bid}
+                            BidAmountValue={spotCardsData.offer}
                             applyClass={"BuyCard"}
                           />
                         </Col>
