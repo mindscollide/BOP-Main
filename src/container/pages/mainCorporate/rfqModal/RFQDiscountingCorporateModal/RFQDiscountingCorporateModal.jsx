@@ -9,20 +9,37 @@ import { useSelector } from "react-redux";
 import { formatDate } from "@/common/utils";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { SaveFEDiscountingTransactionRFQ, SaveNonFEDiscountingTransactionRFQ } from "@/components/features/blotter/BlotterActions";
-const RFQDiscountingCorporateModal = ({
-  openRfqModalDiscountingCorporateComponent,
-  setOpenRfqModalDiscountingCorporateComponent,
-}) => {
+import {
+  CalculateFESwapAndDiscountingApi,
+  SaveFEDiscountingTransactionRFQ,
+  SaveNonFEDiscountingTransactionRFQ,
+  calculateNonFeSwapAndDiscountingRateApi,
+} from "@/components/features/blotter/BlotterActions";
+import { NumericFormat } from "react-number-format";
+import { setDiscountingRFQModal } from "@/store/modalSlice/modalSlicer";
+const RFQDiscountingCorporateModal = () => {
   //Local States
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const natureOfBusinessList = useSelector(
     (state) => state.authReducer.GetAllNatureOfTransactions
   );
-
+  const CalculateFESwapAndDiscountingRate = useSelector(
+    (state) => state.BlotterSlicer.CalculateFESwapAndDiscountingRate
+  );
+  const calculateNonFeSwapAndDiscountingRate = useSelector(
+    (state) => state.BlotterSlicer.calculateNonFeSwapAndDiscountingRate
+  );
   const GetAllActiveCorproates = useSelector(
     (state) => state.authReducer.GetAllActiveCorproates
+  );
+
+  const rfqDiscountingModal = useSelector(
+    (state) => state.modalReducer.DiscountingRFQModal
+  );
+  // Get all instruments for counterparties from Redux store
+  const getAllInstrumentsForCounterPartiesData = useSelector(
+    (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
   );
   const [amountData, setAmountData] = useState("");
   const [Tenor, setTenor] = useState("");
@@ -35,6 +52,8 @@ const RFQDiscountingCorporateModal = ({
     label: "",
   });
   const [tenoreDate, setTenorDate] = useState(formatDate(new Date()));
+  const [currencyOptions, setCurrencyOptions] = useState([]);
+
   const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
 
   let titleDetails =
@@ -44,14 +63,19 @@ const RFQDiscountingCorporateModal = ({
       ? JSON.parse(localStorage.getItem("corporate"))
       : null;
 
-  const [selectedCurrency, setSelectedCurrency] = useState({
-    value: 21,
-    label: "USDPKR",
-  });
+  const [selectedCurrency, setSelectedCurrency] = useState(null);
 
   const [typeOptionSelected, setTypeOptionSelected] = useState({
     value: 0,
     label: "",
+  });
+
+  const [calculatedData, setCalulatedData] = useState({
+    kiborValue: "",
+    swapValue: "",
+    nonFeRate: "",
+    feRate: "",
+    DiscountingFactor: "",
   });
   console.log(typeOptionSelected, "typeOptionSelectedtypeOptionSelected");
   useEffect(() => {
@@ -101,12 +125,125 @@ const RFQDiscountingCorporateModal = ({
       }
     }
   }, [GetAllActiveCorproates]);
+
+  /**
+   * Effect Hook: Initialize Currency Options
+   *
+   * This effect initializes the currency dropdown options by:
+   * 1. Filtering instruments that are applicable for both buy and sell
+   * 2. Formatting them for display in the SelectDropdown component
+   * 3. Setting the default selected currency
+   *
+   * Dependencies:
+   * - getAllInstrumentsForCounterPartiesData: Redux state containing available instruments
+   *
+   * Behavior:
+   * - Only runs when getAllInstrumentsForCounterPartiesData changes
+   * - Filters instruments where both isBuy and isSell are true
+   * - Formats instrument data for dropdown display
+   * - Sets first valid instrument as default selection
+   * - Handles errors gracefully with console logging
+   */
+  useEffect(() => {
+    // Only proceed if instrument data is available
+    if (getAllInstrumentsForCounterPartiesData !== null) {
+      try {
+        // Destructure spot applicable instruments from the data
+        const { spotApplicableInstruments } =
+          getAllInstrumentsForCounterPartiesData;
+
+        // Filter and map instruments to create dropdown options
+        const spotApplicableInstrumentList = spotApplicableInstruments
+          .map((data) => {
+            // Only include instruments that are valid for both buy and sell
+            if (
+              data.isBuy === true &&
+              data.isSell === true &&
+              data.secondaryInstrumentID === 0
+            ) {
+              return {
+                ...data, // Spread all existing instrument properties
+                label: `${data.instrumentName}${data.secondaryInstrumentName}`, // Display name for dropdown
+                value: data.instrumentID, // Unique identifier for selection
+              };
+            }
+            return null; // Explicitly return null for non-matching instruments
+          })
+          .filter(Boolean); // Remove any null values from the array
+
+        // Set the first valid instrument as default selection if available
+        if (spotApplicableInstrumentList.length > 0) {
+          setSelectedCurrency(spotApplicableInstrumentList[0]);
+          setCurrencyOptions(spotApplicableInstrumentList);
+        } else {
+          // Handle case where no valid instruments were found
+          console.warn("No instruments available for both buy and sell");
+          setSelectedCurrency(null);
+          setCurrencyOptions([]);
+        }
+      } catch (error) {
+        // Error handling with detailed error message
+        console.error("Error initializing currency options:", error);
+
+        // Reset currency options to empty array on error
+        setSelectedCurrency(null);
+        setCurrencyOptions([]);
+      }
+    } else {
+      // Handle case where instrument data is not yet loaded
+      setSelectedCurrency(null);
+      setCurrencyOptions([]);
+    }
+  }, [getAllInstrumentsForCounterPartiesData]); // Only re-run when instrument data changes
+
+  useEffect(() => {
+    if (CalculateFESwapAndDiscountingRate !== null) {
+      try {
+        const { feRate, discountingFactor } = CalculateFESwapAndDiscountingRate;
+
+        // Validate the received data
+        if (
+          typeof feRate !== "number" ||
+          typeof discountingFactor !== "number"
+        ) {
+          throw new Error(
+            "Invalid data format received from CalculateFESwapAndDiscountingRate"
+          );
+        }
+
+        // Update state with the calculated values
+        setCalulatedData({
+          DiscountingFactor: discountingFactor,
+          feRate: feRate,
+        });
+      } catch (error) {
+        console.error(
+          "Error while calculating FE Swap and Discounting Rate:",
+          error.message
+        );
+        // Optionally set some error state or show user notification
+        // setErrorState(error.message);
+      }
+    }
+  }, [CalculateFESwapAndDiscountingRate]);
+
+  useEffect(() => {
+    if (calculateNonFeSwapAndDiscountingRate !== null) {
+      try {
+        const { kibor, nonFERate, swap } = calculateNonFeSwapAndDiscountingRate;
+        setCalulatedData({
+          kiborValue: kibor,
+          nonFeRate: nonFERate,
+          swapValue: swap,
+        });
+      } catch (error) {}
+    }
+  }, [calculateNonFeSwapAndDiscountingRate]);
   // handle Change amount
   const handleChangeAmount = (event) => {
     const { name, value } = event.target;
     if (name === "Amount") {
-      const regex = /^[0-9]*$/;
-      if (regex.test(value)) {
+      if (value !== "") {
         setAmountData(value);
       }
     }
@@ -153,44 +290,60 @@ const RFQDiscountingCorporateModal = ({
     setCorporateValue(selectedOption);
     console.log("selectedOption", selectedOption);
   };
-  const handleClickConfirm = () => {
-    // SaveFEDiscountingTransactionAPI
-    // SaveNonFEDiscountingTransactionAPI
- 
-    if (typeOptionSelected.value === 14) {
-      let Data = {
-        CorporateID: corporateValue.value,
-        InstrumentID: selectedCurrency.value,
-        Quantity: Number(amountData),
-        AccountNumber: AccountNumber,
-        NatureOfTransactionID: Number(typeOptionSelected.value),
-        TenorDays: Number(Tenor),
-        // Kibor: 1.5,
-        // Swap: 0.3,
-      };
-      dispatch(SaveNonFEDiscountingTransactionRFQ({Data, navigate}))
-      // SaveNonFEDiscountingTransactionRFQ
-    } else {
-      let Data = {
-        CorporateID: corporateValue.value,
-        InstrumentID: selectedCurrency.value,
-        Quantity: Number(amountData),
-        AccountNumber: AccountNumber,
-        NatureOfTransactionID: Number(typeOptionSelected.value),
-        TenorDays: Number(Tenor),
-        // DiscountingFactor: 2.5,
-      };
-      dispatch(SaveFEDiscountingTransactionRFQ({Data, navigate}))
 
-      // SaveFEDiscountingTransactionRFQ
+  const handleBlurTenor = () => {
+    if (Tenor !== "" && selectedCurrency.value !== 0) {
+      if (typeOptionSelected.value === 14) {
+        let Data = {
+          TenorDays: Number(Tenor),
+          InstrumentName: selectedCurrency.label,
+          InstrumentID: Number(selectedCurrency.value),
+        };
+        dispatch(calculateNonFeSwapAndDiscountingRateApi({ Data, navigate }));
+      } else {
+        let Data = {
+          TenorDays: Number(Tenor),
+          InstrumentName: selectedCurrency.label,
+          InstrumentID: Number(selectedCurrency.value),
+        };
+        dispatch(CalculateFESwapAndDiscountingApi({ Data, navigate }));
+      }
+    }
+  };
+  const handleClickConfirm = () => {
+    if (typeOptionSelected.value === 14) {
+      let AmountValue = amountData.replace(/,/g, "");
+      let Data = {
+        CorporateID: corporateValue.value,
+        InstrumentID: selectedCurrency.value,
+        Quantity: Number(AmountValue),
+        AccountNumber: AccountNumber,
+        NatureOfTransactionID: Number(typeOptionSelected.value),
+        TenorDays: Number(Tenor),
+        Kibor: Number(calculatedData.kiborValue),
+        Swap: Number(calculatedData.swapValue),
+      };
+      dispatch(SaveNonFEDiscountingTransactionRFQ({ Data, navigate }));
+    } else {
+      let AmountValue = amountData.replace(/,/g, "");
+
+      let Data = {
+        CorporateID: corporateValue.value,
+        InstrumentID: selectedCurrency.value,
+        Quantity: Number(AmountValue),
+        AccountNumber: AccountNumber,
+        NatureOfTransactionID: Number(typeOptionSelected.value),
+        TenorDays: Number(Tenor),
+        DiscountingFactor: Number(calculatedData.DiscountingFactor),
+      };
+      dispatch(SaveFEDiscountingTransactionRFQ({ Data, navigate }));
     }
   };
   return (
     <div>
       <Modal
-        show={openRfqModalDiscountingCorporateComponent}
-        setShow={openRfqModalDiscountingCorporateComponent}
-        onHide={() => setOpenRfqModalDiscountingCorporateComponent(false)}
+        show={rfqDiscountingModal}
+        onHide={() => dispatch(setDiscountingRFQModal(false))}
         closeButton
         headerClassName='RFQModalHeaderForwardTabCorporate'
         footerClassName='RFQModalFooterForwardTabCorporate'
@@ -246,7 +399,14 @@ const RFQDiscountingCorporateModal = ({
                     <label className='LabelRFQTransactionModal'>
                       Currency*
                     </label>
-                    <SelectDropdown placeholder='' value={selectedCurrency} />
+                    <SelectDropdown
+                      placeholder=''
+                      options={currencyOptions}
+                      onChange={(selectCurrency) =>
+                        setSelectedCurrency(selectCurrency)
+                      }
+                      value={selectedCurrency}
+                    />
                   </div>
                 </Col>
               </Row>
@@ -279,11 +439,14 @@ const RFQDiscountingCorporateModal = ({
                 <Col lg={12} md={12} sm={12}>
                   <div className='d-flex flex-column flex-wrap'>
                     <label className='LabelRFQTransactionModal'>Amount</label>
-                    <InputFIeld
-                      onChange={handleChangeAmount}
+                    <NumericFormat
+                      customInput={InputFIeld}
                       value={amountData}
                       name='Amount'
                       applyClass='CalculatorTextfield'
+                      thousandSeparator={true}
+                      maxLength={10}
+                      onChange={handleChangeAmount}
                     />
                   </div>
                 </Col>
@@ -298,6 +461,7 @@ const RFQDiscountingCorporateModal = ({
                       value={Tenor}
                       name='Tenor'
                       applyClass='CalculatorTextfield'
+                      onBlur={handleBlurTenor}
                     />
                   </div>
                 </Col>

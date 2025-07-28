@@ -12,16 +12,10 @@ import emailImage from "@/assets/icons/email.png";
 import excelImage from "@/assets/icons/excel.png";
 import printImage from "@/assets/icons/print.png";
 import { useNavigate } from "react-router-dom";
-import CancelReasonModal from "../cancelReasonModal/cancelReasonModal";
 import TXNTreasurySummary from "../txnTreasurySummary/TxnTreasurySummary";
-import { setActiveTab } from "@/container/pages/mainCorporate/rfqModal/RFQSlicer";
 import { useSelector } from "react-redux";
 import { setActiveTreasuryTab } from "@/store/BlotterSlicer/BlotterSlicer";
 import { useDispatch } from "react-redux";
-import {
-  BlotterDataAPI,
-  GetBlotterOutstandingDealsDataAPI,
-} from "../BlotterActions";
 import {
   DownloadExcelReportBlotterTrasactionBranchAPI,
   DownloadExcelReportBlotterTrasactionCorporateAPI,
@@ -30,10 +24,13 @@ import {
   DownloadPDFReportBlotterTrasactionCorporateAPI,
   DownloadPDFReportBlotterTrasactionTreasuryAPI,
 } from "@/store/ReportSlicer/ReportActions";
+import { formatPkAmount } from "@/utils/formatters";
 
 const BlotterHeader = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const GetNOPData = useSelector((state) => state.BlotterSlicer.GetNOPData);
+  console.log("vvv: ", GetNOPData);
   const [openNopModal, setOpenNopModal] = useState(false);
   const [openExportDiv, setOpenExportDiv] = useState(false);
   const [openMailModal, setOpenMailModal] = useState(false);
@@ -46,8 +43,6 @@ const BlotterHeader = () => {
 
   const [isTreasuryVal, setIsTreasuryVal] = useState(0);
 
-  console.log(activeTab, "activeTabactiveTab");
-  console.log(isTreasuryVal, "isTreasuryValisTreasuryVal");
   const tabsData = [
     {
       title: "TXN Summary",
@@ -101,6 +96,7 @@ const BlotterHeader = () => {
       dispatch(DownloadExcelReportBlotterTrasactionBranchAPI({ navigate }));
     }
   };
+
   return (
     <>
       <section className="position-relative">
@@ -119,7 +115,11 @@ const BlotterHeader = () => {
                   <>
                     {" "}
                     <span className="hd-txt me-3">NOP (US$)</span>
-                    <span className="hd-cr me-2">46,999</span>
+                    <span className="hd-cr me-2">
+                      {GetNOPData !== null && GetNOPData !== undefined
+                        ? formatPkAmount(GetNOPData?.nop)
+                        : `(${formatPkAmount(Math.abs(GetNOPData?.nop))})`}
+                    </span>
                     <CustomButton
                       applyClass={"NOP-button"}
                       value="+"
@@ -140,6 +140,7 @@ const BlotterHeader = () => {
                             src={pdfImage}
                             width={30}
                             height={30}
+                            className="cursor-pointer"
                             alt="pdf"
                             onClick={HandlePDFDownloadFunc}
                           />
@@ -148,18 +149,21 @@ const BlotterHeader = () => {
                             width={30}
                             height={30}
                             alt="excel"
+                            className="cursor-pointer"
                             onClick={HandleExcelDownloadFunc}
                           />
                           <img
                             src={emailImage}
                             width={30}
                             height={30}
+                            className="cursor-pointer"
                             alt="email"
                             onClick={onClickMailModal}
                           />
                           <img
                             src={printImage}
                             width={30}
+                            className="cursor-pointer"
                             height={30}
                             alt="print"
                           />
@@ -196,12 +200,14 @@ const BlotterHeader = () => {
                             src={pdfImage}
                             width={30}
                             height={30}
+                            className="cursor-pointer"
                             alt="pdf"
                             onClick={HandlePDFDownloadFunc}
                           />
                           <img
                             src={excelImage}
                             width={30}
+                            className="cursor-pointer"
                             height={30}
                             alt="excel"
                             onClick={HandleExcelDownloadFunc}
@@ -209,12 +215,14 @@ const BlotterHeader = () => {
                           <img
                             src={emailImage}
                             width={30}
+                            className="cursor-pointer"
                             height={30}
                             alt="email"
                             onClick={onClickMailModal}
                           />
                           <img
                             src={printImage}
+                            className="cursor-pointer"
                             width={30}
                             height={30}
                             alt="print"

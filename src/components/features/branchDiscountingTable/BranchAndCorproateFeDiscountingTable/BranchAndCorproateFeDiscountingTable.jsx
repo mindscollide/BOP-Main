@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import GlobalTable from "@/components/common/table/GlobalTable";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -8,17 +8,21 @@ import CustomButton from "@/components/common/globalButton/button";
 import FEDiscountingModal from "../FEDiscountingModal/FEDiscountingModal";
 import { buildDiscountingTable } from "@/components/utils/generateColumnsData";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
+import { throttle } from "lodash";
 
 const BranchAndCorporateFeDiscountingTable = () => {
   //local states
   const [dataSource, setDataSource] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
+  const [originalDataSource, setOriginalDataSource] = useState([]);
   const [feDiscountingModalCall, setFeDiscountingModalCall] = useState(false);
 
-  const globalStateWatchlistCardData = useSelector(
-    (state) => state.WatchListReducer?.GettheDashboardData ?? null
+  const getAllInstrumentsForCounterPartiesData = useSelector(
+    (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
   );
-
+  const CounterPartyFeDiscounting = useSelector(
+    (state) => state.RealtimeActionsSlice.CounterPartyFeDiscounting
+  );
   const GetDiscountingRatesForCounterParty = useSelector(
     (state) => state.WatchListReducer.GetDiscountingRatesForCounterParty
   );
@@ -27,18 +31,32 @@ const BranchAndCorporateFeDiscountingTable = () => {
     (state) => state.dealerReducer.getAllTenors
   );
 
+  const marketStatus = useSelector(
+    (state) => state.WatchListReducer.getMarketStatus
+  );
+
+  const ClearRatesData = useSelector(
+    (state) => state.RealtimeActionsSlice.ClearRatesData
+  );
+
+  console.log(ClearRatesData, "ClearRatesData");
+  console.log(CounterPartyFeDiscounting, "CounterPartyFeDiscounting");
+
+  console.log(dataSource, "dataSource");
+
   useEffect(() => {
     if (
       getAllTenorsRecords !== null &&
-      globalStateWatchlistCardData != null &&
-      GetDiscountingRatesForCounterParty
+      getAllInstrumentsForCounterPartiesData != null
     ) {
       try {
-        const { feDiscountingRates } = GetDiscountingRatesForCounterParty;
+        const { feDiscountingRates = [] } =
+          GetDiscountingRatesForCounterParty !== null &&
+          GetDiscountingRatesForCounterParty;
         let getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
         let getAllInstrument = {
           instruments:
-            globalStateWatchlistCardData.discountingApplicableInstruments,
+            getAllInstrumentsForCounterPartiesData.discountingApplicableInstruments,
         };
 
         const { columnsData, rowData } = buildDiscountingTable(
@@ -57,9 +75,88 @@ const BranchAndCorporateFeDiscountingTable = () => {
     }
   }, [
     getAllTenorsRecords,
-    globalStateWatchlistCardData,
+    getAllInstrumentsForCounterPartiesData,
     GetDiscountingRatesForCounterParty,
   ]);
+
+  const throttledUpdate = useMemo(
+    () =>
+      throttle((discountingUpdate) => {
+        const { feDiscountingInstrumentData } = discountingUpdate;
+
+        setDataSource((prevData) =>
+          prevData.map((row) => {
+            const updatedRow = { ...row };
+
+            Object.keys(row).forEach((key) => {
+              if (key.startsWith("InstrumentID_")) {
+                const currency = key.split("_")[1];
+                const instrumentID = row[key];
+                const tenorID = row.TenorID;
+
+                const match = feDiscountingInstrumentData.find(
+                  (d) =>
+                    d.instrumentID === instrumentID && d.tenorID === tenorID
+                );
+
+                if (match) {
+                  updatedRow[`rate_${currency}`] = match.bidWithSpread;
+                }
+              }
+            });
+
+            return updatedRow;
+          })
+        );
+      }, 20),
+    []
+  );
+
+  useEffect(() => {
+    if (CounterPartyFeDiscounting) {
+      throttledUpdate(CounterPartyFeDiscounting);
+    }
+  }, [CounterPartyFeDiscounting, throttledUpdate]);
+
+  useEffect(() => {
+    if (marketStatus !== null && marketStatus === false) {
+      setDataSource((prevData) =>
+        prevData.map((row) => {
+          const updatedRow = { ...row };
+
+          Object.keys(row).forEach((key) => {
+            if (key.startsWith("InstrumentID_")) {
+              const currency = key.split("_")[1];
+              updatedRow[`rate_${currency}`] = 0;
+            }
+          });
+
+          return updatedRow;
+        })
+      );
+    }
+  }, [marketStatus]);
+
+  // For clear Rates
+  useEffect(() => {
+    if (ClearRatesData?.areRatesClear) {
+      console.log("Cgcecececec");
+      setDataSource((prevData) =>
+        prevData.map((row) => {
+          const updatedRow = { ...row };
+
+          Object.keys(row).forEach((key) => {
+            if (key.startsWith("InstrumentID_")) {
+              const currency = key.split("_")[1];
+              updatedRow[`rate_${currency}`] = 0;
+            }
+          });
+
+          return updatedRow;
+        })
+      );
+    }
+  }, [ClearRatesData]);
 
   const handleFEDiscountingModal = () => {
     setFeDiscountingModalCall(true);
@@ -98,6 +195,9 @@ const BranchAndCorporateFeDiscountingTable = () => {
             value="FE Discounting"
             applyClass={"FEDiscounting"}
             onClick={handleFEDiscountingModal}
+            disabled={
+              marketStatus !== null && marketStatus === false ? true : false
+            }
           />
         </Col>
       </Row>

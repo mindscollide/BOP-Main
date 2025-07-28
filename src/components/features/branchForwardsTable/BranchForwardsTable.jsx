@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import GlobalTable from "../../common/table/GlobalTable";
 import { createColumns, generateData } from "../../utils/generateData";
 import { useDispatch } from "react-redux";
@@ -10,6 +10,7 @@ import { Col, Row } from "react-bootstrap";
 import CorporateBookaForwardModal from "./CorporateBookaForwardModal/CorporateBookaForwardModal";
 import { buildForwardsTable } from "@/components/utils/generateColumnsData";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
+import { throttle } from "lodash";
 
 const BranchForwardsTable = () => {
   const dispatch = useDispatch();
@@ -21,8 +22,12 @@ const BranchForwardsTable = () => {
   const [bookaForwardModalCall, setBookaForwardModalCall] = useState(false);
 
   //Global State for Watchlist Card Data
-  const globalStateWatchlistCardData = useSelector(
-    (state) => state.WatchListReducer?.GettheDashboardData ?? null
+  const getAllInstrumentsForCounterPartiesData = useSelector(
+    (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
+  );
+
+  const CounterPartyForwardRates = useSelector(
+    (state) => state.RealtimeActionsSlice.CounterPartyForwardRates
   );
 
   const getAllTenorsRecords = useSelector(
@@ -32,23 +37,35 @@ const BranchForwardsTable = () => {
   const GetForwardRatesForCounterPartyData = useSelector(
     (state) => state.WatchListReducer.GetForwardRatesForCounterParty
   );
+
+  const marketStatus = useSelector(
+    (state) => state.WatchListReducer.getMarketStatus
+  );
+
+  const ClearRatesData = useSelector(
+    (state) => state.RealtimeActionsSlice.ClearRatesData
+  );
+
+  console.log(ClearRatesData, "ClearRatesData");
+
   console.log(
-    globalStateWatchlistCardData !== null &&
+    getAllInstrumentsForCounterPartiesData !== null &&
       getAllTenorsRecords !== null &&
       GetForwardRatesForCounterPartyData !== null,
-    globalStateWatchlistCardData,
+    getAllInstrumentsForCounterPartiesData,
     getAllTenorsRecords,
     GetForwardRatesForCounterPartyData,
     "GetForwardRatesForCounterPartyDataGetForwardRatesForCounterPartyData"
   );
   useEffect(() => {
     if (
-      globalStateWatchlistCardData !== null &&
-      getAllTenorsRecords !== null &&
-      GetForwardRatesForCounterPartyData !== null
+      getAllInstrumentsForCounterPartiesData !== null &&
+      getAllTenorsRecords !== null
+      // GetForwardRatesForCounterPartyData !== null
     ) {
       try {
-        const { forwardApplicableInstruments } = globalStateWatchlistCardData;
+        const { forwardApplicableInstruments } =
+          getAllInstrumentsForCounterPartiesData;
         console.log(
           forwardApplicableInstruments,
           "forwardApplicableInstrumentsforwardApplicableInstruments"
@@ -57,13 +74,15 @@ const BranchForwardsTable = () => {
         //********************************************** */
         // const { tenors, forwardRates, instruments } =
         //   GetAllFowardsAndDiscountsRatesAPIData;
-
+        const { forwardRates = [] } =
+          GetForwardRatesForCounterPartyData !== null &&
+          GetForwardRatesForCounterPartyData;
         let getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
         let getAllInstrument = { instruments: forwardApplicableInstruments };
 
         const { rowData, columnsData } = buildForwardsTable(
           3,
-          GetForwardRatesForCounterPartyData.forwardRates,
+          forwardRates,
           getAllTenorsData,
           getAllInstrument,
           IndexCell
@@ -73,32 +92,85 @@ const BranchForwardsTable = () => {
           setDataSource(rowData);
           setColumnsData(columnsData);
         }
-        //********************************************** */
-        // const { tenors, forwardRates, instruments } =
-        //   GetAllFowardsAndDiscountsRatesAPIData;
-        // let getAllTenorsData = { tenors };
-        // let getAllInstrument = { instruments };
-        // const { rowData, columnsData } = buildForwardsTable(
-        //   2,
-        //   forwardRates,
-        //   getAllTenorsData,
-        //   getAllInstrument,
-        //   IndexCell
-        // );
-        // console.log(rowData, columnsData, "columnsDatacolumnsData");
-        // if (rowData.length > 0) {
-        //   setDataSource(rowData);
-        //   setColumnsData(columnsData);
-        // }
       } catch (error) {
         console.log(error, "Error while building discounting table");
       }
     }
   }, [
-    globalStateWatchlistCardData,
+    getAllInstrumentsForCounterPartiesData,
     getAllTenorsRecords,
     GetForwardRatesForCounterPartyData,
   ]);
+
+  const throttledForwardUpdate = useMemo(
+    () =>
+      throttle((forwardRatesUpdate) => {
+        const { forwardsInstrumentData } = forwardRatesUpdate;
+
+        setDataSource((prevData) =>
+          prevData.map((row) => {
+            let updatedRow = { ...row };
+
+            forwardsInstrumentData.forEach((d) => {
+              Object.keys(row).forEach((key) => {
+                if (
+                  key.startsWith("InstrumentID_") &&
+                  row[key] === d.instrumentID &&
+                  row.tenorID === d.tenorID
+                ) {
+                  const currency = key.split("_")[1];
+                  updatedRow[`bid_${currency}`] = d.bidWithSpread;
+                  updatedRow[`ask_${currency}`] = d.askWithSpread;
+                }
+              });
+            });
+
+            return updatedRow;
+          })
+        );
+      }, 20),
+    []
+  );
+
+  useEffect(() => {
+    if (CounterPartyForwardRates) {
+      throttledForwardUpdate(CounterPartyForwardRates);
+    }
+  }, [CounterPartyForwardRates, throttledForwardUpdate]);
+
+  useEffect(() => {
+    if (marketStatus !== null && marketStatus === false) {
+      setDataSource((prevData) =>
+        prevData.map((row) => {
+          const updatedRow = { ...row };
+          Object.keys(row).forEach((key) => {
+            if (key.startsWith("bid_") || key.startsWith("ask_")) {
+              updatedRow[key] = 0;
+            }
+          });
+          return updatedRow;
+        })
+      );
+    }
+  }, [marketStatus]);
+
+  // For clear Rates
+  useEffect(() => {
+    if (ClearRatesData?.areRatesClear) {
+      console.log("Cgcecececec");
+      setDataSource((prevData) =>
+        prevData.map((row) => {
+          const updatedRow = { ...row };
+          Object.keys(updatedRow).forEach((key) => {
+            if (key.startsWith("bid_") || key.startsWith("ask_")) {
+              updatedRow[key] = 0;
+            }
+          });
+          return updatedRow;
+        })
+      );
+    }
+  }, [ClearRatesData]);
 
   const handleBookaForwardCorporate = () => {
     setBookaForwardModalCall(true);
@@ -134,6 +206,9 @@ const BranchForwardsTable = () => {
             value="Book a Forward"
             applyClass={"FowwardBranchBookaForwardBtn"}
             onClick={handleBookaForwardCorporate}
+            disabled={
+              marketStatus !== null && marketStatus === false ? true : false
+            }
           />
         </Col>
       </Row>

@@ -91,7 +91,11 @@ span.RfqSpot__indicator-separator.css-1u9des2-indicatorSeparator {
 .RfqSpot__menu-list {
   background-color: var(--color-light-gray2);
 }
-.RfqSpot__option--is-focused , .RfqSpot__option--is-selected{
+.RfqSpot__option--is-selected {
+  background-color: var(--color-light-gray2) !important;
+  color: #000 !important;
+}
+.RfqSpot__option--is-focused {
   background-color: var(--color-blue) !important;
   color: white !important;
 }

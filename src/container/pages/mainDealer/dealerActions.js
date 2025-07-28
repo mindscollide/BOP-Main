@@ -12,10 +12,15 @@ import {
   publishTenorWiseForwardRatesRM,
   getDiscountingRatesRM,
   getDealerDasboardDataRM,
+  GetVoltMeterStatus,
+  UpdateVoltMeterStatus,
 } from "@/common/api_config";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
 import createPostAPI from "@/utils/axiosInstance";
-import { setCreateTenorModal } from "@/store/modalSlice/modalSlicer";
+import {
+  setCreateTenorModal,
+  setPublishedSpotRates,
+} from "@/store/modalSlice/modalSlicer";
 
 // Define the login async thunk
 export const clearRatesAction = createAsyncThunk(
@@ -29,11 +34,6 @@ export const clearRatesAction = createAsyncThunk(
 
       const response = await clearRates(Data);
       const { responseCode } = response.data;
-
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -108,10 +108,6 @@ export const getLastPublishRatesAction = createAsyncThunk(
       const response = await getLastPublishRates();
 
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -128,7 +124,7 @@ export const getLastPublishRatesAction = createAsyncThunk(
           ) {
             return {
               response: response.data.responseResult,
-              message: "Successfull",
+              message: "",
             };
           } else if (
             responseMessage
@@ -185,15 +181,10 @@ export const PublishNewRatesAction = createAsyncThunk(
 
       const { responseCode } = response.data;
       console.log(responseCode, "responseCoderesponseCode");
-      if (responseCode === 401) {
-        return rejectWithValue("401");
-      }
 
       if (responseCode === 417) {
-        // Inside your thunk
-        return rejectWithValue("417", {
-          originalAction: PublishNewRatesAction({ navigate, Data }),
-        });
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(PublishNewRatesAction({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -204,6 +195,8 @@ export const PublishNewRatesAction = createAsyncThunk(
                 "UploadRate_UploadRateServiceManager_PublishTheCurrentUSDRates_01".toLowerCase()
               )
           ) {
+            dispatch(setPublishedSpotRates(false));
+
             return {
               response: response.data.responseResult,
               message: "Rates are published",
@@ -259,20 +252,16 @@ export const PublishNewRatesAction = createAsyncThunk(
 
 // Define the login async thunk
 export const marketOnOffAction = createAsyncThunk(
-  "uploadRate/marketOnOff", // A unique action type string
+  "watchlist/marketOnOff", // A unique action type string
   async ({ navigate, Data }, { rejectWithValue, dispatch }) => {
     try {
       let marketOnOff = createPostAPI(
-        uploadRatesApi,
+        watchListApi,
         marketOnOffRM.RequestMethod
       );
 
       const response = await marketOnOff(Data);
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -284,7 +273,7 @@ export const marketOnOffAction = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "UploadRate_UploadRateServiceManager_MarketONOFF_01".toLowerCase()
+                "WatchList_WatchListServiceManager_MarketONOFF_01".toLowerCase()
               )
           ) {
             return {
@@ -295,7 +284,7 @@ export const marketOnOffAction = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "UploadRate_UploadRateServiceManager_MarketONOFF_02".toLowerCase()
+                "WatchList_WatchListServiceManager_MarketONOFF_02".toLowerCase()
               )
           ) {
             return rejectWithValue("Something went wrong");
@@ -303,7 +292,7 @@ export const marketOnOffAction = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "UploadRate_UploadRateServiceManager_MarketONOFF_03".toLowerCase()
+                "WatchList_WatchListServiceManager_MarketONOFF_03".toLowerCase()
               )
           ) {
             return rejectWithValue("Something went wrong");
@@ -311,7 +300,7 @@ export const marketOnOffAction = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "UploadRate_UploadRateServiceManager_MarketONOFF_04".toLowerCase()
+                "WatchList_WatchListServiceManager_MarketONOFF_04".toLowerCase()
               )
           ) {
             return rejectWithValue("Something went wrong");
@@ -345,12 +334,6 @@ export const getAllTenorsAction = createAsyncThunk(
 
       const { responseCode } = response.data;
 
-      if (responseCode === 401) {
-        navigate("/");
-
-        return rejectWithValue("Something-went-wrong");
-      }
-
       if (responseCode === 417) {
         dispatch(refreshTokenAction({ navigate }));
         dispatch(getAllTenorsAction({ navigate }));
@@ -366,7 +349,7 @@ export const getAllTenorsAction = createAsyncThunk(
           ) {
             return {
               response: response.data.responseResult,
-              message: "Successfull",
+              message: "",
             };
           } else if (
             responseMessage
@@ -422,10 +405,6 @@ export const createTenorAction = createAsyncThunk(
       const response = await createTenor(Data);
 
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -518,10 +497,6 @@ export const getTenorWiseForwardsAction = createAsyncThunk(
 
       const response = await getTenorWiseForwards();
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -538,7 +513,7 @@ export const getTenorWiseForwardsAction = createAsyncThunk(
           ) {
             return {
               response: response.data.responseResult,
-              message: "Successfully",
+              message: "",
             };
           } else if (
             responseMessage
@@ -595,10 +570,6 @@ export const PublishTenorWiseForwardsAction = createAsyncThunk(
       const response = await PublishTenorWiseForwards(Data);
 
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -679,10 +650,6 @@ export const getDiscountingRatesAction = createAsyncThunk(
 
       const response = await getDiscountingRates();
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -797,10 +764,7 @@ export const publishDiscountingRatesAction = createAsyncThunk(
       );
       const response = await publishDiscountingRates(Data);
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(publishDiscountingRatesAction({ navigate, Data }));
@@ -816,7 +780,7 @@ export const publishDiscountingRatesAction = createAsyncThunk(
           ) {
             return {
               response: response.data.responseResult,
-              message: "Successfully",
+              message: "",
             };
           } else if (
             responseMessage
@@ -879,10 +843,7 @@ export const getDealerDashboardApi = createAsyncThunk(
       );
       const response = await DealerDashboardApi();
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(getDealerDashboardApi({ navigate }));
@@ -898,7 +859,7 @@ export const getDealerDashboardApi = createAsyncThunk(
           ) {
             return {
               response: response.data.responseResult,
-              message: "Successfully.",
+              message: "",
             };
           } else if (
             responseMessage
@@ -931,7 +892,159 @@ export const getDealerDashboardApi = createAsyncThunk(
                 "UploadRate_UploadRateServiceManager_GetDealerDashboardData_05".toLowerCase()
               )
           ) {
-            return rejectWithValue("No Record Found");
+            return rejectWithValue(
+              import.meta.env.VITE_MQTT_PORT === "8883" ? "" : "No Record Found"
+            );
+          } else {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          console.log("", response.data);
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      console.log(error);
+      // Reject with error message
+      return rejectWithValue("Something went wrong");
+    }
+  }
+);
+
+export const GetVoltMeterStatusApi = createAsyncThunk(
+  "uploadRates/GetVoltMeterStatus",
+  async ({ navigate }, { rejectWithValue, dispatch }) => {
+    try {
+      let GetVoltMeterStatusData = createPostAPI(
+        uploadRatesApi,
+        GetVoltMeterStatus.RequestMethod
+      );
+      const response = await GetVoltMeterStatusData();
+      const { responseCode } = response.data;
+
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(GetVoltMeterStatusApi({ navigate }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_GetVoltMeterStatus_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message: "",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_GetVoltMeterStatus_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Role doesn’t matched");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_GetVoltMeterStatus_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_GetVoltMeterStatus_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          console.log("", response.data);
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      console.log(error);
+      // Reject with error message
+      return rejectWithValue("Something went wrong");
+    }
+  }
+);
+
+export const UpdateVoltMeterStatusApi = createAsyncThunk(
+  "uploadRate/UpdateVoltMeterStatus",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      let UpdateVoltMeterStatusData = createPostAPI(
+        uploadRatesApi,
+        UpdateVoltMeterStatus.RequestMethod
+      );
+      const response = await UpdateVoltMeterStatusData(Data);
+      const { responseCode } = response.data;
+
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(UpdateVoltMeterStatusApi({ navigate, Data }));
+      } else if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_UpdateVoltMeterStatus_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message: "",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_UpdateVoltMeterStatus_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_UpdateVoltMeterStatus_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_UpdateVoltMeterStatus_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_UploadRateServiceManager_UpdateVoltMeterStatus_05".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
           } else {
             console.log("", response.data);
             return rejectWithValue("Something went wrong");

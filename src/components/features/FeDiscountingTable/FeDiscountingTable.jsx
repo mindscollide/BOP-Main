@@ -6,7 +6,10 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { publishDiscountingRatesAction } from "@/container/pages/mainDealer/dealerActions";
 import { useSelector } from "react-redux";
-import { isValidNumberUnderMax } from "@/utils/formatters";
+import {
+  isValidMaxFourNumberAfterPoint,
+  isValidNumberUnderMax,
+} from "@/utils/formatters";
 import {
   GetFEDiscountingTableApi,
   PublishFEDiscountingTableApi,
@@ -20,8 +23,8 @@ import { FeDiscountingPublishedAction } from "@/store/realtimeActionsSlicer/real
 import { InputCell } from "@/components/common/inputField/InputCell";
 
 /**
- * FeDiscountingTable component renders a table for displaying and managing 
- * discounting rates for financial instruments. It fetches data from the Redux 
+ * FeDiscountingTable component renders a table for displaying and managing
+ * discounting rates for financial instruments. It fetches data from the Redux
  * store and allows users to input and publish updated rates.
  *
  * @component
@@ -44,6 +47,9 @@ const FeDiscountingTable = () => {
   const getAllInstrument = useSelector(
     (state) => state.authReducer.getAllInstruments
   );
+  const GetAllInstrumentForTreasury = useSelector(
+    (state) => state.WatchListReducer.GetAllInstrumentForTreasury
+  );
   const getDashboardForwards = useSelector(
     (state) => state.dealerReducer.getDealerDashboardData
   );
@@ -51,18 +57,30 @@ const FeDiscountingTable = () => {
     (state) => state.RealtimeActionsSlice.FeDiscountingPublished
   );
 
+  console.log("getFeDiscountingDatagetFeDiscountingData");
   console.log(getFeDiscountingData, "getFeDiscountingDatagetFeDiscountingData");
   const getAllTenorsData = useSelector(
     (state) => state.dealerReducer.getAllTenors
   );
-  console.log(getAllTenorsData, "getAllTenorsDatagetAllTenorsData");
+  console.log(
+    getAllTenorsData,
+    GetAllInstrumentForTreasury,
+    "getAllTenorsDatagetAllTenorsData"
+  );
 
   useEffect(() => {
-    if (getDashboardForwards !== null) {
+    if (
+      getDashboardForwards !== null &&
+      getAllTenorsData !== null &&
+      GetAllInstrumentForTreasury !== null
+    ) {
       try {
         const { feDiscountingRates } = getDashboardForwards;
+        const DiscountingInstruments =
+          GetAllInstrumentForTreasury.discountingInstruments;
+        const getAllInstrument = { instruments: DiscountingInstruments };
         const { rowData, columnsData } = buildDiscountingTable(
-          1,
+          5,
           feDiscountingRates,
           getAllTenorsData,
           getAllInstrument,
@@ -78,17 +96,21 @@ const FeDiscountingTable = () => {
         console.log(error, "Error while building discounting table");
       }
     }
-  }, [getDashboardForwards, getAllTenorsData, getAllInstrument]);
+  }, [getDashboardForwards, getAllTenorsData, GetAllInstrumentForTreasury]);
 
   useEffect(() => {
-    if (getFeDiscountingData !== null) {
+    if (
+      getFeDiscountingData !== null &&
+      getAllTenorsData !== null &&
+      GetAllInstrumentForTreasury !== null
+    ) {
       try {
         const { rates } = getFeDiscountingData;
         const { rowData, columnsData } = buildDiscountingTable(
-          1,
+          5,
           rates,
           getAllTenorsData,
-          getAllInstrument,
+          GetAllInstrumentForTreasury,
           InputCell,
           onInputChange
         );
@@ -110,10 +132,10 @@ const FeDiscountingTable = () => {
     return () => {
       dispatch(FeDiscountingPublishedAction(null));
     };
-  }, [getFeDiscountingData, getAllTenorsData, getAllInstrument]);
+  }, [getFeDiscountingData, getAllTenorsData, GetAllInstrumentForTreasury]);
   const onInputChange = (record, instrumentName, value) => {
     const previousValue = record[instrumentName]; // Get previous value from record
-    const validated = isValidNumberUnderMax(value, previousValue, 100);
+    const validated = isValidMaxFourNumberAfterPoint(value, previousValue, 100);
 
     // Only update if valid or corrected (not false)
     if (validated !== false) {
@@ -146,15 +168,15 @@ const FeDiscountingTable = () => {
   return (
     <>
       <GlobalTable
-        prefixCls='DealerAndTreasuryDiscountTable'
+        prefixCls="DealerAndTreasuryDiscountTable"
         columns={columnsData}
         dataSource={rowData}
         pagination={false}
       />
 
-      <span className='d-flex justify-content-center mt-4'>
+      <span className="d-flex justify-content-center mt-4">
         <CustomButton
-          applyClass='publishForwardsBtn'
+          applyClass="publishForwardsBtn"
           value={"Publish FE Discounting"}
           disabled={marketStatus === false ? true : false}
           onClick={handlePublishDiscount}

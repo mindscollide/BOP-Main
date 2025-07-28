@@ -22,14 +22,14 @@ const InputFIeld = ({
   accept,
   onClick,
   onKeyDown,
-  onBlur
+  onBlur,
 }) => (
   <input
     value={value}
     type={type}
     onChange={onChange}
     defaultValue={defaultValue}
-    pattern={`${pattern}`}
+    pattern={pattern}
     placeholder={placeholder}
     className={`${styles[applyClass]} ${className}`}
     checked={checked}

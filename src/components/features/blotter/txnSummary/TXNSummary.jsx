@@ -1,37 +1,30 @@
 import React, { useCallback, useEffect, useState } from "react";
 import GlobalTable from "@/components/common/table/GlobalTable";
-import IconElement from "@/components/common/IconElement/IconElement";
+// import IconElement from "@/components/common/IconElement/IconElement";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { Checkbox, Popover } from "antd";
-import { DownOutlined } from "@ant-design/icons";
+// import { DownOutlined } from "@ant-design/icons";
 import CustomButton from "@/components/common/globalButton/button";
 import CommentModal from "../commentModal/CommentModal";
-import MailModal from "../mailModal/MailModal";
-import pdfImage from "@/assets/icons/pdf.png";
-import emailImage from "@/assets/icons/email.png";
-import excelImage from "@/assets/icons/excel.png";
-import printImage from "@/assets/icons/print.png";
-import { Col, Row } from "react-bootstrap";
 import { getAllChatByTransactionId } from "@/components/features/chatBox/ChatActions";
 import { useNavigate } from "react-router-dom";
-import InfoTransaction from "../infoTransaction/InfoTransaction";
 import { setTransactionInfoModal } from "@/store/modalSlice/modalSlicer";
 import { formatDateTimeToUTCTime } from "@/components/utils/timeFunction";
 import { useTableScrollBottom } from "@/utils/useTableScrollBottom";
 import {
-  AssignTransactionAPI,
   BlotterDataAPI,
-  AcceptTransactionAPI,
-  RejectTransactionAPI,
   AcceptRFQTransaction,
   RejectRFQTransaction,
   RequestCancellation,
   CancelPendingTransactionApi,
   ExpireRFQTransaction,
+  GetSpotTransactionDetailsApi,
+  GetForwardTransactionDetailsApi,
+  GetFEDiscountingTransactionDetailsApi,
+  GetNonFEDiscountingTransactionDetailsApi,
 } from "../BlotterActions";
 import CancelReasonModal from "../cancelReasonModal/cancelReasonModal";
-import { useMqttClient } from "@/components/utils/mqttConnection";
 import {
   BlotterTransactionAccepted,
   BlotterTransactionAdded,
@@ -41,7 +34,8 @@ import {
   TransactionAssignedByTreasury,
 } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { RFQTImer } from "@/components/utils/Timer";
-import { convertDateTimeIntoLocal } from "@/utils/formatters";
+import { convertDateTimeIntoLocal, formatPkAmount } from "@/utils/formatters";
+import { IndexCell } from "@/components/common/inputField/IndexCell";
 const TXNSummary = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -153,6 +147,8 @@ const TXNSummary = () => {
   const [selectedItemsCCY2, setSelectedItemsCCY2] = useState([]);
   //Amount2 Filter State
   const [openAmount2, setOpenAmount2] = useState(false);
+
+  console.log(openAmount2, "openAmount2openAmount2");
   const [selectedItemsAmount2, setSelectedItemsAmount2] = useState([]);
   //Time Filter State
   const [openTime, setOpenTime] = useState(false);
@@ -1008,7 +1004,7 @@ const TXNSummary = () => {
     let Data = {
       TranscationID: txnID,
     };
-
+    console.log(treasuryPersonID, "treasuryPersonIDtreasuryPersonID");
     dispatch(
       getAllChatByTransactionId({
         navigate,
@@ -1020,8 +1016,26 @@ const TXNSummary = () => {
   };
 
   const handleClickInfo = (record) => {
-    setInfoRecord(record);
-    dispatch(setTransactionInfoModal(true));
+    // console.log(record, "recordrecordrecord");
+    // setInfoRecord(record);
+    // dispatch(setTransactionInfoModal(true));
+
+    let Data = {
+      PK_TransactionID: record.pK_TransactionID,
+    };
+    if (record.natureType === 1) {
+      console.log("Spot");
+      dispatch(GetSpotTransactionDetailsApi({ navigate, Data }));
+    } else if (record.natureType === 2) {
+      console.log("Forward");
+      dispatch(GetForwardTransactionDetailsApi({ navigate, Data }));
+    } else if (record.natureType === 3) {
+      console.log("Fe Discouting");
+      dispatch(GetFEDiscountingTransactionDetailsApi({ navigate, Data }));
+    } else if (record.natureType === 4) {
+      console.log("Non Fe Discouting");
+      dispatch(GetNonFEDiscountingTransactionDetailsApi({ navigate, Data }));
+    }
   };
 
   const handleCheckerAccept = (transactionID, type) => {
@@ -1251,6 +1265,9 @@ const TXNSummary = () => {
       dataIndex: "quantity",
       className: "ff-poppins fw-bold",
       width: 80,
+      render: (text, record) => {
+        return <IndexCell value={formatPkAmount(text)} />;
+      },
     },
     {
       title: (
@@ -1280,7 +1297,7 @@ const TXNSummary = () => {
       className: "ff-poppins fw-bold",
       width: 120,
       render: (text, record) => {
-        return text.toFixed(2);
+        return <IndexCell value={formatPkAmount(text)} />;
       },
     },
     {
@@ -1340,7 +1357,7 @@ const TXNSummary = () => {
       width: 120,
       ellipsis: true,
       render: (text, record) => {
-        return text.toFixed(2);
+        return <IndexCell value={formatPkAmount(text)} />;
       },
     },
     {
@@ -1583,6 +1600,15 @@ const TXNSummary = () => {
                     )
                   }
                 />
+              ) : record.statusID === 3 ? (
+                <CustomButton
+                  icon={
+                    <i className='icon-view-comment blotterTableIconSize' />
+                  }
+                  size={"small"}
+                  className='btn btn-sm btn-primary'
+                  onClick={() => handleShowCommentModal(record.comment)}
+                />
               ) : null}
 
               <CustomButton
@@ -1781,6 +1807,9 @@ const TXNSummary = () => {
       dataIndex: "quantity",
       className: "ff-poppins fw-bold",
       width: 80,
+      render: (text, record) => {
+        return <IndexCell value={formatPkAmount(text)} />;
+      },
     },
     {
       title: (
@@ -1868,6 +1897,9 @@ const TXNSummary = () => {
       dataIndex: "amount",
       className: "ff-poppins fw-bold",
       width: 80,
+      render: (text, record) => {
+        return <IndexCell value={formatPkAmount(text)} />;
+      },
     },
     {
       title: (
@@ -2079,8 +2111,29 @@ const TXNSummary = () => {
                   size={"small"}
                   className='btn btn-sm btn-danger chat-btn-trigge blotterCheckerButtonr'
                   onClick={() =>
-                    handleClickChat(record.txnid, record.treasuryPersonID)
+                    handleClickChat(
+                      record.pK_TransactionID,
+                      record.treasuryPersonID
+                    )
                   }
+                />
+              ) : record.statusID === 3 ? (
+                <CustomButton
+                  icon={
+                    <i className='icon-view-comment blotterTableIconSize' />
+                  }
+                  size={"small"}
+                  className='btn btn-sm btn-primary'
+                  onClick={() => handleShowCommentModal(record.comment)}
+                />
+              ) : record.statusID === 7 ? (
+                <CustomButton
+                  icon={
+                    <i className='icon-view-comment blotterTableIconSize' />
+                  }
+                  size={"small"}
+                  className='btn btn-sm btn-primary'
+                  onClick={() => handleShowCommentModal(record.comment)}
                 />
               ) : null}
 
@@ -2125,7 +2178,7 @@ const TXNSummary = () => {
             ? CorporateColumn
             : Treasurycolumns
         }
-        scroll={{ x: "max-content", y: 500 }}
+        scroll={{ x: "max-content", y: 300 }}
       />
       <CommentModal
         comment={comment}
@@ -2142,8 +2195,6 @@ const TXNSummary = () => {
           handleCloseReasonModal={handleCloseReasonModal}
         />
       )}
-
-      <InfoTransaction InfoRecord={InfoRecord} setInfoRecord={setInfoRecord} />
     </>
   );
 };

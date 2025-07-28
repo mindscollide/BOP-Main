@@ -1,11 +1,12 @@
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import GlobalTable from "@/components/common/table/GlobalTable";
 import { buildDiscountingTable } from "@/components/utils/generateColumnsData";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useSelector } from "react-redux";
+import { throttle } from "lodash";
 
 const FeDiscountingTreasuryAndDealer = () => {
-  const [dataSource, setDataSource] = useState([]);
+  const [feDiscountingData, setFeDiscountingData] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
 
   const GetDiscountingRatesForTreasury = useSelector(
@@ -17,25 +18,16 @@ const FeDiscountingTreasuryAndDealer = () => {
   const GetAllInstrumentForTreasury = useSelector(
     (state) => state.WatchListReducer.GetAllInstrumentForTreasury
   );
-
-  console.log(
-    GetDiscountingRatesForTreasury,
-    "Data For Disscouting for treasury: ",
-    {
-      tenors: getAllTenorsRecords,
-      Instruments: GetAllInstrumentForTreasury,
-      discouting_rates: GetDiscountingRatesForTreasury,
-    }
+  const TreasuryFeDiscounting = useSelector(
+    (state) => state.RealtimeActionsSlice.TreasuryFeDiscounting
   );
 
   useEffect(() => {
-    if (
-      GetDiscountingRatesForTreasury !== null &&
-      GetAllInstrumentForTreasury !== null &&
-      getAllTenorsRecords !== null
-    ) {
+    if (GetAllInstrumentForTreasury !== null && getAllTenorsRecords !== null) {
       try {
-        const { feDiscountingRates } = GetDiscountingRatesForTreasury;
+        const { feDiscountingRates = [] } =
+          GetDiscountingRatesForTreasury !== null &&
+          GetDiscountingRatesForTreasury;
         let getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
         let getAllInstrument = {
           instruments: GetAllInstrumentForTreasury.discountingInstruments,
@@ -49,7 +41,7 @@ const FeDiscountingTreasuryAndDealer = () => {
         );
 
         if (rowData.length > 0) {
-          setDataSource(rowData);
+          setFeDiscountingData(rowData);
           setColumnsData(columnsData);
         }
       } catch (error) {}
@@ -59,12 +51,48 @@ const FeDiscountingTreasuryAndDealer = () => {
     GetAllInstrumentForTreasury,
     GetDiscountingRatesForTreasury,
   ]);
+
+  const throttledUpdate = useMemo(
+    () =>
+      throttle((discountingUpdate) => {
+        const { feDiscountingRates } = discountingUpdate;
+
+        setFeDiscountingData((prevData) =>
+          prevData.map((row) => {
+            let updatedRow = { ...row };
+
+            feDiscountingRates.forEach((d) => {
+              Object.keys(row).forEach((key) => {
+                if (
+                  key.startsWith("InstrumentID_") &&
+                  row[key] === d.instrumentID &&
+                  row.TenorID === d.tenorID
+                ) {
+                  const currency = key.split("_")[1];
+                  updatedRow[`rate_${currency}`] = d.bidWithSpread;
+                }
+              });
+            });
+
+            return updatedRow;
+          })
+        );
+      }, 20),
+    []
+  );
+
+  useEffect(() => {
+    if (TreasuryFeDiscounting) {
+      throttledUpdate(TreasuryFeDiscounting);
+    }
+  }, [TreasuryFeDiscounting, throttledUpdate]);
+
   return (
     <>
       <span className="heading mb-2">FE Discounting</span>
       <GlobalTable
         columns={columnsData}
-        dataSource={dataSource}
+        dataSource={feDiscountingData}
         prefixCls={"Treasury_Discounting"}
         bordered
         pagination={false}

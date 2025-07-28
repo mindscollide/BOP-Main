@@ -21,6 +21,7 @@ import ResetPassword from "@/container/loginScreens/ResetPassword/ResetPassword"
 import PrivateRoute from "./routes/PrivateRoutes";
 import Loader from "./components/common/loader/Loader";
 import { ResponseMessage } from "./components/utils/ResponseMessageToast";
+import ForgotPasswordEmailSentTo from "./container/loginScreens/forgetPassword/ForgotPasswordEmailSentTo";
 
 function App() {
   const [routes, setRoutes] = useState([]); // Initially an empty array
@@ -121,6 +122,7 @@ function App() {
       { path: "/", element: <BopLogin /> },
       { path: "/changePassword", element: <ChangePassword /> },
       { path: "/forgotpassword", element: <ForgotPassword /> },
+      { path: "/emailsent", element: <ForgotPasswordEmailSentTo /> },
       { path: "/createPassword", element: <CreatePassword /> },
       { path: "/2fa", element: <TwoFaVerification /> },
       { path: "/resetPassword", element: <ResetPassword /> },
@@ -135,7 +137,9 @@ function App() {
   }, []);
 
   if (!routes.length) {
-    return <div>Loading...</div>; // Better check for array length than null
+    return;
+    // <div>Loading...</div>;
+    // Better check for array length than null
   }
 
   const router = createBrowserRouter(routes);

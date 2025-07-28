@@ -12,8 +12,13 @@ export const GloballyModalProvider = ({ children }) => {
     BD_Enable2FA: false,
     BD_SoundOnEveryMessage: false,
     BD_EmailOnEveryMessage: false,
+
+    CU_Enable2FA: false,
+    CU_SoundOnEveryMessage: false,
+    CU_EmailOnEveryMessage: false,
   });
   const [transactionInfoModal, setTransactionInfoModal] = useState(false);
+  const [publishedSpotRates, setPublishedSpotRates] = useState(false);
   const value = {
     createTenorModal,
     setCreateTenorModal,
@@ -29,6 +34,8 @@ export const GloballyModalProvider = ({ children }) => {
     chatModalTransactionId,
     setTransactionInfoModal,
     transactionInfoModal,
+    publishedSpotRates,
+    setPublishedSpotRates,
   };
   return (
     <ModalContext.Provider value={value}>{children}</ModalContext.Provider>

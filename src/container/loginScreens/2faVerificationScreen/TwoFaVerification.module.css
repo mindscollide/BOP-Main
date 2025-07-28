@@ -1,7 +1,7 @@
 .sign-in {
   height: 100vh !important;
   overflow: hidden !important;
-  background: url(../../../../assets/login//login-bg.png) no-repeat !important;
+  background: url(../../../assets/login/login-bg.png) no-repeat !important;
   background-size: cover !important;
   background-position: fixed !important;
   padding: 15px 0px !important;
@@ -21,7 +21,7 @@
   margin-top: 2.5rem !important;
 }
 
-.twoFaHeading  {
+.twoFaHeading {
   display: flex;
   justify-content: center;
   color: #000;
@@ -107,7 +107,6 @@
   text-align: center;
   line-height: 18px;
   display: inline-block !important;
-
 }
 .OTPInputField {
   width: 52px !important;
@@ -133,4 +132,23 @@
   text-align: center;
   color: #000;
   margin-top: 5px;
+}
+.error_msg {
+  color: #f21616;
+  font-size: 13px;
+}
+.resendDisabled {
+  color: gray;
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+.resendEnabled {
+  color: #007bff;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.resendEnabled:hover {
+  text-decoration: none;
 }

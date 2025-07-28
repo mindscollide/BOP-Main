@@ -18,18 +18,35 @@ import {
   SaveForwardTransactionAPI,
   calculateTenorSwapAndForwardRateApi,
 } from "../../blotter/BlotterActions";
+
+import { NumericFormat } from "react-number-format";
 const CorporateBookaForwardModal = ({
   bookaForwardModalCall,
   setBookaForwardModalCall,
 }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
+  const isCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
+
+  const counterPartyDetails =
+    isBranch && localStorage.getItem("branch") !== null
+      ? JSON.parse(localStorage.getItem("branch"))
+      : isCorporate && localStorage.getItem("corporate") !== null
+      ? JSON.parse(localStorage.getItem("corporate"))
+      : null;
   const natureOfBusinessList = useSelector(
     (state) => state.authReducer.GetAllNatureOfTransactions
   );
   const calculatedForwardsSwapandRate = useSelector(
     (state) => state.BlotterSlicer.calculateTenorSwapAndForwardRateData
   );
+
+  // Get all instruments for counterparties from Redux store
+  const getAllInstrumentsForCounterPartiesData = useSelector(
+    (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
+  );
+
   console.log(
     calculatedForwardsSwapandRate,
     "calculatedForwardsSwapandRatecalculatedForwardsSwapandRate"
@@ -46,9 +63,14 @@ const CorporateBookaForwardModal = ({
     label: "",
     SecondaryInstrumentID: 0,
   });
+  const [currencyOptions, setCurrencyOptions] = useState([]);
+
   const [tenorDate, setTenorDate] = useState(formatDate(new Date()));
   const [optionsDate, setOptionsDate] = useState(formatDate(new Date()));
   const [getAllCorporates, setGetAllCorporates] = useState([]);
+  const [errorState, setErrorState] = useState({
+    accoutErrorStatus: false,
+  });
 
   const [corporateValue, setCorporateValue] = useState({
     value: 0,
@@ -63,11 +85,8 @@ const CorporateBookaForwardModal = ({
     Swap: "",
     CalculateRate: 0,
   });
-
-  const [selectedCurrency, setSelectedCurrency] = useState({
-    value: 21,
-    label: "USDPKR",
-  });
+  console.log(forwardRFQState, "forwardRFQStateforwardRFQStateforwardRFQState");
+  const [selectedCurrency, setSelectedCurrency] = useState(null);
 
   const [typeOptions] = useState([
     { label: "Buy", value: 1 },
@@ -84,6 +103,7 @@ const CorporateBookaForwardModal = ({
     setTypeOptionSelected(selectType);
   };
   const options = [];
+  
 
   useEffect(() => {
     if (natureOfBusinessList !== null) {
@@ -150,6 +170,76 @@ const CorporateBookaForwardModal = ({
       } catch (error) {}
     }
   }, [calculatedForwardsSwapandRate]);
+
+  /**
+   * Effect Hook: Initialize Currency Options
+   *
+   * This effect initializes the currency dropdown options by:
+   * 1. Filtering instruments that are applicable for both buy and sell
+   * 2. Formatting them for display in the SelectDropdown component
+   * 3. Setting the default selected currency
+   *
+   * Dependencies:
+   * - getAllInstrumentsForCounterPartiesData: Redux state containing available instruments
+   *
+   * Behavior:
+   * - Only runs when getAllInstrumentsForCounterPartiesData changes
+   * - Filters instruments where both isBuy and isSell are true
+   * - Formats instrument data for dropdown display
+   * - Sets first valid instrument as default selection
+   * - Handles errors gracefully with console logging
+   */
+  useEffect(() => {
+    // Only proceed if instrument data is available
+    if (getAllInstrumentsForCounterPartiesData !== null) {
+      try {
+        // Destructure spot applicable instruments from the data
+        const { spotApplicableInstruments } =
+          getAllInstrumentsForCounterPartiesData;
+
+        // Filter and map instruments to create dropdown options
+        const spotApplicableInstrumentList = spotApplicableInstruments
+          .map((data) => {
+            // Only include instruments that are valid for both buy and sell
+            if (
+              data.isBuy === true &&
+              data.isSell === true &&
+              data.secondaryInstrumentID === 0
+            ) {
+              return {
+                ...data, // Spread all existing instrument properties
+                label: `${data.instrumentName}${data.secondaryInstrumentName}`, // Display name for dropdown
+                value: data.instrumentID, // Unique identifier for selection
+              };
+            }
+            return null; // Explicitly return null for non-matching instruments
+          })
+          .filter(Boolean); // Remove any null values from the array
+
+        // Set the first valid instrument as default selection if available
+        if (spotApplicableInstrumentList.length > 0) {
+          setSelectedCurrency(spotApplicableInstrumentList[0]);
+          setCurrencyOptions(spotApplicableInstrumentList);
+        } else {
+          // Handle case where no valid instruments were found
+          console.warn("No instruments available for both buy and sell");
+          setSelectedCurrency(null);
+          setCurrencyOptions([]);
+        }
+      } catch (error) {
+        // Error handling with detailed error message
+        console.error("Error initializing currency options:", error);
+
+        // Reset currency options to empty array on error
+        setSelectedCurrency(null);
+        setCurrencyOptions([]);
+      }
+    } else {
+      // Handle case where instrument data is not yet loaded
+      setSelectedCurrency(null);
+      setCurrencyOptions([]);
+    }
+  }, [getAllInstrumentsForCounterPartiesData]); // Only re-run when instrument data changes
   const handleChangeCorporate = (selectedOption) => {
     setCorporateValue(selectedOption);
     console.log("selectedOption", selectedOption);
@@ -158,8 +248,7 @@ const CorporateBookaForwardModal = ({
   const handleChangeValues = (event) => {
     const { name, value } = event.target;
     if (name === "Amount") {
-      const regex = /^[0-9]*$/;
-      if (regex.test(value)) {
+      if (value !== "") {
         setForwardRFQState({
           ...forwardRFQState,
           [name]: value,
@@ -174,7 +263,7 @@ const CorporateBookaForwardModal = ({
         if (value === "" || (numericValue >= 1 && numericValue <= 1000)) {
           setForwardRFQState({
             ...forwardRFQState,
-            Options: value,
+            Options: value === "" ? "0" : value.replace(/^0+/, "") || "0",
           });
 
           if (value !== "") {
@@ -194,7 +283,7 @@ const CorporateBookaForwardModal = ({
         if (value === "" || (numericValue >= 1 && numericValue <= 1000)) {
           setForwardRFQState({
             ...forwardRFQState,
-            TenorDays: value,
+            TenorDays: value === "" ? "0" : value.replace(/^0+/, "") || "0",
           });
 
           if (value !== "") {
@@ -213,6 +302,7 @@ const CorporateBookaForwardModal = ({
           ...forwardRFQState,
           AccNo: value,
         });
+        setErrorState({ ...errorState, accoutErrorStatus: false });
       }
     }
   };
@@ -245,7 +335,12 @@ const CorporateBookaForwardModal = ({
   };
 
   const handleConfirm = () => {
-    if (
+    if (forwardRFQState.AccNo === "") {
+      setErrorState({
+        accoutErrorStatus: true,
+      });
+      return;
+    } else if (
       corporateValue.value !== 0 &&
       selectedCurrency.value !== "" &&
       typeOptionSelected.value !== 0 &&
@@ -256,12 +351,16 @@ const CorporateBookaForwardModal = ({
       forwardRFQState.Options !== "" &&
       forwardRFQState.Swap !== ""
     ) {
+      let amountValue = forwardRFQState.Amount.replace(/,/g, "");
       let Data = {
-        CorporateID: Number(corporateValue.value),
+        CorporateID: isBranch
+          ? Number(corporateValue.value)
+          : Number(counterPartyDetails?.corporateID),
         InstrumentID: Number(selectedCurrency.value),
         SecondaryInstrumentID: 0,
         IsBuySide: typeOptionSelected.value === 1 ? true : false,
-        Quantity: Number(forwardRFQState.Amount),
+        IsBuyType: typeOptionSelected.value === 1 ? true : false,
+        Quantity: Number(amountValue),
         AccountNumber: forwardRFQState.AccNo,
         NatureOfTransactionID: Number(natureOfBusinessSelcted.value),
         TenorDays: Number(forwardRFQState.TenorDays),
@@ -289,13 +388,28 @@ const CorporateBookaForwardModal = ({
         bodyClassName={"BookaforwardCorporateBodyClassname"}
         className=''
         modalHeader={
-          <>
+          isBranch ? (
+            <>
+              <Row>
+                <Col lg={12} md={12} sm={12}>
+                  <span className='Header_BranchName'>
+                    {counterPartyDetails?.branchName}
+                  </span>
+                  <p className='Header_BranchCode'>
+                    {counterPartyDetails?.branchCode}
+                  </p>
+                </Col>
+              </Row>
+            </>
+          ) : isCorporate ? (
             <Row>
               <Col lg={12} md={12} sm={12}>
-                <span className='HeaderHeadingName'>Gull Ahmed</span>
+                <span className='Header_BranchName'>
+                  {counterPartyDetails?.corporateName}
+                </span>
               </Col>
             </Row>
-          </>
+          ) : null
         }
         modalBody={
           <>
@@ -321,9 +435,11 @@ const CorporateBookaForwardModal = ({
                     <div className='d-flex flex-column flex-wrap'>
                       <span className='SubHeadings'>Currency</span>
                       <Select
-                        options={options}
+                        options={currencyOptions}
                         placeholder=''
                         value={selectedCurrency}
+                        isSearchable={false}
+                        onChange={(selectCurrenty) => setSelectedCurrency(selectCurrenty)}
                         classNamePrefix='bookaForwardCorporate'
                       />
                     </div>
@@ -334,6 +450,7 @@ const CorporateBookaForwardModal = ({
                       <Select
                         options={typeOptions}
                         placeholder=''
+                        isSearchable={false}
                         value={
                           typeOptionSelected.value === 0
                             ? null
@@ -366,17 +483,26 @@ const CorporateBookaForwardModal = ({
                         onChange={handleChangeValues}
                       />
                     </div>
+                    {errorState.accoutErrorStatus === true && (
+                      <div className='rfq-error_message'>
+                        Account No. is Required
+                      </div>
+                    )}
                   </Col>
                 </Row>
                 <Row className='mt-2'>
                   <Col lg={12} md={12} sm={12}>
                     <div className='d-flex flex-column flex-wrap'>
                       <span className='SubHeadings'>Amount</span>
-                      <InputFIeld
-                        applyClass={"BookaForwardCorporateInputFields"}
+                      <NumericFormat
                         value={forwardRFQState.Amount}
                         name={"Amount"}
                         onChange={handleChangeValues}
+                        customInput={InputFIeld}
+                        thousandSeparator=','
+                        maxLength={10}
+                        allowNegative={false}
+                        applyClass={"BookaForwardCorporateInputFields"}
                       />
                     </div>
                   </Col>

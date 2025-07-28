@@ -1,5 +1,6 @@
 .transactionModal__body {
-  min-height: 80vh !important;
+  /* min-height: auto !important; */
+  min-height: max-content !important;
   padding: 15px 1rem;
 }
 .company-name-hd {
@@ -36,4 +37,16 @@
   margin: 0 !important;
   font-size: 13px !important;
   font-weight: 700;
+}
+
+.transactionInfolabelInititedBy {
+  margin: 0 !important;
+  font-size: 13px !important;
+  font-weight: 700;
+}
+.transactionInfolabelEmail {
+  margin: 0 !important;
+  font-size: 13px !important;
+  font-weight: 700;
+  color: #096fed;
 }

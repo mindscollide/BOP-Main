@@ -20,10 +20,7 @@ export const getAllCategoryTableData = createAsyncThunk(
 
       const response = await getAllCategoryTable(Data);
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+    
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(getAllCategoryTableData({ navigate, Data }));
@@ -39,7 +36,7 @@ export const getAllCategoryTableData = createAsyncThunk(
           ) {
             return {
               response: response.data.responseResult,
-              message: "Successfull",
+              message: "",
             };
           } else if (
             responseMessage
@@ -94,10 +91,7 @@ export const GetCategoryWiseSpotRatesApi = createAsyncThunk(
       const response = await GetCategoryWiseSpotRatesData(Data);
 
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -114,7 +108,7 @@ export const GetCategoryWiseSpotRatesApi = createAsyncThunk(
           ) {
             return {
               response: response.data.responseResult,
-              message: "API executed successfully.",
+              message: "",
             };
           } else if (
             responseMessage
@@ -123,7 +117,9 @@ export const GetCategoryWiseSpotRatesApi = createAsyncThunk(
                 "WatchList_WatchListServiceManager_GetCategoryWiseSpotRates_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("No Record Found");
+            return rejectWithValue(
+              import.meta.env.VITE_MQTT_PORT === "8883" ? "" : "No Record Found"
+            );
           } else if (
             responseMessage
               .toLowerCase()
@@ -172,10 +168,7 @@ export const GetCategoryWiseForwardRatesApi = createAsyncThunk(
       const response = await GetCategoryWiseForwardRatesData(Data);
 
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -192,7 +185,7 @@ export const GetCategoryWiseForwardRatesApi = createAsyncThunk(
           ) {
             return {
               response: response.data.responseResult,
-              message: "API executed successfully.",
+              message: "",
             };
           } else if (
             responseMessage
@@ -201,7 +194,9 @@ export const GetCategoryWiseForwardRatesApi = createAsyncThunk(
                 "WatchList_WatchListServiceManager_GetCategoryWiseForwardRates_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("No Record Found");
+            return rejectWithValue(
+              import.meta.env.VITE_MQTT_PORT === "8883" ? "" : "No Record Found"
+            );
           } else if (
             responseMessage
               .toLowerCase()
@@ -250,10 +245,7 @@ export const GetCategoryWiseDiscountingRatesApi = createAsyncThunk(
       const response = await GetCategoryWiseDiscountingRatesData(Data);
 
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -270,7 +262,7 @@ export const GetCategoryWiseDiscountingRatesApi = createAsyncThunk(
           ) {
             return {
               response: response.data.responseResult,
-              message: "API executed successfully.",
+              message: "",
             };
           } else if (
             responseMessage
@@ -279,7 +271,9 @@ export const GetCategoryWiseDiscountingRatesApi = createAsyncThunk(
                 "WatchList_WatchListServiceManager_GetCategoryWiseDiscountingRates_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("No Record Found");
+            return rejectWithValue(
+              import.meta.env.VITE_MQTT_PORT === "8883" ? "" : "No Record Found"
+            );
           } else if (
             responseMessage
               .toLowerCase()

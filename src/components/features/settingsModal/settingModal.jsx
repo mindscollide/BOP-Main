@@ -7,7 +7,7 @@ import PassCode from "@/components/features/settingsModal/PasscodeSettingCompone
 import Markettiming from "@/components/features/settingsModal/MarketTimingComponent/MarketTIming";
 import CustomButton from "@/components/common/globalButton/button";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   getMarkingTimingApi,
   updateUserSettingDataAPI,
@@ -15,17 +15,35 @@ import {
 import IconElement from "@/components/common/IconElement/IconElement";
 import { setSettingModal } from "@/store/modalSlice/modalSlicer";
 import { useSelector } from "react-redux";
+import { ResetPasswordCorporateApi } from "@/container/loginScreens/ChangePassword/changePasswordActions";
 
 const SettingModal = () => {
   const settingsRecordData = useSelector(
     (state) => state.modalReducer.settingsRecord
   );
   const settingModal = useSelector((state) => state.modalReducer.settingModal);
-  console.log(settingModal, "settingModalsettingModalsettingModal")
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const [tabActive, setTabActive] = useState(1);
+  console.log({ settingsRecordData }, "Checking Reducer State");
+  console.log(typeof tabActive, "settingModalsettingModalsettingModal");
+  const [createPasswordData, setCreatePasswordData] = useState({
+    userID: localStorage.getItem("userID"),
+    createPassword: "",
+    confirmPassowrd: "",
+    showPassword: false,
+    showConfirmPassword: false,
+  });
+  const [validations, setValidations] = useState({
+    isLengthValid: false,
+    hasNumber: false,
+    hasSpecialChar: false,
+    isMatch: false,
+  });
 
+  console.log(validations, "validationsvalidations");
   useEffect(() => {
     dispatch(getMarkingTimingApi({ navigate }));
   }, []);
@@ -49,35 +67,102 @@ const SettingModal = () => {
     dispatch(setSettingModal(false));
   };
 
+  // const handeClickSave = () => {
+  //   console.log(settingsRecordData, "settingsRecordsettingsRecord");
+  //   let Data = {
+  //     //to do
+  //     Settings: [
+  //       {
+  //         Key: shouldIncludeCorporateComponents
+  //           ? "CU_EmailOnEveryMessage"
+  //           : "BD_EmailOnEveryMessage", //to do
+  //         Value: shouldIncludeCorporateComponents
+  //           ? String(settingsRecordData?.CU_EmailOnEveryMessage)
+  //           : String(settingsRecordData?.BD_EmailOnEveryMessage),
+  //       },
+
+  //       {
+  //         Key: shouldIncludeCorporateComponents
+  //           ? "CU_SoundOnEveryMessage"
+  //           : "BD_SoundOnEveryMessage",
+  //         Value: shouldIncludeCorporateComponents
+  //           ? String(settingsRecordData?.CU_SoundOnEveryMessage)
+  //           : String(settingsRecordData?.BD_SoundOnEveryMessage),
+  //       },
+
+  //       {
+  //         Key: shouldIncludeCorporateComponents
+  //           ? "CU_Enable2FA"
+  //           : "BD_Enable2FA",
+  //         Value: shouldIncludeBranchComponents
+  //           ? String(settingsRecordData?.CU_Enable2FA)
+  //           : String(settingsRecordData?.BD_Enable2FA),
+  //       },
+  //     ],
+  //   };
+  //   console.log(Data, "Data2Data2");
+  //   // dispatch(updateUserSettingDataAPI({ navigate, Data }));
+  // };
+
   const handeClickSave = () => {
     console.log(settingsRecordData, "settingsRecordsettingsRecord");
-    let Data = {
-      Settings: [
-        {
-          Key: "BD_EmailOnEveryMessage",
-          Value: String(settingsRecordData?.BD_EmailOnEveryMessage),
-        },
-        {
-          Key: "BD_SoundOnEveryMessage",
-          Value: String(settingsRecordData?.BD_SoundOnEveryMessage),
-        },
-        {
-          Key: "BD_Enable2FA",
-          Value: String(settingsRecordData?.BD_Enable2FA),
-        },
-      ],
-    };
-    dispatch(updateUserSettingDataAPI({ navigate, Data }));
+    console.log(
+      shouldIncludeCorporateComponents,
+      "shouldIncludeCorporateComponentsshouldIncludeCorporateComponents"
+    );
 
-    console.log(Data, "Data2Data2");
+    if (shouldIncludeCorporateComponents) {
+      let Data = {
+        Settings: [
+          {
+            Key: "CU_EmailOnEveryMessage",
+            Value: String(settingsRecordData?.CU_EmailOnEveryMessage),
+          },
+          {
+            Key: "CU_SoundOnEveryMessage",
+            Value: String(settingsRecordData?.CU_SoundOnEveryMessage),
+          },
+          {
+            Key: "CU_Enable2FA",
+            Value: String(settingsRecordData?.CU_Enable2FA),
+          },
+        ],
+      };
+      dispatch(updateUserSettingDataAPI({ navigate, Data }));
+      if (
+        validations.hasNumber &&
+        validations.hasSpecialChar &&
+        validations.isLengthValid &&
+        validations.isMatch
+      ) {
+        let PasswordData = {
+          userID: Number(createPasswordData.userID),
+          Password: createPasswordData.createPassword,
+        };
+        dispatch(ResetPasswordCorporateApi({ navigate, PasswordData }));
+      }
+    } else {
+      let Data = {
+        Settings: [
+          {
+            Key: "BD_EmailOnEveryMessage",
+            Value: String(settingsRecordData?.BD_EmailOnEveryMessage),
+          },
+          {
+            Key: "BD_SoundOnEveryMessage",
+            Value: String(settingsRecordData?.BD_SoundOnEveryMessage),
+          },
+        ],
+      };
+      dispatch(updateUserSettingDataAPI({ navigate, Data }));
+    }
   };
-
   return (
     <div>
       {" "}
       <GlobalModal
         show={settingModal}
-        backdrop='static'
+        backdrop="static"
         onHide={HandleOnHideModal}
         centered={true}
         className={"ModalClassNameSettings"}
@@ -95,7 +180,8 @@ const SettingModal = () => {
                     sm={8}
                     md={8}
                     lg={8}
-                    className='d-flex justify-content-start gap-1'>
+                    className="d-flex justify-content-start gap-1"
+                  >
                     <CustomButton
                       applyClass={
                         tabActive === 1 ? "tabsButton_active" : "tabsButton"
@@ -103,13 +189,13 @@ const SettingModal = () => {
                       value={"User Settings"}
                       onClick={() => setTabActive(1)}
                     />
-                    {shouldIncludeCorporateComponents && (
+                    {shouldIncludeCorporateComponents === true && (
                       <CustomButton
                         applyClass={
                           tabActive === 2 ? "tabsButton_active" : "tabsButton"
                         }
                         onClick={() => setTabActive(2)}
-                        value={"PassCode Setting"}
+                        value={"Change Password"}
                       />
                     )}
 
@@ -125,7 +211,8 @@ const SettingModal = () => {
                     sm={4}
                     md={4}
                     lg={4}
-                    className='d-flex justify-content-end align-items-center '>
+                    className="d-flex justify-content-end align-items-center "
+                  >
                     <IconElement
                       applyClass={"icon-close"}
                       iconClass={"cursor-pointer"}
@@ -133,12 +220,17 @@ const SettingModal = () => {
                     />
                   </Col>
                 </Row>
-                <Row className='mt-3 d-flex justify-content-start'>
+                <Row className="mt-3 d-flex justify-content-start">
                   <Col sm={12} md={12} lg={12}>
                     {tabActive === 1 ? (
                       <UserSetting />
                     ) : tabActive === 2 ? (
-                      <PassCode />
+                      <PassCode
+                        createPasswordData={createPasswordData}
+                        setCreatePasswordData={setCreatePasswordData}
+                        validations={validations}
+                        setValidations={setValidations}
+                      />
                     ) : (
                       <Markettiming />
                     )}
@@ -160,12 +252,15 @@ const SettingModal = () => {
                 sm={12}
                 md={12}
                 lg={12}
-                className='d-flex justify-content-center'>
-                <CustomButton
-                  applyClass={"saveSettingBtn"}
-                  value={"Save"}
-                  onClick={handeClickSave}
-                />
+                className="d-flex justify-content-center"
+              >
+                {!(tabActive === 3) && (
+                  <CustomButton
+                    applyClass="saveSettingBtn"
+                    value="Save"
+                    onClick={handeClickSave}
+                  />
+                )}
               </Col>
             </Row>
           </>

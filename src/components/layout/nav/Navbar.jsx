@@ -19,6 +19,8 @@ import {
   categoryisUpdated,
 } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import {
+  setDiscountingRFQModal,
+  setForwardRFQModal,
   setIBuySellData,
   setRfqModalOpen,
 } from "@/store/modalSlice/modalSlicer";
@@ -28,20 +30,41 @@ import {
   GetCategoryWiseForwardRatesApi,
   GetCategoryWiseSpotRatesApi,
 } from "@/container/pages/mainCategory/categoryActions";
+import SpotQuoteModal from "@/container/pages/mainCorporate/rfqModal/SpotQuoteModal/SpotQuoteModal";
+import DiscountingRFQQuoteModal from "@/container/pages/mainCorporate/rfqModal/DiscountingRFQQuoteModal/DiscountingRFQQuoteModal";
+import ForwardRFQQuoteModal from "@/container/pages/mainCorporate/rfqModal/ForwardRFQQuoteModal/ForwardRFQQuoteModal";
+import { useMqttClient } from "@/components/utils/mqttConnection";
 
 const GlobalNavbar = () => {
+  const { unsubscribeFromTopics, subscribeToTopics } = useMqttClient({});
   const getAllCategoriesData = useSelector(
     (state) => state.authReducer.getAllCategories
   );
   const settingModalState = useSelector(
     (state) => state.modalReducer.settingModal
   );
+  const spotQuoteModalState = useSelector(
+    (state) => state.modalReducer.spotQuoteModal
+  );
+
+  const forwardQuoteModalState = useSelector(
+    (state) => state.modalReducer.forwardQuoteModal
+  );
+  const discountingQuoteModalState = useSelector(
+    (state) => state.modalReducer.discountingQuoteModal
+  );
+  console.log(
+    spotQuoteModalState,
+    forwardQuoteModalState,
+    discountingQuoteModalState,
+    "discountingQuoteModalState"
+  );
   const activeTab = useSelector((state) => state.RFQReducer.activeTab);
 
   const categoryValue = useSelector(
     (state) => state.dealerReducer.categoryValue
   );
-
+  console.log(categoryValue, "categoryValuecategoryValue");
   const isCategoryAdded = useSelector(
     (state) => state.RealtimeActionsSlice.categoryisAdded
   );
@@ -56,7 +79,6 @@ const GlobalNavbar = () => {
   );
   console.log(isRfqModalOpen, "isRfqModalOpenisRfqModalOpen");
   const dispatch = useDispatch();
-  const [selectedValue, setSelectedValue] = useState(1);
   const [
     openRfqModalForwardCorporateComponent,
     setOpenRfqModalForwardCorporateComponent,
@@ -65,6 +87,15 @@ const GlobalNavbar = () => {
     openRfqModalDiscountingCorporateComponent,
     setOpenRfqModalDiscountingCorporateComponent,
   ] = useState(false);
+
+  const rfqForwardModal = useSelector(
+    (state) => state.modalReducer.forwardRFQModal
+  );
+
+  const rfqDiscountingModal = useSelector(
+    (state) => state.modalReducer.DiscountingRFQModal
+  );
+
   const [allCategories, setAllCategories] = useState([]);
   const [outStandingData, setOutStandingData] = useState([]);
 
@@ -94,15 +125,14 @@ const GlobalNavbar = () => {
   const handleChangeCategory = (event) => {
     console.log(event);
     let Data = { CategoryID: event.value };
-    dispatch(GetCategoryWiseSpotRatesApi({ navigate, Data }));
-    dispatch(GetCategoryWiseForwardRatesApi({ navigate, Data }));
-    dispatch(GetCategoryWiseDiscountingRatesApi({ navigate, Data }));
-
     let obj = {
       value: event.value,
       label: event.label,
     };
     dispatch(setCategoryValue(obj));
+    dispatch(GetCategoryWiseSpotRatesApi({ navigate, Data }));
+    dispatch(GetCategoryWiseForwardRatesApi({ navigate, Data }));
+    dispatch(GetCategoryWiseDiscountingRatesApi({ navigate, Data }));
   };
 
   //handle RFQ Condition Under Certain tabs
@@ -113,9 +143,11 @@ const GlobalNavbar = () => {
       dispatch(setRfqModalOpen(true));
     } else if (activeTab === "Forwards") {
       console.log("Handle Forwards logic");
-      setOpenRfqModalForwardCorporateComponent(true);
+      dispatch(setForwardRFQModal(true));
+      // setOpenRfqModalForwardCorporateComponent(true);
     } else if (activeTab === "Discounting") {
       console.log("Handle Discounting logic");
+
       setOpenRfqModalDiscountingCorporateComponent(true);
     }
   };
@@ -136,13 +168,15 @@ const GlobalNavbar = () => {
             value: newCategoryMap[0].value,
             label: newCategoryMap[0].label,
           };
+          console.log(newCategoryMap, "newCategoryMapnewCategoryMap");
           dispatch(setCategoryValue(obj));
 
           let Data = {
-            Category: newCategoryMap[0].value,
+            CategoryID: obj.value,
           };
           setAllCategories(newCategoryMap);
           console.log(Data, "DataData");
+
           dispatch(GetCategoryWiseSpotRatesApi({ navigate, Data }));
           dispatch(GetCategoryWiseForwardRatesApi({ navigate, Data }));
           dispatch(GetCategoryWiseDiscountingRatesApi({ navigate, Data }));
@@ -197,7 +231,7 @@ const GlobalNavbar = () => {
       }
     }
   }, [isCategoryAdded]);
-  
+
   useEffect(() => {
     if (isCategoryUpdated !== null && categoryValue.value !== 0) {
       const {
@@ -266,40 +300,20 @@ const GlobalNavbar = () => {
 
   return (
     <>
-      <div className="site-header pt-1">
-        <div className="container-fluid page-gutter">
-          <div className="header-inner d-flex align-items-center">
+      <div className='site-header pt-1'>
+        <div className='container-fluid page-gutter'>
+          <div className='header-inner d-flex align-items-center'>
             <SiteLogoComponent />
-            <div className="ms-auto">
-              <div className="d-flex align-items-center gap-2">
-                {shouldIncludeTreasury &&
-                location.pathname === "/BOP/treasury" &&
-                outStandingData.length !== 0 ? (
-                  <>
-                    <section className="position-relative">
-                      <IconElement
-                        iconClass={
-                          "icon-clock fs-4 color-red px-2 cursor-pointer"
-                        }
-                        onClick={() => setViewCurrentDeals(!viewCurrentDeals)}
-                      />
-                      {viewCurrentDeals && (
-                        <ViewCurrentDeals
-                          setOutStandingData={setOutStandingData}
-                          outStandingData={outStandingData}
-                        />
-                      )}
-                    </section>
-                  </>
-                ) : null}
+            <div className='ms-auto'>
+              <div className='d-flex align-items-center gap-2'>
                 {location.pathname !== "/calculator" ? (
                   <>
                     {(shouldIncludeCorporate || shouldIncludeBranch) && (
                       <Suspense fallback={<>Loading RFQ...</>}>
                         <CustomButton
-                          applyClass="rfqBtn"
-                          value="RFQ"
-                          size="small"
+                          applyClass='rfqBtn'
+                          value='RFQ'
+                          size='small'
                           icon={<IconElement iconClass={"icon-list fs-6"} />}
                           onClick={onClickRFQ}
                         />
@@ -308,17 +322,17 @@ const GlobalNavbar = () => {
                     {location.pathname.includes("treasury") &&
                     (shouldIncludeDealer || shouldIncludeTreasury) ? (
                       <CustomButton
-                        applyClass="calcBtn"
-                        value="Calculators"
-                        size="large"
+                        applyClass='calcBtn'
+                        value='Calculators'
+                        size='large'
                         onClick={handleCalculatorClick}
                       />
                     ) : null}
                     {shouldIncludeTreasury &&
                     location.pathname.includes("treasury") ? (
                       <Voltmeter
-                        activeValue={selectedValue}
-                        onSelect={(value) => setSelectedValue(value)}
+                      // activeValue={selectedValue}
+                      // onSelect={(value) => setSelectedValue(value)}
                       />
                     ) : null}
                     {location.pathname.includes("category") && (
@@ -339,31 +353,17 @@ const GlobalNavbar = () => {
         </div>
       </div>
 
+   
+      <SpotQuoteModal />
+      <DiscountingRFQQuoteModal />
+      <ForwardRFQQuoteModal />
+      {settingModalState && <SettingModal />}
+      {/* Forwards RFQ Modal  */}
+      {rfqForwardModal && <RFQForwardCorporateModal />}
       {isRfqModalOpen && <RFQModal />}
 
-      {/* Forwards RFQ Modal  */}
-      {openRfqModalForwardCorporateComponent && (
-        <RFQForwardCorporateModal
-          openRfqModalForwardCorporateComponent={
-            openRfqModalForwardCorporateComponent
-          }
-          setOpenRfqModalForwardCorporateComponent={
-            setOpenRfqModalForwardCorporateComponent
-          }
-        />
-      )}
-      {settingModalState && <SettingModal />}
       {/* Discounting RFQ Modal  */}
-      {openRfqModalDiscountingCorporateComponent && (
-        <RFQDiscountingCorporateModal
-          openRfqModalDiscountingCorporateComponent={
-            openRfqModalDiscountingCorporateComponent
-          }
-          setOpenRfqModalDiscountingCorporateComponent={
-            setOpenRfqModalDiscountingCorporateComponent
-          }
-        />
-      )}
+      {rfqDiscountingModal && <RFQDiscountingCorporateModal />}
     </>
   );
 };

@@ -4,4 +4,5 @@
 
 .ModalClassNameSettings .modal-body {
   overflow: hidden !important;
+  /* max-height: 50vh; */
 }

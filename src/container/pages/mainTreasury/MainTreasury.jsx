@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import {
   BlotterDataAPI,
   GetBlotterOutstandingDealsDataAPI,
+  GetNOPDataAPI,
 } from "@/components/features/blotter/BlotterActions";
 import LiveRates from "./tabsContent/liveRates/LiveRates";
 import Forwards from "./tabsContent/forwards/Forwards";
@@ -15,7 +16,11 @@ import {
   GetBankSpotForTreasuryApi,
   GetDiscountingRatesForTreasuryApi,
 } from "@/components/features/SpotBranch/WatchlistAction";
-import { getAllTenorsAction } from "../mainDealer/dealerActions";
+import {
+  getAllTenorsAction,
+  GetVoltMeterStatusApi,
+} from "../mainDealer/dealerActions";
+import { setBlotterLoader } from "@/store/BlotterSlicer/BlotterSlicer";
 
 const MainTreasury = () => {
   const dispatch = useDispatch();
@@ -26,12 +31,16 @@ const MainTreasury = () => {
     if (import.meta.env.VITE_APP_INCLUDE_TREASURY === "true") {
       let Data = { sRow: 0, Length: 10 };
       dispatch(GetBlotterOutstandingDealsDataAPI({ navigate, Data }));
+      dispatch(setBlotterLoader(true)); // Set the blotter loader to true
+
       dispatch(BlotterDataAPI({ navigate, Data }));
+      dispatch(GetNOPDataAPI({ navigate }));
     }
     dispatch(getAllTreasuryInstrumentsApi({ navigate }));
     dispatch(GetBankForwardForTreasuryApi({ navigate }));
     dispatch(getAllTenorsAction({ navigate }));
     dispatch(GetDiscountingRatesForTreasuryApi({ navigate }));
+    dispatch(GetVoltMeterStatusApi({ navigate }));
   }, []);
 
   const tabsData = [

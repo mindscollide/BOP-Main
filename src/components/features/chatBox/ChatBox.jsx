@@ -6,7 +6,11 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { DownloadFileApi, saveChatApi, uploadDocumentApi } from "./ChatActions";
 import { useNavigate } from "react-router-dom";
-import { convertDateTimeIntoGMT, formatDateToUTC } from "@/utils/formatters";
+import {
+  convertDateTimeIntoGMT,
+  convertDateTimeIntoLocal,
+  formatDateToUTC,
+} from "@/utils/formatters";
 import moment from "moment";
 import { Col, Row } from "react-bootstrap";
 import { fileToBase64 } from "@/utils/converts";
@@ -24,6 +28,8 @@ const ChatBox = () => {
   const receiverPersonID = useSelector(
     (state) => state.modalReducer.treasuryPersonID
   );
+
+  console.log(receiverPersonID, "receiverPersonID");
 
   const [receiverId, setReceiverId] = useState(0);
 
@@ -189,13 +195,13 @@ const ChatBox = () => {
   };
 
   return (
-    <div className='user-chat-box active-chat' id='chat-len1'>
-      <div className='chat-box-inner'>
-        <div className='chat-box-header'>
-          <div className='d-flex align-items-center'>
-            <span className='user-name fw-bold'>{userName}</span>{" "}
+    <div className="user-chat-box active-chat" id="chat-len1">
+      <div className="chat-box-inner">
+        <div className="chat-box-header">
+          <div className="d-flex align-items-center">
+            <span className="user-name fw-bold">{userName}</span>{" "}
             {/* <span className='Company'>(ABC Corporation)</span> */}
-            <span className='ms-auto'>
+            <span className="ms-auto">
               <IconElement
                 applyClass={"icon-close cursor-pointer"}
                 onClick={handleClickClose}
@@ -203,17 +209,17 @@ const ChatBox = () => {
             </span>
           </div>
         </div>
-        <div className='chat-box-content'>
+        <div className="chat-box-content">
           {transactionChat.getAllChat.length > 0
             ? transactionChat.getAllChat.map((data, index) => {
                 if (
                   data.receiverID === Number(localStorage.getItem("userID"))
                 ) {
                   return (
-                    <div className='text-start mb-3' key={data.chatMessageID}>
-                      <div className='message-inbox message-box text-start'>
-                        <div className='mess-txt-wrapper'>
-                          <div className='mess-txt'>{data.message}</div>
+                    <div className="text-start mb-3" key={data.chatMessageID}>
+                      <div className="message-inbox message-box text-start">
+                        <div className="mess-txt-wrapper">
+                          <div className="mess-txt">{data.message}</div>
                           {data.attachments.length > 0 &&
                             data.attachments.map((imgData, index) => {
                               let extractExt =
@@ -227,7 +233,7 @@ const ChatBox = () => {
                               );
 
                               return (
-                                <div className='w-100 mt-2' key={index}>
+                                <div className="w-100 mt-2" key={index}>
                                   {extractExt === "png" ||
                                   extractExt === "jpeg" ||
                                   extractExt === "jpg" ? (
@@ -245,14 +251,16 @@ const ChatBox = () => {
                               );
                             })}
                         </div>
-                        <div className='mess-datetime mt-1'>
-                          <div className='d-flex'>
-                            <div className='message-status' />
-                            <div className='ms-auto'>
-                              <span className='chat-datetime'>
+                        <div className="mess-datetime mt-1">
+                          <div className="d-flex">
+                            <div className="message-status" />
+                            <div className="ms-auto">
+                              <span className="chat-datetime">
                                 {moment(
-                                  convertDateTimeIntoGMT(data.creationDateTime)
-                                ).format("MMM DD, YYYY - HH:mm:ss A")}
+                                  convertDateTimeIntoLocal(
+                                    data.creationDateTime
+                                  )
+                                ).format("MMM DD, YYYY - hh:mm:ss A")}
                               </span>
                             </div>
                           </div>
@@ -262,10 +270,10 @@ const ChatBox = () => {
                   );
                 } else {
                   return (
-                    <div className='text-end mb-3' key={data.chatMessageID}>
-                      <div className='message-outbox message-box text-start'>
-                        <div className='mess-txt-wrapper'>
-                          <div className='mess-txt'>{data.message}</div>
+                    <div className="text-end mb-3" key={data.chatMessageID}>
+                      <div className="message-outbox message-box text-start">
+                        <div className="mess-txt-wrapper">
+                          <div className="mess-txt">{data.message}</div>
                           {data.attachments.length > 0 &&
                             data.attachments.map((imgData, index) => {
                               let extractExt =
@@ -279,7 +287,7 @@ const ChatBox = () => {
                                 extractExt === "jpg"
                               ) {
                                 return (
-                                  <div className='w-100 mt-2' key={index}>
+                                  <div className="w-100 mt-2" key={index}>
                                     <IconElement
                                       applyClass={
                                         "icon-download d-flex justify-content-start"
@@ -293,14 +301,16 @@ const ChatBox = () => {
                               }
                             })}
                         </div>
-                        <div className='mess-datetime mt-1'>
-                          <div className='d-flex'>
-                            <div className='message-status' />
-                            <div className='ms-auto'>
-                              <span className='chat-datetime'>
+                        <div className="mess-datetime mt-1">
+                          <div className="d-flex">
+                            <div className="message-status" />
+                            <div className="ms-auto">
+                              <span className="chat-datetime">
                                 {moment(
-                                  convertDateTimeIntoGMT(data.creationDateTime)
-                                ).format("MMM DD, YYYY - HH:mm:ss A")}
+                                  convertDateTimeIntoLocal(
+                                    data.creationDateTime
+                                  )
+                                ).format("MMM DD, YYYY - hh:mm:ss A")}
                               </span>
                             </div>
                           </div>
@@ -312,9 +322,9 @@ const ChatBox = () => {
               })
             : null}
         </div>
-        <div className='chat-box-footer'>
+        <div className="chat-box-footer">
           <form>
-            <div className='d-flex align-items-center position-relative'>
+            <div className="d-flex align-items-center position-relative">
               {file && (
                 <div className={styles["uploaded-file-section"]}>
                   <div className={styles["file-upload"]}>
@@ -323,7 +333,8 @@ const ChatBox = () => {
                         lg={3}
                         md={3}
                         sm={3}
-                        className={styles["chat-upload-icon"]}>
+                        className={styles["chat-upload-icon"]}
+                      >
                         <IconElement applyClass={"icon-file"} />
                         <p className={styles["chat-upload-text"]}>
                           {file.name}
@@ -341,13 +352,13 @@ const ChatBox = () => {
                 </div>
               )}
 
-              <div className='textarea-block col pe-1'>
+              <div className="textarea-block col pe-1">
                 <InputFIeld
-                  type='text'
-                  applyClass='chatSenderInput'
+                  type="text"
+                  applyClass="chatSenderInput"
                   value={message}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter" ) {
+                    if (e.key === "Enter") {
                       e.preventDefault(); // prevent newline
                       handleClickSaveChat(e); // manually trigger submit
                     }
@@ -359,12 +370,12 @@ const ChatBox = () => {
 
               <div>
                 <IconElement
-                  applyClass='icon-send cursor-pointer'
+                  applyClass="icon-send cursor-pointer"
                   onClick={handleClickSaveChat}
                 />
-                <span className='fw-bold cursor-pointer upload-file-wrapper'>
+                <span className="fw-bold cursor-pointer upload-file-wrapper">
                   <IconElement
-                    applyClass='icon-attachment'
+                    applyClass="icon-attachment"
                     isFile={true}
                     onFileChange={(e) => {
                       const selectedFile = e.target.files[0];

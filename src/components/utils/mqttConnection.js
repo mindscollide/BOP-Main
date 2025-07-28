@@ -12,6 +12,7 @@ export const useMqttClient = ({
   const clientRef = useRef(null);
   const randomString = secureRandomString();
   const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
+  const isCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
 
   const subscribeToTopics = useCallback(
     (topics = []) => {
@@ -60,7 +61,7 @@ export const useMqttClient = ({
     (message) => {
       try {
         const parsed = JSON.parse(message.payloadString);
-        console.log("MQTT message arrived:", parsed);
+        // console.log("MQTT message arrived:", parsed);
         if (onMessageArrivedCallback) onMessageArrivedCallback(parsed);
       } catch (err) {
         console.error("Failed to parse message:", err);
@@ -105,10 +106,13 @@ export const useMqttClient = ({
         let subscribeIDNew = userData?.branchID || userData?.corporateID;
 
         let newTopic = isBranch
-          ? `BRANCH_${subscribeIDNew}`
-          : `CORPORATE_${subscribeIDNew}`;
-
-        subscribeToTopics([subscribeID, `BOP_${userID}`, newTopic]);
+          ? `BOP_BRANCH_${subscribeIDNew}`
+          : `BOP_CORPORATE_${subscribeIDNew}`;
+        if (isCorporate || isBranch) {
+          subscribeToTopics([subscribeID, `BOP_${userID}`, newTopic]);
+        } else {
+          subscribeToTopics([subscribeID, `BOP_${userID}`]);
+        }
       };
 
       clientRef.current.connect({
@@ -123,7 +127,7 @@ export const useMqttClient = ({
         userName: import.meta.env.VITE_MQTT_USERNAME,
         password: import.meta.env.VITE_MQTT_PASSWORD,
         cleanSession: true,
-        useSSL: false,
+        useSSL: import.meta.env.VITE_MQTT_PORT === "8883" ? true : false,
       });
     },
     [onMessageArrived, onConnectionLost, randomString, subscribeToTopics]
@@ -137,5 +141,6 @@ export const useMqttClient = ({
     unsubscribeFromTopics,
     onMessageArrived,
     onConnectionLost,
+    setSubscribedTopics
   };
 };

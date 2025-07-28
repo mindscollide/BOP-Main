@@ -8,6 +8,7 @@ import {
   GetForwardRatesForCounterParty,
   GetMisDataByRange,
   SaveUserDashboardRM,
+  getMarketStatusRM,
 } from "@/common/api_config";
 import { watchListApi } from "@/common/apiend_points";
 import { setCustomHeaders } from "@/common/utils";
@@ -28,10 +29,7 @@ export const GetDashboardDataAPI = createAsyncThunk(
       const response = await GetDashboardDataAction();
       const { responseCode } = response.data;
       console.log(responseCode, "responseCoderesponseCode");
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+
       if (responseCode === 417) {
         console.log(responseCode, "responseCoderesponseCode");
         await dispatch(refreshTokenAction({ navigate }));
@@ -47,49 +45,14 @@ export const GetDashboardDataAPI = createAsyncThunk(
                 "WatchList_WatchListServiceManager_GetFXTradingSectionAndApplicableInstrument_01".toLowerCase()
               )
           ) {
-            console.log("globalStateWatchlistCardData", response.data);
-            let Data = {
-              responseResult: {
-                datetime: "20240904073145",
-                sections: [
-                  {
-                    sectionID: 1,
-                    instrumentID: 21,
-                    instrumentName: "USD",
-                    sell: 5,
-                    buy: 4,
-                  },
-                  {
-                    sectionID: 2,
-                    instrumentID: 22,
-                    instrumentName: "EUR",
-                    sell: 5,
-                    buy: 4,
-                  },
-                  {
-                    sectionID: 3,
-                    instrumentID: 23,
-                    instrumentName: "GBP",
-                    sell: 5,
-                    buy: 4,
-                  },
-                  {
-                    sectionID: 4,
-                    instrumentID: 24,
-                    instrumentName: "JPY",
-                    sell: 5,
-                    buy: 4,
-                  },
-                ],
-                responseMessage:
-                  "WatchList_WatchListServiceManager_GetDashboardData_01",
-                isExecuted: true,
-              },
-            };
+            console.log(
+              "getAllInstrumentsForCounterPartiesData",
+              response.data
+            );
 
             return {
               response: response.data.responseResult,
-              message: "Successfully Rerieved Data",
+              message: "",
             };
           } else if (
             responseMessage
@@ -98,7 +61,7 @@ export const GetDashboardDataAPI = createAsyncThunk(
                 "WatchList_WatchListServiceManager_GetDashboardData_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Unsuccessfull");
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -139,10 +102,7 @@ export const SaveUserDashboardAPI = createAsyncThunk(
 
       const response = await SaveUserDashboard(Data);
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(SaveUserDashboardAPI({ Data, navigate }));
@@ -153,27 +113,27 @@ export const SaveUserDashboardAPI = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "ERM_WatchlistService_GetFXInstrumentsAPI_01".toLowerCase()
+                "WatchList_WatchListServiceManager_SaveUserDashboard_01".toLowerCase()
               )
           ) {
             console.log("", response.data);
             return {
               response: response.data.responseResult,
-              message: "Successfully Rerieved Data",
+              message: "",
             };
           } else if (
             responseMessage
               .toLowerCase()
               .includes(
-                "ERM_WatchlistService_GetFXInstrumentsAPI_02".toLowerCase()
+                "WatchList_WatchListServiceManager_SaveUserDashboard_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Unsuccessfull");
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
               .includes(
-                "ERM_WatchlistService_GetFXInstrumentsAPI_03".toLowerCase()
+                "WatchList_WatchListServiceManager_SaveUserDashboard_03".toLowerCase()
               )
           ) {
             return rejectWithValue("Something went wrong");
@@ -209,10 +169,7 @@ export const getAllTreasuryInstrumentsApi = createAsyncThunk(
 
       const response = await getAllInstruments();
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(getAllTreasuryInstrumentsApi({ navigate }));
@@ -237,7 +194,9 @@ export const getAllTreasuryInstrumentsApi = createAsyncThunk(
                 "WatchList_WatchListServiceManager_GetAllInstrumentForTreasury_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("No Record found");
+            return rejectWithValue(
+              import.meta.env.VITE_MQTT_PORT === "8883" ? "" : "No Record Found"
+            );
           } else if (
             responseMessage
               .toLowerCase()
@@ -286,10 +245,7 @@ export const GetForwardRatesForCounterPartyApi = createAsyncThunk(
 
       const response = await GetForwardRatesForCounterPartyData();
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(GetForwardRatesForCounterPartyApi({ navigate }));
@@ -314,7 +270,9 @@ export const GetForwardRatesForCounterPartyApi = createAsyncThunk(
                 "WatchList_WatchListServiceManager_GetForwardRatesForCounterParty_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("No Record found");
+            return rejectWithValue(
+              import.meta.env.VITE_MQTT_PORT === "8883" ? "" : "No Record Found"
+            );
           } else if (
             responseMessage
               .toLowerCase()
@@ -363,10 +321,7 @@ export const GetDiscountingRatesForCounterPartyApi = createAsyncThunk(
 
       const response = await GetDiscountingRatesForCounterPartyData();
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(GetDiscountingRatesForCounterPartyApi({ navigate }));
@@ -391,7 +346,9 @@ export const GetDiscountingRatesForCounterPartyApi = createAsyncThunk(
                 "WatchList_WatchListServiceManager_GetDiscountingRatesForCounterParty_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("No Record found");
+            return rejectWithValue(
+              import.meta.env.VITE_MQTT_PORT === "8883" ? "" : "No Record Found"
+            );
           } else if (
             responseMessage
               .toLowerCase()
@@ -439,10 +396,7 @@ export const GetBankSpotForTreasuryApi = createAsyncThunk(
 
       const response = await GetBankSpotForTreasuryData(Data);
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(GetBankSpotForTreasuryApi({ navigate, Data }));
@@ -458,7 +412,7 @@ export const GetBankSpotForTreasuryApi = createAsyncThunk(
           ) {
             return {
               response: response.data.responseResult,
-              message: "API executed successfully.",
+              message: "",
             };
           } else if (
             responseMessage
@@ -467,7 +421,9 @@ export const GetBankSpotForTreasuryApi = createAsyncThunk(
                 "WatchList_WatchListServiceManager_GetBankSpotForTreasury_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("No Record Found");
+            return rejectWithValue(
+              import.meta.env.VITE_MQTT_PORT === "8883" ? "" : "No Record Found"
+            );
           } else if (
             responseMessage
               .toLowerCase()
@@ -512,10 +468,7 @@ export const GetBankForwardForTreasuryApi = createAsyncThunk(
 
       const response = await GetBankForwardForTreasuryData();
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(GetBankForwardForTreasuryApi({ navigate }));
@@ -531,7 +484,7 @@ export const GetBankForwardForTreasuryApi = createAsyncThunk(
           ) {
             return {
               response: response.data.responseResult,
-              message: "API executed successfully.",
+              message: "",
             };
           } else if (
             responseMessage
@@ -540,7 +493,9 @@ export const GetBankForwardForTreasuryApi = createAsyncThunk(
                 "WatchList_WatchListServiceManager_GetBankForwardForTreasury_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("No Record Found");
+            return rejectWithValue(
+              import.meta.env.VITE_MQTT_PORT === "8883" ? "" : "No Record Found"
+            );
           } else if (
             responseMessage
               .toLowerCase()
@@ -585,10 +540,7 @@ export const GetMisDataByRangeAPI = createAsyncThunk(
 
       const response = await GetFXInstruGetMisDataByRange(Data);
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(GetMisDataByRangeAPI({ navigate, Data }));
@@ -605,7 +557,7 @@ export const GetMisDataByRangeAPI = createAsyncThunk(
             console.log("", response.data);
             return {
               response: response.data.responseResult,
-              message: "Successfully Rerieved Data",
+              message: "",
             };
           } else if (
             responseMessage
@@ -614,7 +566,7 @@ export const GetMisDataByRangeAPI = createAsyncThunk(
                 "WatchList_WatchListServiceManager_GetMisDataByRange_04".toLowerCase()
               )
           ) {
-            return rejectWithValue("Unsuccessfull");
+            return rejectWithValue("Something went wrong");
           } else if (
             responseMessage
               .toLowerCase()
@@ -654,10 +606,7 @@ export const GetDiscountingRatesForTreasuryApi = createAsyncThunk(
 
       const response = await GetDiscountingRatesForTreasuryData();
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(GetDiscountingRatesForTreasuryApi({ navigate }));
@@ -682,7 +631,9 @@ export const GetDiscountingRatesForTreasuryApi = createAsyncThunk(
                 "WatchList_WatchListServiceManager_GetDiscountingRatesForTreasury_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("No Record found");
+            return rejectWithValue(
+              import.meta.env.VITE_MQTT_PORT === "8883" ? "" : "No Record Found"
+            );
           } else if (
             responseMessage
               .toLowerCase()
@@ -713,6 +664,56 @@ export const GetDiscountingRatesForTreasuryApi = createAsyncThunk(
       }
     } catch (error) {
       // Reject with error message
+      console.log("", error);
+      return rejectWithValue("Something went wrong");
+    }
+  }
+);
+
+export const getMarketStatusApi = createAsyncThunk(
+  "watchlist/getMarketStatus",
+  async ({ navigate }, { rejectWithValue, dispatch }) => {
+    try {
+      let getMarketStatusPost = createPostAPI(
+        watchListApi,
+        getMarketStatusRM.RequestMethod
+      );
+
+      const response = await getMarketStatusPost();
+      const { responseCode } = response.data;
+
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(getMarketStatus({ navigate }));
+      } else if (response.data.responseCode === 200) {
+        const { isExecuted, responseMessage, marketStatus } =
+          response.data.responseResult;
+        if (isExecuted) {
+          switch (responseMessage.toLowerCase()) {
+            case "WatchList_WatchListServiceManager_GetMarketStatus_01".toLowerCase():
+              return {
+                response: marketStatus,
+                message: "",
+              };
+              break;
+            case "WatchList_WatchListServiceManager_GetMarketStatus_02".toLowerCase():
+              return rejectWithValue(
+                import.meta.env.VITE_MQTT_PORT === "8883"
+                  ? ""
+                  : "No Record Found"
+              );
+
+            default:
+              break;
+          }
+          console.log(responseMessage, "responseMessage");
+        } else {
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
       console.log("", error);
       return rejectWithValue("Something went wrong");
     }

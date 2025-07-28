@@ -6,9 +6,11 @@ import {
   DownloadPDFReportBlotterTrasactionBranch,
   DownloadPDFReportBlotterTrasactionCorporate,
   DownloadPDFReportBlotterTrasactionTreasury,
+  NOPCalcuationReports,
 } from "@/common/api_config";
 import { reportApi } from "@/common/apiend_points";
 import { setCustomHeaders } from "@/common/utils";
+import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
 import createPostAPI from "@/utils/axiosInstance";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
@@ -76,9 +78,27 @@ export const DownloadExcelReportBlotterTrasactionBranchAPI = createAsyncThunk(
       );
 
       const response = await getTransactionData(Data, true);
-      console.log(response, "errorerrorerrorerror");
+      const contentType = response.headers?.["content-type"];
 
-      // 🚨 Ensure response is valid before trying to read Excel blob
+      // 🟡 If backend sent JSON in arraybuffer, decode and check for token issues
+      if (contentType && contentType.includes("application/json")) {
+        const decodedString = new TextDecoder().decode(
+          new Uint8Array(response.data)
+        );
+        const parsedData = JSON.parse(decodedString);
+
+        if (parsedData.responseCode === 417) {
+          await dispatch(refreshTokenAction({ navigate }));
+          await dispatch(
+            DownloadExcelReportBlotterTrasactionBranchAPI({ navigate, Data })
+          );
+          return;
+        }
+
+        return rejectWithValue(parsedData.message || "Something went wrong");
+      }
+
+      // 🟢 If it's a valid Excel file
       if (response?.status === 200) {
         const blob = new Blob([response.data], {
           type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -98,15 +118,10 @@ export const DownloadExcelReportBlotterTrasactionBranchAPI = createAsyncThunk(
       }
     } catch (error) {
       console.log("Excel Download Error:", error);
+
       if (error?.responseCode === 401) {
         navigate("/");
         return rejectWithValue("Unauthorized access, please login again");
-      }
-      console.log(error, "errorerrorerrorerror");
-      console.log(error?.responseCode, "errorerrorerrorerror");
-      if (error?.responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
-        return;
       }
 
       return rejectWithValue("Something went wrong while downloading Excel");
@@ -126,9 +141,30 @@ export const DownloadExcelReportBlotterTrasactionCorporateAPI =
         );
 
         const response = await getTransactionData(Data, true);
-        console.log(response, "errorerrorerrorerror");
+        const contentType = response.headers?.["content-type"];
 
-        // 🚨 Ensure response is valid before trying to read Excel blob
+        // 🟡 Handle JSON error inside arraybuffer
+        if (contentType && contentType.includes("application/json")) {
+          const decodedString = new TextDecoder().decode(
+            new Uint8Array(response.data)
+          );
+          const parsedData = JSON.parse(decodedString);
+
+          if (parsedData.responseCode === 417) {
+            await dispatch(refreshTokenAction({ navigate }));
+            await dispatch(
+              DownloadExcelReportBlotterTrasactionCorporateAPI({
+                navigate,
+                Data,
+              })
+            );
+            return;
+          }
+
+          return rejectWithValue(parsedData.message || "Something went wrong");
+        }
+
+        // 🟢 Valid Excel download
         if (response?.status === 200) {
           const blob = new Blob([response.data], {
             type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -150,15 +186,10 @@ export const DownloadExcelReportBlotterTrasactionCorporateAPI =
         }
       } catch (error) {
         console.log("Excel Download Error:", error);
+
         if (error?.responseCode === 401) {
           navigate("/");
           return rejectWithValue("Unauthorized access, please login again");
-        }
-        console.log(error, "errorerrorerrorerror");
-        console.log(error?.responseCode, "errorerrorerrorerror");
-        if (error?.responseCode === 417) {
-          await dispatch(refreshTokenAction({ navigate }));
-          return;
         }
 
         return rejectWithValue("Something went wrong while downloading Excel");
@@ -177,9 +208,27 @@ export const DownloadExcelReportBlotterTrasactionTreasuryAPI = createAsyncThunk(
       );
 
       const response = await getTransactionData(Data, true);
-      console.log(response, "errorerrorerrorerror");
+      const contentType = response.headers?.["content-type"];
 
-      // 🚨 Ensure response is valid before trying to read Excel blob
+      // 🟡 Check if response contains a JSON error inside arraybuffer
+      if (contentType && contentType.includes("application/json")) {
+        const decodedString = new TextDecoder().decode(
+          new Uint8Array(response.data)
+        );
+        const parsedData = JSON.parse(decodedString);
+
+        if (parsedData.responseCode === 417) {
+          await dispatch(refreshTokenAction({ navigate }));
+          await dispatch(
+            DownloadExcelReportBlotterTrasactionTreasuryAPI({ navigate, Data })
+          );
+          return;
+        }
+
+        return rejectWithValue(parsedData.message || "Something went wrong");
+      }
+
+      // 🟢 Handle valid Excel file
       if (response?.status === 200) {
         const blob = new Blob([response.data], {
           type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -199,15 +248,10 @@ export const DownloadExcelReportBlotterTrasactionTreasuryAPI = createAsyncThunk(
       }
     } catch (error) {
       console.log("Excel Download Error:", error);
+
       if (error?.responseCode === 401) {
         navigate("/");
         return rejectWithValue("Unauthorized access, please login again");
-      }
-      console.log(error, "errorerrorerrorerror");
-      console.log(error?.responseCode, "errorerrorerrorerror");
-      if (error?.responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
-        return;
       }
 
       return rejectWithValue("Something went wrong while downloading Excel");
@@ -226,14 +270,31 @@ export const DownloadPDFReportBlotterTrasactionBranchAPI = createAsyncThunk(
       );
 
       const response = await getTransactionData(Data, true);
+      const contentType = response.headers?.["content-type"];
 
-      // 🟢 PDF file response
+      // 🟡 Handle token-expired or error response inside arraybuffer
+      if (contentType && contentType.includes("application/json")) {
+        const decodedString = new TextDecoder().decode(
+          new Uint8Array(response.data)
+        );
+        const parsedData = JSON.parse(decodedString);
+
+        if (parsedData.responseCode === 417) {
+          await dispatch(refreshTokenAction({ navigate }));
+          await dispatch(
+            DownloadPDFReportBlotterTrasactionBranchAPI({ navigate, Data })
+          );
+          return;
+        }
+
+        return rejectWithValue(parsedData.message || "Something went wrong");
+      }
+
+      // 🟢 Handle valid PDF response
       if (response?.status === 200) {
-        const blob = new Blob([response.data], {
-          type: "application/pdf",
-        });
-
+        const blob = new Blob([response.data], { type: "application/pdf" });
         const url = window.URL.createObjectURL(blob);
+
         const link = document.createElement("a");
         link.href = url;
         link.setAttribute("download", "TransactionDetailsByBranch.pdf");
@@ -247,14 +308,10 @@ export const DownloadPDFReportBlotterTrasactionBranchAPI = createAsyncThunk(
       }
     } catch (error) {
       console.log("PDF Download Error:", error);
+
       if (error?.responseCode === 401) {
         navigate("/");
         return rejectWithValue("Unauthorized access, please login again");
-      }
-
-      if (error?.responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
-        return;
       }
 
       return rejectWithValue("Something went wrong while downloading PDF");
@@ -274,13 +331,31 @@ export const DownloadPDFReportBlotterTrasactionCorporateAPI = createAsyncThunk(
 
       const response = await getTransactionData(Data, true);
 
-      // 🟢 PDF file response
-      if (response?.status === 200) {
-        const blob = new Blob([response.data], {
-          type: "application/pdf",
-        });
+      const contentType = response.headers?.["content-type"];
 
+      // 🟡 Handle JSON error wrapped in arraybuffer
+      if (contentType && contentType.includes("application/json")) {
+        const decodedString = new TextDecoder().decode(
+          new Uint8Array(response.data)
+        );
+        const parsedData = JSON.parse(decodedString);
+
+        if (parsedData.responseCode === 417) {
+          await dispatch(refreshTokenAction({ navigate }));
+          await dispatch(
+            DownloadPDFReportBlotterTrasactionCorporateAPI({ navigate, Data })
+          );
+          return;
+        }
+
+        return rejectWithValue(parsedData.message || "Something went wrong");
+      }
+
+      // 🟢 Handle successful PDF response
+      if (response?.status === 200) {
+        const blob = new Blob([response.data], { type: "application/pdf" });
         const url = window.URL.createObjectURL(blob);
+
         const link = document.createElement("a");
         link.href = url;
         link.setAttribute("download", "TransactionDetailsByCorporate.pdf");
@@ -294,14 +369,10 @@ export const DownloadPDFReportBlotterTrasactionCorporateAPI = createAsyncThunk(
       }
     } catch (error) {
       console.log("PDF Download Error:", error);
+
       if (error?.responseCode === 401) {
         navigate("/");
         return rejectWithValue("Unauthorized access, please login again");
-      }
-
-      if (error?.responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
-        return;
       }
 
       return rejectWithValue("Something went wrong while downloading PDF");
@@ -321,13 +392,35 @@ export const DownloadPDFReportBlotterTrasactionTreasuryAPI = createAsyncThunk(
 
       const response = await getTransactionData(Data, true);
 
-      // 🟢 PDF file response
-      if (response?.status === 200) {
-        const blob = new Blob([response.data], {
-          type: "application/pdf",
-        });
+      const contentType = response.headers?.["content-type"];
 
+      // 🟡 If the response is a JSON error wrapped in arraybuffer
+      if (contentType && contentType.includes("application/json")) {
+        const decodedString = new TextDecoder().decode(
+          new Uint8Array(response.data)
+        );
+        const parsedData = JSON.parse(decodedString);
+        console.log(parsedData, "parsedDataparsedDataparsedData");
+        if (parsedData.responseCode === 417) {
+          console.log(
+            parsedData.responseCode,
+            "parsedDataparsedDataparsedData"
+          );
+          await dispatch(refreshTokenAction({ navigate }));
+          await dispatch(
+            DownloadPDFReportBlotterTrasactionTreasuryAPI({ navigate, Data })
+          );
+          return;
+        }
+
+        return rejectWithValue(parsedData.message || "Something went wrong");
+      }
+
+      // 🟢 Handle valid PDF response
+      if (response.status === 200) {
+        const blob = new Blob([response.data], { type: "application/pdf" });
         const url = window.URL.createObjectURL(blob);
+
         const link = document.createElement("a");
         link.href = url;
         link.setAttribute("download", "TransactionDetailsByTreasury.pdf");
@@ -341,17 +434,75 @@ export const DownloadPDFReportBlotterTrasactionTreasuryAPI = createAsyncThunk(
       }
     } catch (error) {
       console.log("PDF Download Error:", error);
+
       if (error?.responseCode === 401) {
         navigate("/");
         return rejectWithValue("Unauthorized access, please login again");
       }
 
-      if (error?.responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
-        return;
+      return rejectWithValue("Something went wrong while downloading PDF");
+    }
+  }
+);
+
+//Excel Report Function Treasury
+export const DownloadExcelReportNOPCalculationsAPI = createAsyncThunk(
+  "Report/DownloadExcelReportNOPCalculationsAPI",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      const getTransactionData = createPostAPI(
+        reportApi,
+        NOPCalcuationReports.RequestMethod
+      );
+
+      const response = await getTransactionData(Data, true);
+      const contentType = response.headers?.["content-type"];
+
+      // 🟡 Check if response contains a JSON error inside arraybuffer
+      if (contentType && contentType.includes("application/json")) {
+        const decodedString = new TextDecoder().decode(
+          new Uint8Array(response.data)
+        );
+        const parsedData = JSON.parse(decodedString);
+
+        if (parsedData.responseCode === 417) {
+          await dispatch(refreshTokenAction({ navigate }));
+          await dispatch(
+            DownloadExcelReportNOPCalculationsAPI({ navigate, Data })
+          );
+          return;
+        }
+
+        return rejectWithValue(parsedData.message || "Something went wrong");
       }
 
-      return rejectWithValue("Something went wrong while downloading PDF");
+      // 🟢 Handle valid Excel file
+      if (response?.status === 200) {
+        const blob = new Blob([response.data], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "NOPCalculations.xlsx");
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        return { message: "Excel downloaded successfully" };
+      } else {
+        return rejectWithValue("Something went wrong while downloading Excel");
+      }
+    } catch (error) {
+      console.log("Excel Download Error:", error);
+
+      if (error?.responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
+      }
+
+      return rejectWithValue("Something went wrong while downloading Excel");
     }
   }
 );

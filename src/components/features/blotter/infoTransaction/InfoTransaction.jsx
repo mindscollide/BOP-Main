@@ -1,28 +1,77 @@
 import GlobalModal from "@/components/common/globalModal/Modal";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./InfoTransaction.module.css";
 import { Col, Row } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { setTransactionInfoModal } from "@/store/modalSlice/modalSlicer";
+import {
+  clearGetFEDiscountingTransactionDetails,
+  clearGetForwardTransactionDetails,
+  clearGetNonFEDiscountingTransactionDetails,
+  clearGetSpotTransactionDetails,
+} from "@/store/BlotterSlicer/BlotterSlicer";
+import {
+  extractTimeFromCompactDate,
+  formatCompactDateTime,
+  formatDateUTCToGMT,
+} from "@/components/utils/timeFunction";
+import moment from "moment";
 
-const InfoTransaction = ({ InfoRecord, setInfoRecord }) => {
+const InfoTransaction = () => {
   const dispatch = useDispatch();
-  const transactionInfoModal = useSelector(
-    (state) => state.modalReducer.transactionInfoModal
+  const [InfoRecord, setInfoRecord] = useState(null);
+
+  const GetNonFEDiscountingTransactionDetails = useSelector(
+    (state) => state.BlotterSlicer.GetNonFEDiscountingTransactionDetails
+  );
+  const GetFEDiscountingTransactionDetails = useSelector(
+    (state) => state.BlotterSlicer.GetFEDiscountingTransactionDetails
   );
 
+  const GetForwardTransactionDetails = useSelector(
+    (state) => state.BlotterSlicer.GetForwardTransactionDetails
+  );
+
+  const GetSpotTransactionDetails = useSelector(
+    (state) => state.BlotterSlicer.GetSpotTransactionDetails
+  );
+  console.log(GetForwardTransactionDetails, "GetForwardTransactionDetails");
+
+  useEffect(() => {
+    if (GetFEDiscountingTransactionDetails !== null) {
+      setInfoRecord(GetFEDiscountingTransactionDetails.transactionDetailsModel);
+    } else if (GetNonFEDiscountingTransactionDetails !== null) {
+      setInfoRecord(
+        GetNonFEDiscountingTransactionDetails.transactionDetailsModel
+      );
+    } else if (GetForwardTransactionDetails !== null) {
+      setInfoRecord(GetForwardTransactionDetails.transactionDetailsModel);
+    } else if (GetSpotTransactionDetails !== null) {
+      setInfoRecord(GetSpotTransactionDetails.transactionDetailsModel);
+    }
+  }, [
+    GetSpotTransactionDetails,
+    GetForwardTransactionDetails,
+    GetFEDiscountingTransactionDetails,
+    GetNonFEDiscountingTransactionDetails,
+  ]);
+
   const handleclose = () => {
-    setInfoRecord(null);
     dispatch(setTransactionInfoModal(false));
+    dispatch(clearGetFEDiscountingTransactionDetails());
+    dispatch(clearGetSpotTransactionDetails());
+    dispatch(clearGetNonFEDiscountingTransactionDetails());
+    dispatch(clearGetForwardTransactionDetails());
   };
+
+  console.log("Data: ", { InfoRecord: InfoRecord });
   return (
     <GlobalModal
       centered={true}
-      show={transactionInfoModal}
+      show={true}
       size={"md"}
       onHide={handleclose}
-      backdrop={true}
       bodyClassName={styles["transactionModal__body"]}
       modalBody={
         <>
@@ -31,139 +80,464 @@ const InfoTransaction = ({ InfoRecord, setInfoRecord }) => {
               sm={12}
               md={12}
               lg={12}
-              className='d-flex align-items-center gap-1'>
-              <p className={styles["company-name-hd"]}>test</p>
-              <span className={styles["dealstatus"]}>Accepted</span>
-            </Col>
-          </Row>
-          <Row className='mt-2'>
-            <Col sm={12} md={12} lg={12}>
-              <p className={styles["txn_id"]}>14-05-2025/c619</p>
-            </Col>
-          </Row>
-          <Row>
-            <span className={styles["span_underline"]} />
-
-            <Col sm={6} md={6} lg={6}>
-              <p className={styles["transactionInfolabel"]}>Branch Name</p>
-            </Col>
-            <Col sm={6} md={6} lg={6}>
-              <p className={styles["transactionInfolabel"]}>
-                {InfoRecord?.counterPartyName}
+              className="d-flex align-items-center gap-1"
+            >
+              <p className={styles["company-name-hd"]}>
+                {InfoRecord?.corporateName}
               </p>
+              <span className={styles["dealstatus"]}>{InfoRecord?.status}</span>
             </Col>
           </Row>
-          <Row>
-            <span className={styles["span_underline"]} />
+          <Row className="mt-2">
+            <Col sm={12} md={12} lg={12}>
+              <p className={styles["txn_id"]}>{InfoRecord?.txnid}</p>
+            </Col>
+          </Row>
 
-            <Col sm={6} md={6} lg={6}>
-              <p className={styles["transactionInfolabel"]}>Branch Code</p>
-            </Col>
-            <Col sm={6} md={6} lg={6}>
-              <p className={styles["transactionInfolabel"]}>5002</p>
-            </Col>
-          </Row>
-          <Row>
-            <span className={styles["span_underline"]} />
+          {(InfoRecord?.natureType === 3 ||
+            InfoRecord?.natureType === 4 ||
+            InfoRecord?.natureType === 2) && (
+            <Row>
+              <span className={styles["span_underline"]} />
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>Branch Name</p>
+              </Col>
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>
+                  {InfoRecord?.branchName}
+                </p>
+              </Col>
+            </Row>
+          )}
 
-            <Col sm={6} md={6} lg={6}>
-              <p className={styles["transactionInfolabel"]}>TYPE</p>
-            </Col>
-            <Col sm={6} md={6} lg={6}>
-              <p className={styles["transactionInfolabel"]}>Sell</p>
-            </Col>
-          </Row>
-          <Row>
-            <span className={styles["span_underline"]} />
+          {(InfoRecord?.natureType === 3 ||
+            InfoRecord?.natureType === 4 ||
+            InfoRecord?.natureType === 2) && (
+            <Row>
+              <span className={styles["span_underline"]} />
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>Branch Code</p>
+              </Col>
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>
+                  {InfoRecord?.branchCode}
+                </p>
+              </Col>
+            </Row>
+          )}
 
-            <Col sm={6} md={6} lg={6}>
-              <p className={styles["transactionInfolabel"]}>Nature</p>
-            </Col>
-            <Col sm={6} md={6} lg={6}>
-              <p className={styles["transactionInfolabel"]}>1</p>
-            </Col>
-          </Row>
-          <Row>
-            <span className={styles["span_underline"]} />
+          {(InfoRecord?.natureType === 3 ||
+            InfoRecord?.natureType === 4 ||
+            InfoRecord?.natureType === 2 ||
+            InfoRecord?.natureType === 1) && (
+            <Row>
+              <span className={styles["span_underline"]} />
+              <Col
+                sm={6}
+                md={6}
+                lg={6}
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <p className={styles["transactionInfolabelInititedBy"]}>
+                  Initiated By
+                </p>
+              </Col>
+              <Col sm={6} md={6} lg={6}>
+                <Row>
+                  <p className={styles["transactionInfolabel"]}>
+                    {InfoRecord?.initiatedByUserName
+                      ? InfoRecord?.initiatedByUserName
+                      : "N/A"}
+                  </p>
+                  <p className={styles["transactionInfolabelEmail"]}>
+                    {InfoRecord?.initiatedByUserEmail
+                      ? InfoRecord?.initiatedByUserEmail
+                      : "N/A"}
+                  </p>
+                </Row>
+              </Col>
+            </Row>
+          )}
+          {(InfoRecord?.natureType === 3 ||
+            InfoRecord?.natureType === 4 ||
+            InfoRecord?.natureType === 2 ||
+            InfoRecord?.natureType === 1) && (
+            <Row>
+              <span className={styles["span_underline"]} />
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>TYPE</p>
+              </Col>
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>
+                  {InfoRecord?.side}
+                </p>
+              </Col>
+            </Row>
+          )}
 
-            <Col sm={6} md={6} lg={6}>
-              <p className={styles["transactionInfolabel"]}>Currency Pair</p>
-            </Col>
-            <Col sm={6} md={6} lg={6}>
-              <p className={styles["transactionInfolabel"]}>USDPKR</p>
-            </Col>
-          </Row>
-          <Row>
-            <span className={styles["span_underline"]} />
+          {(InfoRecord?.natureType === 3 ||
+            InfoRecord?.natureType === 4 ||
+            InfoRecord?.natureType === 2 ||
+            InfoRecord?.natureType === 1) && (
+            <Row>
+              <span className={styles["span_underline"]} />
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>Nature</p>
+              </Col>
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>
+                  {InfoRecord?.nature}
+                </p>
+              </Col>
+            </Row>
+          )}
 
-            <Col sm={6} md={6} lg={6}>
-              <p className={styles["transactionInfolabel"]}>Rate</p>
-            </Col>
-            <Col sm={6} md={6} lg={6}>
-              <p className={styles["transactionInfolabel"]}>289.00</p>
-            </Col>
-          </Row>
-          <Row>
-            <span className={styles["span_underline"]} />
+          {(InfoRecord?.natureType === 3 ||
+            InfoRecord?.natureType === 4 ||
+            InfoRecord?.natureType === 2 ||
+            InfoRecord?.natureType === 1) && (
+            <Row>
+              <span className={styles["span_underline"]} />
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>Currency Pair</p>
+              </Col>
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>
+                  {InfoRecord?.ccY1}
+                  {InfoRecord?.ccY2}
+                </p>
+              </Col>
+            </Row>
+          )}
 
-            <Col sm={6} md={6} lg={6}>
-              <p className={styles["transactionInfolabel"]}>Amount</p>
-            </Col>
-            <Col sm={6} md={6} lg={6}>
-              <p className={styles["transactionInfolabel"]}>N/A</p>
-            </Col>
-          </Row>
-          <Row>
-            <span className={styles["span_underline"]} />
+          {InfoRecord?.natureType === 1 && (
+            <Row>
+              <span className={styles["span_underline"]} />
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>Rate</p>
+              </Col>
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>
+                  {InfoRecord?.rate}
+                </p>
+              </Col>
+            </Row>
+          )}
 
-            <Col sm={6} md={6} lg={6}>
-              <p className={styles["transactionInfolabel"]}>Date</p>
-            </Col>
-            <Col sm={6} md={6} lg={6}>
-              <p className={styles["transactionInfolabel"]}>N/A</p>
-            </Col>
-          </Row>
-          <Row>
-            <span className={styles["span_underline"]} />
+          {(InfoRecord?.natureType === 3 ||
+            InfoRecord?.natureType === 4 ||
+            InfoRecord?.natureType === 2 ||
+            InfoRecord?.natureType === 1) && (
+            <Row>
+              <span className={styles["span_underline"]} />
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>Amount</p>
+              </Col>
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>
+                  {InfoRecord?.amount}
+                </p>
+              </Col>
+            </Row>
+          )}
 
-            <Col sm={6} md={6} lg={6}>
-              <p className={styles["transactionInfolabel"]}>TXN TIME</p>
-            </Col>
-            <Col sm={6} md={6} lg={6}>
-              <p className={styles["transactionInfolabel"]}>14:38 pm</p>
-            </Col>
-          </Row>
-          <Row>
-            <span className={styles["span_underline"]} />
+          {InfoRecord?.natureType === 1 && (
+            <Row>
+              <span className={styles["span_underline"]} />
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>Date</p>
+              </Col>
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>
+                  {moment(formatDateUTCToGMT(InfoRecord?.tradeDateTime)).format(
+                    "ddd, MMM DD, YYYY"
+                  )}
+                </p>
+              </Col>
+            </Row>
+          )}
+          {(InfoRecord?.natureType === 3 ||
+            InfoRecord?.natureType === 4 ||
+            InfoRecord?.natureType === 2) && (
+            <Row>
+              <span className={styles["span_underline"]} />
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>Tenor</p>
+              </Col>
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>
+                  {InfoRecord?.tenorDays}
+                </p>
+              </Col>
+            </Row>
+          )}
 
-            <Col sm={6} md={6} lg={6}>
-              <p className={styles["transactionInfolabel"]}>Cancelled Time</p>
-            </Col>
-            <Col sm={6} md={6} lg={6}>
-              <p className={styles["transactionInfolabel"]}>N/A</p>
-            </Col>
-          </Row>
-          <Row>
-            <span className={styles["span_underline"]} />
+          {(InfoRecord?.natureType === 3 ||
+            InfoRecord?.natureType === 4 ||
+            InfoRecord?.natureType === 2) && (
+            <Row>
+              <span className={styles["span_underline"]} />
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>Maturity Date</p>
+              </Col>
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>
+                  {moment(formatDateUTCToGMT(InfoRecord?.tradeDateTime)).format(
+                    "ddd DD MMM, YYYY"
+                  )}
+                </p>
+              </Col>
+            </Row>
+          )}
+          {(InfoRecord?.natureType === 3 ||
+            InfoRecord?.natureType === 4 ||
+            InfoRecord?.natureType === 2) && (
+            <Row>
+              <span className={styles["span_underline"]} />
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>Option Days</p>
+              </Col>
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>
+                  {InfoRecord?.optionsDays}
+                </p>
+              </Col>
+            </Row>
+          )}
 
-            <Col sm={6} md={6} lg={6}>
-              <p className={styles["transactionInfolabel"]}>LC NO</p>
-            </Col>
-            <Col sm={6} md={6} lg={6}>
-              <p className={styles["transactionInfolabel"]}>qwe</p>
-            </Col>
-          </Row>
-          <Row>
-            <span className={styles["span_underline"]} />
+          {(InfoRecord?.natureType === 3 ||
+            InfoRecord?.natureType === 4 ||
+            InfoRecord?.natureType === 2) && (
+            <Row>
+              <span className={styles["span_underline"]} />
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>
+                  Option End Date
+                </p>
+              </Col>
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>
+                  {moment(formatDateUTCToGMT(InfoRecord?.optionsDate)).format(
+                    "ddd DD MMM, YYYY"
+                  )}
+                </p>
+              </Col>
+            </Row>
+          )}
 
-            <Col sm={6} md={6} lg={6}>
-              <p className={styles["transactionInfolabel"]}>Account # </p>
-            </Col>
-            <Col sm={6} md={6} lg={6}>
-              <p className={styles["transactionInfolabel"]}>asd</p>
-            </Col>
-            <span className={styles["span_underline"]} />
-          </Row>
+          {(InfoRecord?.natureType === 3 ||
+            InfoRecord?.natureType === 4 ||
+            InfoRecord?.natureType === 2) && (
+            <Row>
+              <span className={styles["span_underline"]} />
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>Ready</p>
+              </Col>
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>
+                  {InfoRecord?.ready}
+                </p>
+              </Col>
+            </Row>
+          )}
+
+          {InfoRecord?.natureType === 3 && (
+            <Row>
+              <span className={styles["span_underline"]} />
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>SOFR</p>
+              </Col>
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>{"N/A"}</p>
+              </Col>
+            </Row>
+          )}
+
+          {InfoRecord?.natureType === 4 && (
+            <Row>
+              <span className={styles["span_underline"]} />
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>KIBOR</p>
+              </Col>
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>
+                  {InfoRecord?.kibor}
+                </p>
+              </Col>
+            </Row>
+          )}
+
+          {(InfoRecord?.natureType === 2 || InfoRecord?.natureType === 4) && (
+            <Row>
+              <span className={styles["span_underline"]} />
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>Swap</p>
+              </Col>
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>
+                  {InfoRecord?.swap}
+                </p>
+              </Col>
+            </Row>
+          )}
+          {(InfoRecord?.natureType === 3 ||
+            InfoRecord?.natureType === 4 ||
+            InfoRecord?.natureType === 2 ||
+            InfoRecord?.natureType === 1) && (
+            <Row>
+              <span className={styles["span_underline"]} />
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>
+                  TXN Accepted Time
+                </p>
+              </Col>
+              <Col sm={6} md={6} lg={6}>
+                {/* <p className={styles["transactionInfolabel"]}>
+                  {extractTimeFromCompactDate(InfoRecord?.settlementDateTime)}
+                </p> */}
+                <p className={styles["transactionInfolabel"]}>
+                  {InfoRecord?.settlementDateTime !== "N/A"
+                    ? moment(
+                        formatDateUTCToGMT(InfoRecord?.settlementDateTime)
+                      ).format("hh:mm A")
+                    : InfoRecord?.cancelledTime}
+                </p>
+              </Col>
+            </Row>
+          )}
+
+          {(InfoRecord?.natureType === 1 ||
+            InfoRecord?.natureType === 2 ||
+            InfoRecord?.natureType === 3 ||
+            InfoRecord?.natureType === 4) && (
+            <Row>
+              <span className={styles["span_underline"]} />
+              <Col
+                sm={6}
+                md={6}
+                lg={6}
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <p className={styles["transactionInfolabelInititedBy"]}>
+                  Accepted By
+                </p>
+              </Col>
+              <Col sm={6} md={6} lg={6}>
+                <Row>
+                  <p className={styles["transactionInfolabel"]}>
+                    {InfoRecord?.acceptedByUserName
+                      ? InfoRecord?.acceptedByUserName
+                      : "N/A"}
+                  </p>
+                  <p className={styles["transactionInfolabelEmail"]}>
+                    {InfoRecord?.acceptedByUserEmail
+                      ? InfoRecord?.acceptedByUserEmail
+                      : "N/A"}
+                  </p>
+                </Row>
+              </Col>
+            </Row>
+          )}
+
+          {(InfoRecord?.natureType === 3 ||
+            InfoRecord?.natureType === 4 ||
+            InfoRecord?.natureType === 2 ||
+            InfoRecord?.natureType === 1) && (
+            <Row>
+              <span className={styles["span_underline"]} />
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>Cancelled Time</p>
+              </Col>
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>
+                  {InfoRecord?.cancelledTime !== "N/A"
+                    ? moment(
+                        formatDateUTCToGMT(InfoRecord?.cancelledTime)
+                      ).format("hh:mm A")
+                    : InfoRecord?.cancelledTime}
+                </p>
+              </Col>
+            </Row>
+          )}
+
+          {(InfoRecord?.natureType === 1 ||
+            InfoRecord?.natureType === 2 ||
+            InfoRecord?.natureType === 3 ||
+            InfoRecord?.natureType === 4) && (
+            <Row>
+              <span className={styles["span_underline"]} />
+              <Col
+                sm={6}
+                md={6}
+                lg={6}
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <p className={styles["transactionInfolabelInititedBy"]}>
+                  Cancelled By
+                </p>
+              </Col>
+              <Col sm={6} md={6} lg={6}>
+                <Row>
+                  <p className={styles["transactionInfolabel"]}>
+                    {InfoRecord?.cancelledByUserName
+                      ? InfoRecord?.cancelledByUserName
+                      : "N/A"}
+                  </p>
+                  <p className={styles["transactionInfolabelEmail"]}>
+                    {InfoRecord?.cancelledByUserEmail
+                      ? InfoRecord?.cancelledByUserEmail
+                      : "N/A"}
+                  </p>
+                </Row>
+              </Col>
+            </Row>
+          )}
+          {InfoRecord?.natureType === 1 && (
+            <Row>
+              <span className={styles["span_underline"]} />
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>LC NO</p>
+              </Col>
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>
+                  {InfoRecord?.lcNumber !== "" ? InfoRecord?.lcNumber : "-"}
+                </p>
+              </Col>
+            </Row>
+          )}
+          {(InfoRecord?.natureType === 3 ||
+            InfoRecord?.natureType === 4 ||
+            InfoRecord?.natureType === 2) && (
+            <Row>
+              <span className={styles["span_underline"]} />
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>LC/Doc. NO</p>
+              </Col>
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>
+                  {InfoRecord?.lcNumber !== "" ? InfoRecord?.lcNumber : "-"}
+                </p>
+              </Col>
+            </Row>
+          )}
+
+          {(InfoRecord?.natureType === 3 ||
+            InfoRecord?.natureType === 4 ||
+            InfoRecord?.natureType === 2 ||
+            InfoRecord?.natureType === 1) && (
+            <Row>
+              <span className={styles["span_underline"]} />
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>Account #</p>
+              </Col>
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>
+                  {InfoRecord?.accountNumber}
+                </p>
+              </Col>
+              <span className={styles["span_underline"]} />
+            </Row>
+          )}
         </>
       }
     />

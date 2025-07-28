@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { Radio, Space } from "antd";
 import { Col, Row } from "react-bootstrap";
@@ -7,8 +7,22 @@ import Modal from "@/components/common/globalModal/Modal";
 import GlobalTable from "@/components/common/table/GlobalTable";
 import DatePickerCom from "@/components/common/datePicker/DatePicker";
 import "./NopModal.css";
+import { useSelector } from "react-redux";
+import { DownloadExcelReportNOPCalculationsAPI } from "@/store/ReportSlicer/ReportActions";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { formatPkAmount } from "@/utils/formatters";
 
 const NopModal = ({ openNopModal, setOpenNopModal }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [dataSource, setDataSource] = useState(null);
+  const GetNOPData = useSelector((state) => state.BlotterSlicer.GetNOPData);
+  console.log("GetNOPDataGetNOPData: ", GetNOPData);
+
+  const GetAllInstrumentForTreasury = useSelector(
+    (state) => state.WatchListReducer.GetAllInstrumentForTreasury
+  );
   const [openDownloadTab, setOpenDownloadTab] = useState(false);
 
   const [value, setValue] = useState(1);
@@ -29,40 +43,50 @@ const NopModal = ({ openNopModal, setOpenNopModal }) => {
     setOpenNopModal(false);
   };
 
-  const dataSource = [
-    {
-      key: "1",
-      name: <p className="fw-bold m-0">USD</p>,
-      InflowData: "55,000.00",
-      OutflowData: "-",
-      NetData: "55,000.00",
-      ConversionData: "55,000.00",
-    },
-    {
-      key: "2",
-      name: <p className="fw-bold m-0">EUR</p>,
-      InflowData: "-",
-      OutflowData: "55,000.00",
-      NetData: "(5,000.00)",
-      ConversionData: "(5,234.00)",
-    },
-    {
-      key: "3",
-      name: <p className="fw-bold m-0">GBP</p>,
-      InflowData: "-",
-      OutflowData: "52,000.00",
-      NetData: "(2,000.00)",
-      ConversionData: "(2,472.00)",
-    },
-    {
-      key: "4",
-      name: <p className="fw-bold m-0">NOP</p>,
-      InflowData: "",
-      OutflowData: "",
-      NetData: "",
-      ConversionData: <p className="fw-bold m-0">46,765.70</p>,
-    },
-  ];
+  useEffect(() => {
+    if (
+      GetNOPData !== null &&
+      GetNOPData?.listOfInstruments &&
+      GetAllInstrumentForTreasury !== null
+    ) {
+      console.log(
+        GetAllInstrumentForTreasury,
+        "GetAllInstrumentForTreasuryGetAllInstrumentForTreasuryGetAllInstrumentForTreasury"
+      );
+      const NOPData = GetNOPData.listOfInstruments.map((data, index) => ({
+        key: index.toString(),
+        name: <p className="fw-bold m-0">{data.instrumentName}</p>,
+        InflowData: formatPkAmount(data.inflow),
+        OutflowData: formatPkAmount(data.outflow),
+        NetData: `${data.net < 0 ? `(${formatPkAmount(Math.abs(data.net))})` : formatPkAmount(data.net)}`,
+        ConversionData: (
+          <p className="fw-bold m-0">
+            {data.conversionToDollar < 0
+              ? `(${formatPkAmount(Math.abs(data.conversionToDollar))})`
+              : formatPkAmount(data.conversionToDollar)}
+          </p>
+        ),
+      }));
+
+      // Append the NOP summary row
+      NOPData.push({
+        key: (NOPData.length + 1).toString(),
+        name: <p className="fw-bold m-0">NOP</p>,
+        InflowData: "",
+        OutflowData: "",
+        NetData: "",
+        ConversionData: (
+          <p className="fw-bold m-0">
+            {GetNOPData.nop < 0
+              ? `(${formatPkAmount(Math.abs(GetNOPData.nop))})`
+              : formatPkAmount(GetNOPData.nop)}
+          </p>
+        ),
+      });
+
+      setDataSource(NOPData);
+    }
+  }, [GetNOPData]);
 
   const columns = [
     {
@@ -128,6 +152,11 @@ const NopModal = ({ openNopModal, setOpenNopModal }) => {
       align: "center",
     },
   ];
+
+  const handleDownloadNOPExcelReport = () => {
+    console.log("hello");
+    dispatch(DownloadExcelReportNOPCalculationsAPI({ navigate }));
+  };
 
   return (
     <>
@@ -214,15 +243,16 @@ const NopModal = ({ openNopModal, setOpenNopModal }) => {
                       sm={9}
                       className="d-flex justify-content-end gap-1 px-0"
                     >
-                      <CustomButton
+                      {/* <CustomButton
                         className="btn-sm btn-primary ms-2 download-history-btn-trigger"
                         applyClass={"NopModalBtn"}
                         onClick={onClickDownloadButton}
                         value="Download History"
-                      />
+                      /> */}
                       <CustomButton
                         className="btn-sm btn-primary ms-2 download-history-btn-trigger"
                         applyClass={"NopdownloadButton"}
+                        onClick={handleDownloadNOPExcelReport}
                         icon={<i className="icon-download"></i>}
                       />
                     </Col>

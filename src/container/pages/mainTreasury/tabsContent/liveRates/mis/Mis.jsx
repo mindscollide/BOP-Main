@@ -5,11 +5,11 @@ import IconElement from "../../../../../../components/common/IconElement/IconEle
 import "./Mis.css";
 import DatePickerCom from "../../../../../../components/common/datePicker/DatePicker";
 import CustomButton from "../../../../../../components/common/globalButton/button";
-import { getMisData, loaderInitializeMis } from "./slicer/misSlicer";
 import SectionLoader from "../../../../../../components/common/sectionLoader/SectionLoader";
 import { useNavigate } from "react-router-dom";
-import { formatDateToUTC } from "@/utils/formatters";
+import { formatDateToUTC, formatPkAmount } from "@/utils/formatters";
 import { GetMisDataByRangeAPI } from "@/components/features/SpotBranch/WatchlistAction";
+import { Col, Row } from "react-bootstrap";
 
 const MIS = () => {
   const dispatch = useDispatch();
@@ -18,6 +18,9 @@ const MIS = () => {
     import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
   const GetMisDataByRangeData = useSelector(
     (state) => state.WatchListReducer.GetMisDataByRange
+  );
+  const GetMisDataByRangeSpinner = useSelector(
+    (state) => state.WatchListReducer.GetMisDataByRangeSpinner
   );
   console.log(GetMisDataByRangeData);
 
@@ -34,7 +37,7 @@ const MIS = () => {
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
 
   useEffect(() => {
-    let Data = { StartDate: "20240828070208", EndDate: "20240828070208" };
+    let Data = { StartDate: "", EndDate: "" };
     dispatch(GetMisDataByRangeAPI({ navigate, Data }));
   }, []);
 
@@ -60,32 +63,30 @@ const MIS = () => {
       dataIndex: "topCustomer",
       key: "topCustomer",
       render: (text, record, index) => {
-        const isExpanded = expandedRowKeys.includes(record.key);
+        const isExpanded = expandedRowKeys.includes(record.corporateName);
         return (
           <>
             <span
               className={`${
                 isExpanded ? "expanded" : ""
-              } mis-volumwise-value bg-none color-black tp-customer-hd roboto-13`}
-            >
+              } mis-volumwise-value bg-none color-black tp-customer-hd roboto-13`}>
               {index === 0 ? "Volumewise" : "Profit-wise (PKR)"}
               {shouldIncludeComponents && (
-                <span className="view-detail cursor-pointer">
+                <span className='view-detail cursor-pointer'>
                   <IconElement
                     onClick={() => handleExpandClick(record)}
                     iconClass={`icon-add-circle-fill fs-6 mx-1 ${
                       index === 1 ? "color-green" : "color-blue"
-                    }`}
-                  ></IconElement>
+                    }`}></IconElement>
                 </span>
               )}
             </span>
             {isExpanded ? (
-              <div className="d-grid">
-                <span className="mis-volumwise-value bg-none color-black py-0 roboto-13">
+              <div className='d-grid'>
+                <span className='mis-volumwise-value bg-none color-black py-0 roboto-13'>
                   Import
                 </span>
-                <span className="mis-volumwise-value bg-none color-black py-0 roboto-13">
+                <span className='mis-volumwise-value bg-none color-black py-0 roboto-13'>
                   Export
                 </span>
               </div>
@@ -104,8 +105,7 @@ const MIS = () => {
           <span
             className={`${
               isExpanded ? "expanded" : ""
-            } roboto-13 mis-volumwise-value bg-none color-black`}
-          >
+            } roboto-13 mis-volumwise-value bg-none color-black`}>
             {record?.corporateName}
           </span>
         );
@@ -123,25 +123,22 @@ const MIS = () => {
             <span
               className={`${isExpanded ? "expanded" : ""} ${
                 index === 1 ? "mis-profitwise-value" : "mis-volumwise-value"
-              } roboto-13`}
-            >
-              {record?.value}
+              } roboto-13`}>
+              {formatPkAmount(record?.value)}
             </span>
             {isExpanded ? (
-              <div className="d-grid">
+              <div className='d-grid'>
                 <span
                   className={`${
                     index === 1 ? "mis-profitwise-value" : "mis-volumwise-value"
-                  } bg-none py-0 roboto-13`}
-                >
-                  {record?.import}
+                  } bg-none py-0 roboto-13`}>
+                  {formatPkAmount(record?.import)}
                 </span>
                 <span
                   className={`${
                     index === 1 ? "mis-profitwise-value" : "mis-volumwise-value"
-                  } bg-none py-0 roboto-13`}
-                >
-                  {record?.export}
+                  } bg-none py-0 roboto-13`}>
+                  {formatPkAmount(record?.export)}
                 </span>
               </div>
             ) : null}
@@ -152,11 +149,13 @@ const MIS = () => {
   ];
 
   const handleExpandClick = (record) => {
-    const isExpanded = expandedRowKeys.includes(record.key);
-    const newExpandedRowKeys = isExpanded
-      ? expandedRowKeys.filter((key) => key !== record.key)
-      : [...expandedRowKeys, record.key];
-
+    console.log(
+      expandedRowKeys,
+      record,
+      "expandedRowKeys expandedRowKeys expandedRowKeys"
+    );
+    const isExpanded = expandedRowKeys.includes(record.corporateName);
+    const newExpandedRowKeys = isExpanded ? [] : [record.corporateName]; // 👈 only one row at a time
     setExpandedRowKeys(newExpandedRowKeys);
   };
 
@@ -179,76 +178,93 @@ const MIS = () => {
         StartDate: formatDateToUTC(startDate),
         EndDate: formatDateToUTC(endDate),
       };
+      dispatch(GetMisDataByRangeAPI({ navigate, Data }));
       console.log(Data, "Data");
     } else {
       alert("Please select both dates.");
     }
   };
+  const handleClickReset = () => {
+    console.log("reset clicked");
+    setMisDate({
+      StartDate: "",
+      EndDate: "",
+    });
+  };
 
   return (
     <>
-      <div className="card-box">
-        <div className="box-header bg-primary-orange px-3">
-          <div className="text-start color-white fw-bold fs-6">MIS</div>
+      <div className='card-box position-relative mis-style'>
+        <div className='box-header bg-primary-orange px-3'>
+          <div className='text-start color-white fw-bold fs-6'>MIS</div>
         </div>
-        <div className="box-content-wrapper px-2">
-          <div className="d-flex flex-wrap h-clc-100">
-            <div className="flex-fill px-3">
+        <div className='p-2'>
+          <Row>
+            <Col sm={12} md={8} lg={8}>
               <GlobalTable
                 columns={columns}
                 dataSource={misTableData}
+                // scroll={{ y: 300 }}
                 prefixCls={"MIS_Table"}
                 pagination={false}
               />
-              <div className="expanded-row">
-                <div className="expanded-column first-column">
-                  <span className="color-hd border-0 roboto-13">
+              <div className='expanded-row'>
+                <div className='expanded-column first-column'>
+                  <span className='color-hd border-0 roboto-13'>
                     Total Profit (PKR)
                   </span>
                 </div>
-                <div className="expanded-column third-column">
-                  <span className="mis-totalprofit-value">{totalProfit}</span>
+                <div className='expanded-column third-column'>
+                  <span className='mis-totalprofit-value'>
+                    {formatPkAmount(totalProfit)}
+                  </span>
                 </div>
               </div>
-            </div>
-            <div className="mis-selectrange-form w-fix-210 bg-lighter p-2">
-              <label className="mb-2 fs-6 color-blue">Select Range</label>
-              <div className="form-group">
-                <label className="mb-1">From</label>
-                <DatePickerCom
-                  placeholder="Select Date"
-                  applyClass={"DatePickerField"}
-                  value={MisDate.StartDate}
-                  onChange={(date) => handleChangeDate(date, "StartDate")}
-                />
+            </Col>
+            <Col sm={12} md={4} lg={4}>
+              <div className='mis-selectrange-form w-fix-210 bg-lighter p-2'>
+                <label className='mb-2 fs-6 color-blue'>Select Range</label>
+                <div className='form-group'>
+                  <div className='mb-1'>From</div>
+                  <DatePickerCom
+                    placeholder='Select Date'
+                    applyClass={"DatePickerField-MIS"}
+                    value={MisDate.StartDate}
+                    onChange={(date) => handleChangeDate(date, "StartDate")}
+                  />
+                </div>
+                <div className='form-group'>
+                  <div className='mb-1'>To</div>
+                  <DatePickerCom
+                    placeholder='Select Date'
+                    applyClass={"DatePickerField-MIS"}
+                    className={"d-block w-100"}
+                    value={MisDate.EndDate}
+                    minDate={
+                      MisDate.StartDate !== ""
+                        ? new Date(MisDate.StartDate)
+                        : null
+                    }
+                    onChange={(date) => handleChangeDate(date, "EndDate")}
+                  />
+                </div>
+                <div className='filter-mis-btn mt-3 d-flex gap-1'>
+                  <CustomButton
+                    value='Search'
+                    onClick={handleClickSearch}
+                    applyClass='searchBtn'
+                  />
+                  <CustomButton
+                    value='Reset'
+                    applyClass='resetBtn'
+                    onClick={handleClickReset}
+                  />
+                </div>
               </div>
-              <div className="form-group">
-                <label className="mb-1">
-                  To <span className="invisible"> 123</span>
-                </label>
-                <DatePickerCom
-                  placeholder="Select Date"
-                  applyClass={"DatePickerField"}
-                  value={MisDate.EndDate}
-                  minDate={
-                    MisDate.StartDate !== ""
-                      ? new Date(MisDate.StartDate)
-                      : null
-                  }
-                  onChange={(date) => handleChangeDate(date, "EndDate")}
-                />
-              </div>
-              <div className="filter-mis-btn mt-3 d-flex gap-1">
-                <CustomButton
-                  value="Search"
-                  onClick={handleClickSearch}
-                  applyClass="searchBtn"
-                />
-                <CustomButton value="Reset" applyClass="resetBtn" />
-              </div>
-            </div>
-          </div>
-          {/* {misReducer?.Loader ? <SectionLoader /> : null} */}
+            </Col>
+          </Row>
+
+          {GetMisDataByRangeSpinner && <SectionLoader />}
         </div>
       </div>
     </>

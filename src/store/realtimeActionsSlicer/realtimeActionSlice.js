@@ -14,6 +14,7 @@ const RealtimeActionsSlice = createSlice({
     categoryisAdded: null,
     categoryisUpdated: null,
     categoryisDeleted: null,
+    dealBoxData: null,
 
     BlotterTransactionRFQExpired: null,
     BlotterTransactionRFQExpiredForTreasury: null,
@@ -43,8 +44,68 @@ const RealtimeActionsSlice = createSlice({
     BlotterTransactionRejectedForTreasury: null,
 
     TransactionAssignedByTreasury: null,
+    TreasurySpotRatesFeed: null,
+    CounterPartySpotRates: null,
+    CategorySpotRates: null,
+    CategoryForwardRates: null,
+    TreasuryFeDiscounting: null,
+    TreasuryNonFeDiscounting: null,
+    TreasuryForwardRates: null,
+    FxTradingCards: null,
+    CategoryFeDiscounting: null,
+    CounterPartyNonFeDiscounting: null,
+    CounterPartyForwardRates: null,
+    CounterPartyFeDiscounting: null,
+    CategoryNonFeDiscouting: null,
+    ClearRatesData: null,
   },
   reducers: {
+    setClearRates: (state, { payload }) => {
+      console.log(payload,"checker")
+      state.ClearRatesData = { ...payload };
+    },
+    setCategoryNonFeDiscounting: (state, { payload }) => {
+      state.CategoryNonFeDiscouting = { ...payload };
+    },
+    setCounterPartyFeDiscounting: (state, { payload }) => {
+      state.CounterPartyFeDiscounting = { ...payload };
+    },
+    setCounterPartyForwardRates: (state, { payload }) => {
+      state.CounterPartyForwardRates = { ...payload };
+    },
+    setCounterPartyNonFeDiscounting: (state, { payload }) => {
+      state.CounterPartyNonFeDiscounting = { ...payload };
+    },
+    setCategoryFeDiscounting: (state, { payload }) => {
+      state.CategoryFeDiscounting = payload;
+    },
+    setFxTradingCards: (state, { payload }) => {
+      state.FxTradingCards = payload;
+    },
+    setTreasuryFeDiscounting: (state, { payload }) => {
+      state.TreasuryFeDiscounting = { ...payload };
+    },
+    setTreasuryNonFeDiscounting: (state, { payload }) => {
+      state.TreasuryNonFeDiscounting = { ...payload };
+    },
+    setTreasuryForwardRates: (state, { payload }) => {
+      state.TreasuryForwardRates = payload;
+    },
+    setCategorySpotRates: (state, { payload }) => {
+      state.CategorySpotRates = { ...payload };
+    },
+    setCategoryForwardRates: (state, { payload }) => {
+      state.CategoryForwardRates = { ...payload };
+    },
+    setCounterPartySpotRates: (state, { payload }) => {
+      state.CounterPartySpotRates = { ...payload };
+    },
+    setTreasurySpotRatesFeed: (state, { payload }) => {
+      state.TreasurySpotRatesFeed = { ...payload };
+    },
+    setDealBoxData(state, { payload }) {
+      state.dealBoxData = payload;
+    },
     setMarketTimingsUpdated(state, { payload }) {
       state.marketTimingsUpdated = payload;
     },
@@ -88,6 +149,7 @@ const RealtimeActionsSlice = createSlice({
       state.BlotterTransactionRFQExpiredForTreasuryDealBox = payload;
     },
     BlotterTransactionAdded(state, { payload }) {
+      console.log("CheckerCheckerChecker122121212", payload);
       state.BlotterTransactionAdded = payload;
     },
     BlotterTransactionAddedForTreasury(state, { payload }) {
@@ -143,6 +205,13 @@ const RealtimeActionsSlice = createSlice({
 });
 
 export const {
+  setClearRates,
+  setCategoryFeDiscounting,
+  setFxTradingCards,
+  setTreasuryFeDiscounting,
+  setTreasuryNonFeDiscounting,
+  setTreasurySpotRatesFeed,
+  setTreasuryForwardRates,
   setBlotterTransactionRFQQuotedForTreasuryDealBox,
   BlotterTransactionRFQExpiredForTreasury,
   BlotterTransactionAddedForTreasury,
@@ -174,6 +243,14 @@ export const {
   BlotterTransactionRFQQuoted,
   setBlotterTransactionRFQExpiredForTreasuryDealBox,
   setBlotterTransactionAddedForTreasuryDealBox,
+  setDealBoxData,
+  setCounterPartySpotRates,
+  setCategorySpotRates,
+  setCategoryForwardRates,
+  setCounterPartyNonFeDiscounting,
+  setCounterPartyForwardRates,
+  setCounterPartyFeDiscounting,
+  setCategoryNonFeDiscounting,
 } = RealtimeActionsSlice.actions;
 
 export default RealtimeActionsSlice.reducer;

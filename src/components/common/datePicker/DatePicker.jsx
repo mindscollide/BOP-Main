@@ -9,14 +9,19 @@ const DatePickerCom = ({
   applyClass,
   zIndex,
   minDate,
-  maxDate
+  maxDate,
+  className,
+  format = "DD-MM-YYYY",
 }) => {
   return (
     <DatePicker
+      containerClassName='d-block'
       value={value}
       onChange={onChange}
+      format={format}
       portal={true}
       minDate={minDate}
+      className={className}
       maxDate={maxDate}
       zIndex={zIndex}
       render={<InputField placeholder={placeholder} applyClass={applyClass} />}

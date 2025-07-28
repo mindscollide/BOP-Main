@@ -19,10 +19,7 @@ export const GetNonFEDiscountingTableApi = createAsyncThunk(
       console.log(response, "result");
       const { responseCode } = response.data;
       console.log(responseCode, "result");
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+
       if (responseCode === 417) {
         console.log(response, "result");
 
@@ -35,7 +32,7 @@ export const GetNonFEDiscountingTableApi = createAsyncThunk(
         if (!isExecuted) {
           console.log(response, "result");
 
-          return rejectWithValue(responseMessage);
+          return rejectWithValue("Something went wrong");
         }
         if (
           responseMessage
@@ -46,7 +43,7 @@ export const GetNonFEDiscountingTableApi = createAsyncThunk(
         ) {
           return {
             response: response.data.responseResult,
-            message: "Get Non Fe Discounting Data",
+            message: "",
           };
         } else if (
           responseMessage
@@ -96,10 +93,7 @@ export const PublishNonFEDiscountingTableApi = createAsyncThunk(
       const response = await publishNonFeDiscounting(Data);
       console.log(response, "result");
       const { responseCode } = response.data;
-      if (responseCode === 401) {
-        navigate("/");
-        return rejectWithValue("Unauthorized access, please login again");
-      }
+
       if (responseCode === 417) {
         console.log(response, "result");
 
@@ -108,7 +102,7 @@ export const PublishNonFEDiscountingTableApi = createAsyncThunk(
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (!isExecuted) {
-          return rejectWithValue(responseMessage);
+          return rejectWithValue("Something went wrong");
         }
         if (
           responseMessage
@@ -119,7 +113,7 @@ export const PublishNonFEDiscountingTableApi = createAsyncThunk(
         ) {
           return {
             response: response.data.responseResult,
-            message: "Publish Non Discounting Rates Published Successfully",
+            message: "Non-FE Discounting Rates Published Successfully",
           };
         } else if (
           responseMessage

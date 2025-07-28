@@ -7,8 +7,10 @@ import {
   PublishNonFEDiscountingTableApi,
 } from "@/components/features/NonFeDiscountingTable/NonFeDiscountingAction";
 import {
+  GetVoltMeterStatusApi,
   PublishNewRatesAction,
   PublishTenorWiseForwardsAction,
+  UpdateVoltMeterStatusApi,
   clearRatesAction,
   createTenorAction,
   getAllTenorsAction,
@@ -19,7 +21,7 @@ import {
   marketOnOffAction,
   publishDiscountingRatesAction,
 } from "@/container/pages/mainDealer/dealerActions";
-import { formatCurrencyInput } from "@/utils/formatters";
+import { formatCurrencyInputForNegativeValAlso } from "@/utils/formatters";
 import { createSlice } from "@reduxjs/toolkit";
 
 const dealerReducer = createSlice({
@@ -50,8 +52,14 @@ const dealerReducer = createSlice({
       value: 0,
       label: "",
     },
+    GetVoltMeterStatus: null,
+    UpdateVoltMeterStatus: null,
+    GetVoltMeterStatusRealtime: null,
   },
   reducers: {
+    setUpdateVolMeterRealtime: (state, action) => {
+      state.GetVoltMeterStatusRealtime = action.payload;
+    },
     clearDealerResponseMessage: (state) => {
       state.responseMessage = "";
     },
@@ -68,10 +76,8 @@ const dealerReducer = createSlice({
           if (item.tenorID === tenorID) {
             return {
               ...item,
-              currentBid:
-                view === "bid" ? formatCurrencyInput(value) : item.currentBid,
-              currentAsk:
-                view === "ask" ? formatCurrencyInput(value) : item.currentAsk,
+              currentBid: view === "bid" ? value : item.currentBid,
+              currentAsk: view === "ask" ? value : item.currentAsk,
             };
           }
           return item;
@@ -123,6 +129,7 @@ const dealerReducer = createSlice({
         state.Loader = false;
         state.error = action.payload;
         state.getLastPublishRates = null;
+        state.responseMessage = payload;
       })
       .addCase(PublishNewRatesAction.pending, (state) => {
         state.Loader = true;
@@ -130,6 +137,7 @@ const dealerReducer = createSlice({
       .addCase(PublishNewRatesAction.fulfilled, (state, { payload }) => {
         state.Loader = false;
         state.getCurrentPublishRate = payload?.response;
+        state.getLastPublishRates = payload?.response;
         state.responseMessage = payload?.message;
       })
       .addCase(PublishNewRatesAction.rejected, (state, { payload }) => {
@@ -299,6 +307,34 @@ const dealerReducer = createSlice({
         state.getDealerDashboardData = null;
         state.error = payload;
         state.responseMessage = payload;
+      })
+      .addCase(GetVoltMeterStatusApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(GetVoltMeterStatusApi.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.GetVoltMeterStatus = payload?.response;
+        state.responseMessage = payload?.message;
+      })
+      .addCase(GetVoltMeterStatusApi.rejected, (state, { payload }) => {
+        state.Loader = false;
+        state.GetVoltMeterStatus = null;
+        state.error = payload;
+        state.responseMessage = payload;
+      })
+      .addCase(UpdateVoltMeterStatusApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(UpdateVoltMeterStatusApi.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.UpdateVoltMeterStatus = payload?.response;
+        state.responseMessage = payload?.message;
+      })
+      .addCase(UpdateVoltMeterStatusApi.rejected, (state, { payload }) => {
+        state.Loader = false;
+        state.UpdateVoltMeterStatus = null;
+        state.error = payload;
+        state.responseMessage = payload;
       });
   },
 });
@@ -307,5 +343,6 @@ export const {
   setForwardsForTreasuryBranch,
   setCategoryValue,
   updateForwardItem,
+  setUpdateVolMeterRealtime,
 } = dealerReducer.actions;
 export default dealerReducer.reducer;

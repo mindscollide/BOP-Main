@@ -1,7 +1,8 @@
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import GlobalTable from "@/components/common/table/GlobalTable";
 import { buildDiscountingTable } from "@/components/utils/generateColumnsData";
-import React, { useEffect, useState } from "react";
+import { throttle } from "lodash";
+import React, { useEffect, useMemo, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import { useSelector } from "react-redux";
 
@@ -19,18 +20,21 @@ const CategoryNonFeDiscountingTable = () => {
   const allInstrumentForTreasuryData = useSelector(
     (state) => state.WatchListReducer.GetAllInstrumentForTreasury
   );
-  console.log(
-    "GetCategoryWiseDiscountingRates: ",
-    GetCategoryWiseDiscountingRates
+  const CategoryNonFeDiscouting = useSelector(
+    (state) => state.RealtimeActionsSlice.CategoryNonFeDiscouting
   );
+
+  const marketStatus = useSelector(
+    (state) => state.WatchListReducer.getMarketStatus
+  );
+
+  console.log("marketStatusmarketStatus2434: ", marketStatus);
   useEffect(() => {
-    if (
-      getAllTenorsRecords !== null &&
-      GetCategoryWiseDiscountingRates !== null &&
-      allInstrumentForTreasuryData
-    ) {
+    if (getAllTenorsRecords !== null && allInstrumentForTreasuryData) {
       try {
-        const { nonFEDiscountingRates } = GetCategoryWiseDiscountingRates;
+        const { nonFEDiscountingRates = [] } =
+          GetCategoryWiseDiscountingRates !== null &&
+          GetCategoryWiseDiscountingRates;
         let getAllInstrument = {
           instruments: allInstrumentForTreasuryData.discountingInstruments,
         };
@@ -50,7 +54,62 @@ const CategoryNonFeDiscountingTable = () => {
         }
       } catch (error) {}
     }
-  }, []);
+  }, [
+    GetCategoryWiseDiscountingRates,
+    allInstrumentForTreasuryData,
+    getAllTenorsRecords,
+  ]);
+
+  const throttledUpdate = useMemo(
+    () =>
+      throttle((discountingUpdate) => {
+        const { instrumentNonFEDiscountingData } = discountingUpdate;
+
+        setDataSource((prevData) =>
+          prevData.map((row) => {
+            let updatedRow = { ...row };
+
+            instrumentNonFEDiscountingData.forEach((d) => {
+              Object.keys(row).forEach((key) => {
+                if (
+                  key.startsWith("InstrumentID_") &&
+                  row[key] === d.instrumentID &&
+                  row.TenorID === d.tenorID
+                ) {
+                  const currency = key.split("_")[1];
+                  updatedRow[`rate_${currency}`] = d.bidWithSpread;
+                }
+              });
+            });
+
+            return updatedRow;
+          })
+        );
+      }, 20),
+    []
+  );
+
+  useEffect(() => {
+    if (CategoryNonFeDiscouting !== null) {
+      throttledUpdate(CategoryNonFeDiscouting);
+    }
+  }, [CategoryNonFeDiscouting, throttledUpdate]);
+
+  useEffect(() => {
+    if (marketStatus !== null && marketStatus === false) {
+      setDataSource((prevData) =>
+        prevData.map((row) => {
+          const updatedRow = { ...row };
+          Object.keys(updatedRow).forEach((key) => {
+            if (key.startsWith("rate_")) {
+              updatedRow[key] = 0;
+            }
+          });
+          return updatedRow;
+        })
+      );
+    }
+  }, [marketStatus]);
 
   return (
     <Row>

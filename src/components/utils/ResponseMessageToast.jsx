@@ -1,23 +1,23 @@
+import { useSelector, useDispatch } from "react-redux";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import NotificationSnackbar from "../common/NotificationSnackbar";
-import { useDispatch } from "react-redux";
 import { clearDealerResponseMessage } from "@/store/dealerReducer/dealerSlicer";
 import { clearAuthResponseMessage } from "@/store/authSlicer/authSlicer";
 import { clearBlotterResponseMessage } from "@/store/BlotterSlicer/BlotterSlicer";
 import { clearCatgeoryResponseMessage } from "@/store/categoryReducer/categoryReducer";
 import { clearReportResponseMessage } from "@/store/ReportSlicer/ReportSlicer";
 import { clearSettingResponseMessage } from "@/store/settingSlicer/SettingSlicer";
+import { clearWatchListResponseMessage } from "@/store/watchListSlicer/WatchListSlicer";
 
 export const ResponseMessage = () => {
-  const disaptch = useDispatch();
+  const dispatch = useDispatch();
+
   const UploadRateResponseMessage = useSelector(
     (state) => state.dealerReducer.responseMessage
   );
   const authResponseMessage = useSelector(
     (state) => state.authReducer.responseMessage
   );
-
   const WatchListResponseMessage = useSelector(
     (state) => state.WatchListReducer.responseMessage
   );
@@ -45,119 +45,109 @@ export const ResponseMessage = () => {
   const chatResponseMessage = useSelector(
     (state) => state.chatSlicer.responseMessage
   );
-  const [message, setMessage] = useState("");
-  useEffect(() => {
-    if (WatchListResponseMessage !== "") {
-      setMessage(WatchListResponseMessage);
 
-      setTimeout(() => {
-        setMessage("");
-        // disaptch(clearDealerResponseMessage());
-      }, 3000);
+  const [message, setMessage] = useState("");
+
+  // Debug logs
+  console.group("🔔 Response Messages State");
+  console.log("✅ UploadRateResponseMessage:", UploadRateResponseMessage);
+  console.log("✅ authResponseMessage:", authResponseMessage);
+  console.log("✅ WatchListResponseMessage:", WatchListResponseMessage);
+  console.log("✅ RFQResponseMessage:", RFQResponseMessage);
+  console.log("✅ dealerResponseMessage:", dealerResponseMessage);
+  console.log("✅ catgeoryResponseMessage:", catgeoryResponseMessage);
+  console.log("✅ ReportResponseMessage:", ReportResponseMessage);
+  console.log("✅ CalculatorResponseMessage:", CalculatorResponseMessage);
+  console.log("✅ settingResponseMessage:", settingResponseMessage);
+  console.log("✅ BlotterResponseMessage:", BlotterResponseMessage);
+  console.log("✅ chatResponseMessage:", chatResponseMessage);
+  console.groupEnd();
+
+  const showMessage = (msg, clearAction) => {
+    setMessage(msg);
+    setTimeout(() => {
+      setMessage("");
+      if (clearAction) dispatch(clearAction());
+    }, 3000);
+  };
+
+  useEffect(() => {
+    if (
+      WatchListResponseMessage !== "" &&
+      WatchListResponseMessage !== undefined
+    ) {
+      showMessage(WatchListResponseMessage, clearWatchListResponseMessage);
     }
   }, [WatchListResponseMessage]);
-  useEffect(() => {
-    if (RFQResponseMessage !== "") {
-      setMessage(RFQResponseMessage);
 
-      setTimeout(() => {
-        setMessage("");
-        // disaptch(clearDealerResponseMessage());
-      }, 3000);
+  useEffect(() => {
+    if (RFQResponseMessage !== "" && RFQResponseMessage !== undefined) {
+      showMessage(RFQResponseMessage);
     }
   }, [RFQResponseMessage]);
-  useEffect(() => {
-    if (dealerResponseMessage !== "") {
-      setMessage(dealerResponseMessage);
 
-      setTimeout(() => {
-        setMessage("");
-        disaptch(clearDealerResponseMessage());
-      }, 3000);
+  useEffect(() => {
+    if (dealerResponseMessage !== "" && dealerResponseMessage !== undefined) {
+      showMessage(dealerResponseMessage, clearDealerResponseMessage);
     }
   }, [dealerResponseMessage]);
-  useEffect(() => {
-    if (catgeoryResponseMessage !== "") {
-      setMessage(catgeoryResponseMessage);
 
-      setTimeout(() => {
-        setMessage("");
-        disaptch(clearCatgeoryResponseMessage());
-      }, 3000);
+  useEffect(() => {
+    if (
+      catgeoryResponseMessage !== "" &&
+      catgeoryResponseMessage !== undefined
+    ) {
+      showMessage(catgeoryResponseMessage, clearCatgeoryResponseMessage);
     }
   }, [catgeoryResponseMessage]);
-  useEffect(() => {
-    if (ReportResponseMessage !== "") {
-      setMessage(ReportResponseMessage);
 
-      setTimeout(() => {
-        setMessage("");
-        disaptch(clearReportResponseMessage());
-      }, 3000);
+  useEffect(() => {
+    if (ReportResponseMessage !== "" && ReportResponseMessage !== undefined) {
+      showMessage(ReportResponseMessage, clearReportResponseMessage);
     }
   }, [ReportResponseMessage]);
-  useEffect(() => {
-    if (CalculatorResponseMessage !== "") {
-      setMessage(CalculatorResponseMessage);
 
-      setTimeout(() => {
-        setMessage("");
-        // disaptch(clearDealerResponseMessage());
-      }, 3000);
+  useEffect(() => {
+    if (
+      CalculatorResponseMessage !== "" &&
+      CalculatorResponseMessage !== undefined
+    ) {
+      showMessage(CalculatorResponseMessage);
     }
   }, [CalculatorResponseMessage]);
-  useEffect(() => {
-    if (settingResponseMessage !== "") {
-      setMessage(settingResponseMessage);
 
-      setTimeout(() => {
-        setMessage("");
-        disaptch(clearSettingResponseMessage());
-      }, 3000);
+  useEffect(() => {
+    if (settingResponseMessage !== "" && settingResponseMessage !== undefined) {
+      showMessage(settingResponseMessage, clearSettingResponseMessage);
     }
   }, [settingResponseMessage]);
-  useEffect(() => {
-    if (BlotterResponseMessage !== "") {
-      setMessage(BlotterResponseMessage);
 
-      setTimeout(() => {
-        setMessage("");
-        disaptch(clearBlotterResponseMessage());
-      }, 3000);
+  useEffect(() => {
+    if (BlotterResponseMessage !== "" && BlotterResponseMessage !== undefined) {
+      showMessage(BlotterResponseMessage, clearBlotterResponseMessage);
     }
   }, [BlotterResponseMessage]);
-  useEffect(() => {
-    if (chatResponseMessage !== "") {
-      setMessage(chatResponseMessage);
 
-      setTimeout(() => {
-        setMessage("");
-        // disaptch(clearDealerResponseMessage());
-      }, 3000);
+  useEffect(() => {
+    if (chatResponseMessage !== "" && chatResponseMessage !== undefined) {
+      showMessage(chatResponseMessage);
     }
   }, [chatResponseMessage]);
 
   useEffect(() => {
-    if (authResponseMessage) {
-      setMessage(authResponseMessage);
-
-      setTimeout(() => {
-        setMessage("");
-        disaptch(clearAuthResponseMessage());
-      }, 3000);
+    if (authResponseMessage !== "" && authResponseMessage !== undefined) {
+      showMessage(authResponseMessage, clearAuthResponseMessage);
     }
   }, [authResponseMessage]);
-  // UploadRateResponseMessage
-  useEffect(() => {
-    if (UploadRateResponseMessage) {
-      setMessage(UploadRateResponseMessage);
 
-      setTimeout(() => {
-        setMessage("");
-        // disaptch(clearAuthResponseMessage());
-      }, 3000);
+  useEffect(() => {
+    if (
+      UploadRateResponseMessage !== "" &&
+      UploadRateResponseMessage !== undefined
+    ) {
+      showMessage(UploadRateResponseMessage, clearDealerResponseMessage);
     }
   }, [UploadRateResponseMessage]);
-  // return null
+
   return <NotificationSnackbar message={message} />;
 };

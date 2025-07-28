@@ -18,23 +18,21 @@ export const buildDiscountingTable = (
     const applicableInstruments =
       value === 1
         ? instruments?.filter((inst) => inst.discountingApplicable) || []
-        : value === 3
+        : value === 3 || value === 5
         ? instruments
         : instruments;
 
     const applicableTenors =
-      value === 1 || value === 3
+      value === 1 || value === 3 || value === 5
         ? tenors?.filter((tenor) => tenor.isDiscountingApplicable) || []
         : tenors;
 
     // Step 2: Create a map using composite key (instrumentID-tenorID)
     const rateMap = {};
-    console.log(Data, "DataDataDataData");
     Data?.forEach((rate) => {
       const key = `${rate.instrumentID}-${rate.tenorID}`;
       rateMap[key] = rate.rate;
     });
-    console.log(rateMap, "DataDataDataData");
 
     // Step 3: Build the row data
     const rowData = applicableTenors.map((tenor) => {
@@ -58,7 +56,7 @@ export const buildDiscountingTable = (
       return row;
     });
     let columnsData = [];
-    if (value === 1) {
+    if (value === 1 || value === 5) {
       columnsData = [
         {
           title: "Tenor",
@@ -95,7 +93,8 @@ export const buildDiscountingTable = (
               title: "Tenor",
               dataIndex: "tenorName",
               key: "tenorName",
-              width: 250,
+              align: "center",
+              width: 80,
             },
           ],
         },
@@ -109,6 +108,8 @@ export const buildDiscountingTable = (
               title: "Value",
               dataIndex: `rate_${inst.instrumentName}`,
               align: "center",
+              width: 60,
+
               render: (text, record) => (
                 <InputFIeld value={text} record={record} />
               ),
@@ -133,6 +134,8 @@ export const buildDiscountingTable = (
             {
               title: "value",
               dataIndex: `rate_${inst.instrumentName}`,
+              width: 60,
+
               render: (text, record) => (
                 <InputFIeld value={text} record={record} />
               ),
@@ -141,7 +144,6 @@ export const buildDiscountingTable = (
         })),
       ];
     }
-    console.log(columnsData, "columnsDatacolumnsDatacolumnsData");
     // Step 4: Build the column definitions
 
     return { rowData, columnsData };
@@ -171,7 +173,8 @@ export const buildForwardsTable = (
       value === 1
         ? instruments?.filter((inst) => inst.discountingApplicable) || []
         : value === 3
-        ? instruments
+        ? // value 3 for when  treasury forwards application is used
+          instruments
         : instruments;
 
     const applicableTenors =
@@ -248,12 +251,14 @@ export const buildForwardsTable = (
         {
           title: "",
           key: "tenorName",
-          width: 120,
+          width: 60,
           children: [
             {
               title: "Tenor",
               dataIndex: `tenorName`,
               key: "tenorName",
+              width: 120,
+
               align: "center",
             },
           ],
@@ -268,6 +273,8 @@ export const buildForwardsTable = (
               title: "Bid",
               dataIndex: `bid_${inst.instrumentName}`,
               key: `bid_${inst.instrumentName}`,
+              width: 60,
+
               align: "center",
               render: (text, record) => (
                 <InputFIeld value={text} record={record} />
@@ -277,6 +284,8 @@ export const buildForwardsTable = (
               title: "Ask",
               dataIndex: `ask_${inst.instrumentName}`,
               key: `ask_${inst.instrumentName}`,
+              width: 60,
+
               align: "center",
               render: (text, record) => (
                 <InputFIeld value={text} record={record} />
@@ -307,7 +316,7 @@ export const buildCurrentRatesPayload = (rowData) => {
         if (!isNaN(rate)) {
           currentRates.push({
             TenorID: row.TenorID,
-            InstumentID: row[instrumentIDKey],
+            InstrumentID: row[instrumentIDKey],
             InstrumentName: instrumentName,
             Rate: rate,
           });

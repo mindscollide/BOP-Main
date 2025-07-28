@@ -5,7 +5,8 @@ import CalculatorNonFxDiscounting from "../../../components/features/calculatorN
 import FwdCalculator from "../../../components/features/fwdCalculator/FwdCalculator";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { GetAllCalculatorData } from "./CalculatorActions";
+import { getAllInstrumentsApi } from "@/components/utils/globalApis";
+import { GetBankSpotForTreasuryApi } from "@/components/features/SpotBranch/WatchlistAction";
 
 const MainCalculator = () => {
   const dispatch = useDispatch();
@@ -13,11 +14,13 @@ const MainCalculator = () => {
   //Calling the api for getting Currency
   useEffect(() => {
     try {
-      dispatch(GetAllCalculatorData({ navigate }));
+      dispatch(getAllInstrumentsApi({ navigate }));
+      dispatch(GetBankSpotForTreasuryApi({ navigate }));
     } catch (error) {
       console.log(error, "error");
     }
   }, []);
+
   return (
     <>
       <Container fluid className="page-gutter">

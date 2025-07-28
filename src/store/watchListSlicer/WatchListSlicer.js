@@ -9,6 +9,7 @@ import {
   GetMisDataByRangeAPI,
   SaveUserDashboardAPI,
   getAllTreasuryInstrumentsApi,
+  getMarketStatusApi,
 } from "../../components/features/SpotBranch/WatchlistAction";
 const WatchListSlice = createSlice({
   name: "WatchList",
@@ -16,8 +17,9 @@ const WatchListSlice = createSlice({
     responseMessage: "",
     Loader: false,
     error: null,
-    GettheDashboardData: null,
+    getAllInstrumentForCounterParties: null,
     GetMisDataByRange: null,
+    GetMisDataByRangeSpinner: false,
     SaveUserDashboardData: null,
     allInstrumentForTreasury: null,
     GetAllFowardsAndDiscountsRatesData: null,
@@ -25,12 +27,17 @@ const WatchListSlice = createSlice({
     GetDiscountingRatesForCounterParty: null,
     GetAllInstrumentForTreasury: null,
     GetBankSpotForTreasury: null,
+    GetBankSpotForTreasurySpinner: false,
     GetBankForwardForTreasury: null,
     GetDiscountingRatesForTreasury: null,
+    getMarketStatus: null,
   },
   reducers: {
     clearWatchListResponseMessage: (state) => {
       state.responseMessage = "";
+    },
+    setMarketStatus: (state, action) => {
+      state.getMarketStatus = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -39,18 +46,22 @@ const WatchListSlice = createSlice({
       .addCase(GetMisDataByRangeAPI.pending, (state) => {
         state.Loader = true;
         state.error = null;
+        state.GetMisDataByRangeSpinner = true;
       })
       // Fulfilled state (while the API call is being made GetMisDataByRange)
       .addCase(GetMisDataByRangeAPI.fulfilled, (state, { payload }) => {
         state.Loader = false;
         state.GetMisDataByRange = payload?.response;
         state.error = null;
-        state.responseMessage = payload.message;
+        state.GetMisDataByRangeSpinner = false;
+
+        state.responseMessage = payload?.message;
       })
       // Rejected state (while the API call is fail GetMisDataByRange)
       .addCase(GetMisDataByRangeAPI.rejected, (state, action) => {
-        console.log(action, "actionaction");
         state.Loader = false;
+        state.GetMisDataByRangeSpinner = false;
+
         state.error = action.payload;
         state.GetMisDataByRange = null;
       })
@@ -61,18 +72,16 @@ const WatchListSlice = createSlice({
       })
       // Fulfilled state (while the API call is being made GetDashboardData)
       .addCase(GetDashboardDataAPI.fulfilled, (state, { payload }) => {
-        console.log(payload.response, "globalStateWatchlistCardData");
         state.Loader = false;
-        state.GettheDashboardData = payload?.response;
+        state.getAllInstrumentForCounterParties = payload?.response;
         state.error = null;
         state.responseMessage = payload?.message;
       })
       // Rejected state (while the API call is fail GetDashboardData)
       .addCase(GetDashboardDataAPI.rejected, (state, action) => {
-        console.log(action, "actionaction");
         state.Loader = false;
         state.error = action.payload;
-        state.GettheDashboardData = null;
+        state.getAllInstrumentForCounterParties = null;
       })
 
       // Pending state (while the API call is in Pending State SaveUserDashboard)
@@ -99,7 +108,7 @@ const WatchListSlice = createSlice({
         state.Loader = true;
       })
       .addCase(getAllTreasuryInstrumentsApi.fulfilled, (state, { payload }) => {
-        // console.log(payload.response, "globalStateWatchlistCardData");
+        // console.log(payload.response, "getAllInstrumentsForCounterPartiesData");
         state.Loader = false;
         state.GetAllInstrumentForTreasury = payload?.response;
         state.error = null;
@@ -123,7 +132,7 @@ const WatchListSlice = createSlice({
       .addCase(
         GetForwardRatesForCounterPartyApi.fulfilled,
         (state, { payload }) => {
-          // console.log(payload.response, "globalStateWatchlistCardData");
+          // console.log(payload.response, "getAllInstrumentsForCounterPartiesData");
           state.Loader = false;
           state.GetForwardRatesForCounterParty = payload?.response;
           state.error = null;
@@ -148,7 +157,7 @@ const WatchListSlice = createSlice({
       .addCase(
         GetDiscountingRatesForCounterPartyApi.fulfilled,
         (state, { payload }) => {
-          // console.log(payload.response, "globalStateWatchlistCardData");
+          // console.log(payload.response, "getAllInstrumentsForCounterPartiesData");
           state.Loader = false;
           state.GetDiscountingRatesForCounterParty = payload?.response;
           state.error = null;
@@ -167,15 +176,19 @@ const WatchListSlice = createSlice({
       )
       .addCase(GetBankSpotForTreasuryApi.pending, (state) => {
         state.Loader = true;
+        state.GetBankSpotForTreasurySpinner = true;
       })
       .addCase(GetBankSpotForTreasuryApi.fulfilled, (state, { payload }) => {
         state.Loader = false;
         state.GetBankSpotForTreasury = payload?.response;
+        state.GetBankSpotForTreasurySpinner = false;
         state.responseMessage = payload?.message;
       })
       .addCase(GetBankSpotForTreasuryApi.rejected, (state, { payload }) => {
         state.Loader = false;
         state.GetBankSpotForTreasury = null;
+        state.GetBankSpotForTreasurySpinner = false;
+
         state.responseMessage = payload;
       })
       .addCase(GetBankForwardForTreasuryApi.pending, (state) => {
@@ -209,9 +222,23 @@ const WatchListSlice = createSlice({
           state.GetDiscountingRatesForTreasury = null;
           state.responseMessage = payload;
         }
-      );
+      )
+      .addCase(getMarketStatusApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(getMarketStatusApi.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.getMarketStatus = payload?.response;
+        state.responseMessage = payload?.message;
+      })
+      .addCase(getMarketStatusApi.rejected, (state, { payload }) => {
+        state.Loader = false;
+        state.getMarketStatus = null;
+        state.responseMessage = payload;
+      });
   },
 });
 
-export const { clearWatchListResponseMessage } = WatchListSlice.actions;
+export const { clearWatchListResponseMessage, setMarketStatus } =
+  WatchListSlice.actions;
 export default WatchListSlice.reducer;

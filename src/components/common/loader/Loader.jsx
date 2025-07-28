@@ -2,13 +2,16 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import LoaderImage from "@/assets/logo-hd.png";
 import "./Loader.css";
+import { useLocation } from "react-router-dom";
 
 const Loader = () => {
   const [isLoader, setIsLoading] = useState(false);
   const bankSpotReducerLoader = useSelector(
     (state) => state.bankSpotReducer.Loader
   );
-  const blotterReducerLoader = useSelector((state) => state.BlotterSlicer.Loader) 
+  const blotterReducerLoader = useSelector(
+    (state) => state.BlotterSlicer.Loader
+  );
   const misReducerLoader = useSelector((state) => state.misReducer.Loader);
   const WatchListReducerLoader = useSelector(
     (state) => state.WatchListReducer.Loader
@@ -47,7 +50,7 @@ const Loader = () => {
     settingSlicerLoader,
     chatSlicerLoader,
     dealerSliceLoader,
-    blotterReducerLoader
+    blotterReducerLoader,
   ].some((loading) => loading);
 
   useEffect(() => {

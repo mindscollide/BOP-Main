@@ -16,3 +16,11 @@
 .third-column {
   text-align: right; /* Align the values to the right */
 }
+.mis-selectrange-form {
+  margin-top: 10px;
+  height: 250px !important;
+  width: 100% !important;
+}
+.mis-style {
+  height: 380px !important;
+}

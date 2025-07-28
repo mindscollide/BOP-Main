@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import GlobalTable from "../../common/table/GlobalTable";
 import { useSelector } from "react-redux";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import { buildForwardsTable } from "@/components/utils/generateColumnsData";
-import { Row, Col } from "antd";
+import { throttle } from "lodash";
 
 const CategoryForwards = () => {
   const [dataSource, setDataSource] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
-
   const GetCategoryWiseForwardRatesData = useSelector(
     (state) => state.categoryReducer.GetCategoryWiseForwardRates
   );
@@ -20,6 +19,20 @@ const CategoryForwards = () => {
   const getAllTenorsRecords = useSelector(
     (state) => state.dealerReducer.getAllTenors
   );
+
+  const CategoryForwardRates = useSelector(
+    (state) => state.RealtimeActionsSlice.CategoryForwardRates
+  );
+
+  const marketStatus = useSelector(
+    (state) => state.WatchListReducer.getMarketStatus
+  );
+
+  const ClearRatesData = useSelector(
+    (state) => state.RealtimeActionsSlice.ClearRatesData
+  );
+
+  console.log(CategoryForwardRates, "CategoryForwardRates");
 
   console.log(
     {
@@ -33,13 +46,11 @@ const CategoryForwards = () => {
   // Define the columns structure for the Ant Design Table
   // Define the data source for the Ant Design Table
   useEffect(() => {
-    if (
-      getAllTenorsRecords &&
-      allInstrumentForTreasuryData !== null &&
-      GetCategoryWiseForwardRatesData !== null
-    ) {
+    if (getAllTenorsRecords && allInstrumentForTreasuryData !== null) {
       try {
-        const { forwardRates } = GetCategoryWiseForwardRatesData;
+        const { forwardRates = [] } =
+          GetCategoryWiseForwardRatesData !== null &&
+          GetCategoryWiseForwardRatesData;
         let getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
         let getAllInstrument = {
           instruments: allInstrumentForTreasuryData.forwardInstruments,
@@ -64,23 +75,85 @@ const CategoryForwards = () => {
     getAllTenorsRecords,
     allInstrumentForTreasuryData,
   ]);
+
+  const throttledCategoryForwardUpdate = useMemo(
+    () =>
+      throttle((forwardRatesUpdate) => {
+        const { instrumentForwardsData } = forwardRatesUpdate;
+
+        setDataSource((prevData) =>
+          prevData.map((row) => {
+            let updatedRow = { ...row };
+
+            instrumentForwardsData.forEach((d) => {
+              Object.keys(row).forEach((key) => {
+                if (
+                  key.startsWith("InstrumentID_") &&
+                  row[key] === d.instrumentID &&
+                  row.tenorID === d.tenorID
+                ) {
+                  const currency = key.split("_")[1]; // e.g., USD
+                  updatedRow[`bid_${currency}`] = d.bidWithSpread;
+                  updatedRow[`ask_${currency}`] = d.askWithSpread;
+                }
+              });
+            });
+
+            return updatedRow;
+          })
+        );
+      }, 20),
+    []
+  );
+
+  useEffect(() => {
+    if (CategoryForwardRates) {
+      throttledCategoryForwardUpdate(CategoryForwardRates);
+    }
+  }, [CategoryForwardRates, throttledCategoryForwardUpdate]);
+
+  useEffect(() => {
+    if (marketStatus !== null && marketStatus === false) {
+      setDataSource((prevData) =>
+        prevData.map((row) => {
+          const updatedRow = { ...row };
+          Object.keys(row).forEach((key) => {
+            if (key.startsWith("bid_") || key.startsWith("ask_")) {
+              updatedRow[key] = 0;
+            }
+          });
+          return updatedRow;
+        })
+      );
+    }
+  }, [marketStatus]);
+
+  // For clear Rates
+  useEffect(() => {
+    if (ClearRatesData?.areRatesClear) {
+      setDataSource((prevData) =>
+        prevData.map((row) => {
+          const updatedRow = { ...row };
+          Object.keys(row).forEach((key) => {
+            if (key.startsWith("bid_") || key.startsWith("ask_")) {
+              updatedRow[key] = 0;
+            }
+          });
+          return updatedRow;
+        })
+      );
+    }
+  }, [ClearRatesData]);
+
   return (
     <>
-      {/* <Row>
-        <Col lg={12} md={12} sm={12} className="heading mb-2"> */}
       <span className="heading mb-2"> Forward</span>
-      {/* </Col>
-      </Row>
-      <Row>
-        <Col lg={12} md={12} sm={12}> */}
       <GlobalTable
         columns={columnsData}
         prefixCls="Dealer_Forwards"
         dataSource={dataSource}
         pagination={false}
       />
-      {/* </Col> */}
-      {/* </Row> */}
     </>
   );
 };

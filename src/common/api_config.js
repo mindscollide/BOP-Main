@@ -276,19 +276,19 @@ export const ExpireRFQTransactionRM = {
   RequestMethod: "ServiceManager.ExpireRFQTransaction",
 };
 
-export const GetSpotTransactionDetailsRM = {
+export const GetSpotTransactionDetails = {
   RequestMethod: "ServiceManager.GetSpotTransactionDetails",
 };
 
-export const GetForwardTransactionDetailsRM = {
+export const GetForwardTransactionDetails = {
   RequestMethod: "ServiceManager.GetForwardTransactionDetails",
 };
 
-export const GetFEDiscountingTransactionDetailsRM = {
+export const GetFEDiscountingTransactionDetails = {
   RequestMethod: "ServiceManager.GetFEDiscountingTransactionDetails",
 };
 
-export const GetNonFEDiscountingTransactionDetailsRM = {
+export const GetNonFEDiscountingTransactionDetails = {
   RequestMethod: "ServiceManager.GetNonFEDiscountingTransactionDetails",
 };
 
@@ -374,4 +374,47 @@ export const GetDiscountingRatesForTreasury = {
 
 export const CalculateNonFESwapAndDiscountingRM = {
   RequestMethod: "ServiceManager.CalculateNonFESwapAndDiscounting",
+};
+
+export const GetNOPData = {
+  RequestMethod: "ServiceManager.GetNOPData",
+};
+
+export const ResetPasswordCorporate = {
+  RequestMethod: "ServiceManager.ResetPasswordCorporate",
+};
+
+export const CreateCorporateUserForgotPassword = {
+  RequestMethod: "ServiceManager.CreateCorporateUserForgotPassword",
+};
+
+export const CalculateFEDiscounting = {
+  RequestMethod: "ServiceManager.CalculateFEDiscounting",
+};
+export const CalculateFESwapAndDiscountingRM = {
+  RequestMethod: "ServiceManager.CalculateFEDiscounting",
+};
+
+export const VerifyOTP = {
+  RequestMethod: "ServiceManager.VerifyOTP",
+};
+
+export const GenerateOTP = {
+  RequestMethod: "ServiceManager.GenerateOTP",
+};
+
+export const GetVoltMeterStatus = {
+  RequestMethod: "ServiceManager.GetVoltMeterStatus",
+};
+
+export const UpdateVoltMeterStatus = {
+  RequestMethod: "ServiceManager.UpdateVoltMeterStatus",
+};
+
+export const getMarketStatusRM = {
+  RequestMethod: "ServiceManager.GetMarketStatus",
+};
+
+export const NOPCalcuationReports = {
+  RequestMethod: "ServiceManager.DownloadNOPCalculationsExcelReport",
 };
