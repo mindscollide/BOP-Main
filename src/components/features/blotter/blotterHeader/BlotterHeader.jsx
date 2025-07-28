@@ -24,6 +24,7 @@ import {
   DownloadPDFReportBlotterTrasactionCorporateAPI,
   DownloadPDFReportBlotterTrasactionTreasuryAPI,
 } from "@/store/ReportSlicer/ReportActions";
+import { formatPkAmount } from "@/utils/formatters";
 
 const BlotterHeader = () => {
   const navigate = useNavigate();
@@ -116,8 +117,8 @@ const BlotterHeader = () => {
                     <span className="hd-txt me-3">NOP (US$)</span>
                     <span className="hd-cr me-2">
                       {GetNOPData !== null && GetNOPData !== undefined
-                        ? GetNOPData?.nop
-                        : `(${Math.abs(GetNOPData?.nop)})`}
+                        ? formatPkAmount(GetNOPData?.nop)
+                        : `(${formatPkAmount(Math.abs(GetNOPData?.nop))})`}
                     </span>
                     <CustomButton
                       applyClass={"NOP-button"}

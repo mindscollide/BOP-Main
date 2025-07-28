@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 import { DownloadExcelReportNOPCalculationsAPI } from "@/store/ReportSlicer/ReportActions";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { formatPkAmount } from "@/utils/formatters";
 
 const NopModal = ({ openNopModal, setOpenNopModal }) => {
   const dispatch = useDispatch();
@@ -55,14 +56,14 @@ const NopModal = ({ openNopModal, setOpenNopModal }) => {
       const NOPData = GetNOPData.listOfInstruments.map((data, index) => ({
         key: index.toString(),
         name: <p className="fw-bold m-0">{data.instrumentName}</p>,
-        InflowData: data.inflow,
-        OutflowData: data.outflow,
-        NetData: `${data.net < 0 ? `(${Math.abs(data.net)})` : data.net}`,
+        InflowData: formatPkAmount(data.inflow),
+        OutflowData: formatPkAmount(data.outflow),
+        NetData: `${data.net < 0 ? `(${formatPkAmount(Math.abs(data.net))})` : formatPkAmount(data.net)}`,
         ConversionData: (
           <p className="fw-bold m-0">
             {data.conversionToDollar < 0
-              ? `(${Math.abs(data.conversionToDollar)})`
-              : data.conversionToDollar}
+              ? `(${formatPkAmount(Math.abs(data.conversionToDollar))})`
+              : formatPkAmount(data.conversionToDollar)}
           </p>
         ),
       }));
@@ -77,8 +78,8 @@ const NopModal = ({ openNopModal, setOpenNopModal }) => {
         ConversionData: (
           <p className="fw-bold m-0">
             {GetNOPData.nop < 0
-              ? `(${Math.abs(GetNOPData.nop)})`
-              : GetNOPData.nop}
+              ? `(${formatPkAmount(Math.abs(GetNOPData.nop))})`
+              : formatPkAmount(GetNOPData.nop)}
           </p>
         ),
       });

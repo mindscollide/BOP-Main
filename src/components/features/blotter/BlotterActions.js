@@ -1186,7 +1186,7 @@ export const SaveSpotTransactionRFQ = createAsyncThunk(
             dispatch(setRfqModalOpen(false));
             return {
               response: response.data.responseResult,
-              message: "Spot RFQ transaction saved successfully",
+              message: "Successfully Submitted",
             };
           } else if (
             responseMessage

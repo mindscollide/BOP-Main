@@ -1907,7 +1907,7 @@ const OutstandingDeals = () => {
         bordered={false}
         prefixCls="OutStanding_Table"
         columns={columns}
-        scroll={{ x: "max-content", y: 500 }}
+        scroll={{ x: "max-content", y: 300 }}
       />
       {/* <DealViewModal dealData={dealData} /> */}
       {cancelReasonModal && (
