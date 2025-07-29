@@ -145,13 +145,11 @@ const InfoTransaction = () => {
               <Col sm={6} md={6} lg={6}>
                 <Row>
                   <p className={styles["transactionInfolabel"]}>
-                    {InfoRecord?.initiatedByUserName
-                      ? InfoRecord?.initiatedByUserName
-                      : "N/A"}
+                    {InfoRecord?.initiatedBy ? InfoRecord?.initiatedBy : "N/A"}
                   </p>
                   <p className={styles["transactionInfolabelEmail"]}>
-                    {InfoRecord?.initiatedByUserEmail
-                      ? InfoRecord?.initiatedByUserEmail
+                    {InfoRecord?.initiatedByEmail
+                      ? InfoRecord?.initiatedByEmail
                       : "N/A"}
                   </p>
                 </Row>
