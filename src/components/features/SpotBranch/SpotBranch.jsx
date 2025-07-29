@@ -183,12 +183,7 @@ const SpotBranch = () => {
               data.instrumentID === sectionData.instrumentID &&
               data.secondaryInstrumentID === sectionData.secondaryInstrumentID
           );
-          console.log(
-            matchingData,
-            instrumentSpotData,
-            sectionData,
-            "matchingDatamatchingData"
-          );
+     
           if (matchingData) {
             updated[key] = {
               ...sectionData,
@@ -433,6 +428,10 @@ const SpotBranch = () => {
                               sellValue={
                                 isCorporate ? data.buyValue : data.sellValue
                               }
+                              // buyHeading="I Buy"
+                              // sellHeading="I Sell"
+                              // buyValue={data.buyValue || ""}
+                              // sellValue={data.sellValue || ""}
                               isSellDisabled={data.isSell}
                               isBuyDisabled={data.isBuy}
                               instrumentID={data.instrumentID || 0}
