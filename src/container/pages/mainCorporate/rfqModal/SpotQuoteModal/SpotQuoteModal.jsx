@@ -65,8 +65,7 @@ const SpotQuoteModal = ({ dealData }) => {
     dispatch(RFQTransactionQuotation({ navigate, Data }));
   };
 
-  const handleCancel = () => {};
-  // if (!viewDealModal && !dealData) return null;
+
   return (
     <GlobalModal
       show={spotQuoteModalState}

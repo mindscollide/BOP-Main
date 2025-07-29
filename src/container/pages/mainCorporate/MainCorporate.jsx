@@ -55,6 +55,8 @@ const MainCorporate = () => {
     isNonFeDiscountingEnabled,
     "isNonFeDiscountingEnabledisNonFeDiscountingEnabled"
   );
+
+  console.log(typeof isFeDiscountingEnabled, "CheckerCheckerChecrk");
   const handleTabChange = (tabTitle) => {
     dispatch(setActiveTab(tabTitle));
   };
@@ -81,7 +83,7 @@ const MainCorporate = () => {
         SpotBranch && activeTab === "Spot" ? (
           <Suspense fallback={<>Loading Spot...</>}>
             <SpotBranch />
-            <section className='bg-white mt-2 p-2'>
+            <section className="bg-white mt-2 p-2">
               <BlotterHeader />
             </section>
           </Suspense>
@@ -93,7 +95,7 @@ const MainCorporate = () => {
         ForwardTableBranchComponent && activeTab === "Forwards" ? (
           <Suspense fallback={<>Loading Forwards...</>}>
             <ForwardTableBranchComponent />
-            <section className='bg-white p-2'>
+            <section className="bg-white p-2">
               <BlotterHeader />
             </section>
           </Suspense>
@@ -105,7 +107,7 @@ const MainCorporate = () => {
         BranchDiscountingTable && activeTab === "Discounting" ? (
           <Suspense fallback={<>Loading Discounting...</>}>
             <BranchDiscountingTable />
-            <section className='bg-white p-2'>
+            <section className="bg-white p-2">
               <BlotterHeader />
             </section>
           </Suspense>
@@ -114,7 +116,10 @@ const MainCorporate = () => {
   ];
   let filterTabs = tabsData;
 
-  if (isFeDiscountingEnabled === false && isNonFeDiscountingEnabled === false) {
+  if (
+    JSON.parse(isFeDiscountingEnabled) === false &&
+    JSON.parse(isNonFeDiscountingEnabled) === false
+  ) {
     filterTabs = tabsData.filter((tab) => tab.title !== "Discounting");
   }
 
@@ -125,7 +130,7 @@ const MainCorporate = () => {
       tabs={filterTabs}
       activeKey={activeTab}
       onTabChange={handleTabChange}
-      tabClass='mb-4'
+      tabClass="mb-4"
     />
   );
 };

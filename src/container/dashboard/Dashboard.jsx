@@ -72,6 +72,7 @@ import InfoTransaction from "@/components/features/blotter/infoTransaction/InfoT
 import { getMarketStatusApi } from "@/components/features/SpotBranch/WatchlistAction";
 import { setMarketStatus } from "@/store/watchListSlicer/WatchListSlicer";
 import { setUpdateVolMeterRealtime } from "@/store/dealerReducer/dealerSlicer";
+import { GetNOPDataAPI } from "@/components/features/blotter/BlotterActions";
 const Dashboard = () => {
   const { Content } = Layout;
   const dispatch = useDispatch();
@@ -268,6 +269,13 @@ const Dashboard = () => {
           dispatch(LogoutApi({ navigate }));
         }
         break;
+      case "TREASURY_NOP_UPDATED":
+        // Handle the case When NOP Value Gets Updated
+        if (Number(data.payload.updatedUser?.userID) === Number(userID)) {
+          dispatch(GetNOPDataAPI({ navigate }));
+        }
+        break;
+
       default:
         console.warn("No specific handler for this message type", data.payload);
         break;
@@ -332,12 +340,12 @@ const Dashboard = () => {
     }
   }, []);
   return (
-    <Layout className='roboto-13'>
+    <Layout className="roboto-13">
       {!location.pathname.includes("calculator") && <Header />}
 
       <GlobalNavbar />
       <Content>
-        <main className='px-3'>
+        <main className="px-3">
           <Outlet />
           {/* <AnimatePresence>
             {blotterTransactionAdded && isTreasury && <DealBox />}
