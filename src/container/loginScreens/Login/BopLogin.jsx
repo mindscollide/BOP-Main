@@ -290,12 +290,12 @@ const BopLogin = () => {
                 >
                   {showPassowrd ? (
                     <IconElement
-                      iconClass={"icon-eye-slash"}
+                      iconClass={"icon-eye"}
                       onClick={() => setShowPassword(!showPassowrd)}
                     />
                   ) : (
                     <IconElement
-                      iconClass={"icon-eye"}
+                      iconClass={"icon-eye-slash"}
                       onClick={() => setShowPassword(!showPassowrd)}
                     />
                   )}
