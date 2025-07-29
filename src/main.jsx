@@ -9,6 +9,15 @@ import store from "./store/store.js";
 import { GloballyModalProvider } from "./context/ModalContext.jsx";
 import { DealerAndTreasuryProvider } from "./context/DealerAndTreasuryContext.jsx";
 import { NotificationProvider } from "./context/NotificationProvider.jsx";
+
+// Disable console methods in production for better security and performance
+if (import.meta.env.MODE === "production") {
+  console.log = () => {};
+  console.error = () => {};
+  console.debug = () => {};
+  console.warn = () => {};
+}
+
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>
     <NotificationProvider>
