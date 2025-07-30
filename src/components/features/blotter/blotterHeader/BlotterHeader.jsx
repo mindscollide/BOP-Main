@@ -107,6 +107,18 @@ const BlotterHeader = () => {
     });
   };
 
+  const onClickNopModal= () => {
+    startTransition(() => {
+      setOpenNopModal(true)
+    })
+  }
+
+  const onClickOpenExport = () => {
+    startTransition(() => {
+      setOpenExportDiv(!openExportDiv)
+    })
+  }
+
   return (
     <>
       <section className='position-relative'>
