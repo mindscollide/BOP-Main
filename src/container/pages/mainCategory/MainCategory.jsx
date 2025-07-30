@@ -1,8 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useEffect, Suspense, lazy, startTransition } from "react";
 import GlobalTabs from "../../../components/common/tabs/Tabs";
-import SpotDealerAndTreasury from "../../../components/features/spotDealerAndTreasury/SpotDealerAndTreasury";
-import CategoryForwards from "../../../components/features/categoryForwards/CategoryForwards";
-import CategoryDiscounting from "../../../components/features/categoryDiscount/CategoryDiscounting";
 import { useSelector } from "react-redux";
 import { getAllCategoriesAction } from "@/components/utils/globalApis";
 import { useNavigate } from "react-router-dom";
@@ -10,45 +7,65 @@ import { useDispatch } from "react-redux";
 import { setActiveTab } from "../mainCorporate/rfqModal/RFQSlicer";
 import { getAllTreasuryInstrumentsApi } from "@/components/features/SpotBranch/WatchlistAction";
 import { getAllTenorsAction } from "../mainDealer/dealerActions";
+import SectionLoader from "@/components/common/sectionLoader/SectionLoader";
+
+// Lazy load the tab components
+const SpotDealerAndTreasury = lazy(() => import("../../../components/features/spotDealerAndTreasury/SpotDealerAndTreasury"));
+const CategoryForwards = lazy(() => import("../../../components/features/categoryForwards/CategoryForwards"));
+const CategoryDiscounting = lazy(() => import("../../../components/features/categoryDiscount/CategoryDiscounting"));
 
 const MainCategory = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const activeTab = useSelector((state) => state.RFQReducer.activeTab);
 
   useEffect(() => {
-    dispatch(getAllCategoriesAction({ navigate }));
-    dispatch(getAllTreasuryInstrumentsApi({ navigate }));
-    dispatch(getAllTenorsAction({ navigate }));
-    // let Data = {
-    //   Category: 1,
-    // };
-  }, []);
+    startTransition(() => {
+      dispatch(getAllCategoriesAction({ navigate }));
+      dispatch(getAllTreasuryInstrumentsApi({ navigate }));
+      dispatch(getAllTenorsAction({ navigate }));
+    });
+  }, [dispatch, navigate]);
 
-  const activeTab = useSelector((state) => state.RFQReducer.activeTab);
   const handleTabChange = (tabTitle) => {
-    dispatch(setActiveTab(tabTitle));
+    startTransition(() => {
+      dispatch(setActiveTab(tabTitle));
+    });
   };
 
   const tabsData = [
     {
       title: "Spot",
-      content: activeTab === "Spot" ? <SpotDealerAndTreasury /> : null,
+      content: (
+        <Suspense fallback={<SectionLoader />}>
+          {activeTab === "Spot" && <SpotDealerAndTreasury />}
+        </Suspense>
+      ),
     },
     {
       title: "Forwards",
-      content: activeTab === "Forwards" ? <CategoryForwards /> : null,
+      content: (
+        <Suspense fallback={<SectionLoader />}>
+          {activeTab === "Forwards" && <CategoryForwards />}
+        </Suspense>
+      ),
     },
     {
       title: "Discounting",
-      content: activeTab === "Discounting" ? <CategoryDiscounting /> : null,
+      content: (
+        <Suspense fallback={<SectionLoader />}>
+          {activeTab === "Discounting" && <CategoryDiscounting />}
+        </Suspense>
+      ),
     },
   ];
+
   return (
     <GlobalTabs
       tabs={tabsData}
       activeKey={activeTab}
       onTabChange={handleTabChange}
-      defaultActiveKey="0"
+      defaultActiveKey="Spot"  // Changed from "0" to match your tab titles
       tabClass="mb-4"
     />
   );

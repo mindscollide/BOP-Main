@@ -16,7 +16,7 @@ import {
   GetSpotRatesForCounterPartyAPI,
 } from "@/components/features/blotter/BlotterActions";
 import { getAllTenorsAction } from "../mainDealer/dealerActions";
-import SectionLoader from "@/components/common/loader/SectionLoader";
+import SectionLoader from "@/components/common/sectionLoader/SectionLoader";
 import { setBlotterLoader } from "@/store/BlotterSlicer/BlotterSlicer";
 
 const shouldIncludeComponents =

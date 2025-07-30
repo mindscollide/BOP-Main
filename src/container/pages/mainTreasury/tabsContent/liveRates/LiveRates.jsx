@@ -1,6 +1,6 @@
 import React, { Suspense, lazy, startTransition } from "react";
 import { Row, Col } from "react-bootstrap";
-import SectionLoader from "@/components/common/loader/SectionLoader";
+import SectionLoader from "@/components/common/sectionLoader/SectionLoader";
 
 const shouldIncludeComponents = import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
 const shouldIsDealer = import.meta.env.VITE_APP_INCLUDE_DEALER === "true";
