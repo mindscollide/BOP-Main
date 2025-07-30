@@ -397,7 +397,7 @@ const SpotBranch = () => {
   };
   return (
     <section>
-      <DragDropContext onDragEnd={onDragEnd}>
+      <DragDropContext onDragEnd={onDragEnd} >
         <Row className='px-2'>
           <Col lg={9} md={9} sm={12}>
             <span className='FxTradingOuterBox'>
@@ -470,9 +470,9 @@ const SpotBranch = () => {
             <Row>
               <Col lg={12} md={12} sm={12}>
                 {watchlistTableData.length > 0 ? (
-                  <Droppable droppableId='droppable' direction='vertical'>
+                  <Droppable droppableId='droppable' direction='vertical'  >
                     {(provided) => (
-                      <div ref={provided.innerRef} {...provided.droppableProps}>
+                      <div  ref={provided.innerRef} {...provided.droppableProps}>
                         <GlobalTable
                           columns={columns}
                           dataSource={watchlistTableData}
@@ -486,7 +486,7 @@ const SpotBranch = () => {
                           }}
                           onRow={(record, index) => ({
                             index,
-                            "data-row-key": record.instrumentID,
+                            "data-row-key": index,
                           })}
                           scroll={{ y: 330, x: "auto" }}
                         />

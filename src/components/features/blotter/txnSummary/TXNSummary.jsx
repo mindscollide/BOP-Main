@@ -1480,7 +1480,7 @@ const TXNSummary = () => {
       ellipsis: true,
     },
     {
-      title: "Checker",
+      title: "",
       key: "Checker",
       dataIndex: "Checker",
       className: "comment-class text-center",
@@ -2071,7 +2071,7 @@ const TXNSummary = () => {
                     }
                   />
                   <CustomButton
-                    icon={<i className='icon-trash'></i>}
+                    icon={<i className='icon-close'></i>}
                     size={"small"}
                     className='btn btn-sm btn-danger me-1 blotterCheckerButton '
                     onClick={() =>

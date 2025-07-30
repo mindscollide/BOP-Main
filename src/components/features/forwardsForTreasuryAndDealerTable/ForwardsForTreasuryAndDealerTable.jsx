@@ -141,53 +141,61 @@ const TenoreWiseCurrentAndLastRates = ({
   }, [getDashboardForwards, getAllTenorsData]);
 
   useEffect(() => {
-    if (getTenorWiseForwardsRates !== null) {
-      try {
-        const { currentTenorWiseForwardRates, lastTenorWiseForwardRates } =
-          getTenorWiseForwardsRates.tenorWiseForwardRates;
-        console.log(
-          currentTenorWiseForwardRates,
-          "currentTenorWiseForwardRates"
-        );
-        let newDataMap = currentTenorWiseForwardRates
-          .sort((data, index) => data.tenorDays - data.tenorDays)
-          .map((item) => {
-            let findData = lastTenorWiseForwardRates.find(
-              (data) => data.tenorID === item.tenorID
-            );
-            if (findData !== undefined) {
-              return {
-                tenorID: item.tenorID,
-                tenorName: item.tenorName,
-                currentBid: item.bid,
-                tenorDays: item.tenorDays,
+    if (!getTenorWiseForwardsRates || !getAllTenorsData) return;
 
-                currentAsk: item.ask,
-                lastBid: findData.bid,
-                lastAsk: findData.ask,
-                dateTime: item.dateTime,
-              };
-            } else {
-              return {
-                tenorID: item.tenorID,
-                tenorName: item.tenorName,
-                currentBid: item.bid,
-                tenorDays: item.tenorDays,
-                currentAsk: item.ask,
-                lastBid: "",
-                lastAsk: "",
-                dateTime: item.dateTime,
-              };
-            }
-          });
-        dispatch(setForwardsForTreasuryBranch(newDataMap));
+    try {
+      const {
+        currentTenorWiseForwardRates,
+        lastTenorWiseForwardRates,
+        tenorList,
+      } = getTenorWiseForwardsRates.tenorWiseForwardRates || {};
+      const { tenors } = getAllTenorsData || {};
 
-        dispatch(tenorWiseFowardsRatesPublishedActions(null));
-      } catch (error) {
-        console.log(error);
+      // Early return if required data is missing
+      if (
+        !currentTenorWiseForwardRates ||
+        !lastTenorWiseForwardRates ||
+        !tenors
+      ) {
+        return;
       }
+
+      // Filter out items that exist in tenorList
+      const filteredRates = currentTenorWiseForwardRates.filter(
+        (tenorData) =>
+          !tenorList?.some((data) => data.tenorID === tenorData.tenorID)
+      );
+
+      // Process the remaining data
+      const processedData = filteredRates
+        .map((item) => {
+          const matchingTenor = tenors.find(
+            (tenor) => tenor.tenorID === item.tenorID
+          );
+          const matchingLastRate = lastTenorWiseForwardRates.find(
+            (lastRate) => lastRate.tenorID === item.tenorID
+          );
+
+          return {
+            tenorID: item.tenorID,
+            tenorName: item.tenorName,
+            tenorDays: matchingTenor?.tenorDays || item.tenorDays || 0,
+            currentBid: item.bid,
+            currentAsk: item.ask,
+            lastBid: matchingLastRate?.bid || "",
+            lastAsk: matchingLastRate?.ask || "",
+            dateTime: item.dateTime,
+          };
+        })
+        .sort((a, b) => (a.tenorDays || 0) - (b.tenorDays || 0));
+
+      dispatch(setForwardsForTreasuryBranch(processedData));
+      dispatch(tenorWiseFowardsRatesPublishedActions(null));
+    } catch (error) {
+      console.error("Error processing forward rates:", error);
+      // Consider adding error handling/notification here
     }
-  }, [getTenorWiseForwardsRates]);
+  }, [getTenorWiseForwardsRates, getAllTenorsData]);
 
   const handleDeleteTenorRecord = (record) => {
     setTenorRemoveRecord(record);
