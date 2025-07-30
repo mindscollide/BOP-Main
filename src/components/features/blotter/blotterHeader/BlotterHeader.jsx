@@ -128,7 +128,7 @@ const BlotterHeader = () => {
                     <span className='hd-cr me-2'>
                       {GetNOPData !== null &&
                         GetNOPData !== undefined &&
-                        (formatPkAmount(GetNOPData?.nop) >= 0
+                        (GetNOPData?.nop >= 0
                           ? formatPkAmount(GetNOPData?.nop)
                           : `(${formatPkAmount(Math.abs(GetNOPData?.nop))})`)}
                     </span>
