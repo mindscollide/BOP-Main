@@ -50,3 +50,7 @@
   font-weight: 700;
   color: #096fed;
 }
+.infoTransaction_modal-crossIcon {
+  display: flex;
+  justify-content: flex-end;
+}
