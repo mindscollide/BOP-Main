@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import { setCreateTenorModal } from "@/store/modalSlice/modalSlicer";
 import { setTenorsCreated } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import NotificationSnackBar from "@/components/common/NotificationSnackbar";
+import SectionLoader from "@/components/common/sectionLoader/SectionLoader";
 const shouldIncludeComponents =
   import.meta.env.VITE_APP_INCLUDE_DEALER === "true" ||
   import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
@@ -352,7 +353,7 @@ const ForwardsForTreasuryAndDealer = () => {
         )}
         {DealeAndTreasuryFeDiscountingTable && (
           <Col sm={12} md={12} lg={12} className='mt-3'>
-            <Suspense fallback={<div>Loading table...</div>}>
+            <Suspense fallback={<SectionLoader />}>
               <h6 className='fs-4 fw-bold color-primary'>FE Discounting %</h6>
               <DealeAndTreasuryFeDiscountingTable />
             </Suspense>
@@ -360,7 +361,7 @@ const ForwardsForTreasuryAndDealer = () => {
         )}
         {DealeAndTreasuryNonFeDiscountingTable && (
           <Col sm={12} md={12} lg={12} className='mt-3'>
-            <Suspense fallback={<div>Loading table...</div>}>
+            <Suspense fallback={<SectionLoader />}>
               <h6 className='fs-4 fw-bold color-primary'>
                 Non-FE Discounting %
               </h6>

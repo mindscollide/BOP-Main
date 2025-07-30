@@ -18,7 +18,7 @@ import {
 } from "../mainDealer/dealerActions";
 import { setBlotterLoader } from "@/store/BlotterSlicer/BlotterSlicer";
 import GlobalTabs from "@/components/common/tabs/Tabs";
-import SectionLoader from "@/components/common/loader/SectionLoader";
+import SectionLoader from "@/components/common/sectionLoader/SectionLoader";
 
 // Lazy load the tab components
 const LiveRates = React.lazy(() => import("./tabsContent/liveRates/LiveRates"));
@@ -52,7 +52,7 @@ const MainTreasury = () => {
     { 
       title: "Live Rates", 
       content: (
-        <Suspense fallback={<SectionLoader />}>
+        <Suspense fallback={<></>}>
           <LiveRates />
         </Suspense>
       ) 

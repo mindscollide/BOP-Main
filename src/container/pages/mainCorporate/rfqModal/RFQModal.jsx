@@ -490,11 +490,14 @@ const RFQModal = () => {
         label: business.name,
         value: business.id,
       }));
-    // Update state with new options and selections
-    setNatureOfBusinessOptions(filteredOptions);
+    if (iBuySellData === null) {
+      // Update state with new options and selections
 
-    // Set first option as default if available, otherwise null
-    setSelectedNature(filteredOptions[0] || null);
+      setNatureOfBusinessOptions(filteredOptions);
+
+      // Set first option as default if available, otherwise null
+      setSelectedNature(filteredOptions[0] || null);
+    }
 
     // Update selected transaction type
     setTypeOptionSelected(selectType);
@@ -712,19 +715,20 @@ const RFQModal = () => {
                   <SelectDropdown
                     placeholder=''
                     classNamePrefix='RfqSpot'
-                    options={natureOfBusinessOptions.filter((data) => {
-                      if (typeOptionSelected.value === 1) {
-                        return (
-                          data.isForSpot === true && data.isForBuy === true
-                        );
-                      }
-                      if (typeOptionSelected.value === 2) {
-                        return (
-                          data.isForSpot === true && data.isForSell === true
-                        );
-                      }
-                      return false; // Exclude all by default
-                    })}
+                    options={natureOfBusinessOptions}
+                    // options={natureOfBusinessOptions.filter((data) => {
+                    //   if (typeOptionSelected.value === 1) {
+                    //     return (
+                    //       data.isForSpot === true && data.isForBuy === true
+                    //     );
+                    //   }
+                    //   if (typeOptionSelected.value === 2) {
+                    //     return (
+                    //       data.isForSpot === true && data.isForSell === true
+                    //     );
+                    //   }
+                    //   return false; // Exclude all by default
+                    // })}
                     onChange={handleNatureChange}
                     value={selectedNature}
                   />

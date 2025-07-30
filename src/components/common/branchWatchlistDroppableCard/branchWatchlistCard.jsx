@@ -75,7 +75,10 @@ const BranchRateCardsOfWatchList = ({
                 <span className='DroppableBoxCurrencyLabel'>
                   {currencyLabel.slice(0, 3)}
                 </span>
-                <span className="color-white fs-5 fw-normal"> {currencyLabel.slice(3, 6)}</span>
+                <span className='color-white fs-5 fw-normal'>
+                  {" "}
+                  {currencyLabel.slice(3, 6)}
+                </span>
               </Col>
             </Row>
             <Row className='mt-4'>
