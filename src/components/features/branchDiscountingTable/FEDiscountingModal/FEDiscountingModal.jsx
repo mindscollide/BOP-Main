@@ -488,7 +488,7 @@ const FEDiscountingModal = ({
 
                 {/* Tenor Field */}
                 <Row className=''>
-                  <Col lg={8} md={8} sm={8}>
+                  <Col lg={8} md={8} sm={8} className='pe-0'>
                     <div className='d-flex flex-column flex-wrap'>
                       <span className='SubHeadings'>Tenor</span>
                       <InputFIeld
@@ -504,7 +504,11 @@ const FEDiscountingModal = ({
                       )}
                     </div>
                   </Col>
-                  <Col lg={4} md={4} sm={4} className='d-flex align-items-end'>
+                  <Col
+                    lg={4}
+                    md={4}
+                    sm={4}
+                    className='d-flex align-items-end justify-content-start ps-0'>
                     <span className='feDiscuntingBookAForward_tenorDateSpan'>
                       {tenoreDate}
                     </span>
@@ -534,7 +538,7 @@ const FEDiscountingModal = ({
                       </Col>
                     </Row>
                     <Row className='mt-2 position-relative'>
-                      <Col lg={10} md={10} sm={10}>
+                      <Col lg={10} md={10} sm={10} className='pe-0'>
                         <div className='d-flex flex-column flex-wrap'>
                           <span className='SubHeadings'>
                             Discounting Factor
@@ -547,20 +551,20 @@ const FEDiscountingModal = ({
                           />
                         </div>
                       </Col>
-                      <Col lg={2} md={2} sm={2}>
+                      <Col
+                        lg={2}
+                        md={2}
+                        sm={2}
+                        className='d-flex align-items-end justify-content-start ps-0'>
                         <span className='SofrPercentSignBox'>%</span>
                       </Col>
                     </Row>
                   </Col>
-                  <Col lg={5} md={5} sm={5}>
-                    <Row className='mt-4'>
-                      <Col lg={12} md={12} sm={12}>
-                        <span className='BlueBackGroundboxFEDiscountingModal'>
-                          {/* This would be calculated based on form values */}
-                          {formData.feRate || "0.00"}
-                        </span>
-                      </Col>
-                    </Row>
+                  <Col lg={5} md={5} sm={5} className="d-flex justify-content-center align-items-center">
+                    <span className='BlueBackGroundboxFEDiscountingModal'>
+                      {/* This would be calculated based on form values */}
+                      {formData.feRate || "0.00"}
+                    </span>
                   </Col>
                 </Row>
               </Col>

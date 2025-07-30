@@ -52,7 +52,7 @@ const MainTreasury = () => {
     { 
       title: "Live Rates", 
       content: (
-        <Suspense fallback={<></>}>
+        <Suspense fallback={<SectionLoader />}>
           <LiveRates />
         </Suspense>
       ) 

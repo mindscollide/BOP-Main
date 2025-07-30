@@ -488,7 +488,7 @@ const SpotBranch = () => {
                           }}
                           onRow={(record, index) => ({
                             index,
-                            "data-row-key": record.instrumentID,
+                            "data-row-key": index,
                           })}
                           scroll={{ y: 330, x: "auto" }}
                         />
