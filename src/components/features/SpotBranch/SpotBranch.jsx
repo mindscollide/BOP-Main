@@ -14,6 +14,7 @@ import { formatDateUTCToGMT } from "@/components/utils/timeFunction";
 import moment from "moment";
 import { throttle } from "lodash";
 import { setFxTradingCards } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
+import { setWatchlistTableDataCopy } from "@/store/watchListSlicer/WatchListSlicer";
 
 const initialWatchlistData = Object.fromEntries(
   Array.from({ length: 6 }, (_, i) => [
@@ -109,6 +110,7 @@ const SpotBranch = () => {
 
           // Update table state
           setWatchlistTableData(updatedTableData);
+          dispatch(setWatchlistTableDataCopy(updatedTableData));
 
           // Step 2: Update section watchlists (1-6) based on sectionID
           const filteredSections = updatedTableData.filter(
@@ -172,6 +174,30 @@ const SpotBranch = () => {
 
           return data2;
         })
+      );
+      dispatch(
+        setWatchlistTableDataCopy((prevState) =>
+          prevState.map((data2) => {
+            const getData = instrumentSpotData.find(
+              (data3) =>
+                data2.instrumentID === data3.instrumentID &&
+                data2.secondaryInstrumentID === data3.secondaryInstrumentID
+            );
+
+            if (
+              getData &&
+              (data2.bid !== getData.bid || data2.offer !== getData.ask)
+            ) {
+              return {
+                ...data2,
+                bid: getData.bid,
+                offer: getData.ask,
+              };
+            }
+
+            return data2;
+          })
+        )
       );
 
       setWatchlistData((prev) => {

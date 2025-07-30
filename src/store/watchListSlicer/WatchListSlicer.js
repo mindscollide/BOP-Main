@@ -243,6 +243,9 @@ const WatchListSlice = createSlice({
   },
 });
 
-export const { clearWatchListResponseMessage, setMarketStatus } =
-  WatchListSlice.actions;
+export const {
+  clearWatchListResponseMessage,
+  setMarketStatus,
+  setWatchlistTableDataCopy,
+} = WatchListSlice.actions;
 export default WatchListSlice.reducer;
