@@ -66,11 +66,11 @@ const CorporateBookaForwardModal = ({
     value: 0,
     label: "",
   });
-  const [instrumentValue, setInstrumentValue] = useState({
-    value: 0,
-    label: "",
-    SecondaryInstrumentID: 0,
-  });
+  // const [instrumentValue, setInstrumentValue] = useState({
+  //   value: 0,
+  //   label: "",
+  //   SecondaryInstrumentID: 0,
+  // });
   const [currencyOptions, setCurrencyOptions] = useState([]);
 
   const [tenorDate, setTenorDate] = useState(formatDate(new Date()));
@@ -226,6 +226,20 @@ const CorporateBookaForwardModal = ({
         // Set the first valid instrument as default selection if available
         if (spotApplicableInstrumentList.length > 0) {
           setSelectedCurrency(spotApplicableInstrumentList[0]);
+          let findCurrentRates = currentRatesData.find(
+            (rates, index) =>
+              rates.instrumentID === spotApplicableInstrumentList[0].value
+          );
+          if (findCurrentRates !== undefined) {
+            let getRates =
+              typeOptionSelected.value === 1
+                ? findCurrentRates.bid
+                : findCurrentRates.offer;
+            setForwardRFQState({
+              ...forwardRFQState,
+              Ready: getRates,
+            });
+          }
           setCurrencyOptions(spotApplicableInstrumentList);
         } else {
           // Handle case where no valid instruments were found

@@ -523,6 +523,7 @@ const SpotRates = () => {
                                 name="bidValue"
                                 decimalScale={2}
                                 type="text"
+                                allowNegative={false}
                                 className={
                                   "text-center form-control ff-roboto mt-4 d-block fs-5 fw-bold mb-0"
                                 }
@@ -537,6 +538,7 @@ const SpotRates = () => {
                                 decimalScale={2}
                                 onChange={handleChangeCurrentRate}
                                 name="askValue"
+                                allowNegative={false}
                                 className={
                                   "text-center form-control ff-roboto  mt-4 d-block fs-5 fw-bold mb-0"
                                 }
