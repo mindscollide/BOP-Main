@@ -80,7 +80,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const prevTopicRef = useRef(null);
-  const prevPathRef = useRef(null);
+  const prevPathRef  = useRef(null)
   const chatModal = useSelector((state) => state.modalReducer.chatModal);
   const categoryValue = useSelector(
     (state) => state.dealerReducer.categoryValue
@@ -293,7 +293,7 @@ const Dashboard = () => {
     }),
     [handleMqttMessage]
   );
-  const { connectToMqtt, subscribeToTopics, unsubscribeFromTopics } =
+  const { connectToMqtt, subscribeToTopics, unsubscribeFromTopics, isConnected} =
     useMqttClient(mqttConfig);
 
   useEffect(() => {
@@ -321,19 +321,35 @@ const Dashboard = () => {
     };
   }, [categoryValue]);
   useEffect(() => {
-    const isTreasury = location.pathname.includes("treasury");
-
-    if (isTreasury) {
+    if (!isConnected) return;
+  
+    const isTreasuryPath = location.pathname.includes("treasury");
+  
+    // Subscribe if entering treasury path
+    if (isTreasuryPath) {
       subscribeToTopics(["BOP_REAL_TIME_FEED_TREASURY"]);
       console.log("Subscribed to BOP_REAL_TIME_FEED_TREASURY");
     }
-
-    return () => {
-      if (isTreasury) {
+  
+    // No cleanup here - we'll handle unsubscription in the next effect
+  }, [location.pathname,isConnected ]);
+  
+  // Handle unsubscription only when leaving treasury path
+  useEffect(() => {
+    const handlePathChange = () => {
+      const wasTreasury = prevPathRef.current?.includes("treasury");
+      const isNowTreasury = location.pathname.includes("treasury");
+  
+      // Unsubscribe only if we're leaving treasury path
+      if (wasTreasury && !isNowTreasury) {
         unsubscribeFromTopics(["BOP_REAL_TIME_FEED_TREASURY"]);
         console.log("Unsubscribed from BOP_REAL_TIME_FEED_TREASURY");
       }
+  
+      prevPathRef.current = location.pathname;
     };
+  
+    handlePathChange();
   }, [location.pathname]);
 
   useEffect(() => {
@@ -356,12 +372,12 @@ const Dashboard = () => {
     }
   }, []);
   return (
-    <Layout className='roboto-13'>
+    <Layout className="roboto-13">
       {!location.pathname.includes("calculator") && <Header />}
 
       <GlobalNavbar />
       <Content>
-        <main className='px-3'>
+        <main className="px-3">
           <Outlet />
           {/* <AnimatePresence>
             {blotterTransactionAdded && isTreasury && <DealBox />}
