@@ -38,6 +38,10 @@ const InfoTransaction = () => {
   );
   console.log(GetForwardTransactionDetails, "GetForwardTransactionDetails");
 
+  const transactionInfoModal = useSelector(
+    (state) => state.modalReducer.transactionInfoModal
+  );
+
   useEffect(() => {
     if (GetFEDiscountingTransactionDetails !== null) {
       setInfoRecord(GetFEDiscountingTransactionDetails.transactionDetailsModel);
@@ -69,7 +73,7 @@ const InfoTransaction = () => {
   return (
     <GlobalModal
       centered={true}
-      show={true}
+      show={transactionInfoModal}
       size={"md"}
       onHide={handleclose}
       bodyClassName={styles["transactionModal__body"]}
@@ -77,15 +81,23 @@ const InfoTransaction = () => {
         <>
           <Row>
             <Col
-              sm={12}
-              md={12}
-              lg={12}
+              sm={6}
+              md={6}
+              lg={6}
               className="d-flex align-items-center gap-1"
             >
               <p className={styles["company-name-hd"]}>
                 {InfoRecord?.corporateName}
               </p>
               <span className={styles["dealstatus"]}>{InfoRecord?.status}</span>
+            </Col>
+            <Col
+              sm={6}
+              md={6}
+              lg={6}
+              className={styles["infoTransaction_modal-crossIcon"]}
+            >
+              <i className="icon-close cursor-pointer" onClick={handleclose} />
             </Col>
           </Row>
           <Row className="mt-2">
