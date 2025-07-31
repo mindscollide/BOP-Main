@@ -243,6 +243,7 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                     customInput={InputFIeld}
                     value={readyValue}
                     thousandSeparator=','
+                    applyClass={"DiscountingQuoteInput"}
                     maxLength={10}
                     onChange={(e) => handleChangeRate(e, "readyValue")}
                   />
@@ -253,11 +254,19 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                   lg={12}
                   className='d-flex my-3 align-items-center gap-2'>
                   <label className={styles["DealViewModal_label"]}>Swap</label>
-                  <InputFIeld
+                  <NumericFormat
+                    customInput={InputFIeld}
+                    value={swapValue}
+                    thousandSeparator=','
+                    applyClass={"DiscountingQuoteInput"}
+                    maxLength={10}
+                    onChange={(e) => handleChangeRate(e, "swapValue")}
+                  />
+                  {/* <InputFIeld
                     applyClass={"DiscountingQuoteInput"}
                     value={swapValue}
                     onChange={(e) => handleChangeRate(e, "swapValue")}
-                  />
+                  /> */}
                 </Col>
                 <Col
                   sm={12}
