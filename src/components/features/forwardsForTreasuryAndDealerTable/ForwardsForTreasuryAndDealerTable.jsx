@@ -229,8 +229,16 @@ const TenoreWiseCurrentAndLastRates = ({
 
   const handlePublishForwards = () => {
     console.log("CheckerIs this treasury");
+    console.log(
+      forwardsForTreasuryBranch,
+      "forwardsForTreasuryBranchforwardsForTreasuryBranch"
+    );
     let checkDoNotempty = forwardsForTreasuryBranch.every(
-      (item) => item.currentAsk !== "" && item.currentBid !== ""
+      (item) =>
+        item.currentAsk !== "" &&
+        item.currentAsk !== 0 &&
+        item.currentBid !== "" &&
+        item.currentBid !== 0
     );
 
     let checkAskValue = forwardsForTreasuryBranch.find(
@@ -242,7 +250,7 @@ const TenoreWiseCurrentAndLastRates = ({
 
     if (!checkDoNotempty) {
       const handleClick = () => {
-        showMessage("Please fill all required fields.");
+        showMessage("Bid and Ask fields cannot be 0 or empty");
       };
 
       handleClick();
@@ -268,6 +276,8 @@ const TenoreWiseCurrentAndLastRates = ({
         };
       }),
     };
+    console.log(forwardsForTreasuryBranch, "forwardsForTreasuryBranch");
+
     dispatch(PublishTenorWiseForwardsAction({ Data, navigate }));
   };
 

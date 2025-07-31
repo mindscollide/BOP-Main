@@ -21,6 +21,7 @@ import {
 } from "@/components/utils/generateColumnsData";
 import { NonFeDiscountingPublishedAction } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { InputCell } from "@/components/common/inputField/InputCell";
+import { useNotification } from "@/context/NotificationProvider";
 
 /**
  * NonFeDiscountingTable component renders a table for displaying and managing
@@ -38,6 +39,8 @@ import { InputCell } from "@/components/common/inputField/InputCell";
 const NonFeDiscountingTable = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { showMessage } = useNotification();
+
   const marketStatus = useSelector(
     (state) => state.RealtimeActionsSlice.marketStatus
   );
@@ -159,21 +162,31 @@ const NonFeDiscountingTable = () => {
 
   const handlePublishDiscount = () => {
     const payloadData = buildCurrentRatesPayload(tableData);
+
+    const checkDoNotempty = payloadData.every(
+      (item) => item.Rate !== "" && item.Rate !== 0
+    );
+
+    if (!checkDoNotempty) {
+      showMessage("Rate fields cannot be 0 or empty for any currency");
+      return;
+    }
     let Data = { CurrentRates: payloadData };
+
     dispatch(PublishNonFEDiscountingTableApi({ navigate, Data }));
   };
   return (
     <>
       <GlobalTable
-        prefixCls='DealerAndTreasuryDiscountTable'
+        prefixCls="DealerAndTreasuryDiscountTable"
         columns={columnsData}
         dataSource={tableData}
         pagination={false}
       />
 
-      <span className='d-flex justify-content-center mt-4'>
+      <span className="d-flex justify-content-center mt-4">
         <CustomButton
-          applyClass='publishForwardsBtn'
+          applyClass="publishForwardsBtn"
           value={"Publish Non FE Discounting"}
           onClick={handlePublishDiscount}
           disabled={marketStatus === false ? true : false}

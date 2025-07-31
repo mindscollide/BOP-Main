@@ -1,26 +1,18 @@
-import React, { Suspense, lazy, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import CustomButton from "../../common/globalButton/button";
 import GlobalTable from "../../common/table/GlobalTable";
-import InputFIeld from "../../common/inputField/InputField";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { publishDiscountingRatesAction } from "@/container/pages/mainDealer/dealerActions";
 import { useSelector } from "react-redux";
-import {
-  isValidMaxFourNumberAfterPoint,
-  isValidNumberUnderMax,
-} from "@/utils/formatters";
-import {
-  GetFEDiscountingTableApi,
-  PublishFEDiscountingTableApi,
-} from "./FeDiscountTableAction";
-import { createColumns, generateData } from "@/components/utils/generateData";
+import { isValidMaxFourNumberAfterPoint } from "@/utils/formatters";
+import { PublishFEDiscountingTableApi } from "./FeDiscountTableAction";
 import {
   buildCurrentRatesPayload,
   buildDiscountingTable,
 } from "@/components/utils/generateColumnsData";
 import { FeDiscountingPublishedAction } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { InputCell } from "@/components/common/inputField/InputCell";
+import { useNotification } from "@/context/NotificationProvider";
 
 /**
  * FeDiscountingTable component renders a table for displaying and managing
@@ -38,6 +30,7 @@ import { InputCell } from "@/components/common/inputField/InputCell";
 const FeDiscountingTable = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { showMessage } = useNotification();
   const marketStatus = useSelector(
     (state) => state.RealtimeActionsSlice.marketStatus
   );
@@ -163,6 +156,14 @@ const FeDiscountingTable = () => {
     let Data = { CurrentRates: payloadData };
 
     console.log(payloadData, "payloadDatapayloadDatapayloadData");
+    const checkDoNotempty = payloadData.every(
+      (item) => item.Rate !== "" && item.Rate !== 0
+    );
+
+    if (!checkDoNotempty) {
+      showMessage("Rate fields cannot be 0 or empty for any currency");
+      return;
+    }
     dispatch(PublishFEDiscountingTableApi({ navigate, Data }));
   };
   return (
