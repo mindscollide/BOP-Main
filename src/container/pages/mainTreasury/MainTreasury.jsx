@@ -19,16 +19,35 @@ import {
 import { setBlotterLoader } from "@/store/BlotterSlicer/BlotterSlicer";
 import GlobalTabs from "@/components/common/tabs/Tabs";
 import SectionLoader from "@/components/common/sectionLoader/SectionLoader";
+import { useMqttClient } from "@/components/utils/mqttConnection";
 
 // Lazy load the tab components
 const LiveRates = React.lazy(() => import("./tabsContent/liveRates/LiveRates"));
 const Forwards = React.lazy(() => import("./tabsContent/forwards/Forwards"));
-const Discounting = React.lazy(() => import("./tabsContent/discounting/Discounting"));
+const Discounting = React.lazy(() =>
+  import("./tabsContent/discounting/Discounting")
+);
 
 const MainTreasury = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const { isConnected, connectToMqtt, disconnect, subscribeToTopics } =
+    useMqttClient({
+      onMessageArrivedCallback: (message) => {
+        // Handle incoming messages
+      },
+      onConnectionLostCallback: (error) => {
+        // Handle connection loss
+      },
+      shouldSubscribeToTreasury: true,
+    });
+
+  // useEffect(() => {
+  //   if (isConnected) {
+  //     subscribeToTopics([`BOP_REAL_TIME_FEED_TREASURY`]);
+  //   }
+  // }, [isConnected]);
   useEffect(() => {
     // Wrap data fetching in startTransition if it triggers component loading
     startTransition(() => {
@@ -49,33 +68,33 @@ const MainTreasury = () => {
   }, []);
 
   const tabsData = [
-    { 
-      title: "Live Rates", 
+    {
+      title: "Live Rates",
       content: (
         <Suspense fallback={<SectionLoader />}>
           <LiveRates />
         </Suspense>
-      ) 
+      ),
     },
-    { 
-      title: "Forwards", 
+    {
+      title: "Forwards",
       content: (
         <Suspense fallback={<SectionLoader />}>
           <Forwards />
         </Suspense>
-      ) 
+      ),
     },
-    { 
-      title: "Discounting", 
+    {
+      title: "Discounting",
       content: (
         <Suspense fallback={<SectionLoader />}>
           <Discounting />
         </Suspense>
-      ) 
+      ),
     },
   ];
 
-  return <GlobalTabs tabClass="mb-4" tabs={tabsData} defaultActiveKey={"0"} />;
+  return <GlobalTabs tabClass='mb-4' tabs={tabsData} defaultActiveKey={"0"} />;
 };
 
 export default MainTreasury;

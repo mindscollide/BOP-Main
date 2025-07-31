@@ -6,6 +6,7 @@ import TimePicker from "react-multi-date-picker/plugins/time_picker";
 import { ConvertDateTimrStringIntoGTM } from "@/utils/formatters";
 import { useDispatch } from "react-redux";
 import { setMarketTimingsUpdated } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
+import { convertUTCToLocalDateWithToday } from "@/components/utils/timeFunction";
 
 const MarketTiming = () => {
   const getMarketTimingData = useSelector(
@@ -26,14 +27,10 @@ const MarketTiming = () => {
       try {
         const { monThuStart, monThuEnd, fridayStart, fridayEnd } =
           getMarketTimingData;
-        setMonToThruStartTime(
-          ConvertDateTimrStringIntoGTM(monThuStart, "hh:mm A")
-        );
-        setMonToThruEndTime(ConvertDateTimrStringIntoGTM(monThuEnd, "hh:mm A"));
-        setFridayStartTime(
-          ConvertDateTimrStringIntoGTM(fridayStart, "hh:mm A")
-        );
-        setFridayEndTime(ConvertDateTimrStringIntoGTM(fridayEnd, "hh:mm A"));
+        setMonToThruStartTime(convertUTCToLocalDateWithToday(monThuStart));
+        setMonToThruEndTime(convertUTCToLocalDateWithToday(monThuEnd));
+        setFridayStartTime(convertUTCToLocalDateWithToday(fridayStart));
+        setFridayEndTime(convertUTCToLocalDateWithToday(fridayEnd));
 
         dispatch(setMarketTimingsUpdated(null));
       } catch (error) {
@@ -54,17 +51,11 @@ const MarketTiming = () => {
             fridayEndTime,
           } = marketTimings;
           setMonToThruStartTime(
-            ConvertDateTimrStringIntoGTM(monThuStartTime, "hh:mm A")
+            convertUTCToLocalDateWithToday(monThuStartTime)
           );
-          setMonToThruEndTime(
-            ConvertDateTimrStringIntoGTM(monThuEndTime, "hh:mm A")
-          );
-          setFridayStartTime(
-            ConvertDateTimrStringIntoGTM(fridayStartTime, "hh:mm A")
-          );
-          setFridayEndTime(
-            ConvertDateTimrStringIntoGTM(fridayEndTime, "hh:mm A")
-          );
+          setMonToThruEndTime(convertUTCToLocalDateWithToday(monThuEndTime));
+          setFridayStartTime(convertUTCToLocalDateWithToday(fridayStartTime));
+          setFridayEndTime(convertUTCToLocalDateWithToday(fridayEndTime));
         }
       } catch (error) {}
 
