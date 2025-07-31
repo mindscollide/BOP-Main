@@ -80,6 +80,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const prevTopicRef = useRef(null);
+  const prevPathRef = useRef(null);
   const chatModal = useSelector((state) => state.modalReducer.chatModal);
   const categoryValue = useSelector(
     (state) => state.dealerReducer.categoryValue
@@ -319,6 +320,21 @@ const Dashboard = () => {
       }
     };
   }, [categoryValue]);
+  useEffect(() => {
+    const isTreasury = location.pathname.includes("treasury");
+
+    if (isTreasury) {
+      subscribeToTopics(["BOP_REAL_TIME_FEED_TREASURY"]);
+      console.log("Subscribed to BOP_REAL_TIME_FEED_TREASURY");
+    }
+
+    return () => {
+      if (isTreasury) {
+        unsubscribeFromTopics(["BOP_REAL_TIME_FEED_TREASURY"]);
+        console.log("Unsubscribed from BOP_REAL_TIME_FEED_TREASURY");
+      }
+    };
+  }, [location.pathname]);
 
   useEffect(() => {
     connectToMqtt({ subscribeID, userID });
@@ -340,12 +356,12 @@ const Dashboard = () => {
     }
   }, []);
   return (
-    <Layout className="roboto-13">
+    <Layout className='roboto-13'>
       {!location.pathname.includes("calculator") && <Header />}
 
       <GlobalNavbar />
       <Content>
-        <main className="px-3">
+        <main className='px-3'>
           <Outlet />
           {/* <AnimatePresence>
             {blotterTransactionAdded && isTreasury && <DealBox />}

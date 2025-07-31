@@ -67,3 +67,24 @@ export function extractTimeFromCompactDate(input) {
     })
     .toLowerCase();
 }
+
+
+
+export const convertUTCToLocalDateWithToday = (timeStr) => {
+  // Extract hours and minutes from the input string
+  const [utcHours, utcMinutes] = timeStr.split(":").map(Number);
+
+  // Get today's date parts in the local timezone
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth();
+  const day = today.getDate();
+
+  // Create a Date object in UTC using the provided time and today's date
+  const utcDate = new Date(Date.UTC(year, month, day, utcHours, utcMinutes));
+
+  // Convert it to a local time Date object
+  const localDate = new Date(utcDate);
+
+  return localDate;
+};

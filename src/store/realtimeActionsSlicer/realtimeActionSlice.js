@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { isEqual } from "lodash";
 
 const RealtimeActionsSlice = createSlice({
   name: "realtimeActions",
@@ -101,7 +102,9 @@ const RealtimeActionsSlice = createSlice({
       state.CounterPartySpotRates = { ...payload };
     },
     setTreasurySpotRatesFeed: (state, { payload }) => {
-      state.TreasurySpotRatesFeed = { ...payload };
+      if (!isEqual(state.TreasurySpotRatesFeed, payload)) {
+        state.TreasurySpotRatesFeed = payload;
+      }
     },
     setDealBoxData(state, { payload }) {
       state.dealBoxData = payload;
