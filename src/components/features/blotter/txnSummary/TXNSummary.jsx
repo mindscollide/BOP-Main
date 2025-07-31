@@ -1480,6 +1480,42 @@ const TXNSummary = () => {
       ellipsis: true,
     },
     {
+      title: (
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Status</span>
+          <Popover
+            content={popoverContentStatus}
+            trigger='click'
+            arrow={false}
+            placement='bottom'
+            open={openStatus}
+            onOpenChange={handleOpenChangeStatus}>
+            <span
+              style={{
+                cursor: "pointer",
+                color: "white",
+                background: "#f56600",
+                borderRadius: "4px",
+              }}>
+              ▼
+            </span>
+          </Popover>
+        </div>
+      ),
+      key: "14",
+      dataIndex: "status",
+      className: "ff-poppins fw-bold",
+      width: 80,
+      ellipsis: true,
+      render: (text, record) => (
+        <>
+          <span className={text === "Accepted" ? "color-green" : "color-red"}>
+            {text}
+          </span>
+        </>
+      ),
+    },
+    {
       title: "",
       key: "Checker",
       dataIndex: "Checker",
@@ -1541,42 +1577,6 @@ const TXNSummary = () => {
       },
     },
 
-    {
-      title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Status</span>
-          <Popover
-            content={popoverContentStatus}
-            trigger='click'
-            arrow={false}
-            placement='bottom'
-            open={openStatus}
-            onOpenChange={handleOpenChangeStatus}>
-            <span
-              style={{
-                cursor: "pointer",
-                color: "white",
-                background: "#f56600",
-                borderRadius: "4px",
-              }}>
-              ▼
-            </span>
-          </Popover>
-        </div>
-      ),
-      key: "14",
-      dataIndex: "status",
-      className: "ff-poppins fw-bold",
-      width: 80,
-      ellipsis: true,
-      render: (text, record) => (
-        <>
-          <span className={text === "Accepted" ? "color-green" : "color-red"}>
-            {text}
-          </span>
-        </>
-      ),
-    },
     {
       key: "15",
       title: "",
