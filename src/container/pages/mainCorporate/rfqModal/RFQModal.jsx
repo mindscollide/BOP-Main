@@ -612,7 +612,7 @@ const RFQModal = () => {
                   <>
                     <Col lg={2} md={2} sm={2}>
                       <label className="LabelRFQTransactionModal">
-                        Company Name*
+                        Customer Name*
                       </label>
                     </Col>
                     <Col lg={4} md={4} sm={4} className="mb-3">
@@ -735,7 +735,9 @@ const RFQModal = () => {
                 </Col>
 
                 <Col lg={2} md={2} sm={2}>
-                  <label className="LabelRFQTransactionModal">LC No</label>
+                  <label className="LabelRFQTransactionModal">
+                    Reference No (LC/Contract/Doc)
+                  </label>
                 </Col>
                 <Col lg={4} md={4} sm={4} className="mb-2">
                   <InputFIeld
