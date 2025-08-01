@@ -21,12 +21,17 @@ const MarketTiming = () => {
   const [monToThruEndTime, setMonToThruEndTime] = useState(null);
   const [fridayStartTime, setFridayStartTime] = useState(null);
   const [fridayEndTime, setFridayEndTime] = useState(null);
-
+  console.log(
+    { monToThruStartTime, monToThruEndTime, fridayStartTime, fridayEndTime },
+    "market Timing"
+  );
   useEffect(() => {
     if (getMarketTimingData) {
       try {
         const { monThuStart, monThuEnd, fridayStart, fridayEnd } =
-          getMarketTimingData;
+          getMarketTimingData?.response;
+        console.log({ getMarketTimingData }, "market Timing");
+
         setMonToThruStartTime(convertUTCToLocalDateWithToday(monThuStart));
         setMonToThruEndTime(convertUTCToLocalDateWithToday(monThuEnd));
         setFridayStartTime(convertUTCToLocalDateWithToday(fridayStart));
