@@ -51,10 +51,7 @@ const CorporateBookaForwardModal = ({
   const getAllInstrumentsForCounterPartiesData = useSelector(
     (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
   );
-  console.log(
-    { currentRatesData, getAllInstrumentsForCounterPartiesData },
-    "getAllInstrumentsForCounterPartiesData"
-  );
+
   console.log(
     calculatedForwardsSwapandRate,
     "calculatedForwardsSwapandRatecalculatedForwardsSwapandRate"
@@ -72,7 +69,6 @@ const CorporateBookaForwardModal = ({
   //   SecondaryInstrumentID: 0,
   // });
   const [currencyOptions, setCurrencyOptions] = useState([]);
-
   const [tenorDate, setTenorDate] = useState(formatDate(new Date()));
   const [optionsDate, setOptionsDate] = useState(formatDate(new Date()));
   const [getAllCorporates, setGetAllCorporates] = useState([]);
@@ -110,6 +106,26 @@ const CorporateBookaForwardModal = ({
   const handleChangeType = (selectType) => {
     console.log("selectType", selectType);
     setTypeOptionSelected(selectType);
+
+    try {
+      if (
+        typeOptionSelected.value !== 0 &&
+        forwardRFQState.TenorDays !== "" &&
+        // forwardRFQState.TenorDays !== "0" &&
+        selectedCurrency.value !== 0
+      ) {
+        let Data = {
+          IsBuySide: selectType.value === 1 ? true : false,
+          TenorDays: Number(forwardRFQState.TenorDays),
+          InstrumentName: selectedCurrency.label,
+          InstrumentID: selectedCurrency.value,
+        };
+        dispatch(calculateTenorSwapAndForwardRateApi({ Data, navigate }));
+        console.log(findCurrentRates, "findCurrentRatesfindCurrentRates");
+      }
+    } catch (error) {
+      console.log("Error in Calculating rated: ", error);
+    }
   };
   const options = [];
 
@@ -161,6 +177,7 @@ const CorporateBookaForwardModal = ({
       }
     }
   }, [GetAllActiveCorproates]);
+
   console.log(
     calculatedForwardsSwapandRate,
     "calculatedForwardsSwapandRatecalculatedForwardsSwapandRate"
@@ -168,11 +185,12 @@ const CorporateBookaForwardModal = ({
   useEffect(() => {
     if (calculatedForwardsSwapandRate !== null) {
       try {
-        const { forwardRate, swap } = calculatedForwardsSwapandRate;
+        const { forwardRate, swap, readyRate } = calculatedForwardsSwapandRate;
         setForwardRFQState({
           ...forwardRFQState,
           Swap: swap,
           CalculateRate: forwardRate,
+          Ready: readyRate,
         });
         dispatch(clearCalculateTenorSwapAndForwardRateData());
       } catch (error) {}
@@ -226,20 +244,20 @@ const CorporateBookaForwardModal = ({
         // Set the first valid instrument as default selection if available
         if (spotApplicableInstrumentList.length > 0) {
           setSelectedCurrency(spotApplicableInstrumentList[0]);
-          let findCurrentRates = currentRatesData.find(
-            (rates, index) =>
-              rates.instrumentID === spotApplicableInstrumentList[0].value
-          );
-          if (findCurrentRates !== undefined) {
-            let getRates =
-              typeOptionSelected.value === 1
-                ? findCurrentRates.bid
-                : findCurrentRates.offer;
-            setForwardRFQState({
-              ...forwardRFQState,
-              Ready: getRates,
-            });
-          }
+          // let findCurrentRates = currentRatesData.find(
+          //   (rates, index) =>
+          //     rates.instrumentID === spotApplicableInstrumentList[0].value
+          // );
+          // if (findCurrentRates !== undefined) {
+          //   let getRates =
+          //     typeOptionSelected.value === 1
+          //       ? findCurrentRates.bid
+          //       : findCurrentRates.offer;
+          //   setForwardRFQState({
+          //     ...forwardRFQState,
+          //     Ready: getRates,
+          //   });
+          // }
           setCurrencyOptions(spotApplicableInstrumentList);
         } else {
           // Handle case where no valid instruments were found
@@ -261,10 +279,12 @@ const CorporateBookaForwardModal = ({
       setCurrencyOptions([]);
     }
   }, [getAllInstrumentsForCounterPartiesData]); // Only re-run when instrument data changes
+
   const handleChangeCorporate = (selectedOption) => {
     setCorporateValue(selectedOption);
     console.log("selectedOption", selectedOption);
   };
+
   // handle Change amount
   const handleChangeValues = (event) => {
     const { name, value } = event.target;
@@ -328,21 +348,22 @@ const CorporateBookaForwardModal = ({
     }
   };
 
-  const handleClickCalculatureForwards = () => {
-    let Data = {
-      IsBuySide: typeOptionSelected.value === 1 ? true : false,
-      TenorDays: forwardRFQState.TenorDays,
-      InstrumentName: selectedCurrency.label,
-      InstrumentID: selectedCurrency.value,
-    };
+  // const handleClickCalculatureForwards = () => {
+  //   let Data = {
+  //     IsBuySide: typeOptionSelected.value === 1 ? true : false,
+  //     TenorDays: forwardRFQState.TenorDays,
+  //     InstrumentName: selectedCurrency.label,
+  //     InstrumentID: selectedCurrency.value,
+  //   };
 
-    dispatch(calculateTenorSwapAndForwardRateApi({ Data, navigate }));
-  };
+  //   dispatch(calculateTenorSwapAndForwardRateApi({ Data, navigate }));
+  // };
 
   const handleUpdateRate = () => {
     if (
       typeOptionSelected.value !== 0 &&
       forwardRFQState.TenorDays !== "" &&
+      // forwardRFQState.TenorDays !== "0" &&
       selectedCurrency.value !== 0
     ) {
       let Data = {
@@ -354,23 +375,42 @@ const CorporateBookaForwardModal = ({
       dispatch(calculateTenorSwapAndForwardRateApi({ Data, navigate }));
     }
   };
+
   const handleChangeCurrency = (selectCurrenty) => {
-    let findCurrentRates = currentRatesData.find(
-      (rates, index) => rates.instrumentID === selectCurrenty.value
-    );
+    console.log(selectCurrenty, "selectCurrenty");
     setSelectedCurrency(selectCurrenty);
-    if (findCurrentRates !== undefined) {
-      let getRates =
-        typeOptionSelected.value === 1
-          ? findCurrentRates.bid
-          : findCurrentRates.offer;
-      setForwardRFQState({
-        ...forwardRFQState,
-        Ready: getRates,
-      });
+    // let findCurrentRates = currentRatesData.find(
+    //   (rates, index) => rates.instrumentID === selectCurrenty.value
+    // );
+    // if (findCurrentRates !== undefined) {
+    //   let getRates =
+    //     typeOptionSelected.value === 1
+    //       ? findCurrentRates.bid
+    //       : findCurrentRates.offer;
+    //   setForwardRFQState({
+    //     ...forwardRFQState,
+    //     Ready: getRates,
+    //   });
+    // }
+    try {
+      if (
+        typeOptionSelected.value !== 0 &&
+        forwardRFQState.TenorDays !== "" &&
+        // forwardRFQState.TenorDays !== "0" &&
+        selectCurrenty.value !== 0
+      ) {
+        let Data = {
+          IsBuySide: typeOptionSelected.value === 1 ? true : false,
+          TenorDays: Number(forwardRFQState.TenorDays),
+          InstrumentName: selectCurrenty.label,
+          InstrumentID: selectCurrenty.value,
+        };
+        dispatch(calculateTenorSwapAndForwardRateApi({ Data, navigate }));
+        console.log(findCurrentRates, "findCurrentRatesfindCurrentRates");
+      }
+    } catch (error) {
+      console.log("Error in Calculating rated: ", error);
     }
-    console.log(findCurrentRates, "findCurrentRatesfindCurrentRates");
-    // setForwardRFQState
   };
 
   const handleConfirm = () => {
