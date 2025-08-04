@@ -51,10 +51,7 @@ const BankSpot = memo(() => {
     selectGetAllInstrumentForTreasury,
     shallowEqual
   );
-  const TreasurySpotRatesFeed = useSelector(
-    selectedTreasurySpotRatesFeed,
-    (prev, next) => !isFeedDifferent(prev, next)
-  );
+
   const worldCrosses = useSelector(selectWorldCrosses, shallowEqual);
   const worldCurrencies = useSelector(selectWorldCurrencies, shallowEqual);
   const isLoading = useSelector(selectTreasuryBankSpotSpinner);
@@ -63,7 +60,17 @@ const BankSpot = memo(() => {
   const [processedData, setProcessedData] = useState([]);
   // Refs for throttled function and previous feed
   const throttledUpdateRef = useRef();
-  const prevFeedRef = useRef(TreasurySpotRatesFeed);
+  const prevFeedRef = useRef();
+
+  const rawFeed = useSelector(selectedTreasurySpotRatesFeed);
+
+  const TreasurySpotRatesFeed = useMemo(() => {
+    if (!isFeedDifferent(prevFeedRef.current, rawFeed)) {
+      return prevFeedRef.current;
+    }
+    prevFeedRef.current = rawFeed;
+    return rawFeed;
+  }, [rawFeed]);
 
   /**
    * Safely enriches instrument data with cross and currency rates
@@ -170,7 +177,7 @@ const BankSpot = memo(() => {
 
   // Initialize and cleanup throttled function
   useEffect(() => {
-    const throttledUpdate = throttle(updateData, 20, {
+    const throttledUpdate = throttle(updateData, 40, {
       leading: true,
       trailing: true,
     });
