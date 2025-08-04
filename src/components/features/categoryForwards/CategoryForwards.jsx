@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import { buildForwardsTable } from "@/components/utils/generateColumnsData";
 import { throttle } from "lodash";
+import { setCategoryFowardsTenorsChanges } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 
 const CategoryForwards = () => {
   const [dataSource, setDataSource] = useState([]);
@@ -134,6 +135,7 @@ const CategoryForwards = () => {
           setDataSource(rowData);
           setColumnsData(columnsData);
         }
+        dispatch(setCategoryFowardsTenorsChanges(null));
         console.log(updatedTenors, "updatedTenorsupdatedTenors");
       } catch (error) {
         console.log(error);

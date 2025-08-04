@@ -4,6 +4,7 @@ import { buildForwardsTable } from "@/components/utils/generateColumnsData";
 import React, { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { throttle } from "lodash";
+import { setTreasuryFowardsTenorsChanges } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 
 const BankForwards = () => {
   const [dataSource, setDataSource] = useState([]);
@@ -28,6 +29,12 @@ const BankForwards = () => {
   const marketStatus = useSelector(
     (state) => state.WatchListReducer.getMarketStatus
   );
+
+  const treasuryFowardsTenorsChanges = useSelector(
+    (state) => state.RealtimeActionsSlice.treasuryFowardsTenorsChanges
+  );
+
+  console.log(treasuryFowardsTenorsChanges, "treasuryFowardsTenorsChanges");
 
   useEffect(() => {
     if (getAllTenorsRecords !== null && GetAllInstrumentForTreasury !== null) {
@@ -55,6 +62,68 @@ const BankForwards = () => {
     }
   }, [
     GetBankForwardForTreasury,
+    getAllTenorsRecords,
+    GetAllInstrumentForTreasury,
+  ]);
+
+  useEffect(() => {
+    if (
+      treasuryFowardsTenorsChanges !== null &&
+      getAllTenorsRecords !== null &&
+      GetAllInstrumentForTreasury !== null
+    ) {
+      try {
+        const { newIsForwardtenorList = [], removedtenorList = [] } =
+          treasuryFowardsTenorsChanges;
+        const allTenors = [...(getAllTenorsRecords.tenors || [])];
+
+        const { forwardInstruments } = GetAllInstrumentForTreasury;
+        // Convert arrays of objects to Set of IDs
+        const removedSet = new Set(
+          removedtenorList.map((item) => item.tenorID)
+        );
+        const newSet = new Set(
+          newIsForwardtenorList.map((item) => item.tenorID)
+        );
+
+        // Update each tenor's isForwardingApplicable field
+        const updatedTenors = allTenors.map((tenor) => ({
+          ...tenor,
+          isForwardingApplicable: newSet.has(tenor.tenorID)
+            ? true
+            : removedSet.has(tenor.tenorID)
+            ? false
+            : tenor.isForwardingApplicable, // leave unchanged if in neither
+        }));
+
+        console.log(updatedTenors, "updatedTenorsupdatedTenors");
+        let getAllTenorsData = { tenors: updatedTenors };
+        let getAllInstrument = {
+          instruments: forwardInstruments,
+        };
+
+        const { forwardRates = [] } =
+          GetBankForwardForTreasury !== null && GetBankForwardForTreasury;
+        // const { forwardInstruments } = GetAllInstrumentForTreasury;
+        const { rowData, columnsData } = buildForwardsTable(
+          3,
+          forwardRates,
+          getAllTenorsData,
+          getAllInstrument,
+          IndexCell
+        );
+        if (rowData.length > 0) {
+          setDataSource(rowData);
+          setColumnsData(columnsData);
+        }
+        dispatch(setTreasuryFowardsTenorsChanges(null));
+        console.log(updatedTenors, "updatedTenorsupdatedTenors");
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }, [
+    treasuryFowardsTenorsChanges,
     getAllTenorsRecords,
     GetAllInstrumentForTreasury,
   ]);
