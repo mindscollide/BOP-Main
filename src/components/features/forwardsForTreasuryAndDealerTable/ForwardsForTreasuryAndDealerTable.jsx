@@ -1,15 +1,13 @@
-import NotificationSnackBar from "@/components/common/NotificationSnackbar";
 import GlobalModal from "@/components/common/globalModal/Modal";
-import {
-  getTenorWiseForwardsAction,
-  PublishTenorWiseForwardsAction,
-} from "@/container/pages/mainDealer/dealerActions";
+import { PublishTenorWiseForwardsAction } from "@/container/pages/mainDealer/dealerActions";
 import {
   setForwardsForTreasuryBranch,
   updateForwardItem,
 } from "@/store/dealerReducer/dealerSlicer";
-import { tenorWiseFowardsRatesPublishedActions } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
-import { formatCurrencyInput } from "@/utils/formatters";
+import {
+  setCategoryFowardsTenorsChanges,
+  tenorWiseFowardsRatesPublishedActions,
+} from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import React, { lazy, Suspense, useEffect, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import { useSelector } from "react-redux";
@@ -148,9 +146,11 @@ const TenoreWiseCurrentAndLastRates = ({
         currentTenorWiseForwardRates,
         lastTenorWiseForwardRates,
         tenorList,
+        // newIsForwardtenorList,
       } = getTenorWiseForwardsRates.tenorWiseForwardRates || {};
       const { tenors } = getAllTenorsData || {};
 
+      console.log(getTenorWiseForwardsRates, "viewing the data");
       // Early return if required data is missing
       if (
         !currentTenorWiseForwardRates ||
