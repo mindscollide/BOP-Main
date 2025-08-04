@@ -62,11 +62,20 @@ const RealtimeActionsSlice = createSlice({
 
     categoryFowardsTenorsChanges: null,
     counterPartyFowardsTenorsChanges: null,
-    TreasuryFowardsTenorsChanges: null
+    treasuryFowardsTenorsChanges: null,
   },
   reducers: {
+    setCategoryFowardsTenorsChanges: (state, { payload }) => {
+      state.categoryFowardsTenorsChanges = payload;
+    },
+    setCounterPartyFowardsTenorsChanges: (state, { payload }) => {
+      state.counterPartyFowardsTenorsChanges = payload;
+    },
+    setTreasuryFowardsTenorsChanges: (state, { payload }) => {
+      state.treasuryFowardsTenorsChanges = payload;
+    },
     setClearRates: (state, { payload }) => {
-      console.log(payload,"checker")
+      console.log(payload, "checker");
       state.ClearRatesData = { ...payload };
     },
     setCategoryNonFeDiscounting: (state, { payload }) => {
@@ -212,6 +221,9 @@ const RealtimeActionsSlice = createSlice({
 });
 
 export const {
+  setCategoryFowardsTenorsChanges,
+  setTreasuryFowardsTenorsChanges,
+  setCounterPartyFowardsTenorsChanges,
   setClearRates,
   setCategoryFeDiscounting,
   setFxTradingCards,
