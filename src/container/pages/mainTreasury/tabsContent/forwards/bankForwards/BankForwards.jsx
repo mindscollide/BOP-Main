@@ -95,9 +95,11 @@ const BankForwards = () => {
             ? false
             : tenor.isForwardingApplicable, // leave unchanged if in neither
         }));
-
+        const filteredTenors = updatedTenors.filter(
+          (t) => t.isForwardingApplicable
+        );
         console.log(updatedTenors, "updatedTenorsupdatedTenors");
-        let getAllTenorsData = { tenors: updatedTenors };
+        let getAllTenorsData = { tenors: filteredTenors };
         let getAllInstrument = {
           instruments: forwardInstruments,
         };

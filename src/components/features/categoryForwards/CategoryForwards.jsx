@@ -115,8 +115,10 @@ const CategoryForwards = () => {
             ? false
             : tenor.isForwardingApplicable, // leave unchanged if in neither
         }));
-
-        let getAllTenorsData = { tenors: updatedTenors };
+        const filteredTenors = updatedTenors.filter(
+          (t) => t.isForwardingApplicable
+        );
+        let getAllTenorsData = { tenors: filteredTenors };
         let getAllInstrument = {
           instruments: allInstrumentForTreasuryData.forwardInstruments,
         };
