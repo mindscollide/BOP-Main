@@ -349,7 +349,7 @@ const ForwardsForTreasuryAndDealer = () => {
           </Col>
         )}
         {DealeAndTreasuryFeDiscountingTable && (
-          <Col sm={12} md={12} lg={12} className='mt-3 position-relative'>
+          <Col sm={12} md={12} lg={12} className="mt-3 position-relative">
             <Suspense fallback={<SectionLoader />}>
               <h6 className="fs-4 fw-bold color-primary">FE Discounting %</h6>
               <DealeAndTreasuryFeDiscountingTable />
@@ -357,7 +357,7 @@ const ForwardsForTreasuryAndDealer = () => {
           </Col>
         )}
         {DealeAndTreasuryNonFeDiscountingTable && (
-          <Col sm={12} md={12} lg={12} className='mt-3 position-relative'>
+          <Col sm={12} md={12} lg={12} className="mt-3 position-relative">
             <Suspense fallback={<SectionLoader />}>
               <h6 className="fs-4 fw-bold color-primary">
                 Non-FE Discounting %

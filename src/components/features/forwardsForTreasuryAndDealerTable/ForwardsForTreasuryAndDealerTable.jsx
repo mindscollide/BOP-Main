@@ -272,7 +272,7 @@ const TenoreWiseCurrentAndLastRates = ({
           TenorID: item.tenorID,
           Bid: Number(item.currentBid),
           Ask: Number(item.currentAsk),
-          DateTime: item.dateTime,
+          DateTime: "",
         };
       }),
     };
