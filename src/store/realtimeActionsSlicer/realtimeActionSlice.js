@@ -59,6 +59,10 @@ const RealtimeActionsSlice = createSlice({
     CounterPartyFeDiscounting: null,
     CategoryNonFeDiscouting: null,
     ClearRatesData: null,
+
+    categoryFowardsTenorsChanges: null,
+    counterPartyFowardsTenorsChanges: null,
+    TreasuryFowardsTenorsChanges: null
   },
   reducers: {
     setClearRates: (state, { payload }) => {

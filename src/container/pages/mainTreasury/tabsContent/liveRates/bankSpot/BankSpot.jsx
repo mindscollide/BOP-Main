@@ -17,7 +17,7 @@ import SectionLoader from "@/components/common/sectionLoader/SectionLoader";
 // Memoized selectors outside component
 const selectGetAllInstrumentForTreasury = (state) =>
   state.WatchListReducer.GetAllInstrumentForTreasury?.crossInstruments;
-const selectTreasurySpotRatesFeed = (state) =>
+const selectedTreasurySpotRatesFeed = (state) =>
   state.RealtimeActionsSlice.TreasurySpotRatesFeed;
 const selectWorldCrosses = (state) =>
   state.WatchListReducer.GetBankSpotForTreasury?.worldCrosses || [];
@@ -52,7 +52,7 @@ const BankSpot = memo(() => {
     shallowEqual
   );
   const TreasurySpotRatesFeed = useSelector(
-    selectTreasurySpotRatesFeed,
+    selectedTreasurySpotRatesFeed,
     (prev, next) => !isFeedDifferent(prev, next)
   );
   const worldCrosses = useSelector(selectWorldCrosses, shallowEqual);
