@@ -24,8 +24,8 @@ export const LogoutApi = createAsyncThunk(
               .toLowerCase()
               .includes("ERM_AuthService_AuthManager_LogOut_01".toLowerCase())
           ) {
-            localStorage.clear();
-            navigate("/");
+            // localStorage.clear();
+            window.location.href = "/";
           } else if (
             responseMessage
               .toLowerCase()
