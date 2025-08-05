@@ -213,11 +213,13 @@ const FEDiscountingModal = ({
   useEffect(() => {
     if (CalculateFESwapAndDiscountingRate !== null) {
       try {
-        const { feRate, discountingFactor } = CalculateFESwapAndDiscountingRate;
+        const { feRate, discountingFactor, readyRate } =
+          CalculateFESwapAndDiscountingRate;
         setFormData((prev) => ({
           ...prev,
           DiscountingFactor: discountingFactor,
           feRate: feRate,
+          Ready: readyRate,
         }));
       } catch (error) {
         console.log(
@@ -335,10 +337,10 @@ const FEDiscountingModal = ({
       AccountNumber: formData.AccountNumber,
       NatureOfTransactionID: formData.NatureOfTransactionID,
       TenorDays: parseInt(formData.TenorDays),
-      DiscountingFactor: parseFloat(formData.DiscountingFactor),
-      Ready: parseFloat(formData.Ready),
+      // DiscountingFactor: parseFloat(formData.DiscountingFactor),
+      // Ready: parseFloat(formData.Ready),
     };
-
+    console.log(payload, "payloadpayloadpayloadtest");
     // Dispatch API action
     dispatch(
       SaveFEDiscountingTransactionAPI({
