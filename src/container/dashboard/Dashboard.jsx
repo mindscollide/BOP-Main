@@ -55,6 +55,7 @@ import {
   setTenorsCreated,
   setTreasuryFeDiscounting,
   setTreasuryForwardRates,
+  setTreasuryFowardsTenorsChanges,
   setTreasuryNonFeDiscounting,
   setTreasurySpotRatesFeed,
   tenorWiseFowardsRatesPublishedActions,
@@ -151,6 +152,7 @@ const Dashboard = () => {
         };
         console.log(tenorsData, "tenorsDatatenorsData");
         dispatch(setCategoryFowardsTenorsChanges(tenorsData));
+        dispatch(setTreasuryFowardsTenorsChanges(tenorsData));
         break;
       case "NONFE_DISCOUNTING_RATES_PUBLISHED":
         dispatch(NonFeDiscountingPublishedAction(data.payload));

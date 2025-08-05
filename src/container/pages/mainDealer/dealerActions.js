@@ -619,7 +619,7 @@ export const PublishTenorWiseForwardsAction = createAsyncThunk(
                 "UploadRate_UploadRateServiceManager_PublishTenorWiseForwardRates_05".toLowerCase()
               )
           ) {
-            return rejectWithValue("Something went wrong");
+            return rejectWithValue("Forward rates are published");
           } else {
             console.log("", response.data);
             return rejectWithValue("Something went wrong");

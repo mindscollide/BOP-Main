@@ -4,8 +4,11 @@ import { useSelector } from "react-redux";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import { buildForwardsTable } from "@/components/utils/generateColumnsData";
 import { throttle } from "lodash";
+import { setCategoryFowardsTenorsChanges } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
+import { useDispatch } from "react-redux";
 
 const CategoryForwards = () => {
+  const dispatch = useDispatch();
   const [dataSource, setDataSource] = useState([]);
 
   const [columnsData, setColumnsData] = useState([]);
@@ -101,20 +104,26 @@ const CategoryForwards = () => {
         const removedSet = new Set(
           removedtenorList.map((item) => item.tenorID)
         );
-        const newSet = new Set(
-          newIsForwardtenorList.map((item) => item.tenorID)
-        );
+        // const newSet = new Set(
+        //   newIsForwardtenorList.map((item) => item.tenorID)
+        // );
 
         // Update each tenor's isForwardingApplicable field
         const updatedTenors = allTenors.map((tenor) => ({
           ...tenor,
-          isForwardingApplicable: newSet.has(tenor.tenorID)
-            ? true
-            : removedSet.has(tenor.tenorID)
-            ? false
-            : tenor.isForwardingApplicable, // leave unchanged if in neither
+          isForwardingApplicable: removedSet.has(tenor.tenorID) ? false : true, // leave unchanged if in neither
         }));
-
+        console.log(
+          {
+            removedSet,
+            // newSet,
+            removedtenorList,
+            newIsForwardtenorList,
+            updatedTenors,
+            allTenors,
+          },
+          "allTenorsallTenorsallTenors"
+        );
         let getAllTenorsData = { tenors: updatedTenors };
         let getAllInstrument = {
           instruments: allInstrumentForTreasuryData.forwardInstruments,
@@ -134,6 +143,7 @@ const CategoryForwards = () => {
           setDataSource(rowData);
           setColumnsData(columnsData);
         }
+        dispatch(setCategoryFowardsTenorsChanges(null));
         console.log(updatedTenors, "updatedTenorsupdatedTenors");
       } catch (error) {
         console.log(error);

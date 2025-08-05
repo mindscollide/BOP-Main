@@ -1,20 +1,11 @@
-import React, { Suspense, lazy, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import CustomButton from "../../common/globalButton/button";
 import GlobalTable from "../../common/table/GlobalTable";
-import InputFIeld from "../../common/inputField/InputField";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { publishDiscountingRatesAction } from "@/container/pages/mainDealer/dealerActions";
 import { useSelector } from "react-redux";
-import {
-  formatPercentageInput,
-  isValidMaxFourNumberAfterPoint,
-  isValidNumberUnderMax,
-} from "@/utils/formatters";
-import {
-  GetNonFEDiscountingTableApi,
-  PublishNonFEDiscountingTableApi,
-} from "./NonFeDiscountingAction";
+import { isValidMaxFourNumberAfterPoint } from "@/utils/formatters";
+import { PublishNonFEDiscountingTableApi } from "./NonFeDiscountingAction";
 import {
   buildCurrentRatesPayload,
   buildDiscountingTable,
@@ -164,7 +155,7 @@ const NonFeDiscountingTable = () => {
     const payloadData = buildCurrentRatesPayload(tableData);
 
     const checkDoNotempty = payloadData.every(
-      (item) => item.Rate !== "" && item.Rate !== 0
+      (item) => item.Rate !== "" && Number(item.Rate) !== 0
     );
 
     if (!checkDoNotempty) {
@@ -177,6 +168,13 @@ const NonFeDiscountingTable = () => {
   };
   return (
     <>
+      <div className="datetime fw-bold text-end mb-2 ff-roboto">
+        {/* {currentRates.dateTime !== "" &&
+                moment(formatDateUTCToGMT(currentRates.dateTime)).format(
+                  "DD MMM YYYY, hh:mm:ss"
+                )} */}
+        05 Aug 2025, 11:20:58
+      </div>
       <GlobalTable
         prefixCls="DealerAndTreasuryDiscountTable"
         columns={columnsData}

@@ -236,9 +236,9 @@ const TenoreWiseCurrentAndLastRates = ({
     let checkDoNotempty = forwardsForTreasuryBranch.every(
       (item) =>
         item.currentAsk !== "" &&
-        item.currentAsk !== 0 &&
+        Number(item.currentAsk) !== 0 &&
         item.currentBid !== "" &&
-        item.currentBid !== 0
+        Number(item.currentBid) !== 0
     );
 
     let checkAskValue = forwardsForTreasuryBranch.find(
@@ -438,6 +438,13 @@ const TenoreWiseCurrentAndLastRates = ({
       {GlobalTable && (
         <>
           <Suspense fallback={<div>Loading Table...</div>}>
+            <div className="datetime fw-bold text-end mb-2 ff-roboto">
+              {/* {currentRates.dateTime !== "" &&
+                moment(formatDateUTCToGMT(currentRates.dateTime)).format(
+                  "DD MMM YYYY, hh:mm:ss"
+                )} */}
+              05 Aug 2025, 11:20:58
+            </div>
             <GlobalTable
               columns={columns}
               dataSource={forwardsForTreasuryBranch}
@@ -450,7 +457,13 @@ const TenoreWiseCurrentAndLastRates = ({
                   applyClass="publishForwardsBtn"
                   value={"Publish Forwards"}
                   onClick={handlePublishForwards}
-                  disabled={marketStatus === false ? true : false}
+                  disabled={
+                    marketStatus === false
+                      ? true
+                      : forwardsForTreasuryBranch.length === 0
+                      ? false
+                      : false
+                  }
                 />
               </span>
             )}
