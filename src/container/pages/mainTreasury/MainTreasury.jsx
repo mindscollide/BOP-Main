@@ -32,7 +32,7 @@ const MainTreasury = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { isConnected, connectToMqtt, disconnect, subscribeToTopics } =
+  const { isConnected, connectToMqtt, disconnect, subscribeToTopics , unsubscribeFromTopics} =
     useMqttClient({
       onMessageArrivedCallback: (message) => {
         // Handle incoming messages
@@ -45,7 +45,11 @@ const MainTreasury = () => {
 
   // useEffect(() => {
   //   if (isConnected) {
+  //     console.log("first time connected to mqtt");
   //     subscribeToTopics([`BOP_REAL_TIME_FEED_TREASURY`]);
+  //   } 
+  //   return () => {
+  //     unsubscribeFromTopics([`BOP_REAL_TIME_FEED_TREASURY`]);
   //   }
   // }, [isConnected]);
   useEffect(() => {

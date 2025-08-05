@@ -342,6 +342,8 @@ const Dashboard = () => {
     if (isTreasuryPath) {
       subscribeToTopics(["BOP_REAL_TIME_FEED_TREASURY"]);
       console.log("Subscribed to BOP_REAL_TIME_FEED_TREASURY");
+    } else {
+      unsubscribeFromTopics([`BOP_REAL_TIME_FEED_TREASURY`]);
     }
 
     // No cleanup here - we'll handle unsubscription in the next effect
