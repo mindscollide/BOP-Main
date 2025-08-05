@@ -283,6 +283,18 @@ const FEDiscountingModal = ({
       [field]: selectedOption,
     }));
 
+    console.log({ field, selectedOption }, "sdfsdfsdfdsfdfs");
+
+    if (field === "InstrumentID") {
+      if (Number(tenorValue) !== 0 && selectedOption.value !== 0) {
+        let Data = {
+          TenorDays: Number(tenorValue),
+          InstrumentName: selectedOption.label,
+          InstrumentID: Number(selectedOption.value),
+        };
+        dispatch(CalculateFESwapAndDiscountingApi({ Data, navigate }));
+      }
+    }
     // Clear error when dropdown is updated
     if (errors[field]) {
       setErrors((prev) => ({
@@ -313,14 +325,15 @@ const FEDiscountingModal = ({
   };
 
   const onBlurTenorDays = () => {
-    let Data = {
-      TenorDays: Number(formData.TenorDays),
-      InstrumentName: formData.InstrumentID.label,
-      InstrumentID: formData.InstrumentID.value,
-    };
-    dispatch(CalculateFESwapAndDiscountingApi({ Data, navigate }));
+    if (Number(formData.TenorDays) !== 0 && formData.InstrumentID.value !== 0) {
+      let Data = {
+        TenorDays: Number(formData.TenorDays),
+        InstrumentName: formData.InstrumentID.label,
+        InstrumentID: formData.InstrumentID.value,
+      };
+      dispatch(CalculateFESwapAndDiscountingApi({ Data, navigate }));
+    }
   };
-
   // Handler for confirm button click
   const handleClickConfirmFERFQ = () => {
     if (!validateForm()) {
@@ -492,7 +505,7 @@ const FEDiscountingModal = ({
                 <Row className="">
                   <Col lg={8} md={8} sm={8} className="pe-0">
                     <div className="d-flex flex-column flex-wrap">
-                      <span className="SubHeadings">Tenor</span>
+                      <span className="SubHeadings">Tenor*</span>
                       <InputFIeld
                         onChange={handleChangeTenor}
                         value={tenorValue}
@@ -527,9 +540,10 @@ const FEDiscountingModal = ({
                           <span className="SubHeadings">Ready</span>
                           <InputFIeld
                             value={formData.Ready}
-                            onChange={(e) =>
-                              handleInputChange("Ready", e.target.value)
-                            }
+                            // onChange={(e) =>
+                            //   handleInputChange("Ready", e.target.value)
+                            // }
+                            disabled={true}
                             applyClass={"BookaForwardCorporateInputFields"}
                           />
                           {errors.Ready && (

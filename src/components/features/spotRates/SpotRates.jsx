@@ -206,11 +206,19 @@ const SpotRates = () => {
     console.log("Check Value again", { bid, ask });
 
     // Step 1: Validate required fields
-    if (!bid || !ask || !refreshInterval) {
+    if (!bid || !ask) {
       console.log("Check Value again");
 
       const handleClick = () => {
-        showMessage("Please fill all required fields.");
+        showMessage("Please fill all required fields");
+      };
+
+      handleClick();
+      return;
+    }
+    if (!refreshInterval) {
+      const handleClick = () => {
+        showMessage("Please enter the Refresh Interval value");
       };
 
       handleClick();
