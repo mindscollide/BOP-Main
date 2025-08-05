@@ -34,8 +34,6 @@ const BankForwards = () => {
     (state) => state.RealtimeActionsSlice.treasuryFowardsTenorsChanges
   );
 
-  console.log(treasuryFowardsTenorsChanges, "treasuryFowardsTenorsChanges");
-
   useEffect(() => {
     if (getAllTenorsRecords !== null && GetAllInstrumentForTreasury !== null) {
       try {
@@ -185,7 +183,7 @@ const BankForwards = () => {
 
   return (
     <>
-      <div className="flex-fill mt-3 fs-4 fw-bold color-black mb-1 ff-roboto">
+      <div className='flex-fill mt-3 fs-4 fw-bold color-black mb-1 ff-roboto'>
         Bank Forwards
       </div>
 

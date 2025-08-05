@@ -341,23 +341,27 @@ const OutstandingDeals = () => {
           break;
 
         case "quoted":
+          if (!transaction) break;
+          console.log(transaction, "transactiontransactionquoted");
           const newUpdatedData = updatedData.map((item) => {
             if (item.pK_TransactionID === transaction.pK_TransactionID) {
               return {
                 ...item,
-                bid: transaction?.bid,
-                offer: transaction?.offer,
-                statusID: transaction?.statusID,
-                rfqTimerDetails: {
-                  startTime: transaction?.rfqTimerDetails?.startTime,
-                  endTime: transaction?.rfqTimerDetails?.endTime,
-                  isEnded: transaction?.rfqTimerDetails?.isEnded,
-                },
-                amount: transaction?.amount,
+                bid: transaction.bid,
+                offer: transaction.offer,
+                statusID: transaction.statusID,
+                amount: transaction.amount,
+                rfqTimerDetails:
+                  transaction.rfqTimerDetails ?? item.rfqTimerDetails,
               };
             }
             return item;
           });
+          console.log(
+            newUpdatedData,
+            updatedData,
+            "transactiontransactionquoted"
+          );
 
           updateGlobalOutstandingBlotter(newUpdatedData);
           dispatch(BlotterTransactionRFQQuoted(null));
@@ -422,6 +426,7 @@ const OutstandingDeals = () => {
       }
 
       if (blotterTransactionRFQQuoted !== null) {
+        console.log(blotterTransactionRFQQuoted, "blotterTransactionRFQQuoted")
         handleTransaction(blotterTransactionRFQQuoted.transaction, "quoted");
       }
 
@@ -539,14 +544,14 @@ const OutstandingDeals = () => {
 
   const popoverContentTXN = (
     <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
+      <div className='d-flex justify-content-between mb-2'>
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Select All"}
           onClick={handleSelectAll}
         />
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Desselect All"}
           onClick={handleDeselectAll}
         />
@@ -554,8 +559,7 @@ const OutstandingDeals = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsTXNID}
-        onChange={handleCheckboxChange}
-      >
+        onChange={handleCheckboxChange}>
         {TXN_ID_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -585,14 +589,14 @@ const OutstandingDeals = () => {
 
   const popoverContentClientName = (
     <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
+      <div className='d-flex justify-content-between mb-2'>
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Select All"}
           onClick={handleSelectAllCustomerName}
         />
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Desselect All"}
           onClick={handleDeselectAllCustomerName}
         />
@@ -620,14 +624,14 @@ const OutstandingDeals = () => {
 
   const popoverContentType = (
     <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
+      <div className='d-flex justify-content-between mb-2'>
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Select All"}
           onClick={handleSelectAllType}
         />
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Desselect All"}
           onClick={handleDeselectAllType}
         />
@@ -666,14 +670,14 @@ const OutstandingDeals = () => {
 
   const popoverContentNature = (
     <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
+      <div className='d-flex justify-content-between mb-2'>
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Select All"}
           onClick={handleSelectAllNature}
         />
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Desselect All"}
           onClick={handleDeselectAllNature}
         />
@@ -681,8 +685,7 @@ const OutstandingDeals = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsNature}
-        onChange={handleCheckboxChangeNature}
-      >
+        onChange={handleCheckboxChangeNature}>
         {Nature_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -712,14 +715,14 @@ const OutstandingDeals = () => {
 
   const popoverContentCCY1 = (
     <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
+      <div className='d-flex justify-content-between mb-2'>
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Select All"}
           onClick={handleSelectAllCCY1}
         />
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Desselect All"}
           onClick={handleDeselectAllCCY1}
         />
@@ -727,8 +730,7 @@ const OutstandingDeals = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsCCY1}
-        onChange={handleCheckboxChangeCCY1}
-      >
+        onChange={handleCheckboxChangeCCY1}>
         {CCY1_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -758,14 +760,14 @@ const OutstandingDeals = () => {
 
   const popoverContentAmount1 = (
     <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
+      <div className='d-flex justify-content-between mb-2'>
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Select All"}
           onClick={handleSelectAllAmount1}
         />
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Desselect All"}
           onClick={handleDeselectAllAmount1}
         />
@@ -773,8 +775,7 @@ const OutstandingDeals = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsAmount1}
-        onChange={handleCheckboxChangeAmount1}
-      >
+        onChange={handleCheckboxChangeAmount1}>
         {Amount_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -804,14 +805,14 @@ const OutstandingDeals = () => {
 
   const popoverContentRate = (
     <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
+      <div className='d-flex justify-content-between mb-2'>
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Select All"}
           onClick={handleSelectAllRate}
         />
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Desselect All"}
           onClick={handleDeselectAllRate}
         />
@@ -819,8 +820,7 @@ const OutstandingDeals = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsRate}
-        onChange={handleCheckboxChangeRate}
-      >
+        onChange={handleCheckboxChangeRate}>
         {Rate_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -850,14 +850,14 @@ const OutstandingDeals = () => {
 
   const popoverContentCCY2 = (
     <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
+      <div className='d-flex justify-content-between mb-2'>
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Select All"}
           onClick={handleSelectAllCCY2}
         />
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Desselect All"}
           onClick={handleDeselectAllCCY2}
         />
@@ -865,8 +865,7 @@ const OutstandingDeals = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsCCY2}
-        onChange={handleCheckboxChangeCCY2}
-      >
+        onChange={handleCheckboxChangeCCY2}>
         {CCY2_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -896,14 +895,14 @@ const OutstandingDeals = () => {
 
   const popoverContentAmount2 = (
     <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
+      <div className='d-flex justify-content-between mb-2'>
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Select All"}
           onClick={handleSelectAllAmount2}
         />
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Desselect All"}
           onClick={handleDeselectAllAmount2}
         />
@@ -911,8 +910,7 @@ const OutstandingDeals = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsAmount2}
-        onChange={handleCheckboxChangeAmount2}
-      >
+        onChange={handleCheckboxChangeAmount2}>
         {Amount2_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -942,14 +940,14 @@ const OutstandingDeals = () => {
 
   const popoverContentTime = (
     <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
+      <div className='d-flex justify-content-between mb-2'>
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Select All"}
           onClick={handleSelectAllTime}
         />
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Desselect All"}
           onClick={handleDeselectAllTime}
         />
@@ -957,8 +955,7 @@ const OutstandingDeals = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsTime}
-        onChange={handleCheckboxChangeTime}
-      >
+        onChange={handleCheckboxChangeTime}>
         {Time_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -988,14 +985,14 @@ const OutstandingDeals = () => {
 
   const popoverContentLCno = (
     <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
+      <div className='d-flex justify-content-between mb-2'>
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Select All"}
           onClick={handleSelectAllLCno}
         />
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Desselect All"}
           onClick={handleDeselectAllLCno}
         />
@@ -1003,8 +1000,7 @@ const OutstandingDeals = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsLCno}
-        onChange={handleCheckboxChangeLCno}
-      >
+        onChange={handleCheckboxChangeLCno}>
         {LCno_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -1034,14 +1030,14 @@ const OutstandingDeals = () => {
 
   const popoverContentAccNO = (
     <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
+      <div className='d-flex justify-content-between mb-2'>
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Select All"}
           onClick={handleSelectAllAccNO}
         />
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Desselect All"}
           onClick={handleDeselectAllAccNO}
         />
@@ -1049,8 +1045,7 @@ const OutstandingDeals = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsAccNO}
-        onChange={handleCheckboxChangeAccNO}
-      >
+        onChange={handleCheckboxChangeAccNO}>
         {Accno_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -1085,14 +1080,14 @@ const OutstandingDeals = () => {
 
   const popoverContentStatus = (
     <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
+      <div className='d-flex justify-content-between mb-2'>
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Select All"}
           onClick={handleSelectAllStatus}
         />
         <CustomButton
-          applyClass="SelectAllButton"
+          applyClass='SelectAllButton'
           value={"Desselect All"}
           onClick={handleDeselectAllStatus}
         />
@@ -1100,8 +1095,7 @@ const OutstandingDeals = () => {
       <Checkbox.Group
         style={{ display: "flex", flexDirection: "column" }}
         value={selectedItemsStatus}
-        onChange={handleCheckboxChangeStatus}
-      >
+        onChange={handleCheckboxChangeStatus}>
         {Status_OPTIONS.map((item) => (
           <Checkbox key={item} value={item}>
             {item}
@@ -1236,24 +1230,22 @@ const OutstandingDeals = () => {
     // TXNID
     {
       title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">TXN ID</span>
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>TXN ID</span>
           <Popover
             content={popoverContentTXN}
-            trigger="click"
+            trigger='click'
             arrow={false}
-            placement="bottom"
+            placement='bottom'
             open={open}
-            onOpenChange={handleOpenChange}
-          >
+            onOpenChange={handleOpenChange}>
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}
-            >
+              }}>
               ▼
             </span>
           </Popover>
@@ -1268,24 +1260,22 @@ const OutstandingDeals = () => {
     // Client Name
     {
       title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">Client</span>
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Client</span>
           <Popover
             content={popoverContentClientName}
-            trigger="click"
+            trigger='click'
             arrow={false}
-            placement="bottom"
+            placement='bottom'
             open={openCustomername}
-            onOpenChange={handleOpenChangeCustomerName}
-          >
+            onOpenChange={handleOpenChangeCustomerName}>
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}
-            >
+              }}>
               ▼
             </span>
           </Popover>
@@ -1299,24 +1289,22 @@ const OutstandingDeals = () => {
     // Branch Code
     {
       title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">Branch Code</span>
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Branch Code</span>
           <Popover
             content={popoverContentType}
-            trigger="click"
+            trigger='click'
             arrow={false}
-            placement="bottom"
+            placement='bottom'
             open={openType}
-            onOpenChange={handleOpenChangeType}
-          >
+            onOpenChange={handleOpenChangeType}>
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}
-            >
+              }}>
               ▼
             </span>
           </Popover>
@@ -1330,24 +1318,22 @@ const OutstandingDeals = () => {
     // Side
     {
       title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">Type</span>
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Type</span>
           <Popover
             content={popoverContentType}
-            trigger="click"
+            trigger='click'
             arrow={false}
-            placement="bottom"
+            placement='bottom'
             open={openType}
-            onOpenChange={handleOpenChangeType}
-          >
+            onOpenChange={handleOpenChangeType}>
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}
-            >
+              }}>
               ▼
             </span>
           </Popover>
@@ -1361,24 +1347,22 @@ const OutstandingDeals = () => {
     // Nature
     {
       title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">Nature</span>
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Nature</span>
           <Popover
             content={popoverContentNature}
-            trigger="click"
+            trigger='click'
             arrow={false}
-            placement="bottom"
+            placement='bottom'
             open={openNature}
-            onOpenChange={handleOpenChangeNature}
-          >
+            onOpenChange={handleOpenChangeNature}>
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}
-            >
+              }}>
               ▼
             </span>
           </Popover>
@@ -1392,8 +1376,8 @@ const OutstandingDeals = () => {
     // Bid
     {
       title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">Bid</span>
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Bid</span>
         </div>
       ),
       key: "rate1",
@@ -1407,8 +1391,8 @@ const OutstandingDeals = () => {
     // Offer
     {
       title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">Offer</span>
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Offer</span>
         </div>
       ),
       key: "rate2",
@@ -1422,24 +1406,22 @@ const OutstandingDeals = () => {
     // CCY1
     {
       title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">CCY1</span>
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>CCY1</span>
           <Popover
             content={popoverContentAmount1}
-            trigger="click"
+            trigger='click'
             arrow={false}
-            placement="bottom"
+            placement='bottom'
             open={openAmount1}
-            onOpenChange={handleOpenChangeAmount1}
-          >
+            onOpenChange={handleOpenChangeAmount1}>
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}
-            >
+              }}>
               ▼
             </span>
           </Popover>
@@ -1453,24 +1435,22 @@ const OutstandingDeals = () => {
     // Amount
     {
       title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">Amount</span>
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Amount</span>
           <Popover
             content={popoverContentRate}
-            trigger="click"
+            trigger='click'
             arrow={false}
-            placement="bottom"
+            placement='bottom'
             open={openRate}
-            onOpenChange={handleOpenChangeRate}
-          >
+            onOpenChange={handleOpenChangeRate}>
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}
-            >
+              }}>
               ▼
             </span>
           </Popover>
@@ -1487,24 +1467,22 @@ const OutstandingDeals = () => {
     // CCY2
     {
       title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">CCY2</span>
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>CCY2</span>
           <Popover
             content={popoverContentCCY2}
-            trigger="click"
+            trigger='click'
             arrow={false}
-            placement="bottom"
+            placement='bottom'
             open={openCCY2}
-            onOpenChange={handleOpenChangeCCY2}
-          >
+            onOpenChange={handleOpenChangeCCY2}>
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}
-            >
+              }}>
               ▼
             </span>
           </Popover>
@@ -1518,24 +1496,22 @@ const OutstandingDeals = () => {
     // Amount
     {
       title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">Amount</span>
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Amount</span>
           <Popover
             content={popoverContentAmount2}
-            trigger="click"
+            trigger='click'
             arrow={false}
-            placement="bottom"
+            placement='bottom'
             open={openAmount2}
-            onOpenChange={handleOpenChangeAmount2}
-          >
+            onOpenChange={handleOpenChangeAmount2}>
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}
-            >
+              }}>
               ▼
             </span>
           </Popover>
@@ -1552,24 +1528,22 @@ const OutstandingDeals = () => {
     // Time
     {
       title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">Time</span>
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Time</span>
           <Popover
             content={popoverContentTime}
-            trigger="click"
+            trigger='click'
             arrow={false}
-            placement="bottom"
+            placement='bottom'
             open={openTime}
-            onOpenChange={handleOpenChangeTime}
-          >
+            onOpenChange={handleOpenChangeTime}>
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}
-            >
+              }}>
               ▼
             </span>
           </Popover>
@@ -1614,24 +1588,22 @@ const OutstandingDeals = () => {
     // LC No.
     {
       title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">LC NO.</span>
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>LC NO.</span>
           <Popover
             content={popoverContentLCno}
-            trigger="click"
+            trigger='click'
             arrow={false}
-            placement="bottom"
+            placement='bottom'
             open={openLCno}
-            onOpenChange={handleOpenChangeLCno}
-          >
+            onOpenChange={handleOpenChangeLCno}>
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}
-            >
+              }}>
               ▼
             </span>
           </Popover>
@@ -1645,24 +1617,22 @@ const OutstandingDeals = () => {
     // Account No
     {
       title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">Acc NO.</span>
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Acc NO.</span>
           <Popover
             content={popoverContentAccNO}
-            trigger="click"
+            trigger='click'
             arrow={false}
-            placement="bottom"
+            placement='bottom'
             open={openAccNO}
-            onOpenChange={handleOpenChangeAccNO}
-          >
+            onOpenChange={handleOpenChangeAccNO}>
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}
-            >
+              }}>
               ▼
             </span>
           </Popover>
@@ -1676,24 +1646,22 @@ const OutstandingDeals = () => {
     // Status
     {
       title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">Status</span>
+        <div className='d-flex align-items-center justify-content-center gap-1'>
+          <span className='ff-poppins fw-bold'>Status</span>
           <Popover
             content={popoverContentStatus}
-            trigger="click"
+            trigger='click'
             arrow={false}
-            placement="bottom"
+            placement='bottom'
             open={openStatus}
-            onOpenChange={handleOpenChangeStatus}
-          >
+            onOpenChange={handleOpenChangeStatus}>
             <span
               style={{
                 cursor: "pointer",
                 color: "white",
                 background: "#f56600",
                 borderRadius: "4px",
-              }}
-            >
+              }}>
               ▼
             </span>
           </Popover>
@@ -1714,8 +1682,7 @@ const OutstandingDeals = () => {
                 : record.statusID === 2
                 ? "pending_outstanding"
                 : "color-red"
-            }
-          >
+            }>
             {text}
           </span>
         </>
@@ -1738,13 +1705,13 @@ const OutstandingDeals = () => {
         //   setShowChatModal(true);
         // };
         return (
-          <div className="col-action text-nowrap text-center d-flex gap-1">
+          <div className='col-action text-nowrap text-center d-flex gap-1'>
             {record.statusID === 2 ? (
               <>
                 <CustomButton
-                  icon={<i className="icon-user-check  "></i>}
+                  icon={<i className='icon-user-check  '></i>}
                   size={"small"}
-                  className="btn  btn-primary btn-sm"
+                  className='btn  btn-primary btn-sm'
                   onClick={() => handleClickAssignTransaction(record)}
                 />
               </>
@@ -1755,9 +1722,9 @@ const OutstandingDeals = () => {
                   {record.isRFQ === true ? (
                     <>
                       <CustomButton
-                        icon={<i className="icon-open "></i>}
+                        icon={<i className='icon-open '></i>}
                         size={"small"}
-                        className="btn btn-sm btn-primary"
+                        className='btn btn-sm btn-primary'
                         onClick={() => openViewDeal(record, record.natureType)}
                       />
                     </>
@@ -1765,23 +1732,23 @@ const OutstandingDeals = () => {
                     record.natureType === 3 ||
                     record.natureType === 4 ? (
                     <CustomButton
-                      icon={<i className="icon-open "></i>}
+                      icon={<i className='icon-open '></i>}
                       size={"small"}
-                      className="btn btn-sm btn-primary"
+                      className='btn btn-sm btn-primary'
                       onClick={() => openViewDeal(record, record.natureType)}
                     />
                   ) : (
                     <>
                       <CustomButton
-                        icon={<i className="icon-check"></i>}
+                        icon={<i className='icon-check'></i>}
                         size={"small"}
-                        className="btn btn-sm btn-success blotterCheckerButton "
+                        className='btn btn-sm btn-success blotterCheckerButton '
                         onClick={() => acceptTransaction(record)}
                       />
                       <CustomButton
-                        icon={<i className="icon-close "></i>}
+                        icon={<i className='icon-close '></i>}
                         size={"small"}
-                        className="btn btn-sm btn-danger blotterCheckerButton "
+                        className='btn btn-sm btn-danger blotterCheckerButton '
                         onClick={() => rejectTransaction(record)}
                       />
                     </>
@@ -1792,9 +1759,9 @@ const OutstandingDeals = () => {
                   <CustomButton
                     size={"small"}
                     icon={
-                      <i className="icon-user-check blotterCheckerButton "></i>
+                      <i className='icon-user-check blotterCheckerButton '></i>
                     }
-                    className="btn  btn-primary"
+                    className='btn  btn-primary'
                     onClick={() => handleClickAssignTransaction(record)}
                   />
                 </>
@@ -1802,8 +1769,8 @@ const OutstandingDeals = () => {
             ) : record.statusID === 6 ? (
               <>
                 <CustomButton
-                  icon={<i className="icon-check "></i>}
-                  className="btn btn-sm btn-danger"
+                  icon={<i className='icon-check '></i>}
+                  className='btn btn-sm btn-danger'
                   applyClass={"ActionButton"}
                   size={"small"}
                   onClick={() =>
@@ -1811,8 +1778,8 @@ const OutstandingDeals = () => {
                   }
                 />
                 <CustomButton
-                  icon={<i className="icon-close "></i>}
-                  className="btn btn-sm btn-success "
+                  icon={<i className='icon-close '></i>}
+                  className='btn btn-sm btn-success '
                   size={"small"}
                   onClick={() =>
                     handleRejectTransactionCancellation(record.pK_TransactionID)
@@ -1847,51 +1814,50 @@ const OutstandingDeals = () => {
       width: 120,
       render: (text, record) => {
         return (
-          <div className="d-flex gap-1 justify-content-start">
+          <div className='d-flex gap-1 justify-content-start'>
             {record.statusID === 6 ? (
               <CustomButton
                 icon={
-                  <i className="icon-view-comment blotterTableIconSize "></i>
+                  <i className='icon-view-comment blotterTableIconSize '></i>
                 }
-                className="btn  btn-primary"
+                className='btn  btn-primary'
                 onClick={() => handleShowCommentModal(record.comment)}
               />
             ) : (
-              <span className="w-30"></span>
+              <span className='w-30'></span>
             )}
             {(record.statusID === 4 || record.statusID === 5) &&
             Number(record.treasuryPersonID) ===
               Number(localStorage.getItem("userID")) ? (
               <CustomButton
-                icon={<i className="icon-chat2 "></i>}
-                className="btn btn-sm btn-danger chat-btn-trigger"
+                icon={<i className='icon-chat2 '></i>}
+                className='btn btn-sm btn-danger chat-btn-trigger'
                 onClick={() =>
                   handleClickChat(record.pK_TransactionID, record.fK_UserID)
                 }
               />
             ) : (
-              <span className="w-30"></span>
+              <span className='w-30'></span>
             )}
 
             <CustomButton
               onClick={() => handleClickInfo(record)}
               icon={
                 <svg
-                  id="info_Layer_1"
-                  x="0px"
-                  y="0px"
-                  width="12px"
-                  height="12px"
-                  fill="#ffffff"
-                  viewBox="0 0 55 55"
-                >
+                  id='info_Layer_1'
+                  x='0px'
+                  y='0px'
+                  width='12px'
+                  height='12px'
+                  fill='#ffffff'
+                  viewBox='0 0 55 55'>
                   <g>
-                    <path d="M41.407,45.858c0.067,0.838,0.156,1.672,0.183,2.508   c0.005,0.152-0.205,0.376-0.37,0.461c-1.347,0.687-2.679,1.416-4.069,2.005c-3.305,1.396-6.715,2.5-10.277,3.009   c-1.447,0.206-2.936,0.154-4.403,0.153c-0.477-0.001-0.968-0.178-1.424-0.345c-1.313-0.481-1.98-1.443-1.948-2.85   c0.015-0.583,0.103-1.179,0.253-1.744c1.863-7.013,3.752-14.02,5.61-21.037c0.199-0.751,0.327-1.543,0.341-2.318   c0.021-1.142-0.615-1.925-1.667-2.331c-1.605-0.618-3.258-0.468-4.89-0.161c-1.764,0.332-3.468,0.873-5.149,1.884   c-0.074-0.978-0.157-1.863-0.187-2.75c-0.005-0.127,0.234-0.307,0.396-0.388c1.334-0.67,2.648-1.389,4.021-1.968   c3.327-1.403,6.755-2.512,10.337-3.021c1.465-0.208,2.994-0.294,4.457-0.125c2.782,0.323,3.808,2.02,3.073,4.73   c-0.94,3.474-1.914,6.941-2.838,10.419c-1.049,3.953-2.087,7.912-3.077,11.879c-0.524,2.107,0.385,3.449,2.526,3.839   c2.048,0.376,4.038-0.017,5.981-0.634C39.313,46.75,40.296,46.295,41.407,45.858z"></path>
-                    <circle cx="27.5" cy="7.608" r="6.609"></circle>
+                    <path d='M41.407,45.858c0.067,0.838,0.156,1.672,0.183,2.508   c0.005,0.152-0.205,0.376-0.37,0.461c-1.347,0.687-2.679,1.416-4.069,2.005c-3.305,1.396-6.715,2.5-10.277,3.009   c-1.447,0.206-2.936,0.154-4.403,0.153c-0.477-0.001-0.968-0.178-1.424-0.345c-1.313-0.481-1.98-1.443-1.948-2.85   c0.015-0.583,0.103-1.179,0.253-1.744c1.863-7.013,3.752-14.02,5.61-21.037c0.199-0.751,0.327-1.543,0.341-2.318   c0.021-1.142-0.615-1.925-1.667-2.331c-1.605-0.618-3.258-0.468-4.89-0.161c-1.764,0.332-3.468,0.873-5.149,1.884   c-0.074-0.978-0.157-1.863-0.187-2.75c-0.005-0.127,0.234-0.307,0.396-0.388c1.334-0.67,2.648-1.389,4.021-1.968   c3.327-1.403,6.755-2.512,10.337-3.021c1.465-0.208,2.994-0.294,4.457-0.125c2.782,0.323,3.808,2.02,3.073,4.73   c-0.94,3.474-1.914,6.941-2.838,10.419c-1.049,3.953-2.087,7.912-3.077,11.879c-0.524,2.107,0.385,3.449,2.526,3.839   c2.048,0.376,4.038-0.017,5.981-0.634C39.313,46.75,40.296,46.295,41.407,45.858z'></path>
+                    <circle cx='27.5' cy='7.608' r='6.609'></circle>
                   </g>
                 </svg>
               }
-              className="btn btn-sm btn-primary info-btn-trigger ms-1"
+              className='btn btn-sm btn-primary info-btn-trigger ms-1'
             />
           </div>
         );
@@ -1905,7 +1871,7 @@ const OutstandingDeals = () => {
         pagination={false}
         dataSource={blotterdata}
         bordered={false}
-        prefixCls="OutStanding_Table"
+        prefixCls='OutStanding_Table'
         columns={columns}
         scroll={{ x: "max-content", y: 300 }}
       />
