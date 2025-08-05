@@ -34,8 +34,6 @@ const BankForwards = () => {
     (state) => state.RealtimeActionsSlice.treasuryFowardsTenorsChanges
   );
 
-  console.log(treasuryFowardsTenorsChanges, "treasuryFowardsTenorsChanges");
-
   useEffect(() => {
     if (getAllTenorsRecords !== null && GetAllInstrumentForTreasury !== null) {
       try {
@@ -94,7 +92,7 @@ const BankForwards = () => {
         // const filteredTenors = updatedTenors.filter(
         //   (t) => t.isForwardingApplicable
         // );
-        console.log(updatedTenors, "updatedTenorsupdatedTenors");
+        // console.log(updatedTenors, "updatedTenorsupdatedTenors");
         let getAllTenorsData = { tenors: updatedTenors };
         let getAllInstrument = {
           instruments: forwardInstruments,
@@ -115,7 +113,7 @@ const BankForwards = () => {
           setColumnsData(columnsData);
         }
         dispatch(setTreasuryFowardsTenorsChanges(null));
-        console.log(updatedTenors, "updatedTenorsupdatedTenors");
+        // console.log(updatedTenors, "updatedTenorsupdatedTenors");
       } catch (error) {
         console.log(error);
       }
