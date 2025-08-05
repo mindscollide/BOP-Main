@@ -202,6 +202,7 @@ const Dashboard = () => {
         dispatch(BlotterTransactionAcceptedForTreasury(data.payload));
         break;
       case "BLOTTER_TRANSACTION_RFQ_QUOTED":
+        console.log(data.payload, "BLOTTER_TRANSACTION_RFQ_QUOTED");
         dispatch(BlotterTransactionRFQQuoted(data.payload));
         dispatch(BlotterTransactionRFQQuotedForTreasury(data.payload));
         dispatch(
