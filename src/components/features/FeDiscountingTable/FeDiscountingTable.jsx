@@ -157,7 +157,7 @@ const FeDiscountingTable = () => {
 
     console.log(payloadData, "payloadDatapayloadDatapayloadData");
     const checkDoNotempty = payloadData.every(
-      (item) => item.Rate !== "" && item.Rate !== 0
+      (item) => item.Rate !== "" && Number(item.Rate) !== 0
     );
 
     if (!checkDoNotempty) {
@@ -168,6 +168,13 @@ const FeDiscountingTable = () => {
   };
   return (
     <>
+      <div className="datetime fw-bold text-end mb-2 ff-roboto">
+        {/* {currentRates.dateTime !== "" &&
+                moment(formatDateUTCToGMT(currentRates.dateTime)).format(
+                  "DD MMM YYYY, hh:mm:ss"
+                )} */}
+        05 Aug 2025, 11:20:58
+      </div>
       <GlobalTable
         prefixCls="DealerAndTreasuryDiscountTable"
         columns={columnsData}

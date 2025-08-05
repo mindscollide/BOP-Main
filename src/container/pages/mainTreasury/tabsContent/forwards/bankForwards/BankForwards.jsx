@@ -89,17 +89,13 @@ const BankForwards = () => {
         // Update each tenor's isForwardingApplicable field
         const updatedTenors = allTenors.map((tenor) => ({
           ...tenor,
-          isForwardingApplicable: newSet.has(tenor.tenorID)
-            ? true
-            : removedSet.has(tenor.tenorID)
-            ? false
-            : tenor.isForwardingApplicable, // leave unchanged if in neither
+          isForwardingApplicable: removedSet.has(tenor.tenorID) ? false : true, // leave unchanged if in neither
         }));
-        const filteredTenors = updatedTenors.filter(
-          (t) => t.isForwardingApplicable
-        );
+        // const filteredTenors = updatedTenors.filter(
+        //   (t) => t.isForwardingApplicable
+        // );
         console.log(updatedTenors, "updatedTenorsupdatedTenors");
-        let getAllTenorsData = { tenors: filteredTenors };
+        let getAllTenorsData = { tenors: updatedTenors };
         let getAllInstrument = {
           instruments: forwardInstruments,
         };
