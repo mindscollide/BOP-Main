@@ -266,6 +266,7 @@ const FwdCalculator = () => {
                 value={price}
                 applyClass={"CalculatorTextfield"}
                 onChange={handleReadyValue}
+                disabled={true}
               />
 
               <label className="mt-1">Tenor</label>

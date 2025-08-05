@@ -208,6 +208,7 @@ const CalculatorNonFxDiscounting = () => {
                 value={price}
                 applyClass={"CalculatorTextfield"}
                 onChange={handleReadyValue}
+                disabled
               />
 
               <label className="mt-1">Tenor</label>
