@@ -86,7 +86,6 @@ export const buildDiscountingTable = (
           title: "",
           dataIndex: "",
           key: "",
-
           width: 80,
           children: [
             {
@@ -102,13 +101,13 @@ export const buildDiscountingTable = (
           title: inst.instrumentName,
           key: `rate_${inst.instrumentName}`,
           align: "center",
-          width: 60,
+          width: 80,
           children: [
             {
               title: "Value",
               dataIndex: `rate_${inst.instrumentName}`,
               align: "center",
-              width: 60,
+              width: 80,
 
               render: (text, record) => (
                 <InputFIeld value={text} record={record} />

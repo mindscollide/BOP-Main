@@ -28,15 +28,16 @@ const CancelReasonModal = ({
               sm={12}
               md={12}
               lg={12}
-              className='modal-title fw-bold color-blue h5'>
+              className="modal-title fw-bold color-blue h5"
+            >
               Cancel Reason
             </Col>
           </Row>
-          <Row className='form-group'>
-            <span className='col-form-label mt-4'>Cancel Reason</span>
+          <Row className="form-group">
+            <span className="col-form-label mt-4">Cancel Reason</span>
             <Col sm={12} md={12} lg={12}>
               <TextArea
-                className='form-control'
+                className="form-control"
                 name={"cancelReasonInput"}
                 value={cancelReasonComment}
                 onChange={handleChange}
@@ -48,20 +49,22 @@ const CancelReasonModal = ({
         </>
       }
       modalFooter={
-        <Row className='text-center'>
+        <Row className="text-center">
           <Col
             lg={12}
             md={12}
             sm={12}
-            className='d-flex gap-1 justify-content-center'>
+            className="d-flex gap-1 justify-content-center"
+          >
             <CustomButton
               applyClass={"cancelReasonModalSubmitBtn"}
-              value='Submit'
+              value="Submit"
               onClick={handleClickReasonSubmit}
+              disabled={cancelReasonComment !== "" ? false : true}
             />
             <CustomButton
               applyClass={"cancelReasonModalCancelBtn"}
-              value='Close'
+              value="Close"
               onClick={handleCloseReasonModal}
             />
           </Col>

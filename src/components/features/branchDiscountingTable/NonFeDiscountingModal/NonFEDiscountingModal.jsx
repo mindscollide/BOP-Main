@@ -318,6 +318,7 @@ const NonFEDiscountingModal = ({
         onHide={() => {
           setNonfeDiscountingModalCall(false);
         }}
+        centered={true}
         closeButton
         footerClassName={"BookaforwardCorporateFooterClassname"}
         headerClassName={"BookaforwardCorporateHeaderClassname"}

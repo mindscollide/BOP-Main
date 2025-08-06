@@ -62,7 +62,7 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
         let getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
         let getAllInstrument = {
           instruments:
-            getAllInstrumentsForCounterPartiesData.discountingApplicableInstruments,
+            getAllInstrumentsForCounterPartiesData.nonFEDiscountingApplicableInstruments,
         };
 
         const { columnsData, rowData } = buildDiscountingTable(

@@ -60,7 +60,7 @@ const NonFeDiscountingTable = () => {
       try {
         const { nonFEDiscountingRates } = getDashboardForwards;
         const DiscountingInstruments =
-          GetAllInstrumentForTreasury.discountingInstruments;
+          GetAllInstrumentForTreasury.nonFEDiscountingInstruments;
         const getAllInstrument = { instruments: DiscountingInstruments };
         const { rowData, columnsData } = buildDiscountingTable(
           5,
