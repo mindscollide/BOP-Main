@@ -199,13 +199,13 @@ const FwdCalculator = () => {
                 applyClass="inputField-calculator"
                 applyClassTag="tag-for-calculator"
                 width="100%"
-                inputWidth="60%"
+                inputWidth="50%"
                 tagText={tagText}
-                tagWidth="40%"
+                tagWidth="50%"
                 tagClassName="yourTagClass"
               />
 
-              <label className="mt-1">swap</label>
+              <label className="mt-1">Swap</label>
               <InputFIeld
                 value={resulteSwap}
                 disabled={true}

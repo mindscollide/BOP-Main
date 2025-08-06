@@ -32,22 +32,27 @@ const MainTreasury = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { isConnected, connectToMqtt, disconnect, subscribeToTopics , unsubscribeFromTopics} =
-    useMqttClient({
-      onMessageArrivedCallback: (message) => {
-        // Handle incoming messages
-      },
-      onConnectionLostCallback: (error) => {
-        // Handle connection loss
-      },
-      shouldSubscribeToTreasury: true,
-    });
+  const {
+    isConnected,
+    connectToMqtt,
+    disconnect,
+    subscribeToTopics,
+    unsubscribeFromTopics,
+  } = useMqttClient({
+    onMessageArrivedCallback: (message) => {
+      // Handle incoming messages
+    },
+    onConnectionLostCallback: (error) => {
+      // Handle connection loss
+    },
+    shouldSubscribeToTreasury: true,
+  });
 
   // useEffect(() => {
   //   if (isConnected) {
   //     console.log("first time connected to mqtt");
   //     subscribeToTopics([`BOP_REAL_TIME_FEED_TREASURY`]);
-  //   } 
+  //   }
   //   return () => {
   //     unsubscribeFromTopics([`BOP_REAL_TIME_FEED_TREASURY`]);
   //   }
@@ -75,25 +80,31 @@ const MainTreasury = () => {
     {
       title: "Live Rates",
       content: (
-        <Suspense fallback={<SectionLoader />}>
-          <LiveRates />
-        </Suspense>
+        <div className='position-relative'>
+          <Suspense fallback={<SectionLoader />}>
+            <LiveRates />
+          </Suspense>
+        </div>
       ),
     },
     {
       title: "Forwards",
       content: (
-        <Suspense fallback={<SectionLoader />}>
-          <Forwards />
-        </Suspense>
+        <div className='position-relative'>
+          <Suspense fallback={<SectionLoader />}>
+            <Forwards />
+          </Suspense>
+        </div>
       ),
     },
     {
       title: "Discounting",
       content: (
-        <Suspense fallback={<SectionLoader />}>
-          <Discounting />
-        </Suspense>
+        <div className='position-relative'>
+          <Suspense fallback={<SectionLoader />}>
+            <Discounting />
+          </Suspense>
+        </div>
       ),
     },
   ];

@@ -172,13 +172,13 @@ const CalculatorNonFxDiscounting = () => {
                 applyClass="inputField-calculator"
                 applyClassTag="tag-for-calculator"
                 width="100%" // width of the entire container
-                inputWidth="60%" // width of the input field
+                inputWidth="50%" // width of the input field
                 tagText={tagText}
-                tagWidth="40%" // width of the span
+                tagWidth="50%" // width of the span
                 tagClassName="yourTagClass"
               />
 
-              <div className="d-flex flex-row mt-1">
+              <div className="d-flex flex-row mt-1 gap-2" >
                 <span className="d-flex flex-column">
                   <label>Swap</label>
                   <InputFIeld
@@ -197,9 +197,9 @@ const CalculatorNonFxDiscounting = () => {
                     applyClass="inputField-calculator"
                     applyClassTag="tag-for-calculator"
                     width="100%"
-                    inputWidth="80%"
+                    inputWidth="75%"
                     tagText="%"
-                    tagWidth="20%"
+                    tagWidth="25%"
                     // tagClassName="yourTagClass"
                   />
                 </span>

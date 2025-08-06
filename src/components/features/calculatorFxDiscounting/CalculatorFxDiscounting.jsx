@@ -183,9 +183,9 @@ const CalculatorFxDiscounting = () => {
                 applyClass="inputField-calculator"
                 applyClassTag="tag-for-calculator"
                 width="100%"
-                inputWidth="60%"
+                inputWidth="50%"
                 tagText={tagText}
-                tagWidth="40%"
+                tagWidth="50%"
                 tagClassName="yourTagClass"
               />
 
@@ -198,9 +198,9 @@ const CalculatorFxDiscounting = () => {
                 applyClass="inputField-calculator"
                 applyClassTag="tag-for-calculator"
                 width="100%"
-                inputWidth="90%"
+                inputWidth="85%"
                 tagText="%"
-                tagWidth="10%"
+                tagWidth="15%"
                 tagClassName="yourTagClass"
               />
             </div>
