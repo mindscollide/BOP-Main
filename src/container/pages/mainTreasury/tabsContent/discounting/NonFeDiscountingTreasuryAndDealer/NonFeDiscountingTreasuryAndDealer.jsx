@@ -31,7 +31,7 @@ const NonFeDiscountingTreasuryAndDealer = () => {
           GetDiscountingRatesForTreasury;
         let getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
         let getAllInstrument = {
-          instruments: GetAllInstrumentForTreasury.discountingInstruments,
+          instruments: GetAllInstrumentForTreasury.nonFEDiscountingInstruments,
         };
         const { columnsData, rowData } = buildDiscountingTable(
           3,

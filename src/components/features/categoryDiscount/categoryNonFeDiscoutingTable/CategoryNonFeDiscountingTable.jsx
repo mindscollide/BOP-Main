@@ -36,7 +36,7 @@ const CategoryNonFeDiscountingTable = () => {
           GetCategoryWiseDiscountingRates !== null &&
           GetCategoryWiseDiscountingRates;
         let getAllInstrument = {
-          instruments: allInstrumentForTreasuryData.discountingInstruments,
+          instruments: allInstrumentForTreasuryData.nonFEDiscountingInstruments,
         };
         let getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
 

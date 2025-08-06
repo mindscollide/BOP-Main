@@ -135,11 +135,11 @@ const PassCodeSettingComponent = ({
                     showPassword: !createPasswordData.showPassword,
                   });
                 }}
-                iconClass={"icon-eye-slash"}
+                iconClass={"icon-eye"}
               />
             ) : (
               <IconElement
-                iconClass={"icon-eye"}
+                iconClass={"icon-eye-slash"}
                 onClick={() => {
                   setCreatePasswordData({
                     ...createPasswordData,
@@ -185,11 +185,11 @@ const PassCodeSettingComponent = ({
                       !createPasswordData.showConfirmPassword,
                   });
                 }}
-                iconClass={"icon-eye-slash"}
+                iconClass={"icon-eye"}
               />
             ) : (
               <IconElement
-                iconClass={"icon-eye"}
+                iconClass={"icon-eye-slash"}
                 onClick={() => {
                   setCreatePasswordData({
                     ...createPasswordData,
