@@ -426,7 +426,7 @@ const OutstandingDeals = () => {
       }
 
       if (blotterTransactionRFQQuoted !== null) {
-        console.log(blotterTransactionRFQQuoted, "blotterTransactionRFQQuoted")
+        console.log(blotterTransactionRFQQuoted, "blotterTransactionRFQQuoted");
         handleTransaction(blotterTransactionRFQQuoted.transaction, "quoted");
       }
 
@@ -1289,7 +1289,7 @@ const OutstandingDeals = () => {
     // Branch Code
     {
       title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
+        <div className='d-flex align-items-center justify-content-center  gap-1'>
           <span className='ff-poppins fw-bold'>Branch Code</span>
           <Popover
             content={popoverContentType}
@@ -1314,6 +1314,7 @@ const OutstandingDeals = () => {
       dataIndex: "branchCode",
       className: "ff-poppins fw-bold",
       width: 120,
+      ellipsis: true,
     },
     // Side
     {
