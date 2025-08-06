@@ -17,6 +17,7 @@ import {
   formatDateUTCToGMT,
 } from "@/components/utils/timeFunction";
 import moment from "moment";
+import { formatNumberWithCommas } from "@/utils/formatters";
 
 const InfoTransaction = () => {
   const dispatch = useDispatch();
@@ -228,7 +229,7 @@ const InfoTransaction = () => {
               </Col>
               <Col sm={6} md={6} lg={6}>
                 <p className={styles["transactionInfolabel"]}>
-                  {InfoRecord?.rate}
+                  {formatNumberWithCommas(InfoRecord?.rate)}
                 </p>
               </Col>
             </Row>
@@ -245,7 +246,7 @@ const InfoTransaction = () => {
               </Col>
               <Col sm={6} md={6} lg={6}>
                 <p className={styles["transactionInfolabel"]}>
-                  {InfoRecord?.amount}
+                  {formatNumberWithCommas(InfoRecord?.amount)}
                 </p>
               </Col>
             </Row>

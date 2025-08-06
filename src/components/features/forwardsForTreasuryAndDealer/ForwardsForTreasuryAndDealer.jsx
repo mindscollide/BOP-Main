@@ -86,13 +86,7 @@ const ForwardsForTreasuryAndDealer = () => {
   const forwardsForTreasuryBranch = useSelector(
     (state) => state.dealerReducer.forwardsForTreasuryBranch
   );
-  const getTenorWiseForwardsRates = useSelector(
-    (state) => state.dealerReducer.getTenorWiseForwardsRates
-  );
-  console.log(
-    tenorsCreated,
-    "forwardsForTreasuryBranchforwardsForTreasuryBranch"
-  );
+
   const getAllTenorsData = useSelector(
     (state) => state.dealerReducer.getAllTenors
   );
@@ -101,8 +95,6 @@ const ForwardsForTreasuryAndDealer = () => {
     tenorName: "",
     noOfDays: 0,
   });
-
-  console.log(createTenor, "tenorNametenorName");
 
   const [error, setError] = useState({ tenorName: "", noOfDays: "" });
   const [tenorValue, setTenorValue] = useState({
@@ -114,7 +106,6 @@ const ForwardsForTreasuryAndDealer = () => {
   const [snackbarData, setSnackbarData] = useState({
     message: "",
   });
-  console.log(snackbarData, "snackbarDatasnackbarData");
   useEffect(() => {
     if (snackbarData.message !== "") {
       const timer = setTimeout(() => {

@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
 import GlobalTable from "@/components/common/table/GlobalTable";
-import { createColumns, generateData } from "@/components/utils/generateData";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -40,8 +39,7 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
     typeof JSON.parse(marketStatus),
     "marketStatusmarketStatus"
   );
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+
   //local states
   const [dataSource, setDataSource] = useState([]);
   const [columnsData, setColumnsData] = useState([]);

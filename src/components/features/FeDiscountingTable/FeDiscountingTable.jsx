@@ -13,6 +13,8 @@ import {
 import { FeDiscountingPublishedAction } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { InputCell } from "@/components/common/inputField/InputCell";
 import { useNotification } from "@/context/NotificationProvider";
+import { formatDateUTCToGMT } from "@/components/utils/timeFunction";
+import moment from "moment";
 
 /**
  * FeDiscountingTable component renders a table for displaying and managing
@@ -30,6 +32,7 @@ import { useNotification } from "@/context/NotificationProvider";
 const FeDiscountingTable = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [date, setDate] = useState("");
   const { showMessage } = useNotification();
   const marketStatus = useSelector(
     (state) => state.RealtimeActionsSlice.marketStatus
@@ -37,9 +40,7 @@ const FeDiscountingTable = () => {
 
   const [columnsData, setColumnsData] = useState([]);
   const [rowData, setRowData] = useState([]);
-  const getAllInstrument = useSelector(
-    (state) => state.authReducer.getAllInstruments
-  );
+
   const GetAllInstrumentForTreasury = useSelector(
     (state) => state.WatchListReducer.GetAllInstrumentForTreasury
   );
@@ -50,15 +51,8 @@ const FeDiscountingTable = () => {
     (state) => state.RealtimeActionsSlice.FeDiscountingPublished
   );
 
-  console.log("getFeDiscountingDatagetFeDiscountingData");
-  console.log(getFeDiscountingData, "getFeDiscountingDatagetFeDiscountingData");
   const getAllTenorsData = useSelector(
     (state) => state.dealerReducer.getAllTenors
-  );
-  console.log(
-    getAllTenorsData,
-    GetAllInstrumentForTreasury,
-    "getAllTenorsDatagetAllTenorsData"
   );
 
   useEffect(() => {
@@ -68,6 +62,14 @@ const FeDiscountingTable = () => {
       GetAllInstrumentForTreasury !== null
     ) {
       try {
+        console.log(
+          {
+            getDashboardForwards,
+            getAllTenorsData,
+            GetAllInstrumentForTreasury,
+          },
+          "hellohello"
+        );
         const { feDiscountingRates } = getDashboardForwards;
         const DiscountingInstruments =
           GetAllInstrumentForTreasury.discountingInstruments;
@@ -82,8 +84,13 @@ const FeDiscountingTable = () => {
         );
 
         if (rowData.length > 0) {
+          console.log(
+            feDiscountingRates,
+            "feDiscountingRatesfeDiscountingRates"
+          );
           setRowData(rowData);
           setColumnsData(columnsData);
+          setDate(feDiscountingRates[0]?.dateTime);
         }
       } catch (error) {
         console.log(error, "Error while building discounting table");
@@ -116,6 +123,7 @@ const FeDiscountingTable = () => {
         if (rowData.length > 0) {
           setRowData(rowData);
           setColumnsData(columnsData);
+          setDate(rates[0]?.dateTime);
           dispatch(FeDiscountingPublishedAction(null));
         }
       } catch (error) {
@@ -126,6 +134,7 @@ const FeDiscountingTable = () => {
       dispatch(FeDiscountingPublishedAction(null));
     };
   }, [getFeDiscountingData, getAllTenorsData, GetAllInstrumentForTreasury]);
+
   const onInputChange = (record, instrumentName, value) => {
     const previousValue = record[instrumentName]; // Get previous value from record
     const validated = isValidMaxFourNumberAfterPoint(value, previousValue, 100);
@@ -169,11 +178,9 @@ const FeDiscountingTable = () => {
   return (
     <>
       <div className="datetime fw-bold text-end mb-2 ff-roboto">
-        {/* {currentRates.dateTime !== "" &&
-                moment(formatDateUTCToGMT(currentRates.dateTime)).format(
-                  "DD MMM YYYY, hh:mm:ss"
-                )} */}
-        05 Aug 2025, 11:20:58
+        {date !== "" &&
+          moment(formatDateUTCToGMT(date)).format("DD MMM YYYY, hh:mm:ss")}
+        {/* 05 Aug 2025, 11:20:58 */}
       </div>
       <GlobalTable
         prefixCls="DealerAndTreasuryDiscountTable"

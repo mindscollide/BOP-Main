@@ -28,7 +28,6 @@ const CategoryNonFeDiscountingTable = () => {
     (state) => state.WatchListReducer.getMarketStatus
   );
 
-  console.log("marketStatusmarketStatus2434: ", marketStatus);
   useEffect(() => {
     if (getAllTenorsRecords !== null && allInstrumentForTreasuryData) {
       try {
