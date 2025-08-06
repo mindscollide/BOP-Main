@@ -19,6 +19,9 @@
   border-radius: 30px;
   background: var(--color-green);
   color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .txn_id {
   font-size: 13px;

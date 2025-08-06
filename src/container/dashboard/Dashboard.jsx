@@ -263,9 +263,9 @@ const Dashboard = () => {
 
       // ✅ Spot/Forward rates — wrap in transition
       case "TREASURY_SPOT_RATES_FEED":
-        // startTransition(() => {
+        startTransition(() => {
           dispatch(setTreasurySpotRatesFeed(payload));
-        // });
+        });
         break;
       case "DISPATCHER_SPOT_RATES":
         startTransition(() => {

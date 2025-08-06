@@ -514,6 +514,7 @@ const TXNTreasurySummary = () => {
         pagination={false}
         dataSource={blotterdata}
         bordered={false}
+        rowHoverBg={"none"}
         prefixCls='TXNSummary_Table'
         columns={Treasurycolumns}
         scroll={{ x: "max-content", y: 300 }}
