@@ -42,7 +42,21 @@ const SettingModal = () => {
     hasSpecialChar: false,
     isMatch: false,
   });
-
+  const resetPasswordFields = () => {
+    setCreatePasswordData({
+      userID: localStorage.getItem("userID"),
+      createPassword: "",
+      confirmPassowrd: "",
+      showPassword: false,
+      showConfirmPassword: false,
+    });
+    setValidations({
+      isLengthValid: false,
+      hasNumber: false,
+      hasSpecialChar: false,
+      isMatch: false,
+    });
+  };
   console.log(validations, "validationsvalidations");
   useEffect(() => {
     dispatch(getMarkingTimingApi({ navigate }));
@@ -106,10 +120,6 @@ const SettingModal = () => {
 
   const handeClickSave = () => {
     console.log(settingsRecordData, "settingsRecordsettingsRecord");
-    console.log(
-      shouldIncludeCorporateComponents,
-      "shouldIncludeCorporateComponentsshouldIncludeCorporateComponents"
-    );
 
     if (shouldIncludeCorporateComponents) {
       let Data = {
@@ -129,18 +139,6 @@ const SettingModal = () => {
         ],
       };
       dispatch(updateUserSettingDataAPI({ navigate, Data }));
-      if (
-        validations.hasNumber &&
-        validations.hasSpecialChar &&
-        validations.isLengthValid &&
-        validations.isMatch
-      ) {
-        let PasswordData = {
-          userID: Number(createPasswordData.userID),
-          Password: createPasswordData.createPassword,
-        };
-        dispatch(ResetPasswordCorporateApi({ navigate, PasswordData }));
-      }
     } else {
       let Data = {
         Settings: [
@@ -157,6 +155,27 @@ const SettingModal = () => {
       dispatch(updateUserSettingDataAPI({ navigate, Data }));
     }
   };
+  const handeClickSavePassword = () => {
+    if (
+      validations.hasNumber &&
+      validations.hasSpecialChar &&
+      validations.isLengthValid &&
+      validations.isMatch
+    ) {
+      let PasswordData = {
+        userID: Number(createPasswordData.userID),
+        Password: createPasswordData.createPassword,
+      };
+      dispatch(ResetPasswordCorporateApi({ navigate, PasswordData }));
+      // Optionally clear the password fields after saving
+      setCreatePasswordData({
+        ...createPasswordData,
+        createPassword: "",
+        confirmPassowrd: "",
+      });
+    }
+  };
+
   return (
     <div>
       {" "}
@@ -187,7 +206,9 @@ const SettingModal = () => {
                         tabActive === 1 ? "tabsButton_active" : "tabsButton"
                       }
                       value={"User Settings"}
-                      onClick={() => setTabActive(1)}
+                      onClick={() => {
+                        setTabActive(1), resetPasswordFields();
+                      }}
                     />
                     {shouldIncludeCorporateComponents === true && (
                       <CustomButton
@@ -204,7 +225,10 @@ const SettingModal = () => {
                         tabActive === 3 ? "tabsButton_active" : "tabsButton"
                       }
                       value={"Market Timing"}
-                      onClick={() => setTabActive(3)}
+                      onClick={() => {
+                        setTabActive(3);
+                        resetPasswordFields();
+                      }}
                     />
                   </Col>
                   <Col
@@ -245,6 +269,27 @@ const SettingModal = () => {
             </>
           </>
         }
+        // modalFooter={
+        //   <>
+        //     <Row>
+        //       <Col
+        //         sm={12}
+        //         md={12}
+        //         lg={12}
+        //         className="d-flex justify-content-center"
+        //       >
+        //         {!(tabActive === 3) && (
+        //           <CustomButton
+        //             applyClass="saveSettingBtn"
+        //             value="Save"
+        //             onClick={handeClickSave}
+        //           />
+        //         )}
+        //       </Col>
+        //     </Row>
+        //   </>
+        // }
+        // In SettingModal.js
         modalFooter={
           <>
             <Row>
@@ -254,11 +299,26 @@ const SettingModal = () => {
                 lg={12}
                 className="d-flex justify-content-center"
               >
-                {!(tabActive === 3) && (
+                {tabActive === 1 && (
                   <CustomButton
                     applyClass="saveSettingBtn"
-                    value="Save"
+                    value="Save Settings"
                     onClick={handeClickSave}
+                  />
+                )}
+                {tabActive === 2 && (
+                  <CustomButton
+                    applyClass="saveSettingBtn"
+                    value="Save Password"
+                    onClick={handeClickSavePassword}
+                    disabled={
+                      !(
+                        validations.hasNumber &&
+                        validations.hasSpecialChar &&
+                        validations.isLengthValid &&
+                        validations.isMatch
+                      )
+                    }
                   />
                 )}
               </Col>

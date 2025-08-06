@@ -114,9 +114,11 @@ export const updateUserSettingDataAPI = createAsyncThunk(
               "Setting_SettingServiceManager_UpdateUserSettings_01".toLowerCase()
             )
         ) {
+          dispatch(setSettingModal(false));
+
           return {
             response: response.data.responseResult,
-            message: "Setting Updated Successfully",
+            message: "User Settings Updated Successfully",
           };
         } else if (
           responseMessage
