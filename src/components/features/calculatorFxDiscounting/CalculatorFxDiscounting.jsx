@@ -19,9 +19,9 @@ const CalculatorFxDiscounting = () => {
   );
 
   //World Crosses Data to Get the Cross Rates Without Spread
-  const WorldCrossesData = useSelector(
-    (state) => state.WatchListReducer.GetBankSpotForTreasury
-  );
+  // const WorldCrossesData = useSelector(
+  //   (state) => state.WatchListReducer.GetBankSpotForTreasury
+  // );
 
   //Resulting Calculated value of FX Discounting
   const CalculatedFxDiscounting = useSelector(
@@ -34,7 +34,6 @@ const CalculatorFxDiscounting = () => {
     []
   );
   const [price, setPrice] = useState(0);
-  const [ready, setReady] = useState(0);
 
   const [inputValue, setInputValue] = useState("0");
   const [resultFeRate, setResultFeRate] = useState(0);
@@ -46,8 +45,9 @@ const CalculatorFxDiscounting = () => {
     try {
       if (
         InstrumentsData?.instruments &&
-        Array.isArray(InstrumentsData.instruments) &&
-        WorldCrossesData?.worldCrosses
+        Array.isArray(InstrumentsData.instruments)
+        //  &&
+        // WorldCrossesData?.worldCrosses
       ) {
         // const forwards = InstrumentsData.instruments.filter(
         //   (item) => item.forwardsApplicable === true
@@ -82,7 +82,7 @@ const CalculatorFxDiscounting = () => {
     } catch (error) {
       console.error("Error processing instrument data:", error);
     }
-  }, [InstrumentsData, WorldCrossesData]);
+  }, [InstrumentsData]);
 
   //Extracting the Calculated FE Values
 
@@ -102,19 +102,6 @@ const CalculatorFxDiscounting = () => {
   //Handle onChange Currency
   const handleChangeCurrencyCalculator = (selected) => {
     setSelectedOption(selected);
-
-    // const selectedInstrumentID = selected?.value;
-
-    // Get matching rate from WorldCrossesData
-    // const matchedRate = WorldCrossesData?.worldCrosses?.find(
-    //   (cross) => cross.instrumentID === selectedInstrumentID
-    // );
-
-    // if (matchedRate) {
-    //   setPrice(matchedRate.bid);
-    // } else {
-    //   setPrice(null);
-    // }
   };
 
   //Handle onChange Tenor
@@ -136,24 +123,6 @@ const CalculatorFxDiscounting = () => {
         } else {
           setTagText(formatDate(newDate)); // Optional: clear tag text if input is empty
         }
-      }
-    }
-  };
-
-  // Handle Change Ready Value
-  const handleReadyValue = (e) => {
-    const value = e.target.value;
-
-    // Match format: up to 4 digits before decimal, up to 4 digits after
-    if (/^\d{0,4}(\.\d{0,4})?$/.test(value)) {
-      const [integerPart] = value.split(".");
-
-      // Allow empty string (for typing) or numeric part between 1 and 1000
-      if (
-        value === "" ||
-        (parseInt(integerPart, 10) >= 1 && parseInt(integerPart, 10) <= 1000)
-      ) {
-        setPrice(value);
       }
     }
   };
@@ -202,7 +171,6 @@ const CalculatorFxDiscounting = () => {
                 defaultValue="0"
                 value={price}
                 applyClass={"CalculatorTextfield"}
-                onChange={handleReadyValue}
                 disabled={true}
               />
 

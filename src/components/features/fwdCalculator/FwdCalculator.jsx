@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col } from "react-bootstrap";
 import CustomButton from "../../common/globalButton/button";
 import InputFIeld from "../../common/inputField/InputField";
 import InputFieldWithTag from "../../common/inputFieldWithTag/InputFieldWithTag";
@@ -19,10 +18,10 @@ const FwdCalculator = () => {
     (state) => state.authReducer.getAllInstruments
   );
 
-  //World Crosses Data to Get the Cross Rates Without Spread
-  const WorldCrossesData = useSelector(
-    (state) => state.WatchListReducer.GetBankSpotForTreasury
-  );
+  // //World Crosses Data to Get the Cross Rates Without Spread
+  // const WorldCrossesData = useSelector(
+  //   (state) => state.WatchListReducer.GetBankSpotForTreasury
+  // );
 
   //Resulting Calculated value of Forwads
   const CalculatedForwards = useSelector(
@@ -57,11 +56,9 @@ const FwdCalculator = () => {
     try {
       if (
         InstrumentsData?.instruments &&
-        Array.isArray(InstrumentsData.instruments) &&
-        WorldCrossesData?.worldCrosses
+        Array.isArray(InstrumentsData.instruments)
       ) {
         console.log(InstrumentsData, "InstrumentsData");
-        console.log(WorldCrossesData, "InstrumentsData");
         const Forwards = InstrumentsData.instruments
           .filter((item) => item.forwardsApplicable === true)
           .map((item) => ({
@@ -75,22 +72,12 @@ const FwdCalculator = () => {
         const defaultUSD = Forwards.find((item) => item.label === "USD");
         if (defaultUSD) {
           setSelectedOption(defaultUSD);
-
-          const matchedRate = WorldCrossesData.worldCrosses.find(
-            (cross) => cross.instrumentID === defaultUSD.value
-          );
-
-          if (matchedRate) {
-            setPrice(matchedRate.bid);
-          } else {
-            setPrice(null); // fallback if not found
-          }
         }
       }
     } catch (error) {
       console.error("Error processing instrument data:", error);
     }
-  }, [InstrumentsData, WorldCrossesData]);
+  }, [InstrumentsData]);
 
   // Effect to update date whenever inputValue changes
   useEffect(() => {
@@ -106,7 +93,6 @@ const FwdCalculator = () => {
   useEffect(() => {
     try {
       if (CalculatedForwards && CalculatedForwards !== null) {
-        console.log(CalculatedForwards, "CalculatedForwards");
         setResulteForwards(CalculatedForwards.forwardRate);
         setResulteSwap(CalculatedForwards.swap);
       }
@@ -243,7 +229,7 @@ const FwdCalculator = () => {
                   <SelectDropdown
                     options={forwardApplicableList}
                     value={selectedOption}
-                    onChange={handleChangeCurrencyCalculator}
+                    onChange={(selected) => setSelectedOption(selected)}
                     placeholder="Select a currency"
                   />
                 </div>
