@@ -95,6 +95,7 @@ const TXNTreasurySummary = () => {
   const FILTER_OPTIONS = {
     TXN_ID: ["09-09-2024/0568", "09-09-2024/4798"],
     CUSTOMER_NAME: ["Gul Ahmed"],
+    BRANC_CODE: ["1234", "5678"],
     TYPE: ["Buy", "Sell"],
     NATURE: ["1", "6"],
     CCY1: ["USD"],
@@ -309,7 +310,7 @@ const TXNTreasurySummary = () => {
    */
   const createFilterColumn = (title, filterKey, dataIndex, width, render) => ({
     title: (
-      <div className='d-flex align-items-center justify-content-center gap-1'>
+      <div className='d-flex align-items-center justify-content-center  gap-1'>
         <span className='ff-poppins fw-bold'>{title}</span>
         <Popover
           content={createFilterPopoverContent(filterKey)}
@@ -329,6 +330,7 @@ const TXNTreasurySummary = () => {
     className: "ff-poppins fw-bold",
     width,
     render,
+    ellipsis: true
   });
 
   /**
@@ -411,7 +413,13 @@ const TXNTreasurySummary = () => {
   const Treasurycolumns = [
     createFilterColumn("TXN ID", "TXN_ID", "txnid", 120),
     createFilterColumn("Client", "CUSTOMER_NAME", "corporateName", 120),
-    createFilterColumn("Branch Code", "CUSTOMER_NAME", "branchCode", 120),
+    createFilterColumn(
+      "Branch Code",
+      "BRANC_CODE",
+      "branchCode",
+      120,
+      (text) => text
+    ),
     createFilterColumn("Type", "TYPE", "side", 70),
     createFilterColumn("Nature", "NATURE", "nature", 120),
     createFilterColumn("CCY1", "CCY1", "ccY1", 80),

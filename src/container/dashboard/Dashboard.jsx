@@ -1,5 +1,11 @@
 import { Layout } from "antd";
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import React, {
+  startTransition,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+} from "react";
 import Header from "@/components/layout/header/header";
 import GlobalNavbar from "@/components/layout/nav/Navbar";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
@@ -117,12 +123,15 @@ const Dashboard = () => {
 
   // Memoized MQTT message handler
   const handleMqttMessage = useCallback((data) => {
-    // console.log(data, "datadatadatadata");
-    switch (data.payload.message) {
+    const type = data?.payload?.message;
+    const payload = data?.payload;
+
+    switch (type) {
+      // ✅ Chat (real-time but low frequency)
       case "INCOMING_CHAT":
         try {
           const chatObj = {
-            ...data.payload.chat,
+            ...payload.chat,
             creationDateTime: formatDateToUTC(new Date()),
           };
           dispatch(setIncomingChat(chatObj));
@@ -130,167 +139,228 @@ const Dashboard = () => {
           console.log(error);
         }
         break;
+
+      // ✅ Market & Tenor
       case "TENOR_CREATED":
-        dispatch(setTenorsCreated(data.payload));
+        dispatch(setTenorsCreated(payload));
         break;
       case "MARKET_TIME_UPDATED":
-        dispatch(setMarketTimingsUpdated(data.payload));
-        break;
-      case "CURRENT_USD_RATES_PUBLISHED":
-        dispatch(currentRatePublishedAction(data.payload));
-        break;
-      case "FE_DISCOUNTING_RATES_PUBLISHED":
-        dispatch(FeDiscountingPublishedAction(data.payload));
-        break;
-      case "TENOR_WISE_FORWARD_RATES_PUBLISHED":
-        dispatch(tenorWiseFowardsRatesPublishedActions(data.payload));
-        console.log(data.payload, "TENOR_WISE_FORWARD_RATES_PUBLISHED");
-        let tenorsData = {
-          newIsForwardtenorList:
-            data.payload.tenorWiseForwardRates.newIsForwardtenorList,
-          removedtenorList: data.payload.tenorWiseForwardRates.removedtenorList,
-        };
-        console.log(tenorsData, "tenorsDatatenorsData");
-        dispatch(setCategoryFowardsTenorsChanges(tenorsData));
-        dispatch(setTreasuryFowardsTenorsChanges(tenorsData));
-        break;
-      case "NONFE_DISCOUNTING_RATES_PUBLISHED":
-        dispatch(NonFeDiscountingPublishedAction(data.payload));
+        dispatch(setMarketTimingsUpdated(payload));
         break;
       case "MARKET_STATUS_UPDATED":
-        dispatch(marketStatusUpdated(data.payload.marketStatus.isMarketOn));
-        dispatch(setMarketStatus(data.payload.marketStatus.isMarketOn));
+        dispatch(marketStatusUpdated(payload.marketStatus.isMarketOn));
+        dispatch(setMarketStatus(payload.marketStatus.isMarketOn));
         break;
+
+      // ✅ USD, FE, NONFE (wrap in startTransition for smoothness)
+      case "CURRENT_USD_RATES_PUBLISHED":
+        startTransition(() => {
+          dispatch(currentRatePublishedAction(payload));
+        });
+        break;
+      case "FE_DISCOUNTING_RATES_PUBLISHED":
+        startTransition(() => {
+          dispatch(FeDiscountingPublishedAction(payload));
+        });
+        break;
+      case "NONFE_DISCOUNTING_RATES_PUBLISHED":
+        startTransition(() => {
+          dispatch(NonFeDiscountingPublishedAction(payload));
+        });
+        break;
+
+      case "TENOR_WISE_FORWARD_RATES_PUBLISHED":
+        startTransition(() => {
+          dispatch(tenorWiseFowardsRatesPublishedActions(payload));
+
+          let tenorsData = {
+            newIsForwardtenorList:
+              payload.tenorWiseForwardRates.newIsForwardtenorList,
+            removedtenorList: payload.tenorWiseForwardRates.removedtenorList,
+          };
+
+          dispatch(setCategoryFowardsTenorsChanges(tenorsData));
+          dispatch(setTreasuryFowardsTenorsChanges(tenorsData));
+        });
+        break;
+
+      // ✅ Logout events
       case "BRANCH_STATUS_INACTIVE":
       case "CORPORATE_STATUS_INACTIVE":
         dispatch(LogoutApi({ navigate }));
         break;
-      case "CATEGORY_ADDED":
-        dispatch(categoryisAdded(data.payload));
-        break;
-      case "CATEGORY_UPDATED":
-        dispatch(categoryisUpdated(data.payload));
-        break;
-      case "CATEGORY_DELETED":
-        dispatch(categoryisDeleted(data.payload));
-        break;
-      case "BLOTTER_RFQ_TRANSACTION_EXPIRED":
-        dispatch(BlotterTransactionRFQExpired(data.payload));
-        dispatch(
-          setBlotterTransactionRFQExpiredForTreasuryDealBox(data.payload)
-        );
 
-        if (
-          chatModal &&
-          chatModalTransactionId === data.payload?.transaction?.pK_TransactionID
-        ) {
-          console.log(first);
-          dispatch(setChatModal(false));
-        }
-        break;
+      // ✅ Blotter Transaction Events (heavy updates → use startTransition)
       case "BLOTTER_TRANSACTION_ADDED":
-        dispatch(BlotterTransactionAdded(data.payload));
-        dispatch(BlotterTransactionAddedForTreasury(data.payload));
-        dispatch(setBlotterTransactionAddedForTreasuryDealBox(data.payload));
+        startTransition(() => {
+          dispatch(BlotterTransactionAdded(payload));
+          dispatch(BlotterTransactionAddedForTreasury(payload));
+          dispatch(setBlotterTransactionAddedForTreasuryDealBox(payload));
+        });
         break;
-      case "BLOTTER_TRANSACTION_ASSIGNED":
-        dispatch(BlotterTransactionAssigned(data.payload));
-        dispatch(BlotterTransactionAssignedForTreasury(data.payload));
+
+      case "BLOTTER_RFQ_TRANSACTION_EXPIRED":
+        startTransition(() => {
+          dispatch(BlotterTransactionRFQExpired(payload));
+          dispatch(setBlotterTransactionRFQExpiredForTreasuryDealBox(payload));
+
+          if (
+            chatModal &&
+            chatModalTransactionId === payload?.transaction?.pK_TransactionID
+          ) {
+            dispatch(setChatModal(false));
+          }
+        });
         break;
-      case "BLOTTER_TRANSACTION_ACCEPTED":
-        dispatch(BlotterTransactionAccepted(data.payload));
-        dispatch(BlotterTransactionAcceptedForTreasury(data.payload));
-        break;
+
       case "BLOTTER_TRANSACTION_RFQ_QUOTED":
-        console.log(data.payload, "BLOTTER_TRANSACTION_RFQ_QUOTED");
-        dispatch(BlotterTransactionRFQQuoted(data.payload));
-        dispatch(BlotterTransactionRFQQuotedForTreasury(data.payload));
-        dispatch(
-          setBlotterTransactionRFQQuotedForTreasuryDealBox(data.payload)
-        );
+        console.log(payload, "BLOTTER_TRANSACTION_RFQ_QUOTED");
+        startTransition(() => {
+          dispatch(BlotterTransactionRFQQuoted(payload));
+          dispatch(BlotterTransactionRFQQuotedForTreasury(payload));
+          dispatch(setBlotterTransactionRFQQuotedForTreasuryDealBox(payload));
+        });
         break;
+
+      case "BLOTTER_TRANSACTION_ASSIGNED":
+        startTransition(() => {
+          dispatch(BlotterTransactionAssigned(payload));
+          dispatch(BlotterTransactionAssignedForTreasury(payload));
+        });
+        break;
+
+      case "BLOTTER_TRANSACTION_ACCEPTED":
+        startTransition(() => {
+          dispatch(BlotterTransactionAccepted(payload));
+          dispatch(BlotterTransactionAcceptedForTreasury(payload));
+        });
+        break;
+
       case "BLOTTER_TRANSACTION_CANCELLATION_REQUEST":
-        dispatch(BlotterTransactionCancellationRequest(data.payload));
-        dispatch(
-          BlotterTransactionCancellationRequestForTreasury(data.payload)
-        );
+        startTransition(() => {
+          dispatch(BlotterTransactionCancellationRequest(payload));
+          dispatch(BlotterTransactionCancellationRequestForTreasury(payload));
+        });
         break;
+
       case "BLOTTER_TRANSACTION_CANCELLED":
-        dispatch(BlotterTranscationCancelled(data.payload));
-        dispatch(BlotterTranscationCancelledForTreasury(data.payload));
+        startTransition(() => {
+          dispatch(BlotterTranscationCancelled(payload));
+          dispatch(BlotterTranscationCancelledForTreasury(payload));
+        });
         break;
+
       case "BLOTTER_TRANSACTION_REJECTED":
-        dispatch(BlotterTransactionRejected(data.payload));
-        dispatch(BlotterTransactionRejectedForTreasury(data.payload));
+        startTransition(() => {
+          dispatch(BlotterTransactionRejected(payload));
+          dispatch(BlotterTransactionRejectedForTreasury(payload));
+        });
         break;
+
       case "BLOTTER_TRANSACTION_ASSIGNED_TO_TREASURY":
-        dispatch(TransactionAssignedByTreasury(data.payload));
+        dispatch(TransactionAssignedByTreasury(payload));
         break;
+
+      // ✅ Spot/Forward rates — wrap in transition
       case "TREASURY_SPOT_RATES_FEED":
-        dispatch(setTreasurySpotRatesFeed(data.payload));
+        // startTransition(() => {
+          dispatch(setTreasurySpotRatesFeed(payload));
+        // });
         break;
       case "DISPATCHER_SPOT_RATES":
-        dispatch(setCounterPartySpotRates(data.payload));
+        startTransition(() => {
+          dispatch(setCounterPartySpotRates(payload));
+        });
         break;
       case "DISPATCHER_CATEGORY_SPOT_RATES_FOR_TREASURY":
-        dispatch(setCategorySpotRates(data.payload));
+        startTransition(() => {
+          dispatch(setCategorySpotRates(payload));
+        });
         break;
       case "TREASURY_FORWARD_RATES_FEED":
-        dispatch(setTreasuryForwardRates(data.payload));
+        startTransition(() => {
+          dispatch(setTreasuryForwardRates(payload));
+        });
         break;
       case "TREASURY_FEDISCOUNTING_RATES_FEED":
-        dispatch(setTreasuryFeDiscounting(data.payload));
+        startTransition(() => {
+          dispatch(setTreasuryFeDiscounting(payload));
+        });
         break;
       case "TREASURY_NONFEDISCOUNTING_RATES_FEED":
-        dispatch(setTreasuryNonFeDiscounting(data.payload));
+        startTransition(() => {
+          dispatch(setTreasuryNonFeDiscounting(payload));
+        });
         break;
       case "DISPATCHER_CATEGORY_FORWARD_RATES_FOR_TREASURY":
-        dispatch(setCategoryForwardRates(data.payload));
+        startTransition(() => {
+          dispatch(setCategoryForwardRates(payload));
+        });
         break;
       case "DISPATCHER_CATEGORY_FEDISCOUNTING_RATES_FOR_TREASURY":
-        dispatch(setCategoryFeDiscounting(data.payload));
-        break;
-      case "DISPATCHER_NONFEDISCOUNTING_RATES":
-        dispatch(setCounterPartyNonFeDiscounting(data.payload));
-        break;
-      case "SAVE_DASHBOARD":
-        dispatch(setFxTradingCards(data.payload));
-        break;
-      case "DISPATCHER_FORWARD_RATES":
-        dispatch(setCounterPartyForwardRates(data.payload));
-        break;
-      case "DISPATCHER_FEDISCOUNTING_RATES":
-        dispatch(setCounterPartyFeDiscounting(data.payload));
+        startTransition(() => {
+          dispatch(setCategoryFeDiscounting(payload));
+        });
         break;
       case "DISPATCHER_CATEGORY_NONFEDISCOUNTING_RATES_FOR_TREASURY":
-        dispatch(setCategoryNonFeDiscounting(data.payload));
+        startTransition(() => {
+          dispatch(setCategoryNonFeDiscounting(payload));
+        });
+        break;
+      case "DISPATCHER_FORWARD_RATES":
+        startTransition(() => {
+          dispatch(setCounterPartyForwardRates(payload));
+        });
+        break;
+      case "DISPATCHER_FEDISCOUNTING_RATES":
+        startTransition(() => {
+          dispatch(setCounterPartyFeDiscounting(payload));
+        });
+        break;
+      case "DISPATCHER_NONFEDISCOUNTING_RATES":
+        startTransition(() => {
+          dispatch(setCounterPartyNonFeDiscounting(payload));
+        });
+        break;
+
+      // ✅ Dashboard and Volt Meter
+      case "SAVE_DASHBOARD":
+        dispatch(setFxTradingCards(payload));
         break;
       case "UPDATED_VOLTMETER_STATUS":
-        dispatch(setUpdateVolMeterRealtime(data.payload));
+        dispatch(setUpdateVolMeterRealtime(payload));
+        break;
       case "RATES_CLEAR":
-        dispatch(setClearRates(data.payload));
+        dispatch(setClearRates(payload));
         break;
+
+      // ✅ Role or Access Control
       case "BANK_USER_ROLE_STATUS_CHANGE":
-        // Handle the case where a user role status changes
-        if (Number(data.payload.updatedUser?.userID) === Number(userID)) {
-          dispatch(LogoutApi({ navigate }));
-        }
-        break;
       case "CORP_USER_ROLE_STATUS_CHANGE":
-        // Handle the case where a corporate user role status changes
-        if (Number(data.payload.updatedUser?.userID) === Number(userID)) {
+        if (Number(payload.updatedUser?.userID) === Number(userID)) {
           dispatch(LogoutApi({ navigate }));
         }
         break;
+
       case "TREASURY_NOP_UPDATED":
-        // Handle the case When NOP Value Gets Updated
-        if (Number(data.payload.updatedUser?.userID) === Number(userID)) {
+        if (Number(payload.updatedUser?.userID) === Number(userID)) {
           dispatch(GetNOPDataAPI({ navigate }));
         }
         break;
 
+      // ✅ Categories
+      case "CATEGORY_ADDED":
+        dispatch(categoryisAdded(payload));
+        break;
+      case "CATEGORY_UPDATED":
+        dispatch(categoryisUpdated(payload));
+        break;
+      case "CATEGORY_DELETED":
+        dispatch(categoryisDeleted(payload));
+        break;
+
       default:
-        console.warn("No specific handler for this message type", data.payload);
+        console.warn("No specific handler for this message type", payload);
         break;
     }
   }, []);
@@ -390,12 +460,12 @@ const Dashboard = () => {
     }
   }, []);
   return (
-    <Layout className="roboto-13">
+    <Layout className='roboto-13'>
       {!location.pathname.includes("calculator") && <Header />}
 
       <GlobalNavbar />
       <Content>
-        <main className="px-3">
+        <main className='px-3'>
           <Outlet />
           {/* <AnimatePresence>
             {blotterTransactionAdded && isTreasury && <DealBox />}

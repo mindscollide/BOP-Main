@@ -1,9 +1,11 @@
+
 import React, {
   useState,
   useEffect,
   useRef,
   useMemo,
   useCallback,
+  startTransition,
   memo,
 } from "react";
 import PropTypes from "prop-types";
@@ -51,7 +53,10 @@ const BankSpot = memo(() => {
     selectGetAllInstrumentForTreasury,
     shallowEqual
   );
-
+  const TreasurySpotRatesFeed = useSelector(
+    selectedTreasurySpotRatesFeed,
+    (prev, next) => !isFeedDifferent(prev, next)
+  );
   const worldCrosses = useSelector(selectWorldCrosses, shallowEqual);
   const worldCurrencies = useSelector(selectWorldCurrencies, shallowEqual);
   const isLoading = useSelector(selectTreasuryBankSpotSpinner);
@@ -60,17 +65,7 @@ const BankSpot = memo(() => {
   const [processedData, setProcessedData] = useState([]);
   // Refs for throttled function and previous feed
   const throttledUpdateRef = useRef();
-  const prevFeedRef = useRef();
-
-  const rawFeed = useSelector(selectedTreasurySpotRatesFeed);
-
-  const TreasurySpotRatesFeed = useMemo(() => {
-    if (!isFeedDifferent(prevFeedRef.current, rawFeed)) {
-      return prevFeedRef.current;
-    }
-    prevFeedRef.current = rawFeed;
-    return rawFeed;
-  }, [rawFeed]);
+  const prevFeedRef = useRef(TreasurySpotRatesFeed);
 
   /**
    * Safely enriches instrument data with cross and currency rates
@@ -121,59 +116,62 @@ const BankSpot = memo(() => {
    */
   const updateData = useCallback((feed) => {
     if (!feed) return;
-
+  
     try {
-      setProcessedData((prevData) => {
-        const { instrumentCrossRate, instrumentParitySpot } = feed;
-        let hasUpdates = false;
-
-        const updatedData = prevData.map((data) => {
-          const updatedItem = { ...data };
-
-          // Update cross rates
-          if (
-            instrumentCrossRate &&
-            data.instrumentID === instrumentCrossRate.instrumentID &&
-            data.secondaryInstrumentID ===
-              instrumentCrossRate.secondaryInstrumentID
-          ) {
+      startTransition(() => {
+        setProcessedData((prevData) => {
+          const { instrumentCrossRate, instrumentParitySpot } = feed;
+          let hasUpdates = false;
+  
+          const updatedData = prevData.map((data) => {
+            const updatedItem = { ...data };
+  
+            // Update cross rates
             if (
-              data.worldCrossBid !== instrumentCrossRate.bid ||
-              data.worldCrossOffer !== instrumentCrossRate.ask
+              instrumentCrossRate &&
+              data.instrumentID === instrumentCrossRate.instrumentID &&
+              data.secondaryInstrumentID ===
+                instrumentCrossRate.secondaryInstrumentID
             ) {
-              updatedItem.worldCrossBid = instrumentCrossRate.bid;
-              updatedItem.worldCrossOffer = instrumentCrossRate.ask;
-              updatedItem.time = instrumentCrossRate.updateDateTime;
-              hasUpdates = true;
+              if (
+                data.worldCrossBid !== instrumentCrossRate.bid ||
+                data.worldCrossOffer !== instrumentCrossRate.ask
+              ) {
+                updatedItem.worldCrossBid = instrumentCrossRate.bid;
+                updatedItem.worldCrossOffer = instrumentCrossRate.ask;
+                updatedItem.time = instrumentCrossRate.updateDateTime;
+                hasUpdates = true;
+              }
             }
-          }
-
-          // Update spot rates
-          if (
-            instrumentParitySpot &&
-            data.instrumentID === instrumentParitySpot.instrumentID &&
-            data.secondaryInstrumentID ===
-              instrumentParitySpot.secondaryInstrumentID
-          ) {
+  
+            // Update spot rates
             if (
-              data.worldCurBid !== instrumentParitySpot.bid ||
-              data.worldCurOffer !== instrumentParitySpot.ask
+              instrumentParitySpot &&
+              data.instrumentID === instrumentParitySpot.instrumentID &&
+              data.secondaryInstrumentID ===
+                instrumentParitySpot.secondaryInstrumentID
             ) {
-              updatedItem.worldCurBid = instrumentParitySpot.bid;
-              updatedItem.worldCurOffer = instrumentParitySpot.ask;
-              hasUpdates = true;
+              if (
+                data.worldCurBid !== instrumentParitySpot.bid ||
+                data.worldCurOffer !== instrumentParitySpot.ask
+              ) {
+                updatedItem.worldCurBid = instrumentParitySpot.bid;
+                updatedItem.worldCurOffer = instrumentParitySpot.ask;
+                hasUpdates = true;
+              }
             }
-          }
-
-          return updatedItem;
+  
+            return updatedItem;
+          });
+  
+          return hasUpdates ? updatedData : prevData;
         });
-
-        return hasUpdates ? updatedData : prevData;
       });
     } catch (error) {
       console.error("Error updating data:", error);
     }
   }, []);
+  
 
   // Initialize and cleanup throttled function
   useEffect(() => {
@@ -194,9 +192,12 @@ const BankSpot = memo(() => {
     if (!isFeedDifferent(prevFeedRef.current, TreasurySpotRatesFeed)) {
       return;
     }
-
+  
     prevFeedRef.current = TreasurySpotRatesFeed;
-    throttledUpdateRef.current?.(TreasurySpotRatesFeed);
+  
+    startTransition(() => {
+      throttledUpdateRef.current?.(TreasurySpotRatesFeed);
+    });
   }, [TreasurySpotRatesFeed]);
 
   // Memoized table columns configuration
@@ -288,9 +289,6 @@ const BankSpot = memo(() => {
     []
   );
 
-  if (!crossInstruments && isLoading) {
-    return <SectionLoader />;
-  }
 
   return (
     <div className="bank-spot-container">
