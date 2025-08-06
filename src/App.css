@@ -39,10 +39,10 @@ html {
 
 body {
   background: #f4f4f4 !important;
-  font-family: "Roboto", sans-serif !important;
+  font-family: "Roboto" !important;
   color: #45494d;
   font-size: 14px !important;
-  font-weight: 400;
+  font-weight: 400 !important;
   overflow-x: hidden !important;
   min-height: 100%;
   /* user-select: none !important; */
