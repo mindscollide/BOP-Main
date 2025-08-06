@@ -36,22 +36,20 @@ const BopLogin = () => {
   useEffect(() => {
     const rememberedEmail = localStorage.getItem("rememberedEmail");
     const encryptedPassword = localStorage.getItem("rememberedPassword");
+    localStorage.clear(); // Clear localStorage to avoid conflicts with other data
     console.log(
       rememberedEmail,
       encryptedPassword,
       "encryptedPasswordencryptedPassword"
     );
-    if (rememberedEmail) {
+    if (rememberedEmail || encryptedPassword) {
       setCredentials((prev) => ({
         ...prev,
         email: rememberedEmail,
       }));
       setRememberMe(true);
-      localStorage.clear(); // Clear localStorage to avoid conflicts with other data
       localStorage.setItem("rememberedEmail", rememberedEmail);
-    }
 
-    if (encryptedPassword) {
       try {
         const decryptedPassword = decrypt(
           encryptedPassword,
@@ -62,17 +60,19 @@ const BopLogin = () => {
           password: decryptedPassword,
         }));
         setRememberMe(true);
-        localStorage.clear(); // Clear localStorage to avoid conflicts with other data
-
-        const encryptedPassword = encrypt(
+        const encryptedPassword2 = encrypt(
           decryptedPassword,
           import.meta.env.VITE_BOP_KEY
         );
-        localStorage.setItem("rememberedPassword", encryptedPassword);
+        localStorage.setItem("rememberedPassword", encryptedPassword2);
       } catch (error) {
         console.error("Failed to decrypt password:", error);
         localStorage.removeItem("rememberedPassword");
       }
+    } else {
+      localStorage.clear(); // Clear localStorage to avoid conflicts with other data
+      localStorage.removeItem("rememberedEmail");
+      localStorage.removeItem("rememberedPassword");
     }
   }, []);
 
