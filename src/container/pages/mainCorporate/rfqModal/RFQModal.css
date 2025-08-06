@@ -27,9 +27,9 @@
 }
 
 .LabelRFQTransactionModal {
-  font-weight: 800 !important;
+  font-weight: 700;
   font-size: 13px !important;
-  font-family: "Roboto", sans-serif !important;
+  font-family: 'Roboto' !important;
 }
 
 span.RfqSpot__indicator-separator.css-1u9des2-indicatorSeparator {
@@ -39,15 +39,16 @@ span.RfqSpot__indicator-separator.css-1u9des2-indicatorSeparator {
 /* Control container (already applied) */
 .RfqSpot__control {
   min-height: 28px !important;
-  height: 28px !important;
+  /* height: 28px !important; */
   padding: 0 !important; /* Remove any inner control padding */
 }
 
 /* Value container (where the selected value appears) */
 .RfqSpot__value-container {
   padding: 0 10px !important;
-  height: 28px !important;
-  font-weight: 800 !important;
+  /* height: 28px !important; */
+  font-weight:600 !important;
+  font-family: "Roboto" !important;
   /* display: flex; */
   /* align-items: center; */
 }
