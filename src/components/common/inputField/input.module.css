@@ -214,6 +214,19 @@
   outline: 0;
   box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
 }
+
+.CalculatorTextfield-withTagInputfield:disabled {
+  border: 1px solid #d9d9d9;
+  background-color: #efefef4d;
+  border-radius: 6px;
+  color: #545454;
+}
+.CalculatorTextfield:disabled {
+  border: 1px solid #d9d9d9;
+  background-color: #efefef4d;
+  border-radius: 6px;
+  color: #545454;
+}
 /* End  Dealer Bit  Input Field */
 
 /* IBuySell Modal TextField Height Start*/
