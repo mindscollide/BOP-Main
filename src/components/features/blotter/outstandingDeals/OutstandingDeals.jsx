@@ -1722,6 +1722,26 @@ const OutstandingDeals = () => {
                   onClick={() => handleClickAssignTransaction(record)}
                 />
               </>
+            ) : record.statusID === 6 ? (
+              <>
+                <CustomButton
+                  icon={<i className='icon-check '></i>}
+                  className='btn btn-sm btn-danger'
+                  applyClass={"ActionButton"}
+                  size={"small"}
+                  onClick={() =>
+                    handleAcceptTransactionCancellation(record.pK_TransactionID)
+                  }
+                />
+                <CustomButton
+                  icon={<i className='icon-close '></i>}
+                  className='btn btn-sm btn-success '
+                  size={"small"}
+                  onClick={() =>
+                    handleRejectTransactionCancellation(record.pK_TransactionID)
+                  }
+                />
+              </>
             ) : Number(record?.treasuryPersonID) ===
               Number(localStorage.getItem("userID")) ? (
               record.statusID === 5 ? (
@@ -1773,41 +1793,7 @@ const OutstandingDeals = () => {
                   />
                 </>
               ) : null
-            ) : record.statusID === 6 ? (
-              <>
-                <CustomButton
-                  icon={<i className='icon-check '></i>}
-                  className='btn btn-sm btn-danger'
-                  applyClass={"ActionButton"}
-                  size={"small"}
-                  onClick={() =>
-                    handleAcceptTransactionCancellation(record.pK_TransactionID)
-                  }
-                />
-                <CustomButton
-                  icon={<i className='icon-close '></i>}
-                  className='btn btn-sm btn-success '
-                  size={"small"}
-                  onClick={() =>
-                    handleRejectTransactionCancellation(record.pK_TransactionID)
-                  }
-                />
-              </>
             ) : null}
-            {/* 
-            <CustomButton
-              icon={<i className='icon-trash '></i>}
-              className='btn btn-sm btn-danger  '
-            />
-
-            <CustomButton
-              icon={<i className='icon-open '></i>}
-              className='btn btn-sm btn-primary  '
-            />
-            <CustomButton
-              icon={<i className='icon-view-comment'></i>}
-              className='btn btn-sm btn-primary'
-            /> */}
           </div>
         );
       },
