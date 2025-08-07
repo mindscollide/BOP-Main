@@ -10,7 +10,9 @@ import { useNavigate } from "react-router-dom";
 import { formatDateToUTC, formatPkAmount } from "@/utils/formatters";
 import { GetMisDataByRangeAPI } from "@/components/features/SpotBranch/WatchlistAction";
 import { Col, Row } from "react-bootstrap";
-
+import { Popover } from "antd";
+import excelImage from "@/assets/icons/excel.png";
+import pdfImage from "@/assets/icons/pdf.png";
 const MIS = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -25,17 +27,11 @@ const MIS = () => {
   console.log(GetMisDataByRangeData, "Checkerchekcrrrrr");
 
   const [misTableData, setMisTableData] = useState(null);
-
-  const getToday = () => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    return today;
-  };
   const [MisDate, setMisDate] = useState({
     StartDate: new Date(),
     EndDate: new Date(),
   });
-
+  const [exportButton, setExportButton] = useState(false);
   console.log(MisDate, "misTableDatamisTableDatamisTableData");
 
   const [totalProfit, setTotalProfit] = useState(0);
@@ -224,12 +220,59 @@ const MIS = () => {
       EndDate: new Date(),
     });
   };
+  const onClickOpenExport = () => {};
 
   return (
     <>
       <div className="card-box position-relative mis-style">
         <div className="box-header bg-primary-orange px-3">
-          <div className="text-start color-white fw-bold fs-6">MIS</div>
+          {/* <div className="text-start color-white fw-bold fs-6">MIS</div> */}
+          <Row>
+            <Col
+              sm={6}
+              md={6}
+              lg={6}
+              className="text-start color-white fw-bold fs-6"
+            >
+              MIS
+            </Col>
+            {/* <Col
+              sm={6}
+              md={6}
+              lg={6}
+              className="d-flex align-item-center justify-content-end  color-white fw-bold fs-6"
+            >
+              <Popover
+                content={
+                  <div className={"export-options"}>
+                    <CustomButton
+                      // value={"Excel"}
+                      icon={<img src={excelImage} alt="Excel Icon" />}
+                      className={"bg-none"}
+                      // onClick={() => handleExport("excel")}
+                      // className={styles["export-button"]}
+                    />
+                    <CustomButton
+                      icon={<img src={pdfImage} alt="PDF Icon" />}
+                      // onClick={() => handleExport("pdf")}
+                      className={"bg-none"}
+                    />
+                  </div>
+                }
+                trigger="click"
+                open={exportButton}
+                onOpenChange={() => setExportButton(!exportButton)}
+                placement="bottom"
+                arrow={false}
+              >
+                <CustomButton
+                  applyClass={"Export-button_MIS"}
+                  value="Export"
+                  onClick={onClickOpenExport}
+                />
+              </Popover>
+            </Col> */}
+          </Row>
         </div>
         <div className="p-2 position-relative">
           <Row>

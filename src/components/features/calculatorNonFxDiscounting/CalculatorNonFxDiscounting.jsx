@@ -48,7 +48,7 @@ const CalculatorNonFxDiscounting = () => {
         WorldCrossesData?.worldCrosses
       ) {
         const discountings = InstrumentsData.instruments
-          .filter((item) => item.discountingApplicable === true)
+          .filter((item) => item.isNonFEDiscountingApplicable === true)
           .map((item) => ({
             value: item.instrumentID,
             label: item.instrumentName,
@@ -178,7 +178,7 @@ const CalculatorNonFxDiscounting = () => {
                 tagClassName="yourTagClass"
               />
 
-              <div className="d-flex flex-row mt-1 gap-2" >
+              <div className="d-flex flex-row mt-1 gap-2">
                 <span className="d-flex flex-column">
                   <label>Swap</label>
                   <InputFIeld

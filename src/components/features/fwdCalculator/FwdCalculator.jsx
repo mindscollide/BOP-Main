@@ -162,7 +162,6 @@ const FwdCalculator = () => {
                   <SelectDropdown
                     options={forwardApplicableList}
                     value={selectedOption}
-                    c
                     onChange={(selected) => setSelectedOption(selected)}
                     placeholder="Select a currency"
                   />
