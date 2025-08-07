@@ -2168,6 +2168,7 @@ const TXNSummary = () => {
         dataSource={blotterdata}
         bordered={false}
         prefixCls='TXNSummary_Table'
+        rowKey={(record) => record.pK_TransactionID}
         columns={
           isBranch
             ? BranchColumn

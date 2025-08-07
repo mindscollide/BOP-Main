@@ -523,6 +523,7 @@ const TXNTreasurySummary = () => {
         bordered={false}
         rowHoverBg={"none"}
         prefixCls='TXNSummary_Table'
+        rowKey={(record) => record.pK_TransactionID}
         columns={Treasurycolumns}
         scroll={{ x: "max-content", y: 300 }}
         rowClassName={(record) =>
