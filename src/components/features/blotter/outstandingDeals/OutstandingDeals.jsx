@@ -1881,6 +1881,7 @@ const OutstandingDeals = () => {
         prefixCls='OutStanding_Table'
         columns={columns}
         scroll={{ x: "max-content", y: 300 }}
+        rowKey={(record) => record.pK_TransactionID}
       />
       {/* <DealViewModal dealData={dealData} /> */}
       {cancelReasonModal && (
