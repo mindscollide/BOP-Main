@@ -47,6 +47,7 @@ import {
   updateOutstandingBlotterData,
 } from "@/store/BlotterSlicer/BlotterSlicer";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
+import { useNotification } from "@/context/NotificationProvider";
 
 /**
  * OutstandingDeals component displays a list of outstanding deals in the blotter.
@@ -120,6 +121,7 @@ import { IndexCell } from "@/components/common/inputField/IndexCell";
  * );
  */
 const OutstandingDeals = () => {
+  const { showMessage } = useNotification();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const blotterTransactionRFQExpired = useSelector(
@@ -1174,6 +1176,10 @@ const OutstandingDeals = () => {
   };
 
   const handleClickReasonSubmit = useCallback(() => {
+    if (cancelReasonComment.trim() === "") {
+      showMessage("Please enter a reason for cancellation");
+      return;
+    }
     if (cancelType === "Rejected") {
       let Data = {
         PK_TransactionID: cancelTransactionID,

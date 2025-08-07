@@ -36,9 +36,11 @@ import {
 import { RFQTImer } from "@/components/utils/Timer";
 import { convertDateTimeIntoLocal, formatPkAmount } from "@/utils/formatters";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
+import { useNotification } from "@/context/NotificationProvider";
 const TXNSummary = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { showMessage } = useNotification();
   const blotterTransactionRFQExpired = useSelector(
     (state) => state.RealtimeActionsSlice.BlotterTransactionRFQExpired
   );
@@ -1060,6 +1062,10 @@ const TXNSummary = () => {
   };
 
   const handleClickReasonSubmit = useCallback(() => {
+    if (cancelReasonComment.trim() === "") {
+      showMessage("Please enter a reason for cancellation");
+      return;
+    }
     if (cancelType === "Cancelled") {
       let Data = {
         PK_TransactionID: cancelTransactionID,
@@ -1587,7 +1593,7 @@ const TXNSummary = () => {
       render: (text, record) => {
         return (
           <>
-            <div className='col-chat text-nowrap text-center'>
+            <div className='d-flex justify-content-end gap-1'>
               {record.statusID === 5 || record.statusID === 4 ? (
                 <CustomButton
                   icon={<i className='icon-chat2'></i>}
@@ -1606,7 +1612,7 @@ const TXNSummary = () => {
                     <i className='icon-view-comment blotterTableIconSize' />
                   }
                   size={"small"}
-                  className='btn btn-sm btn-primary'
+                  className='btn btn-sm btn-primary d-flex justify-content-center align-items-center'
                   onClick={() => handleShowCommentModal(record.comment)}
                 />
               ) : null}
@@ -1629,7 +1635,7 @@ const TXNSummary = () => {
                     </g>
                   </svg>
                 }
-                className='btn btn-sm btn-primary info-btn-trigger ms-1'
+                className='btn btn-sm btn-primary info-btn-trigger ms-1 d-flex justify-content-center align-items-center'
               />
             </div>
           </>

@@ -42,12 +42,14 @@ import { setTransactionInfoModal } from "@/store/modalSlice/modalSlicer";
 import { updateRealtimeBlotterData } from "@/store/BlotterSlicer/BlotterSlicer";
 import { formatPkAmount } from "@/utils/formatters";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
+import { useNotification } from "@/context/NotificationProvider";
 
 /**
  * TXNTreasurySummary component that manages and displays the treasury transaction summary.
  * It connects to the Redux store to fetch and manage the state of various transaction types.
  */
 const TXNTreasurySummary = () => {
+  const { showMessage } = useNotification();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   // Redux selectors
@@ -330,7 +332,7 @@ const TXNTreasurySummary = () => {
     className: "ff-poppins fw-bold",
     width,
     render,
-    ellipsis: true
+    ellipsis: true,
   });
 
   /**
@@ -352,6 +354,11 @@ const TXNTreasurySummary = () => {
    * Submits the cancellation/rejection reason
    */
   const handleClickReasonSubmit = useCallback(() => {
+    if (cancelReasonComment.trim() === "") {
+      showMessage("Please enter a reason for cancellation");
+      return;
+    }
+
     const Data = {
       PK_TransactionID: cancelTransactionID,
       Comment: cancelReasonComment,
@@ -473,7 +480,7 @@ const TXNTreasurySummary = () => {
       width: 80,
       align: "center",
       render: (_, record) => (
-        <div className='d-flex gap-1 justify-content-start'>
+        <div className='d-flex gap-1 justify-content-end'>
           {record.statusID === 3 && (
             <CustomButton
               size='small'

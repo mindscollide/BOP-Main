@@ -10,9 +10,17 @@ import { getAllTenorsAction } from "../mainDealer/dealerActions";
 import SectionLoader from "@/components/common/sectionLoader/SectionLoader";
 
 // Lazy load the tab components
-const SpotDealerAndTreasury = lazy(() => import("../../../components/features/spotDealerAndTreasury/SpotDealerAndTreasury"));
-const CategoryForwards = lazy(() => import("../../../components/features/categoryForwards/CategoryForwards"));
-const CategoryDiscounting = lazy(() => import("../../../components/features/categoryDiscount/CategoryDiscounting"));
+const SpotDealerAndTreasury = lazy(() =>
+  import(
+    "../../../components/features/spotDealerAndTreasury/SpotDealerAndTreasury"
+  )
+);
+const CategoryForwards = lazy(() =>
+  import("../../../components/features/categoryForwards/CategoryForwards")
+);
+const CategoryDiscounting = lazy(() =>
+  import("../../../components/features/categoryDiscount/CategoryDiscounting")
+);
 
 const MainCategory = () => {
   const navigate = useNavigate();
@@ -37,25 +45,31 @@ const MainCategory = () => {
     {
       title: "Spot",
       content: (
-        <Suspense fallback={<SectionLoader />}>
-          {activeTab === "Spot" && <SpotDealerAndTreasury />}
-        </Suspense>
+        <span className='position-relative'>
+          <Suspense fallback={<SectionLoader />}>
+            {activeTab === "Spot" && <SpotDealerAndTreasury />}
+          </Suspense>
+        </span>
       ),
     },
     {
       title: "Forwards",
       content: (
-        <Suspense fallback={<SectionLoader />}>
-          {activeTab === "Forwards" && <CategoryForwards />}
-        </Suspense>
+        <span className='position-relative'>
+          <Suspense fallback={<SectionLoader />}>
+            {activeTab === "Forwards" && <CategoryForwards />}
+          </Suspense>
+        </span>
       ),
     },
     {
       title: "Discounting",
       content: (
-        <Suspense fallback={<SectionLoader />}>
-          {activeTab === "Discounting" && <CategoryDiscounting />}
-        </Suspense>
+        <span className='position-relative'>
+          <Suspense fallback={<SectionLoader />}>
+            {activeTab === "Discounting" && <CategoryDiscounting />}
+          </Suspense>
+        </span>
       ),
     },
   ];
@@ -65,8 +79,8 @@ const MainCategory = () => {
       tabs={tabsData}
       activeKey={activeTab}
       onTabChange={handleTabChange}
-      defaultActiveKey="Spot"  // Changed from "0" to match your tab titles
-      tabClass="mb-4"
+      defaultActiveKey='Spot' // Changed from "0" to match your tab titles
+      tabClass='mb-4'
     />
   );
 };

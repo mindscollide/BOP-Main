@@ -15,12 +15,17 @@ const CancelReasonModal = ({
     console.log(event.target.value, "event.target.valueevent.target.value");
     setCancelReasonComment(event.target.value.trimStart());
   };
+
+  const handleHideModal = () => {
+    setCancelReasonModal(false);
+    setCancelReasonComment("");
+  }
   return (
     <GlobalModal
       show={cancelReasonModal}
       footerClassName={"d-block border-0 pt-0 pb-1"}
       bodyClassName={"pb-0"}
-      onHide={() => setCancelReasonModal(false)}
+      onHide={handleHideModal}
       modalBody={
         <>
           <Row>
@@ -60,7 +65,7 @@ const CancelReasonModal = ({
               applyClass={"cancelReasonModalSubmitBtn"}
               value="Submit"
               onClick={handleClickReasonSubmit}
-              disabled={cancelReasonComment !== "" ? false : true}
+              // disabled={cancelReasonComment !== "" ? false : true}
             />
             <CustomButton
               applyClass={"cancelReasonModalCancelBtn"}
