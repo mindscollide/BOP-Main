@@ -13,6 +13,8 @@ import {
 import { NonFeDiscountingPublishedAction } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { InputCell } from "@/components/common/inputField/InputCell";
 import { useNotification } from "@/context/NotificationProvider";
+import { formatDateUTCToGMT } from "@/components/utils/timeFunction";
+import moment from "moment";
 
 /**
  * NonFeDiscountingTable component renders a table for displaying and managing
@@ -30,6 +32,7 @@ import { useNotification } from "@/context/NotificationProvider";
 const NonFeDiscountingTable = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [date, setDate] = useState("");
   const { showMessage } = useNotification();
 
   const marketStatus = useSelector(
@@ -70,11 +73,9 @@ const NonFeDiscountingTable = () => {
           InputCell,
           onInputChange
         );
-        console.log(
-          { rowData, columnsData },
-          " columnsDatacolumnsDatacolumnsData"
-        );
+
         if (rowData.length > 0) {
+          setDate(nonFEDiscountingRates[0]?.dateTime);
           setTableData(rowData);
           setColumnsData(columnsData);
         }
@@ -91,7 +92,7 @@ const NonFeDiscountingTable = () => {
       try {
         const { rates } = NonFeDiscountingPublishedData;
         const DiscountingInstruments =
-          GetAllInstrumentForTreasury.discountingInstruments;
+          GetAllInstrumentForTreasury.nonFEDiscountingInstruments;
         const getAllInstrument = { instruments: DiscountingInstruments };
         const { rowData, columnsData } = buildDiscountingTable(
           5,
@@ -110,6 +111,7 @@ const NonFeDiscountingTable = () => {
         if (rowData.length > 0) {
           setTableData(rowData);
           setColumnsData(columnsData);
+          setDate(rates[0]?.dateTime);
           dispatch(NonFeDiscountingPublishedAction(null));
         }
       } catch (error) {
@@ -169,11 +171,8 @@ const NonFeDiscountingTable = () => {
   return (
     <>
       <div className="datetime fw-bold text-end mb-2 ff-roboto">
-        {/* {currentRates.dateTime !== "" &&
-                moment(formatDateUTCToGMT(currentRates.dateTime)).format(
-                  "DD MMM YYYY, hh:mm:ss"
-                )} */}
-        05 Aug 2025, 11:20:58
+        {date !== "" &&
+          moment(formatDateUTCToGMT(date)).format("DD MMM YYYY, hh:mm:ss")}
       </div>
       <GlobalTable
         prefixCls="DealerAndTreasuryDiscountTable"

@@ -15,6 +15,8 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useNotification } from "@/context/NotificationProvider";
 import { NumericFormat } from "react-number-format";
+import moment from "moment";
+import { formatDateUTCToGMT } from "@/components/utils/timeFunction";
 
 // Define condition to include components
 const shouldIncludeComponents =
@@ -60,6 +62,7 @@ const TenoreWiseCurrentAndLastRates = ({
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [date, setDate] = useState("");
   const { showMessage } = useNotification();
 
   const marketStatus = useSelector(
@@ -82,8 +85,6 @@ const TenoreWiseCurrentAndLastRates = ({
 
   const [confirmationModal, setConfirmationModal] = useState(false);
   const [TenorRemoveRecord, setTenorRemoveRecord] = useState(null);
-
-  console.log(forwardsForTreasuryBranch, "forwardsForTreasuryBranch");
 
   useEffect(() => {
     if (newTenorRecord !== null) {
@@ -130,7 +131,8 @@ const TenoreWiseCurrentAndLastRates = ({
             dateTime: current?.dateTime ?? "",
           };
         });
-
+        console.log(newDataMap[0]?.dateTime, "newDataMapnewDataMap");
+        setDate(newDataMap[0]?.dateTime);
         dispatch(setForwardsForTreasuryBranch(newDataMap));
       } catch (error) {
         console.error("Error processing tenor forwards:", error);
@@ -188,7 +190,7 @@ const TenoreWiseCurrentAndLastRates = ({
           };
         })
         .sort((a, b) => (a.tenorDays || 0) - (b.tenorDays || 0));
-
+      setDate(processedData[0]?.dateTime);
       dispatch(setForwardsForTreasuryBranch(processedData));
       dispatch(tenorWiseFowardsRatesPublishedActions(null));
     } catch (error) {
@@ -439,11 +441,11 @@ const TenoreWiseCurrentAndLastRates = ({
         <>
           <Suspense fallback={<div>Loading Table...</div>}>
             <div className="datetime fw-bold text-end mb-2 ff-roboto">
-              {/* {currentRates.dateTime !== "" &&
-                moment(formatDateUTCToGMT(currentRates.dateTime)).format(
+              {date !== "" &&
+                moment(formatDateUTCToGMT(date)).format(
                   "DD MMM YYYY, hh:mm:ss"
-                )} */}
-              05 Aug 2025, 11:20:58
+                )}
+              {/* 05 Aug 2025, 11:20:58 */}
             </div>
             <GlobalTable
               columns={columns}
