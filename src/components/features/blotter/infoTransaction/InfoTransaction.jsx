@@ -33,7 +33,6 @@ const InfoTransaction = () => {
   const GetSpotTransactionDetails = useSelector(
     (state) => state.BlotterSlicer.GetSpotTransactionDetails
   );
-  console.log(GetForwardTransactionDetails, "GetForwardTransactionDetails");
 
   const transactionInfoModal = useSelector(
     (state) => state.modalReducer.transactionInfoModal
@@ -86,7 +85,18 @@ const InfoTransaction = () => {
               <p className={styles["company-name-hd"]}>
                 {InfoRecord?.corporateName}
               </p>
-              <span className={styles["dealstatus"]}>{InfoRecord?.status}</span>
+              <span
+                className={`${styles.dealstatus} ${
+                  InfoRecord?.status.toLowerCase() === "accepted"
+                    ? styles["dealstatus-accepted"]
+                    : InfoRecord?.status.toLowerCase() === "pending"
+                    ? styles["dealstatus-pending"]
+                    : styles["dealstatus-cancelled"]
+                }
+                }`}
+              >
+                {InfoRecord?.status}
+              </span>
             </Col>
             <Col
               sm={6}
@@ -216,6 +226,22 @@ const InfoTransaction = () => {
               </Col>
             </Row>
           )}
+          {(InfoRecord?.natureType === 3 ||
+            InfoRecord?.natureType === 4 ||
+            InfoRecord?.natureType === 2 ||
+            InfoRecord?.natureType === 1) && (
+            <Row>
+              <span className={styles["span_underline"]} />
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>TXN Amount</p>
+              </Col>
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>
+                  {formatPkAmount(InfoRecord?.quantity)}
+                </p>
+              </Col>
+            </Row>
+          )}
 
           {InfoRecord?.natureType === 1 && (
             <Row>
@@ -238,7 +264,7 @@ const InfoTransaction = () => {
             <Row>
               <span className={styles["span_underline"]} />
               <Col sm={6} md={6} lg={6}>
-                <p className={styles["transactionInfolabel"]}>Amount</p>
+                <p className={styles["transactionInfolabel"]}>Total Amount</p>
               </Col>
               <Col sm={6} md={6} lg={6}>
                 <p className={styles["transactionInfolabel"]}>
