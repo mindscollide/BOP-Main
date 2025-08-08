@@ -190,7 +190,7 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
         >
           <CustomButton
             value="Non-FE Discounting"
-            applyClass={"FEDiscounting"}
+            applyClass={"FowwardBranchBookaForwardBtn"}
             onClick={handleNonFEDiscountingModal}
             disabled={
               marketStatus !== null && marketStatus === false ? true : false
