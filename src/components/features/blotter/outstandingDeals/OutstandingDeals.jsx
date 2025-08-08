@@ -120,48 +120,14 @@ import { useNotification } from "@/context/NotificationProvider";
  *   <OutstandingDeals />
  * );
  */
-const OutstandingDeals = () => {
+const OutstandingDeals = ({
+  treasuryOutStandingDealRecords,
+  treasuryOutStandingDealsRow,
+  treasuryOutStandingDeal,
+}) => {
   const { showMessage } = useNotification();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const blotterTransactionRFQExpired = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTransactionRFQExpired
-  );
-
-  const blotterTransactionAssigned = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTransactionAssigned
-  );
-  const blotterTransactionAdded = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTransactionAdded
-  );
-  const blotterTransactionRFQQuoted = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTransactionRFQQuoted
-  );
-  const blotterTransactionAccepted = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTransactionAccepted
-  );
-
-  const blotterTranscationCancelled = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTranscationCancelled
-  );
-
-  const blotterTransactionCancellationRequest = useSelector(
-    (state) =>
-      state.RealtimeActionsSlice.BlotterTransactionCancellationRequestData
-  );
-
-  const blotterTransactionRejected = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTransactionRejected
-  );
-  const BlotterTransactionAddedForTreasury = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTransactionAddedForTreasury
-  );
-  console.log(blotterTransactionAdded, "CheckerCheckerChecker122121212");
-
-  console.log(
-    BlotterTransactionAddedForTreasury,
-    "BlotterTransactionAddedForTreasury"
-  );
 
   //HardCoded Filter Values start
   const TXN_ID_OPTIONS = [
@@ -185,34 +151,6 @@ const OutstandingDeals = () => {
   const Status_OPTIONS = ["Pending"];
 
   //HardCoded Filter Values Ended
-
-  //Global State For Blotter Data
-  const getBlotterOutstandingData = useSelector(
-    (state) => state.BlotterSlicer.getBlotterOutstandingData
-  );
-  const totalRecordsOutstanding = useSelector(
-    (state) => state.BlotterSlicer.totalCountOutstandingData
-  );
-
-  const OutstandingTableNewData = useSelector(
-    (state) => state.BlotterSlicer.OutstandingTableNewData
-  );
-
-  console.log(
-    OutstandingTableNewData,
-    totalRecordsOutstanding,
-    getBlotterOutstandingData,
-    "OutstandingTableNewDataOutstandingTableNewData"
-  );
-
-  //local states
-  const [blotterdata, setBlotterdata] = useState([]);
-
-  console.log(getBlotterOutstandingData, "getBlotterOutstandingData");
-  console.log(blotterdata, "blotterdatablotterdata");
-  const [totalRecord, setTotalRecords] = useState(0);
-  const [sRow, setRow] = useState(0);
-  console.log(sRow, "sRowsRowsRow");
 
   const [hasReachedBottom, setHasReachedBottom] = useState(false);
   //TXNID Filter State
@@ -264,268 +202,17 @@ const OutstandingDeals = () => {
   const [cancelReasonComment, setCancelReasonComment] = useState("");
   const [cancelType, setCancelType] = useState("");
   const [cancelTransactionID, setCancelTransactionID] = useState(0);
-  console.log(totalRecord, blotterdata.length, "totalRecord");
   useTableScrollBottom(
     () => {
-      console.log(totalRecord, blotterdata.length, "totalRecord");
-      if (totalRecord !== blotterdata.length) {
+      if (treasuryOutStandingDealRecords !== treasuryOutStandingDeal.length) {
         setHasReachedBottom(true);
-        let Data = { sRow: sRow, Length: 10 };
+        let Data = { sRow: treasuryOutStandingDealsRow, Length: 10 };
         dispatch(GetBlotterOutstandingDealsDataAPI({ navigate, Data }));
       }
     },
     0,
     "OutStanding_Table"
   );
-
-  useEffect(() => {
-    if (
-      getBlotterOutstandingData !== null ||
-      Array.isArray(OutstandingTableNewData)
-    ) {
-      console.log(
-        { OutstandingTableNewData, getBlotterOutstandingData },
-        "tnxTableNewDatatnxTableNewData"
-      );
-      setBlotterdata(OutstandingTableNewData);
-      setRow(OutstandingTableNewData.length);
-      setTotalRecords(totalRecordsOutstanding);
-      setHasReachedBottom(false);
-    }
-  }, [
-    getBlotterOutstandingData,
-    OutstandingTableNewData,
-    totalRecordsOutstanding,
-  ]);
-
-  useEffect(() => {
-    const updateGlobalOutstandingBlotter = (newSummary) => {
-      console.log(newSummary, "newSummarynewSummary");
-      dispatch(
-        updateOutstandingBlotterData({
-          ...getBlotterOutstandingData,
-          // tnxSummary: newSummary,
-          OutstandingTableNewData: newSummary,
-        })
-      );
-    };
-
-    const handleTransaction = (transaction, type) => {
-      if (!transaction) return;
-      let updatedData = [...(OutstandingTableNewData || [])];
-      console.log(updatedData, "updatedDataupdatedDataupdatedData");
-      switch (type) {
-        case "added":
-          console.log(updatedData, "updatedDataupdatedDataupdatedData");
-
-          const existingIndex = updatedData.findIndex(
-            (item) => item.pK_TransactionID === transaction.pK_TransactionID
-          );
-          console.log(existingIndex, "updatedDataupdatedDataupdatedData");
-
-          if (existingIndex !== -1) {
-            updatedData[existingIndex] = transaction;
-          } else {
-            // setTotalRecords((prevTotal) => prevTotal + 1);
-            updatedData = [transaction, ...updatedData];
-          }
-          console.log(updatedData, "updatedDataupdatedDataupdatedData");
-
-          updateGlobalOutstandingBlotter(updatedData);
-          // setBlotterdata(updatedData);
-          // const isExists = updatedData.some(
-          //   (data) => data.pK_TransactionID === transaction?.pK_TransactionID
-          // );
-          // if (!isExists) {
-          //   setBlotterdata((prev) => [transaction, ...prev]);
-          // }
-          dispatch(BlotterTransactionAdded(null));
-          break;
-
-        case "quoted":
-          if (!transaction) break;
-          console.log(transaction, "transactiontransactionquoted");
-          const newUpdatedData = updatedData.map((item) => {
-            if (item.pK_TransactionID === transaction.pK_TransactionID) {
-              return {
-                ...item,
-                bid: transaction.bid,
-                offer: transaction.offer,
-                statusID: transaction.statusID,
-                amount: transaction.amount,
-                rfqTimerDetails:
-                  transaction.rfqTimerDetails ?? item.rfqTimerDetails,
-              };
-            }
-            return item;
-          });
-          console.log(
-            newUpdatedData,
-            updatedData,
-            "transactiontransactionquoted"
-          );
-
-          updateGlobalOutstandingBlotter(newUpdatedData);
-          dispatch(BlotterTransactionRFQQuoted(null));
-          break;
-
-        case "expired": {
-          const filteredData = updatedData.filter(
-            (item) => item.pK_TransactionID !== transaction.pK_TransactionID
-          );
-
-          updateGlobalOutstandingBlotter(filteredData);
-          dispatch(BlotterTransactionRFQExpired(null));
-          break;
-        }
-        case "accepted": {
-          console.log(
-            updatedData,
-            transaction,
-            "updatedDataupdatedDataupdatedData accepted"
-          );
-          const filteredData = updatedData.filter(
-            (item) => item.pK_TransactionID !== transaction.pK_TransactionID
-          );
-          console.log(
-            filteredData,
-            "updatedDataupdatedDataupdatedData accepted"
-          );
-
-          updateGlobalOutstandingBlotter(filteredData);
-          dispatch(BlotterTransactionAccepted(null));
-          break;
-        }
-        case "cancelled": {
-          const filteredData = updatedData.filter(
-            (item) => item.pK_TransactionID !== transaction.pK_TransactionID
-          );
-
-          updateGlobalOutstandingBlotter(filteredData);
-          dispatch(BlotterTranscationCancelled(null));
-          break;
-        }
-
-        case "rejected": {
-          const filteredData = updatedData.filter(
-            (item) => item.pK_TransactionID !== transaction.pK_TransactionID
-          );
-
-          updateGlobalOutstandingBlotter(filteredData);
-          dispatch(BlotterTransactionRejected(null));
-          break;
-        }
-
-        default:
-          break;
-      }
-      // updateGlobalOutstandingBlotter(updatedData);
-    };
-
-    try {
-      if (blotterTransactionAdded !== null) {
-        handleTransaction(blotterTransactionAdded.transaction, "added");
-      }
-
-      if (blotterTransactionRFQQuoted !== null) {
-        console.log(blotterTransactionRFQQuoted, "blotterTransactionRFQQuoted");
-        handleTransaction(blotterTransactionRFQQuoted.transaction, "quoted");
-      }
-
-      if (blotterTransactionRFQExpired !== null) {
-        handleTransaction(blotterTransactionRFQExpired.transaction, "expired");
-      }
-
-      if (blotterTransactionAccepted !== null) {
-        handleTransaction(blotterTransactionAccepted.transaction, "accepted");
-      }
-
-      if (blotterTranscationCancelled !== null) {
-        handleTransaction(blotterTranscationCancelled.transaction, "cancelled");
-        // const updatedData = (OutstandingTableNewData || []).filter(
-        //   (item) => item.pK_TransactionID !== transaction.pK_TransactionID
-        // );
-        // updateGlobalOutstandingBlotter(updatedData);
-      }
-
-      if (blotterTransactionRejected !== null) {
-        handleTransaction(blotterTransactionRejected.transaction, "rejected");
-      }
-    } catch (error) {
-      console.log(error, "error in unified blotter transaction handler");
-    }
-  }, [
-    blotterTransactionAdded,
-    blotterTransactionRFQQuoted,
-    blotterTransactionRFQExpired,
-    blotterTransactionAccepted,
-    blotterTranscationCancelled,
-    blotterTransactionRejected,
-    OutstandingTableNewData,
-  ]);
-
-  useEffect(() => {
-    if (blotterTransactionAssigned !== null) {
-      try {
-        const {
-          transactionID,
-          treasuryPersonID,
-          statusID,
-          statusForAssignedUser,
-          statusForOtherTreasury,
-        } = blotterTransactionAssigned;
-
-        setBlotterdata((prevBlotterData) =>
-          prevBlotterData.map((tableData) => {
-            if (tableData.pK_TransactionID === transactionID) {
-              if (
-                Number(localStorage.getItem("userID")) ===
-                Number(treasuryPersonID)
-              ) {
-                return {
-                  ...tableData,
-                  status: statusForAssignedUser,
-                  statusID: statusID,
-                  treasuryPersonID: treasuryPersonID,
-                };
-              } else {
-                return {
-                  ...tableData,
-                  status: statusForOtherTreasury,
-                  statusID: statusID,
-                  treasuryPersonID: treasuryPersonID,
-                };
-              }
-            }
-
-            // ⚠️ Add this to return unchanged rows
-            return tableData;
-          })
-        );
-        dispatch(BlotterTransactionAssigned(null));
-      } catch (error) {
-        console.log(error, "error in blotterTransactionAssigned");
-      }
-    }
-  }, [blotterTransactionAssigned]);
-
-  useEffect(() => {
-    if (blotterTransactionCancellationRequest !== null) {
-      try {
-        const { transaction } = blotterTransactionCancellationRequest;
-        let ishasAlready = blotterdata.find(
-          (data, index) =>
-            data.pK_TransactionID === transaction?.pK_TransactionID
-        );
-        if (ishasAlready === undefined) {
-          setBlotterdata([transaction, ...blotterdata]);
-        }
-        dispatch(BlotterTransactionCancellationRequest(null));
-      } catch (error) {
-        console.log(error, "error in blotterTransactionCancellationRequest");
-      }
-    }
-  }, [blotterTransactionCancellationRequest]);
 
   //TXN ID PopOver Functions Starts
   const handleOpenChange = (newOpen) => {
@@ -1813,6 +1500,7 @@ const OutstandingDeals = () => {
                 icon={
                   <i className='icon-view-comment blotterTableIconSize '></i>
                 }
+                size={"small"}
                 className='btn  btn-primary'
                 onClick={() => handleShowCommentModal(record.comment)}
               />
@@ -1824,7 +1512,8 @@ const OutstandingDeals = () => {
               Number(localStorage.getItem("userID")) ? (
               <CustomButton
                 icon={<i className='icon-chat2 '></i>}
-                className='btn btn-sm btn-danger chat-btn-trigger'
+                size={"small"}
+                className='btn btn-danger chat-btn-trigger d-flex justify-content-center align-items-center'
                 onClick={() =>
                   handleClickChat(record.pK_TransactionID, record.fK_UserID)
                 }
@@ -1862,7 +1551,7 @@ const OutstandingDeals = () => {
     <>
       <GlobalTable
         pagination={false}
-        dataSource={blotterdata}
+        dataSource={treasuryOutStandingDeal}
         bordered={false}
         prefixCls='OutStanding_Table'
         columns={columns}
