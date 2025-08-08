@@ -674,7 +674,9 @@
   border-color: #096fed !important;
   cursor: pointer !important;
 }
-
+.FEDiscounting:disabled {
+  cursor: not-allowed !important;
+}
 .ConfirmButtonBookaForward {
   border-radius: 4px !important;
   font-size: 14px !important;

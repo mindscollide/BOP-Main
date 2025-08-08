@@ -11,13 +11,9 @@ import {
   clearGetNonFEDiscountingTransactionDetails,
   clearGetSpotTransactionDetails,
 } from "@/store/BlotterSlicer/BlotterSlicer";
-import {
-  extractTimeFromCompactDate,
-  formatCompactDateTime,
-  formatDateUTCToGMT,
-} from "@/components/utils/timeFunction";
+import { formatDateUTCToGMT } from "@/components/utils/timeFunction";
 import moment from "moment";
-import { formatNumberWithCommas } from "@/utils/formatters";
+import { formatPkAmount } from "@/utils/formatters";
 
 const InfoTransaction = () => {
   const dispatch = useDispatch();
@@ -229,7 +225,7 @@ const InfoTransaction = () => {
               </Col>
               <Col sm={6} md={6} lg={6}>
                 <p className={styles["transactionInfolabel"]}>
-                  {formatNumberWithCommas(InfoRecord?.rate)}
+                  {formatPkAmount(InfoRecord?.rate)}
                 </p>
               </Col>
             </Row>
@@ -246,7 +242,7 @@ const InfoTransaction = () => {
               </Col>
               <Col sm={6} md={6} lg={6}>
                 <p className={styles["transactionInfolabel"]}>
-                  {formatNumberWithCommas(InfoRecord?.amount)}
+                  {formatPkAmount(InfoRecord?.amount)}
                 </p>
               </Col>
             </Row>
@@ -411,7 +407,7 @@ const InfoTransaction = () => {
                     ? moment(
                         formatDateUTCToGMT(InfoRecord?.settlementDateTime)
                       ).format("hh:mm A")
-                    : InfoRecord?.cancelledTime}
+                    : "N/A"}
                 </p>
               </Col>
             </Row>
