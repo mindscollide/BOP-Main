@@ -26,6 +26,17 @@ import {
 } from "@/store/ReportSlicer/ReportActions";
 import { formatPkAmount } from "@/utils/formatters";
 import SectionLoader from "@/components/common/loader/SectionLoader";
+import {
+  BlotterTransactionAccepted,
+  BlotterTransactionAdded,
+  BlotterTransactionAssigned,
+  BlotterTransactionCancellationRequest,
+  BlotterTransactionCancellationRequestForTreasury,
+  BlotterTransactionRFQExpired,
+  BlotterTransactionRFQQuoted,
+  BlotterTransactionRejected,
+  BlotterTranscationCancelled,
+} from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 
 // Lazy load components
 const TXNSummary = lazy(() => import("../txnSummary/TXNSummary"));
@@ -52,8 +63,341 @@ const BlotterHeader = () => {
   const activeTab = useSelector(
     (state) => state.BlotterSlicer.activeTabBlotter
   );
+  const [treasuryTXNSummary, setTreasuryTXNSummary] = useState([]);
+  const [treasuryTXNSummaryTotalRecords, setTreasuryTXNSummaryTotalRecords] =
+    useState(0);
 
-  const [isTreasuryVal, setIsTreasuryVal] = useState(0);
+  console.log(
+    treasuryTXNSummary,
+    "treasuryTXNSummarytreasuryTXNSummarytreasuryTXNSummary"
+  );
+  const [treasuryTXNSummarysRow, setTreasuryTXNSummarysRow] = useState(0);
+
+  const [treasuryOutStandingDeal, setTreasuryOutStandingDeal] = useState([]);
+  const [treasuryOutStandingDealRecords, setTreasuryOutStandingDealRecords] =
+    useState(0);
+  const [treasuryOutStandingDealsRow, setTreasuryOutStandingDealsRow] =
+    useState(0);
+
+  const [counterPartyTXNSummary, setCounterPartysetTXNSummary] = useState([]);
+  const [counterPartyTXNSummaryRecords, setCounterPartyTXNSummaryRecords] =
+    useState(0);
+  const [counterPartyTXNSummarysRow, setCounterPartyTXNSummarysRow] =
+    useState(0);
+
+  // This is Treasury Actions which is based on actions performed on Blotter Transaction
+  const blotterTransactionRFQExpiredForTreasury = useSelector(
+    (state) =>
+      state.RealtimeActionsSlice.BlotterTransactionRFQExpiredForTreasury
+  );
+  const blotterTransactionAcceptedForTreasury = useSelector(
+    (state) => state.RealtimeActionsSlice.BlotterTransactionAcceptedForTreasury
+  );
+  const blotterTransactionCancellationRequestDataForTreasury = useSelector(
+    (state) =>
+      state.RealtimeActionsSlice
+        .BlotterTransactionCancellationRequestDataForTreasury
+  );
+  const blotterTranscationCancelledForTreasury = useSelector(
+    (state) => state.RealtimeActionsSlice.BlotterTranscationCancelledForTreasury
+  );
+  const blotterTransactionRejectedForTreasury = useSelector(
+    (state) => state.RealtimeActionsSlice.BlotterTransactionRejectedForTreasury
+  );
+  // Treasury and CounterParty Data
+  const GlobalStateGetBlotterData = useSelector(
+    (state) => state.BlotterSlicer.getBlotterApiData
+  );
+
+  //Global State For Blotter OutStanding
+  const getBlotterOutstandingData = useSelector(
+    (state) => state.BlotterSlicer.getBlotterOutstandingData
+  );
+  // This is mqtt states related to Treasury Outstanding Deals Tab
+
+  const blotterTransactionRFQExpired = useSelector(
+    (state) => state.RealtimeActionsSlice.BlotterTransactionRFQExpired
+  );
+
+  const blotterTransactionAssigned = useSelector(
+    (state) => state.RealtimeActionsSlice.BlotterTransactionAssigned
+  );
+  const blotterTransactionAdded = useSelector(
+    (state) => state.RealtimeActionsSlice.BlotterTransactionAdded
+  );
+  const blotterTransactionRFQQuoted = useSelector(
+    (state) => state.RealtimeActionsSlice.BlotterTransactionRFQQuoted
+  );
+  const blotterTransactionAccepted = useSelector(
+    (state) => state.RealtimeActionsSlice.BlotterTransactionAccepted
+  );
+
+  const blotterTranscationCancelled = useSelector(
+    (state) => state.RealtimeActionsSlice.BlotterTranscationCancelled
+  );
+
+  const blotterTransactionCancellationRequest = useSelector(
+    (state) =>
+      state.RealtimeActionsSlice.BlotterTransactionCancellationRequestData
+  );
+
+  const blotterTransactionRejected = useSelector(
+    (state) => state.RealtimeActionsSlice.BlotterTransactionRejected
+  );
+  const BlotterTransactionAddedForTreasury = useSelector(
+    (state) => state.RealtimeActionsSlice.BlotterTransactionAddedForTreasury
+  );
+
+  useEffect(() => {
+    if (GlobalStateGetBlotterData !== null) {
+      const { tnxSummary, totalCount } = GlobalStateGetBlotterData;
+      if (tnxSummary.length > 0) {
+        if (isBranch || isCorporate) {
+          setCounterPartysetTXNSummary(tnxSummary);
+          setCounterPartyTXNSummaryRecords(totalCount);
+          setCounterPartyTXNSummarysRow(tnxSummary.length);
+          return;
+        }
+        if (isTreasury) {
+          setTreasuryTXNSummary(tnxSummary);
+          setTreasuryTXNSummaryTotalRecords(totalCount);
+          setTreasuryTXNSummarysRow(tnxSummary.length);
+          return;
+        }
+      }
+    }
+  }, [GlobalStateGetBlotterData]);
+
+  useEffect(() => {
+    if (getBlotterOutstandingData !== null) {
+      const { outstandingDeals, totalCount } = getBlotterOutstandingData;
+      if (outstandingDeals.length > 0) {
+        if (isTreasury) {
+          setTreasuryOutStandingDeal(outstandingDeals);
+          setTreasuryOutStandingDealRecords(totalCount);
+          setTreasuryOutStandingDealsRow(outstandingDeals.length);
+          return;
+        }
+      }
+    }
+  }, [getBlotterOutstandingData]);
+  // This useEffect is for Treasury TXN Summary
+  useEffect(() => {
+    const handleTransactionUpdate = (transaction) => {
+      if (!transaction) return;
+
+      setTreasuryTXNSummary((prevData) => {
+        const updatedData = [...(prevData || [])];
+        const existingIndex = updatedData.findIndex(
+          (item) => item.pK_TransactionID === transaction.pK_TransactionID
+        );
+
+        if (existingIndex !== -1) {
+          updatedData[existingIndex] = transaction;
+        } else {
+          updatedData.unshift(transaction);
+          setTreasuryTXNSummaryTotalRecords((prev) => prev + 1);
+        }
+
+        return updatedData;
+      });
+    };
+
+    // Handle RFQ Expired
+    if (blotterTransactionRFQExpiredForTreasury?.transaction) {
+      handleTransactionUpdate(
+        blotterTransactionRFQExpiredForTreasury.transaction
+      );
+    }
+
+    // Handle Transaction Accepted
+    if (blotterTransactionAcceptedForTreasury?.transaction) {
+      handleTransactionUpdate(
+        blotterTransactionAcceptedForTreasury.transaction
+      );
+    }
+
+    // Handle Transaction Cancelled
+    if (blotterTranscationCancelledForTreasury?.transaction) {
+      handleTransactionUpdate(
+        blotterTranscationCancelledForTreasury.transaction
+      );
+    }
+
+    // Handle Transaction Rejected
+    if (blotterTransactionRejectedForTreasury?.transaction) {
+      handleTransactionUpdate(
+        blotterTransactionRejectedForTreasury.transaction
+      );
+    }
+
+    // Handle Transaction Cancellation Request
+    if (blotterTransactionCancellationRequestDataForTreasury?.transaction) {
+      const { transaction } =
+        blotterTransactionCancellationRequestDataForTreasury;
+
+      setTreasuryTXNSummary((prevData) => {
+        const updatedData = (prevData || []).filter(
+          (item) => item.pK_TransactionID !== transaction.pK_TransactionID
+        );
+        setTreasuryTXNSummaryTotalRecords((prev) => Math.max(0, prev - 1));
+        return updatedData;
+      });
+
+      dispatch(BlotterTransactionCancellationRequestForTreasury(null));
+    }
+  }, [
+    blotterTransactionRFQExpiredForTreasury,
+    blotterTransactionAcceptedForTreasury,
+    blotterTransactionCancellationRequestDataForTreasury,
+    blotterTranscationCancelledForTreasury,
+    blotterTransactionRejectedForTreasury,
+  ]);
+
+  useEffect(() => {
+    const handleTransaction = (transaction, type) => {
+      if (!transaction) return;
+
+      setTreasuryOutStandingDeal((prevData) => {
+        let updatedData = [...(prevData || [])];
+
+        switch (type) {
+          case "added": {
+            const index = updatedData.findIndex(
+              (item) => item.pK_TransactionID === transaction.pK_TransactionID
+            );
+
+            if (index !== -1) {
+              updatedData[index] = transaction;
+            } else {
+              updatedData = [transaction, ...updatedData];
+            }
+
+            dispatch(BlotterTransactionAdded(null));
+            return updatedData;
+          }
+
+          case "quoted": {
+            updatedData = updatedData.map((item) =>
+              item.pK_TransactionID === transaction.pK_TransactionID
+                ? {
+                    ...item,
+                    bid: transaction.bid,
+                    offer: transaction.offer,
+                    amount: transaction.amount,
+                    statusID: transaction.statusID,
+                    rfqTimerDetails:
+                      transaction.rfqTimerDetails ?? item.rfqTimerDetails,
+                  }
+                : item
+            );
+
+            dispatch(BlotterTransactionRFQQuoted(null));
+            return updatedData;
+          }
+
+          case "expired":
+          case "accepted":
+          case "cancelled":
+          case "rejected": {
+            updatedData = updatedData.filter(
+              (item) => item.pK_TransactionID !== transaction.pK_TransactionID
+            );
+
+            const dispatchMap = {
+              expired: BlotterTransactionRFQExpired,
+              accepted: BlotterTransactionAccepted,
+              cancelled: BlotterTranscationCancelled,
+              rejected: BlotterTransactionRejected,
+            };
+
+            dispatch(dispatchMap[type](null));
+            return updatedData;
+          }
+
+          case "assigned": {
+            updatedData = updatedData.map((item) =>
+              item.pK_TransactionID === transaction.transactionID
+                ? {
+                    ...item,
+                    status: transaction.statusForAssignedUser,
+                    statusID: transaction.statusID,
+                    treasuryPersonID: transaction.treasuryPersonID,
+                  }
+                : item
+            );
+
+            dispatch(BlotterTransactionAssigned(null));
+            return updatedData;
+          }
+
+          case "cancellationRequest": {
+            const exists = updatedData.find(
+              (item) => item.pK_TransactionID === transaction.pK_TransactionID
+            );
+
+            if (!exists) {
+              updatedData = [transaction, ...updatedData];
+            }
+
+            dispatch(BlotterTransactionCancellationRequest(null));
+            return updatedData;
+          }
+
+          default:
+            return updatedData;
+        }
+      });
+    };
+
+    try {
+      if (blotterTransactionAdded?.transaction) {
+        handleTransaction(blotterTransactionAdded.transaction, "added");
+      }
+
+      if (blotterTransactionRFQQuoted?.transaction) {
+        handleTransaction(blotterTransactionRFQQuoted.transaction, "quoted");
+      }
+
+      if (blotterTransactionRFQExpired?.transaction) {
+        handleTransaction(blotterTransactionRFQExpired.transaction, "expired");
+      }
+
+      if (blotterTransactionAccepted?.transaction) {
+        handleTransaction(blotterTransactionAccepted.transaction, "accepted");
+      }
+
+      if (blotterTranscationCancelled?.transaction) {
+        handleTransaction(blotterTranscationCancelled.transaction, "cancelled");
+      }
+
+      if (blotterTransactionRejected?.transaction) {
+        handleTransaction(blotterTransactionRejected.transaction, "rejected");
+      }
+
+      if (blotterTransactionAssigned) {
+        handleTransaction(blotterTransactionAssigned, "assigned");
+      }
+
+      if (blotterTransactionCancellationRequest?.transaction) {
+        handleTransaction(
+          blotterTransactionCancellationRequest.transaction,
+          "cancellationRequest"
+        );
+      }
+    } catch (error) {
+      console.error("Error in unified transaction handler:", error);
+    }
+  }, [
+    blotterTransactionAdded,
+    blotterTransactionRFQQuoted,
+    blotterTransactionRFQExpired,
+    blotterTransactionAccepted,
+    blotterTranscationCancelled,
+    blotterTransactionRejected,
+    blotterTransactionAssigned, // ✅ now added
+    blotterTransactionCancellationRequest, // ✅ now added
+  ]);
 
   const tabsData = [
     {
@@ -62,7 +406,11 @@ const BlotterHeader = () => {
         <section className='position-relative'>
           <Suspense fallback={<SectionLoader />}>
             {activeTab === "TXN Summary" && (
-              <TXNTreasurySummary isTreasuryVal={isTreasuryVal} />
+              <TXNTreasurySummary
+                treasuryTXNSummaryTotalRecords={treasuryTXNSummaryTotalRecords}
+                treasuryTXNSummary={treasuryTXNSummary}
+                treasuryTXNSummarysRow={treasuryTXNSummarysRow}
+              />
             )}
           </Suspense>
         </section>
@@ -72,9 +420,15 @@ const BlotterHeader = () => {
       title: "Outstanding Deals",
       content: (
         <section className='position-relative'>
-        <Suspense fallback={<SectionLoader />}>
-          {activeTab === "Outstanding Deals" && <OutstandingDeals />}
-        </Suspense>
+          <Suspense fallback={<SectionLoader />}>
+            {activeTab === "Outstanding Deals" && (
+              <OutstandingDeals
+                treasuryOutStandingDeal={treasuryOutStandingDeal}
+                treasuryOutStandingDealsRow={treasuryOutStandingDealsRow}
+                treasuryOutStandingDealRecords={treasuryOutStandingDealRecords}
+              />
+            )}
+          </Suspense>
         </section>
       ),
     },
@@ -134,6 +488,7 @@ const BlotterHeader = () => {
               onTabChange={handleTabChange}
               activeKey={activeTab}
               defaultActiveKey={"0"}
+              outStandingCounter={treasuryOutStandingDeal.length}
             />
             <div className='moreOptionsNOPExport'>
               <div className='nop-hd-container'>
@@ -207,7 +562,7 @@ const BlotterHeader = () => {
               <div className='fs-6 fw-bold color-hd data-summary-heading mb-4'>
                 TXN Summary
               </div>
-              <div className='moreOptionsNOPExport'>
+              <div className='moreOptionsNOPExport position-relative'>
                 <div className='nop-hd-container'>
                   <div className='d-flex align-items-center'>
                     <CustomButton
@@ -263,20 +618,18 @@ const BlotterHeader = () => {
           )
         )}
 
-        <Suspense fallback={null}>
-          {openNopModal && (
-            <NopModal
-              openNopModal={openNopModal}
-              setOpenNopModal={setOpenNopModal}
-            />
-          )}
-          {openMailModal && (
-            <MailModal
-              openMailModal={openMailModal}
-              setOpenMailModal={setOpenMailModal}
-            />
-          )}
-        </Suspense>
+        {openNopModal && (
+          <NopModal
+            openNopModal={openNopModal}
+            setOpenNopModal={setOpenNopModal}
+          />
+        )}
+        {openMailModal && (
+          <MailModal
+            openMailModal={openMailModal}
+            setOpenMailModal={setOpenMailModal}
+          />
+        )}
       </section>
     </>
   );

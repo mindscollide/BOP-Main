@@ -2,29 +2,25 @@ import React from "react";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 import "./Tabs.css";
-import { useSelector } from "react-redux";
 const GlobalTabs = ({
   tabs,
   activeKey,
   onTabChange,
   tabClass,
-  counterValue,
+  outStandingCounter,
 }) => {
-  const OutstandingTableNewData = useSelector(
-    (state) => state.BlotterSlicer.OutstandingTableNewData
-  );
+
   return (
     <Tabs
       activeKey={activeKey}
       onSelect={onTabChange}
-      children={<> </>}
       id="uncontrolled-tab-example"
       className={`${tabClass} ${"position-relative"}`}
     >
       {tabs.map((tab, index) => (
         <Tab eventKey={tab.title} title={tab.title} key={index}>
           {(activeKey === "Outstanding Deals" || activeKey === "TXN Summary") &&
-          OutstandingTableNewData.length > 0 ? (
+         outStandingCounter !== 0 ? (
             <span
               style={{
                 background: "red",
@@ -43,7 +39,7 @@ const GlobalTabs = ({
                 left: "315px",
               }}
             >
-              {OutstandingTableNewData?.length}
+              {outStandingCounter}
             </span>
           ) : null}
 

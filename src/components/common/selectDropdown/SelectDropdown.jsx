@@ -79,6 +79,11 @@ const SelectDropdown = ({
       pageSize={0}
       menuPosition={menuPosition}
       filterOption={filterOptions}
+      styles={{
+        valueContainer: (provided) => {
+          console.log(provided, "provided");
+        } 
+      }}
     />
   );
 };
