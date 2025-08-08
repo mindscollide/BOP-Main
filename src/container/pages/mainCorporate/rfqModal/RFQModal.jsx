@@ -56,6 +56,10 @@ const RFQModal = () => {
 
   // State for main RFQ modal visibility
   const [rfqModal, setRfqModal] = useState(true);
+  const [errorMessage, setErrorMessage] = useState({
+    message: "",
+    status: false,
+  });
 
   /**
    * Redux Selectors for required data
@@ -779,6 +783,7 @@ const RFQModal = () => {
         modalFooter={
           rfqModal ? (
             <Row>
+              {/* <Col></Col> */}
               <Col
                 lg={12}
                 md={12}

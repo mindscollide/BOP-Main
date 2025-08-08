@@ -236,7 +236,7 @@ const MIS = () => {
             >
               MIS
             </Col>
-            {/* <Col
+            <Col
               sm={6}
               md={6}
               lg={6}
@@ -271,7 +271,7 @@ const MIS = () => {
                   onClick={onClickOpenExport}
                 />
               </Popover>
-            </Col> */}
+            </Col>
           </Row>
         </div>
         <div className="p-2 position-relative">
