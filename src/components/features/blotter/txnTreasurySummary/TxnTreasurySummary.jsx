@@ -12,6 +12,17 @@ import GlobalTable from "@/components/common/table/GlobalTable";
 import { formatDateTimeToUTCTime } from "@/components/utils/timeFunction";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import { formatPkAmount } from "@/utils/formatters";
+import {
+  AcceptRFQTransaction,
+  BlotterDataAPI,
+  CancelPendingTransactionApi,
+  CancelTransaction,
+  GetFEDiscountingTransactionDetailsApi,
+  GetForwardTransactionDetailsApi,
+  GetNonFEDiscountingTransactionDetailsApi,
+  GetSpotTransactionDetailsApi,
+  RejectRFQTransaction,
+} from "../BlotterActions";
 
 // ... (other imports remain the same)
 
@@ -159,17 +170,6 @@ const TXNTreasurySummary = React.memo(
         title: (
           <div className='d-flex align-items-center justify-content-center gap-1'>
             <span className='ff-poppins fw-bold'>{title}</span>
-            <Popover
-              content={createFilterPopoverContent(filterKey)}
-              trigger='click'
-              arrow={false}
-              placement='bottom'
-              open={filterStates[filterKey].open}
-              onOpenChange={(newOpen) =>
-                handleFilterOpenChange(filterKey, newOpen)
-              }>
-              <span className='filter-dropdown-trigger'>▼</span>
-            </Popover>
           </div>
         ),
         key: dataIndex,
@@ -179,7 +179,8 @@ const TXNTreasurySummary = React.memo(
         render,
         ellipsis: true,
       }),
-      [createFilterPopoverContent, filterStates, handleFilterOpenChange]
+      []
+      // [createFilterPopoverContent, filterStates, handleFilterOpenChange]
     );
 
     // Transaction action handlers
@@ -269,21 +270,22 @@ const TXNTreasurySummary = React.memo(
         createFilterColumn("Type", "TYPE", "side", 70),
         createFilterColumn("Nature", "NATURE", "nature", 120),
         createFilterColumn("CCY1", "CCY1", "ccY1", 80),
-        createFilterColumn("Amount", "AMOUNT", "quantity", 80, (text) => (
+        createFilterColumn("TXN Amount", "AMOUNT", "quantity", 130, (text) => (
           <IndexCell value={formatPkAmount(text)} />
         )),
         createFilterColumn("Rate", "RATE", "rate", 120, (text) =>
-          formatPkAmount(text)
+          formatPkAmount(text, { decimals: 5 })
         ),
+        createFilterColumn("Tenor Days", "RATE", "", 120),
         createFilterColumn("CCY2", "CCY2", "ccY2", 60),
-        createFilterColumn("Amount", "AMOUNT2", "amount", 120, (text) => (
+        createFilterColumn("Total Amount", "AMOUNT2", "amount", 140, (text) => (
           <IndexCell value={formatPkAmount(text)} />
         )),
         createFilterColumn("Time", "TIME", "tradeDateTime", 80, (text) =>
           text !== "" ? formatDateTimeToUTCTime(text) : ""
         ),
-        createFilterColumn("LC NO.", "LC_NO", "lcNuIndexCell mber", 120),
-        createFilterColumn("Acc NO.", "ACC_NO", "accountNumber", 120),
+        // createFilterColumn("LC NO.", "LC_NO", "lcNuIndexCell mber", 120),
+        // createFilterColumn("Acc NO.", "ACC_NO", "accountNumber", 120),
         {
           ...createFilterColumn("Status", "STATUS", "status", 80),
           render: (text) => (

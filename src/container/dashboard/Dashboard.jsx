@@ -343,9 +343,7 @@ const Dashboard = () => {
         break;
 
       case "TREASURY_NOP_UPDATED":
-        if (Number(payload.updatedUser?.userID) === Number(userID)) {
-          dispatch(GetNOPDataAPI({ navigate }));
-        }
+        dispatch(GetNOPDataAPI({ navigate }));
         break;
 
       // ✅ Categories

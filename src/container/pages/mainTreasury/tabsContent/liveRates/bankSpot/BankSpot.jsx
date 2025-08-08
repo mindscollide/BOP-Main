@@ -1,4 +1,3 @@
-
 import React, {
   useState,
   useEffect,
@@ -116,16 +115,16 @@ const BankSpot = memo(() => {
    */
   const updateData = useCallback((feed) => {
     if (!feed) return;
-  
+
     try {
       startTransition(() => {
         setProcessedData((prevData) => {
           const { instrumentCrossRate, instrumentParitySpot } = feed;
           let hasUpdates = false;
-  
+
           const updatedData = prevData.map((data) => {
             const updatedItem = { ...data };
-  
+
             // Update cross rates
             if (
               instrumentCrossRate &&
@@ -143,27 +142,24 @@ const BankSpot = memo(() => {
                 hasUpdates = true;
               }
             }
-  
             // Update spot rates
             if (
               instrumentParitySpot &&
-              data.instrumentID === instrumentParitySpot.instrumentID &&
-              data.secondaryInstrumentID ===
-                instrumentParitySpot.secondaryInstrumentID
+              data.instrumentID === instrumentParitySpot.instrumentID 
             ) {
               if (
-                data.worldCurBid !== instrumentParitySpot.bid ||
-                data.worldCurOffer !== instrumentParitySpot.ask
+                Number(data.worldCurBid) !== Number(instrumentParitySpot.bid) ||
+                Number(data.worldCurOffer) !== Number(instrumentParitySpot.ask)
               ) {
                 updatedItem.worldCurBid = instrumentParitySpot.bid;
                 updatedItem.worldCurOffer = instrumentParitySpot.ask;
                 hasUpdates = true;
               }
             }
-  
+
             return updatedItem;
           });
-  
+
           return hasUpdates ? updatedData : prevData;
         });
       });
@@ -171,7 +167,6 @@ const BankSpot = memo(() => {
       console.error("Error updating data:", error);
     }
   }, []);
-  
 
   // Initialize and cleanup throttled function
   useEffect(() => {
@@ -192,9 +187,9 @@ const BankSpot = memo(() => {
     if (!isFeedDifferent(prevFeedRef.current, TreasurySpotRatesFeed)) {
       return;
     }
-  
+
     prevFeedRef.current = TreasurySpotRatesFeed;
-  
+
     startTransition(() => {
       throttledUpdateRef.current?.(TreasurySpotRatesFeed);
     });
@@ -221,7 +216,7 @@ const BankSpot = memo(() => {
         align: "center",
         render: (text, record) => (
           <BidAmountBox
-            applyClass="BidCardBox"
+            applyClass='BidCardBox'
             bankSpot={true}
             BidAmountValue={record?.worldCrossBid}
           />
@@ -235,7 +230,7 @@ const BankSpot = memo(() => {
         align: "center",
         render: (text, record) => (
           <BidAmountBox
-            applyClass="OfferCardBox"
+            applyClass='OfferCardBox'
             bankSpot={true}
             BidAmountValue={record?.worldCrossOffer}
           />
@@ -256,7 +251,7 @@ const BankSpot = memo(() => {
         align: "center",
         render: (text, record) => (
           <BidAmountBox
-            applyClass="BidCardBox"
+            applyClass='BidCardBox'
             bankSpot={true}
             BidAmountValue={record?.worldCurBid}
           />
@@ -270,7 +265,7 @@ const BankSpot = memo(() => {
         align: "center",
         render: (text, record) => (
           <BidAmountBox
-            applyClass="OfferCardBox"
+            applyClass='OfferCardBox'
             bankSpot={true}
             BidAmountValue={record?.worldCurOffer}
           />
@@ -283,27 +278,28 @@ const BankSpot = memo(() => {
         width: 80,
         className: "roboto-13",
         render: (text) =>
-          text ? formatDateUTCToGMT(text).toTimeString().substring(0, 8) : "--:--:--",
+          text
+            ? formatDateUTCToGMT(text).toTimeString().substring(0, 8)
+            : "--:--:--",
       },
     ],
     []
   );
 
-
   return (
-    <div className="bank-spot-container">
-      <div className="box-header bg-primary-orange px-3">
-        <div className="text-start color-white fw-bold fs-6">Bank Spot</div>
+    <div className='bank-spot-container'>
+      <div className='box-header bg-primary-orange px-3'>
+        <div className='text-start color-white fw-bold fs-6'>Bank Spot</div>
       </div>
 
-      <div className="mb-2 h-100 position-relative">
+      <div className='mb-2 h-100 position-relative'>
         <GlobalTable
           columns={columns}
           dataSource={processedData}
           rowKey={(record) =>
             `${record.instrumentID}-${record.secondaryInstrumentID}`
           }
-          prefixCls="BankSpot_Table"
+          prefixCls='BankSpot_Table'
           pagination={false}
           scroll={{ x: "hidden", y: 300 }}
           loading={isLoading}

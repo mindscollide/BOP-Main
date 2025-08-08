@@ -74,12 +74,6 @@ const TXNSummary = () => {
   const transactionAssignedByTreasury = useSelector(
     (state) => state.RealtimeActionsSlice.TransactionAssignedByTreasury
   );
-  console.log(
-    cancelReasonComment,
-    cancelType,
-    cancelTransactionID,
-    "cancelTransactionIDcancelTransactionID"
-  );
 
   //HardCoded Filter Values start
   const TXN_ID_OPTIONS = [
@@ -103,7 +97,6 @@ const TXNSummary = () => {
   const Status_OPTIONS = ["Pending"];
 
   const [statusOptions, setStatusOptions] = useState([]);
-  console.log(statusOptions, "statusOptionsstatusOptions");
   //HardCoded Filter Values Ended
 
   //Global State For Blotter Data
@@ -114,7 +107,6 @@ const TXNSummary = () => {
   //local states
   const [blotterdata, setBlotterdata] = useState([]);
 
-  console.log(blotterdata, "blotterdatablotterdata");
   const [totalRecord, setTotalRecords] = useState(0);
   const [sRow, setRow] = useState(0);
   const [hasReachedBottom, setHasReachedBottom] = useState(false);
@@ -150,7 +142,6 @@ const TXNSummary = () => {
   //Amount2 Filter State
   const [openAmount2, setOpenAmount2] = useState(false);
 
-  console.log(openAmount2, "openAmount2openAmount2");
   const [selectedItemsAmount2, setSelectedItemsAmount2] = useState([]);
   //Time Filter State
   const [openTime, setOpenTime] = useState(false);
@@ -167,9 +158,7 @@ const TXNSummary = () => {
 
   const [openExportDiv, setOpenExportDiv] = useState(false);
 
-  const [InfoRecord, setInfoRecord] = useState(null);
 
-  const isTreasury = import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
   const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
 
   const isCorproate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
@@ -177,15 +166,7 @@ const TXNSummary = () => {
   useTableScrollBottom(
     () => {
       if (totalRecord !== blotterdata.length) {
-        console.log(
-          {
-            isShouldTrue: totalRecord !== blotterdata.length,
-            totalRecord,
-            blotterLength: blotterdata.length,
-            sRow,
-          },
-          "totalRecordtotalRecord"
-        );
+    
         setHasReachedBottom(true);
         let Data = { sRow: sRow, Length: 10 };
         dispatch(BlotterDataAPI({ navigate, Data }));
@@ -1018,9 +999,7 @@ const TXNSummary = () => {
   };
 
   const handleClickInfo = (record) => {
-    // console.log(record, "recordrecordrecord");
-    // setInfoRecord(record);
-    // dispatch(setTransactionInfoModal(true));
+
 
     let Data = {
       PK_TransactionID: record.pK_TransactionID,
@@ -1107,7 +1086,7 @@ const TXNSummary = () => {
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
           <span className='ff-poppins fw-bold'>TXN ID</span>
-          <Popover
+          {/* <Popover
             content={popoverContentTXN}
             trigger='click'
             arrow={false}
@@ -1123,7 +1102,7 @@ const TXNSummary = () => {
               }}>
               ▼
             </span>
-          </Popover>
+          </Popover> */}
         </div>
       ),
       key: "txnid",
@@ -1136,7 +1115,7 @@ const TXNSummary = () => {
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
           <span className='ff-poppins fw-bold'>Customer Name</span>
-          <Popover
+          {/* <Popover
             content={popoverContentCustomerName}
             trigger='click'
             arrow={false}
@@ -1152,7 +1131,7 @@ const TXNSummary = () => {
               }}>
               ▼
             </span>
-          </Popover>
+          </Popover> */}
         </div>
       ),
       key: "counterPartyName",
@@ -1164,7 +1143,7 @@ const TXNSummary = () => {
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
           <span className='ff-poppins fw-bold'>Type</span>
-          <Popover
+          {/* <Popover
             content={popoverContentType}
             trigger='click'
             arrow={false}
@@ -1180,7 +1159,7 @@ const TXNSummary = () => {
               }}>
               ▼
             </span>
-          </Popover>
+          </Popover> */}
         </div>
       ),
       key: "side",
@@ -1192,7 +1171,7 @@ const TXNSummary = () => {
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
           <span className='ff-poppins fw-bold'>Nature</span>
-          <Popover
+          {/* <Popover
             content={popoverContentNature}
             trigger='click'
             arrow={false}
@@ -1208,7 +1187,7 @@ const TXNSummary = () => {
               }}>
               ▼
             </span>
-          </Popover>
+          </Popover> */}
         </div>
       ),
       key: "nature",
@@ -1220,7 +1199,7 @@ const TXNSummary = () => {
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
           <span className='ff-poppins fw-bold'>CCY1</span>
-          <Popover
+          {/* <Popover
             content={popoverContentCCY1}
             trigger='click'
             arrow={false}
@@ -1236,7 +1215,7 @@ const TXNSummary = () => {
               }}>
               ▼
             </span>
-          </Popover>
+          </Popover> */}
         </div>
       ),
       key: "ccY1",
@@ -1248,7 +1227,7 @@ const TXNSummary = () => {
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
           <span className='ff-poppins fw-bold'>Amount</span>
-          <Popover
+          {/* <Popover
             content={popoverContentAmount1}
             trigger='click'
             arrow={false}
@@ -1264,7 +1243,7 @@ const TXNSummary = () => {
               }}>
               ▼
             </span>
-          </Popover>
+          </Popover> */}
         </div>
       ),
       key: "amount1",
@@ -1279,7 +1258,7 @@ const TXNSummary = () => {
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
           <span className='ff-poppins fw-bold'>Rate</span>
-          <Popover
+          {/* <Popover
             content={popoverContentRate}
             trigger='click'
             arrow={false}
@@ -1295,7 +1274,7 @@ const TXNSummary = () => {
               }}>
               ▼
             </span>
-          </Popover>
+          </Popover> */}
         </div>
       ),
       key: "rate1",
@@ -1310,7 +1289,7 @@ const TXNSummary = () => {
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
           <span className='ff-poppins fw-bold'>CCY2</span>
-          <Popover
+          {/* <Popover
             content={popoverContentCCY2}
             trigger='click'
             arrow={false}
@@ -1326,7 +1305,7 @@ const TXNSummary = () => {
               }}>
               ▼
             </span>
-          </Popover>
+          </Popover> */}
         </div>
       ),
       key: "ccY2",
@@ -1338,7 +1317,7 @@ const TXNSummary = () => {
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
           <span className='ff-poppins fw-bold'>Amount</span>
-          <Popover
+          {/* <Popover
             content={popoverContentAmount2}
             trigger='click'
             arrow={false}
@@ -1354,7 +1333,7 @@ const TXNSummary = () => {
               }}>
               ▼
             </span>
-          </Popover>
+          </Popover> */}
         </div>
       ),
       key: "amount2",
@@ -1370,7 +1349,7 @@ const TXNSummary = () => {
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
           <span className='ff-poppins fw-bold'>Time</span>
-          <Popover
+          {/* <Popover
             content={popoverContentTime}
             trigger='click'
             arrow={false}
@@ -1386,7 +1365,7 @@ const TXNSummary = () => {
               }}>
               ▼
             </span>
-          </Popover>
+          </Popover> */}
         </div>
       ),
       key: "time",
@@ -1430,66 +1409,8 @@ const TXNSummary = () => {
     {
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>LC NO.</span>
-          <Popover
-            content={popoverContentLCno}
-            trigger='click'
-            arrow={false}
-            placement='bottom'
-            open={openLCno}
-            onOpenChange={handleOpenChangeLCno}>
-            <span
-              style={{
-                cursor: "pointer",
-                color: "white",
-                background: "#f56600",
-                borderRadius: "4px",
-              }}>
-              ▼
-            </span>
-          </Popover>
-        </div>
-      ),
-      key: "lC_No",
-      dataIndex: "lcNumber",
-      className: "ff-poppins fw-bold",
-      width: 120,
-      ellipsis: true,
-    },
-    {
-      title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Acc No.</span>
-          <Popover
-            content={popoverContentAccNO}
-            trigger='click'
-            arrow={false}
-            placement='bottom'
-            open={openAccNO}
-            onOpenChange={handleOpenChangeAccNO}>
-            <span
-              style={{
-                cursor: "pointer",
-                color: "white",
-                background: "#f56600",
-                borderRadius: "4px",
-              }}>
-              ▼
-            </span>
-          </Popover>
-        </div>
-      ),
-      key: "accountNumber",
-      dataIndex: "accountNumber",
-      className: "ff-poppins fw-bold",
-      width: 120,
-      ellipsis: true,
-    },
-    {
-      title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
           <span className='ff-poppins fw-bold'>Status</span>
-          <Popover
+          {/* <Popover
             content={popoverContentStatus}
             trigger='click'
             arrow={false}
@@ -1505,7 +1426,7 @@ const TXNSummary = () => {
               }}>
               ▼
             </span>
-          </Popover>
+          </Popover> */}
         </div>
       ),
       key: "14",
@@ -1649,7 +1570,7 @@ const TXNSummary = () => {
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
           <span className='ff-poppins fw-bold'>TXN ID</span>
-          <Popover
+          {/* <Popover
             content={popoverContentTXN}
             trigger='click'
             arrow={false}
@@ -1665,7 +1586,7 @@ const TXNSummary = () => {
               }}>
               ▼
             </span>
-          </Popover>
+          </Popover> */}
         </div>
       ),
       key: "txnid",
@@ -1678,7 +1599,7 @@ const TXNSummary = () => {
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
           <span className='ff-poppins text-nowrap fw-bold'>Customer Name</span>
-          <Popover
+          {/* <Popover
             content={popoverContentCustomerName}
             trigger='click'
             arrow={false}
@@ -1694,7 +1615,7 @@ const TXNSummary = () => {
               }}>
               ▼
             </span>
-          </Popover>
+          </Popover> */}
         </div>
       ),
       key: "corporateName",
@@ -1706,7 +1627,7 @@ const TXNSummary = () => {
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
           <span className='ff-poppins fw-bold'>Type</span>
-          <Popover
+          {/* <Popover
             content={popoverContentType}
             trigger='click'
             arrow={false}
@@ -1722,7 +1643,7 @@ const TXNSummary = () => {
               }}>
               ▼
             </span>
-          </Popover>
+          </Popover> */}
         </div>
       ),
       key: "side",
@@ -1734,7 +1655,7 @@ const TXNSummary = () => {
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
           <span className='ff-poppins fw-bold'>Nature</span>
-          <Popover
+          {/* <Popover
             content={popoverContentNature}
             trigger='click'
             arrow={false}
@@ -1750,7 +1671,7 @@ const TXNSummary = () => {
               }}>
               ▼
             </span>
-          </Popover>
+          </Popover> */}
         </div>
       ),
       key: "nature",
@@ -1762,7 +1683,7 @@ const TXNSummary = () => {
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
           <span className='ff-poppins fw-bold'>CCY1</span>
-          <Popover
+          {/* <Popover
             content={popoverContentCCY1}
             trigger='click'
             arrow={false}
@@ -1778,7 +1699,7 @@ const TXNSummary = () => {
               }}>
               ▼
             </span>
-          </Popover>
+          </Popover> */}
         </div>
       ),
       key: "ccY1",
@@ -1790,7 +1711,7 @@ const TXNSummary = () => {
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
           <span className='ff-poppins fw-bold'>Amount</span>
-          <Popover
+          {/* <Popover
             content={popoverContentAmount1}
             trigger='click'
             arrow={false}
@@ -1806,7 +1727,7 @@ const TXNSummary = () => {
               }}>
               ▼
             </span>
-          </Popover>
+          </Popover> */}
         </div>
       ),
       key: "amount1",
@@ -1821,7 +1742,7 @@ const TXNSummary = () => {
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
           <span className='ff-poppins fw-bold'>Rate</span>
-          <Popover
+          {/* <Popover
             content={popoverContentRate}
             trigger='click'
             arrow={false}
@@ -1837,7 +1758,7 @@ const TXNSummary = () => {
               }}>
               ▼
             </span>
-          </Popover>
+          </Popover> */}
         </div>
       ),
       key: "rate1",
@@ -1852,7 +1773,7 @@ const TXNSummary = () => {
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
           <span className='ff-poppins fw-bold'>CCY2</span>
-          <Popover
+          {/* <Popover
             content={popoverContentCCY2}
             trigger='click'
             arrow={false}
@@ -1868,7 +1789,7 @@ const TXNSummary = () => {
               }}>
               ▼
             </span>
-          </Popover>
+          </Popover> */}
         </div>
       ),
       key: "ccY2",
@@ -1880,7 +1801,7 @@ const TXNSummary = () => {
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
           <span className='ff-poppins fw-bold'>Amount</span>
-          <Popover
+          {/* <Popover
             content={popoverContentAmount2}
             trigger='click'
             arrow={false}
@@ -1896,7 +1817,7 @@ const TXNSummary = () => {
               }}>
               ▼
             </span>
-          </Popover>
+          </Popover> */}
         </div>
       ),
       key: "amount2",
@@ -1911,7 +1832,7 @@ const TXNSummary = () => {
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
           <span className='ff-poppins fw-bold'>Time</span>
-          <Popover
+          {/* <Popover
             content={popoverContentTime}
             trigger='click'
             arrow={false}
@@ -1927,7 +1848,7 @@ const TXNSummary = () => {
               }}>
               ▼
             </span>
-          </Popover>
+          </Popover> */}
         </div>
       ),
       key: "time",
@@ -1965,67 +1886,12 @@ const TXNSummary = () => {
         }
       },
     },
-    {
-      title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>LC NO.</span>
-          <Popover
-            content={popoverContentLCno}
-            trigger='click'
-            arrow={false}
-            placement='bottom'
-            open={openLCno}
-            onOpenChange={handleOpenChangeLCno}>
-            <span
-              style={{
-                cursor: "pointer",
-                color: "white",
-                background: "#f56600",
-                borderRadius: "4px",
-              }}>
-              ▼
-            </span>
-          </Popover>
-        </div>
-      ),
-      key: "lC_No",
-      dataIndex: "lcNumber",
-      className: "ff-poppins fw-bold",
-      width: 120,
-    },
-    {
-      title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Acc NO.</span>
-          <Popover
-            content={popoverContentAccNO}
-            trigger='click'
-            arrow={false}
-            placement='bottom'
-            open={openAccNO}
-            onOpenChange={handleOpenChangeAccNO}>
-            <span
-              style={{
-                cursor: "pointer",
-                color: "white",
-                background: "#f56600",
-                borderRadius: "4px",
-              }}>
-              ▼
-            </span>
-          </Popover>
-        </div>
-      ),
-      key: "accountNumber",
-      dataIndex: "accountNumber",
-      className: "ff-poppins fw-bold",
-      width: 120,
-    },
+ 
     {
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
           <span className='ff-poppins fw-bold'>Status</span>
-          <Popover
+          {/* <Popover
             content={popoverContentStatus}
             trigger='click'
             arrow={false}
@@ -2041,7 +1907,7 @@ const TXNSummary = () => {
               }}>
               ▼
             </span>
-          </Popover>
+          </Popover> */}
         </div>
       ),
       key: "14",
@@ -2152,7 +2018,7 @@ const TXNSummary = () => {
                     </g>
                   </svg>
                 }
-                className='btn btn-sm btn-primary info-btn-trigger ms-1'
+                className='btn btn-sm btn-primary info-btn-trigger ms-1 d-flex justify-content-center align-items-center'
               />
             </div>
           </>
@@ -2174,7 +2040,7 @@ const TXNSummary = () => {
             ? BranchColumn
             : isCorproate
             ? CorporateColumn
-            : Treasurycolumns
+            : []
         }
         scroll={{ x: "max-content", y: 300 }}
       />

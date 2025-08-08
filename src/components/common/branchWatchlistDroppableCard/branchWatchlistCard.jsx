@@ -94,7 +94,7 @@ const BranchRateCardsOfWatchList = ({
                           ? "SellandBuyCardBracnh"
                           : "SellandBuyCardBracnh_disbaled"
                       }
-                      onClick={() => handleOpenModal("sell")}
+                      onClick={() => handleOpenModal("buy")}
                     />
                   </Col>
                   <Col lg={6} md={6} sm={6}>
@@ -107,7 +107,7 @@ const BranchRateCardsOfWatchList = ({
                           ? "SellandBuyCardBracnh"
                           : "SellandBuyCardBracnh_disbaled"
                       }
-                      onClick={() => handleOpenModal("buy")}
+                      onClick={() => handleOpenModal("sell")}
                     />
                   </Col>
                 </>

@@ -48,7 +48,9 @@ const TXNTreasurySummary = lazy(() =>
 );
 const NopModal = lazy(() => import("../nopModal/NopModal"));
 const MailModal = lazy(() => import("../mailModal/MailModal"));
-
+const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
+const isCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
+const isTreasury = import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
 const BlotterHeader = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -56,10 +58,6 @@ const BlotterHeader = () => {
   const [openNopModal, setOpenNopModal] = useState(false);
   const [openExportDiv, setOpenExportDiv] = useState(false);
   const [openMailModal, setOpenMailModal] = useState(false);
-
-  const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
-  const isCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
-  const isTreasury = import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
   const activeTab = useSelector(
     (state) => state.BlotterSlicer.activeTabBlotter
   );
@@ -67,23 +65,15 @@ const BlotterHeader = () => {
   const [treasuryTXNSummaryTotalRecords, setTreasuryTXNSummaryTotalRecords] =
     useState(0);
 
-  console.log(
-    treasuryTXNSummary,
-    "treasuryTXNSummarytreasuryTXNSummarytreasuryTXNSummary"
+  const [treasuryTXNSummarysRow, setTreasuryTXNSummarysRow] = useState(
+    treasuryTXNSummary.length || 0
   );
-  const [treasuryTXNSummarysRow, setTreasuryTXNSummarysRow] = useState(0);
 
   const [treasuryOutStandingDeal, setTreasuryOutStandingDeal] = useState([]);
   const [treasuryOutStandingDealRecords, setTreasuryOutStandingDealRecords] =
     useState(0);
   const [treasuryOutStandingDealsRow, setTreasuryOutStandingDealsRow] =
-    useState(0);
-
-  const [counterPartyTXNSummary, setCounterPartysetTXNSummary] = useState([]);
-  const [counterPartyTXNSummaryRecords, setCounterPartyTXNSummaryRecords] =
-    useState(0);
-  const [counterPartyTXNSummarysRow, setCounterPartyTXNSummarysRow] =
-    useState(0);
+    useState(treasuryOutStandingDeal.length || 0);
 
   // This is Treasury Actions which is based on actions performed on Blotter Transaction
   const blotterTransactionRFQExpiredForTreasury = useSelector(
@@ -144,20 +134,11 @@ const BlotterHeader = () => {
   const blotterTransactionRejected = useSelector(
     (state) => state.RealtimeActionsSlice.BlotterTransactionRejected
   );
-  const BlotterTransactionAddedForTreasury = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTransactionAddedForTreasury
-  );
 
   useEffect(() => {
     if (GlobalStateGetBlotterData !== null) {
       const { tnxSummary, totalCount } = GlobalStateGetBlotterData;
       if (tnxSummary.length > 0) {
-        if (isBranch || isCorporate) {
-          setCounterPartysetTXNSummary(tnxSummary);
-          setCounterPartyTXNSummaryRecords(totalCount);
-          setCounterPartyTXNSummarysRow(tnxSummary.length);
-          return;
-        }
         if (isTreasury) {
           setTreasuryTXNSummary(tnxSummary);
           setTreasuryTXNSummaryTotalRecords(totalCount);
@@ -181,6 +162,7 @@ const BlotterHeader = () => {
       }
     }
   }, [getBlotterOutstandingData]);
+
   // This useEffect is for Treasury TXN Summary
   useEffect(() => {
     const handleTransactionUpdate = (transaction) => {
@@ -559,13 +541,21 @@ const BlotterHeader = () => {
         ) : (
           (isBranch || isCorporate) && (
             <>
-              <Row className="mb-3">
-                <Col sm={6} md={6} lg={6} className="d-flex justify-content-start align-items-center">
+              <Row className='mb-3'>
+                <Col
+                  sm={6}
+                  md={6}
+                  lg={6}
+                  className='d-flex justify-content-start align-items-center'>
                   <span className='fs-6 fw-bold color-hd data-summary-heading'>
                     TXN Summary
                   </span>
                 </Col>
-                <Col sm={6} md={6} lg={6} className="d-flex justify-content-end align-items-center">
+                <Col
+                  sm={6}
+                  md={6}
+                  lg={6}
+                  className='d-flex justify-content-end align-items-center'>
                   <CustomButton
                     applyClass={"Export-button"}
                     value='Export'
@@ -611,58 +601,10 @@ const BlotterHeader = () => {
                   )}
                 </Col>
               </Row>
-
-              {/* <div className='moreOptionsNOPExport position-relative'>
-                <div className='nop-hd-container'>
-                  <div className='d-flex align-items-center'>
-                    <CustomButton
-                      applyClass={"Export-button"}
-                      value='Export'
-                      onClick={() => setOpenExportDiv(!openExportDiv)}
-                    />
-
-                    {openExportDiv && (
-                      <div className='exportOptions'>
-                        <div className='exportOptionsBox'>
-                          <img
-                            src={pdfImage}
-                            width={30}
-                            height={30}
-                            className='cursor-pointer'
-                            alt='pdf'
-                            onClick={HandlePDFDownloadFunc}
-                          />
-                          <img
-                            src={excelImage}
-                            width={30}
-                            height={30}
-                            alt='excel'
-                            className='cursor-pointer'
-                            onClick={HandleExcelDownloadFunc}
-                          />
-                          <img
-                            src={emailImage}
-                            width={30}
-                            height={30}
-                            className='cursor-pointer'
-                            alt='email'
-                            onClick={() => setOpenMailModal(true)}
-                          />
-                          <img
-                            src={printImage}
-                            className='cursor-pointer'
-                            width={30}
-                            height={30}
-                            alt='print'
-                          />
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div> */}
               <Suspense fallback={<SectionLoader />}>
-                <TXNSummary />
+                <TXNSummary
+           
+                />
               </Suspense>
             </>
           )

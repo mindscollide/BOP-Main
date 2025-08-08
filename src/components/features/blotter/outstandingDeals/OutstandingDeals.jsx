@@ -1280,63 +1280,63 @@ const OutstandingDeals = ({
       },
     },
     // LC No.
-    {
-      title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>LC NO.</span>
-          <Popover
-            content={popoverContentLCno}
-            trigger='click'
-            arrow={false}
-            placement='bottom'
-            open={openLCno}
-            onOpenChange={handleOpenChangeLCno}>
-            <span
-              style={{
-                cursor: "pointer",
-                color: "white",
-                background: "#f56600",
-                borderRadius: "4px",
-              }}>
-              ▼
-            </span>
-          </Popover>
-        </div>
-      ),
-      key: "lC_No",
-      dataIndex: "lcNumber",
-      className: "ff-poppins fw-bold",
-      width: 120,
-    },
+    // {
+    //   title: (
+    //     <div className='d-flex align-items-center justify-content-center gap-1'>
+    //       <span className='ff-poppins fw-bold'>LC NO.</span>
+    //       <Popover
+    //         content={popoverContentLCno}
+    //         trigger='click'
+    //         arrow={false}
+    //         placement='bottom'
+    //         open={openLCno}
+    //         onOpenChange={handleOpenChangeLCno}>
+    //         <span
+    //           style={{
+    //             cursor: "pointer",
+    //             color: "white",
+    //             background: "#f56600",
+    //             borderRadius: "4px",
+    //           }}>
+    //           ▼
+    //         </span>
+    //       </Popover>
+    //     </div>
+    //   ),
+    //   key: "lC_No",
+    //   dataIndex: "lcNumber",
+    //   className: "ff-poppins fw-bold",
+    //   width: 120,
+    // },
     // Account No
-    {
-      title: (
-        <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Acc NO.</span>
-          <Popover
-            content={popoverContentAccNO}
-            trigger='click'
-            arrow={false}
-            placement='bottom'
-            open={openAccNO}
-            onOpenChange={handleOpenChangeAccNO}>
-            <span
-              style={{
-                cursor: "pointer",
-                color: "white",
-                background: "#f56600",
-                borderRadius: "4px",
-              }}>
-              ▼
-            </span>
-          </Popover>
-        </div>
-      ),
-      key: "accountNumber",
-      dataIndex: "accountNumber",
-      className: "ff-poppins fw-bold",
-      width: 120,
-    },
+    // {
+    //   title: (
+    //     <div className='d-flex align-items-center justify-content-center gap-1'>
+    //       <span className='ff-poppins fw-bold'>Acc NO.</span>
+    //       <Popover
+    //         content={popoverContentAccNO}
+    //         trigger='click'
+    //         arrow={false}
+    //         placement='bottom'
+    //         open={openAccNO}
+    //         onOpenChange={handleOpenChangeAccNO}>
+    //         <span
+    //           style={{
+    //             cursor: "pointer",
+    //             color: "white",
+    //             background: "#f56600",
+    //             borderRadius: "4px",
+    //           }}>
+    //           ▼
+    //         </span>
+    //       </Popover>
+    //     </div>
+    //   ),
+    //   key: "accountNumber",
+    //   dataIndex: "accountNumber",
+    //   className: "ff-poppins fw-bold",
+    //   width: 120,
+    // },
     // Status
     {
       title: (

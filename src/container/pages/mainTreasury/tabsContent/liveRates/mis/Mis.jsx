@@ -75,6 +75,9 @@ const MIS = () => {
       } catch (error) {
         console.log(error);
       }
+    } else {
+      setMisTableData([])
+      setTotalProfit(0)
     }
   }, [GetMisDataByRangeData]);
 
