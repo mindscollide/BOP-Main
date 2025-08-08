@@ -205,7 +205,7 @@ const RFQModal = () => {
           label: typeOptions[0].label,
         });
         let val = typeOptions[0].value;
-        if (iBuySellData == null && formattedOptions.length > 0) {
+        if (iBuySellData === null && formattedOptions.length > 0) {
           let getNatureVal = formattedOptions.filter((listData, index) => {
             if (val === 1) {
               return listData.isForBuy === true && listData.isForSpot === true;
@@ -216,9 +216,9 @@ const RFQModal = () => {
             return listData;
           });
           setSelectedNature(getNatureVal[0]);
+          setNatureOfBusinessOptions(getNatureVal)
         }
 
-        // setSelectedNature(formattedOptions.);
       } catch (error) {
         console.error("Error initializing nature of business options:", error);
       }
@@ -716,19 +716,7 @@ const RFQModal = () => {
                     placeholder=""
                     classNamePrefix="RfqSpot"
                     options={natureOfBusinessOptions}
-                    // options={natureOfBusinessOptions.filter((data) => {
-                    //   if (typeOptionSelected.value === 1) {
-                    //     return (
-                    //       data.isForSpot === true && data.isForBuy === true
-                    //     );
-                    //   }
-                    //   if (typeOptionSelected.value === 2) {
-                    //     return (
-                    //       data.isForSpot === true && data.isForSell === true
-                    //     );
-                    //   }
-                    //   return false; // Exclude all by default
-                    // })}
+              
                     onChange={handleNatureChange}
                     value={selectedNature}
                   />

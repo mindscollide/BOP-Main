@@ -559,10 +559,60 @@ const BlotterHeader = () => {
         ) : (
           (isBranch || isCorporate) && (
             <>
-              <div className='fs-6 fw-bold color-hd data-summary-heading mb-4'>
-                TXN Summary
-              </div>
-              <div className='moreOptionsNOPExport position-relative'>
+              <Row className="mb-3">
+                <Col sm={6} md={6} lg={6} className="d-flex justify-content-start align-items-center">
+                  <span className='fs-6 fw-bold color-hd data-summary-heading'>
+                    TXN Summary
+                  </span>
+                </Col>
+                <Col sm={6} md={6} lg={6} className="d-flex justify-content-end align-items-center">
+                  <CustomButton
+                    applyClass={"Export-button"}
+                    value='Export'
+                    onClick={() => setOpenExportDiv(!openExportDiv)}
+                  />
+
+                  {openExportDiv && (
+                    <div className='exportOptions'>
+                      <div className='exportOptionsBox'>
+                        <img
+                          src={pdfImage}
+                          width={30}
+                          height={30}
+                          className='cursor-pointer'
+                          alt='pdf'
+                          onClick={HandlePDFDownloadFunc}
+                        />
+                        <img
+                          src={excelImage}
+                          width={30}
+                          height={30}
+                          alt='excel'
+                          className='cursor-pointer'
+                          onClick={HandleExcelDownloadFunc}
+                        />
+                        <img
+                          src={emailImage}
+                          width={30}
+                          height={30}
+                          className='cursor-pointer'
+                          alt='email'
+                          onClick={() => setOpenMailModal(true)}
+                        />
+                        <img
+                          src={printImage}
+                          className='cursor-pointer'
+                          width={30}
+                          height={30}
+                          alt='print'
+                        />
+                      </div>
+                    </div>
+                  )}
+                </Col>
+              </Row>
+
+              {/* <div className='moreOptionsNOPExport position-relative'>
                 <div className='nop-hd-container'>
                   <div className='d-flex align-items-center'>
                     <CustomButton
@@ -610,7 +660,7 @@ const BlotterHeader = () => {
                     )}
                   </div>
                 </div>
-              </div>
+              </div> */}
               <Suspense fallback={<SectionLoader />}>
                 <TXNSummary />
               </Suspense>
