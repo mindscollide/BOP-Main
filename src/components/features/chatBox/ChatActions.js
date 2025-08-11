@@ -6,7 +6,11 @@ import {
 } from "@/common/api_config";
 import { chatApi } from "@/common/apiend_points";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
-import { setChatModal, setChatModalTransactionId, setTreasuryPersonID } from "@/store/modalSlice/modalSlicer";
+import {
+  setChatModal,
+  setChatModalTransactionId,
+  setTreasuryPersonID,
+} from "@/store/modalSlice/modalSlicer";
 import createPostAPI from "@/utils/axiosInstance";
 import { fileToBase64 } from "@/utils/converts";
 import { formatDateToUTC } from "@/utils/formatters";
@@ -25,7 +29,6 @@ export const getAllChatByTransactionId = createAsyncThunk(
       );
       const response = await getUserChat(Data);
       const { responseCode } = response.data;
-    
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
@@ -33,7 +36,7 @@ export const getAllChatByTransactionId = createAsyncThunk(
           getAllChatByTransactionId({
             navigate,
             Data,
-            treasuryPersonID
+            treasuryPersonID,
           })
         );
       } else if (responseCode === 200) {
@@ -51,7 +54,7 @@ export const getAllChatByTransactionId = createAsyncThunk(
         ) {
           dispatch(setChatModal(true));
           dispatch(setChatModalTransactionId(Data.TranscationID));
-          dispatch(setTreasuryPersonID(treasuryPersonID))
+          dispatch(setTreasuryPersonID(treasuryPersonID));
           return {
             response: response.data.responseResult,
             message: "",
@@ -64,8 +67,8 @@ export const getAllChatByTransactionId = createAsyncThunk(
             )
         ) {
           dispatch(setChatModal(true));
-          setChatModalTransactionId(Data.TranscationID);
-          dispatch(setTreasuryPersonID(treasuryPersonID))
+          dispatch(setChatModalTransactionId(Data.TranscationID));
+          dispatch(setTreasuryPersonID(treasuryPersonID));
 
           return rejectWithValue("No Found");
         } else if (
@@ -116,7 +119,7 @@ export const saveChatApi = createAsyncThunk(
       let getUserChat = createPostAPI(chatApi, saveChatRM.RequestMethod);
       const response = await getUserChat(Data);
       const { responseCode } = response.data;
-    
+
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(
@@ -237,7 +240,7 @@ export const uploadDocumentApi = createAsyncThunk(
       );
       const response = await uploadDocument(file, true);
       const { responseCode } = response.data;
-    
+
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(uploadDocumentApi({ Data, navigate }));

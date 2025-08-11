@@ -183,7 +183,10 @@ export const GetBlotterOutstandingDealsDataAPI = createAsyncThunk(
 
 export const SaveSpotTransactionAPI = createAsyncThunk(
   "Blotter/SaveSpot",
-  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+  async (
+    { navigate, Data, setErrorMessage },
+    { dispatch, rejectWithValue }
+  ) => {
     try {
       const postAPI = createPostAPI(
         blotterApi,
@@ -234,6 +237,51 @@ export const SaveSpotTransactionAPI = createAsyncThunk(
               )
           ) {
             return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveSpotTransaction_06".toLowerCase()
+              )
+          ) {
+            // return rejectWithValue("Daily Limit Exceeded");
+            setErrorMessage((prev) => {
+              return {
+                ...prev,
+                status: true,
+                message: `Daily Limit Exceeded from ${response.data.responseResult.dailyLimitRemaining.toFixed(
+                  2
+                )}`,
+              };
+            });
+            return {
+              response: response.data.responseResult,
+              message: `Daily Limit Exceeded from ${response.data.responseResult.dailyLimitRemaining.toFixed(
+                2
+              )}`,
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveSpotTransaction_07".toLowerCase()
+              )
+          ) {
+            setErrorMessage((prev) => {
+              return {
+                ...prev,
+                status: true,
+                message: `Max Transaction Limit Exceeded from ${response.data.responseResult.maxLimit.toFixed(
+                  2
+                )}`,
+              };
+            });
+            return {
+              response: response.data.responseResult,
+              message: `Max Transaction Limit Exceeded from ${response.data.responseResult.maxLimit.toFixed(
+                2
+              )}`,
+            };
           } else {
             return rejectWithValue("Something went wrong");
           }

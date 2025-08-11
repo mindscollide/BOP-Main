@@ -210,7 +210,21 @@ const TXNSummary = () => {
     if (blotterTransactionRFQExpired !== null) {
       try {
         const { transaction } = blotterTransactionRFQExpired;
-        setBlotterdata([transaction, ...blotterdata]);
+        let isAlreadyExist = blotterdata.find(
+          (data2, index) =>
+            data2.pK_TransactionID === transaction.pK_TransactionID
+        );
+        if (isAlreadyExist !== undefined) {
+          setBlotterdata((prevBlotterData) =>
+            prevBlotterData.map((item) =>
+              item.pK_TransactionID === transaction.pK_TransactionID
+                ? transaction
+                : item
+            )
+          );
+        } else {
+          setBlotterdata([transaction, ...blotterdata]);
+        }
         dispatch(BlotterTransactionRFQExpired(null));
       } catch (error) {
         console.log(error, "error in blotterTransactionRFQExpired");
@@ -1528,7 +1542,7 @@ const TXNSummary = () => {
                 <CustomButton
                   icon={<i className="icon-chat2"></i>}
                   size={"small"}
-                  className="btn btn-sm btn-danger chat-btn-trigger"
+                  className="btn btn-sm btn-danger chat-btn-trigger d-flex justify-content-center align-items-center"
                   onClick={() =>
                     handleClickChat(
                       record.pK_TransactionID,

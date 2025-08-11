@@ -77,7 +77,10 @@ import {
 import { AnimatePresence } from "framer-motion";
 import { GetAllNatureOfTransactionsApi } from "../pages/mainCorporate/rfqModal/RFQActions";
 import InfoTransaction from "@/components/features/blotter/infoTransaction/InfoTransaction";
-import { getMarketStatusApi } from "@/components/features/SpotBranch/WatchlistAction";
+import {
+  getMarketStatusApi,
+  GetMisDataByRangeAPI,
+} from "@/components/features/SpotBranch/WatchlistAction";
 import { setMarketStatus } from "@/store/watchListSlicer/WatchListSlicer";
 import { setUpdateVolMeterRealtime } from "@/store/dealerReducer/dealerSlicer";
 import { GetNOPDataAPI } from "@/components/features/blotter/BlotterActions";
@@ -344,6 +347,19 @@ const Dashboard = () => {
 
       case "TREASURY_NOP_UPDATED":
         dispatch(GetNOPDataAPI({ navigate }));
+
+        const startDate = new Date();
+        startDate.setHours(0, 0, 0, 0);
+
+        const endDate = new Date();
+        endDate.setHours(23, 58, 59, 99);
+
+        const Data = {
+          StartDate: formatDateToUTC(startDate, 1),
+          EndDate: formatDateToUTC(endDate, 1),
+        };
+        dispatch(GetMisDataByRangeAPI({ navigate, Data }));
+
         break;
 
       // ✅ Categories
@@ -458,12 +474,12 @@ const Dashboard = () => {
     }
   }, []);
   return (
-    <Layout className='roboto-13'>
+    <Layout className="roboto-13">
       {!location.pathname.includes("calculator") && <Header />}
 
       <GlobalNavbar />
       <Content>
-        <main className='px-3'>
+        <main className="px-3">
           <Outlet />
           {/* <AnimatePresence>
             {blotterTransactionAdded && isTreasury && <DealBox />}

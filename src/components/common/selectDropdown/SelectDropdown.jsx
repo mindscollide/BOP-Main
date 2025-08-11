@@ -45,7 +45,7 @@ import "./SelectDropdown.css";
 const SelectDropdown = ({
   options = [],
   className,
-  classNamePrefix = "TransactionModal",
+  classNamePrefix = "RfqSpot",
   components,
   closeMenuOnSelect,
   closeMenuOnScroll,
@@ -54,7 +54,7 @@ const SelectDropdown = ({
   placeholder,
   value,
   isSearchable,
-  menuPlacement ,
+  menuPlacement,
   filterOptions,
   menuIsOpen,
   menuPosition = "fixed", // Changed from 'fixed' to 'absolute' for better positioning
@@ -66,7 +66,7 @@ const SelectDropdown = ({
       onChange={onChange}
       options={options}
       className={className}
-      classNamePrefix={classNamePrefix}
+      classNamePrefix={`${classNamePrefix} ${"RfqSpot"}`}
       components={components}
       closeMenuOnSelect={closeMenuOnSelect}
       closeMenuOnScroll={closeMenuOnScroll}

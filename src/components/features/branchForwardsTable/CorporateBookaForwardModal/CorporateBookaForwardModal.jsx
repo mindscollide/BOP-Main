@@ -504,7 +504,7 @@ const CorporateBookaForwardModal = ({
                           placeholder=""
                           value={corporateValue}
                           onChange={handleChangeCorporate}
-                          classNamePrefix="bookaForwardCorporate"
+                          classNamePrefix="RfqSpot"
                         />
                       </div>
                     </Col>
@@ -519,7 +519,7 @@ const CorporateBookaForwardModal = ({
                         value={selectedCurrency}
                         isSearchable={false}
                         onChange={handleChangeCurrency}
-                        classNamePrefix="bookaForwardCorporate"
+                        classNamePrefix="RfqSpot"
                       />
                     </div>
                   </Col>
@@ -536,7 +536,7 @@ const CorporateBookaForwardModal = ({
                             : typeOptionSelected
                         }
                         onChange={handleChangeType}
-                        classNamePrefix="bookaForwardCorporate"
+                        classNamePrefix="RfqSpot"
                       />
                     </div>
                   </Col>
