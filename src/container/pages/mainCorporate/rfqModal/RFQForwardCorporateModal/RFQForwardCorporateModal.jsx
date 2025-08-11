@@ -423,7 +423,7 @@ const RFQForwardCorporateModal = ({
                       Customer Name*
                     </label>
                     <SelectDropdown
-                      classNamePrefix="TransactionModal"
+                      classNamePrefix="RfqSpot"
                       placeholder=""
                       options={getAllCorporates}
                       onChange={handleChangeCorporate}
@@ -440,7 +440,7 @@ const RFQForwardCorporateModal = ({
                       Currency*
                     </label>
                     <SelectDropdown
-                      classNamePrefix="bookaForwardCorporate"
+                      classNamePrefix="RfqSpot"
                       placeholder=""
                       options={currencyOptions}
                       value={selectedCurrency}
@@ -456,7 +456,7 @@ const RFQForwardCorporateModal = ({
                     <label className="LabelRFQTransactionModal">Type*</label>
                     <SelectDropdown
                       placeholder=""
-                      classNamePrefix="bookaForwardCorporate"
+                      classNamePrefix="RfqSpot"
                       options={typeOptions}
                       value={typeOptionSelected}
                       onChange={handleChangeType}

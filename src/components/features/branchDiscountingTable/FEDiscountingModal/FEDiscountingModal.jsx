@@ -410,6 +410,7 @@ const FEDiscountingModal = ({
                       <div className="d-flex flex-column flex-wrap">
                         <span className="SubHeadings">Client name*</span>
                         <SelectDropdown
+                          classNamePrefix="RfqSpot"
                           options={getAllCorporates}
                           value={formData.corproateObj}
                           isSearchable={true}
@@ -434,6 +435,7 @@ const FEDiscountingModal = ({
                     <div className="d-flex flex-column flex-wrap">
                       <span className="SubHeadings">Currency</span>
                       <SelectDropdown
+                        classNamePrefix="RfqSpot"
                         options={currencyOptions}
                         value={formData.InstrumentID}
                         onChange={(selected) =>

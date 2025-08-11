@@ -12,6 +12,9 @@ import {
   setViewDealModal,
 } from "@/store/modalSlice/modalSlicer";
 import {
+  AcceptTransactionAPI,
+  GetForwardTransactionDetailsApi,
+  RejectTransactionAPI,
   RFQForwardTransactionQuotation,
   RFQTransactionQuotation,
 } from "@/components/features/blotter/BlotterActions";
@@ -25,6 +28,8 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
   const navigate = useNavigate();
   const [readyValue, setReadyValue] = useState("");
   const [swapValue, setSwapValue] = useState("");
+  const [readyRateValue, setReadyRateValue] = useState("");
+
   const [forwardQuoteData, setForwardQuoteData] = useState(null);
   const forwardQuoteModal = useSelector(
     (state) => state.modalReducer.forwardQuoteModal
@@ -32,6 +37,10 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
   const forwardQuoteModalData = useSelector(
     (state) => state.BlotterSlicer.forwardQuoteModalData
   );
+  const GetForwardTransactionDetails = useSelector(
+    (state) => state.BlotterSlicer.GetForwardTransactionDetails
+  );
+  console.log(GetForwardTransactionDetails, "testGetForwardTransactionDetails");
 
   const closeModal = () => {
     dispatch(setForwardQuoteModalData(null));
@@ -39,6 +48,7 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
     setReadyValue("");
     setSwapValue("");
   };
+
   useEffect(() => {
     if (forwardQuoteModalData !== null) {
       try {
@@ -47,6 +57,11 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
           forwardQuoteModalData,
           "forwardQuoteModalDataforwardQuoteModalData"
         );
+        let Data = {
+          PK_TransactionID: forwardQuoteModalData.pK_TransactionID,
+        };
+        let val = 1;
+        dispatch(GetForwardTransactionDetailsApi({ navigate, Data, val }));
         setReadyValue(forwardQuoteModalData.rate);
       } catch (error) {
         console.log(error);
@@ -58,6 +73,17 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
     //   setSwapValue("");
     // };
   }, [forwardQuoteModalData]);
+  useEffect(() => {
+    if (GetForwardTransactionDetails !== null) {
+      try {
+        const { rate, ready, swap } =
+          GetForwardTransactionDetails.transactionDetailsModel;
+        setReadyValue(ready);
+        setSwapValue(swap);
+        setReadyRateValue(rate);
+      } catch (error) {}
+    }
+  }, [GetForwardTransactionDetails]);
 
   // Get all instruments for counterparties from Redux store
   const getAllInstrumentsForCounterPartiesData = useSelector(
@@ -89,6 +115,16 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
     }
   };
 
+  const handleAccept = (transactionID) => {
+    const Data = { PK_TransactionID: transactionID };
+    let val = 1;
+    dispatch(AcceptTransactionAPI({ navigate, Data, val }));
+  };
+  const handleReject = (transactionID) => {
+    const Data = { PK_TransactionID: transactionID, Comment: "Hello" };
+    let val = 1;
+    dispatch(RejectTransactionAPI({ navigate, Data, val }));
+  };
   const calculateNewReadyValue = (instrumentName, ready, swap) => {
     const numReady = parseFloat(ready) || 0;
     const numSwap = parseFloat(swap) || 0;
@@ -250,6 +286,7 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                     customInput={InputFIeld}
                     value={readyValue}
                     thousandSeparator=","
+                    disabled={!forwardQuoteData?.isRFQ}
                     applyClass={"DiscountingQuoteInput"}
                     maxLength={10}
                     onChange={(e) => handleChangeRate(e, "readyValue")}
@@ -265,6 +302,7 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                   <NumericFormat
                     customInput={InputFIeld}
                     value={swapValue}
+                    disabled={!forwardQuoteData?.isRFQ}
                     thousandSeparator=","
                     applyClass={"DiscountingQuoteInput"}
                     maxLength={10}
@@ -284,13 +322,7 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                 >
                   <label className={styles["DealViewModal_label"]}>Rate</label>
                   <span className={styles["CalculateValue"]}>
-                    {forwardQuoteData?.ccY1
-                      ? calculateNewReadyValue(
-                          forwardQuoteData.ccY1,
-                          readyValue,
-                          swapValue
-                        )
-                      : "--"}
+                    {readyRateValue}
                   </span>
                 </Col>
 
@@ -324,7 +356,9 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                       value={"Accept"}
                       applyClass={"AcceptBtnDealBox"}
                       className={"px-4"}
-                      onClick={handleSubmit}
+                      onClick={() =>
+                        handleAccept(forwardQuoteData.pK_TransactionID)
+                      }
                     />
                     <CustomButton
                       icon={<IconElement iconClass={"icon-send fs-5"} />}
@@ -332,7 +366,9 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                       value={"Reject"}
                       applyClass={"RejectBtnDealBox"}
                       className={"px-4"}
-                      onClick={handleSubmit}
+                      onClick={() =>
+                        handleReject(forwardQuoteData.pK_TransactionID)
+                      }
                     />
                   </Col>
                 )}

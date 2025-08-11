@@ -74,7 +74,8 @@ const DiscountingRFQQuoteModal = ({ dealData }) => {
               sm={3}
               md={3}
               lg={3}
-              className={styles["DealViewModal_oneSide"]}>
+              className={styles["DealViewModal_oneSide"]}
+            >
               <Row>
                 <Col sm={12} md={12} lg={12}>
                   <label className={styles["DealViewModal__label"]}>Side</label>
@@ -146,21 +147,22 @@ const DiscountingRFQQuoteModal = ({ dealData }) => {
               sm={9}
               md={9}
               lg={9}
-              className={styles["DealViewModal_SecondSide"]}>
-              <Row className='mb-3'>
+              className={styles["DealViewModal_SecondSide"]}
+            >
+              <Row className="mb-3">
                 <Col sm={10} md={10} lg={10}>
-                  <div className='mb-3 color-black br-detail-hd'>
+                  <div className="mb-3 color-black br-detail-hd">
                     <span className={styles["company-name"]}>
                       {DiscountingQuoteData?.branchName}
                     </span>
-                    <span className='br-code fs-sm'>
+                    <span className="br-code fs-sm">
                       ({DiscountingQuoteData?.branchCode})
                     </span>
                   </div>
                   <div className={styles["company-name-hd"]}>
                     {DiscountingQuoteData?.corporateName}
                   </div>
-                  <div className='d-inline-block txn-id fs-normal color-black'>
+                  <div className="d-inline-block txn-id fs-normal color-black">
                     {DiscountingQuoteData?.txnid}
                   </div>
                 </Col>
@@ -168,7 +170,8 @@ const DiscountingRFQQuoteModal = ({ dealData }) => {
                   sm={2}
                   md={2}
                   lg={2}
-                  className='d-flex justify-content-center'>
+                  className="d-flex justify-content-center"
+                >
                   <IconElement
                     onClick={closeModal}
                     iconClass={"icon-close fs-4 cursor-pointer"}
@@ -180,7 +183,8 @@ const DiscountingRFQQuoteModal = ({ dealData }) => {
                   sm={12}
                   md={12}
                   lg={12}
-                  className='d-flex align-items-center gap-2'>
+                  className="d-flex align-items-center gap-2"
+                >
                   <label className={styles["DealViewModal_label"]}>Ready</label>
                   <InputFIeld
                     applyClass={"DiscountingQuoteInput"}
@@ -191,7 +195,8 @@ const DiscountingRFQQuoteModal = ({ dealData }) => {
                   sm={12}
                   md={12}
                   lg={12}
-                  className='d-flex mt-3  align-items-center gap-2'>
+                  className="d-flex mt-3  align-items-center gap-2"
+                >
                   <label className={styles["DealViewModal_label"]}>Rate</label>
                   <InputFIeld
                     applyClass={"DiscountingQuoteInput"}
@@ -202,7 +207,8 @@ const DiscountingRFQQuoteModal = ({ dealData }) => {
                   sm={12}
                   md={12}
                   lg={12}
-                  className='d-flex mt-3 align-items-center gap-2'>
+                  className="d-flex mt-3 align-items-center gap-2"
+                >
                   <label className={styles["DealViewModal_label"]}>Swap</label>
                   <InputFIeld
                     applyClass={"DiscountingQuoteInput"}
@@ -213,7 +219,8 @@ const DiscountingRFQQuoteModal = ({ dealData }) => {
                   sm={12}
                   md={12}
                   lg={12}
-                  className='d-flex mt-3  align-items-center gap-2'>
+                  className="d-flex mt-3  align-items-center gap-2"
+                >
                   <label className={styles["DealViewModal_label"]}></label>
                   <InputFIeld
                     applyClass={"DiscountingQuoteInput"}
@@ -227,7 +234,8 @@ const DiscountingRFQQuoteModal = ({ dealData }) => {
                     sm={12}
                     md={12}
                     lg={12}
-                    className='d-flex align-items-center gap-2 mt-4'>
+                    className="d-flex align-items-center gap-2 mt-4"
+                  >
                     <label className={styles["DealViewModal_label"]}></label>
                     <CustomButton
                       icon={<IconElement iconClass={"icon-send fs-5"} />}
@@ -243,7 +251,8 @@ const DiscountingRFQQuoteModal = ({ dealData }) => {
                     sm={12}
                     md={12}
                     lg={12}
-                    className='d-flex align-items-center justify-content-center gap-2 mt-4'>
+                    className="d-flex align-items-center justify-content-center gap-2 mt-4"
+                  >
                     <CustomButton
                       icon={<IconElement iconClass={"icon-send fs-5"} />}
                       iconPosition={"left"}
