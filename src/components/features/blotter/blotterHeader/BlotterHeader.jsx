@@ -533,7 +533,9 @@ const BlotterHeader = () => {
                         GetNOPData !== undefined &&
                         (GetNOPData?.nop >= 0
                           ? formatPkAmount(GetNOPData?.nop)
-                          : `(${formatPkAmount(Math.abs(GetNOPData?.nop))})`)}
+                          : (
+                            <span className="color-red">{`(${formatPkAmount(Math.abs(GetNOPData?.nop))})`}</span>
+                          ))}
                     </span>
                     <CustomButton
                       applyClass={"NOP-button"}
