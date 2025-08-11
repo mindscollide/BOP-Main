@@ -2076,7 +2076,9 @@ export const GetFEDiscountingTransactionDetailsApi = createAsyncThunk(
                 "Blotter_BlotterServiceManager_GetFEDiscountingTransactionDetails_01".toLowerCase()
               )
           ) {
-            dispatch(setTransactionInfoModal(true));
+            if (val !== 1) {
+              dispatch(setTransactionInfoModal(true));
+            }
             return {
               response: response.data.responseResult,
               message: "",

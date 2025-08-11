@@ -262,7 +262,7 @@ const DiscountingRFQQuoteModal = () => {
                     onChange={(event) =>
                       handleChangeRate("readyVal", event.target.value)
                     }
-                    thousandSeparator=','
+                    thousandSeparator=","
                     maxLength={10}
                     disabled={!DiscountingQuoteData?.isRFQ}
                   />
@@ -281,7 +281,7 @@ const DiscountingRFQQuoteModal = () => {
                     onChange={(event) =>
                       handleChangeRate("kiborValue", event.target.value)
                     }
-                    thousandSeparator=','
+                    thousandSeparator=","
                     maxLength={10}
                     disabled={!DiscountingQuoteData?.isRFQ}
                   />
@@ -301,7 +301,7 @@ const DiscountingRFQQuoteModal = () => {
                     onChange={(event) =>
                       handleChangeRate("swapVal", event.target.value)
                     }
-                    thousandSeparator=','
+                    thousandSeparator=","
                     maxLength={10}
                   />
                 </Col>
