@@ -39,6 +39,7 @@ import { blotterApi, watchListApi } from "@/common/apiend_points";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
 import { setForwardQuoteModalData } from "@/store/BlotterSlicer/BlotterSlicer";
 import {
+  setDiscountingQuoteModal,
   setDiscountingRFQModal,
   setForwardQuoteModal,
   setForwardRFQModal,
@@ -1251,7 +1252,7 @@ export const SaveForwardTransactionRFQApi = createAsyncThunk(
                 "Blotter_BlotterServiceManager_SaveForwardTransactionRFQ_01".toLowerCase()
               )
           ) {
-            dispatch(setForwardRFQModal(false))
+            dispatch(setForwardRFQModal(false));
             return {
               response: response.data.responseResult,
               message: "Forward RFQ transaction saved successfully",
@@ -1707,6 +1708,7 @@ export const RFQNonFEDiscountingTransactionQuotation = createAsyncThunk(
                 "Blotter_BlotterServiceManager_RFQNonFEDiscountingTransactionQuotation_01".toLowerCase()
               )
           ) {
+            dispatch(setDiscountingQuoteModal(false));
             return {
               response: response.data.responseResult,
               message: "Non-FE Discounting quotation generated successfully",
@@ -2067,7 +2069,7 @@ export const GetFEDiscountingTransactionDetailsApi = createAsyncThunk(
 
 export const GetNonFEDiscountingTransactionDetailsApi = createAsyncThunk(
   "Blotter/GetNonFEDiscountingTransactionDetails",
-  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+  async ({ navigate, Data, val }, { dispatch, rejectWithValue }) => {
     try {
       const postAPI = createPostAPI(
         blotterApi,
@@ -2078,7 +2080,9 @@ export const GetNonFEDiscountingTransactionDetailsApi = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(GetNonFEDiscountingTransactionDetailsApi({ navigate, Data }));
+        dispatch(
+          GetNonFEDiscountingTransactionDetailsApi({ navigate, Data, val })
+        );
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -2089,7 +2093,9 @@ export const GetNonFEDiscountingTransactionDetailsApi = createAsyncThunk(
                 "Blotter_BlotterServiceManager_GetNonFEDiscountingTransactionDetails_01".toLowerCase()
               )
           ) {
-            dispatch(setTransactionInfoModal(true));
+            if (val !== 1) {
+              dispatch(setTransactionInfoModal(true));
+            }
 
             return {
               response: response.data.responseResult,

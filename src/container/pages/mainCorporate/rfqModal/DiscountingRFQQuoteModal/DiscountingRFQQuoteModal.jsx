@@ -8,33 +8,78 @@ import CustomButton from "@/components/common/globalButton/button";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { setDiscountingQuoteModal } from "@/store/modalSlice/modalSlicer";
-import { RFQTransactionQuotation } from "@/components/features/blotter/BlotterActions";
+import {
+  GetFEDiscountingTransactionDetailsApi,
+  GetNonFEDiscountingTransactionDetailsApi,
+  RFQNonFEDiscountingTransactionQuotation,
+  RFQTransactionQuotation,
+} from "@/components/features/blotter/BlotterActions";
 import { useNavigate } from "react-router-dom";
 import { setDiscountingQuoteModalData } from "@/store/BlotterSlicer/BlotterSlicer";
+import { NumericFormat } from "react-number-format";
 
-const DiscountingRFQQuoteModal = ({ dealData }) => {
-  console.log(dealData, "dealDatadealData");
+const DiscountingRFQQuoteModal = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [bid, setBid] = useState("");
   const [offer, setOffer] = useState("");
+
+  const [readyValue, setReadyValue] = useState("");
+  const [rateValue, setRateValue] = useState("");
+  const [kiborValue, setKiborValue] = useState("");
+  const [swapValue, setSwapValue] = useState("");
+  const [finalValue, setFinalValue] = useState("");
   const discountingQuoteModalState = useSelector(
     (state) => state.modalReducer.discountingQuoteModal
+  );
+  const GetNonFEDiscountingTransactionDetails = useSelector(
+    (state) => state.BlotterSlicer.GetNonFEDiscountingTransactionDetails
   );
   const discountingQuoteModalData = useSelector(
     (state) => state.BlotterSlicer.discountingQuoteModalData
   );
   const [DiscountingQuoteData, setDiscountingQuoteData] = useState(null);
-  console.log(DiscountingQuoteData, "DiscountingQuoteDataDiscountingQuoteData");
   const closeModal = () => {
     dispatch(setDiscountingQuoteModalData(null));
     dispatch(setDiscountingQuoteModal(false));
   };
 
   useEffect(() => {
+    if (GetNonFEDiscountingTransactionDetails !== null) {
+      try {
+        const { rate, ready, swap, kibor } =
+          GetNonFEDiscountingTransactionDetails.transactionDetailsModel;
+        setReadyValue(ready);
+        setKiborValue(kibor.toFixed(4));
+        setSwapValue(swap);
+        setFinalValue(rate);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }, [GetNonFEDiscountingTransactionDetails]);
+
+  useEffect(() => {
     if (discountingQuoteModalData !== null) {
       try {
         setDiscountingQuoteData(discountingQuoteModalData);
+        console.log(
+          discountingQuoteModalData,
+          "discountingQuoteModalDatadiscountingQuoteModalData"
+        );
+        let Data = {
+          PK_TransactionID: discountingQuoteModalData.pK_TransactionID,
+        };
+        let val = 1;
+        if (discountingQuoteModalData.natureType === 3) {
+          dispatch(
+            GetFEDiscountingTransactionDetailsApi({ navigate, Data, val })
+          );
+        } else if (discountingQuoteModalData.natureType === 4) {
+          dispatch(
+            GetNonFEDiscountingTransactionDetailsApi({ navigate, Data, val })
+          );
+        }
       } catch (error) {
         console.log(error);
       }
@@ -44,7 +89,17 @@ const DiscountingRFQQuoteModal = ({ dealData }) => {
     };
   }, [discountingQuoteModalData]);
 
-  const handleChangeRate = (event, type) => {};
+  const handleChangeRate = (name, value) => {
+    if (name === "readyVal") {
+      setReadyValue(value.trimStart());
+    } else if (name === "rateVal") {
+      setRateValue(value.trimStart());
+    } else if (name === "swapVal") {
+      setSwapValue(value.trimStart());
+    } else if (name === "kiborValue") {
+      setKiborValue(value.trimStart());
+    }
+  };
 
   const handleSubmit = () => {
     // scenario is if side is "buy" then bid should be disabled and offer should be enabled
@@ -52,14 +107,28 @@ const DiscountingRFQQuoteModal = ({ dealData }) => {
     // RFQForwardTransactionQuotation naturetype 2
     // RFQFEDiscountingTransactionQuotation naturetype 3
     // RFQNonFEDiscountingTransactionQuotation naturetype 4
-    let Data = {
-      PK_TransactionID: dealData?.pK_TransactionID,
-      Rate:
-        dealData.side.toLowerCase() === "sell" ? Number(bid) : Number(offer),
-    };
-    dispatch(RFQTransactionQuotation({ navigate, Data }));
+    if (DiscountingQuoteData?.natureType === 4) {
+      let Data = {
+        PK_TransactionID: DiscountingQuoteData.pK_TransactionID,
+        Ready: Number(readyValue),
+        Swap: Number(swapValue),
+        Kibor: Number(kiborValue),
+      };
+      dispatch(RFQNonFEDiscountingTransactionQuotation({ navigate, Data }));
+    } else if (DiscountingQuoteData?.natureType === 3) {
+    }
   };
+  const handleAccept = () => {
+    let Data = { PK_TransactionID: transactionID };
+    let val = 1;
+    dispatch(AcceptTransactionAPI({ Data, navigate, val }));
+  };
+  const handleReject = (transactionID) => {
+    let Data = { PK_TransactionID: transactionID, Comment: "Hello" };
+    let val = 1;
 
+    dispatch(RejectTransactionRM({ Data, navigate, val }));
+  };
   const handleCancel = () => {};
   // if (!viewDealModal && !dealData) return null;
   return (
@@ -182,9 +251,16 @@ const DiscountingRFQQuoteModal = ({ dealData }) => {
                   lg={12}
                   className='d-flex align-items-center gap-2'>
                   <label className={styles["DealViewModal_label"]}>Ready</label>
-                  <InputFIeld
+                  <NumericFormat
+                    customInput={InputFIeld}
                     applyClass={"DiscountingQuoteInput"}
-                    onChange={(e) => handleChangeRate(e, "bid")}
+                    value={readyValue}
+                    onChange={(event) =>
+                      handleChangeRate("readyVal", event.target.value)
+                    }
+                    thousandSeparator=','
+                    maxLength={10}
+                    disabled={!DiscountingQuoteData?.isRFQ}
                   />
                 </Col>
                 <Col
@@ -193,9 +269,16 @@ const DiscountingRFQQuoteModal = ({ dealData }) => {
                   lg={12}
                   className='d-flex mt-3  align-items-center gap-2'>
                   <label className={styles["DealViewModal_label"]}>Rate</label>
-                  <InputFIeld
+                  <NumericFormat
+                    customInput={InputFIeld}
+                    value={kiborValue}
                     applyClass={"DiscountingQuoteInput"}
-                    onChange={(e) => handleChangeRate(e, "bid")}
+                    onChange={(event) =>
+                      handleChangeRate("kiborValue", event.target.value)
+                    }
+                    thousandSeparator=','
+                    maxLength={10}
+                    disabled={!DiscountingQuoteData?.isRFQ}
                   />
                 </Col>
                 <Col
@@ -204,9 +287,16 @@ const DiscountingRFQQuoteModal = ({ dealData }) => {
                   lg={12}
                   className='d-flex mt-3 align-items-center gap-2'>
                   <label className={styles["DealViewModal_label"]}>Swap</label>
-                  <InputFIeld
+                  <NumericFormat
+                    disabled={!DiscountingQuoteData?.isRFQ}
+                    customInput={InputFIeld}
+                    value={swapValue}
                     applyClass={"DiscountingQuoteInput"}
-                    onChange={(e) => handleChangeRate(e, "bid")}
+                    onChange={(event) =>
+                      handleChangeRate("swapVal", event.target.value)
+                    }
+                    thousandSeparator=','
+                    maxLength={10}
                   />
                 </Col>
                 <Col
@@ -215,12 +305,18 @@ const DiscountingRFQQuoteModal = ({ dealData }) => {
                   lg={12}
                   className='d-flex mt-3  align-items-center gap-2'>
                   <label className={styles["DealViewModal_label"]}></label>
-                  <InputFIeld
+                  <NumericFormat
+                    customInput={InputFIeld}
                     applyClass={"DiscountingQuoteInput"}
-                    value={"280"}
-                    disabled={true}
-                    onChange={(e) => handleChangeRate(e, "bid")}
+                    value={finalValue}
+                    disabled={!DiscountingQuoteData?.isRFQ}
                   />
+                  {/* <InputFIeld
+                    applyClass={"DiscountingQuoteInput"}
+                    // value={"280"}
+                    // disabled={true}
+                    onChange={(e) => handleChangeRate(e, "bid")}
+                  /> */}
                 </Col>
                 {DiscountingQuoteData?.isRFQ ? (
                   <Col
@@ -250,7 +346,9 @@ const DiscountingRFQQuoteModal = ({ dealData }) => {
                       value={"Accept"}
                       applyClass={"AcceptBtnDealBox"}
                       className={"px-4"}
-                      onClick={handleSubmit}
+                      onClick={() =>
+                        handleAccept(DiscountingQuoteData.pK_TransactionID)
+                      }
                     />
                     <CustomButton
                       icon={<IconElement iconClass={"icon-send fs-5"} />}
@@ -258,7 +356,9 @@ const DiscountingRFQQuoteModal = ({ dealData }) => {
                       value={"Reject"}
                       applyClass={"RejectBtnDealBox"}
                       className={"px-4"}
-                      onClick={handleSubmit}
+                      onClick={() =>
+                        handleReject(DiscountingQuoteData.pK_TransactionID)
+                      }
                     />
                   </Col>
                 )}

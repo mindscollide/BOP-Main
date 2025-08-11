@@ -1226,7 +1226,7 @@ const TXNSummary = () => {
     {
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Amount</span>
+          <span className='ff-poppins fw-bold text-center'>TXN Amount</span>
           {/* <Popover
             content={popoverContentAmount1}
             trigger='click'
@@ -1248,8 +1248,9 @@ const TXNSummary = () => {
       ),
       key: "amount1",
       dataIndex: "quantity",
-      className: "ff-poppins fw-bold",
-      width: 80,
+      className: "ff-poppins fw-bold text-center",
+      align: "center",
+      width: 120,
       render: (text, record) => {
         return <IndexCell value={formatPkAmount(text)} />;
       },
@@ -1316,7 +1317,7 @@ const TXNSummary = () => {
     {
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Amount</span>
+          <span className='ff-poppins fw-bold'>Total Amount</span>
           {/* <Popover
             content={popoverContentAmount2}
             trigger='click'

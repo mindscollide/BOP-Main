@@ -271,7 +271,27 @@ const SpotBranch = () => {
   useEffect(() => {
     try {
       if (marketStatus !== null && marketStatus === false) {
-        setWatchlistData(initialWatchlistData);
+        // setWatchlistData(initialWatchlistData);
+        setWatchlistData((prev) => {
+          const updated = { ...prev };
+          Object.keys(prev).forEach((key) => {
+            const sectionData = prev[key];
+            // const matchingData = instrumentSpotData.find(
+            //   (data) =>
+            //     data.instrumentID === sectionData.instrumentID &&
+            //     data.secondaryInstrumentID === sectionData.secondaryInstrumentID
+            // );
+            console.log(sectionData, "sectionDatasectionDatasectionData");
+            // if (matchingData) {
+            updated[key] = {
+              ...sectionData,
+              buyValue: 0,
+              sellValue: 0,
+            };
+            // }
+          });
+          return updated;
+        });
         setWatchlistTableData((prev) => {
           return prev.map((data) => {
             return {
