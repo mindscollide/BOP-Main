@@ -80,7 +80,8 @@ const InfoTransaction = () => {
               sm={6}
               md={6}
               lg={6}
-              className='d-flex align-items-center gap-1'>
+              className="d-flex align-items-center gap-1"
+            >
               <p className={styles["company-name-hd"]}>
                 {InfoRecord?.corporateName}
               </p>
@@ -101,11 +102,12 @@ const InfoTransaction = () => {
               sm={6}
               md={6}
               lg={6}
-              className={styles["infoTransaction_modal-crossIcon"]}>
-              <i className='icon-close cursor-pointer' onClick={handleclose} />
+              className={styles["infoTransaction_modal-crossIcon"]}
+            >
+              <i className="icon-close cursor-pointer" onClick={handleclose} />
             </Col>
           </Row>
-          <Row className='mt-2'>
+          <Row className="mt-2">
             <Col sm={12} md={12} lg={12}>
               <p className={styles["txn_id"]}>{InfoRecord?.txnid}</p>
             </Col>
@@ -153,7 +155,8 @@ const InfoTransaction = () => {
                 sm={6}
                 md={6}
                 lg={6}
-                style={{ display: "flex", alignItems: "center" }}>
+                style={{ display: "flex", alignItems: "center" }}
+              >
                 <p className={styles["transactionInfolabelInititedBy"]}>
                   Initiated By
                 </p>
@@ -329,7 +332,7 @@ const InfoTransaction = () => {
               </Col>
               <Col sm={6} md={6} lg={6}>
                 <p className={styles["transactionInfolabel"]}>
-                  {InfoRecord?.optionsDays}
+                  {InfoRecord?.optionsDays ? InfoRecord?.optionsDays : "N/A"}
                 </p>
               </Col>
             </Row>
@@ -347,9 +350,11 @@ const InfoTransaction = () => {
               </Col>
               <Col sm={6} md={6} lg={6}>
                 <p className={styles["transactionInfolabel"]}>
-                  {moment(formatDateUTCToGMT(InfoRecord?.optionsDate)).format(
-                    "ddd DD MMM, YYYY"
-                  )}
+                  {InfoRecord?.optionsDate
+                    ? moment(
+                        formatDateUTCToGMT(InfoRecord?.optionsDate)
+                      ).format("ddd DD MMM, YYYY")
+                    : "N/A"}
                 </p>
               </Col>
             </Row>
@@ -446,7 +451,8 @@ const InfoTransaction = () => {
                 sm={6}
                 md={6}
                 lg={6}
-                style={{ display: "flex", alignItems: "center" }}>
+                style={{ display: "flex", alignItems: "center" }}
+              >
                 <p className={styles["transactionInfolabelInititedBy"]}>
                   Accepted By
                 </p>
@@ -499,7 +505,8 @@ const InfoTransaction = () => {
                 sm={6}
                 md={6}
                 lg={6}
-                style={{ display: "flex", alignItems: "center" }}>
+                style={{ display: "flex", alignItems: "center" }}
+              >
                 <p className={styles["transactionInfolabelInititedBy"]}>
                   Cancelled By
                 </p>

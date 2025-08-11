@@ -1251,7 +1251,7 @@ export const SaveForwardTransactionRFQApi = createAsyncThunk(
                 "Blotter_BlotterServiceManager_SaveForwardTransactionRFQ_01".toLowerCase()
               )
           ) {
-            dispatch(setForwardRFQModal(false))
+            dispatch(setForwardRFQModal(false));
             return {
               response: response.data.responseResult,
               message: "Forward RFQ transaction saved successfully",
@@ -2021,8 +2021,7 @@ export const GetFEDiscountingTransactionDetailsApi = createAsyncThunk(
             dispatch(setTransactionInfoModal(true));
             return {
               response: response.data.responseResult,
-              message:
-                "FE Discounting transaction details retrieved successfully",
+              message: "",
             };
           } else if (
             responseMessage
@@ -2093,8 +2092,7 @@ export const GetNonFEDiscountingTransactionDetailsApi = createAsyncThunk(
 
             return {
               response: response.data.responseResult,
-              message:
-                "Non-FE Discounting transaction details retrieved successfully",
+              message: "",
             };
           } else if (
             responseMessage
