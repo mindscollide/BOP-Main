@@ -31,6 +31,7 @@ const TXNTreasurySummary = React.memo(
     treasuryTXNSummary,
     treasuryTXNSummarysRow,
     treasuryTXNSummaryTotalRecords,
+    setHasBottomReachedTreasuryTXN,
   }) => {
     const { showMessage } = useNotification();
     const dispatch = useDispatch();
@@ -84,6 +85,7 @@ const TXNTreasurySummary = React.memo(
     useTableScrollBottom(
       () => {
         if (treasuryTXNSummaryTotalRecords !== treasuryTXNSummary.length) {
+          setHasBottomReachedTreasuryTXN(true);
           let Data = { sRow: treasuryTXNSummarysRow, Length: 10 };
           dispatch(BlotterDataAPI({ navigate, Data }));
         }
@@ -184,20 +186,17 @@ const TXNTreasurySummary = React.memo(
     );
 
     // Transaction action handlers
-    const handleTransactionAction = useCallback(
-      (transactionID, type) => {
-        if (type === "Accepted") {
-          dispatch(
-            AcceptRFQTransaction({ PK_TransactionID: transactionID }, navigate)
-          );
-        } else {
-          setCancelReasonModal(true);
-          setCancelType(type);
-          setCancelTransactionID(transactionID);
-        }
-      },
-      [dispatch, navigate]
-    );
+    const handleTransactionAction = useCallback((transactionID, type) => {
+      if (type === "Accepted") {
+        dispatch(
+          AcceptRFQTransaction({ PK_TransactionID: transactionID }, navigate)
+        );
+      } else {
+        setCancelReasonModal(true);
+        setCancelType(type);
+        setCancelTransactionID(transactionID);
+      }
+    }, []);
 
     const handleClickReasonSubmit = useCallback(() => {
       if (cancelReasonComment.trim() === "") {
@@ -219,14 +218,7 @@ const TXNTreasurySummary = React.memo(
       if (actions[cancelType]) {
         dispatch(actions[cancelType]({ Data, navigate, setCancelReasonModal }));
       }
-    }, [
-      cancelType,
-      cancelTransactionID,
-      cancelReasonComment,
-      dispatch,
-      navigate,
-      showMessage,
-    ]);
+    }, [cancelType, cancelTransactionID, cancelReasonComment, showMessage]);
 
     const handleCloseReasonModal = useCallback(() => {
       setCancelReasonModal(false);

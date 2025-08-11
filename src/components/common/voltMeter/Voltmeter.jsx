@@ -86,13 +86,17 @@ const Voltmeter = () => {
    */
   useEffect(() => {
     if (GetVoltMeterStatus !== null) {
-      // Find the currently active voltmeter in initial status data
-      const active = GetVoltMeterStatus.voltMeterStatuses.find(
-        (item) => item.isVolMeterActive === true
-      );
-      // If active voltmeter found, update local state
-      if (active !== undefined) {
-        setActiveValue(active?.voltMeterID);
+      try {
+        // Find the currently active voltmeter in initial status data
+        const active = GetVoltMeterStatus.voltMeterStatuses.find(
+          (item) => item.isVolMeterActive === true
+        );
+        // If active voltmeter found, update local state
+        if (active !== undefined) {
+          setActiveValue(active?.voltMeterID);
+        }
+      } catch (error) {
+        console.log(error);
       }
     }
   }, [GetVoltMeterStatus]);

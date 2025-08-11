@@ -50,12 +50,12 @@ const ChatBox = () => {
   const getAllUserData = useSelector(
     (state) => state.chatSlicer.getAllChatByTransactions
   );
-
+  console.log(getAllUserData, "getAllUserDatagetAllUserData");
   useEffect(() => {
     if (getAllUserData !== null) {
       try {
         const { chatID, getAllChat, transactionID } = getAllUserData;
-        if (Array.isArray(getAllChat) && getAllChat.length > 0) {
+        if (Array.isArray(getAllChat)) {
           setTransactionChat({
             chatID: chatID,
             getAllChat: getAllChat,
@@ -73,47 +73,38 @@ const ChatBox = () => {
     }
   }, [getAllUserData]);
   useEffect(() => {
-    if (Array.isArray(IncomingChat) && IncomingChat.length > 0) {
-      try {
-        setTransactionChat((prevState) => {
-          const existingChatIDs = prevState.getAllChat.map(
-            (chat) => chat.chatMessageID
+    if (!Array.isArray(IncomingChat) || IncomingChat.length === 0) return;
+
+    setTransactionChat((prevState) => {
+      const existingChatIDs = new Set(
+        prevState.getAllChat.map((chat) => chat.chatMessageID)
+      );
+
+      const mergedChats = [...prevState.getAllChat];
+      let hasNewChats = false;
+
+      IncomingChat.forEach((newChat) => {
+        if (!existingChatIDs.has(newChat.chatMessageID)) {
+          mergedChats.unshift(newChat); // prepend only truly new messages
+          hasNewChats = true;
+        } else {
+          // update existing one
+          const index = mergedChats.findIndex(
+            (c) => c.chatMessageID === newChat.chatMessageID
           );
-
-          const updatedChats = prevState.getAllChat.map((existingChat) => {
-            const incomingMatch = IncomingChat.find(
-              (newChat) => newChat.chatMessageID === existingChat.chatMessageID
-            );
-            return incomingMatch
-              ? { ...existingChat, ...incomingMatch }
-              : existingChat;
-          });
-
-          const newChats = IncomingChat.filter(
-            (newChat) => !existingChatIDs.includes(newChat.chatMessageID)
-          );
-
-          return {
-            ...prevState,
-            getAllChat: [...newChats, ...updatedChats], // prepend new chats, keep updated
-          };
-        });
-
-        // Only dispatch AFTER state update is done
-        const updatedIncoming = IncomingChat.filter(
-          (newChat) =>
-            !transactionChat.getAllChat.some(
-              (existingChat) =>
-                existingChat.chatMessageID === newChat.chatMessageID
-            )
-        );
-        if (updatedIncoming.length !== IncomingChat.length) {
-          dispatch(setIncomingChat(updatedIncoming));
+          if (index !== -1)
+            mergedChats[index] = { ...mergedChats[index], ...newChat };
         }
-      } catch (error) {
-        console.log(error, "Error in processing IncomingChat");
-      }
-    }
+      });
+
+      return {
+        ...prevState,
+        getAllChat: mergedChats,
+      };
+    });
+
+    // Clear IncomingChat after merge
+    dispatch(setIncomingChat([]));
   }, [IncomingChat]);
 
   const handleClickClose = () => {
@@ -195,13 +186,13 @@ const ChatBox = () => {
   };
 
   return (
-    <div className="user-chat-box active-chat" id="chat-len1">
-      <div className="chat-box-inner">
-        <div className="chat-box-header">
-          <div className="d-flex align-items-center">
-            <span className="user-name fw-bold">{userName}</span>{" "}
+    <div className='user-chat-box active-chat' id='chat-len1'>
+      <div className='chat-box-inner'>
+        <div className='chat-box-header'>
+          <div className='d-flex align-items-center'>
+            <span className='user-name fw-bold'>{userName}</span>{" "}
             {/* <span className='Company'>(ABC Corporation)</span> */}
-            <span className="ms-auto">
+            <span className='ms-auto'>
               <IconElement
                 applyClass={"icon-close cursor-pointer"}
                 onClick={handleClickClose}
@@ -209,17 +200,17 @@ const ChatBox = () => {
             </span>
           </div>
         </div>
-        <div className="chat-box-content">
+        <div className='chat-box-content'>
           {transactionChat.getAllChat.length > 0
             ? transactionChat.getAllChat.map((data, index) => {
                 if (
                   data.receiverID === Number(localStorage.getItem("userID"))
                 ) {
                   return (
-                    <div className="text-start mb-3" key={data.chatMessageID}>
-                      <div className="message-inbox message-box text-start">
-                        <div className="mess-txt-wrapper">
-                          <div className="mess-txt">{data.message}</div>
+                    <div className='text-start mb-3' key={data.chatMessageID}>
+                      <div className='message-inbox message-box text-start'>
+                        <div className='mess-txt-wrapper'>
+                          <div className='mess-txt'>{data.message}</div>
                           {data.attachments.length > 0 &&
                             data.attachments.map((imgData, index) => {
                               let extractExt =
@@ -233,7 +224,7 @@ const ChatBox = () => {
                               );
 
                               return (
-                                <div className="w-100 mt-2" key={index}>
+                                <div className='w-100 mt-2' key={index}>
                                   {extractExt === "png" ||
                                   extractExt === "jpeg" ||
                                   extractExt === "jpg" ? (
@@ -251,11 +242,11 @@ const ChatBox = () => {
                               );
                             })}
                         </div>
-                        <div className="mess-datetime mt-1">
-                          <div className="d-flex">
-                            <div className="message-status" />
-                            <div className="ms-auto">
-                              <span className="chat-datetime">
+                        <div className='mess-datetime mt-1'>
+                          <div className='d-flex'>
+                            <div className='message-status' />
+                            <div className='ms-auto'>
+                              <span className='chat-datetime'>
                                 {moment(
                                   convertDateTimeIntoLocal(
                                     data.creationDateTime
@@ -270,10 +261,10 @@ const ChatBox = () => {
                   );
                 } else {
                   return (
-                    <div className="text-end mb-3" key={data.chatMessageID}>
-                      <div className="message-outbox message-box text-start">
-                        <div className="mess-txt-wrapper">
-                          <div className="mess-txt">{data.message}</div>
+                    <div className='text-end mb-3' key={data.chatMessageID}>
+                      <div className='message-outbox message-box text-start'>
+                        <div className='mess-txt-wrapper'>
+                          <div className='mess-txt'>{data.message}</div>
                           {data.attachments.length > 0 &&
                             data.attachments.map((imgData, index) => {
                               let extractExt =
@@ -287,7 +278,7 @@ const ChatBox = () => {
                                 extractExt === "jpg"
                               ) {
                                 return (
-                                  <div className="w-100 mt-2" key={index}>
+                                  <div className='w-100 mt-2' key={index}>
                                     <IconElement
                                       applyClass={
                                         "icon-download d-flex justify-content-start"
@@ -301,11 +292,11 @@ const ChatBox = () => {
                               }
                             })}
                         </div>
-                        <div className="mess-datetime mt-1">
-                          <div className="d-flex">
-                            <div className="message-status" />
-                            <div className="ms-auto">
-                              <span className="chat-datetime">
+                        <div className='mess-datetime mt-1'>
+                          <div className='d-flex'>
+                            <div className='message-status' />
+                            <div className='ms-auto'>
+                              <span className='chat-datetime'>
                                 {moment(
                                   convertDateTimeIntoLocal(
                                     data.creationDateTime
@@ -322,9 +313,9 @@ const ChatBox = () => {
               })
             : null}
         </div>
-        <div className="chat-box-footer">
+        <div className='chat-box-footer'>
           <form>
-            <div className="d-flex align-items-center position-relative">
+            <div className='d-flex align-items-center position-relative'>
               {file && (
                 <div className={styles["uploaded-file-section"]}>
                   <div className={styles["file-upload"]}>
@@ -333,8 +324,7 @@ const ChatBox = () => {
                         lg={3}
                         md={3}
                         sm={3}
-                        className={styles["chat-upload-icon"]}
-                      >
+                        className={styles["chat-upload-icon"]}>
                         <IconElement applyClass={"icon-file"} />
                         <p className={styles["chat-upload-text"]}>
                           {file.name}
@@ -352,10 +342,10 @@ const ChatBox = () => {
                 </div>
               )}
 
-              <div className="textarea-block col pe-1">
+              <div className='textarea-block col pe-1'>
                 <InputFIeld
-                  type="text"
-                  applyClass="chatSenderInput"
+                  type='text'
+                  applyClass='chatSenderInput'
                   value={message}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
@@ -370,12 +360,12 @@ const ChatBox = () => {
 
               <div>
                 <IconElement
-                  applyClass="icon-send cursor-pointer"
+                  applyClass='icon-send cursor-pointer'
                   onClick={handleClickSaveChat}
                 />
-                <span className="fw-bold cursor-pointer upload-file-wrapper">
+                <span className='fw-bold cursor-pointer upload-file-wrapper'>
                   <IconElement
-                    applyClass="icon-attachment"
+                    applyClass='icon-attachment'
                     isFile={true}
                     onFileChange={(e) => {
                       const selectedFile = e.target.files[0];

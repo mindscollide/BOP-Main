@@ -76,19 +76,19 @@ const RealtimeActionsSlice = createSlice({
     },
     setClearRates: (state, { payload }) => {
       console.log(payload, "checker");
-      state.ClearRatesData = { ...payload };
+      state.ClearRatesData = payload;
     },
     setCategoryNonFeDiscounting: (state, { payload }) => {
-      state.CategoryNonFeDiscouting = { ...payload };
+      state.CategoryNonFeDiscouting = payload;
     },
     setCounterPartyFeDiscounting: (state, { payload }) => {
-      state.CounterPartyFeDiscounting = { ...payload };
+      state.CounterPartyFeDiscounting = payload;
     },
     setCounterPartyForwardRates: (state, { payload }) => {
-      state.CounterPartyForwardRates = { ...payload };
+      state.CounterPartyForwardRates = payload;
     },
     setCounterPartyNonFeDiscounting: (state, { payload }) => {
-      state.CounterPartyNonFeDiscounting = { ...payload };
+      state.CounterPartyNonFeDiscounting = payload;
     },
     setCategoryFeDiscounting: (state, { payload }) => {
       state.CategoryFeDiscounting = payload;
@@ -97,22 +97,22 @@ const RealtimeActionsSlice = createSlice({
       state.FxTradingCards = payload;
     },
     setTreasuryFeDiscounting: (state, { payload }) => {
-      state.TreasuryFeDiscounting = { ...payload };
+      state.TreasuryFeDiscounting = payload;
     },
     setTreasuryNonFeDiscounting: (state, { payload }) => {
-      state.TreasuryNonFeDiscounting = { ...payload };
+      state.TreasuryNonFeDiscounting = payload;
     },
     setTreasuryForwardRates: (state, { payload }) => {
       state.TreasuryForwardRates = payload;
     },
     setCategorySpotRates: (state, { payload }) => {
-      state.CategorySpotRates = { ...payload };
+      state.CategorySpotRates = payload;
     },
     setCategoryForwardRates: (state, { payload }) => {
-      state.CategoryForwardRates = { ...payload };
+      state.CategoryForwardRates = payload;
     },
     setCounterPartySpotRates: (state, { payload }) => {
-      state.CounterPartySpotRates = { ...payload };
+      state.CounterPartySpotRates = payload;
     },
     setTreasurySpotRatesFeed: (state, { payload }) => {
       if (!isEqual(state.TreasurySpotRatesFeed, payload)) {

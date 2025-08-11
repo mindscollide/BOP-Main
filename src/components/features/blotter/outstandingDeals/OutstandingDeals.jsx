@@ -44,7 +44,6 @@ import {
   setDiscountingQuoteModalData,
   setForwardQuoteModalData,
   setSpotQuoteModalData,
-  updateOutstandingBlotterData,
 } from "@/store/BlotterSlicer/BlotterSlicer";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import { useNotification } from "@/context/NotificationProvider";
@@ -123,6 +122,7 @@ import { useNotification } from "@/context/NotificationProvider";
 const OutstandingDeals = ({
   treasuryOutStandingDealRecords,
   treasuryOutStandingDealsRow,
+  setHasBottomReachedOutstanding,
   treasuryOutStandingDeal,
 }) => {
   const { showMessage } = useNotification();
@@ -152,7 +152,6 @@ const OutstandingDeals = ({
 
   //HardCoded Filter Values Ended
 
-  const [hasReachedBottom, setHasReachedBottom] = useState(false);
   //TXNID Filter State
   const [open, setOpen] = useState(false);
   const [selectedItemsTXNID, setSelectedItemsTXNID] = useState([]);
@@ -205,7 +204,7 @@ const OutstandingDeals = ({
   useTableScrollBottom(
     () => {
       if (treasuryOutStandingDealRecords !== treasuryOutStandingDeal.length) {
-        setHasReachedBottom(true);
+        setHasBottomReachedOutstanding(true);
         let Data = { sRow: treasuryOutStandingDealsRow, Length: 10 };
         dispatch(GetBlotterOutstandingDealsDataAPI({ navigate, Data }));
       }
@@ -1498,7 +1497,7 @@ const OutstandingDeals = ({
             {record.statusID === 6 ? (
               <CustomButton
                 icon={
-                  <i className='icon-view-comment blotterTableIconSize '></i>
+                  <i className='icon-view-comment d-flex justify-content-center align-items-center blotterTableIconSize '></i>
                 }
                 size={"small"}
                 className='btn  btn-primary'

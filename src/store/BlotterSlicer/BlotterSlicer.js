@@ -77,23 +77,6 @@ const BlotterSlicer = createSlice({
     CalculateFESwapAndDiscountingRate: null,
   },
   reducers: {
-    updateRealtimeBlotterData: (state, { payload }) => {
-      console.log(
-        payload,
-        "updateRealtimeBlotterDataupdateRealtimeBlotterDatasss"
-      );
-      // state.getBlotterApiData = payload;
-      state.tnxTableNewData = payload?.tnxTableNewData;
-    },
-    updateOutstandingBlotterData: (state, { payload }) => {
-      console.log(
-        payload,
-        "updateRealtimeBlotterDataupdateRealtimeBlotterData"
-      );
-      // state.getBlotterOutstandingData = payload;
-      state.OutstandingTableNewData = payload?.OutstandingTableNewData;
-      state.totalCountOutstandingData = payload?.OutstandingTableNewData.length;
-    },
     setSpotQuoteModalData: (state, { payload }) => {
       state.spotQuoteModalData = payload;
     },
@@ -158,15 +141,8 @@ const BlotterSlicer = createSlice({
       })
       // Fulfilled state (when the API call succeeds CorporateBlotterDataAPI)
       .addCase(BlotterDataAPI.fulfilled, (state, { payload }) => {
-        let newData = [
-          ...state.tnxTableNewData,
-          ...payload?.response?.tnxSummary,
-        ];
-        console.log(payload, "getBlotterApiData");
-        console.log(newData, "getBlotterApiData");
         state.Loader = false;
         state.getBlotterApiData = payload?.response;
-        state.tnxTableNewData = newData;
         state.error = null;
         state.responseMessage = payload?.message;
       })
@@ -175,7 +151,6 @@ const BlotterSlicer = createSlice({
         console.log(action, "actionaction");
         state.Loader = false;
         state.error = action.payload;
-        state.tnxTableNewData = [];
         state.getBlotterApiData = null;
       })
       .addCase(GetBlotterOutstandingDealsDataAPI.pending, (state) => {
@@ -185,25 +160,15 @@ const BlotterSlicer = createSlice({
       .addCase(
         GetBlotterOutstandingDealsDataAPI.fulfilled,
         (state, { payload }) => {
-          let newData = [
-            ...state.OutstandingTableNewData,
-            ...payload?.response?.outstandingDeals,
-          ];
-          console.log(payload, "getBlotterApiData");
-          console.log(newData, "getBlotterApiData");
           state.Loader = false;
           state.getBlotterOutstandingData = payload?.response;
-          state.OutstandingTableNewData = newData;
           state.error = null;
           state.responseMessage = payload?.message;
-          state.totalCountOutstandingData = payload.response?.totalCount;
         }
       )
       .addCase(GetBlotterOutstandingDealsDataAPI.rejected, (state, action) => {
-        console.log(action, "actionaction");
         state.Loader = false;
         state.error = action.payload;
-        state.OutstandingTableNewData = [];
         state.getBlotterOutstandingData = null;
       })
       .addCase(SaveSpotTransactionAPI.pending, (state) => {
@@ -383,7 +348,7 @@ const BlotterSlicer = createSlice({
           console.log(action, "actionaction");
           state.Loader = false;
           state.error = action.payload;
-        state.responseMessage = action?.payload;
+          state.responseMessage = action?.payload;
           state.calculateTenorSwapAndForwardRateData = null;
         }
       )
@@ -421,7 +386,6 @@ const BlotterSlicer = createSlice({
         state.Loader = false;
         state.saveForwardRFQTransaction = null;
         state.responseMessage = payload;
-
       })
       .addCase(GetFEDiscountingTransactionDetailsApi.pending, (state) => {
         state.Loader = true;
@@ -530,7 +494,6 @@ const BlotterSlicer = createSlice({
           state.Loader = false;
           state.calculateNonFeSwapAndDiscountingRate = null;
           state.responseMessage = payload;
-          
         }
       )
       .addCase(CalculateFEDiscountingAPI.pending, (state, { payload }) => {
@@ -562,8 +525,6 @@ const BlotterSlicer = createSlice({
 });
 
 export const {
-  updateOutstandingBlotterData,
-  updateRealtimeBlotterData,
   setDiscountingQuoteModalData,
   setForwardQuoteModalData,
   setActiveTreasuryTab,

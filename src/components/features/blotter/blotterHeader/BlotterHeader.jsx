@@ -61,19 +61,21 @@ const BlotterHeader = () => {
   const activeTab = useSelector(
     (state) => state.BlotterSlicer.activeTabBlotter
   );
+  const [hasBottomReachedTreasuryTXN, setHasBottomReachedTreasuryTXN] =
+    useState(false);
   const [treasuryTXNSummary, setTreasuryTXNSummary] = useState([]);
   const [treasuryTXNSummaryTotalRecords, setTreasuryTXNSummaryTotalRecords] =
     useState(0);
 
-  const [treasuryTXNSummarysRow, setTreasuryTXNSummarysRow] = useState(
-    treasuryTXNSummary.length || 0
-  );
+  const [treasuryTXNSummarysRow, setTreasuryTXNSummarysRow] = useState(0);
+  const [hasBottomReachedOutstanding, setHasBottomReachedOutstanding] =
+    useState(false);
 
   const [treasuryOutStandingDeal, setTreasuryOutStandingDeal] = useState([]);
   const [treasuryOutStandingDealRecords, setTreasuryOutStandingDealRecords] =
     useState(0);
   const [treasuryOutStandingDealsRow, setTreasuryOutStandingDealsRow] =
-    useState(treasuryOutStandingDeal.length || 0);
+    useState(0);
 
   // This is Treasury Actions which is based on actions performed on Blotter Transaction
   const blotterTransactionRFQExpiredForTreasury = useSelector(
@@ -136,30 +138,74 @@ const BlotterHeader = () => {
   );
 
   useEffect(() => {
-    if (GlobalStateGetBlotterData !== null) {
-      const { tnxSummary, totalCount } = GlobalStateGetBlotterData;
-      if (tnxSummary.length > 0) {
-        if (isTreasury) {
-          setTreasuryTXNSummary(tnxSummary);
-          setTreasuryTXNSummaryTotalRecords(totalCount);
-          setTreasuryTXNSummarysRow(tnxSummary.length);
-          return;
+    try {
+      if (GlobalStateGetBlotterData !== null) {
+        const { tnxSummary, totalCount } = GlobalStateGetBlotterData;
+        if (tnxSummary.length > 0) {
+          if (isTreasury) {
+            if (hasBottomReachedTreasuryTXN) {
+              setHasBottomReachedTreasuryTXN(false);
+              setTreasuryTXNSummary((prev) => [...tnxSummary, ...prev]);
+              setTreasuryTXNSummaryTotalRecords(totalCount);
+              setTreasuryTXNSummarysRow((prev) => prev + tnxSummary.length);
+            } else {
+              setHasBottomReachedTreasuryTXN(false);
+              setTreasuryTXNSummary(tnxSummary);
+              setTreasuryTXNSummaryTotalRecords(totalCount);
+              setTreasuryTXNSummarysRow(tnxSummary.length);
+            }
+            return;
+          }
+        }
+      } else if (GlobalStateGetBlotterData === null) {
+        if (!hasBottomReachedTreasuryTXN) {
+          setHasBottomReachedTreasuryTXN(false);
+          setTreasuryTXNSummary([]);
+          setTreasuryTXNSummaryTotalRecords(0);
+          setTreasuryTXNSummarysRow(0);
         }
       }
+    } catch (error) {
+      console.log(error);
     }
   }, [GlobalStateGetBlotterData]);
 
   useEffect(() => {
-    if (getBlotterOutstandingData !== null) {
-      const { outstandingDeals, totalCount } = getBlotterOutstandingData;
-      if (outstandingDeals.length > 0) {
-        if (isTreasury) {
-          setTreasuryOutStandingDeal(outstandingDeals);
-          setTreasuryOutStandingDealRecords(totalCount);
-          setTreasuryOutStandingDealsRow(outstandingDeals.length);
-          return;
+    try {
+      if (getBlotterOutstandingData !== null) {
+        const { outstandingDeals, totalCount } = getBlotterOutstandingData;
+        if (outstandingDeals.length > 0) {
+          if (isTreasury) {
+            if (hasBottomReachedOutstanding) {
+              setHasBottomReachedOutstanding(false);
+              setTreasuryOutStandingDeal((prev) => [
+                ...outstandingDeals,
+                ...prev,
+              ]);
+              setTreasuryOutStandingDealRecords(totalCount);
+              setTreasuryOutStandingDealsRow(
+                (prev) => prev + outstandingDeals.length
+              );
+              return;
+            } else {
+              setHasBottomReachedOutstanding(false);
+              setTreasuryOutStandingDeal(outstandingDeals);
+              setTreasuryOutStandingDealRecords(totalCount);
+              setTreasuryOutStandingDealsRow(outstandingDeals.length);
+              return;
+            }
+          }
+        }
+      } else if (getBlotterOutstandingData === null) {
+        if (!hasBottomReachedOutstanding) {
+          setHasBottomReachedOutstanding(false);
+          setTreasuryOutStandingDeal([]);
+          setTreasuryOutStandingDealRecords(0);
+          setTreasuryOutStandingDealsRow(0);
         }
       }
+    } catch (error) {
+      console.log(error);
     }
   }, [getBlotterOutstandingData]);
 
@@ -392,6 +438,8 @@ const BlotterHeader = () => {
                 treasuryTXNSummaryTotalRecords={treasuryTXNSummaryTotalRecords}
                 treasuryTXNSummary={treasuryTXNSummary}
                 treasuryTXNSummarysRow={treasuryTXNSummarysRow}
+                setHasBottomReachedTreasuryTXN={setHasBottomReachedTreasuryTXN}
+                hasBottomReachedTreasuryTXN={hasBottomReachedTreasuryTXN}
               />
             )}
           </Suspense>
@@ -408,6 +456,8 @@ const BlotterHeader = () => {
                 treasuryOutStandingDeal={treasuryOutStandingDeal}
                 treasuryOutStandingDealsRow={treasuryOutStandingDealsRow}
                 treasuryOutStandingDealRecords={treasuryOutStandingDealRecords}
+                hasBottomReachedOutstanding={hasBottomReachedOutstanding}
+                setHasBottomReachedOutstanding={setHasBottomReachedOutstanding}
               />
             )}
           </Suspense>
@@ -602,9 +652,7 @@ const BlotterHeader = () => {
                 </Col>
               </Row>
               <Suspense fallback={<SectionLoader />}>
-                <TXNSummary
-           
-                />
+                <TXNSummary />
               </Suspense>
             </>
           )
