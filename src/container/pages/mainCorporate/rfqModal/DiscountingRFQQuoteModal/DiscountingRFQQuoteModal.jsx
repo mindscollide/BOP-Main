@@ -12,6 +12,7 @@ import {
   AcceptTransactionAPI,
   GetFEDiscountingTransactionDetailsApi,
   GetNonFEDiscountingTransactionDetailsApi,
+  RFQFEDiscountingTransactionQuotation,
   RFQNonFEDiscountingTransactionQuotation,
   RFQTransactionQuotation,
   RejectTransactionAPI,
@@ -28,6 +29,7 @@ const DiscountingRFQQuoteModal = () => {
 
   const [readyValue, setReadyValue] = useState("");
   const [rateValue, setRateValue] = useState("");
+  const [discoutingFactorValue, setDiscoutingFactorValue] = useState("");
   const [kiborValue, setKiborValue] = useState("");
   const [swapValue, setSwapValue] = useState("");
   const [finalValue, setFinalValue] = useState("");
@@ -36,6 +38,10 @@ const DiscountingRFQQuoteModal = () => {
   );
   const GetNonFEDiscountingTransactionDetails = useSelector(
     (state) => state.BlotterSlicer.GetNonFEDiscountingTransactionDetails
+  );
+
+  const GetFEDiscountingTransactionDetails = useSelector(
+    (state) => state.BlotterSlicer.GetFEDiscountingTransactionDetails
   );
   const discountingQuoteModalData = useSelector(
     (state) => state.BlotterSlicer.discountingQuoteModalData
@@ -60,6 +66,17 @@ const DiscountingRFQQuoteModal = () => {
       }
     }
   }, [GetNonFEDiscountingTransactionDetails]);
+  useEffect(() => {
+    if (GetFEDiscountingTransactionDetails !== null) {
+      try {
+        const { discountingFactor, ready, rate } =
+          GetFEDiscountingTransactionDetails.transactionDetailsModel;
+        setKiborValue(discountingFactor.toFixed(4));
+        setReadyValue(ready);
+        setFinalValue(rate);
+      } catch (error) {}
+    }
+  }, [GetFEDiscountingTransactionDetails]);
 
   useEffect(() => {
     if (discountingQuoteModalData !== null) {
@@ -109,6 +126,7 @@ const DiscountingRFQQuoteModal = () => {
     // RFQForwardTransactionQuotation naturetype 2
     // RFQFEDiscountingTransactionQuotation naturetype 3
     // RFQNonFEDiscountingTransactionQuotation naturetype 4
+    // let val = 1;
     if (DiscountingQuoteData?.natureType === 4) {
       let Data = {
         PK_TransactionID: DiscountingQuoteData.pK_TransactionID,
@@ -118,6 +136,12 @@ const DiscountingRFQQuoteModal = () => {
       };
       dispatch(RFQNonFEDiscountingTransactionQuotation({ navigate, Data }));
     } else if (DiscountingQuoteData?.natureType === 3) {
+      let Date = {
+        PK_TransactionID: DiscountingQuoteData.pK_TransactionID,
+        Ready: Number(readyValue),
+        DiscountingFactor: Number(kiborValue),
+      };
+      dispatch(RFQFEDiscountingTransactionQuotation({ navigate, Data }));
     }
   };
   const handleAccept = (transactionID) => {
@@ -288,25 +312,30 @@ const DiscountingRFQQuoteModal = () => {
                     disabled={!DiscountingQuoteData?.isRFQ}
                   />
                 </Col>
-                <Col
-                  sm={12}
-                  md={12}
-                  lg={12}
-                  className="d-flex mt-3 align-items-center gap-2"
-                >
-                  <label className={styles["DealViewModal_label"]}>Swap</label>
-                  <NumericFormat
-                    disabled={!DiscountingQuoteData?.isRFQ}
-                    customInput={InputFIeld}
-                    value={swapValue}
-                    applyClass={"DiscountingQuoteInput"}
-                    onChange={(event) =>
-                      handleChangeRate("swapVal", event.target.value)
-                    }
-                    thousandSeparator=","
-                    maxLength={10}
-                  />
-                </Col>
+                {DiscountingQuoteData?.natureType === 4 && (
+                  <Col
+                    sm={12}
+                    md={12}
+                    lg={12}
+                    className="d-flex mt-3 align-items-center gap-2"
+                  >
+                    <label className={styles["DealViewModal_label"]}>
+                      Swap
+                    </label>
+                    <NumericFormat
+                      disabled={!DiscountingQuoteData?.isRFQ}
+                      customInput={InputFIeld}
+                      value={swapValue}
+                      applyClass={"DiscountingQuoteInput"}
+                      onChange={(event) =>
+                        handleChangeRate("swapVal", event.target.value)
+                      }
+                      thousandSeparator=","
+                      maxLength={10}
+                    />
+                  </Col>
+                )}
+
                 <Col
                   sm={12}
                   md={12}

@@ -639,6 +639,7 @@ export const AcceptTransactionAPI = createAsyncThunk(
           ) {
             if (val === 1) {
               dispatch(setForwardQuoteModal(false));
+              dispatch(setDiscountingQuoteModal(false));
             }
             return {
               response: response.data.responseResult,
@@ -733,6 +734,7 @@ export const RejectTransactionAPI = createAsyncThunk(
             }
             if (val === 1) {
               dispatch(setForwardQuoteModal(false));
+              dispatch(setDiscountingQuoteModal(false));
             }
             return {
               response: response.data.responseResult,
@@ -2054,7 +2056,7 @@ export const GetForwardTransactionDetailsApi = createAsyncThunk(
 
 export const GetFEDiscountingTransactionDetailsApi = createAsyncThunk(
   "Blotter/GetFEDiscountingTransactionDetails",
-  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+  async ({ navigate, Data, val }, { dispatch, rejectWithValue }) => {
     try {
       const postAPI = createPostAPI(
         blotterApi,
@@ -2065,7 +2067,9 @@ export const GetFEDiscountingTransactionDetailsApi = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(GetFEDiscountingTransactionDetailsApi({ navigate, Data }));
+        dispatch(
+          GetFEDiscountingTransactionDetailsApi({ navigate, Data, val })
+        );
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
