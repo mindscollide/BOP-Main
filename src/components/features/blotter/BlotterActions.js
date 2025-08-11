@@ -184,7 +184,10 @@ export const GetBlotterOutstandingDealsDataAPI = createAsyncThunk(
 
 export const SaveSpotTransactionAPI = createAsyncThunk(
   "Blotter/SaveSpot",
-  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+  async (
+    { navigate, Data, setErrorMessage },
+    { dispatch, rejectWithValue }
+  ) => {
     try {
       const postAPI = createPostAPI(
         blotterApi,
@@ -235,6 +238,51 @@ export const SaveSpotTransactionAPI = createAsyncThunk(
               )
           ) {
             return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveSpotTransaction_06".toLowerCase()
+              )
+          ) {
+            // return rejectWithValue("Daily Limit Exceeded");
+            setErrorMessage((prev) => {
+              return {
+                ...prev,
+                status: true,
+                message: `Daily Limit Exceeded from ${response.data.responseResult.dailyLimitRemaining.toFixed(
+                  2
+                )}`,
+              };
+            });
+            return {
+              response: response.data.responseResult,
+              message: `Daily Limit Exceeded from ${response.data.responseResult.dailyLimitRemaining.toFixed(
+                2
+              )}`,
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveSpotTransaction_07".toLowerCase()
+              )
+          ) {
+            setErrorMessage((prev) => {
+              return {
+                ...prev,
+                status: true,
+                message: `Max Transaction Limit Exceeded from ${response.data.responseResult.maxLimit.toFixed(
+                  2
+                )}`,
+              };
+            });
+            return {
+              response: response.data.responseResult,
+              message: `Max Transaction Limit Exceeded from ${response.data.responseResult.maxLimit.toFixed(
+                2
+              )}`,
+            };
           } else {
             return rejectWithValue("Something went wrong");
           }
@@ -567,7 +615,7 @@ export const AssignTransactionAPI = createAsyncThunk(
 
 export const AcceptTransactionAPI = createAsyncThunk(
   "Blotter/Accept",
-  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+  async ({ navigate, Data, val }, { dispatch, rejectWithValue }) => {
     try {
       const postAPI = createPostAPI(
         blotterApi,
@@ -578,7 +626,7 @@ export const AcceptTransactionAPI = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(AcceptTransactionAPI({ navigate, Data }));
+        dispatch(AcceptTransactionAPI({ navigate, Data, val }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -589,6 +637,9 @@ export const AcceptTransactionAPI = createAsyncThunk(
                 "Blotter_BlotterServiceManager_AcceptTransaction_01".toLowerCase()
               )
           ) {
+            if (val === 1) {
+              dispatch(setForwardQuoteModal(false));
+            }
             return {
               response: response.data.responseResult,
               message: "Transaction accepted successfully",
@@ -651,7 +702,7 @@ export const AcceptTransactionAPI = createAsyncThunk(
 export const RejectTransactionAPI = createAsyncThunk(
   "Blotter/Reject",
   async (
-    { navigate, Data, setCancelReasonModal },
+    { navigate, Data, setCancelReasonModal, val },
     { dispatch, rejectWithValue }
   ) => {
     try {
@@ -665,7 +716,7 @@ export const RejectTransactionAPI = createAsyncThunk(
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
         dispatch(
-          RejectTransactionAPI({ navigate, Data, setCancelReasonModal })
+          RejectTransactionAPI({ navigate, Data, setCancelReasonModal, val })
         );
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -679,6 +730,9 @@ export const RejectTransactionAPI = createAsyncThunk(
           ) {
             if (typeof setCancelReasonModal === "function") {
               setCancelReasonModal(false);
+            }
+            if (val === 1) {
+              dispatch(setForwardQuoteModal(false));
             }
             return {
               response: response.data.responseResult,
@@ -1929,7 +1983,7 @@ export const GetSpotTransactionDetailsApi = createAsyncThunk(
 
 export const GetForwardTransactionDetailsApi = createAsyncThunk(
   "Blotter/GetForwardTransactionDetails",
-  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+  async ({ navigate, Data, val }, { dispatch, rejectWithValue }) => {
     try {
       const postAPI = createPostAPI(
         blotterApi,
@@ -1940,7 +1994,7 @@ export const GetForwardTransactionDetailsApi = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(GetForwardTransactionDetailsApi({ navigate, Data }));
+        dispatch(GetForwardTransactionDetailsApi({ navigate, Data, val }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -1951,7 +2005,9 @@ export const GetForwardTransactionDetailsApi = createAsyncThunk(
                 "Blotter_BlotterServiceManager_GetForwardTransactionDetails_01".toLowerCase()
               )
           ) {
-            dispatch(setTransactionInfoModal(true));
+            if (val !== 1) {
+              dispatch(setTransactionInfoModal(true));
+            }
 
             return {
               response: response.data.responseResult,
@@ -2023,8 +2079,7 @@ export const GetFEDiscountingTransactionDetailsApi = createAsyncThunk(
             dispatch(setTransactionInfoModal(true));
             return {
               response: response.data.responseResult,
-              message:
-                "FE Discounting transaction details retrieved successfully",
+              message: "",
             };
           } else if (
             responseMessage
@@ -2099,8 +2154,7 @@ export const GetNonFEDiscountingTransactionDetailsApi = createAsyncThunk(
 
             return {
               response: response.data.responseResult,
-              message:
-                "Non-FE Discounting transaction details retrieved successfully",
+              message: "",
             };
           } else if (
             responseMessage
