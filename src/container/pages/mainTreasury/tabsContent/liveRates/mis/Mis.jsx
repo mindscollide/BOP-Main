@@ -26,7 +26,9 @@ const MIS = () => {
   );
   console.log(GetMisDataByRangeData, "Checkerchekcrrrrr");
 
-  const [misTableData, setMisTableData] = useState(null);
+  const [misTableData, setMisTableData] = useState([]);
+
+  console.log(misTableData, "misTableDatamisTableData")
   const [MisDate, setMisDate] = useState({
     StartDate: new Date(),
     EndDate: new Date(),
@@ -87,7 +89,8 @@ const MIS = () => {
       dataIndex: "topCustomer",
       key: "topCustomer",
       render: (text, record, index) => {
-        const isExpanded = expandedRowKeys.includes(record.corporateName);
+        console.log(index, "topCustomertopCustomer index")
+        const isExpanded = expandedRowKeys.includes(index);
         return (
           <>
             <span
@@ -98,14 +101,14 @@ const MIS = () => {
               {shouldIncludeComponents && (
                 <span className='view-detail cursor-pointer'>
                   <IconElement
-                    onClick={() => handleExpandClick(record)}
+                    onClick={() => handleExpandClick(index)}
                     iconClass={`icon-add-circle-fill fs-6 mx-1 ${
                       index === 1 ? "color-green" : "color-blue"
                     }`}></IconElement>
                 </span>
               )}
             </span>
-            {isExpanded && expandedRowKeys.includes(record.corporateName) ? (
+            {isExpanded && expandedRowKeys.includes(index) ? (
               <div className='d-grid'>
                 <span className='mis-volumwise-value bg-none color-black py-0 roboto-13'>
                   Import
@@ -141,7 +144,9 @@ const MIS = () => {
       key: "value",
       className: "value",
       render: (text, record, index) => {
-        const isExpanded = expandedRowKeys.includes(record.corporateName);
+        console.log(index, "topCustomertopCustomer index")
+
+        const isExpanded = expandedRowKeys.includes(index);
         return (
           <>
             <span
@@ -150,7 +155,7 @@ const MIS = () => {
               } roboto-13`}>
               {formatPkAmount(record?.value)}
             </span>
-            {isExpanded && expandedRowKeys.includes(record.corporateName) ? (
+            {isExpanded && expandedRowKeys.includes(index) ? (
               <div className='d-grid'>
                 <span
                   className={`${
@@ -172,15 +177,11 @@ const MIS = () => {
     },
   ];
 
-  const handleExpandClick = (record) => {
-    console.log(
-      expandedRowKeys,
-      record,
-      "expandedRowKeys expandedRowKeys expandedRowKeys"
-    );
-    const isExpanded = expandedRowKeys.includes(record.corporateName);
+  const handleExpandClick = (index) => {
+  
+    const isExpanded = expandedRowKeys.includes(index);
 
-    const newExpandedRowKeys = isExpanded ? [] : [record.corporateName]; // 👈 only one row at a time
+    const newExpandedRowKeys = isExpanded ? [] : [index]; // 👈 only one row at a time
     setExpandedRowKeys(newExpandedRowKeys);
   };
 
