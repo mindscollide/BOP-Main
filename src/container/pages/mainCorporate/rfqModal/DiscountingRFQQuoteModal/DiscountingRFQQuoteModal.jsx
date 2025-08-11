@@ -9,10 +9,12 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { setDiscountingQuoteModal } from "@/store/modalSlice/modalSlicer";
 import {
+  AcceptTransactionAPI,
   GetFEDiscountingTransactionDetailsApi,
   GetNonFEDiscountingTransactionDetailsApi,
   RFQNonFEDiscountingTransactionQuotation,
   RFQTransactionQuotation,
+  RejectTransactionAPI,
 } from "@/components/features/blotter/BlotterActions";
 import { useNavigate } from "react-router-dom";
 import { setDiscountingQuoteModalData } from "@/store/BlotterSlicer/BlotterSlicer";
@@ -118,7 +120,7 @@ const DiscountingRFQQuoteModal = () => {
     } else if (DiscountingQuoteData?.natureType === 3) {
     }
   };
-  const handleAccept = () => {
+  const handleAccept = (transactionID) => {
     let Data = { PK_TransactionID: transactionID };
     let val = 1;
     dispatch(AcceptTransactionAPI({ Data, navigate, val }));
@@ -127,7 +129,7 @@ const DiscountingRFQQuoteModal = () => {
     let Data = { PK_TransactionID: transactionID, Comment: "Hello" };
     let val = 1;
 
-    dispatch(RejectTransactionRM({ Data, navigate, val }));
+    dispatch(RejectTransactionAPI({ Data, navigate, val }));
   };
   const handleCancel = () => {};
   // if (!viewDealModal && !dealData) return null;
