@@ -80,15 +80,26 @@ export const formatPercentageInput2 = (value) => {
   return afterDecimal ? `${beforeDecimal}.${afterDecimal}` : beforeDecimal;
 };
 
-export const formatDateToUTC = (date) => {
-  return (
-    date.getUTCFullYear().toString() +
-    String(date.getUTCMonth() + 1).padStart(2, "0") +
-    String(date.getUTCDate()).padStart(2, "0") +
-    String(date.getUTCHours()).padStart(2, "0") +
-    String(date.getUTCMinutes()).padStart(2, "0") +
-    String(date.getUTCSeconds()).padStart(2, "0")
-  );
+export const formatDateToUTC = (date, value) => {
+  if (value === 1) {
+    return (
+      date.getFullYear().toString() +
+      String(date.getMonth() + 1).padStart(2, "0") +
+      String(date.getDate()).padStart(2, "0") +
+      String(date.getHours()).padStart(2, "0") +
+      String(date.getMinutes()).padStart(2, "0") +
+      String(date.getSeconds()).padStart(2, "0")
+    );
+  } else {
+    return (
+      date.getUTCFullYear().toString() +
+      String(date.getUTCMonth() + 1).padStart(2, "0") +
+      String(date.getUTCDate()).padStart(2, "0") +
+      String(date.getUTCHours()).padStart(2, "0") +
+      String(date.getUTCMinutes()).padStart(2, "0") +
+      String(date.getUTCSeconds()).padStart(2, "0")
+    );
+  }
 };
 
 export const convertDateTimeIntoGMT = (date) => {
@@ -205,7 +216,6 @@ export const convertDateTimeIntoLocal = (utcDateString) => {
   return utcDate;
 };
 
-
 /**
  * Formats numeric values with Pakistan-style number formatting
  * @param {number|string} rawValue - The value to format
@@ -216,11 +226,7 @@ export const convertDateTimeIntoLocal = (utcDateString) => {
  * @returns {string} Formatted amount string
  */
 export const formatPkAmount = (rawValue, options = {}) => {
-  const {
-    decimals = 2,
-    allowNegative = true,
-    emptySymbol = ""
-  } = options;
+  const { decimals = 2, allowNegative = true, emptySymbol = "" } = options;
 
   // Handle empty/null/undefined cases
   if (rawValue === null || rawValue === undefined || rawValue === "") {
@@ -252,7 +258,7 @@ export const formatPkAmount = (rawValue, options = {}) => {
   return numericValue.toLocaleString("en-PK", {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
-    useGrouping: true
+    useGrouping: true,
   });
 };
 
@@ -263,14 +269,13 @@ export const formatPkAmount = (rawValue, options = {}) => {
 // formatPkAmount(null) => "" (returns emptySymbol)
 // formatPkAmount("invalid", {emptySymbol: "N/A"}) => "N/A"
 
-
 export const formatNumberWithCommas = (value) => {
   if (!value) return "";
   const parts = value.toString().split(".");
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   return parts.join(".");
-}
+};
 
 export const removeCommas = (value) => {
   return value?.toString().replace(/,/g, "") || "";
-}
+};

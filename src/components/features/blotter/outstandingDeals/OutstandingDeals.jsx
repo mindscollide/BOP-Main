@@ -1524,6 +1524,7 @@ const OutstandingDeals = ({
 
             <CustomButton
               onClick={() => handleClickInfo(record)}
+              size={"small"}
               icon={
                 <svg
                   id='info_Layer_1'
@@ -1539,7 +1540,7 @@ const OutstandingDeals = ({
                   </g>
                 </svg>
               }
-              className='btn btn-sm btn-primary info-btn-trigger ms-1'
+              className='btn btn-sm btn-primary info-btn-trigger ms-1 d-flex justify-content-center align-items-center'
             />
           </div>
         );
