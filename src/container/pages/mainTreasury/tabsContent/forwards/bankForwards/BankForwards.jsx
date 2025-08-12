@@ -5,8 +5,10 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { throttle } from "lodash";
 import { setTreasuryFowardsTenorsChanges } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
+import { useDispatch } from "react-redux";
 
 const BankForwards = () => {
+  const dispatch = useDispatch();
   const [dataSource, setDataSource] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
 
@@ -99,7 +101,9 @@ const BankForwards = () => {
         };
 
         const { forwardRates = [] } =
-          GetBankForwardForTreasury !== null && GetBankForwardForTreasury;
+          GetBankForwardForTreasury !== null &&
+          GetBankForwardForTreasury !== undefined &&
+          GetBankForwardForTreasury;
         // const { forwardInstruments } = GetAllInstrumentForTreasury;
         const { rowData, columnsData } = buildForwardsTable(
           3,
@@ -183,7 +187,7 @@ const BankForwards = () => {
 
   return (
     <>
-      <div className="flex-fill mt-3 fs-4 fw-bold color-black mb-1 ff-roboto">
+      <div className='flex-fill mt-3 fs-4 fw-bold color-black mb-1 ff-roboto'>
         Bank Forwards
       </div>
 

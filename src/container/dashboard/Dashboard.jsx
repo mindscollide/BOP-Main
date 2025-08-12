@@ -424,13 +424,14 @@ const Dashboard = () => {
     if (!isConnected) return;
 
     const isTreasuryPath = location.pathname.includes("treasury");
-
-    // Subscribe if entering treasury path
-    if (isTreasuryPath) {
-      subscribeToTopics(["BOP_REAL_TIME_FEED_TREASURY"]);
-      console.log("Subscribed to BOP_REAL_TIME_FEED_TREASURY");
-    } else {
-      unsubscribeFromTopics([`BOP_REAL_TIME_FEED_TREASURY`]);
+    if (isTreasury || isDealer) {
+      // Subscribe if entering treasury path
+      if (isTreasuryPath) {
+        subscribeToTopics(["BOP_REAL_TIME_FEED_TREASURY"]);
+        console.log("Subscribed to BOP_REAL_TIME_FEED_TREASURY");
+      } else {
+        unsubscribeFromTopics([`BOP_REAL_TIME_FEED_TREASURY`]);
+      }
     }
 
     // No cleanup here - we'll handle unsubscription in the next effect
@@ -474,12 +475,12 @@ const Dashboard = () => {
     }
   }, []);
   return (
-    <Layout className="roboto-13">
+    <Layout className='roboto-13'>
       {!location.pathname.includes("calculator") && <Header />}
 
       <GlobalNavbar />
       <Content>
-        <main className="px-3">
+        <main className='px-3'>
           <Outlet />
           {/* <AnimatePresence>
             {blotterTransactionAdded && isTreasury && <DealBox />}

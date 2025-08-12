@@ -1129,7 +1129,7 @@ const OutstandingDeals = ({
     {
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Amount</span>
+          <span className='ff-poppins fw-bold'>TXN Amount</span>
           <Popover
             content={popoverContentRate}
             trigger='click'
@@ -1152,7 +1152,7 @@ const OutstandingDeals = ({
       key: "amount1",
       dataIndex: "quantity",
       className: "ff-poppins fw-bold",
-      width: 80,
+      width: 150,
       render: (text, reocrd) => {
         return <IndexCell value={formatPkAmount(text)} />;
       },
@@ -1190,7 +1190,7 @@ const OutstandingDeals = ({
     {
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
-          <span className='ff-poppins fw-bold'>Amount</span>
+          <span className='ff-poppins fw-bold'>Total Amount</span>
           <Popover
             content={popoverContentAmount2}
             trigger='click'
@@ -1213,7 +1213,7 @@ const OutstandingDeals = ({
       key: "amount2",
       dataIndex: "amount",
       className: "ff-poppins fw-bold",
-      width: 80,
+      width: 150,
       render: (text, reocrd) => {
         return <IndexCell value={formatPkAmount(text)} />;
       },
