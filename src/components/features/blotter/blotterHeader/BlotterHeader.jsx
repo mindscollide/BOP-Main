@@ -354,7 +354,7 @@ const BlotterHeader = () => {
                   }
                 : item
             );
-
+            console.log({ updatedData, transaction }, "updatedDataupdatedData");
             dispatch(BlotterTransactionAssigned(null));
             return updatedData;
           }

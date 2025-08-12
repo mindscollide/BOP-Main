@@ -125,6 +125,15 @@ const OutstandingDeals = ({
   setHasBottomReachedOutstanding,
   treasuryOutStandingDeal,
 }) => {
+  console.log(
+    {
+      treasuryOutStandingDealRecords,
+      treasuryOutStandingDealsRow,
+      setHasBottomReachedOutstanding,
+      treasuryOutStandingDeal,
+    },
+    "treasuryOutStandingDealtreasuryOutStandingDeal"
+  );
   const { showMessage } = useNotification();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -1078,7 +1087,7 @@ const OutstandingDeals = ({
       className: "ff-poppins fw-bold",
       width: 60,
       render: (text, reocrd) => {
-        return <IndexCell value={formatPkAmount(text)} />;
+        return <IndexCell value={formatPkAmount(text, { decimals: 5 })} />;
       },
     },
     // Offer
@@ -1093,7 +1102,7 @@ const OutstandingDeals = ({
       className: "ff-poppins fw-bold",
       width: 60,
       render: (text, reocrd) => {
-        return <IndexCell value={formatPkAmount(text)} />;
+        return <IndexCell value={formatPkAmount(text, { decimals: 5 })} />;
       },
     },
     // CCY1
@@ -1257,6 +1266,8 @@ const OutstandingDeals = ({
             ? true
             : false
           : false;
+        let isAssignedUser =
+          Number(localStorage.getItem("userID")) && record.treasuryPersonID;
         let rfqTimer =
           isRFQ && record.rfqTimerDetails.endTime
             ? convertDateTimeIntoLocal(record.rfqTimerDetails.endTime)
@@ -1265,7 +1276,7 @@ const OutstandingDeals = ({
         return (
           <span>
             {formatDateTimeToUTCTime(text)}{" "}
-            {isRFQ && (
+            {isRFQ && isAssignedUser && (
               <RFQTImer
                 endTime={rfqTimer}
                 dispatch={dispatch}

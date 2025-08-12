@@ -193,7 +193,9 @@ const CorporateBookaForwardModal = ({
           Ready: readyRate,
         });
         dispatch(clearCalculateTenorSwapAndForwardRateData(null));
-      } catch (error) {}
+      } catch (error) {
+        console.log(error)
+      }
     }
   }, [calculatedForwardsSwapandRate]);
 
