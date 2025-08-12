@@ -162,6 +162,7 @@ const CalculatorFxDiscounting = () => {
                 value={selectedOption}
                 onChange={handleChangeCurrencyCalculator}
                 placeholder="Select a currency"
+                classNamePrefix="RfqSpot"
               />
 
               <label className="mt-1">Ready</label>
@@ -192,7 +193,7 @@ const CalculatorFxDiscounting = () => {
               <label className="mt-1">Discounting Factor</label>
               <InputFieldWithTag
                 type="text"
-                value={resultDiscountingFactor}
+                value={Number(resultDiscountingFactor).toFixed(4)}
                 disabled={true}
                 placeholder="Enter value"
                 applyClass="inputField-calculator"

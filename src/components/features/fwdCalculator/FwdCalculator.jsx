@@ -158,12 +158,13 @@ const FwdCalculator = () => {
             <div className="flex-fill px-2 p-2">
               <div className="d-flex flex-row gap-4  w-100">
                 <div className="d-flex flex-column flex-fill">
-                  <label className="mt-1">Currency</label>
+                  <label className={"mt-1"}>Currency</label>
                   <SelectDropdown
                     options={forwardApplicableList}
                     value={selectedOption}
                     onChange={(selected) => setSelectedOption(selected)}
                     placeholder="Select a currency"
+                    classNamePrefix="RfqSpot"
                   />
                 </div>
 
@@ -175,6 +176,7 @@ const FwdCalculator = () => {
                       setSelectedOptionImportExport(selected)
                     }
                     placeholder="Import"
+                    classNamePrefix="RfqSpot"
                   />
                 </div>
               </div>
@@ -207,7 +209,7 @@ const FwdCalculator = () => {
 
               <label className="mt-1">Swap</label>
               <InputFIeld
-                value={resulteSwap}
+                value={Number(resulteSwap).toFixed(4)}
                 disabled={true}
                 applyClass="CalculatorTextfield-withTagInputfield"
               />

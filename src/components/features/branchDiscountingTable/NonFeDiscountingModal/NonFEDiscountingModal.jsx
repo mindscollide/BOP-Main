@@ -465,7 +465,7 @@ const NonFEDiscountingModal = ({
                           <span className="SubHeadings">KIBOR</span>
                           <InputFIeld
                             applyClass={"CalculatorTextfield"}
-                            value={calculatedData.kiborValue}
+                            value={Number(calculatedData.kiborValue).toFixed(4)}
                             disabled={true}
                           />
                         </div>
@@ -485,7 +485,7 @@ const NonFEDiscountingModal = ({
                           <span className="SubHeadings">Swap</span>
                           <InputFIeld
                             applyClass={"CalculatorTextfield"}
-                            value={calculatedData.swapValue}
+                            value={Number(calculatedData.swapValue).toFixed(4)}
                             disabled={true}
                           />
                         </div>

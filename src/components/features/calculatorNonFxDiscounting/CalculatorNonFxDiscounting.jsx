@@ -151,6 +151,7 @@ const CalculatorNonFxDiscounting = () => {
                 value={selectedOption}
                 onChange={(selected) => setSelectedOption(selected)}
                 placeholder="Select a currency"
+                classNamePrefix="RfqSpot"
               />
 
               <label className="mt-1">Ready</label>

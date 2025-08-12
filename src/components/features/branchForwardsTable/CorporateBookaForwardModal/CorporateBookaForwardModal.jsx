@@ -625,7 +625,7 @@ const CorporateBookaForwardModal = ({
                       <span className="SubHeadings">Ready</span>
                       <InputFIeld
                         applyClass={"CalculatorTextfield"}
-                        value={forwardRFQState.Ready}
+                        value={Number(forwardRFQState.Ready).toFixed(2)}
                         disabled={true}
                       />
                     </div>
@@ -635,7 +635,7 @@ const CorporateBookaForwardModal = ({
                       <span className="SubHeadings">Swap</span>
                       <InputFIeld
                         applyClass={"CalculatorTextfield"}
-                        value={forwardRFQState.Swap}
+                        value={Number(forwardRFQState.Swap).toFixed(4)}
                         disabled={true}
                       />
                     </div>

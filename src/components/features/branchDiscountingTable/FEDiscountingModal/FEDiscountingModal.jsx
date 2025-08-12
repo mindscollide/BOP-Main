@@ -563,7 +563,9 @@ const FEDiscountingModal = ({
                             Discounting Factor
                           </span>
                           <InputFIeld
-                            value={formData.DiscountingFactor}
+                            value={Number(formData.DiscountingFactor).toFixed(
+                              4
+                            )}
                             // onChange={(e) => handleInputChange('Swap', e.target.value)}
                             disabled={true}
                             applyClass={"CalculatorTextfield"}

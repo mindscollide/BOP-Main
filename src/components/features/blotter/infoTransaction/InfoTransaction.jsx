@@ -77,9 +77,9 @@ const InfoTransaction = () => {
         <>
           <Row>
             <Col
-              sm={6}
-              md={6}
-              lg={6}
+              sm={10}
+              md={10}
+              lg={10}
               className="d-flex align-items-center gap-1"
             >
               <p className={styles["company-name-hd"]}>
@@ -99,9 +99,9 @@ const InfoTransaction = () => {
               </span>
             </Col>
             <Col
-              sm={6}
-              md={6}
-              lg={6}
+              sm={2}
+              md={2}
+              lg={2}
               className={styles["infoTransaction_modal-crossIcon"]}
             >
               <i className="icon-close cursor-pointer" onClick={handleclose} />

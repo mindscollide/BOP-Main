@@ -301,7 +301,7 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                   <label className={styles["DealViewModal_label"]}>Swap</label>
                   <NumericFormat
                     customInput={InputFIeld}
-                    value={swapValue}
+                    value={Number(swapValue).toFixed(4)}
                     disabled={!forwardQuoteData?.isRFQ}
                     thousandSeparator=","
                     applyClass={"DiscountingQuoteInput"}
