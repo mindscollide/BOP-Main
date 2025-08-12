@@ -72,7 +72,7 @@ export const useMqttClient = ({
 
   const onConnectionLost = useCallback(
     (resObj) => {
-      console.warn("MQTT connection lost:", resObj?.errorMessage);
+      console.warn("MQTT connection lost:", resObj);
       setIsConnected(false);
       setSubscribedTopics([]);
       if (onConnectionLostCallback) onConnectionLostCallback(resObj);
@@ -83,7 +83,7 @@ export const useMqttClient = ({
   const connectToMqtt = useCallback(
     ({ subscribeID, userID }) => {
       if (!subscribeID || clientRef.current?.isConnected()) {
-        console.warn("Already connected or missing subscribeID");
+        console.warn("Already connected or missing subscribeID", subscribeID, clientRef.current.isConnected());
         return;
       }
 

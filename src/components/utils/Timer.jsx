@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 export const RFQTImer = ({
   endTime,
@@ -8,29 +8,19 @@ export const RFQTImer = ({
   navigate,
 }) => {
   const [timeLeft, setTimeLeft] = useState(endTime - new Date());
-  const [hasExpired, setHasExpired] = useState(false);
+  const hasCalled = useRef(false);
 
   useEffect(() => {
-    if (timeLeft <= 0) {
-      setHasExpired(true);
-      if (apiFunction) {
-        console.log(Data, navigate, "Data, navigate in Timer");
-        dispatch(apiFunction({ Data, navigate }));
-      }
-      return;
-    }
-
     const interval = setInterval(() => {
       const remaining = endTime - new Date();
 
       if (remaining <= 0) {
         clearInterval(interval);
         setTimeLeft(0);
-        setHasExpired(true);
 
-        if (apiFunction) {
+        if (!hasCalled.current && apiFunction) {
+          hasCalled.current = true;
           console.log(Data, navigate, "Data, navigate in Timer");
-
           dispatch(apiFunction({ Data, navigate }));
         }
       } else {
@@ -39,17 +29,15 @@ export const RFQTImer = ({
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [endTime, dispatch, apiFunction]);
-
-  if (hasExpired) {
-    return;
-  }
+  }, [endTime, dispatch, apiFunction, Data, navigate]);
 
   const minutes = Math.floor(timeLeft / 60000);
   const seconds = Math.floor((timeLeft % 60000) / 1000);
 
+  if (timeLeft <= 0) return null;
+
   return (
-    <span className='RFQ_TimerStyle'>
+    <span className="RFQ_TimerStyle">
       {minutes}:{seconds.toString().padStart(2, "0")}
     </span>
   );

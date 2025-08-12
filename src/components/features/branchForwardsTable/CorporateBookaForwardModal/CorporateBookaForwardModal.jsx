@@ -192,7 +192,7 @@ const CorporateBookaForwardModal = ({
           CalculateRate: forwardRate,
           Ready: readyRate,
         });
-        dispatch(clearCalculateTenorSwapAndForwardRateData());
+        dispatch(clearCalculateTenorSwapAndForwardRateData(null));
       } catch (error) {}
     }
   }, [calculatedForwardsSwapandRate]);
