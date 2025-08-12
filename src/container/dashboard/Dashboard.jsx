@@ -43,6 +43,7 @@ import {
   currentRatePublishedAction,
   marketStatusUpdated,
   setBlotterTransactionAddedForTreasuryDealBox,
+  setBlotterTransactionRFQExpiredForTreasury,
   setBlotterTransactionRFQExpiredForTreasuryDealBox,
   setBlotterTransactionRFQQuotedForTreasuryDealBox,
   setCategoryFeDiscounting,
@@ -206,6 +207,7 @@ const Dashboard = () => {
         startTransition(() => {
           dispatch(BlotterTransactionRFQExpired(payload));
           dispatch(setBlotterTransactionRFQExpiredForTreasuryDealBox(payload));
+          dispatch(setBlotterTransactionRFQExpiredForTreasury(payload));
 
           if (
             chatModal &&

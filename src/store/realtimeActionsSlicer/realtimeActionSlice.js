@@ -158,7 +158,7 @@ const RealtimeActionsSlice = createSlice({
     BlotterTransactionRFQExpired(state, { payload }) {
       state.BlotterTransactionRFQExpired = payload;
     },
-    BlotterTransactionRFQExpiredForTreasury(state, { payload }) {
+    setBlotterTransactionRFQExpiredForTreasury(state, { payload }) {
       state.BlotterTransactionRFQExpiredForTreasury = payload;
     },
     setBlotterTransactionRFQExpiredForTreasuryDealBox(state, { payload }) {
@@ -232,7 +232,7 @@ export const {
   setTreasurySpotRatesFeed,
   setTreasuryForwardRates,
   setBlotterTransactionRFQQuotedForTreasuryDealBox,
-  BlotterTransactionRFQExpiredForTreasury,
+  setBlotterTransactionRFQExpiredForTreasury,
   BlotterTransactionAddedForTreasury,
   BlotterTransactionAssignedForTreasury,
   BlotterTransactionAcceptedForTreasury,
