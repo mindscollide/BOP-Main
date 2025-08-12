@@ -546,7 +546,7 @@ const CorporateBookaForwardModal = ({
                     <div className="d-flex flex-column flex-wrap">
                       <span className="SubHeadings">Nature</span>
                       <InputFIeld
-                        applyClass={"BookaForwardCorporateInputFields"}
+                        applyClass={"CalculatorTextfield"}
                         value={natureOfBusinessSelcted?.label || ""}
                         disabled={true}
                       />
@@ -556,7 +556,7 @@ const CorporateBookaForwardModal = ({
                     <div className="d-flex flex-column flex-wrap">
                       <span className="SubHeadings">A/c No*</span>
                       <InputFIeld
-                        applyClass={"BookaForwardCorporateInputFields"}
+                        applyClass={"CalculatorTextfield"}
                         value={forwardRFQState.AccNo}
                         name={"AccNo"}
                         onChange={handleChangeValues}
@@ -581,7 +581,7 @@ const CorporateBookaForwardModal = ({
                         thousandSeparator=","
                         maxLength={10}
                         allowNegative={false}
-                        applyClass={"BookaForwardCorporateInputFields"}
+                        applyClass={"CalculatorTextfield"}
                       />
                     </div>
                   </Col>
@@ -591,7 +591,7 @@ const CorporateBookaForwardModal = ({
                     <div className="d-flex flex-column flex-wrap">
                       <span className="SubHeadings">Tenor</span>
                       <InputFIeld
-                        applyClass={"BookaForwardCorporateInputFields"}
+                        applyClass={"CalculatorTextfield"}
                         value={forwardRFQState.TenorDays}
                         name={"TenorDays"}
                         onChange={handleChangeValues}
@@ -608,7 +608,7 @@ const CorporateBookaForwardModal = ({
                     <div className="d-flex flex-column flex-wrap">
                       <span className="SubHeadings">Options</span>
                       <InputFIeld
-                        applyClass={"BookaForwardCorporateInputFields"}
+                        applyClass={"CalculatorTextfield"}
                         value={forwardRFQState.Options}
                         name={"Options"}
                         onChange={handleChangeValues}
@@ -624,7 +624,7 @@ const CorporateBookaForwardModal = ({
                     <div className="d-flex flex-column flex-wrap">
                       <span className="SubHeadings">Ready</span>
                       <InputFIeld
-                        applyClass={"BookaForwardCorporateInputFields"}
+                        applyClass={"CalculatorTextfield"}
                         value={forwardRFQState.Ready}
                         disabled={true}
                       />
@@ -634,7 +634,7 @@ const CorporateBookaForwardModal = ({
                     <div className="d-flex flex-column flex-wrap">
                       <span className="SubHeadings">Swap</span>
                       <InputFIeld
-                        applyClass={"BookaForwardCorporateInputFields"}
+                        applyClass={"CalculatorTextfield"}
                         value={forwardRFQState.Swap}
                         disabled={true}
                       />

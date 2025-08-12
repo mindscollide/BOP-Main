@@ -455,7 +455,7 @@ const FEDiscountingModal = ({
                       <InputFIeld
                         value={selectedNature?.name || ""}
                         disabled={true}
-                        applyClass={"BookaForwardCorporateInputFields"}
+                        applyClass={"CalculatorTextfield"}
                       />
                     </div>
                   </Col>
@@ -467,7 +467,7 @@ const FEDiscountingModal = ({
                         onChange={(e) =>
                           handleInputChange("AccountNumber", e.target.value)
                         }
-                        applyClass={"BookaForwardCorporateInputFields"}
+                        applyClass={"CalculatorTextfield"}
                       />
                       {errors.AccountNumber && (
                         <span className="text-danger small">
@@ -492,7 +492,7 @@ const FEDiscountingModal = ({
                         thousandSeparator=","
                         maxLength={10}
                         name={"Amount"}
-                        applyClass={"BookaForwardCorporateInputFields"}
+                        applyClass={"CalculatorTextfield"}
                       />
                       {errors.Quantity && (
                         <span className="text-danger small">
@@ -511,7 +511,7 @@ const FEDiscountingModal = ({
                       <InputFIeld
                         onChange={handleChangeTenor}
                         value={tenorValue}
-                        applyClass={"BookaForwardCorporateInputFields"}
+                        applyClass={"CalculatorTextfield"}
                         onBlur={onBlurTenorDays}
                       />
                       {errors.TenorDays && (
@@ -546,7 +546,7 @@ const FEDiscountingModal = ({
                             //   handleInputChange("Ready", e.target.value)
                             // }
                             disabled={true}
-                            applyClass={"BookaForwardCorporateInputFields"}
+                            applyClass={"CalculatorTextfield"}
                           />
                           {errors.Ready && (
                             <span className="text-danger small">
@@ -566,7 +566,7 @@ const FEDiscountingModal = ({
                             value={formData.DiscountingFactor}
                             // onChange={(e) => handleInputChange('Swap', e.target.value)}
                             disabled={true}
-                            applyClass={"BookaForwardCorporateInputFields"}
+                            applyClass={"CalculatorTextfield"}
                           />
                         </div>
                       </Col>
