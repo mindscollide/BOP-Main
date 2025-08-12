@@ -1256,27 +1256,28 @@ const OutstandingDeals = ({
       className: "ff-poppins fw-bold",
       width: 60,
       render: (text, record) => {
-        // if the isRFQ true and status is 2 or 5 and time is ended true
         let Data = { PK_TransactionID: record.pK_TransactionID };
-        // ExpireRFQTransaction({navigate, Data})
-        let isRFQ = record.isRFQ
-          ? (record.statusID === 2 || record.statusID === 5) &&
-            record.rfqTimerDetails !== null &&
-            record.rfqTimerDetails?.isEnded === false
-            ? true
-            : false
-          : false;
-        let isAssignedUser =
-          Number(localStorage.getItem("userID")) === Number(record.treasuryPersonID);
-        let rfqTimer =
-          isRFQ && record.rfqTimerDetails.endTime
+
+        const isRFQ =
+          record.isRFQ &&
+          record.statusID === 2 &&
+          record.rfqTimerDetails !== null &&
+          record.rfqTimerDetails?.isEnded === false;
+
+        const isAssignedUser =
+          record.statusID === 5 &&
+          Number(localStorage.getItem("userID")) ===
+            Number(record.treasuryPersonID);
+
+        const rfqTimer =
+          (isRFQ || isAssignedUser) && record.rfqTimerDetails?.endTime
             ? convertDateTimeIntoLocal(record.rfqTimerDetails.endTime)
             : null;
-        console.log(rfqTimer, text, "rfqTimerrfqTimer");
+
         return (
           <span>
             {formatDateTimeToUTCTime(text)}{" "}
-            {isRFQ && isAssignedUser && (
+            {(isRFQ || isAssignedUser) && rfqTimer && (
               <RFQTImer
                 endTime={rfqTimer}
                 dispatch={dispatch}
