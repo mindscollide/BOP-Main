@@ -348,13 +348,17 @@ const BlotterHeader = () => {
               item.pK_TransactionID === transaction.transactionID
                 ? {
                     ...item,
-                    status: transaction.statusForAssignedUser,
+                    status:
+                      Number(localStorage.getItem("userID")) ===
+                      Number(transaction.treasuryPersonID)
+                        ? transaction.statusForAssignedUser
+                        : transaction.statusForOtherTreasury,
                     statusID: transaction.statusID,
                     treasuryPersonID: transaction.treasuryPersonID,
                   }
                 : item
             );
-
+            console.log({ updatedData, transaction }, "updatedDataupdatedData");
             dispatch(BlotterTransactionAssigned(null));
             return updatedData;
           }
@@ -431,7 +435,7 @@ const BlotterHeader = () => {
     {
       title: "TXN Summary",
       content: (
-        <section className='position-relative'>
+        <section className="position-relative">
           <Suspense fallback={<SectionLoader />}>
             {activeTab === "TXN Summary" && (
               <TXNTreasurySummary
@@ -449,7 +453,7 @@ const BlotterHeader = () => {
     {
       title: "Outstanding Deals",
       content: (
-        <section className='position-relative'>
+        <section className="position-relative">
           <Suspense fallback={<SectionLoader />}>
             {activeTab === "Outstanding Deals" && (
               <OutstandingDeals
@@ -511,83 +515,83 @@ const BlotterHeader = () => {
   };
   return (
     <>
-      <section className='position-relative h-auto'>
+      <section className="position-relative h-auto">
         {isTreasury ? (
           <>
             <GlobalTabs
-              tabClass=' d-flex justify-content-start gap-2 mb-3 align-items-center position-relative'
+              tabClass=" d-flex justify-content-start gap-2 mb-3 align-items-center position-relative"
               tabs={tabsData}
               onTabChange={handleTabChange}
               activeKey={activeTab}
               defaultActiveKey={"0"}
               outStandingCounter={treasuryOutStandingDeal.length}
             />
-            <div className='moreOptionsNOPExport'>
-              <div className='nop-hd-container'>
-                <div className='d-flex align-items-center'>
+            <div className="moreOptionsNOPExport">
+              <div className="nop-hd-container">
+                <div className="d-flex align-items-center">
                   <>
                     {" "}
-                    <span className='hd-txt me-3'>NOP (US$)</span>
-                    <span className='hd-cr me-2'>
+                    <span className="hd-txt me-3">NOP (US$)</span>
+                    <span className="hd-cr me-2">
                       {GetNOPData !== null &&
                         GetNOPData !== undefined &&
                         (GetNOPData?.nop === 0 ? (
-                          <span className='color-black'>
+                          <span className="color-black">
                             {formatPkAmount(GetNOPData?.nop)}
                           </span>
                         ) : GetNOPData?.nop >= 0 ? (
                           <span>{formatPkAmount(GetNOPData?.nop)}</span>
                         ) : (
-                          <span className='color-red'>{`(${formatPkAmount(
+                          <span className="color-red">{`(${formatPkAmount(
                             Math.abs(GetNOPData?.nop)
                           )})`}</span>
                         ))}
                     </span>
                     <CustomButton
                       applyClass={"NOP-button"}
-                      value='+'
+                      value="+"
                       onClick={onClickNopModal}
                     />{" "}
                     <CustomButton
                       applyClass={"Export-button"}
-                      value='Export'
+                      value="Export"
                       onClick={onClickOpenExport}
                     />
                   </>
 
                   {openExportDiv && (
-                    <div className='exportOptions'>
-                      <div className='exportOptionsBox'>
+                    <div className="exportOptions">
+                      <div className="exportOptionsBox">
                         <img
                           src={pdfImage}
                           width={30}
                           height={30}
-                          className='cursor-pointer'
-                          alt='pdf'
+                          className="cursor-pointer"
+                          alt="pdf"
                           onClick={HandlePDFDownloadFunc}
                         />
                         <img
                           src={excelImage}
                           width={30}
                           height={30}
-                          alt='excel'
-                          className='cursor-pointer'
+                          alt="excel"
+                          className="cursor-pointer"
                           onClick={HandleExcelDownloadFunc}
                         />
                         <img
                           src={emailImage}
                           width={30}
                           height={30}
-                          className='cursor-pointer'
-                          alt='email'
+                          className="cursor-pointer"
+                          alt="email"
                           onClick={() => setOpenMailModal(true)}
                         />
                         <img
                           src={printImage}
                           width={30}
                           height={30}
-                          className='cursor-pointer'
-                          alt='print'
+                          className="cursor-pointer"
+                          alt="print"
                         />
                       </div>
                     </div>
@@ -599,13 +603,14 @@ const BlotterHeader = () => {
         ) : (
           (isBranch || isCorporate) && (
             <>
-              <Row className='mb-3'>
+              <Row className="mb-3">
                 <Col
                   sm={6}
                   md={6}
                   lg={6}
-                  className='d-flex justify-content-start align-items-center'>
-                  <span className='fs-6 fw-bold color-hd data-summary-heading'>
+                  className="d-flex justify-content-start align-items-center"
+                >
+                  <span className="fs-6 fw-bold color-hd data-summary-heading">
                     TXN Summary
                   </span>
                 </Col>
@@ -613,46 +618,47 @@ const BlotterHeader = () => {
                   sm={6}
                   md={6}
                   lg={6}
-                  className='d-flex justify-content-end align-items-center'>
+                  className="d-flex justify-content-end align-items-center"
+                >
                   <CustomButton
                     applyClass={"Export-button"}
-                    value='Export'
+                    value="Export"
                     onClick={() => setOpenExportDiv(!openExportDiv)}
                   />
 
                   {openExportDiv && (
-                    <div className='exportOptions'>
-                      <div className='exportOptionsBox'>
+                    <div className="exportOptions">
+                      <div className="exportOptionsBox">
                         <img
                           src={pdfImage}
                           width={30}
                           height={30}
-                          className='cursor-pointer'
-                          alt='pdf'
+                          className="cursor-pointer"
+                          alt="pdf"
                           onClick={HandlePDFDownloadFunc}
                         />
                         <img
                           src={excelImage}
                           width={30}
                           height={30}
-                          alt='excel'
-                          className='cursor-pointer'
+                          alt="excel"
+                          className="cursor-pointer"
                           onClick={HandleExcelDownloadFunc}
                         />
                         <img
                           src={emailImage}
                           width={30}
                           height={30}
-                          className='cursor-pointer'
-                          alt='email'
+                          className="cursor-pointer"
+                          alt="email"
                           onClick={() => setOpenMailModal(true)}
                         />
                         <img
                           src={printImage}
-                          className='cursor-pointer'
+                          className="cursor-pointer"
                           width={30}
                           height={30}
-                          alt='print'
+                          alt="print"
                         />
                       </div>
                     </div>

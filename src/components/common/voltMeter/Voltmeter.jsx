@@ -61,6 +61,7 @@ const Voltmeter = () => {
    */
   useEffect(() => {
     if (GetVoltMeterStatusRealtime !== null) {
+      console.log(GetVoltMeterStatusRealtime, "GetVoltMeterStatusRealtime");
       try {
         // Find the currently active voltmeter in realtime data
         const active = GetVoltMeterStatusRealtime.statuses.find(
@@ -70,8 +71,9 @@ const Voltmeter = () => {
         // If active voltmeter found, update local state
         if (active !== undefined) {
           setActiveValue(active.voltMeterID);
+        } else {
+          setActiveValue(0);
         }
-
         // Reset realtime update flag in Redux store
         dispatch(setUpdateVolMeterRealtime(null));
       } catch (error) {
@@ -94,6 +96,8 @@ const Voltmeter = () => {
         // If active voltmeter found, update local state
         if (active !== undefined) {
           setActiveValue(active?.voltMeterID);
+        } else {
+          setActiveValue(0);
         }
       } catch (error) {
         console.log(error);
@@ -102,10 +106,10 @@ const Voltmeter = () => {
   }, [GetVoltMeterStatus]);
 
   return (
-    <div className='vol-meter-container'>
-      <div className='d-flex align-items-center vol-meter-inner-wrapper'>
+    <div className="vol-meter-container">
+      <div className="d-flex align-items-center vol-meter-inner-wrapper">
         {/* Voltmeter title/heading */}
-        <div className='heading-vol-meter fs-6 fw-semibold ff-poppins'>
+        <div className="heading-vol-meter fs-6 fw-semibold ff-poppins">
           Vol Meter
         </div>
 
@@ -115,7 +119,8 @@ const Voltmeter = () => {
             className={`btn btn-default vol-meter ms-1 ${
               activeValue === button.value ? "active-vol" : ""
             } ${button.value === 0 ? "vol-meter-off" : ""}`} // Special class for 'off' button
-            onClick={() => handleButtonClick(button.value)}>
+            onClick={() => handleButtonClick(button.value)}
+          >
             {button.label}
           </button>
         ))}

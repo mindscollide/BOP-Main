@@ -50,7 +50,7 @@ const ReportSlicer = createSlice({
         (state) => {
           state.Loader = true;
           state.error = null;
-          state.responseMessage = "";
+          state.responseMessage = "Request Initiated";
         }
       )
       // Fulfilled state
@@ -78,7 +78,7 @@ const ReportSlicer = createSlice({
         (state) => {
           state.Loader = true;
           state.error = null;
-          state.responseMessage = "";
+          state.responseMessage = "Request Initiated";
         }
       )
       // Fulfilled state
@@ -106,7 +106,7 @@ const ReportSlicer = createSlice({
         (state) => {
           state.Loader = true;
           state.error = null;
-          state.responseMessage = "";
+          state.responseMessage = "Request Initiated";
         }
       )
       // Fulfilled state
@@ -132,7 +132,7 @@ const ReportSlicer = createSlice({
       .addCase(DownloadPDFReportBlotterTrasactionBranchAPI.pending, (state) => {
         state.Loader = true;
         state.error = null;
-        state.responseMessage = "";
+        state.responseMessage = "Request Initiated";
       })
       // Fulfilled state
       .addCase(
@@ -159,7 +159,7 @@ const ReportSlicer = createSlice({
         (state) => {
           state.Loader = true;
           state.error = null;
-          state.responseMessage = "";
+          state.responseMessage = "Request Initiated";
         }
       )
       // Fulfilled state
@@ -187,7 +187,7 @@ const ReportSlicer = createSlice({
         (state) => {
           state.Loader = true;
           state.error = null;
-          state.responseMessage = "";
+          state.responseMessage = "Request Initiated";
         }
       )
       // Fulfilled state
@@ -215,7 +215,7 @@ const ReportSlicer = createSlice({
       .addCase(DownloadExcelReportNOPCalculationsAPI.pending, (state) => {
         state.Loader = true;
         state.error = null;
-        state.responseMessage = "";
+        state.responseMessage = "Request Initiated";
       })
       // Fulfilled state
       .addCase(
