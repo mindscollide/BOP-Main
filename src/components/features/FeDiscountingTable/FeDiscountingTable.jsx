@@ -70,7 +70,10 @@ const FeDiscountingTable = () => {
           },
           "hellohello"
         );
-        const { feDiscountingRates } = getDashboardForwards;
+        const { feDiscountingRates = [] } =
+          getDashboardForwards !== null &&
+          getDashboardForwards !== undefined &&
+          getDashboardForwards;
         const DiscountingInstruments =
           GetAllInstrumentForTreasury.discountingInstruments;
         const getAllInstrument = { instruments: DiscountingInstruments };
@@ -177,21 +180,21 @@ const FeDiscountingTable = () => {
   };
   return (
     <>
-      <div className="datetime fw-bold text-end mb-2 ff-roboto">
+      <div className='datetime fw-bold text-end mb-2 ff-roboto'>
         {date !== "" &&
           moment(formatDateUTCToGMT(date)).format("DD MMM YYYY, hh:mm:ss")}
         {/* 05 Aug 2025, 11:20:58 */}
       </div>
       <GlobalTable
-        prefixCls="DealerAndTreasuryDiscountTable"
+        prefixCls='DealerAndTreasuryDiscountTable'
         columns={columnsData}
         dataSource={rowData}
         pagination={false}
       />
 
-      <span className="d-flex justify-content-center mt-4">
+      <span className='d-flex justify-content-center mt-4'>
         <CustomButton
-          applyClass="publishForwardsBtn"
+          applyClass='publishForwardsBtn'
           value={"Publish FE Discounting"}
           disabled={marketStatus === false ? true : false}
           onClick={handlePublishDiscount}

@@ -420,7 +420,6 @@ const CorporateBookaForwardModal = ({
       });
       return;
     } else if (
-      corporateValue.value !== 0 &&
       selectedCurrency.value !== "" &&
       typeOptionSelected.value !== 0 &&
       forwardRFQState.Amount !== "" &&

@@ -1735,7 +1735,7 @@ const TXNSummary = () => {
     {
       title: (
         <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">Amount</span>
+          <span className="ff-poppins fw-bold">TXN Amount</span>
           {/* <Popover
             content={popoverContentAmount1}
             trigger='click'
@@ -1758,7 +1758,7 @@ const TXNSummary = () => {
       key: "amount1",
       dataIndex: "quantity",
       className: "ff-poppins fw-bold",
-      width: 80,
+      width: 150,
       render: (text, record) => {
         return <IndexCell value={formatPkAmount(text)} />;
       },
@@ -1825,7 +1825,7 @@ const TXNSummary = () => {
     {
       title: (
         <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">Amount</span>
+          <span className="ff-poppins fw-bold">Total Amount</span>
           {/* <Popover
             content={popoverContentAmount2}
             trigger='click'
@@ -1848,7 +1848,7 @@ const TXNSummary = () => {
       key: "amount2",
       dataIndex: "amount",
       className: "ff-poppins fw-bold",
-      width: 80,
+      width: 150,
       render: (text, record) => {
         return <IndexCell value={formatPkAmount(text)} />;
       },
@@ -1956,7 +1956,7 @@ const TXNSummary = () => {
       render: (text, record) => {
         return (
           <>
-            <div className="col-chat text-nowrap text-center">
+            <div className="col-chat text-nowrap text-center d-flex justify-content-center align-items-center">
               {record.statusID === 4 && record.isRFQ === true ? (
                 <>
                   <CustomButton
