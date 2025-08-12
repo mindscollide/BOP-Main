@@ -77,6 +77,9 @@ const BlotterSlicer = createSlice({
     CalculateFESwapAndDiscountingRate: null,
   },
   reducers: {
+    setCalculateNonFeSwapAndDiscountingRate: (state, { payload }) => {
+      state.calculateNonFeSwapAndDiscountingRate = payload;
+    },
     setCalculateFESwapAndDiscountingRate: (state, { payload }) => {
       state.CalculateFESwapAndDiscountingRate = payload;
     },
@@ -539,7 +542,8 @@ export const {
   clearGetForwardTransactionDetails,
   setSpotQuoteModalData,
   setBlotterLoader,
-  setCalculateFESwapAndDiscountingRate
+  setCalculateFESwapAndDiscountingRate,
+  setCalculateNonFeSwapAndDiscountingRate
 } = BlotterSlicer.actions;
 
 export default BlotterSlicer.reducer;

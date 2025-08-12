@@ -15,6 +15,7 @@ import {
 import { formatDate } from "@/common/utils";
 import { useSelector } from "react-redux";
 import { NumericFormat } from "react-number-format";
+import { setCalculateNonFeSwapAndDiscountingRate } from "@/store/BlotterSlicer/BlotterSlicer";
 const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
 const isCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
 
@@ -230,7 +231,10 @@ const NonFEDiscountingModal = ({
           swapValue: swap,
           Ready: readyRate,
         });
-      } catch (error) {}
+        dispatch(setCalculateNonFeSwapAndDiscountingRate(null));
+      } catch (error) {
+        console.log(error);
+      }
     }
   }, [calculateNonFeSwapAndDiscountingRate]);
 

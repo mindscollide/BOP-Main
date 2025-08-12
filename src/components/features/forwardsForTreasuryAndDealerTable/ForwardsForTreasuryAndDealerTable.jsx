@@ -278,12 +278,22 @@ const TenoreWiseCurrentAndLastRates = ({
           Bid: Number(item.currentBid),
           Ask: Number(item.currentAsk),
           DateTime: "",
+          NoOfDays: item.tenorDays,
         };
       }),
     };
-    console.log(forwardsForTreasuryBranch, "forwardsForTreasuryBranch");
-
+    console.log({ Data, forwardsForTreasuryBranch }, "DataDataData");
     dispatch(PublishTenorWiseForwardsAction({ Data, navigate }));
+  };
+
+  const handleChangeDays = (tenorId, value) => {
+    const updatedData = forwardsForTreasuryBranch.map((item) =>
+      item.tenorID === tenorId
+        ? { ...item, tenorDays: Number(value) || 0 }
+        : item
+    );
+
+    dispatch(setForwardsForTreasuryBranch(updatedData));
   };
 
   const columns = [
@@ -303,17 +313,15 @@ const TenoreWiseCurrentAndLastRates = ({
           align: "center",
           width: 250,
           render: (text, record) => {
-            const tenor = getAllTenorsData?.tenors?.find(
-              (item) => item.tenorID === record.tenorID
-            );
             return (
-              tenor && (
-                <InputFIeld
-                  value={tenor.tenorDays}
-                  disabled={true}
-                  applyClass={"DealerTableBitInput"}
-                />
-              )
+              <InputFIeld
+                value={record.tenorDays}
+                // disabled={true}
+                onChange={(event) =>
+                  handleChangeDays(record.tenorID, event.target.value)
+                }
+                applyClass={"DealerTableBitInput"}
+              />
             );
           },
         },
