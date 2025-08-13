@@ -107,6 +107,8 @@ const TXNSummary = () => {
   //local states
   const [blotterdata, setBlotterdata] = useState([]);
 
+  console.log(blotterdata, "blotterdatablotterdatablotterdata")
+
   const [totalRecord, setTotalRecords] = useState(0);
   const [sRow, setRow] = useState(0);
   const [hasReachedBottom, setHasReachedBottom] = useState(false);

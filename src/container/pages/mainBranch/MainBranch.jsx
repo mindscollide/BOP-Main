@@ -72,7 +72,7 @@ const MainBranch = () => {
     {
       title: "Spot",
       content:
-        SpotBranch && activeTab === "Spot" ? (
+        SpotBranch  ? (
           <Suspense fallback={<>Loading....</>}>
             <SpotBranch />
             <section className="bg-white mt-2 mb-4 p-2">
@@ -84,7 +84,7 @@ const MainBranch = () => {
     {
       title: "Forwards",
       content:
-        ForwardsForBranch && activeTab === "Forwards" ? (
+        ForwardsForBranch ? (
           <Suspense fallback={<>Loading Forwards.... </>}>
             <ForwardsForBranch />
             <section className="bg-white p-2">
@@ -96,7 +96,7 @@ const MainBranch = () => {
     {
       title: "Discounting",
       content:
-        BranchDiscountingTable && activeTab === "Discounting" ? (
+        BranchDiscountingTable  ? (
           <Suspense fallback={<>Loading Discounting...</>}>
             <BranchDiscountingTable />
             <section className="bg-white p-2">

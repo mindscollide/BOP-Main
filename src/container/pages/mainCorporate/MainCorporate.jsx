@@ -79,39 +79,36 @@ const MainCorporate = () => {
   const tabsData = [
     {
       title: "Spot",
-      content:
-        SpotBranch && activeTab === "Spot" ? (
-          <Suspense fallback={<>Loading Spot...</>}>
-            <SpotBranch />
-            <section className="bg-white mt-2 p-2">
-              <BlotterHeader />
-            </section>
-          </Suspense>
-        ) : null,
+      content: SpotBranch ? (
+        <Suspense fallback={<>Loading Spot...</>}>
+          <SpotBranch />
+          <section className='bg-white mt-2 p-2'>
+            <BlotterHeader />
+          </section>
+        </Suspense>
+      ) : null,
     },
     {
       title: "Forwards",
-      content:
-        ForwardTableBranchComponent && activeTab === "Forwards" ? (
-          <Suspense fallback={<>Loading Forwards...</>}>
-            <ForwardTableBranchComponent />
-            <section className="bg-white p-2">
-              <BlotterHeader />
-            </section>
-          </Suspense>
-        ) : null,
+      content: ForwardTableBranchComponent ? (
+        <Suspense fallback={<>Loading Forwards...</>}>
+          <ForwardTableBranchComponent />
+          <section className='bg-white p-2'>
+            <BlotterHeader />
+          </section>
+        </Suspense>
+      ) : null,
     },
     {
       title: "Discounting",
-      content:
-        BranchDiscountingTable && activeTab === "Discounting" ? (
-          <Suspense fallback={<>Loading Discounting...</>}>
-            <BranchDiscountingTable />
-            <section className="bg-white p-2">
-              <BlotterHeader />
-            </section>
-          </Suspense>
-        ) : null,
+      content: BranchDiscountingTable ? (
+        <Suspense fallback={<>Loading Discounting...</>}>
+          <BranchDiscountingTable />
+          <section className='bg-white p-2'>
+            <BlotterHeader />
+          </section>
+        </Suspense>
+      ) : null,
     },
   ];
   let filterTabs = tabsData;
@@ -130,7 +127,7 @@ const MainCorporate = () => {
       tabs={filterTabs}
       activeKey={activeTab}
       onTabChange={handleTabChange}
-      tabClass="mb-4"
+      tabClass='mb-4'
     />
   );
 };
