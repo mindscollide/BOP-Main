@@ -19,6 +19,7 @@ const SelectDropdown = ({
   menuIsOpen,
   menuPosition = "fixed",
   onChange,
+  isMulti,
 }) => {
   return (
     <Select
@@ -39,6 +40,7 @@ const SelectDropdown = ({
       pageSize={0}
       menuPosition={menuPosition}
       filterOption={filterOptions}
+      isMulti={isMulti}
     />
   );
 };

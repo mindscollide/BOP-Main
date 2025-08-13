@@ -418,3 +418,19 @@ export const getMarketStatusRM = {
 export const NOPCalcuationReports = {
   RequestMethod: "ServiceManager.DownloadNOPCalculationsExcelReport",
 };
+
+export const GetUsersEmail = {
+  RequestMethod: "ServiceManager.GetUsersEmail",
+};
+
+export const EmailBlotterTransactionDetailsForTreasury = {
+  RequestMethod: "ServiceManager.EmailBlotterTransactionDetailsForTreasury",
+};
+
+export const EmailBlotterTransactionDetailsForBranch = {
+  RequestMethod: "ServiceMethod.EmailBlotterTransactionDetailsForBranch",
+};
+
+export const EmailBlotterTransactionDetailsForCorporate = {
+  RequestMethod: "ServiceMethod.EmailBlotterTransactionDetailsForCorporate",
+};
