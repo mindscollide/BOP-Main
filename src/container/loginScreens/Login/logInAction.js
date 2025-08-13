@@ -53,7 +53,8 @@ export const loginInApi = createAsyncThunk(
             case "ERM_AuthService_AuthManager_Login_13".toLowerCase():
               console.log("", response.data);
               return rejectWithValue("Branch is InActive");
-
+            case "ERM_AuthService_AuthManager_Login_14".toLowerCase():
+              rejectWithValue("Invalid Role");
             case "ERM_AuthService_AuthManager_Login_03".toLowerCase():
               const {
                 branch,

@@ -12,6 +12,9 @@ import { updateEmail, updatePassword, updateUsername } from "./Loginfunctions";
 import { useNotification } from "@/context/NotificationProvider";
 
 const shouldIsCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
+const shouldIsBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
+const shouldIsDealer = import.meta.env.VITE_APP_INCLUDE_DEALER === "true";
+const shouldIsTreasury = import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
 
 const BopLogin = () => {
   const dispatch = useDispatch();
@@ -151,6 +154,13 @@ const BopLogin = () => {
           Password: password,
           DeviceID: "1",
           Device: "Browser",
+          RoleID: shouldIsBranch
+            ? 9
+            : shouldIsDealer
+            ? 7
+            : shouldIsTreasury
+            ? 8
+            : 0,
         };
         dispatch(loginInApi({ Data, navigate, shouldIsCorporate }));
       } else {
