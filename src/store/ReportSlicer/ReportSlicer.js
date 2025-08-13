@@ -8,6 +8,9 @@ import {
   DownloadPDFReportBlotterTrasactionBranchAPI,
   DownloadPDFReportBlotterTrasactionCorporateAPI,
   DownloadPDFReportBlotterTrasactionTreasuryAPI,
+  EmailBlotterTransactionDetailsForBranchAPI,
+  EmailBlotterTransactionDetailsForCorporateAPI,
+  EmailBlotterTransactionDetailsForTreasuryAPI,
 } from "./ReportActions";
 
 const ReportSlicer = createSlice({
@@ -229,6 +232,87 @@ const ReportSlicer = createSlice({
       // Rejected state
       .addCase(
         DownloadExcelReportNOPCalculationsAPI.rejected,
+        (state, action) => {
+          state.Loader = false;
+          state.error = action.payload || "Download failed";
+          state.responseMessage = "";
+        }
+      )
+
+      // Pending state
+      .addCase(EmailBlotterTransactionDetailsForBranchAPI.pending, (state) => {
+        state.Loader = true;
+        state.error = null;
+        state.responseMessage = "Request Initiated";
+      })
+      // Fulfilled state
+      .addCase(
+        EmailBlotterTransactionDetailsForBranchAPI.fulfilled,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.error = null;
+          state.responseMessage = payload.message || "Email Sent successful";
+        }
+      )
+      // Rejected state
+      .addCase(
+        EmailBlotterTransactionDetailsForBranchAPI.rejected,
+        (state, action) => {
+          state.Loader = false;
+          state.error = action.payload || "Download failed";
+          state.responseMessage = "";
+        }
+      )
+
+      // Pending state
+      .addCase(
+        EmailBlotterTransactionDetailsForCorporateAPI.pending,
+        (state) => {
+          state.Loader = true;
+          state.error = null;
+          state.responseMessage = "Request Initiated";
+        }
+      )
+      // Fulfilled state
+      .addCase(
+        EmailBlotterTransactionDetailsForCorporateAPI.fulfilled,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.error = null;
+          state.responseMessage = payload.message || "Email Sent successful";
+        }
+      )
+      // Rejected state
+      .addCase(
+        EmailBlotterTransactionDetailsForCorporateAPI.rejected,
+        (state, action) => {
+          state.Loader = false;
+          state.error = action.payload || "Download failed";
+          state.responseMessage = "";
+        }
+      )
+
+      // Pending state
+      .addCase(
+        EmailBlotterTransactionDetailsForTreasuryAPI.pending,
+        (state) => {
+          state.Loader = true;
+          state.error = null;
+          state.responseMessage = "Request Initiated";
+        }
+      )
+      // Fulfilled state
+      .addCase(
+        EmailBlotterTransactionDetailsForTreasuryAPI.fulfilled,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.error = null;
+          state.responseMessage = payload.message || "Email Sent successful";
+        }
+      )
+      // Rejected state
+      .addCase(
+        EmailBlotterTransactionDetailsForTreasuryAPI.rejected,
         (state, action) => {
           state.Loader = false;
           state.error = action.payload || "Download failed";

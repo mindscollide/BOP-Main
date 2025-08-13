@@ -61,3 +61,13 @@
   color: #096fed;
   margin: 0 !important;
 }
+.emailSendUser {
+  border: 1px solid #e1e1e1;
+  border-radius: 20px;
+  padding: 7px 5px;
+}
+.removeEmailIcon {
+  color: #f21616;
+  font-size: 15px !important;
+  cursor: pointer;
+}
