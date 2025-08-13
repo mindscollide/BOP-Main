@@ -271,18 +271,39 @@ const TenoreWiseCurrentAndLastRates = ({
       return;
     }
 
+    // Get all tenorDays values
+    const tenorDaysList = forwardsForTreasuryBranch.map(
+      (item) => item.tenorDays
+    );
+
+    // Find duplicates
+    const duplicates = tenorDaysList.filter(
+      (item, index) => tenorDaysList.indexOf(item) !== index
+    );
+
+    // Alert if duplicates found
+    if (duplicates.length > 0) {
+      console.log(duplicates, "duplicatesduplicatesduplicates");
+      showMessage(
+        `Duplicate tenorDays found: ${[...new Set(duplicates)].join(", ")}`
+      );
+      return;
+      // alert(
+      //   `Duplicate tenorDays found: ${[...new Set(duplicates)].join(", ")}`
+      // );
+    }
+
     let Data = {
-      CurrentTenorWiseForwardRates: forwardsForTreasuryBranch.map((item) => {
-        return {
-          TenorID: item.tenorID,
-          Bid: Number(item.currentBid),
-          Ask: Number(item.currentAsk),
-          DateTime: "",
-          NoOfDays: item.tenorDays,
-        };
-      }),
+      CurrentTenorWiseForwardRates: forwardsForTreasuryBranch.map((item) => ({
+        TenorID: item.tenorID,
+        Bid: Number(item.currentBid),
+        Ask: Number(item.currentAsk),
+        DateTime: "",
+        NoOfDays: item.tenorDays,
+      })),
     };
-    console.log({ Data, forwardsForTreasuryBranch }, "DataDataData");
+
+    // console.log({ Data, forwardsForTreasuryBranch }, "DataDataData");
     dispatch(PublishTenorWiseForwardsAction({ Data, navigate }));
   };
 
