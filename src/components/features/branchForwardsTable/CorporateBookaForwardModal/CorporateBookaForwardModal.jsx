@@ -194,7 +194,7 @@ const CorporateBookaForwardModal = ({
         });
         dispatch(clearCalculateTenorSwapAndForwardRateData(null));
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     }
   }, [calculatedForwardsSwapandRate]);
@@ -655,10 +655,18 @@ const CorporateBookaForwardModal = ({
           <>
             <Row>
               <Col
-                lg={12}
-                md={12}
+                lg={6}
+                md={6}
                 sm={12}
-                className="d-flex justify-content-center"
+                className="d-flex justify-content-start align-items-center rfqLimit_error-style"
+              >
+                {/* Limit should be lower than 1000 */}
+              </Col>
+              <Col
+                lg={6}
+                md={6}
+                sm={12}
+                className="d-flex align-items-center justify-content-end"
               >
                 <CustomButton
                   value={"Confirm"}

@@ -410,15 +410,15 @@ const FEDiscountingModal = ({
               <Col lg={12} md={12} sm={12}>
                 {isBranch ? (
                   <>
-                    <span className='FeDiscountingHeader_BranchName'>
+                    <span className="FeDiscountingHeader_BranchName">
                       {counterPartyDetails?.branchName}
                     </span>
-                    <p className='FeDiscountingHeader_BranchCode'>
+                    <p className="FeDiscountingHeader_BranchCode">
                       {counterPartyDetails?.branchCode}
                     </p>
                   </>
                 ) : isCorporate ? (
-                  <span className='FeDiscountingHeader_BranchName'>
+                  <span className="FeDiscountingHeader_BranchName">
                     {counterPartyDetails?.corporateName}
                   </span>
                 ) : null}
@@ -432,22 +432,22 @@ const FEDiscountingModal = ({
               <Col lg={12} md={12} sm={12}>
                 {/* Company Name Field */}
                 {isBranch && (
-                  <Row className='mb-2'>
+                  <Row className="mb-2">
                     <Col lg={12} md={12} sm={12}>
-                      <div className='d-flex flex-column flex-wrap'>
-                        <span className='SubHeadings'>Client name*</span>
+                      <div className="d-flex flex-column flex-wrap">
+                        <span className="SubHeadings">Client name*</span>
                         <SelectDropdown
-                          classNamePrefix='RfqSpot'
+                          classNamePrefix="RfqSpot"
                           options={getAllCorporates}
                           value={formData.corproateObj}
                           isSearchable={true}
                           onChange={(selected) =>
                             handleDropdownChange("corproateObj", selected)
                           }
-                          placeholder='Select Company'
+                          placeholder="Select Company"
                         />
                         {errors.corproateObj && (
-                          <span className='text-danger small'>
+                          <span className="text-danger small">
                             Please select a company
                           </span>
                         )}
@@ -459,26 +459,26 @@ const FEDiscountingModal = ({
                 {/* Currency Field */}
                 <Row>
                   <Col lg={12} md={12} sm={12}>
-                    <div className='d-flex flex-column flex-wrap'>
-                      <span className='SubHeadings'>Currency</span>
+                    <div className="d-flex flex-column flex-wrap">
+                      <span className="SubHeadings">Currency</span>
                       <SelectDropdown
-                        classNamePrefix='RfqSpot'
+                        classNamePrefix="RfqSpot"
                         options={currencyOptions}
                         value={formData.InstrumentID}
                         onChange={(selected) =>
                           handleDropdownChange("InstrumentID", selected)
                         }
-                        placeholder='Select Currency'
+                        placeholder="Select Currency"
                       />
                     </div>
                   </Col>
                 </Row>
 
                 {/* Nature and Account Number Fields */}
-                <Row className='mt-2'>
+                <Row className="mt-2">
                   <Col lg={6} md={6} sm={6}>
-                    <div className='d-flex flex-column flex-wrap'>
-                      <span className='SubHeadings'>Nature</span>
+                    <div className="d-flex flex-column flex-wrap">
+                      <span className="SubHeadings">Nature</span>
                       <InputFIeld
                         value={selectedNature?.name || ""}
                         disabled={true}
@@ -487,8 +487,8 @@ const FEDiscountingModal = ({
                     </div>
                   </Col>
                   <Col lg={6} md={6} sm={6}>
-                    <div className='d-flex flex-column flex-wrap'>
-                      <span className='SubHeadings'>A/c No*</span>
+                    <div className="d-flex flex-column flex-wrap">
+                      <span className="SubHeadings">A/c No*</span>
                       <InputFIeld
                         value={formData.AccountNumber}
                         onChange={(e) =>
@@ -497,7 +497,7 @@ const FEDiscountingModal = ({
                         applyClass={"CalculatorTextfield"}
                       />
                       {errors.AccountNumber && (
-                        <span className='text-danger small'>
+                        <span className="text-danger small">
                           Please enter a valid account number
                         </span>
                       )}
@@ -506,23 +506,23 @@ const FEDiscountingModal = ({
                 </Row>
 
                 {/* Amount Field */}
-                <Row className='my-2'>
+                <Row className="my-2">
                   <Col lg={12} md={12} sm={12}>
-                    <div className='d-flex flex-column flex-wrap'>
-                      <span className='SubHeadings'>Amount</span>
+                    <div className="d-flex flex-column flex-wrap">
+                      <span className="SubHeadings">Amount</span>
                       <NumericFormat
                         customInput={InputFIeld}
                         value={formData.Quantity}
                         onChange={(e) =>
                           handleInputChange("Quantity", e.target.value)
                         }
-                        thousandSeparator=','
+                        thousandSeparator=","
                         maxLength={10}
                         name={"Amount"}
                         applyClass={"CalculatorTextfield"}
                       />
                       {errors.Quantity && (
-                        <span className='text-danger small'>
+                        <span className="text-danger small">
                           Please enter a valid amount
                         </span>
                       )}
@@ -531,10 +531,10 @@ const FEDiscountingModal = ({
                 </Row>
 
                 {/* Tenor Field */}
-                <Row className=''>
-                  <Col lg={8} md={8} sm={8} className='pe-0'>
-                    <div className='d-flex flex-column flex-wrap'>
-                      <span className='SubHeadings'>Tenor*</span>
+                <Row className="">
+                  <Col lg={8} md={8} sm={8} className="pe-0">
+                    <div className="d-flex flex-column flex-wrap">
+                      <span className="SubHeadings">Tenor*</span>
                       <InputFIeld
                         onChange={handleChangeTenor}
                         value={tenorValue}
@@ -542,7 +542,7 @@ const FEDiscountingModal = ({
                         onBlur={onBlurTenorDays}
                       />
                       {errors.TenorDays && (
-                        <span className='text-danger small'>
+                        <span className="text-danger small">
                           Please enter valid tenor days (1-1000)
                         </span>
                       )}
@@ -552,20 +552,21 @@ const FEDiscountingModal = ({
                     lg={4}
                     md={4}
                     sm={4}
-                    className='d-flex align-items-end justify-content-start ps-0'>
-                    <span className='feDiscuntingBookAForward_tenorDateSpan'>
+                    className="d-flex align-items-end justify-content-start ps-0"
+                  >
+                    <span className="feDiscuntingBookAForward_tenorDateSpan">
                       {tenoreDate}
                     </span>
                   </Col>
                 </Row>
 
                 {/* Ready and Swap Fields */}
-                <Row className='mt-2'>
+                <Row className="mt-2">
                   <Col lg={7} md={7} sm={7}>
                     <Row>
                       <Col lg={12} md={12} sm={12}>
-                        <div className='d-flex flex-column flex-wrap'>
-                          <span className='SubHeadings'>Ready</span>
+                        <div className="d-flex flex-column flex-wrap">
+                          <span className="SubHeadings">Ready</span>
                           <InputFIeld
                             value={formData.Ready}
                             // onChange={(e) =>
@@ -575,17 +576,17 @@ const FEDiscountingModal = ({
                             applyClass={"CalculatorTextfield"}
                           />
                           {errors.Ready && (
-                            <span className='text-danger small'>
+                            <span className="text-danger small">
                               Please enter a valid value
                             </span>
                           )}
                         </div>
                       </Col>
                     </Row>
-                    <Row className='mt-2 position-relative'>
-                      <Col lg={10} md={10} sm={10} className='pe-0'>
-                        <div className='d-flex flex-column flex-wrap'>
-                          <span className='SubHeadings'>
+                    <Row className="mt-2 position-relative">
+                      <Col lg={10} md={10} sm={10} className="pe-0">
+                        <div className="d-flex flex-column flex-wrap">
+                          <span className="SubHeadings">
                             Discounting Factor
                           </span>
                           <InputFIeld
@@ -602,8 +603,9 @@ const FEDiscountingModal = ({
                         lg={2}
                         md={2}
                         sm={2}
-                        className='d-flex align-items-end justify-content-start ps-0'>
-                        <span className='SofrPercentSignBox'>%</span>
+                        className="d-flex align-items-end justify-content-start ps-0"
+                      >
+                        <span className="SofrPercentSignBox">%</span>
                       </Col>
                     </Row>
                   </Col>
@@ -611,8 +613,9 @@ const FEDiscountingModal = ({
                     lg={5}
                     md={5}
                     sm={5}
-                    className='d-flex justify-content-center align-items-center'>
-                    <span className='BlueBackGroundboxFEDiscountingModal'>
+                    className="d-flex justify-content-center align-items-center"
+                  >
+                    <span className="BlueBackGroundboxFEDiscountingModal">
                       {/* This would be calculated based on form values */}
                       {formData.feRate || "0.00"}
                     </span>
@@ -629,7 +632,8 @@ const FEDiscountingModal = ({
                 lg={12}
                 md={12}
                 sm={12}
-                className='d-flex justify-content-center'>
+                className="d-flex justify-content-center"
+              >
                 <CustomButton
                   value={"Confirm"}
                   applyClass={"ConfirmButtonBookaForward"}

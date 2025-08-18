@@ -178,6 +178,7 @@ const MailModal = ({ openMailModal, setOpenMailModal }) => {
         size="lg"
         footerClassName="Mail-footer-className"
         headerClassName="Mail-header-className"
+        bodyClassName={"Mail-body-className"}
         closeButton
         modalHeader={
           <>
@@ -226,24 +227,26 @@ const MailModal = ({ openMailModal, setOpenMailModal }) => {
                   />
                 </Col>
               </Row>
-              <Row>
-                <Col
-                  sm={12}
-                  md={12}
-                  lg={12}
-                  className="d-flex justify-content-start gap-2 flex-wrap "
-                >
-                  {sendEmails.map((user) => (
-                    <span className="emailSendUser">
-                      <IconElement
-                        iconClass={"icon-close removeEmailIcon"}
-                        onClick={() => handleRemoveEmail(user.userID)}
-                      />
-                      {user.email}
-                    </span>
-                  ))}
-                </Col>
-              </Row>
+              <section className="add-mail-section">
+                <Row>
+                  <Col
+                    sm={12}
+                    md={12}
+                    lg={12}
+                    className="d-flex justify-content-start gap-2 flex-wrap "
+                  >
+                    {sendEmails.map((user) => (
+                      <span className="emailSendUser">
+                        <IconElement
+                          iconClass={"icon-close removeEmailIcon"}
+                          onClick={() => handleRemoveEmail(user.userID)}
+                        />
+                        {user.email}
+                      </span>
+                    ))}
+                  </Col>
+                </Row>
+              </section>
               <Row>
                 <Col className="mb-3 mt-5">
                   <label>Message (Optional)</label>
