@@ -466,12 +466,8 @@ const SpotBranch = () => {
                               currencyLabel={data.currecncyLabel || ""}
                               buyHeading={isBranch ? "BOP Buy" : "I Buy"}
                               sellHeading={isBranch ? "BOP Sell" : "I Sell"}
-                              buyValue={
-                                isCorporate ? data.buyValue : data.sellValue
-                              }
-                              sellValue={
-                                isCorporate ? data.sellValue : data.buyValue
-                              }
+                              buyValue={data.buyValue}
+                              sellValue={data.sellValue}
                               // buyHeading="I Buy"
                               // sellHeading="I Sell"
                               // buyValue={data.buyValue || ""}
