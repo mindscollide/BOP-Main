@@ -465,9 +465,12 @@ const InfoTransaction = () => {
                       : "N/A"}
                   </p>
                   <p className={styles["transactionInfolabelEmail"]}>
-                    {InfoRecord?.acceptedByUserEmail
-                      ? InfoRecord?.acceptedByUserEmail
-                      : "N/A"}
+                    {
+                      InfoRecord?.acceptedByUserName !== "Auto Accept" &&
+                        InfoRecord?.acceptedByUserEmail
+                      // ? InfoRecord?.acceptedByUserEmail
+                      // : "N/A"
+                    }
                   </p>
                 </Row>
               </Col>
