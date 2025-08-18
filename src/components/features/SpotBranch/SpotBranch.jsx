@@ -467,10 +467,10 @@ const SpotBranch = () => {
                               buyHeading={isBranch ? "BOP Buy" : "I Buy"}
                               sellHeading={isBranch ? "BOP Sell" : "I Sell"}
                               buyValue={
-                                isCorporate ? data.sellValue : data.sellValue
+                                isCorporate ? data.buyValue : data.sellValue
                               }
                               sellValue={
-                                isCorporate ? data.buyValue : data.buyValue
+                                isCorporate ? data.sellValue : data.buyValue
                               }
                               // buyHeading="I Buy"
                               // sellHeading="I Sell"
