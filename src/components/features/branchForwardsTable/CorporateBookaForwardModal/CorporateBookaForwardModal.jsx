@@ -28,6 +28,10 @@ const CorporateBookaForwardModal = ({
   const dispatch = useDispatch();
   const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
   const isCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
+  const [errorMessage, setErrorMessage] = useState({
+    message: "",
+    status: false,
+  });
 
   const counterPartyDetails =
     isBranch && localStorage.getItem("branch") !== null
@@ -448,7 +452,12 @@ const CorporateBookaForwardModal = ({
         Swap: Number(forwardRFQState.Swap),
       };
       dispatch(
-        SaveForwardTransactionAPI({ navigate, Data, setBookaForwardModalCall })
+        SaveForwardTransactionAPI({
+          navigate,
+          Data,
+          setBookaForwardModalCall,
+          setErrorMessage,
+        })
       );
     }
   };
@@ -660,6 +669,9 @@ const CorporateBookaForwardModal = ({
                 sm={12}
                 className="d-flex justify-content-start align-items-center rfqLimit_error-style"
               >
+                {errorMessage.status === true && errorMessage.message !== ""
+                  ? errorMessage.message
+                  : ""}
                 {/* Limit should be lower than 1000 */}
               </Col>
               <Col

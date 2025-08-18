@@ -302,7 +302,7 @@ export const SaveSpotTransactionAPI = createAsyncThunk(
 export const SaveForwardTransactionAPI = createAsyncThunk(
   "Blotter/SaveForward",
   async (
-    { navigate, Data, setBookaForwardModalCall },
+    { navigate, Data, setBookaForwardModalCall, setErrorMessage },
     { dispatch, rejectWithValue }
   ) => {
     try {
@@ -320,6 +320,7 @@ export const SaveForwardTransactionAPI = createAsyncThunk(
             navigate,
             Data,
             setBookaForwardModalCall,
+            setErrorMessage,
           })
         );
       } else if (responseCode === 200) {
@@ -361,6 +362,50 @@ export const SaveForwardTransactionAPI = createAsyncThunk(
               )
           ) {
             return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveForwardTransaction_06".toLowerCase()
+              )
+          ) {
+            setErrorMessage((prev) => {
+              return {
+                ...prev,
+                status: true,
+                message: `Daily Limit Exceeded from ${response.data.responseResult.dailyLimitRemaining.toFixed(
+                  2
+                )}`,
+              };
+            });
+            return {
+              response: response.data.responseResult,
+              message: `Daily Limit Exceeded from ${response.data.responseResult.dailyLimitRemaining.toFixed(
+                2
+              )}`,
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveForwardTransaction_07".toLowerCase()
+              )
+          ) {
+            setErrorMessage((prev) => {
+              return {
+                ...prev,
+                status: true,
+                message: `Max Transaction Limit Exceeded from ${response.data.responseResult.maxLimit.toFixed(
+                  2
+                )}`,
+              };
+            });
+            return {
+              response: response.data.responseResult,
+              message: `Max Transaction Limit Exceeded from ${response.data.responseResult.maxLimit.toFixed(
+                2
+              )}`,
+            };
           } else {
             return rejectWithValue("Something went wrong");
           }
@@ -379,7 +424,7 @@ export const SaveForwardTransactionAPI = createAsyncThunk(
 export const SaveFEDiscountingTransactionAPI = createAsyncThunk(
   "Blotter/SaveFEDiscounting",
   async (
-    { navigate, Data, setFeDiscountingModalCall },
+    { navigate, Data, setFeDiscountingModalCall, setErrorMessage },
     { dispatch, rejectWithValue }
   ) => {
     try {
@@ -397,6 +442,7 @@ export const SaveFEDiscountingTransactionAPI = createAsyncThunk(
             navigate,
             Data,
             setFeDiscountingModalCall,
+            setErrorMessage,
           })
         );
       } else if (responseCode === 200) {
@@ -438,6 +484,50 @@ export const SaveFEDiscountingTransactionAPI = createAsyncThunk(
               )
           ) {
             return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveFEDiscountingTransaction_06".toLowerCase()
+              )
+          ) {
+            setErrorMessage((prev) => {
+              return {
+                ...prev,
+                status: true,
+                message: `Daily Limit Exceeded from ${response.data.responseResult.dailyLimitRemaining.toFixed(
+                  2
+                )}`,
+              };
+            });
+            return {
+              response: response.data.responseResult,
+              message: `Daily Limit Exceeded from ${response.data.responseResult.dailyLimitRemaining.toFixed(
+                2
+              )}`,
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveFEDiscountingTransaction_07".toLowerCase()
+              )
+          ) {
+            setErrorMessage((prev) => {
+              return {
+                ...prev,
+                status: true,
+                message: `Max Transaction Limit Exceeded from ${response.data.responseResult.maxLimit.toFixed(
+                  2
+                )}`,
+              };
+            });
+            return {
+              response: response.data.responseResult,
+              message: `Max Transaction Limit Exceeded from ${response.data.responseResult.maxLimit.toFixed(
+                2
+              )}`,
+            };
           } else {
             return rejectWithValue("Something went wrong");
           }
@@ -456,7 +546,7 @@ export const SaveFEDiscountingTransactionAPI = createAsyncThunk(
 export const SaveNonFEDiscountingTransactionAPI = createAsyncThunk(
   "Blotter/SaveNonFEDiscounting",
   async (
-    { navigate, Data, setNonfeDiscountingModalCall },
+    { navigate, Data, setNonfeDiscountingModalCall, setErrorMessage },
     { dispatch, rejectWithValue }
   ) => {
     try {
@@ -474,6 +564,7 @@ export const SaveNonFEDiscountingTransactionAPI = createAsyncThunk(
             navigate,
             Data,
             setNonfeDiscountingModalCall,
+            setErrorMessage,
           })
         );
       } else if (responseCode === 200) {
@@ -515,6 +606,50 @@ export const SaveNonFEDiscountingTransactionAPI = createAsyncThunk(
               )
           ) {
             return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveNonFEDiscountingTransaction_06".toLowerCase()
+              )
+          ) {
+            setErrorMessage((prev) => {
+              return {
+                ...prev,
+                status: true,
+                message: `Daily Limit Exceeded from ${response.data.responseResult.dailyLimitRemaining.toFixed(
+                  2
+                )}`,
+              };
+            });
+            return {
+              response: response.data.responseResult,
+              message: `Daily Limit Exceeded from ${response.data.responseResult.dailyLimitRemaining.toFixed(
+                2
+              )}`,
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveNonFEDiscountingTransaction_07".toLowerCase()
+              )
+          ) {
+            setErrorMessage((prev) => {
+              return {
+                ...prev,
+                status: true,
+                message: `Max Transaction Limit Exceeded from ${response.data.responseResult.maxLimit.toFixed(
+                  2
+                )}`,
+              };
+            });
+            return {
+              response: response.data.responseResult,
+              message: `Max Transaction Limit Exceeded from ${response.data.responseResult.maxLimit.toFixed(
+                2
+              )}`,
+            };
           } else {
             return rejectWithValue("Something went wrong");
           }

@@ -33,7 +33,10 @@ const FEDiscountingModal = ({
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const [errorMessage, setErrorMessage] = useState({
+    message: "",
+    status: false,
+  });
   // Redux selectors
   const GetAllActiveCorproates = useSelector(
     (state) => state.authReducer.GetAllActiveCorproates
@@ -369,6 +372,7 @@ const FEDiscountingModal = ({
         navigate,
         Data: payload,
         setFeDiscountingModalCall,
+        setErrorMessage,
       })
     );
 
@@ -629,10 +633,20 @@ const FEDiscountingModal = ({
           <>
             <Row>
               <Col
-                lg={12}
-                md={12}
+                lg={6}
+                md={6}
                 sm={12}
-                className="d-flex justify-content-center"
+                className="d-flex justify-content-start align-items-center rfqLimit_error-style"
+              >
+                {errorMessage.status === true && errorMessage.message !== ""
+                  ? errorMessage.message
+                  : ""}
+              </Col>
+              <Col
+                lg={6}
+                md={6}
+                sm={12}
+                className="d-flex align-items-center justify-content-end"
               >
                 <CustomButton
                   value={"Confirm"}
