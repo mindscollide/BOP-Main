@@ -2,7 +2,7 @@ import {
   GetFeDiscountingRM,
   PublishFeDiscountingRM,
 } from "@/common/api_config";
-import { uploadRatesApi } from "@/common/apiend_points";
+import { watchListApi } from "@/common/apiend_points";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
 import createPostAPI from "@/utils/axiosInstance";
 import { createAsyncThunk } from "@reduxjs/toolkit";
@@ -12,7 +12,7 @@ export const GetFEDiscountingTableApi = createAsyncThunk(
   async ({ navigate }, { rejectWithValue, dispatch }) => {
     try {
       const getFeDiscounting = createPostAPI(
-        uploadRatesApi,
+        watchListApi,
         GetFeDiscountingRM.RequestMethod
       );
       const response = await getFeDiscounting();
@@ -87,7 +87,7 @@ export const PublishFEDiscountingTableApi = createAsyncThunk(
   async ({ Data, navigate }, { rejectWithValue, dispatch }) => {
     try {
       const publishFeDiscounting = createPostAPI(
-        uploadRatesApi,
+        watchListApi,
         PublishFeDiscountingRM.RequestMethod
       );
       const response = await publishFeDiscounting(Data);

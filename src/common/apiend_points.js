@@ -1,7 +1,6 @@
 const baseURL = import.meta.env.VITE_BASE_URL;
 
 const authApi = `${baseURL}${import.meta.env.VITE_AUTH_PORT}`;
-const uploadRatesApi = `${baseURL}${import.meta.env.VITE_UPLOAD_RATES_PORT}`;
 const watchListApi = `${baseURL}${import.meta.env.VITE_WATCHLIST_PORT}`;
 const blotterApi = `${baseURL}${import.meta.env.VITE_BLOTTER_PORT}`;
 const reportApi = `${baseURL}${import.meta.env.VITE_REPORT_PORT}`;
@@ -11,7 +10,6 @@ const chatApi = `${baseURL}${import.meta.env.VITE_CHAT_PORT}`;
 
 export {
   authApi,
-  uploadRatesApi,
   watchListApi,
   blotterApi,
   reportApi,
