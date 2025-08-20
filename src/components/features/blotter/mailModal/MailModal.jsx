@@ -53,18 +53,22 @@ const MailModal = ({ openMailModal, setOpenMailModal }) => {
       }
     }
   }, [GetUsersEmail]);
+
   const onCloseModal = () => {
     setOpenMailModal(false);
   };
+
   console.log(emailOptions, "emailListemailList");
   const handleSelectUsers = (values) => {
     console.log(values, "selectedUser");
     setSelectedEmails(values);
   };
+
   const handleAddUsers = () => {
     setSendEmails([...sendEmails, ...selectedEmails]);
     setSelectedEmails([]);
   };
+
   const handleRemoveEmail = (value) => {
     console.log({ value }, "removedEmail");
     setSendEmails((prev) =>
@@ -88,6 +92,7 @@ const MailModal = ({ openMailModal, setOpenMailModal }) => {
       setIsExcel(false);
     }
   };
+
   const handleSendEmail = () => {
     console.log("handleSendEmail click", userRole, sendEmails);
     if (Number(userRole) === 9) {
@@ -113,6 +118,7 @@ const MailModal = ({ openMailModal, setOpenMailModal }) => {
       }
     }
     if (Number(userRole) === 8) {
+      //send email to treasury
       try {
         const Data = {
           Emails: sendEmails.map((e) => ({ Email: e.email })),
@@ -121,7 +127,7 @@ const MailModal = ({ openMailModal, setOpenMailModal }) => {
           MessageBody: message,
         };
         // console.log(Data, "DataDataData");
-        //send email to treasury
+
         dispatch(
           EmailBlotterTransactionDetailsForTreasuryAPI({
             navigate,
@@ -160,14 +166,6 @@ const MailModal = ({ openMailModal, setOpenMailModal }) => {
   const handleSendMessage = (event) => {
     const { name, value } = event.target;
     setMessage(value);
-    //   if (name === "message") {
-    //     const regex = /^[0-9]*$/;
-    //     if (regex.test(value)) {
-    //       setLcNumberData(value);
-    //     }
-    //   } else {
-    //     setLcNumberData(value);
-    //   }
   };
   return (
     <>
@@ -180,6 +178,7 @@ const MailModal = ({ openMailModal, setOpenMailModal }) => {
         size="lg"
         footerClassName="Mail-footer-className"
         headerClassName="Mail-header-className"
+        bodyClassName={"Mail-body-className"}
         closeButton
         modalHeader={
           <>
@@ -228,24 +227,26 @@ const MailModal = ({ openMailModal, setOpenMailModal }) => {
                   />
                 </Col>
               </Row>
-              <Row>
-                <Col
-                  sm={12}
-                  md={12}
-                  lg={12}
-                  className="d-flex justify-content-start gap-2 flex-wrap "
-                >
-                  {sendEmails.map((user) => (
-                    <span className="emailSendUser">
-                      <IconElement
-                        iconClass={"icon-close removeEmailIcon"}
-                        onClick={() => handleRemoveEmail(user.userID)}
-                      />
-                      {user.email}
-                    </span>
-                  ))}
-                </Col>
-              </Row>
+              <section className="add-mail-section">
+                <Row>
+                  <Col
+                    sm={12}
+                    md={12}
+                    lg={12}
+                    className="d-flex justify-content-start gap-2 flex-wrap "
+                  >
+                    {sendEmails.map((user) => (
+                      <span className="emailSendUser">
+                        <IconElement
+                          iconClass={"icon-close removeEmailIcon"}
+                          onClick={() => handleRemoveEmail(user.userID)}
+                        />
+                        {user.email}
+                      </span>
+                    ))}
+                  </Col>
+                </Row>
+              </section>
               <Row>
                 <Col className="mb-3 mt-5">
                   <label>Message (Optional)</label>

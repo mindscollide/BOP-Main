@@ -15,10 +15,17 @@
   position: relative;
   top: 10px !important;
 }
-
+.Mail-body-className {
+  overflow: hidden !important;
+}
 .modal-footer-column {
   padding: 15px 20px;
   border-top: 1px solid #e1e1e1 !important;
+}
+.add-mail-section {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  max-height: 15vh !important;
 }
 
 .cancel-button-mail {

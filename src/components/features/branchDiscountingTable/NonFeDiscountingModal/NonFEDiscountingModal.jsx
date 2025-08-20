@@ -31,7 +31,10 @@ const NonFEDiscountingModal = ({
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const [errorMessage, setErrorMessage] = useState({
+    message: "",
+    status: false,
+  });
   const natureOfBusinessList = useSelector(
     (state) => state.authReducer.GetAllNatureOfTransactions
   );
@@ -293,6 +296,7 @@ const NonFEDiscountingModal = ({
         navigate,
         Data,
         setNonfeDiscountingModalCall,
+        setErrorMessage,
       })
     );
   };
@@ -512,10 +516,20 @@ const NonFEDiscountingModal = ({
           <>
             <Row>
               <Col
-                lg={12}
-                md={12}
+                lg={6}
+                md={6}
                 sm={12}
-                className="d-flex justify-content-center"
+                className="d-flex justify-content-start align-items-center rfqLimit_error-style"
+              >
+                {errorMessage.status === true && errorMessage.message !== ""
+                  ? errorMessage.message
+                  : ""}
+              </Col>
+              <Col
+                lg={6}
+                md={6}
+                sm={12}
+                className="d-flex align-items-center justify-content-end"
               >
                 <CustomButton
                   value={"Confirm"}
