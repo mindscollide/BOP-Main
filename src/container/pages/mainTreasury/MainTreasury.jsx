@@ -67,12 +67,12 @@ const MainTreasury = () => {
         dispatch(setBlotterLoader(true));
         dispatch(BlotterDataAPI({ navigate, Data }));
         dispatch(GetNOPDataAPI({ navigate }));
+        dispatch(GetVoltMeterStatusApi({ navigate }));
       }
       dispatch(getAllTreasuryInstrumentsApi({ navigate }));
       dispatch(GetBankForwardForTreasuryApi({ navigate }));
       dispatch(getAllTenorsAction({ navigate }));
       dispatch(GetDiscountingRatesForTreasuryApi({ navigate }));
-      dispatch(GetVoltMeterStatusApi({ navigate }));
     });
   }, []);
 
