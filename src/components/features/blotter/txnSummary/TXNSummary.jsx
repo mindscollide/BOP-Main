@@ -37,6 +37,7 @@ import { RFQTImer } from "@/components/utils/Timer";
 import { convertDateTimeIntoLocal, formatPkAmount } from "@/utils/formatters";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import { useNotification } from "@/context/NotificationProvider";
+import { Spinner } from "react-bootstrap";
 const TXNSummary = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -110,11 +111,11 @@ const TXNSummary = () => {
   console.log(blotterdata, "blotterdatablotterdatablotterdata");
 
   const [totalRecord, setTotalRecords] = useState(0);
-  const [sRow, setRow] = useState(
-    Array.isArray(blotterdata),
-    blotterdata.length > 0 ? blotterdata.length : 0
+  const [sRow, setRow] = useState(0
   );
+
   const [hasReachedBottom, setHasReachedBottom] = useState(false);
+  console.log(hasReachedBottom, "hasReachedBottomhasReachedBottom")
   //TXNID Filter State
   const [open, setOpen] = useState(false);
   const [selectedItemsTXNID, setSelectedItemsTXNID] = useState([]);
@@ -166,7 +167,7 @@ const TXNSummary = () => {
   const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
 
   const isCorproate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
-
+  console.log({ totalRecord, blotterDatalength: blotterdata.length, sRow }, "ScrollData");
   useTableScrollBottom(
     () => {
       if (totalRecord !== blotterdata.length) {
@@ -175,32 +176,52 @@ const TXNSummary = () => {
         dispatch(BlotterDataAPI({ navigate, Data }));
       }
     },
-    0,
+    1,
     "TXNSummary_Table"
   );
-  //Extracting Out the Blotter Data API
   useEffect(() => {
     try {
       if (GlobalStateGetBlotterData !== null) {
+        const { tnxSummary, totalCount } = GlobalStateGetBlotterData;
+        console.log(
+          { tnxSummary, totalCount, blotterdata, hasReachedBottom },
+          "DEBUG"
+        );
         if (hasReachedBottom) {
-          setHasReachedBottom(false);
+          console.log(
+            { tnxSummary, totalCount, blotterdata, hasReachedBottom },
+            "DEBUG"
+          );
           setBlotterdata((prevData) => [
             ...prevData,
-            ...GlobalStateGetBlotterData.tnxSummary,
+            ...tnxSummary,
           ]);
-          setTotalRecords(GlobalStateGetBlotterData.totalCount);
-          // setRow(
-          //   (prevRow) => prevRow + GlobalStateGetBlotterData.tnxSummary.length
-          // );
+          setTotalRecords(totalCount);
+          setRow(
+            (prevRow) => prevRow + tnxSummary.length
+          );
+        setHasReachedBottom(false);  // 👈 always forcing back to false
+
+          return; // Exit early if hasReachedBottom is true
         } else {
-          setHasReachedBottom(false);
-          setBlotterdata(GlobalStateGetBlotterData.tnxSummary);
-          setTotalRecords(GlobalStateGetBlotterData.totalCount);
-          // setRow(GlobalStateGetBlotterData.tnxSummary.length);
+          console.log(
+            { tnxSummary, totalCount, blotterdata, hasReachedBottom },
+            "DEBUG"
+          );
+          setBlotterdata(tnxSummary);
+          setTotalRecords(totalCount);
+          setRow(tnxSummary.length);
+          return; // Exit early if hasReachedBottom is false
         }
+
+
       } else if (GlobalStateGetBlotterData === null) {
+        console.log(
+          { GlobalStateGetBlotterData, blotterdata, hasReachedBottom },
+          "DEBUG"
+        )
         if (!hasReachedBottom) {
-          setHasReachedBottom(false);
+          setHasReachedBottom(false); // 👈 again forcing false
           setBlotterdata([]);
           setTotalRecords(0);
           setRow(0);
@@ -210,6 +231,7 @@ const TXNSummary = () => {
       console.log(error, "error");
     }
   }, [GlobalStateGetBlotterData]);
+
 
   useEffect(() => {
     if (blotterTransactionRFQExpired !== null) {
@@ -229,6 +251,8 @@ const TXNSummary = () => {
           );
         } else {
           setTotalRecords((prevTotal) => prevTotal + 1);
+          setRow((prevTotal) => prevTotal + 1);
+
           setBlotterdata([transaction, ...blotterdata]);
         }
         dispatch(BlotterTransactionRFQExpired(null));
@@ -257,6 +281,8 @@ const TXNSummary = () => {
           );
         } else {
           setTotalRecords((prevTotal) => prevTotal + 1);
+          setRow((prevTotal) => prevTotal + 1);
+
           setBlotterdata([transaction, ...blotterdata]);
         }
 
@@ -339,6 +365,8 @@ const TXNSummary = () => {
         );
       } else {
         setTotalRecords((prevTotal) => prevTotal + 1);
+        setRow((prevTotal) => prevTotal + 1);
+
         setBlotterdata([transaction, ...blotterdata]);
       }
     }
@@ -361,6 +389,8 @@ const TXNSummary = () => {
         );
       } else {
         setTotalRecords((prevTotal) => prevTotal + 1);
+        setRow((prevTotal) => prevTotal + 1);
+
         setBlotterdata([transaction, ...blotterdata]);
       }
     }
@@ -377,6 +407,8 @@ const TXNSummary = () => {
         if (!ishasAlready) {
           setTotalRecords((prevTotal) => prevTotal + 1);
           setBlotterdata([transaction, ...blotterdata]);
+          setRow((prevTotal) => prevTotal + 1);
+
           dispatch(BlotterTransactionAdded(null));
         }
       } catch (error) {
@@ -2055,9 +2087,14 @@ const TXNSummary = () => {
         dataSource={blotterdata}
         bordered={false}
         prefixCls='TXNSummary_Table'
-        rowKey={(record) => record.pK_TransactionID}
+        rowKey={(record, index) => `${record.pK_TransactionID}-${index}`}
         columns={isBranch ? BranchColumn : isCorproate ? CorporateColumn : []}
         scroll={{ x: "max-content", y: 300 }}
+        footer={hasReachedBottom ? () => (
+          <div className='text-center'>
+            <Spinner />
+          </div>
+        ) : null}
       />
       <CommentModal
         comment={comment}

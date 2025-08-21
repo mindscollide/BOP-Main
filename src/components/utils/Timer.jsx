@@ -20,7 +20,6 @@ export const RFQTImer = ({
 
         if (!hasCalled.current && apiFunction) {
           hasCalled.current = true;
-          console.log(Data, navigate, "Data, navigate in Timer");
           dispatch(apiFunction({ Data, navigate }));
         }
       } else {

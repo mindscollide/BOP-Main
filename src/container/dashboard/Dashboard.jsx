@@ -348,6 +348,7 @@ const Dashboard = () => {
         break;
 
       case "TREASURY_NOP_UPDATED":
+        console.log(data.payload, "TREASURY_NOP_UPDATED");
         dispatch(GetNOPDataAPI({ navigate }));
 
         const startDate = new Date();

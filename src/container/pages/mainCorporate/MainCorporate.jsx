@@ -16,6 +16,7 @@ import {
   GetForwardRatesForCounterPartyApi,
 } from "@/components/features/SpotBranch/WatchlistAction";
 import { setBlotterLoader } from "@/store/BlotterSlicer/BlotterSlicer";
+import SectionLoader from "@/components/common/loader/SectionLoader";
 const shouldIncludeComponents =
   import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
 
@@ -25,18 +26,18 @@ const SpotBranch = shouldIncludeComponents
 
 const ForwardTableBranchComponent = shouldIncludeComponents
   ? lazy(() =>
-      import(
-        "../../../components/features/ForwardTableBranchComponent/ForwardTableBranchComponent"
-      )
+    import(
+      "../../../components/features/ForwardTableBranchComponent/ForwardTableBranchComponent"
     )
+  )
   : null;
 
 const BranchDiscountingTable = shouldIncludeComponents
   ? lazy(() =>
-      import(
-        "../../../components/features/branchDiscountingTable/BranchDiscountingTable"
-      )
+    import(
+      "../../../components/features/branchDiscountingTable/BranchDiscountingTable"
     )
+  )
   : null;
 const MainCorporate = () => {
   const dispatch = useDispatch();
@@ -80,34 +81,41 @@ const MainCorporate = () => {
     {
       title: "Spot",
       content: SpotBranch ? (
-        <Suspense fallback={<>Loading Spot...</>}>
-          <SpotBranch />
-          <section className='bg-white mt-2 p-2'>
-            <BlotterHeader />
-          </section>
-        </Suspense>
+        <section className="position-relative">
+          <Suspense fallback={<SectionLoader />}>
+            <SpotBranch />
+            <section className='bg-white mt-2 p-2'>
+              <BlotterHeader />
+            </section>
+          </Suspense>
+        </section>
       ) : null,
     },
     {
       title: "Forwards",
       content: ForwardTableBranchComponent ? (
-        <Suspense fallback={<>Loading Forwards...</>}>
-          <ForwardTableBranchComponent />
-          <section className='bg-white p-2'>
-            <BlotterHeader />
-          </section>
-        </Suspense>
+        <section className="position-relative">
+          <Suspense fallback={<SectionLoader />}>
+            <ForwardTableBranchComponent />
+            <section className='bg-white p-2'>
+              <BlotterHeader />
+            </section>
+          </Suspense>
+        </section>
       ) : null,
     },
     {
       title: "Discounting",
       content: BranchDiscountingTable ? (
-        <Suspense fallback={<>Loading Discounting...</>}>
-          <BranchDiscountingTable />
-          <section className='bg-white p-2'>
-            <BlotterHeader />
-          </section>
-        </Suspense>
+        <section className="position-relative">
+
+          <Suspense fallback={<SectionLoader />}>
+            <BranchDiscountingTable />
+            <section className='bg-white p-2'>
+              <BlotterHeader />
+            </section>
+          </Suspense>
+        </section>
       ) : null,
     },
   ];

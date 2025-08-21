@@ -933,7 +933,7 @@ const OutstandingDeals = ({
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
           <span className='ff-poppins fw-bold'>TXN ID</span>
-          <Popover
+          {/* <Popover
             content={popoverContentTXN}
             trigger='click'
             arrow={false}
@@ -949,7 +949,7 @@ const OutstandingDeals = ({
               }}>
               ▼
             </span>
-          </Popover>
+          </Popover> */}
         </div>
       ),
       key: "txnid",
@@ -963,7 +963,7 @@ const OutstandingDeals = ({
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
           <span className='ff-poppins fw-bold'>Client</span>
-          <Popover
+          {/* <Popover
             content={popoverContentClientName}
             trigger='click'
             arrow={false}
@@ -979,7 +979,7 @@ const OutstandingDeals = ({
               }}>
               ▼
             </span>
-          </Popover>
+          </Popover> */}
         </div>
       ),
       key: "counterPartyName",
@@ -992,7 +992,7 @@ const OutstandingDeals = ({
       title: (
         <div className='d-flex align-items-center justify-content-center  gap-1'>
           <span className='ff-poppins fw-bold'>Branch Code</span>
-          <Popover
+          {/* <Popover
             content={popoverContentType}
             trigger='click'
             arrow={false}
@@ -1008,7 +1008,7 @@ const OutstandingDeals = ({
               }}>
               ▼
             </span>
-          </Popover>
+          </Popover> */}
         </div>
       ),
       key: "side",
@@ -1022,7 +1022,7 @@ const OutstandingDeals = ({
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
           <span className='ff-poppins fw-bold'>Type</span>
-          <Popover
+          {/* <Popover
             content={popoverContentType}
             trigger='click'
             arrow={false}
@@ -1038,7 +1038,7 @@ const OutstandingDeals = ({
               }}>
               ▼
             </span>
-          </Popover>
+          </Popover> */}
         </div>
       ),
       key: "side",
@@ -1051,7 +1051,7 @@ const OutstandingDeals = ({
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
           <span className='ff-poppins fw-bold'>Nature</span>
-          <Popover
+          {/* <Popover
             content={popoverContentNature}
             trigger='click'
             arrow={false}
@@ -1067,7 +1067,7 @@ const OutstandingDeals = ({
               }}>
               ▼
             </span>
-          </Popover>
+          </Popover> */}
         </div>
       ),
       key: "nature",
@@ -1110,7 +1110,7 @@ const OutstandingDeals = ({
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
           <span className='ff-poppins fw-bold'>CCY1</span>
-          <Popover
+          {/* <Popover
             content={popoverContentAmount1}
             trigger='click'
             arrow={false}
@@ -1126,7 +1126,7 @@ const OutstandingDeals = ({
               }}>
               ▼
             </span>
-          </Popover>
+          </Popover> */}
         </div>
       ),
       key: "ccY1",
@@ -1139,7 +1139,7 @@ const OutstandingDeals = ({
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
           <span className='ff-poppins fw-bold'>TXN Amount</span>
-          <Popover
+          {/* <Popover
             content={popoverContentRate}
             trigger='click'
             arrow={false}
@@ -1155,7 +1155,7 @@ const OutstandingDeals = ({
               }}>
               ▼
             </span>
-          </Popover>
+          </Popover> */}
         </div>
       ),
       key: "amount1",
@@ -1171,7 +1171,7 @@ const OutstandingDeals = ({
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
           <span className='ff-poppins fw-bold'>CCY2</span>
-          <Popover
+          {/* <Popover
             content={popoverContentCCY2}
             trigger='click'
             arrow={false}
@@ -1187,7 +1187,7 @@ const OutstandingDeals = ({
               }}>
               ▼
             </span>
-          </Popover>
+          </Popover> */}
         </div>
       ),
       key: "ccY2",
@@ -1200,23 +1200,7 @@ const OutstandingDeals = ({
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
           <span className='ff-poppins fw-bold'>Total Amount</span>
-          <Popover
-            content={popoverContentAmount2}
-            trigger='click'
-            arrow={false}
-            placement='bottom'
-            open={openAmount2}
-            onOpenChange={handleOpenChangeAmount2}>
-            <span
-              style={{
-                cursor: "pointer",
-                color: "white",
-                background: "#f56600",
-                borderRadius: "4px",
-              }}>
-              ▼
-            </span>
-          </Popover>
+       
         </div>
       ),
       key: "amount2",
@@ -1232,23 +1216,7 @@ const OutstandingDeals = ({
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
           <span className='ff-poppins fw-bold'>Time</span>
-          <Popover
-            content={popoverContentTime}
-            trigger='click'
-            arrow={false}
-            placement='bottom'
-            open={openTime}
-            onOpenChange={handleOpenChangeTime}>
-            <span
-              style={{
-                cursor: "pointer",
-                color: "white",
-                background: "#f56600",
-                borderRadius: "4px",
-              }}>
-              ▼
-            </span>
-          </Popover>
+       
         </div>
       ),
       key: "time",
@@ -1353,7 +1321,7 @@ const OutstandingDeals = ({
       title: (
         <div className='d-flex align-items-center justify-content-center gap-1'>
           <span className='ff-poppins fw-bold'>Status</span>
-          <Popover
+          {/* <Popover
             content={popoverContentStatus}
             trigger='click'
             arrow={false}
@@ -1369,7 +1337,7 @@ const OutstandingDeals = ({
               }}>
               ▼
             </span>
-          </Popover>
+          </Popover> */}
         </div>
       ),
       key: "14",

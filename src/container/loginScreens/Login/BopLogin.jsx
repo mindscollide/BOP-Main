@@ -45,7 +45,7 @@ const BopLogin = () => {
       encryptedPassword,
       "encryptedPasswordencryptedPassword"
     );
-    if (rememberedEmail || encryptedPassword) {
+    if (rememberedEmail || encryptedPassword && encryptedPassword === null) {
       setCredentials((prev) => ({
         ...prev,
         email: rememberedEmail,
