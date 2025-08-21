@@ -1,14 +1,22 @@
-import React, { useCallback, useState, useMemo } from "react";
+import React, { useCallback, useState, useMemo, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { Checkbox, Popover } from "antd";
 import isEqual from "lodash/isEqual";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
+import { makeStyles } from "@mui/styles";
+
 import CustomButton from "@/components/common/globalButton/button";
 import { useNotification } from "@/context/NotificationProvider";
 import { useTableScrollBottom } from "@/utils/useTableScrollBottom";
 import CommentModal from "../commentModal/CommentModal";
 import CancelReasonModal from "../cancelReasonModal/cancelReasonModal";
-import GlobalTable from "@/components/common/table/GlobalTable";
 import { formatDateTimeToUTCTime } from "@/components/utils/timeFunction";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import { formatPkAmount } from "@/utils/formatters";
@@ -24,7 +32,47 @@ import {
   RejectRFQTransaction,
 } from "../BlotterActions";
 
-// ... (other imports remain the same)
+// Custom styles for the component
+const useStyles = makeStyles((theme) => ({
+  tableContainer: {
+    maxHeight: 400,
+    overflow: 'auto',
+    "& .MuiTableHead-root": {
+      position: "sticky",
+      top: 0,
+      zIndex: 1,
+      backgroundColor: "var(--color-primary) !important",
+    },
+    "& .MuiTableCell-head": {
+      fontWeight: "bold",
+      color: "white",
+      backgroundColor: "var(--color-primary) !important",
+    },
+  },
+  statusAccepted: {
+    color: "green",
+  },
+  statusRejected: {
+    color: "red",
+  },
+  statusCancelled: {
+    // textDecoration: "line-through",
+    // opacity: 0.7,
+  },
+  filterButton: {
+    cursor: "pointer",
+    color: "white",
+    background: "#f56600",
+    borderRadius: "4px",
+    padding: "2px 4px",
+    marginLeft: "4px",
+  },
+  actionButtons: {
+    display: "flex",
+    gap: "4px",
+    justifyContent: "center",
+  },
+}));
 
 const TXNTreasurySummary = React.memo(
   ({
@@ -32,11 +80,21 @@ const TXNTreasurySummary = React.memo(
     treasuryTXNSummarysRow,
     treasuryTXNSummaryTotalRecords,
     setHasBottomReachedTreasuryTXN,
+    hasBottomReachedTreasuryTXN
   }) => {
+    console.log({
+      treasuryTXNSummary,
+      treasuryTXNSummarysRow,
+      treasuryTXNSummaryTotalRecords,
+      setHasBottomReachedTreasuryTXN,
+      hasBottomReachedTreasuryTXN
+    }, "TXNTreasurySummary Props");
+    const classes = useStyles();
     const { showMessage } = useNotification();
     const dispatch = useDispatch();
     const navigate = useNavigate();
-
+    const TxnTreasuryTableContainerRef = useRef();
+    const observer = useRef();
     // Modal states
     const [cancelReasonModal, setCancelReasonModal] = useState(false);
     const [cancelReasonComment, setCancelReasonComment] = useState("");
@@ -66,123 +124,56 @@ const TXNTreasurySummary = React.memo(
       []
     );
 
-    // Memoize initial filter states
-    const initialFilterStates = useMemo(
-      () =>
-        Object.keys(FILTER_OPTIONS).reduce((acc, key) => {
-          acc[key] = {
-            open: false,
-            selectedItems: [],
-          };
-          return acc;
-        }, {}),
-      [FILTER_OPTIONS]
-    );
+    // // Handle infinite scroll
+    // useTableScrollBottom(
+    //   () => {
+    //     if (treasuryTXNSummaryTotalRecords !== treasuryTXNSummary.length) {
+    //       setHasBottomReachedTreasuryTXN(true);
+    //       let Data = { sRow: treasuryTXNSummarysRow, Length: 10 };
+    //       dispatch(BlotterDataAPI({ navigate, Data }));
+    //     }
+    //   },
+    //   0,
+    //   "TXNSummary_Table"
+    // );
+    console.log(treasuryTXNSummaryTotalRecords <= treasuryTXNSummary.length, treasuryTXNSummary, treasuryTXNSummaryTotalRecords, "TXNTreasurySummary");
+    // Load more data function for infinite scrolling
+    const loadMore = useCallback(async () => {
 
-    const [filterStates, setFilterStates] = useState(initialFilterStates);
+    console.log(treasuryTXNSummaryTotalRecords <= treasuryTXNSummary.length, treasuryTXNSummary, treasuryTXNSummaryTotalRecords, "TXNTreasurySummary");
 
-    // Handle infinite scroll
-    useTableScrollBottom(
-      () => {
-        if (treasuryTXNSummaryTotalRecords !== treasuryTXNSummary.length) {
-          setHasBottomReachedTreasuryTXN(true);
-          let Data = { sRow: treasuryTXNSummarysRow, Length: 10 };
-          dispatch(BlotterDataAPI({ navigate, Data }));
-        }
+      // Prevent loading if already at bottom or no more records
+      if (hasBottomReachedTreasuryTXN || treasuryTXNSummaryTotalRecords <= treasuryTXNSummary.length) return;
+
+      setHasBottomReachedTreasuryTXN(true); // Set loading state
+    console.log(treasuryTXNSummaryTotalRecords <= treasuryTXNSummary.length, treasuryTXNSummary, treasuryTXNSummaryTotalRecords, "TXNTreasurySummary");
+
+      // Prepare data for API call
+      let Data = { sRow: treasuryTXNSummarysRow, Length: 10 };
+      dispatch(GetBlotterOutstandingDealsDataAPI({ navigate, Data }));
+    }, [hasBottomReachedTreasuryTXN, treasuryTXNSummaryTotalRecords, treasuryTXNSummary.length, treasuryTXNSummarysRow]);
+
+    // Intersection Observer callback for infinite scrolling
+    const lastRowRef = useCallback(
+      (node) => {
+        if (hasBottomReachedTreasuryTXN || !TxnTreasuryTableContainerRef.current) return;
+
+        // Disconnect previous observer
+        if (observer.current) observer.current.disconnect();
+
+        // Create new observer to detect when last row is visible
+        observer.current = new IntersectionObserver((entries) => {
+          if (entries[0].isIntersecting) {
+            loadMore(); // Load more data when last row is visible
+          }
+        }, {
+          root: TxnTreasuryTableContainerRef.current, // Use table container as root
+          threshold: 1.0 // Fully visible threshold
+        });
+
+        if (node) observer.current.observe(node); // Observe the last row
       },
-      0,
-      "TXNSummary_Table"
-    );
-
-    // Memoized filter handlers
-    const handleFilterOpenChange = useCallback((filterKey, newOpen) => {
-      setFilterStates((prev) => ({
-        ...prev,
-        [filterKey]: { ...prev[filterKey], open: newOpen },
-      }));
-    }, []);
-
-    const handleSelectAll = useCallback(
-      (filterKey) => {
-        setFilterStates((prev) => ({
-          ...prev,
-          [filterKey]: {
-            ...prev[filterKey],
-            selectedItems: FILTER_OPTIONS[filterKey],
-          },
-        }));
-      },
-      [FILTER_OPTIONS]
-    );
-
-    const handleDeselectAll = useCallback((filterKey) => {
-      setFilterStates((prev) => ({
-        ...prev,
-        [filterKey]: { ...prev[filterKey], selectedItems: [] },
-      }));
-    }, []);
-
-    const handleCheckboxChange = useCallback((filterKey, checkedValues) => {
-      setFilterStates((prev) => ({
-        ...prev,
-        [filterKey]: { ...prev[filterKey], selectedItems: checkedValues },
-      }));
-    }, []);
-
-    // Memoized popover content creator
-    const createFilterPopoverContent = useCallback(
-      (filterKey) => (
-        <div style={{ width: 220 }}>
-          <div className='d-flex justify-content-between mb-2'>
-            <CustomButton
-              applyClass='SelectAllButton'
-              value='Select All'
-              onClick={() => handleSelectAll(filterKey)}
-            />
-            <CustomButton
-              applyClass='SelectAllButton'
-              value='Deselect All'
-              onClick={() => handleDeselectAll(filterKey)}
-            />
-          </div>
-          <Checkbox.Group
-            style={{ display: "flex", flexDirection: "column" }}
-            value={filterStates[filterKey].selectedItems}
-            onChange={(checked) => handleCheckboxChange(filterKey, checked)}>
-            {FILTER_OPTIONS[filterKey].map((item) => (
-              <Checkbox key={item} value={item}>
-                {item}
-              </Checkbox>
-            ))}
-          </Checkbox.Group>
-        </div>
-      ),
-      [
-        FILTER_OPTIONS,
-        filterStates,
-        handleCheckboxChange,
-        handleDeselectAll,
-        handleSelectAll,
-      ]
-    );
-
-    // Memoized column creator
-    const createFilterColumn = useCallback(
-      (title, filterKey, dataIndex, width, render) => ({
-        title: (
-          <div className='d-flex align-items-center justify-content-center gap-1'>
-            <span className='ff-poppins fw-bold'>{title}</span>
-          </div>
-        ),
-        key: dataIndex,
-        dataIndex,
-        className: "ff-poppins fw-bold",
-        width,
-        render,
-        ellipsis: true,
-      }),
-      []
-      // [createFilterPopoverContent, filterStates, handleFilterOpenChange]
+      [hasBottomReachedTreasuryTXN, loadMore]
     );
 
     // Transaction action handlers
@@ -250,49 +241,105 @@ const TXNTreasurySummary = React.memo(
     // Memoized table columns
     const Treasurycolumns = useMemo(
       () => [
-        createFilterColumn("TXN ID", "TXN_ID", "txnid", 120),
-        createFilterColumn("Client", "CUSTOMER_NAME", "corporateName", 120),
-        createFilterColumn(
-          "Branch Code",
-          "BRANC_CODE",
-          "branchCode",
-          120,
-          (text) => text
-        ),
-        createFilterColumn("Type", "TYPE", "side", 70),
-        createFilterColumn("Nature", "NATURE", "nature", 120),
-        createFilterColumn("CCY1", "CCY1", "ccY1", 80),
-        createFilterColumn("TXN Amount", "AMOUNT", "quantity", 130, (text) => (
-          <IndexCell value={formatPkAmount(text)} />
-        )),
-        createFilterColumn("Rate", "RATE", "rate", 120, (text) =>
-          formatPkAmount(text, { decimals: 5 })
-        ),
-        createFilterColumn("Tenor Days", "RATE", "", 120),
-        createFilterColumn("CCY2", "CCY2", "ccY2", 60),
-        createFilterColumn("Total Amount", "AMOUNT2", "amount", 140, (text) => (
-          <IndexCell value={formatPkAmount(text)} />
-        )),
-        createFilterColumn("Time", "TIME", "tradeDateTime", 80, (text) =>
-          text !== "" ? formatDateTimeToUTCTime(text) : ""
-        ),
-        // createFilterColumn("LC NO.", "LC_NO", "lcNuIndexCell mber", 120),
-        // createFilterColumn("Acc NO.", "ACC_NO", "accountNumber", 120),
         {
-          ...createFilterColumn("Status", "STATUS", "status", 80),
-          render: (text) => (
-            <span className={text === "Accepted" ? "color-green" : "color-red"}>
-              {text}
-            </span>
-          ),
+          id: 'txnid',
+          label: 'TXN ID',
+          width: 120,
+          render: (record) => record.txnid
         },
         {
-          title: "Action",
-          key: "action",
+          id: 'corporateName',
+          label: 'Client',
+          width: 120,
+          render: (record) => record.corporateName
+        },
+        {
+          id: 'branchCode',
+          label: 'Branch Code',
+          width: 120,
+          align: "center",
+          render: (record) => record.branchCode
+        },
+        {
+          id: 'side',
+          label: 'Type',
+          width: 70,
+          align: "center",
+          render: (record) => record.side
+        },
+        {
+          id: 'nature',
+          label: 'Nature',
+          width: 120,
+          align: "center",
+          render: (record) => record.nature
+        },
+        {
+          id: 'ccY1',
+          label: 'CCY1',
           width: 80,
           align: "center",
-          render: (_, record) => (
-            <div className='col-action text-nowrap text-center d-flex gap-1 justify-content-center'>
+          render: (record) => record.ccY1
+        },
+        {
+          id: 'quantity',
+          label: 'TXN Amount',
+          width: 130,
+          align: "center",
+          render: (record) => <IndexCell value={formatPkAmount(record.quantity)} />
+        },
+        {
+          id: 'rate',
+          label: 'Rate',
+          width: 120,
+          align: "center",
+          render: (record) => formatPkAmount(record.rate, { decimals: 5 })
+        },
+        {
+          id: 'tenorDays',
+          label: 'Tenor Days',
+          width: 120,
+          render: () => "" // Placeholder for tenor days
+        },
+        {
+          id: 'ccY2',
+          label: 'CCY2',
+          width: 60,
+          align: "center",
+          render: (record) => record.ccY2
+        },
+        {
+          id: 'amount',
+          label: 'Total Amount',
+          width: 140,
+          align: "center",
+          render: (record) => <IndexCell value={formatPkAmount(record.amount)} />
+        },
+        {
+          id: 'tradeDateTime',
+          label: 'Time',
+          width: 80,
+          align: "center",
+          render: (record) => record.tradeDateTime !== "" ? formatDateTimeToUTCTime(record.tradeDateTime) : ""
+        },
+        {
+          id: 'status',
+          label: 'Status',
+          width: 80,
+          align: "center",
+          render: (record) => (
+            <span className={record.status === "Accepted" ? classes.statusAccepted : classes.statusRejected}>
+              {record.status}
+            </span>
+          )
+        },
+        {
+          id: 'action',
+          label: 'Action',
+          width: 80,
+          align: 'center',
+          render: (record) => (
+            <div className={classes.actionButtons}>
               {record.statusID === 1 && (
                 <CustomButton
                   icon={<i className='icon-close blotterTableIconSize' />}
@@ -307,15 +354,15 @@ const TXNTreasurySummary = React.memo(
                 />
               )}
             </div>
-          ),
+          )
         },
         {
-          key: "actions",
-          title: "",
+          id: 'actions',
+          label: '',
           width: 80,
-          align: "center",
-          render: (_, record) => (
-            <div className='d-flex gap-1 justify-content-end'>
+          align: 'center',
+          render: (record) => (
+            <div className={classes.actionButtons}>
               {record.statusID === 3 && (
                 <CustomButton
                   size='small'
@@ -347,11 +394,11 @@ const TXNTreasurySummary = React.memo(
                 }
               />
             </div>
-          ),
+          )
         },
       ],
       [
-        createFilterColumn,
+        classes,
         handleClickInfo,
         handleShowCommentModal,
         handleTransactionAction,
@@ -392,19 +439,52 @@ const TXNTreasurySummary = React.memo(
 
     return (
       <>
-        <GlobalTable
-          pagination={false}
-          dataSource={treasuryTXNSummary}
-          bordered={false}
-          rowHoverBg={"none"}
-          prefixCls='TXNSummary_Table'
-          rowKey={(record) => record.pK_TransactionID}
-          columns={Treasurycolumns}
-          scroll={{ x: "max-content", y: 300 }}
-          rowClassName={(record) =>
-            record.statusID === 7 ? "Cancelled_Transaction" : ""
-          }
-        />
+        <TableContainer ref={TxnTreasuryTableContainerRef} 
+        sx={{ maxHeight: 400, overflow: 'auto' }}
+        
+        className={classes.tableContainer}
+        >
+          <Table stickyHeader size="small">
+            <TableHead>
+              <TableRow>
+                {Treasurycolumns.map((column) => (
+                  <TableCell
+                    key={column.id}
+                    style={{ width: column.width, whiteSpace: 'nowrap' }}
+                    align={column.align || 'left'}
+                  >
+                    {column.label}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {treasuryTXNSummary.map((row, index) => {
+                const isLast = index === treasuryTXNSummary.length - 1;
+
+                return (
+                  <TableRow
+                    key={`${row.pK_TransactionID}-${index}`}
+                    ref={isLast ? lastRowRef : null}
+                    
+                    className={row.statusID === 7 ? classes.statusCancelled : ""}
+                  >
+                    {Treasurycolumns.map((column) => (
+                      <TableCell
+                        key={column.id}
+                        align={column.align || 'left'}
+                        sx={{ width: column.width, whiteSpace: 'nowrap', fontSize: '13px', fontWeight: "500" }}
+                      >
+                        {column.render ? column.render(row) : row[column.id]}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                )
+              }
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
 
         {memoizedCommentModal}
         {memoizedCancelReasonModal}
@@ -417,7 +497,7 @@ const TXNTreasurySummary = React.memo(
       isEqual(prevProps.treasuryTXNSummary, nextProps.treasuryTXNSummary) &&
       prevProps.treasuryTXNSummarysRow === nextProps.treasuryTXNSummarysRow &&
       prevProps.treasuryTXNSummaryTotalRecords ===
-        nextProps.treasuryTXNSummaryTotalRecords
+      nextProps.treasuryTXNSummaryTotalRecords
     );
   }
 );
