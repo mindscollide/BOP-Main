@@ -1,26 +1,20 @@
-import React, { Suspense, lazy, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import CustomButton from "../../common/globalButton/button";
 import GlobalTable from "../../common/table/GlobalTable";
-import InputFIeld from "../../common/inputField/InputField";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { publishDiscountingRatesAction } from "@/container/pages/mainDealer/dealerActions";
 import { useSelector } from "react-redux";
-import {
-  formatPercentageInput,
-  isValidMaxFourNumberAfterPoint,
-  isValidNumberUnderMax,
-} from "@/utils/formatters";
-import {
-  GetNonFEDiscountingTableApi,
-  PublishNonFEDiscountingTableApi,
-} from "./NonFeDiscountingAction";
+import { isValidMaxFourNumberAfterPoint } from "@/utils/formatters";
+import { PublishNonFEDiscountingTableApi } from "./NonFeDiscountingAction";
 import {
   buildCurrentRatesPayload,
   buildDiscountingTable,
 } from "@/components/utils/generateColumnsData";
 import { NonFeDiscountingPublishedAction } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { InputCell } from "@/components/common/inputField/InputCell";
+import { useNotification } from "@/context/NotificationProvider";
+import { formatDateUTCToGMT } from "@/components/utils/timeFunction";
+import moment from "moment";
 
 /**
  * NonFeDiscountingTable component renders a table for displaying and managing
@@ -38,6 +32,9 @@ import { InputCell } from "@/components/common/inputField/InputCell";
 const NonFeDiscountingTable = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [date, setDate] = useState("");
+  const { showMessage } = useNotification();
+
   const marketStatus = useSelector(
     (state) => state.RealtimeActionsSlice.marketStatus
   );
@@ -66,7 +63,7 @@ const NonFeDiscountingTable = () => {
       try {
         const { nonFEDiscountingRates } = getDashboardForwards;
         const DiscountingInstruments =
-          GetAllInstrumentForTreasury.discountingInstruments;
+          GetAllInstrumentForTreasury.nonFEDiscountingInstruments;
         const getAllInstrument = { instruments: DiscountingInstruments };
         const { rowData, columnsData } = buildDiscountingTable(
           5,
@@ -76,11 +73,9 @@ const NonFeDiscountingTable = () => {
           InputCell,
           onInputChange
         );
-        console.log(
-          { rowData, columnsData },
-          " columnsDatacolumnsDatacolumnsData"
-        );
+
         if (rowData.length > 0) {
+          setDate(nonFEDiscountingRates[0]?.dateTime);
           setTableData(rowData);
           setColumnsData(columnsData);
         }
@@ -97,7 +92,7 @@ const NonFeDiscountingTable = () => {
       try {
         const { rates } = NonFeDiscountingPublishedData;
         const DiscountingInstruments =
-          GetAllInstrumentForTreasury.discountingInstruments;
+          GetAllInstrumentForTreasury.nonFEDiscountingInstruments;
         const getAllInstrument = { instruments: DiscountingInstruments };
         const { rowData, columnsData } = buildDiscountingTable(
           5,
@@ -116,6 +111,7 @@ const NonFeDiscountingTable = () => {
         if (rowData.length > 0) {
           setTableData(rowData);
           setColumnsData(columnsData);
+          setDate(rates[0]?.dateTime);
           dispatch(NonFeDiscountingPublishedAction(null));
         }
       } catch (error) {
@@ -159,21 +155,35 @@ const NonFeDiscountingTable = () => {
 
   const handlePublishDiscount = () => {
     const payloadData = buildCurrentRatesPayload(tableData);
+
+    const checkDoNotempty = payloadData.every(
+      (item) => item.Rate !== "" && Number(item.Rate) !== 0
+    );
+
+    if (!checkDoNotempty) {
+      showMessage("Rate fields cannot be 0 or empty for any currency");
+      return;
+    }
     let Data = { CurrentRates: payloadData };
+
     dispatch(PublishNonFEDiscountingTableApi({ navigate, Data }));
   };
   return (
     <>
+      <div className="datetime fw-bold text-end mb-2 ff-roboto">
+        {date !== "" &&
+          moment(formatDateUTCToGMT(date)).format("DD MMM YYYY, hh:mm:ss")}
+      </div>
       <GlobalTable
-        prefixCls='DealerAndTreasuryDiscountTable'
+        prefixCls="DealerAndTreasuryDiscountTable"
         columns={columnsData}
         dataSource={tableData}
         pagination={false}
       />
 
-      <span className='d-flex justify-content-center mt-4'>
+      <span className="d-flex justify-content-center mt-4">
         <CustomButton
-          applyClass='publishForwardsBtn'
+          applyClass="publishForwardsBtn"
           value={"Publish Non FE Discounting"}
           onClick={handlePublishDiscount}
           disabled={marketStatus === false ? true : false}

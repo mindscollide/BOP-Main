@@ -14,6 +14,7 @@ import { formatDateUTCToGMT } from "@/components/utils/timeFunction";
 import moment from "moment";
 import { throttle } from "lodash";
 import { setFxTradingCards } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
+import { setWatchlistTableDataCopy } from "@/store/watchListSlicer/WatchListSlicer";
 
 const initialWatchlistData = Object.fromEntries(
   Array.from({ length: 6 }, (_, i) => [
@@ -49,7 +50,7 @@ const SpotBranch = () => {
   );
 
   //Card Data Local State
-  const [watchlistCardData, setWatchlistCardData] = useState([]);
+  // const [watchlistCardData, setWatchlistCardData] = useState([]);
   const [watchlistTableData, setWatchlistTableData] = useState([]);
   const [watchListDateTime, setWatchListDateTime] = useState(null);
 
@@ -74,7 +75,7 @@ const SpotBranch = () => {
 
   console.log(ClearRatesData, "ClearRatesDataClearRatesData");
 
-  const [watchlistData, setWatchlistData] = useState(initialWatchlistData);
+  const [watchlistData, setWatchlistData] = useState([]);
 
   console.log(watchlistData, "watchlistDatawatchlistData");
   // Extracting out the Cards Wathlist data in the state
@@ -109,6 +110,7 @@ const SpotBranch = () => {
 
           // Update table state
           setWatchlistTableData(updatedTableData);
+          dispatch(setWatchlistTableDataCopy(updatedTableData));
 
           // Step 2: Update section watchlists (1-6) based on sectionID
           const filteredSections = updatedTableData.filter(
@@ -173,6 +175,28 @@ const SpotBranch = () => {
           return data2;
         })
       );
+      const updatedTableData = watchlistTableData.map((data2) => {
+        const getData = instrumentSpotData.find(
+          (data3) =>
+            data2.instrumentID === data3.instrumentID &&
+            data2.secondaryInstrumentID === data3.secondaryInstrumentID
+        );
+
+        if (
+          getData &&
+          (data2.bid !== getData.bid || data2.offer !== getData.ask)
+        ) {
+          return {
+            ...data2,
+            bid: getData.bid,
+            offer: getData.ask,
+          };
+        }
+
+        return data2;
+      });
+
+      dispatch(setWatchlistTableDataCopy(updatedTableData));
 
       setWatchlistData((prev) => {
         const updated = { ...prev };
@@ -183,12 +207,7 @@ const SpotBranch = () => {
               data.instrumentID === sectionData.instrumentID &&
               data.secondaryInstrumentID === sectionData.secondaryInstrumentID
           );
-          console.log(
-            matchingData,
-            instrumentSpotData,
-            sectionData,
-            "matchingDatamatchingData"
-          );
+
           if (matchingData) {
             updated[key] = {
               ...sectionData,
@@ -252,7 +271,29 @@ const SpotBranch = () => {
   useEffect(() => {
     try {
       if (marketStatus !== null && marketStatus === false) {
-        setWatchlistData(initialWatchlistData);
+        // setWatchlistData(initialWatchlistData);
+        setWatchlistData((prev) => {
+          const updated = { ...prev };
+          Object.keys(prev).forEach((key, index) => {
+            const sectionData = prev[key];
+            const sectionKey = `watchlist${index + 1}`;
+            console.log(sectionKey,"sectionKeysectionKey")
+            // const matchingData = instrumentSpotData.find(
+            //   (data) =>
+            //     data.instrumentID === sectionData.instrumentID &&
+            //     data.secondaryInstrumentID === sectionData.secondaryInstrumentID
+            // );
+            console.log(sectionData, "sectionDatasectionDatasectionData");
+            // if (matchingData) {
+            updated[sectionKey] = {
+              ...sectionData,
+              buyValue: 0,
+              sellValue: 0,
+            };
+            // }
+          });
+          return updated;
+        });
         setWatchlistTableData((prev) => {
           return prev.map((data) => {
             return {
@@ -427,12 +468,12 @@ const SpotBranch = () => {
                               currencyLabel={data.currecncyLabel || ""}
                               buyHeading={isBranch ? "BOP Buy" : "I Buy"}
                               sellHeading={isBranch ? "BOP Sell" : "I Sell"}
-                              buyValue={
-                                isCorporate ? data.sellValue : data.buyValue
-                              }
-                              sellValue={
-                                isCorporate ? data.buyValue : data.sellValue
-                              }
+                              buyValue={data.buyValue}
+                              sellValue={data.sellValue}
+                              // buyHeading="I Buy"
+                              // sellHeading="I Sell"
+                              // buyValue={data.buyValue || ""}
+                              // sellValue={data.sellValue || ""}
                               isSellDisabled={data.isSell}
                               isBuyDisabled={data.isBuy}
                               instrumentID={data.instrumentID || 0}
@@ -487,7 +528,7 @@ const SpotBranch = () => {
                           }}
                           onRow={(record, index) => ({
                             index,
-                            "data-row-key": record.instrumentID,
+                            "data-row-key": index,
                           })}
                           scroll={{ y: 330, x: "auto" }}
                         />

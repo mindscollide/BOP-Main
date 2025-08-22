@@ -4,9 +4,13 @@ import { useSelector } from "react-redux";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import { buildForwardsTable } from "@/components/utils/generateColumnsData";
 import { throttle } from "lodash";
+import { setCategoryFowardsTenorsChanges } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
+import { useDispatch } from "react-redux";
 
 const CategoryForwards = () => {
+  const dispatch = useDispatch();
   const [dataSource, setDataSource] = useState([]);
+
   const [columnsData, setColumnsData] = useState([]);
   const GetCategoryWiseForwardRatesData = useSelector(
     (state) => state.categoryReducer.GetCategoryWiseForwardRates
@@ -31,6 +35,18 @@ const CategoryForwards = () => {
   const ClearRatesData = useSelector(
     (state) => state.RealtimeActionsSlice.ClearRatesData
   );
+  const categoryFowardsTenorsChanges = useSelector(
+    (state) => state.RealtimeActionsSlice.categoryFowardsTenorsChanges
+  );
+
+  console.log(
+    categoryFowardsTenorsChanges,
+    "categoryFowardsTenorsChangescategoryFowardsTenorsChanges"
+  );
+  console.log(
+    { dataSource, categoryFowardsTenorsChanges },
+    "dataSourcedataSourcedataSource"
+  );
 
   console.log(CategoryForwardRates, "CategoryForwardRates");
 
@@ -48,13 +64,14 @@ const CategoryForwards = () => {
   useEffect(() => {
     if (getAllTenorsRecords && allInstrumentForTreasuryData !== null) {
       try {
-        const { forwardRates = [] } =
-          GetCategoryWiseForwardRatesData !== null &&
-          GetCategoryWiseForwardRatesData;
         let getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
         let getAllInstrument = {
           instruments: allInstrumentForTreasuryData.forwardInstruments,
         };
+
+        const { forwardRates = [] } =
+          GetCategoryWiseForwardRatesData !== null &&
+          GetCategoryWiseForwardRatesData;
         const { rowData, columnsData } = buildForwardsTable(
           3,
           forwardRates,
@@ -70,8 +87,70 @@ const CategoryForwards = () => {
         console.log(error, "Error while building discounting table");
       }
     }
+  }, [allInstrumentForTreasuryData, getAllTenorsRecords]);
+
+  useEffect(() => {
+    if (
+      categoryFowardsTenorsChanges !== null &&
+      getAllTenorsRecords !== null &&
+      allInstrumentForTreasuryData !== null
+    ) {
+      try {
+        const { newIsForwardtenorList = [], removedtenorList = [] } =
+          categoryFowardsTenorsChanges;
+        const allTenors = [...(getAllTenorsRecords.tenors || [])];
+
+        // Convert arrays of objects to Set of IDs
+        const removedSet = new Set(
+          removedtenorList.map((item) => item.tenorID)
+        );
+        // const newSet = new Set(
+        //   newIsForwardtenorList.map((item) => item.tenorID)
+        // );
+
+        // Update each tenor's isForwardingApplicable field
+        const updatedTenors = allTenors.map((tenor) => ({
+          ...tenor,
+          isForwardingApplicable: removedSet.has(tenor.tenorID) ? false : true, // leave unchanged if in neither
+        }));
+        console.log(
+          {
+            removedSet,
+            // newSet,
+            removedtenorList,
+            newIsForwardtenorList,
+            updatedTenors,
+            allTenors,
+          },
+          "allTenorsallTenorsallTenors"
+        );
+        let getAllTenorsData = { tenors: updatedTenors };
+        let getAllInstrument = {
+          instruments: allInstrumentForTreasuryData.forwardInstruments,
+        };
+
+        const { forwardRates = [] } =
+          GetCategoryWiseForwardRatesData !== null &&
+          GetCategoryWiseForwardRatesData;
+        const { rowData, columnsData } = buildForwardsTable(
+          3,
+          forwardRates,
+          getAllTenorsData,
+          getAllInstrument,
+          IndexCell
+        );
+        if (rowData.length > 0) {
+          setDataSource(rowData);
+          setColumnsData(columnsData);
+        }
+        dispatch(setCategoryFowardsTenorsChanges(null));
+        console.log(updatedTenors, "updatedTenorsupdatedTenors");
+      } catch (error) {
+        console.log(error);
+      }
+    }
   }, [
-    allInstrumentForTreasuryData,
+    categoryFowardsTenorsChanges,
     getAllTenorsRecords,
     allInstrumentForTreasuryData,
   ]);
@@ -144,6 +223,32 @@ const CategoryForwards = () => {
       );
     }
   }, [ClearRatesData]);
+
+  // useEffect(() => {
+  //   try {
+  //     if (categoryFowardsTenorsChanges !== null) {
+  //       const forwardRates =
+  //         categoryFowardsTenorsChanges.tenorWiseForwardRates
+  //           .currentTenorWiseForwardRates;
+  //       let getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
+  //       let getAllInstrument = {
+  //         instruments: allInstrumentForTreasuryData.forwardInstruments,
+  //       };
+
+  //       const { rowData, columnsData } = buildForwardsTable(
+  //         3,
+  //         forwardRates,
+  //         getAllTenorsData,
+  //         getAllInstrument,
+  //         IndexCell
+  //       );
+  //       if (rowData.length > 0) {
+  //         setDataSource(rowData);
+  //         setColumnsData(columnsData);
+  //       }
+  //     }
+  //   } catch (error) {}
+  // }, [categoryFowardsTenorsChanges]);
 
   return (
     <>

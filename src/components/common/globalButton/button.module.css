@@ -439,6 +439,36 @@
   background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
   border-color: #feac78 !important;
 }
+
+.Export-button_MIS,
+.Export-button_MIS:active {
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  line-height: 0.9 !important;
+  font-family: "Poppins", sans-serif !important;
+  background: #ffffff !important;
+  border-color: #ffffff !important;
+  color: #000;
+  border-radius: 4px;
+  transition: all 0.3s ease-in;
+  -webkit-transition: all 0.3s ease-in;
+  -moz-transition: all 0.3s ease-in;
+  -o-transition: all 0.3s ease-in;
+  -ms-transition: all 0.3s ease-in;
+  position: relative;
+  box-shadow: none !important;
+  padding-left: 1.5rem !important;
+  padding-right: 1.5rem !important;
+}
+
+.Export-button_MIS:hover {
+  background: #000000 !important;
+  color: white;
+  /* background: -moz-linear-gradient(top, #feac78 0%, #000000 100%) !important;
+  background: -webkit-linear-gradient(top, #feac78 0%, #e97225 100%) !important;
+  background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important; */
+  border-color: #000000 !important;
+}
 .createTenorModalFooterBtn {
   border: 1px solid #0d6efd !important;
   background: #fff !important;
@@ -644,7 +674,9 @@
   border-color: #096fed !important;
   cursor: pointer !important;
 }
-
+.FEDiscounting:disabled {
+  cursor: not-allowed !important;
+}
 .ConfirmButtonBookaForward {
   border-radius: 4px !important;
   font-size: 14px !important;

@@ -27,13 +27,14 @@ const GlobalTable = ({
 }) => {
   return (
     <Table
+      rowHoverable={false}
       columns={columns}
       prefixCls={prefixCls}
       dataSource={dataSource}
       bordered={bordered}
       pagination={pagination}
       footer={footer}
-      size='middle'
+      size='small'
       style={style}
       rowClassName={rowClassName}
       dropdownPrefixCls={dropdownPrefixCls}

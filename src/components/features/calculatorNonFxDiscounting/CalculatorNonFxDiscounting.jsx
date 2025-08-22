@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col } from "react-bootstrap";
 import CustomButton from "../../common/globalButton/button";
 import InputFIeld from "../../common/inputField/InputField";
 import InputFieldWithTag from "../../common/inputFieldWithTag/InputFieldWithTag";
@@ -8,7 +7,6 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { formatDate } from "@/common/utils";
-import { CalculateNonFxDiscountingAPI } from "@/container/pages/mainCalculator/CalculatorActions";
 import { calculateNonFeSwapAndDiscountingRateApi } from "../blotter/BlotterActions";
 
 const CalculatorNonFxDiscounting = () => {
@@ -19,7 +17,7 @@ const CalculatorNonFxDiscounting = () => {
   const InstrumentsData = useSelector(
     (state) => state.authReducer.getAllInstruments
   );
-
+  console.log(InstrumentsData, "instruments data");
   //World Crosses Data to Get the Cross Rates Without Spread
   const WorldCrossesData = useSelector(
     (state) => state.WatchListReducer.GetBankSpotForTreasury
@@ -35,7 +33,7 @@ const CalculatorNonFxDiscounting = () => {
   const [discountingApplicableList, setDiscountingApplicableList] = useState(
     []
   );
-  const [price, setPrice] = useState(285.2635);
+  const [ready, setReady] = useState(0);
   const [inputValue, setInputValue] = useState("0");
   const [nonFERate, setNonFERate] = useState(0);
   const [calculatedSwap, setCalculatedSwap] = useState(0);
@@ -50,7 +48,7 @@ const CalculatorNonFxDiscounting = () => {
         WorldCrossesData?.worldCrosses
       ) {
         const discountings = InstrumentsData.instruments
-          .filter((item) => item.discountingApplicable === true)
+          .filter((item) => item.isNonFEDiscountingApplicable === true)
           .map((item) => ({
             value: item.instrumentID,
             label: item.instrumentName,
@@ -58,35 +56,17 @@ const CalculatorNonFxDiscounting = () => {
 
         setDiscountingApplicableList(discountings);
 
-        //  Find USD in worldCrosses (this contains bid/offer)
-        const matchedRateUSD = WorldCrossesData.worldCrosses.find((cross) => {
-          const instrument = InstrumentsData.instruments.find(
-            (item) =>
-              item.instrumentID === cross.instrumentID &&
-              item.instrumentName === "USD" &&
-              item.discountingApplicable === true
-          );
-          return instrument !== undefined;
-        });
+        // Select USD by default in discountingApplicableList
+        const defaultUSD = discountings.find((item) => item.label === "USD");
 
-        // If found, match with dropdown option and set selected + price
-        if (matchedRateUSD) {
-          const defaultUSDOption = discountings.find(
-            (item) => item.value === matchedRateUSD.instrumentID
-          );
-
-          if (defaultUSDOption) {
-            setSelectedOption(defaultUSDOption); // or your actual state for selected discounting option
-            setPrice(matchedRateUSD.bid);
-          } else {
-            setPrice(null);
-          }
+        if (defaultUSD) {
+          setSelectedOption(defaultUSD);
         }
       }
     } catch (error) {
       console.error("Error processing instrument data:", error);
     }
-  }, [InstrumentsData, WorldCrossesData]);
+  }, [InstrumentsData]);
 
   // Effect to update date whenever inputValue changes
   useEffect(() => {
@@ -105,29 +85,12 @@ const CalculatorNonFxDiscounting = () => {
         setNonFERate(CalculatedNonFxDiscounting.nonFERate);
         setCalculatedSwap(CalculatedNonFxDiscounting.swap);
         setCalculatedKibor(CalculatedNonFxDiscounting.kibor);
+        setReady(CalculatedNonFxDiscounting.readyRate);
       }
     } catch (error) {
       console.log(error);
     }
   }, [CalculatedNonFxDiscounting]);
-
-  //Handle onChange Currency
-  const handleChangeCurrencyCalculator = (selected) => {
-    setSelectedOption(selected);
-
-    const selectedInstrumentID = selected?.value;
-
-    // Find the corresponding rate from WorldCrossesData
-    const matchedRate = WorldCrossesData?.worldCrosses?.find(
-      (cross) => cross.instrumentID === selectedInstrumentID
-    );
-
-    if (matchedRate) {
-      setPrice(matchedRate.bid);
-    } else {
-      setPrice(null);
-    }
-  };
 
   // Only allow numeric input Tenor
   const handleInputChangeTenor = (e) => {
@@ -136,28 +99,18 @@ const CalculatorNonFxDiscounting = () => {
     // Allow only digits and up to 4 characters
     if (/^\d{0,4}$/.test(value)) {
       const numericValue = parseInt(value, 10);
-
-      // Allow empty input (for typing) or numbers from 1 to 1000
+      const newDate = new Date();
+      // Allow empty input or numbers from 1 to 1000
       if (value === "" || (numericValue >= 1 && numericValue <= 1000)) {
         setInputValue(value);
-      }
-    }
-  };
 
-  // Handle Change Ready Value
-  const handleReadyValue = (e) => {
-    const value = e.target.value;
-
-    // Match format: up to 4 digits before decimal, up to 4 digits after
-    if (/^\d{0,4}(\.\d{0,4})?$/.test(value)) {
-      const [integerPart] = value.split(".");
-
-      // Allow empty string (for typing) or numeric part between 1 and 1000
-      if (
-        value === "" ||
-        (parseInt(integerPart, 10) >= 1 && parseInt(integerPart, 10) <= 1000)
-      ) {
-        setPrice(value);
+        if (value !== "") {
+          const newDate = new Date();
+          newDate.setDate(newDate.getDate() + numericValue); // Use numericValue here
+          setTagText(formatDate(newDate));
+        } else {
+          setTagText(formatDate(newDate)); // Optional: clear tag text if input is empty
+        }
       }
     }
   };
@@ -196,8 +149,9 @@ const CalculatorNonFxDiscounting = () => {
               <SelectDropdown
                 options={discountingApplicableList}
                 value={selectedOption}
-                onChange={handleChangeCurrencyCalculator}
+                onChange={(selected) => setSelectedOption(selected)}
                 placeholder="Select a currency"
+                classNamePrefix="RfqSpot"
               />
 
               <label className="mt-1">Ready</label>
@@ -205,9 +159,9 @@ const CalculatorNonFxDiscounting = () => {
                 type="number"
                 name="price"
                 defaultValue="0"
-                value={price}
+                value={ready}
                 applyClass={"CalculatorTextfield"}
-                onChange={handleReadyValue}
+                disabled={true}
               />
 
               <label className="mt-1">Tenor</label>
@@ -219,13 +173,13 @@ const CalculatorNonFxDiscounting = () => {
                 applyClass="inputField-calculator"
                 applyClassTag="tag-for-calculator"
                 width="100%" // width of the entire container
-                inputWidth="60%" // width of the input field
+                inputWidth="50%" // width of the input field
                 tagText={tagText}
-                tagWidth="40%" // width of the span
+                tagWidth="50%" // width of the span
                 tagClassName="yourTagClass"
               />
 
-              <div className="d-flex flex-row mt-1">
+              <div className="d-flex flex-row mt-1 gap-2">
                 <span className="d-flex flex-column">
                   <label>Swap</label>
                   <InputFIeld
@@ -241,14 +195,13 @@ const CalculatorNonFxDiscounting = () => {
                     type="text"
                     value={calculatedKibor}
                     disabled={true}
-                    placeholder="Enter value"
                     applyClass="inputField-calculator"
                     applyClassTag="tag-for-calculator"
                     width="100%"
-                    inputWidth="80%"
+                    inputWidth="75%"
                     tagText="%"
-                    tagWidth="20%"
-                    tagClassName="yourTagClass"
+                    tagWidth="25%"
+                    // tagClassName="yourTagClass"
                   />
                 </span>
               </div>

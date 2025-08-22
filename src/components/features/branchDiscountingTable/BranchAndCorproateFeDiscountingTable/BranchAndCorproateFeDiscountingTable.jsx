@@ -1,7 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
 import GlobalTable from "@/components/common/table/GlobalTable";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Col, Row } from "react-bootstrap";
 import CustomButton from "@/components/common/globalButton/button";
@@ -14,7 +12,6 @@ const BranchAndCorporateFeDiscountingTable = () => {
   //local states
   const [dataSource, setDataSource] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
-  const [originalDataSource, setOriginalDataSource] = useState([]);
   const [feDiscountingModalCall, setFeDiscountingModalCall] = useState(false);
 
   const getAllInstrumentsForCounterPartiesData = useSelector(
@@ -38,11 +35,6 @@ const BranchAndCorporateFeDiscountingTable = () => {
   const ClearRatesData = useSelector(
     (state) => state.RealtimeActionsSlice.ClearRatesData
   );
-
-  console.log(ClearRatesData, "ClearRatesData");
-  console.log(CounterPartyFeDiscounting, "CounterPartyFeDiscounting");
-
-  console.log(dataSource, "dataSource");
 
   useEffect(() => {
     if (

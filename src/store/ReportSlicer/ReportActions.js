@@ -6,6 +6,9 @@ import {
   DownloadPDFReportBlotterTrasactionBranch,
   DownloadPDFReportBlotterTrasactionCorporate,
   DownloadPDFReportBlotterTrasactionTreasury,
+  EmailBlotterTransactionDetailsForTreasury,
+  EmailBlotterTransactionDetailsForBranch,
+  EmailBlotterTransactionDetailsForCorporate,
   NOPCalcuationReports,
 } from "@/common/api_config";
 import { reportApi } from "@/common/apiend_points";
@@ -503,6 +506,271 @@ export const DownloadExcelReportNOPCalculationsAPI = createAsyncThunk(
       }
 
       return rejectWithValue("Something went wrong while downloading Excel");
+    }
+  }
+);
+
+// Email Report Function Branch
+export const EmailBlotterTransactionDetailsForBranchAPI = createAsyncThunk(
+  "Report/EmailBlotterTransactionDetailsForBranch", // A unique action type string
+  async (
+    { Data, navigate, setOpenMailModal },
+    { dispatch, rejectWithValue }
+  ) => {
+    try {
+      let EmailBlotterTransactionDetailsForBranchData = createPostAPI(
+        reportApi,
+        EmailBlotterTransactionDetailsForBranch.RequestMethod
+      );
+
+      const response = await EmailBlotterTransactionDetailsForBranchData(Data);
+      console.log(response, "EmailBlotterTransactionDetailsForBranchResponse");
+      const { data, status } = response;
+      if (data?.responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(
+          EmailBlotterTransactionDetailsForBranchAPI({
+            Data,
+            navigate,
+            setOpenMailModal,
+          })
+        );
+      }
+      if (status === 200) {
+        const { isExecuted, responseMessage } = data;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Report_ReportServiceManager_EmailBlotterTransactionDetailsForBranch_01".toLowerCase()
+              )
+          ) {
+            setOpenMailModal(false);
+            console.log("Email Sent Successfully");
+            return {
+              response: null,
+              message: "Email Sent Successfully",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Report_ReportServiceManager_EmailBlotterTransactionDetailsForBranch_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Report_ReportServiceManager_EmailBlotterTransactionDetailsForBranch_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Report_ReportServiceManager_EmailBlotterTransactionDetailsForBranch_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          console.log("", response.data);
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        console.log("", response.data);
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      // Reject with error message
+      console.log("", error);
+      return rejectWithValue("Something went wrong");
+    }
+  }
+);
+
+// Email Report Function Branch
+export const EmailBlotterTransactionDetailsForCorporateAPI = createAsyncThunk(
+  "Report/EmailBlotterTransactionDetailsForCorporate", // A unique action type string
+  async (
+    { Data, navigate, setOpenMailModal },
+    { dispatch, rejectWithValue }
+  ) => {
+    try {
+      let EmailBlotterTransactionDetailsForCorporateData = createPostAPI(
+        reportApi,
+        EmailBlotterTransactionDetailsForCorporate.RequestMethod
+      );
+
+      const response = await EmailBlotterTransactionDetailsForCorporateData(
+        Data
+      );
+      console.log(response, "EmailBlotterTransactionDetailsForCorporate");
+      const { data, status } = response;
+      if (data?.responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(
+          EmailBlotterTransactionDetailsForCorporateAPI({
+            Data,
+            navigate,
+            setOpenMailModal,
+          })
+        );
+      }
+      if (status === 200) {
+        const { isExecuted, responseMessage } = data;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Report_ReportServiceManager_EmailBlotterTransactionDetailsForCorporate_01".toLowerCase()
+              )
+          ) {
+            setOpenMailModal(false);
+            console.log("Email Sent Successfully");
+            return {
+              response: null,
+              message: "Email Sent Successfully",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Report_ReportServiceManager_EmailBlotterTransactionDetailsForCorporate_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Report_ReportServiceManager_EmailBlotterTransactionDetailsForCorporate_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Report_ReportServiceManager_EmailBlotterTransactionDetailsForCorporate_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          console.log("", response.data);
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        console.log("", response.data);
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      // Reject with error message
+      console.log("", error);
+      return rejectWithValue("Something went wrong");
+    }
+  }
+);
+
+// Email Report Function Branch
+export const EmailBlotterTransactionDetailsForTreasuryAPI = createAsyncThunk(
+  "Report/EmailBlotterTransactionDetailsForTreasury", // A unique action type string
+  async (
+    { Data, navigate, setOpenMailModal },
+    { dispatch, rejectWithValue }
+  ) => {
+    try {
+      let EmailBlotterTransactionDetailsForTreasuryData = createPostAPI(
+        reportApi,
+        EmailBlotterTransactionDetailsForTreasury.RequestMethod
+      );
+
+      const response = await EmailBlotterTransactionDetailsForTreasuryData(
+        Data
+      );
+      console.log(
+        response,
+        "EmailBlotterTransactionDetailsForTreasuryResponse"
+      );
+      const { data, status } = response;
+      if (data?.responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(
+          EmailBlotterTransactionDetailsForTreasuryAPI({
+            Data,
+            navigate,
+            setOpenMailModal,
+          })
+        );
+      }
+      if (status === 200) {
+        const { isExecuted, responseMessage } = data;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Report_ReportServiceManager_EmailBlotterTransactionDetailsForTreasury_01".toLowerCase()
+              )
+          ) {
+            setOpenMailModal(false);
+            console.log("Email Sent Successfully");
+            return {
+              response: null,
+              message: "Email Sent Successfully",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Report_ReportServiceManager_EmailBlotterTransactionDetailsForTreasury_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Report_ReportServiceManager_EmailBlotterTransactionDetailsForTreasury_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Report_ReportServiceManager_EmailBlotterTransactionDetailsForTreasury_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          console.log("", response.data);
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        console.log("", response.data);
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      // Reject with error message
+      console.log("", error);
+      return rejectWithValue("Something went wrong");
     }
   }
 );

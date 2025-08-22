@@ -16,6 +16,7 @@ import {
   GetForwardRatesForCounterPartyApi,
 } from "@/components/features/SpotBranch/WatchlistAction";
 import { setBlotterLoader } from "@/store/BlotterSlicer/BlotterSlicer";
+import SectionLoader from "@/components/common/loader/SectionLoader";
 const shouldIncludeComponents =
   import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
 
@@ -25,18 +26,18 @@ const SpotBranch = shouldIncludeComponents
 
 const ForwardTableBranchComponent = shouldIncludeComponents
   ? lazy(() =>
-      import(
-        "../../../components/features/ForwardTableBranchComponent/ForwardTableBranchComponent"
-      )
+    import(
+      "../../../components/features/ForwardTableBranchComponent/ForwardTableBranchComponent"
     )
+  )
   : null;
 
 const BranchDiscountingTable = shouldIncludeComponents
   ? lazy(() =>
-      import(
-        "../../../components/features/branchDiscountingTable/BranchDiscountingTable"
-      )
+    import(
+      "../../../components/features/branchDiscountingTable/BranchDiscountingTable"
     )
+  )
   : null;
 const MainCorporate = () => {
   const dispatch = useDispatch();
@@ -55,6 +56,8 @@ const MainCorporate = () => {
     isNonFeDiscountingEnabled,
     "isNonFeDiscountingEnabledisNonFeDiscountingEnabled"
   );
+
+  console.log(typeof isFeDiscountingEnabled, "CheckerCheckerChecrk");
   const handleTabChange = (tabTitle) => {
     dispatch(setActiveTab(tabTitle));
   };
@@ -77,44 +80,51 @@ const MainCorporate = () => {
   const tabsData = [
     {
       title: "Spot",
-      content:
-        SpotBranch && activeTab === "Spot" ? (
-          <Suspense fallback={<>Loading Spot...</>}>
+      content: SpotBranch ? (
+        <section className="position-relative">
+          <Suspense fallback={<SectionLoader />}>
             <SpotBranch />
             <section className='bg-white mt-2 p-2'>
               <BlotterHeader />
             </section>
           </Suspense>
-        ) : null,
+        </section>
+      ) : null,
     },
     {
       title: "Forwards",
-      content:
-        ForwardTableBranchComponent && activeTab === "Forwards" ? (
-          <Suspense fallback={<>Loading Forwards...</>}>
+      content: ForwardTableBranchComponent ? (
+        <section className="position-relative">
+          <Suspense fallback={<SectionLoader />}>
             <ForwardTableBranchComponent />
             <section className='bg-white p-2'>
               <BlotterHeader />
             </section>
           </Suspense>
-        ) : null,
+        </section>
+      ) : null,
     },
     {
       title: "Discounting",
-      content:
-        BranchDiscountingTable && activeTab === "Discounting" ? (
-          <Suspense fallback={<>Loading Discounting...</>}>
+      content: BranchDiscountingTable ? (
+        <section className="position-relative">
+
+          <Suspense fallback={<SectionLoader />}>
             <BranchDiscountingTable />
             <section className='bg-white p-2'>
               <BlotterHeader />
             </section>
           </Suspense>
-        ) : null,
+        </section>
+      ) : null,
     },
   ];
   let filterTabs = tabsData;
 
-  if (isFeDiscountingEnabled === false && isNonFeDiscountingEnabled === false) {
+  if (
+    JSON.parse(isFeDiscountingEnabled) === false &&
+    JSON.parse(isNonFeDiscountingEnabled) === false
+  ) {
     filterTabs = tabsData.filter((tab) => tab.title !== "Discounting");
   }
 

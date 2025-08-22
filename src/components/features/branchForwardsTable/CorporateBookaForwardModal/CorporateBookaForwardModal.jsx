@@ -28,6 +28,10 @@ const CorporateBookaForwardModal = ({
   const dispatch = useDispatch();
   const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
   const isCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
+  const [errorMessage, setErrorMessage] = useState({
+    message: "",
+    status: false,
+  });
 
   const counterPartyDetails =
     isBranch && localStorage.getItem("branch") !== null
@@ -41,6 +45,11 @@ const CorporateBookaForwardModal = ({
   const calculatedForwardsSwapandRate = useSelector(
     (state) => state.BlotterSlicer.calculateTenorSwapAndForwardRateData
   );
+  const currentRatesData = useSelector(
+    (state) => state.WatchListReducer.watchlistTableDataCopy
+  );
+
+  console.log(currentRatesData, "watchlistTableDatawatchlistTableData");
 
   // Get all instruments for counterparties from Redux store
   const getAllInstrumentsForCounterPartiesData = useSelector(
@@ -58,13 +67,12 @@ const CorporateBookaForwardModal = ({
     value: 0,
     label: "",
   });
-  const [instrumentValue, setInstrumentValue] = useState({
-    value: 0,
-    label: "",
-    SecondaryInstrumentID: 0,
-  });
+  // const [instrumentValue, setInstrumentValue] = useState({
+  //   value: 0,
+  //   label: "",
+  //   SecondaryInstrumentID: 0,
+  // });
   const [currencyOptions, setCurrencyOptions] = useState([]);
-
   const [tenorDate, setTenorDate] = useState(formatDate(new Date()));
   const [optionsDate, setOptionsDate] = useState(formatDate(new Date()));
   const [getAllCorporates, setGetAllCorporates] = useState([]);
@@ -81,10 +89,11 @@ const CorporateBookaForwardModal = ({
     Amount: "",
     TenorDays: "",
     Options: "",
-    Ready: 290.11,
+    Ready: "",
     Swap: "",
     CalculateRate: 0,
   });
+
   console.log(forwardRFQState, "forwardRFQStateforwardRFQStateforwardRFQState");
   const [selectedCurrency, setSelectedCurrency] = useState(null);
 
@@ -101,9 +110,28 @@ const CorporateBookaForwardModal = ({
   const handleChangeType = (selectType) => {
     console.log("selectType", selectType);
     setTypeOptionSelected(selectType);
+
+    try {
+      if (
+        typeOptionSelected.value !== 0 &&
+        forwardRFQState.TenorDays !== "" &&
+        // forwardRFQState.TenorDays !== "0" &&
+        selectedCurrency.value !== 0
+      ) {
+        let Data = {
+          IsBuySide: selectType.value === 1 ? true : false,
+          TenorDays: Number(forwardRFQState.TenorDays),
+          InstrumentName: selectedCurrency.label,
+          InstrumentID: selectedCurrency.value,
+        };
+        dispatch(calculateTenorSwapAndForwardRateApi({ Data, navigate }));
+        console.log(findCurrentRates, "findCurrentRatesfindCurrentRates");
+      }
+    } catch (error) {
+      console.log("Error in Calculating rated: ", error);
+    }
   };
   const options = [];
-  
 
   useEffect(() => {
     if (natureOfBusinessList !== null) {
@@ -153,6 +181,7 @@ const CorporateBookaForwardModal = ({
       }
     }
   }, [GetAllActiveCorproates]);
+
   console.log(
     calculatedForwardsSwapandRate,
     "calculatedForwardsSwapandRatecalculatedForwardsSwapandRate"
@@ -160,14 +189,17 @@ const CorporateBookaForwardModal = ({
   useEffect(() => {
     if (calculatedForwardsSwapandRate !== null) {
       try {
-        const { forwardRate, swap } = calculatedForwardsSwapandRate;
+        const { forwardRate, swap, readyRate } = calculatedForwardsSwapandRate;
         setForwardRFQState({
           ...forwardRFQState,
           Swap: swap,
           CalculateRate: forwardRate,
+          Ready: readyRate,
         });
-        dispatch(clearCalculateTenorSwapAndForwardRateData());
-      } catch (error) {}
+        dispatch(clearCalculateTenorSwapAndForwardRateData(null));
+      } catch (error) {
+        console.log(error);
+      }
     }
   }, [calculatedForwardsSwapandRate]);
 
@@ -194,31 +226,44 @@ const CorporateBookaForwardModal = ({
     if (getAllInstrumentsForCounterPartiesData !== null) {
       try {
         // Destructure spot applicable instruments from the data
-        const { spotApplicableInstruments } =
+        const { forwardApplicableInstruments } =
           getAllInstrumentsForCounterPartiesData;
 
         // Filter and map instruments to create dropdown options
-        const spotApplicableInstrumentList = spotApplicableInstruments
+        const spotApplicableInstrumentList = forwardApplicableInstruments
           .map((data) => {
             // Only include instruments that are valid for both buy and sell
-            if (
-              data.isBuy === true &&
-              data.isSell === true &&
-              data.secondaryInstrumentID === 0
-            ) {
+            if (data.isBuy === true || data.isSell === true) {
               return {
                 ...data, // Spread all existing instrument properties
-                label: `${data.instrumentName}${data.secondaryInstrumentName}`, // Display name for dropdown
+                label: `${data.instrumentName}`, // Display name for dropdown
                 value: data.instrumentID, // Unique identifier for selection
               };
             }
             return null; // Explicitly return null for non-matching instruments
           })
           .filter(Boolean); // Remove any null values from the array
-
+        console.log(
+          spotApplicableInstrumentList,
+          "spotApplicableInstrumentList"
+        );
         // Set the first valid instrument as default selection if available
         if (spotApplicableInstrumentList.length > 0) {
           setSelectedCurrency(spotApplicableInstrumentList[0]);
+          // let findCurrentRates = currentRatesData.find(
+          //   (rates, index) =>
+          //     rates.instrumentID === spotApplicableInstrumentList[0].value
+          // );
+          // if (findCurrentRates !== undefined) {
+          //   let getRates =
+          //     typeOptionSelected.value === 1
+          //       ? findCurrentRates.bid
+          //       : findCurrentRates.offer;
+          //   setForwardRFQState({
+          //     ...forwardRFQState,
+          //     Ready: getRates,
+          //   });
+          // }
           setCurrencyOptions(spotApplicableInstrumentList);
         } else {
           // Handle case where no valid instruments were found
@@ -240,10 +285,12 @@ const CorporateBookaForwardModal = ({
       setCurrencyOptions([]);
     }
   }, [getAllInstrumentsForCounterPartiesData]); // Only re-run when instrument data changes
+
   const handleChangeCorporate = (selectedOption) => {
     setCorporateValue(selectedOption);
     console.log("selectedOption", selectedOption);
   };
+
   // handle Change amount
   const handleChangeValues = (event) => {
     const { name, value } = event.target;
@@ -307,21 +354,22 @@ const CorporateBookaForwardModal = ({
     }
   };
 
-  const handleClickCalculatureForwards = () => {
-    let Data = {
-      IsBuySide: typeOptionSelected.value === 1 ? true : false,
-      TenorDays: forwardRFQState.TenorDays,
-      InstrumentName: selectedCurrency.label,
-      InstrumentID: selectedCurrency.value,
-    };
+  // const handleClickCalculatureForwards = () => {
+  //   let Data = {
+  //     IsBuySide: typeOptionSelected.value === 1 ? true : false,
+  //     TenorDays: forwardRFQState.TenorDays,
+  //     InstrumentName: selectedCurrency.label,
+  //     InstrumentID: selectedCurrency.value,
+  //   };
 
-    dispatch(calculateTenorSwapAndForwardRateApi({ Data, navigate }));
-  };
+  //   dispatch(calculateTenorSwapAndForwardRateApi({ Data, navigate }));
+  // };
 
   const handleUpdateRate = () => {
     if (
       typeOptionSelected.value !== 0 &&
       forwardRFQState.TenorDays !== "" &&
+      // forwardRFQState.TenorDays !== "0" &&
       selectedCurrency.value !== 0
     ) {
       let Data = {
@@ -334,6 +382,43 @@ const CorporateBookaForwardModal = ({
     }
   };
 
+  const handleChangeCurrency = (selectCurrenty) => {
+    console.log(selectCurrenty, "selectCurrenty");
+    setSelectedCurrency(selectCurrenty);
+    // let findCurrentRates = currentRatesData.find(
+    //   (rates, index) => rates.instrumentID === selectCurrenty.value
+    // );
+    // if (findCurrentRates !== undefined) {
+    //   let getRates =
+    //     typeOptionSelected.value === 1
+    //       ? findCurrentRates.bid
+    //       : findCurrentRates.offer;
+    //   setForwardRFQState({
+    //     ...forwardRFQState,
+    //     Ready: getRates,
+    //   });
+    // }
+    try {
+      if (
+        typeOptionSelected.value !== 0 &&
+        forwardRFQState.TenorDays !== "" &&
+        // forwardRFQState.TenorDays !== "0" &&
+        selectCurrenty.value !== 0
+      ) {
+        let Data = {
+          IsBuySide: typeOptionSelected.value === 1 ? true : false,
+          TenorDays: Number(forwardRFQState.TenorDays),
+          InstrumentName: selectCurrenty.label,
+          InstrumentID: selectCurrenty.value,
+        };
+        dispatch(calculateTenorSwapAndForwardRateApi({ Data, navigate }));
+        console.log(findCurrentRates, "findCurrentRatesfindCurrentRates");
+      }
+    } catch (error) {
+      console.log("Error in Calculating rated: ", error);
+    }
+  };
+
   const handleConfirm = () => {
     if (forwardRFQState.AccNo === "") {
       setErrorState({
@@ -341,7 +426,6 @@ const CorporateBookaForwardModal = ({
       });
       return;
     } else if (
-      corporateValue.value !== 0 &&
       selectedCurrency.value !== "" &&
       typeOptionSelected.value !== 0 &&
       forwardRFQState.Amount !== "" &&
@@ -368,7 +452,12 @@ const CorporateBookaForwardModal = ({
         Swap: Number(forwardRFQState.Swap),
       };
       dispatch(
-        SaveForwardTransactionAPI({ navigate, Data, setBookaForwardModalCall })
+        SaveForwardTransactionAPI({
+          navigate,
+          Data,
+          setBookaForwardModalCall,
+          setErrorMessage,
+        })
       );
     }
   };
@@ -386,16 +475,16 @@ const CorporateBookaForwardModal = ({
         footerClassName={"BookaforwardCorporateFooterClassname"}
         headerClassName={"BookaforwardCorporateHeaderClassname"}
         bodyClassName={"BookaforwardCorporateBodyClassname"}
-        className=''
+        className=""
         modalHeader={
           isBranch ? (
             <>
               <Row>
                 <Col lg={12} md={12} sm={12}>
-                  <span className='Header_BranchName'>
+                  <span className="Header_BranchName">
                     {counterPartyDetails?.branchName}
                   </span>
-                  <p className='Header_BranchCode'>
+                  <p className="Header_BranchCode">
                     {counterPartyDetails?.branchCode}
                   </p>
                 </Col>
@@ -404,7 +493,7 @@ const CorporateBookaForwardModal = ({
           ) : isCorporate ? (
             <Row>
               <Col lg={12} md={12} sm={12}>
-                <span className='Header_BranchName'>
+                <span className="Header_BranchName">
                   {counterPartyDetails?.corporateName}
                 </span>
               </Col>
@@ -413,43 +502,43 @@ const CorporateBookaForwardModal = ({
         }
         modalBody={
           <>
-            <Row className='position-relative'>
+            <Row className="position-relative">
               <Col lg={9} md={9} sm={9}>
                 <Row>
                   {import.meta.env.VITE_APP_INCLUDE_BRANCH === "true" && (
-                    <Col lg={12} md={12} sm={12} className='mb-2'>
-                      <div className='d-flex flex-column flex-wrap'>
-                        <span className='SubHeadings'>Client Name</span>
+                    <Col lg={12} md={12} sm={12} className="mb-2">
+                      <div className="d-flex flex-column flex-wrap">
+                        <span className="SubHeadings">Client Name</span>
                         <Select
                           options={getAllCorporates}
-                          placeholder=''
+                          placeholder=""
                           value={corporateValue}
                           onChange={handleChangeCorporate}
-                          classNamePrefix='bookaForwardCorporate'
+                          classNamePrefix="RfqSpot"
                         />
                       </div>
                     </Col>
                   )}
 
                   <Col lg={6} md={6} sm={6}>
-                    <div className='d-flex flex-column flex-wrap'>
-                      <span className='SubHeadings'>Currency</span>
+                    <div className="d-flex flex-column flex-wrap">
+                      <span className="SubHeadings">Currency</span>
                       <Select
                         options={currencyOptions}
-                        placeholder=''
+                        placeholder=""
                         value={selectedCurrency}
                         isSearchable={false}
-                        onChange={(selectCurrenty) => setSelectedCurrency(selectCurrenty)}
-                        classNamePrefix='bookaForwardCorporate'
+                        onChange={handleChangeCurrency}
+                        classNamePrefix="RfqSpot"
                       />
                     </div>
                   </Col>
                   <Col lg={6} md={6} sm={6}>
-                    <div className='d-flex flex-column flex-wrap'>
-                      <span className='SubHeadings'>Type</span>
+                    <div className="d-flex flex-column flex-wrap">
+                      <span className="SubHeadings">Type</span>
                       <Select
                         options={typeOptions}
-                        placeholder=''
+                        placeholder=""
                         isSearchable={false}
                         value={
                           typeOptionSelected.value === 0
@@ -457,62 +546,62 @@ const CorporateBookaForwardModal = ({
                             : typeOptionSelected
                         }
                         onChange={handleChangeType}
-                        classNamePrefix='bookaForwardCorporate'
+                        classNamePrefix="RfqSpot"
                       />
                     </div>
                   </Col>
                 </Row>
-                <Row className='mt-2'>
+                <Row className="mt-2">
                   <Col lg={6} md={6} sm={6}>
-                    <div className='d-flex flex-column flex-wrap'>
-                      <span className='SubHeadings'>Nature</span>
+                    <div className="d-flex flex-column flex-wrap">
+                      <span className="SubHeadings">Nature</span>
                       <InputFIeld
-                        applyClass={"BookaForwardCorporateInputFields"}
+                        applyClass={"CalculatorTextfield"}
                         value={natureOfBusinessSelcted?.label || ""}
                         disabled={true}
                       />
                     </div>
                   </Col>
                   <Col lg={6} md={6} sm={6}>
-                    <div className='d-flex flex-column flex-wrap'>
-                      <span className='SubHeadings'>A/c No*</span>
+                    <div className="d-flex flex-column flex-wrap">
+                      <span className="SubHeadings">A/c No*</span>
                       <InputFIeld
-                        applyClass={"BookaForwardCorporateInputFields"}
+                        applyClass={"CalculatorTextfield"}
                         value={forwardRFQState.AccNo}
                         name={"AccNo"}
                         onChange={handleChangeValues}
                       />
                     </div>
                     {errorState.accoutErrorStatus === true && (
-                      <div className='rfq-error_message'>
+                      <div className="rfq-error_message">
                         Account No. is Required
                       </div>
                     )}
                   </Col>
                 </Row>
-                <Row className='mt-2'>
+                <Row className="mt-2">
                   <Col lg={12} md={12} sm={12}>
-                    <div className='d-flex flex-column flex-wrap'>
-                      <span className='SubHeadings'>Amount</span>
+                    <div className="d-flex flex-column flex-wrap">
+                      <span className="SubHeadings">Amount</span>
                       <NumericFormat
                         value={forwardRFQState.Amount}
                         name={"Amount"}
                         onChange={handleChangeValues}
                         customInput={InputFIeld}
-                        thousandSeparator=','
+                        thousandSeparator=","
                         maxLength={10}
                         allowNegative={false}
-                        applyClass={"BookaForwardCorporateInputFields"}
+                        applyClass={"CalculatorTextfield"}
                       />
                     </div>
                   </Col>
                 </Row>
-                <Row className='mt-2  g-0'>
+                <Row className="mt-2  g-0">
                   <Col lg={7} md={7} sm={7}>
-                    <div className='d-flex flex-column flex-wrap'>
-                      <span className='SubHeadings'>Tenor</span>
+                    <div className="d-flex flex-column flex-wrap">
+                      <span className="SubHeadings">Tenor</span>
                       <InputFIeld
-                        applyClass={"BookaForwardCorporateInputFields"}
+                        applyClass={"CalculatorTextfield"}
                         value={forwardRFQState.TenorDays}
                         name={"TenorDays"}
                         onChange={handleChangeValues}
@@ -520,51 +609,51 @@ const CorporateBookaForwardModal = ({
                       />
                     </div>
                   </Col>
-                  <Col lg={5} md={5} sm={5} className='d-flex align-items-end'>
-                    <span className='dateSpan'>{tenorDate}</span>
+                  <Col lg={5} md={5} sm={5} className="d-flex align-items-end">
+                    <span className="dateSpan">{tenorDate}</span>
                   </Col>
                 </Row>
-                <Row className='mt-2  g-0'>
+                <Row className="mt-2  g-0">
                   <Col lg={7} md={7} sm={7}>
-                    <div className='d-flex flex-column flex-wrap'>
-                      <span className='SubHeadings'>Options</span>
+                    <div className="d-flex flex-column flex-wrap">
+                      <span className="SubHeadings">Options</span>
                       <InputFIeld
-                        applyClass={"BookaForwardCorporateInputFields"}
+                        applyClass={"CalculatorTextfield"}
                         value={forwardRFQState.Options}
                         name={"Options"}
                         onChange={handleChangeValues}
                       />
                     </div>
                   </Col>
-                  <Col lg={5} md={5} sm={5} className='d-flex align-items-end'>
-                    <span className='dateSpatwo'>{optionsDate}</span>
+                  <Col lg={5} md={5} sm={5} className="d-flex align-items-end">
+                    <span className="dateSpatwo">{optionsDate}</span>
                   </Col>
                 </Row>
-                <Row className='mt-2'>
+                <Row className="mt-2">
                   <Col lg={6} md={6} sm={6}>
-                    <div className='d-flex flex-column flex-wrap'>
-                      <span className='SubHeadings'>Ready</span>
+                    <div className="d-flex flex-column flex-wrap">
+                      <span className="SubHeadings">Ready</span>
                       <InputFIeld
-                        applyClass={"BookaForwardCorporateInputFields"}
-                        value={forwardRFQState.Ready}
+                        applyClass={"CalculatorTextfield"}
+                        value={Number(forwardRFQState.Ready).toFixed(2)}
                         disabled={true}
                       />
                     </div>
                   </Col>
                   <Col lg={6} md={6} sm={6}>
-                    <div className='d-flex flex-column flex-wrap'>
-                      <span className='SubHeadings'>Swap</span>
+                    <div className="d-flex flex-column flex-wrap">
+                      <span className="SubHeadings">Swap</span>
                       <InputFIeld
-                        applyClass={"BookaForwardCorporateInputFields"}
-                        value={forwardRFQState.Swap}
+                        applyClass={"CalculatorTextfield"}
+                        value={Number(forwardRFQState.Swap).toFixed(4)}
                         disabled={true}
                       />
                     </div>
                   </Col>
                 </Row>
               </Col>
-              <Col lg={3} md={3} sm={3} className='BlueboxStyles  '>
-                <span className='BlueBackGroundbox d-flex justify-content-center align-items-centerF '>
+              <Col lg={3} md={3} sm={3} className="BlueboxStyles  ">
+                <span className="BlueBackGroundbox d-flex justify-content-center align-items-centerF ">
                   {forwardRFQState.CalculateRate}
                 </span>
               </Col>
@@ -575,10 +664,22 @@ const CorporateBookaForwardModal = ({
           <>
             <Row>
               <Col
-                lg={12}
-                md={12}
+                lg={6}
+                md={6}
                 sm={12}
-                className='d-flex justify-content-center'>
+                className="d-flex justify-content-start align-items-center rfqLimit_error-style"
+              >
+                {errorMessage.status === true && errorMessage.message !== ""
+                  ? errorMessage.message
+                  : ""}
+                {/* Limit should be lower than 1000 */}
+              </Col>
+              <Col
+                lg={6}
+                md={6}
+                sm={12}
+                className="d-flex align-items-center justify-content-end"
+              >
                 <CustomButton
                   value={"Confirm"}
                   onClick={handleConfirm}

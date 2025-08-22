@@ -172,7 +172,7 @@
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  /* border-radius: 0.375rem; */
+  border-radius: 0.375rem;
   border-top-left-radius: 0.375rem !important;
   border-bottom-left-radius: 0.375rem !important;
 
@@ -213,6 +213,19 @@
   border-color: #86b7fe;
   outline: 0;
   box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.CalculatorTextfield-withTagInputfield:disabled {
+  border: 1px solid #d9d9d9;
+  background-color: #efefef4d;
+  border-radius: 6px;
+  color: #545454;
+}
+.CalculatorTextfield:disabled {
+  border: 1px solid #d9d9d9;
+  background-color: #efefef4d;
+  border-radius: 6px;
+  color: #545454;
 }
 /* End  Dealer Bit  Input Field */
 

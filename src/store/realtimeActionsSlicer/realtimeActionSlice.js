@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { isEqual } from "lodash";
 
 const RealtimeActionsSlice = createSlice({
   name: "realtimeActions",
@@ -58,23 +59,36 @@ const RealtimeActionsSlice = createSlice({
     CounterPartyFeDiscounting: null,
     CategoryNonFeDiscouting: null,
     ClearRatesData: null,
+
+    categoryFowardsTenorsChanges: null,
+    counterPartyFowardsTenorsChanges: null,
+    treasuryFowardsTenorsChanges: null,
   },
   reducers: {
+    setCategoryFowardsTenorsChanges: (state, { payload }) => {
+      state.categoryFowardsTenorsChanges = payload;
+    },
+    setCounterPartyFowardsTenorsChanges: (state, { payload }) => {
+      state.counterPartyFowardsTenorsChanges = payload;
+    },
+    setTreasuryFowardsTenorsChanges: (state, { payload }) => {
+      state.treasuryFowardsTenorsChanges = payload;
+    },
     setClearRates: (state, { payload }) => {
-      console.log(payload,"checker")
-      state.ClearRatesData = { ...payload };
+      console.log(payload, "checker");
+      state.ClearRatesData = payload;
     },
     setCategoryNonFeDiscounting: (state, { payload }) => {
-      state.CategoryNonFeDiscouting = { ...payload };
+      state.CategoryNonFeDiscouting = payload;
     },
     setCounterPartyFeDiscounting: (state, { payload }) => {
-      state.CounterPartyFeDiscounting = { ...payload };
+      state.CounterPartyFeDiscounting = payload;
     },
     setCounterPartyForwardRates: (state, { payload }) => {
-      state.CounterPartyForwardRates = { ...payload };
+      state.CounterPartyForwardRates = payload;
     },
     setCounterPartyNonFeDiscounting: (state, { payload }) => {
-      state.CounterPartyNonFeDiscounting = { ...payload };
+      state.CounterPartyNonFeDiscounting = payload;
     },
     setCategoryFeDiscounting: (state, { payload }) => {
       state.CategoryFeDiscounting = payload;
@@ -83,25 +97,27 @@ const RealtimeActionsSlice = createSlice({
       state.FxTradingCards = payload;
     },
     setTreasuryFeDiscounting: (state, { payload }) => {
-      state.TreasuryFeDiscounting = { ...payload };
+      state.TreasuryFeDiscounting = payload;
     },
     setTreasuryNonFeDiscounting: (state, { payload }) => {
-      state.TreasuryNonFeDiscounting = { ...payload };
+      state.TreasuryNonFeDiscounting = payload;
     },
     setTreasuryForwardRates: (state, { payload }) => {
       state.TreasuryForwardRates = payload;
     },
     setCategorySpotRates: (state, { payload }) => {
-      state.CategorySpotRates = { ...payload };
+      state.CategorySpotRates = payload;
     },
     setCategoryForwardRates: (state, { payload }) => {
-      state.CategoryForwardRates = { ...payload };
+      state.CategoryForwardRates = payload;
     },
     setCounterPartySpotRates: (state, { payload }) => {
-      state.CounterPartySpotRates = { ...payload };
+      state.CounterPartySpotRates = payload;
     },
     setTreasurySpotRatesFeed: (state, { payload }) => {
-      state.TreasurySpotRatesFeed = { ...payload };
+      if (!isEqual(state.TreasurySpotRatesFeed, payload)) {
+        state.TreasurySpotRatesFeed = payload;
+      }
     },
     setDealBoxData(state, { payload }) {
       state.dealBoxData = payload;
@@ -111,6 +127,9 @@ const RealtimeActionsSlice = createSlice({
     },
     setIncomingChat(state, { payload }) {
       state.IncomingChat = [...state.IncomingChat, payload];
+    },
+    clearIncomingChat(state) {
+      state.IncomingChat = []; // reset to empty
     },
     setTenorsCreated(state, { payload }) {
       state.tenorsCreated = payload;
@@ -142,7 +161,7 @@ const RealtimeActionsSlice = createSlice({
     BlotterTransactionRFQExpired(state, { payload }) {
       state.BlotterTransactionRFQExpired = payload;
     },
-    BlotterTransactionRFQExpiredForTreasury(state, { payload }) {
+    setBlotterTransactionRFQExpiredForTreasury(state, { payload }) {
       state.BlotterTransactionRFQExpiredForTreasury = payload;
     },
     setBlotterTransactionRFQExpiredForTreasuryDealBox(state, { payload }) {
@@ -205,6 +224,9 @@ const RealtimeActionsSlice = createSlice({
 });
 
 export const {
+  setCategoryFowardsTenorsChanges,
+  setTreasuryFowardsTenorsChanges,
+  setCounterPartyFowardsTenorsChanges,
   setClearRates,
   setCategoryFeDiscounting,
   setFxTradingCards,
@@ -213,7 +235,7 @@ export const {
   setTreasurySpotRatesFeed,
   setTreasuryForwardRates,
   setBlotterTransactionRFQQuotedForTreasuryDealBox,
-  BlotterTransactionRFQExpiredForTreasury,
+  setBlotterTransactionRFQExpiredForTreasury,
   BlotterTransactionAddedForTreasury,
   BlotterTransactionAssignedForTreasury,
   BlotterTransactionAcceptedForTreasury,
@@ -251,6 +273,7 @@ export const {
   setCounterPartyForwardRates,
   setCounterPartyFeDiscounting,
   setCategoryNonFeDiscounting,
+  clearIncomingChat
 } = RealtimeActionsSlice.actions;
 
 export default RealtimeActionsSlice.reducer;

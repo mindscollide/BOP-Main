@@ -162,8 +162,7 @@ const NopModal = ({ openNopModal, setOpenNopModal }) => {
     <>
       <Modal
         show={openNopModal}
-        onHide={onCloseModalNop}
-        setShow={setOpenNopModal}
+        onHide={() => setOpenNopModal(false)}
         className="modal-nop-class"
         centered
         size="lg"

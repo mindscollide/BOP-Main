@@ -4,8 +4,11 @@ import { buildForwardsTable } from "@/components/utils/generateColumnsData";
 import React, { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { throttle } from "lodash";
+import { setTreasuryFowardsTenorsChanges } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
+import { useDispatch } from "react-redux";
 
 const BankForwards = () => {
+  const dispatch = useDispatch();
   const [dataSource, setDataSource] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
 
@@ -27,6 +30,10 @@ const BankForwards = () => {
 
   const marketStatus = useSelector(
     (state) => state.WatchListReducer.getMarketStatus
+  );
+
+  const treasuryFowardsTenorsChanges = useSelector(
+    (state) => state.RealtimeActionsSlice.treasuryFowardsTenorsChanges
   );
 
   useEffect(() => {
@@ -55,6 +62,68 @@ const BankForwards = () => {
     }
   }, [
     GetBankForwardForTreasury,
+    getAllTenorsRecords,
+    GetAllInstrumentForTreasury,
+  ]);
+
+  useEffect(() => {
+    if (
+      treasuryFowardsTenorsChanges !== null &&
+      getAllTenorsRecords !== null &&
+      GetAllInstrumentForTreasury !== null
+    ) {
+      try {
+        const { newIsForwardtenorList = [], removedtenorList = [] } =
+          treasuryFowardsTenorsChanges;
+        const allTenors = [...(getAllTenorsRecords.tenors || [])];
+
+        const { forwardInstruments } = GetAllInstrumentForTreasury;
+        // Convert arrays of objects to Set of IDs
+        const removedSet = new Set(
+          removedtenorList.map((item) => item.tenorID)
+        );
+        const newSet = new Set(
+          newIsForwardtenorList.map((item) => item.tenorID)
+        );
+
+        // Update each tenor's isForwardingApplicable field
+        const updatedTenors = allTenors.map((tenor) => ({
+          ...tenor,
+          isForwardingApplicable: removedSet.has(tenor.tenorID) ? false : true, // leave unchanged if in neither
+        }));
+        // const filteredTenors = updatedTenors.filter(
+        //   (t) => t.isForwardingApplicable
+        // );
+        // console.log(updatedTenors, "updatedTenorsupdatedTenors");
+        let getAllTenorsData = { tenors: updatedTenors };
+        let getAllInstrument = {
+          instruments: forwardInstruments,
+        };
+
+        const { forwardRates = [] } =
+          GetBankForwardForTreasury !== null &&
+          GetBankForwardForTreasury !== undefined &&
+          GetBankForwardForTreasury;
+        // const { forwardInstruments } = GetAllInstrumentForTreasury;
+        const { rowData, columnsData } = buildForwardsTable(
+          3,
+          forwardRates,
+          getAllTenorsData,
+          getAllInstrument,
+          IndexCell
+        );
+        if (rowData.length > 0) {
+          setDataSource(rowData);
+          setColumnsData(columnsData);
+        }
+        dispatch(setTreasuryFowardsTenorsChanges(null));
+        // console.log(updatedTenors, "updatedTenorsupdatedTenors");
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }, [
+    treasuryFowardsTenorsChanges,
     getAllTenorsRecords,
     GetAllInstrumentForTreasury,
   ]);
@@ -118,7 +187,7 @@ const BankForwards = () => {
 
   return (
     <>
-      <div className="flex-fill mt-3 fs-4 fw-bold color-black mb-1 ff-roboto">
+      <div className='flex-fill mt-3 fs-4 fw-bold color-black mb-1 ff-roboto'>
         Bank Forwards
       </div>
 

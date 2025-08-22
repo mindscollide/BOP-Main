@@ -14,7 +14,7 @@ const CustomButton = ({
   prefixCls,
   applyClass,
   className,
-  disabled
+  disabled,
 }) => {
   return (
     <>
@@ -29,8 +29,8 @@ const CustomButton = ({
         prefixCls={prefixCls}
         size={size}
         onClick={onClick}
-        
-        iconPosition={iconPosition}>
+        iconPosition={iconPosition}
+      >
         {value}
       </Button>
     </>

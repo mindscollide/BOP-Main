@@ -1,11 +1,23 @@
-import React, { useCallback, useEffect, useState } from "react";
-import GlobalTable from "@/components/common/table/GlobalTable";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import CustomButton from "@/components/common/globalButton/button";
-import { Checkbox, Popover } from "antd";
-import CommentModal from "../commentModal/CommentModal";
 import { useNavigate } from "react-router-dom";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Box,
+  Checkbox,
+  Popover,
+  CircularProgress,
+} from "@mui/material";
+import { makeStyles } from "@mui/styles";
+
+import CustomButton from "@/components/common/globalButton/button";
+import CommentModal from "../commentModal/CommentModal";
 import {
   AcceptTransactionAPI,
   AcceptTransactionCancellationRequest,
@@ -20,7 +32,6 @@ import {
   RejectTransactionCancellationRequest,
 } from "../BlotterActions";
 import { formatDateTimeToUTCTime } from "@/components/utils/timeFunction";
-import { useTableScrollBottom } from "@/utils/useTableScrollBottom";
 import {
   setDiscountingQuoteModal,
   setForwardQuoteModal,
@@ -44,9 +55,53 @@ import {
   setDiscountingQuoteModalData,
   setForwardQuoteModalData,
   setSpotQuoteModalData,
-  updateOutstandingBlotterData,
 } from "@/store/BlotterSlicer/BlotterSlicer";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
+import { useNotification } from "@/context/NotificationProvider";
+
+// Custom styles for the component
+const useStyles = makeStyles((theme) => ({
+  tableContainer: {
+    maxHeight: 400,
+    overflow: "auto",
+    "& .MuiTableHead-root": {
+      position: "sticky",
+      top: 0,
+      zIndex: 1,
+      backgroundColor: "var(--color-primary) !important",
+    },
+    "& .MuiTableCell-head": {
+      fontWeight: "bold",
+      color: "white",
+      backgroundColor: "var(--color-primary) !important",
+    },
+  },
+  statusAccepted: {
+    color: "green",
+  },
+  statusRejected: {
+    color: "red",
+  },
+  statusInProgress: {
+    color: "orange",
+  },
+  statusPending: {
+    color: "#ffcc00",
+  },
+  filterButton: {
+    cursor: "pointer",
+    color: "white",
+    background: "#f56600",
+    borderRadius: "4px",
+    padding: "2px 4px",
+    marginLeft: "4px",
+  },
+  actionButtons: {
+    display: "flex",
+    gap: "4px",
+    justifyContent: "center",
+  },
+}));
 
 /**
  * OutstandingDeals component displays a list of outstanding deals in the blotter.
@@ -55,120 +110,28 @@ import { IndexCell } from "@/components/common/inputField/IndexCell";
  *
  * @component
  * @returns {JSX.Element} The rendered OutstandingDeals component.
- *
- * @example
- * // Usage
- * <OutstandingDeals />
- *
- * @reduxState
- * - BlotterTransactionRFQExpired: Data for expired RFQs.
- * - BlotterTransactionAssigned: Data for assigned transactions.
- * - BlotterTransactionAdded: Data for newly added transactions.
- * - BlotterTransactionRFQQuoted: Data for quoted RFQs.
- * - BlotterTransactionAccepted: Data for accepted transactions.
- * - BlotterTranscationCancelled: Data for cancelled transactions.
- * - BlotterTransactionCancellationRequestData: Data for cancellation requests.
- * - BlotterTransactionRejected: Data for rejected transactions.
- * - getBlotterOutstandingData: Data for outstanding deals.
- *
- * @localState
- * - blotterdata: Array of current blotter data.
- * - totalRecord: Total number of records in the blotter.
- * - sRow: Current row index for pagination.
- * - hasReachedBottom: Boolean indicating if the bottom of the table has been reached.
- * - open: Boolean for TXN ID filter visibility.
- * - selectedItemsTXNID: Array of selected TXN IDs.
- * - showCommentModal: Boolean for comment modal visibility.
- * - comment: Current comment text.
- * - openCustomername: Boolean for customer name filter visibility.
- * - selectedItemsCustomerName: Array of selected customer names.
- * - openType: Boolean for type filter visibility.
- * - selectedItemsType: Array of selected types.
- * - openNature: Boolean for nature filter visibility.
- * - selectedItemsNature: Array of selected natures.
- * - openCCY1: Boolean for CCY1 filter visibility.
- * - selectedItemsCCY1: Array of selected CCY1 values.
- * - openAmount1: Boolean for amount1 filter visibility.
- * - selectedItemsAmount1: Array of selected amount1 values.
- * - openRate: Boolean for rate filter visibility.
- * - selectedItemsRate: Array of selected rates.
- * - openCCY2: Boolean for CCY2 filter visibility.
- * - selectedItemsCCY2: Array of selected CCY2 values.
- * - openAmount2: Boolean for amount2 filter visibility.
- * - selectedItemsAmount2: Array of selected amount2 values.
- * - openTime: Boolean for time filter visibility.
- * - selectedItemsTime: Array of selected times.
- * - openLCno: Boolean for LC number filter visibility.
- * - selectedItemsLCno: Array of selected LC numbers.
- * - openAccNO: Boolean for account number filter visibility.
- * - selectedItemsAccNO: Array of selected account numbers.
- * - openStatus: Boolean for status filter visibility.
- * - selectedItemsStatus: Array of selected statuses.
- * - dealData: Data for the current deal.
  */
-/**
- * OutstandingDeals component displays a list of outstanding deals in the blotter.
- * It manages the state of various filters and handles updates to the blotter data
- * based on real-time actions from the Redux store.
- *
- * @component
- * @returns {JSX.Element} The rendered OutstandingDeals component.
- *
- * @example
- * return (
- *   <OutstandingDeals />
- * );
- */
-const OutstandingDeals = () => {
+const OutstandingDeals = ({
+  treasuryOutStandingDealRecords,
+  treasuryOutStandingDealsRow,
+  setHasBottomReachedOutstanding,
+  treasuryOutStandingDeal,
+  hasBottomReachedOutstanding,
+}) => {
+  const classes = useStyles();
+  const { showMessage } = useNotification();
   const dispatch = useDispatch();
+  const observer = useRef(null);
+  const outstandingTableContainerRef = useRef(null);
   const navigate = useNavigate();
-  const blotterTransactionRFQExpired = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTransactionRFQExpired
-  );
 
-  const blotterTransactionAssigned = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTransactionAssigned
-  );
-  const blotterTransactionAdded = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTransactionAdded
-  );
-  const blotterTransactionRFQQuoted = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTransactionRFQQuoted
-  );
-  const blotterTransactionAccepted = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTransactionAccepted
-  );
-
-  const blotterTranscationCancelled = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTranscationCancelled
-  );
-
-  const blotterTransactionCancellationRequest = useSelector(
-    (state) =>
-      state.RealtimeActionsSlice.BlotterTransactionCancellationRequestData
-  );
-
-  const blotterTransactionRejected = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTransactionRejected
-  );
-  const BlotterTransactionAddedForTreasury = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTransactionAddedForTreasury
-  );
-  console.log(blotterTransactionAdded, "CheckerCheckerChecker122121212");
-
-  console.log(
-    BlotterTransactionAddedForTreasury,
-    "BlotterTransactionAddedForTreasury"
-  );
-
-  //HardCoded Filter Values start
+  // Hardcoded filter options
   const TXN_ID_OPTIONS = [
     "09-09-2024/0568",
     "09-09-2024/4798",
     "09-09-2024/bd2e",
     "09-09-2024/d1f2",
   ];
-
   const CustomerName_OPTIONS = ["Gul Ahmed"];
   const TYPE_OPTIONS = ["Buy", "Sell"];
   const Nature_OPTIONS = ["1", "6"];
@@ -182,79 +145,35 @@ const OutstandingDeals = () => {
   const Accno_OPTIONS = ["234234234234234234234234"];
   const Status_OPTIONS = ["Pending"];
 
-  //HardCoded Filter Values Ended
-
-  //Global State For Blotter Data
-  const getBlotterOutstandingData = useSelector(
-    (state) => state.BlotterSlicer.getBlotterOutstandingData
-  );
-  const totalRecordsOutstanding = useSelector(
-    (state) => state.BlotterSlicer.totalCountOutstandingData
-  );
-
-  const OutstandingTableNewData = useSelector(
-    (state) => state.BlotterSlicer.OutstandingTableNewData
-  );
-
-  console.log(
-    OutstandingTableNewData,
-    totalRecordsOutstanding,
-    getBlotterOutstandingData,
-    "OutstandingTableNewDataOutstandingTableNewData"
-  );
-
-  //local states
-  const [blotterdata, setBlotterdata] = useState([]);
-
-  console.log(getBlotterOutstandingData, "getBlotterOutstandingData");
-  console.log(blotterdata, "blotterdatablotterdata");
-  const [totalRecord, setTotalRecords] = useState(0);
-  const [sRow, setRow] = useState(0);
-  console.log(sRow, "sRowsRowsRow");
-
-  const [hasReachedBottom, setHasReachedBottom] = useState(false);
-  //TXNID Filter State
+  // State for filters
   const [open, setOpen] = useState(false);
   const [selectedItemsTXNID, setSelectedItemsTXNID] = useState([]);
-  // Show and Hide Comment Modal and commentState
   const [showCommentModal, setShowCommentModal] = useState(false);
   const [comment, setComment] = useState("");
-  //Customer Name Filter State
   const [openCustomername, setOpenCustomername] = useState(false);
   const [selectedItemsCustomerName, setSelectedItemsCustomerName] = useState(
     []
   );
-  //Type Filter State
   const [openType, setOpenType] = useState(false);
   const [selectedItemsType, setSelectedItemsType] = useState([]);
-  //Nature Filter State
   const [openNature, setOpenNature] = useState(false);
   const [selectedItemsNature, setSelectedItemsNature] = useState([]);
-  //CCY1 Filter State
   const [openCCY1, setOpenCCY1] = useState(false);
   const [selectedItemsCCY1, setSelectedItemsCCY1] = useState([]);
-  //Amount1 Filter State
   const [openAmount1, setOpenAmount1] = useState(false);
   const [selectedItemsAmount1, setSelectedItemsAmount1] = useState([]);
-  //Rate Filter State
   const [openRate, setOpenRate] = useState(false);
   const [selectedItemsRate, setSelectedItemsRate] = useState([]);
-  //CCY2 Filter State
   const [openCCY2, setOpenCCY2] = useState(false);
   const [selectedItemsCCY2, setSelectedItemsCCY2] = useState([]);
-  //Amount2 Filter State
   const [openAmount2, setOpenAmount2] = useState(false);
   const [selectedItemsAmount2, setSelectedItemsAmount2] = useState([]);
-  //Time Filter State
   const [openTime, setOpenTime] = useState(false);
   const [selectedItemsTime, setSelectedItemsTime] = useState([]);
-  //LCno Filter State
   const [openLCno, setOpenLCno] = useState(false);
   const [selectedItemsLCno, setSelectedItemsLCno] = useState([]);
-  //AccNO Filter State
   const [openAccNO, setOpenAccNO] = useState(false);
   const [selectedItemsAccNO, setSelectedItemsAccNO] = useState([]);
-  //Status Filter State
   const [openStatus, setOpenStatus] = useState(false);
   const [selectedItemsStatus, setSelectedItemsStatus] = useState([]);
 
@@ -262,855 +181,77 @@ const OutstandingDeals = () => {
   const [cancelReasonComment, setCancelReasonComment] = useState("");
   const [cancelType, setCancelType] = useState("");
   const [cancelTransactionID, setCancelTransactionID] = useState(0);
-  console.log(totalRecord, blotterdata.length, "totalRecord");
-  useTableScrollBottom(
-    () => {
-      console.log(totalRecord, blotterdata.length, "totalRecord");
-      if (totalRecord !== blotterdata.length) {
-        setHasReachedBottom(true);
-        let Data = { sRow: sRow, Length: 10 };
-        dispatch(GetBlotterOutstandingDealsDataAPI({ navigate, Data }));
-      }
-    },
-    0,
-    "OutStanding_Table"
-  );
 
-  useEffect(() => {
-    if (
-      getBlotterOutstandingData !== null ||
-      Array.isArray(OutstandingTableNewData)
-    ) {
-      console.log(
-        { OutstandingTableNewData, getBlotterOutstandingData },
-        "tnxTableNewDatatnxTableNewData"
-      );
-      setBlotterdata(OutstandingTableNewData);
-      setRow(OutstandingTableNewData.length);
-      setTotalRecords(totalRecordsOutstanding);
-      setHasReachedBottom(false);
-    }
-  }, [
-    getBlotterOutstandingData,
-    OutstandingTableNewData,
-    totalRecordsOutstanding,
-  ]);
-
-  useEffect(() => {
-    const updateGlobalOutstandingBlotter = (newSummary) => {
-      console.log(newSummary, "newSummarynewSummary");
-      dispatch(
-        updateOutstandingBlotterData({
-          ...getBlotterOutstandingData,
-          // tnxSummary: newSummary,
-          OutstandingTableNewData: newSummary,
-        })
-      );
-    };
-
-    const handleTransaction = (transaction, type) => {
-      if (!transaction) return;
-      let updatedData = [...(OutstandingTableNewData || [])];
-      console.log(updatedData, "updatedDataupdatedDataupdatedData");
-      switch (type) {
-        case "added":
-          console.log(updatedData, "updatedDataupdatedDataupdatedData");
-
-          const existingIndex = updatedData.findIndex(
-            (item) => item.pK_TransactionID === transaction.pK_TransactionID
-          );
-          console.log(existingIndex, "updatedDataupdatedDataupdatedData");
-
-          if (existingIndex !== -1) {
-            updatedData[existingIndex] = transaction;
-          } else {
-            // setTotalRecords((prevTotal) => prevTotal + 1);
-            updatedData = [transaction, ...updatedData];
-          }
-          console.log(updatedData, "updatedDataupdatedDataupdatedData");
-
-          updateGlobalOutstandingBlotter(updatedData);
-          // setBlotterdata(updatedData);
-          // const isExists = updatedData.some(
-          //   (data) => data.pK_TransactionID === transaction?.pK_TransactionID
-          // );
-          // if (!isExists) {
-          //   setBlotterdata((prev) => [transaction, ...prev]);
-          // }
-          dispatch(BlotterTransactionAdded(null));
-          break;
-
-        case "quoted":
-          const newUpdatedData = updatedData.map((item) => {
-            if (item.pK_TransactionID === transaction.pK_TransactionID) {
-              return {
-                ...item,
-                bid: transaction?.bid,
-                offer: transaction?.offer,
-                statusID: transaction?.statusID,
-                rfqTimerDetails: {
-                  startTime: transaction?.rfqTimerDetails?.startTime,
-                  endTime: transaction?.rfqTimerDetails?.endTime,
-                  isEnded: transaction?.rfqTimerDetails?.isEnded,
-                },
-                amount: transaction?.amount,
-              };
-            }
-            return item;
-          });
-
-          updateGlobalOutstandingBlotter(newUpdatedData);
-          dispatch(BlotterTransactionRFQQuoted(null));
-          break;
-
-        case "expired": {
-          const filteredData = updatedData.filter(
-            (item) => item.pK_TransactionID !== transaction.pK_TransactionID
-          );
-
-          updateGlobalOutstandingBlotter(filteredData);
-          dispatch(BlotterTransactionRFQExpired(null));
-          break;
-        }
-        case "accepted": {
-          console.log(
-            updatedData,
-            transaction,
-            "updatedDataupdatedDataupdatedData accepted"
-          );
-          const filteredData = updatedData.filter(
-            (item) => item.pK_TransactionID !== transaction.pK_TransactionID
-          );
-          console.log(
-            filteredData,
-            "updatedDataupdatedDataupdatedData accepted"
-          );
-
-          updateGlobalOutstandingBlotter(filteredData);
-          dispatch(BlotterTransactionAccepted(null));
-          break;
-        }
-        case "cancelled": {
-          const filteredData = updatedData.filter(
-            (item) => item.pK_TransactionID !== transaction.pK_TransactionID
-          );
-
-          updateGlobalOutstandingBlotter(filteredData);
-          dispatch(BlotterTranscationCancelled(null));
-          break;
-        }
-
-        case "rejected": {
-          const filteredData = updatedData.filter(
-            (item) => item.pK_TransactionID !== transaction.pK_TransactionID
-          );
-
-          updateGlobalOutstandingBlotter(filteredData);
-          dispatch(BlotterTransactionRejected(null));
-          break;
-        }
-
-        default:
-          break;
-      }
-      // updateGlobalOutstandingBlotter(updatedData);
-    };
-
-    try {
-      if (blotterTransactionAdded !== null) {
-        handleTransaction(blotterTransactionAdded.transaction, "added");
-      }
-
-      if (blotterTransactionRFQQuoted !== null) {
-        handleTransaction(blotterTransactionRFQQuoted.transaction, "quoted");
-      }
-
-      if (blotterTransactionRFQExpired !== null) {
-        handleTransaction(blotterTransactionRFQExpired.transaction, "expired");
-      }
-
-      if (blotterTransactionAccepted !== null) {
-        handleTransaction(blotterTransactionAccepted.transaction, "accepted");
-      }
-
-      if (blotterTranscationCancelled !== null) {
-        handleTransaction(blotterTranscationCancelled.transaction, "cancelled");
-        // const updatedData = (OutstandingTableNewData || []).filter(
-        //   (item) => item.pK_TransactionID !== transaction.pK_TransactionID
-        // );
-        // updateGlobalOutstandingBlotter(updatedData);
-      }
-
-      if (blotterTransactionRejected !== null) {
-        handleTransaction(blotterTransactionRejected.transaction, "rejected");
-      }
-    } catch (error) {
-      console.log(error, "error in unified blotter transaction handler");
-    }
-  }, [
-    blotterTransactionAdded,
-    blotterTransactionRFQQuoted,
-    blotterTransactionRFQExpired,
-    blotterTransactionAccepted,
-    blotterTranscationCancelled,
-    blotterTransactionRejected,
-    OutstandingTableNewData,
-  ]);
-
-  useEffect(() => {
-    if (blotterTransactionAssigned !== null) {
-      try {
-        const {
-          transactionID,
-          treasuryPersonID,
-          statusID,
-          statusForAssignedUser,
-          statusForOtherTreasury,
-        } = blotterTransactionAssigned;
-
-        setBlotterdata((prevBlotterData) =>
-          prevBlotterData.map((tableData) => {
-            if (tableData.pK_TransactionID === transactionID) {
-              if (
-                Number(localStorage.getItem("userID")) ===
-                Number(treasuryPersonID)
-              ) {
-                return {
-                  ...tableData,
-                  status: statusForAssignedUser,
-                  statusID: statusID,
-                  treasuryPersonID: treasuryPersonID,
-                };
-              } else {
-                return {
-                  ...tableData,
-                  status: statusForOtherTreasury,
-                  statusID: statusID,
-                  treasuryPersonID: treasuryPersonID,
-                };
-              }
-            }
-
-            // ⚠️ Add this to return unchanged rows
-            return tableData;
-          })
-        );
-        dispatch(BlotterTransactionAssigned(null));
-      } catch (error) {
-        console.log(error, "error in blotterTransactionAssigned");
-      }
-    }
-  }, [blotterTransactionAssigned]);
-
-  useEffect(() => {
-    if (blotterTransactionCancellationRequest !== null) {
-      try {
-        const { transaction } = blotterTransactionCancellationRequest;
-        let ishasAlready = blotterdata.find(
-          (data, index) =>
-            data.pK_TransactionID === transaction?.pK_TransactionID
-        );
-        if (ishasAlready === undefined) {
-          setBlotterdata([transaction, ...blotterdata]);
-        }
-        dispatch(BlotterTransactionCancellationRequest(null));
-      } catch (error) {
-        console.log(error, "error in blotterTransactionCancellationRequest");
-      }
-    }
-  }, [blotterTransactionCancellationRequest]);
-
-  //TXN ID PopOver Functions Starts
-  const handleOpenChange = (newOpen) => {
-    setOpen(newOpen);
-  };
-
-  const handleSelectAll = () => {
-    setSelectedItemsTXNID(TXN_ID_OPTIONS);
-  };
-
-  const handleDeselectAll = () => {
-    setSelectedItemsTXNID([]);
-  };
-
-  const handleCheckboxChange = (checkedValues) => {
+  // Filter handlers (similar to original, but simplified for brevity)
+  const handleOpenChange = (newOpen) => setOpen(newOpen);
+  const handleSelectAll = () => setSelectedItemsTXNID(TXN_ID_OPTIONS);
+  const handleDeselectAll = () => setSelectedItemsTXNID([]);
+  const handleCheckboxChange = (checkedValues) =>
     setSelectedItemsTXNID(checkedValues);
-  };
 
-  const popoverContentTXN = (
-    <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
-        <CustomButton
-          applyClass="SelectAllButton"
-          value={"Select All"}
-          onClick={handleSelectAll}
-        />
-        <CustomButton
-          applyClass="SelectAllButton"
-          value={"Desselect All"}
-          onClick={handleDeselectAll}
-        />
-      </div>
-      <Checkbox.Group
-        style={{ display: "flex", flexDirection: "column" }}
-        value={selectedItemsTXNID}
-        onChange={handleCheckboxChange}
-      >
-        {TXN_ID_OPTIONS.map((item) => (
-          <Checkbox key={item} value={item}>
-            {item}
-          </Checkbox>
-        ))}
-      </Checkbox.Group>
-    </div>
+  // Load more data function for infinite scrolling
+  const loadMore = useCallback(async () => {
+    // Prevent loading if already at bottom or no more records
+    if (
+      hasBottomReachedOutstanding ||
+      treasuryOutStandingDealRecords <= treasuryOutStandingDeal.length
+    )
+      return;
+
+    setHasBottomReachedOutstanding(true); // Set loading state
+
+    // Prepare data for API call
+    let Data = { sRow: treasuryOutStandingDealsRow, Length: 10 };
+    dispatch(GetBlotterOutstandingDealsDataAPI({ navigate, Data }));
+  }, [
+    hasBottomReachedOutstanding,
+    setHasBottomReachedOutstanding,
+    treasuryOutStandingDealRecords,
+    treasuryOutStandingDeal.length,
+    treasuryOutStandingDealsRow,
+  ]);
+
+  // Intersection Observer callback for infinite scrolling
+  const lastRowRef = useCallback(
+    (node) => {
+      if (hasBottomReachedOutstanding || !outstandingTableContainerRef.current)
+        return;
+
+      // Disconnect previous observer
+      if (observer.current) observer.current.disconnect();
+
+      // Create new observer to detect when last row is visible
+      observer.current = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting && !hasBottomReachedOutstanding) {
+            loadMore(); // Load more data when last row is visible
+          }
+        },
+        {
+          root: outstandingTableContainerRef.current, // Use table container as root
+          threshold: 0.5, // Fully visible threshold
+        }
+      );
+
+      if (node) observer.current.observe(node); // Observe the last row
+    },
+    [hasBottomReachedOutstanding, loadMore]
   );
-  //TXN ID PopOver Functions Ends
 
-  //Customer Name PopOver Functions Starts
-  const handleOpenChangeCustomerName = (newOpen) => {
-    setOpenCustomername(newOpen);
-  };
-
-  const handleSelectAllCustomerName = () => {
-    setSelectedItemsCustomerName(CustomerName_OPTIONS);
-  };
-
-  const handleDeselectAllCustomerName = () => {
-    setSelectedItemsCustomerName([]);
-  };
-
-  const handleCheckboxChangeCustomerName = (checkedValues) => {
-    setSelectedItemsCustomerName(checkedValues);
-  };
-
-  const popoverContentClientName = (
-    <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
-        <CustomButton
-          applyClass="SelectAllButton"
-          value={"Select All"}
-          onClick={handleSelectAllCustomerName}
-        />
-        <CustomButton
-          applyClass="SelectAllButton"
-          value={"Desselect All"}
-          onClick={handleDeselectAllCustomerName}
-        />
-      </div>
-    </div>
-  );
-  //Customer Name PopOver Functions Ends
-
-  //Type PopOver Functions Starts
-  const handleOpenChangeType = (newOpen) => {
-    setOpenType(newOpen);
-  };
-
-  const handleSelectAllType = () => {
-    setSelectedItemsType(TYPE_OPTIONS);
-  };
-
-  const handleDeselectAllType = () => {
-    setSelectedItemsType([]);
-  };
-
-  const handleCheckboxChangeType = (checkedValues) => {
-    setSelectedItemsType(checkedValues);
-  };
-
-  const popoverContentType = (
-    <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
-        <CustomButton
-          applyClass="SelectAllButton"
-          value={"Select All"}
-          onClick={handleSelectAllType}
-        />
-        <CustomButton
-          applyClass="SelectAllButton"
-          value={"Desselect All"}
-          onClick={handleDeselectAllType}
-        />
-      </div>
-      {/* <Checkbox.Group
-        style={{ display: "flex", flexDirection: "column" }}
-        value={selectedItemsType}
-        onChange={handleCheckboxChangeType}
-      >
-        {TYPE_OPTIONS.map((item) => (
-          <Checkbox key={item} value={item}>
-            {item}
-          </Checkbox>
-        ))}
-      </Checkbox.Group> */}
-    </div>
-  );
-  //Type PopOver Functions Ends
-
-  //Nature PopOver Functions Starts
-  const handleOpenChangeNature = (newOpen) => {
-    setOpenNature(newOpen);
-  };
-
-  const handleSelectAllNature = () => {
-    setSelectedItemsNature(Nature_OPTIONS);
-  };
-
-  const handleDeselectAllNature = () => {
-    setSelectedItemsNature([]);
-  };
-
-  const handleCheckboxChangeNature = (checkedValues) => {
-    setSelectedItemsNature(checkedValues);
-  };
-
-  const popoverContentNature = (
-    <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
-        <CustomButton
-          applyClass="SelectAllButton"
-          value={"Select All"}
-          onClick={handleSelectAllNature}
-        />
-        <CustomButton
-          applyClass="SelectAllButton"
-          value={"Desselect All"}
-          onClick={handleDeselectAllNature}
-        />
-      </div>
-      <Checkbox.Group
-        style={{ display: "flex", flexDirection: "column" }}
-        value={selectedItemsNature}
-        onChange={handleCheckboxChangeNature}
-      >
-        {Nature_OPTIONS.map((item) => (
-          <Checkbox key={item} value={item}>
-            {item}
-          </Checkbox>
-        ))}
-      </Checkbox.Group>
-    </div>
-  );
-  //Nature PopOver Functions Ends
-
-  //CCY1 PopOver Functions Starts
-  const handleOpenChangeCCY1 = (newOpen) => {
-    setOpenCCY1(newOpen);
-  };
-
-  const handleSelectAllCCY1 = () => {
-    setSelectedItemsCCY1(CCY1_OPTIONS);
-  };
-
-  const handleDeselectAllCCY1 = () => {
-    setSelectedItemsCCY1([]);
-  };
-
-  const handleCheckboxChangeCCY1 = (checkedValues) => {
-    setSelectedItemsCCY1(checkedValues);
-  };
-
-  const popoverContentCCY1 = (
-    <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
-        <CustomButton
-          applyClass="SelectAllButton"
-          value={"Select All"}
-          onClick={handleSelectAllCCY1}
-        />
-        <CustomButton
-          applyClass="SelectAllButton"
-          value={"Desselect All"}
-          onClick={handleDeselectAllCCY1}
-        />
-      </div>
-      <Checkbox.Group
-        style={{ display: "flex", flexDirection: "column" }}
-        value={selectedItemsCCY1}
-        onChange={handleCheckboxChangeCCY1}
-      >
-        {CCY1_OPTIONS.map((item) => (
-          <Checkbox key={item} value={item}>
-            {item}
-          </Checkbox>
-        ))}
-      </Checkbox.Group>
-    </div>
-  );
-  //CCY1 PopOver Functions Ends
-
-  //Amount1 PopOver Functions Starts
-  const handleOpenChangeAmount1 = (newOpen) => {
-    setOpenAmount1(newOpen);
-  };
-
-  const handleSelectAllAmount1 = () => {
-    setSelectedItemsAmount1(Amount_OPTIONS);
-  };
-
-  const handleDeselectAllAmount1 = () => {
-    setSelectedItemsAmount1([]);
-  };
-
-  const handleCheckboxChangeAmount1 = (checkedValues) => {
-    setSelectedItemsAmount1(checkedValues);
-  };
-
-  const popoverContentAmount1 = (
-    <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
-        <CustomButton
-          applyClass="SelectAllButton"
-          value={"Select All"}
-          onClick={handleSelectAllAmount1}
-        />
-        <CustomButton
-          applyClass="SelectAllButton"
-          value={"Desselect All"}
-          onClick={handleDeselectAllAmount1}
-        />
-      </div>
-      <Checkbox.Group
-        style={{ display: "flex", flexDirection: "column" }}
-        value={selectedItemsAmount1}
-        onChange={handleCheckboxChangeAmount1}
-      >
-        {Amount_OPTIONS.map((item) => (
-          <Checkbox key={item} value={item}>
-            {item}
-          </Checkbox>
-        ))}
-      </Checkbox.Group>
-    </div>
-  );
-  //CCY1 PopOver Functions Ends
-
-  //Rate PopOver Functions Starts
-  const handleOpenChangeRate = (newOpen) => {
-    setOpenRate(newOpen);
-  };
-
-  const handleSelectAllRate = () => {
-    setSelectedItemsRate(Rate_OPTIONS);
-  };
-
-  const handleDeselectAllRate = () => {
-    setSelectedItemsRate([]);
-  };
-
-  const handleCheckboxChangeRate = (checkedValues) => {
-    setSelectedItemsRate(checkedValues);
-  };
-
-  const popoverContentRate = (
-    <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
-        <CustomButton
-          applyClass="SelectAllButton"
-          value={"Select All"}
-          onClick={handleSelectAllRate}
-        />
-        <CustomButton
-          applyClass="SelectAllButton"
-          value={"Desselect All"}
-          onClick={handleDeselectAllRate}
-        />
-      </div>
-      <Checkbox.Group
-        style={{ display: "flex", flexDirection: "column" }}
-        value={selectedItemsRate}
-        onChange={handleCheckboxChangeRate}
-      >
-        {Rate_OPTIONS.map((item) => (
-          <Checkbox key={item} value={item}>
-            {item}
-          </Checkbox>
-        ))}
-      </Checkbox.Group>
-    </div>
-  );
-  //Rate PopOver Functions Ends
-
-  //CCY2 PopOver Functions Starts
-  const handleOpenChangeCCY2 = (newOpen) => {
-    setOpenCCY2(newOpen);
-  };
-
-  const handleSelectAllCCY2 = () => {
-    setSelectedItemsCCY2(CCY2_OPTIONS);
-  };
-
-  const handleDeselectAllCCY2 = () => {
-    setSelectedItemsCCY2([]);
-  };
-
-  const handleCheckboxChangeCCY2 = (checkedValues) => {
-    setSelectedItemsCCY2(checkedValues);
-  };
-
-  const popoverContentCCY2 = (
-    <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
-        <CustomButton
-          applyClass="SelectAllButton"
-          value={"Select All"}
-          onClick={handleSelectAllCCY2}
-        />
-        <CustomButton
-          applyClass="SelectAllButton"
-          value={"Desselect All"}
-          onClick={handleDeselectAllCCY2}
-        />
-      </div>
-      <Checkbox.Group
-        style={{ display: "flex", flexDirection: "column" }}
-        value={selectedItemsCCY2}
-        onChange={handleCheckboxChangeCCY2}
-      >
-        {CCY2_OPTIONS.map((item) => (
-          <Checkbox key={item} value={item}>
-            {item}
-          </Checkbox>
-        ))}
-      </Checkbox.Group>
-    </div>
-  );
-  //CCY2 PopOver Functions Ends
-
-  //Amount2 PopOver Functions Starts
-  const handleOpenChangeAmount2 = (newOpen) => {
-    setOpenAmount2(newOpen);
-  };
-
-  const handleSelectAllAmount2 = () => {
-    setSelectedItemsAmount2(Amount2_OPTIONS);
-  };
-
-  const handleDeselectAllAmount2 = () => {
-    setSelectedItemsAmount2([]);
-  };
-
-  const handleCheckboxChangeAmount2 = (checkedValues) => {
-    setSelectedItemsAmount2(checkedValues);
-  };
-
-  const popoverContentAmount2 = (
-    <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
-        <CustomButton
-          applyClass="SelectAllButton"
-          value={"Select All"}
-          onClick={handleSelectAllAmount2}
-        />
-        <CustomButton
-          applyClass="SelectAllButton"
-          value={"Desselect All"}
-          onClick={handleDeselectAllAmount2}
-        />
-      </div>
-      <Checkbox.Group
-        style={{ display: "flex", flexDirection: "column" }}
-        value={selectedItemsAmount2}
-        onChange={handleCheckboxChangeAmount2}
-      >
-        {Amount2_OPTIONS.map((item) => (
-          <Checkbox key={item} value={item}>
-            {item}
-          </Checkbox>
-        ))}
-      </Checkbox.Group>
-    </div>
-  );
-  //Amount2 PopOver Functions Ends
-
-  //Time PopOver Functions Starts
-  const handleOpenChangeTime = (newOpen) => {
-    setOpenTime(newOpen);
-  };
-
-  const handleSelectAllTime = () => {
-    setSelectedItemsTime(Time_OPTIONS);
-  };
-
-  const handleDeselectAllTime = () => {
-    setSelectedItemsTime([]);
-  };
-
-  const handleCheckboxChangeTime = (checkedValues) => {
-    setSelectedItemsTime(checkedValues);
-  };
-
-  const popoverContentTime = (
-    <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
-        <CustomButton
-          applyClass="SelectAllButton"
-          value={"Select All"}
-          onClick={handleSelectAllTime}
-        />
-        <CustomButton
-          applyClass="SelectAllButton"
-          value={"Desselect All"}
-          onClick={handleDeselectAllTime}
-        />
-      </div>
-      <Checkbox.Group
-        style={{ display: "flex", flexDirection: "column" }}
-        value={selectedItemsTime}
-        onChange={handleCheckboxChangeTime}
-      >
-        {Time_OPTIONS.map((item) => (
-          <Checkbox key={item} value={item}>
-            {item}
-          </Checkbox>
-        ))}
-      </Checkbox.Group>
-    </div>
-  );
-  //Time PopOver Functions Ends
-
-  //LCno PopOver Functions Starts
-  const handleOpenChangeLCno = (newOpen) => {
-    setOpenLCno(newOpen);
-  };
-
-  const handleSelectAllLCno = () => {
-    setSelectedItemsLCno(LCno_OPTIONS);
-  };
-
-  const handleDeselectAllLCno = () => {
-    setSelectedItemsLCno([]);
-  };
-
-  const handleCheckboxChangeLCno = (checkedValues) => {
-    setSelectedItemsLCno(checkedValues);
-  };
-
-  const popoverContentLCno = (
-    <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
-        <CustomButton
-          applyClass="SelectAllButton"
-          value={"Select All"}
-          onClick={handleSelectAllLCno}
-        />
-        <CustomButton
-          applyClass="SelectAllButton"
-          value={"Desselect All"}
-          onClick={handleDeselectAllLCno}
-        />
-      </div>
-      <Checkbox.Group
-        style={{ display: "flex", flexDirection: "column" }}
-        value={selectedItemsLCno}
-        onChange={handleCheckboxChangeLCno}
-      >
-        {LCno_OPTIONS.map((item) => (
-          <Checkbox key={item} value={item}>
-            {item}
-          </Checkbox>
-        ))}
-      </Checkbox.Group>
-    </div>
-  );
-  //LCno PopOver Functions Ends
-
-  //ACCno PopOver Functions Starts
-  const handleOpenChangeAccNO = (newOpen) => {
-    setOpenAccNO(newOpen);
-  };
-
-  const handleSelectAllAccNO = () => {
-    setSelectedItemsAccNO(Accno_OPTIONS);
-  };
-
-  const handleDeselectAllAccNO = () => {
-    setSelectedItemsAccNO([]);
-  };
-
-  const handleCheckboxChangeAccNO = (checkedValues) => {
-    setSelectedItemsAccNO(checkedValues);
-  };
-
-  const popoverContentAccNO = (
-    <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
-        <CustomButton
-          applyClass="SelectAllButton"
-          value={"Select All"}
-          onClick={handleSelectAllAccNO}
-        />
-        <CustomButton
-          applyClass="SelectAllButton"
-          value={"Desselect All"}
-          onClick={handleDeselectAllAccNO}
-        />
-      </div>
-      <Checkbox.Group
-        style={{ display: "flex", flexDirection: "column" }}
-        value={selectedItemsAccNO}
-        onChange={handleCheckboxChangeAccNO}
-      >
-        {Accno_OPTIONS.map((item) => (
-          <Checkbox key={item} value={item}>
-            {item}
-          </Checkbox>
-        ))}
-      </Checkbox.Group>
-    </div>
-  );
-  //ACCno PopOver Functions Ends
-
-  //status PopOver Functions Starts
-  const handleOpenChangeStatus = (newOpen) => {
-    setOpenStatus(newOpen);
-  };
-
-  const handleSelectAllStatus = () => {
-    setSelectedItemsStatus(Status_OPTIONS);
-  };
-
-  const handleDeselectAllStatus = () => {
-    setSelectedItemsStatus([]);
-  };
-
-  const handleCheckboxChangeStatus = (checkedValues) => {
-    setSelectedItemsStatus(checkedValues);
-  };
+  // Cleanup observer on unmount
+  useEffect(() => {
+    return () => {
+      if (observer.current) {
+        observer.current.disconnect();
+      }
+    };
+  }, []);
+  // Other filter handlers would follow the same pattern...
 
   const handleShowCommentModal = (text) => {
     setShowCommentModal(true);
     setComment(text);
   };
-
-  const popoverContentStatus = (
-    <div style={{ width: 220 }}>
-      <div className="d-flex justify-content-between mb-2">
-        <CustomButton
-          applyClass="SelectAllButton"
-          value={"Select All"}
-          onClick={handleSelectAllStatus}
-        />
-        <CustomButton
-          applyClass="SelectAllButton"
-          value={"Desselect All"}
-          onClick={handleDeselectAllStatus}
-        />
-      </div>
-      <Checkbox.Group
-        style={{ display: "flex", flexDirection: "column" }}
-        value={selectedItemsStatus}
-        onChange={handleCheckboxChangeStatus}
-      >
-        {Status_OPTIONS.map((item) => (
-          <Checkbox key={item} value={item}>
-            {item}
-          </Checkbox>
-        ))}
-      </Checkbox.Group>
-    </div>
-  );
-  //status PopOver Functions Ends
 
   const handleClickAssignTransaction = (record) => {
     let Data = { PK_TransactionID: Number(record.pK_TransactionID) };
@@ -1118,21 +259,18 @@ const OutstandingDeals = () => {
   };
 
   const openViewDeal = (record, natureTypeId) => {
-    console.log(record, natureTypeId, "openViewDealopenViewDeal");
     if (natureTypeId === 1) {
-      //  For Spot
       dispatch(setViewDealModal(true));
       dispatch(setSpotQuoteModalData(record));
     } else if (natureTypeId === 2) {
-      // For Forwards
       dispatch(setForwardQuoteModal(true));
       dispatch(setForwardQuoteModalData(record));
     } else if (natureTypeId === 3 || natureTypeId === 4) {
       dispatch(setDiscountingQuoteModal(true));
       dispatch(setDiscountingQuoteModalData(record));
-      // For Fe And Non Fe Discounting
     }
   };
+
   const acceptTransaction = (record) => {
     dispatch(
       AcceptTransactionAPI({
@@ -1141,45 +279,34 @@ const OutstandingDeals = () => {
       })
     );
   };
+
   const rejectTransaction = (record) => {
     setCancelReasonModal(true);
     setCancelType("Rejected");
     setCancelTransactionID(record.pK_TransactionID);
-    // dispatch(
-    //   RejectTransactionAPI({
-    //     navigate,
-    //     Data: { PK_TransactionID: record.pK_TransactionID },
-    //   })
-    // );
   };
 
   const handleAcceptTransactionCancellation = (transactionID) => {
     let Data = { PK_TransactionID: transactionID };
     dispatch(AcceptTransactionCancellationRequest({ navigate, Data }));
   };
+
   const handleRejectTransactionCancellation = (transactionID) => {
-    // let Data = { PK_TransactionID: transactionID };
-    // dispatch(RejectTransactionCancellationRequest({ navigate, Data }));
     setCancelReasonModal(true);
     setCancelType("Cancellation");
     setCancelTransactionID(transactionID);
   };
 
   const handleClickChat = (txnID, treasuryPersonID) => {
-    let Data = {
-      TranscationID: txnID,
-    };
-
-    dispatch(
-      getAllChatByTransactionId({
-        navigate,
-        Data,
-        treasuryPersonID,
-      })
-    );
+    let Data = { TranscationID: txnID };
+    dispatch(getAllChatByTransactionId({ navigate, Data, treasuryPersonID }));
   };
 
   const handleClickReasonSubmit = useCallback(() => {
+    if (cancelReasonComment.trim() === "") {
+      showMessage("Please enter a reason for cancellation");
+      return;
+    }
     if (cancelType === "Rejected") {
       let Data = {
         PK_TransactionID: cancelTransactionID,
@@ -1202,7 +329,6 @@ const OutstandingDeals = () => {
   }, [
     cancelType,
     cancelTransactionID,
-    cancelReasonModal,
     cancelReasonComment,
     setCancelReasonModal,
   ]);
@@ -1212,393 +338,126 @@ const OutstandingDeals = () => {
     setCancelType("");
     setCancelTransactionID(0);
     setCancelReasonComment("");
-  }, [cancelType, cancelTransactionID, cancelReasonModal, cancelReasonComment]);
+  }, []);
+
   const handleClickInfo = (record) => {
-    let Data = {
-      PK_TransactionID: record.pK_TransactionID,
-    };
+    let Data = { PK_TransactionID: record.pK_TransactionID };
     if (record.natureType === 1) {
-      console.log("Spot");
       dispatch(GetSpotTransactionDetailsApi({ navigate, Data }));
     } else if (record.natureType === 2) {
-      console.log("Forward");
       dispatch(GetForwardTransactionDetailsApi({ navigate, Data }));
     } else if (record.natureType === 3) {
-      console.log("Fe Discouting");
       dispatch(GetFEDiscountingTransactionDetailsApi({ navigate, Data }));
     } else if (record.natureType === 4) {
-      console.log("Non Fe Discouting");
       dispatch(GetNonFEDiscountingTransactionDetailsApi({ navigate, Data }));
     }
   };
 
+  // Table columns configuration
   const columns = [
-    // TXNID
     {
-      title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">TXN ID</span>
-          <Popover
-            content={popoverContentTXN}
-            trigger="click"
-            arrow={false}
-            placement="bottom"
-            open={open}
-            onOpenChange={handleOpenChange}
-          >
-            <span
-              style={{
-                cursor: "pointer",
-                color: "white",
-                background: "#f56600",
-                borderRadius: "4px",
-              }}
-            >
-              ▼
-            </span>
-          </Popover>
-        </div>
-      ),
-      key: "txnid",
-      dataIndex: "txnid",
+      id: "txnid",
+      label: "TXN ID",
       align: "center",
-      className: "ff-poppins fw-bold",
       width: 120,
+      render: (record) => record.txnid,
     },
-    // Client Name
     {
-      title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">Client</span>
-          <Popover
-            content={popoverContentClientName}
-            trigger="click"
-            arrow={false}
-            placement="bottom"
-            open={openCustomername}
-            onOpenChange={handleOpenChangeCustomerName}
-          >
-            <span
-              style={{
-                cursor: "pointer",
-                color: "white",
-                background: "#f56600",
-                borderRadius: "4px",
-              }}
-            >
-              ▼
-            </span>
-          </Popover>
-        </div>
-      ),
-      key: "counterPartyName",
-      dataIndex: "corporateName",
-      className: "ff-poppins fw-bold",
+      id: "corporateName",
+      label: "Client",
       width: 120,
+      render: (record) => record.corporateName,
     },
-    // Branch Code
     {
-      title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">Branch Code</span>
-          <Popover
-            content={popoverContentType}
-            trigger="click"
-            arrow={false}
-            placement="bottom"
-            open={openType}
-            onOpenChange={handleOpenChangeType}
-          >
-            <span
-              style={{
-                cursor: "pointer",
-                color: "white",
-                background: "#f56600",
-                borderRadius: "4px",
-              }}
-            >
-              ▼
-            </span>
-          </Popover>
-        </div>
-      ),
-      key: "side",
-      dataIndex: "branchCode",
-      className: "ff-poppins fw-bold",
+      id: "branchCode",
+      label: "Branch Code",
       width: 120,
+      align: "center",
+      render: (record) => record.branchCode,
     },
-    // Side
     {
-      title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">Type</span>
-          <Popover
-            content={popoverContentType}
-            trigger="click"
-            arrow={false}
-            placement="bottom"
-            open={openType}
-            onOpenChange={handleOpenChangeType}
-          >
-            <span
-              style={{
-                cursor: "pointer",
-                color: "white",
-                background: "#f56600",
-                borderRadius: "4px",
-              }}
-            >
-              ▼
-            </span>
-          </Popover>
-        </div>
-      ),
-      key: "side",
-      dataIndex: "side",
-      className: "ff-poppins fw-bold",
+      id: "side",
+      label: "Type",
       width: 60,
+      render: (record) => record.side,
     },
-    // Nature
     {
-      title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">Nature</span>
-          <Popover
-            content={popoverContentNature}
-            trigger="click"
-            arrow={false}
-            placement="bottom"
-            open={openNature}
-            onOpenChange={handleOpenChangeNature}
-          >
-            <span
-              style={{
-                cursor: "pointer",
-                color: "white",
-                background: "#f56600",
-                borderRadius: "4px",
-              }}
-            >
-              ▼
-            </span>
-          </Popover>
-        </div>
-      ),
-      key: "nature",
-      dataIndex: "nature",
-      className: "ff-poppins fw-bold",
+      id: "nature",
+      label: "Nature",
       width: 120,
+      align: "center",
+      render: (record) => record.nature,
     },
-    // Bid
     {
-      title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">Bid</span>
-        </div>
-      ),
-      key: "rate1",
-      dataIndex: "bid",
-      className: "ff-poppins fw-bold",
+      id: "bid",
+      label: "Bid",
       width: 60,
-      render: (text, reocrd) => {
-        return <IndexCell value={formatPkAmount(text)} />;
-      },
-    },
-    // Offer
-    {
-      title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">Offer</span>
-        </div>
+      align: "center",
+      render: (record) => (
+        <IndexCell value={formatPkAmount(record.bid, { decimals: 5 })} />
       ),
-      key: "rate2",
-      dataIndex: "offer",
-      className: "ff-poppins fw-bold",
+    },
+    {
+      id: "offer",
+      label: "Offer",
       width: 60,
-      render: (text, reocrd) => {
-        return <IndexCell value={formatPkAmount(text)} />;
-      },
-    },
-    // CCY1
-    {
-      title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">CCY1</span>
-          <Popover
-            content={popoverContentAmount1}
-            trigger="click"
-            arrow={false}
-            placement="bottom"
-            open={openAmount1}
-            onOpenChange={handleOpenChangeAmount1}
-          >
-            <span
-              style={{
-                cursor: "pointer",
-                color: "white",
-                background: "#f56600",
-                borderRadius: "4px",
-              }}
-            >
-              ▼
-            </span>
-          </Popover>
-        </div>
+      align: "center",
+      render: (record) => (
+        <IndexCell value={formatPkAmount(record.offer, { decimals: 5 })} />
       ),
-      key: "ccY1",
-      dataIndex: "ccY1",
-      className: "ff-poppins fw-bold",
+    },
+    {
+      id: "ccY1",
+      label: "CCY1",
       width: 80,
+      align: "center",
+      render: (record) => record.ccY1,
     },
-    // Amount
     {
-      title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">Amount</span>
-          <Popover
-            content={popoverContentRate}
-            trigger="click"
-            arrow={false}
-            placement="bottom"
-            open={openRate}
-            onOpenChange={handleOpenChangeRate}
-          >
-            <span
-              style={{
-                cursor: "pointer",
-                color: "white",
-                background: "#f56600",
-                borderRadius: "4px",
-              }}
-            >
-              ▼
-            </span>
-          </Popover>
-        </div>
-      ),
-      key: "amount1",
-      dataIndex: "quantity",
-      className: "ff-poppins fw-bold",
+      id: "quantity",
+      label: "TXN Amount",
+      width: 150,
+      align: "center",
+      render: (record) => <IndexCell value={formatPkAmount(record.quantity)} />,
+    },
+    {
+      id: "ccY2",
+      label: "CCY2",
       width: 80,
-      render: (text, reocrd) => {
-        return <IndexCell value={formatPkAmount(text)} />;
-      },
+      align: "center",
+      render: (record) => record.ccY2,
     },
-    // CCY2
     {
-      title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">CCY2</span>
-          <Popover
-            content={popoverContentCCY2}
-            trigger="click"
-            arrow={false}
-            placement="bottom"
-            open={openCCY2}
-            onOpenChange={handleOpenChangeCCY2}
-          >
-            <span
-              style={{
-                cursor: "pointer",
-                color: "white",
-                background: "#f56600",
-                borderRadius: "4px",
-              }}
-            >
-              ▼
-            </span>
-          </Popover>
-        </div>
-      ),
-      key: "ccY2",
-      dataIndex: "ccY2",
-      className: "ff-poppins fw-bold",
-      width: 80,
+      id: "amount",
+      label: "Total Amount",
+      width: 150,
+      align: "center",
+      render: (record) => <IndexCell value={formatPkAmount(record.amount)} />,
     },
-    // Amount
     {
-      title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">Amount</span>
-          <Popover
-            content={popoverContentAmount2}
-            trigger="click"
-            arrow={false}
-            placement="bottom"
-            open={openAmount2}
-            onOpenChange={handleOpenChangeAmount2}
-          >
-            <span
-              style={{
-                cursor: "pointer",
-                color: "white",
-                background: "#f56600",
-                borderRadius: "4px",
-              }}
-            >
-              ▼
-            </span>
-          </Popover>
-        </div>
-      ),
-      key: "amount2",
-      dataIndex: "amount",
-      className: "ff-poppins fw-bold",
-      width: 80,
-      render: (text, reocrd) => {
-        return <IndexCell value={formatPkAmount(text)} />;
-      },
-    },
-    // Time
-    {
-      title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">Time</span>
-          <Popover
-            content={popoverContentTime}
-            trigger="click"
-            arrow={false}
-            placement="bottom"
-            open={openTime}
-            onOpenChange={handleOpenChangeTime}
-          >
-            <span
-              style={{
-                cursor: "pointer",
-                color: "white",
-                background: "#f56600",
-                borderRadius: "4px",
-              }}
-            >
-              ▼
-            </span>
-          </Popover>
-        </div>
-      ),
-      key: "time",
-      dataIndex: "tradeDateTime",
-      className: "ff-poppins fw-bold",
+      id: "tradeDateTime",
+      label: "Time",
       width: 60,
-      render: (text, record) => {
-        // if the isRFQ true and status is 2 or 5 and time is ended true
+      render: (record) => {
         let Data = { PK_TransactionID: record.pK_TransactionID };
-        // ExpireRFQTransaction({navigate, Data})
-        let isRFQ = record.isRFQ
-          ? (record.statusID === 2 || record.statusID === 5) &&
-            record.rfqTimerDetails !== null &&
-            record.rfqTimerDetails?.isEnded === false
-            ? true
-            : false
-          : false;
-        let rfqTimer =
-          isRFQ && record.rfqTimerDetails.endTime
+        const isRFQ =
+          record.isRFQ &&
+          record.statusID === 2 &&
+          record.rfqTimerDetails !== null &&
+          record.rfqTimerDetails?.isEnded === false;
+        const isAssignedUser =
+          record.statusID === 5 &&
+          Number(localStorage.getItem("userID")) ===
+            Number(record.treasuryPersonID);
+        const rfqTimer =
+          (isRFQ || isAssignedUser) && record.rfqTimerDetails?.endTime
             ? convertDateTimeIntoLocal(record.rfqTimerDetails.endTime)
             : null;
-        console.log(rfqTimer, text, "rfqTimerrfqTimer");
+
         return (
           <span>
-            {formatDateTimeToUTCTime(text)}{" "}
-            {isRFQ && (
+            {formatDateTimeToUTCTime(record.tradeDateTime)}{" "}
+            {(isRFQ || isAssignedUser) && rfqTimer && (
               <RFQTImer
                 endTime={rfqTimer}
                 dispatch={dispatch}
@@ -1611,305 +470,207 @@ const OutstandingDeals = () => {
         );
       },
     },
-    // LC No.
     {
-      title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">LC NO.</span>
-          <Popover
-            content={popoverContentLCno}
-            trigger="click"
-            arrow={false}
-            placement="bottom"
-            open={openLCno}
-            onOpenChange={handleOpenChangeLCno}
-          >
-            <span
-              style={{
-                cursor: "pointer",
-                color: "white",
-                background: "#f56600",
-                borderRadius: "4px",
-              }}
-            >
-              ▼
-            </span>
-          </Popover>
-        </div>
-      ),
-      key: "lC_No",
-      dataIndex: "lcNumber",
-      className: "ff-poppins fw-bold",
-      width: 120,
-    },
-    // Account No
-    {
-      title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">Acc NO.</span>
-          <Popover
-            content={popoverContentAccNO}
-            trigger="click"
-            arrow={false}
-            placement="bottom"
-            open={openAccNO}
-            onOpenChange={handleOpenChangeAccNO}
-          >
-            <span
-              style={{
-                cursor: "pointer",
-                color: "white",
-                background: "#f56600",
-                borderRadius: "4px",
-              }}
-            >
-              ▼
-            </span>
-          </Popover>
-        </div>
-      ),
-      key: "accountNumber",
-      dataIndex: "accountNumber",
-      className: "ff-poppins fw-bold",
-      width: 120,
-    },
-    // Status
-    {
-      title: (
-        <div className="d-flex align-items-center justify-content-center gap-1">
-          <span className="ff-poppins fw-bold">Status</span>
-          <Popover
-            content={popoverContentStatus}
-            trigger="click"
-            arrow={false}
-            placement="bottom"
-            open={openStatus}
-            onOpenChange={handleOpenChangeStatus}
-          >
-            <span
-              style={{
-                cursor: "pointer",
-                color: "white",
-                background: "#f56600",
-                borderRadius: "4px",
-              }}
-            >
-              ▼
-            </span>
-          </Popover>
-        </div>
-      ),
-      key: "14",
-      dataIndex: "status",
-      className: "ff-poppins fw-bold",
+      id: "status",
+      label: "Status",
       width: 80,
-      render: (text, record) => (
-        <>
-          <span
-            className={
-              text === "Accepted"
-                ? "color-green"
-                : record.statusID === 5
-                ? "InProgress_outstanding"
-                : record.statusID === 2
-                ? "pending_outstanding"
-                : "color-red"
-            }
-          >
-            {text}
-          </span>
-        </>
+      render: (record) => (
+        <span
+          className={
+            record.status === "Accepted"
+              ? classes.statusAccepted
+              : record.statusID === 5
+              ? classes.statusInProgress
+              : record.statusID === 2
+              ? classes.statusPending
+              : classes.statusRejected
+          }>
+          {record.status}
+        </span>
       ),
     },
-    // Action
     {
-      key: "15",
-      title: "Action",
-      dataIndex: "chat",
-      className: "comment-class ",
+      id: "actions1",
+      label: "Action",
       width: 120,
-      render: (text, record) => {
-        // 2 = Pending, 5 = In Progress, 6 = Accepted
-        // 2 = Assigned
-        // 5 = if isRfq to show deal icon and modal open of deal ||   Accepted or Rejected
-        // 6 = Accepted Red and Rejected Rejec
-        // const handleClickChat = (txnid) => {
-        //   setSelectedTXNID(txnid);
-        //   setShowChatModal(true);
-        // };
-        return (
-          <div className="col-action text-nowrap text-center d-flex gap-1">
-            {record.statusID === 2 ? (
-              <>
-                <CustomButton
-                  icon={<i className="icon-user-check  "></i>}
-                  size={"small"}
-                  className="btn  btn-primary btn-sm"
-                  onClick={() => handleClickAssignTransaction(record)}
-                />
-              </>
-            ) : Number(record?.treasuryPersonID) ===
-              Number(localStorage.getItem("userID")) ? (
-              record.statusID === 5 ? (
-                <>
-                  {record.isRFQ === true ? (
-                    <>
-                      <CustomButton
-                        icon={<i className="icon-open "></i>}
-                        size={"small"}
-                        className="btn btn-sm btn-primary"
-                        onClick={() => openViewDeal(record, record.natureType)}
-                      />
-                    </>
-                  ) : record.natureType === 2 ||
-                    record.natureType === 3 ||
-                    record.natureType === 4 ? (
-                    <CustomButton
-                      icon={<i className="icon-open "></i>}
-                      size={"small"}
-                      className="btn btn-sm btn-primary"
-                      onClick={() => openViewDeal(record, record.natureType)}
-                    />
-                  ) : (
-                    <>
-                      <CustomButton
-                        icon={<i className="icon-check"></i>}
-                        size={"small"}
-                        className="btn btn-sm btn-success blotterCheckerButton "
-                        onClick={() => acceptTransaction(record)}
-                      />
-                      <CustomButton
-                        icon={<i className="icon-close "></i>}
-                        size={"small"}
-                        className="btn btn-sm btn-danger blotterCheckerButton "
-                        onClick={() => rejectTransaction(record)}
-                      />
-                    </>
-                  )}
-                </>
-              ) : record.statusID === 4 ? null : record.statusID === 2 ? (
-                <>
-                  <CustomButton
-                    size={"small"}
-                    icon={
-                      <i className="icon-user-check blotterCheckerButton "></i>
-                    }
-                    className="btn  btn-primary"
-                    onClick={() => handleClickAssignTransaction(record)}
-                  />
-                </>
-              ) : null
-            ) : record.statusID === 6 ? (
-              <>
-                <CustomButton
-                  icon={<i className="icon-check "></i>}
-                  className="btn btn-sm btn-danger"
-                  applyClass={"ActionButton"}
-                  size={"small"}
-                  onClick={() =>
-                    handleAcceptTransactionCancellation(record.pK_TransactionID)
-                  }
-                />
-                <CustomButton
-                  icon={<i className="icon-close "></i>}
-                  className="btn btn-sm btn-success "
-                  size={"small"}
-                  onClick={() =>
-                    handleRejectTransactionCancellation(record.pK_TransactionID)
-                  }
-                />
-              </>
-            ) : null}
-            {/* 
+      render: (record) => (
+        <div className={classes.actionButtons}>
+          {record.statusID === 2 ? (
             <CustomButton
-              icon={<i className='icon-trash '></i>}
-              className='btn btn-sm btn-danger  '
+              icon={<i className='icon-user-check'></i>}
+              size={"small"}
+              className='btn btn-primary btn-sm d-flex justify-content-center align-items-center'
+              onClick={() => handleClickAssignTransaction(record)}
             />
-
-            <CustomButton
-              icon={<i className='icon-open '></i>}
-              className='btn btn-sm btn-primary  '
-            />
-            <CustomButton
-              icon={<i className='icon-view-comment'></i>}
-              className='btn btn-sm btn-primary'
-            /> */}
-          </div>
-        );
-      },
-    },
-    // Action
-    {
-      key: "16",
-      title: "",
-      dataIndex: "chat",
-      className: "comment-class ",
-      width: 120,
-      render: (text, record) => {
-        return (
-          <div className="d-flex gap-1 justify-content-start">
-            {record.statusID === 6 ? (
+          ) : record.statusID === 6 ? (
+            <>
               <CustomButton
-                icon={
-                  <i className="icon-view-comment blotterTableIconSize "></i>
+                icon={<i className='icon-check'></i>}
+                className='btn btn-sm btn-danger d-flex justify-content-center align-items-center'
+                size={"small"}
+                onClick={() =>
+                  handleAcceptTransactionCancellation(record.pK_TransactionID)
                 }
-                className="btn  btn-primary"
-                onClick={() => handleShowCommentModal(record.comment)}
               />
-            ) : (
-              <span className="w-30"></span>
-            )}
-            {(record.statusID === 4 || record.statusID === 5) &&
-            Number(record.treasuryPersonID) ===
-              Number(localStorage.getItem("userID")) ? (
               <CustomButton
-                icon={<i className="icon-chat2 "></i>}
-                className="btn btn-sm btn-danger chat-btn-trigger"
+                icon={<i className='icon-close'></i>}
+                className='btn btn-sm btn-success d-flex justify-content-center align-items-center'
+                size={"small"}
+                onClick={() =>
+                  handleRejectTransactionCancellation(record.pK_TransactionID)
+                }
+              />
+            </>
+          ) : Number(record?.treasuryPersonID) ===
+            Number(localStorage.getItem("userID")) ? (
+            record.statusID === 5 ? (
+              <>
+                {record.isRFQ === true ? (
+                  <CustomButton
+                    icon={<i className='icon-open'></i>}
+                    size={"small"}
+                    className='btn btn-sm btn-primary d-flex justify-content-center align-items-center'
+                    onClick={() => openViewDeal(record, record.natureType)}
+                  />
+                ) : record.natureType === 2 ||
+                  record.natureType === 3 ||
+                  record.natureType === 4 ? (
+                  <CustomButton
+                    icon={<i className='icon-open'></i>}
+                    size={"small"}
+                    className='btn btn-sm btn-primary d-flex justify-content-center align-items-center'
+                    onClick={() => openViewDeal(record, record.natureType)}
+                  />
+                ) : (
+                  <>
+                    <CustomButton
+                      icon={<i className='icon-check'></i>}
+                      size={"small"}
+                      className='btn btn-sm btn-success blotterCheckerButton d-flex justify-content-center align-items-center'
+                      onClick={() => acceptTransaction(record)}
+                    />
+                    <CustomButton
+                      icon={<i className='icon-close'></i>}
+                      size={"small"}
+                      className='btn btn-sm btn-danger blotterCheckerButton d-flex justify-content-center align-items-center'
+                      onClick={() => rejectTransaction(record)}
+                    />
+                  </>
+                )}
+              </>
+            ) : record.statusID === 2 ? (
+              <CustomButton
+                size={"small"}
+                icon={<i className='icon-user-check blotterCheckerButton'></i>}
+                className='btn btn-primary d-flex justify-content-center align-items-center'
+                onClick={() => handleClickAssignTransaction(record)}
+              />
+            ) : null
+          ) : null}
+        </div>
+      ),
+    },
+    {
+      id: "actions2",
+      label: "",
+      width: 120,
+      render: (record) => (
+        <div className='d-flex justify-content-center align-items-center'>
+          {record.statusID === 6 && (
+            <CustomButton
+              icon={
+                <i className='icon-view-comment d-flex justify-content-center align-items-center blotterTableIconSize'></i>
+              }
+              size={"small"}
+              className='btn btn-primary'
+              onClick={() => handleShowCommentModal(record.comment)}
+            />
+          )}
+          {(record.statusID === 4 || record.statusID === 5) &&
+            Number(record.treasuryPersonID) ===
+              Number(localStorage.getItem("userID")) && (
+              <CustomButton
+                icon={<i className='icon-chat2'></i>}
+                size={"small"}
+                className='btn btn-danger chat-btn-trigger d-flex justify-content-center align-items-center'
                 onClick={() =>
                   handleClickChat(record.pK_TransactionID, record.fK_UserID)
                 }
               />
-            ) : (
-              <span className="w-30"></span>
             )}
-
-            <CustomButton
-              onClick={() => handleClickInfo(record)}
-              icon={
-                <svg
-                  id="info_Layer_1"
-                  x="0px"
-                  y="0px"
-                  width="12px"
-                  height="12px"
-                  fill="#ffffff"
-                  viewBox="0 0 55 55"
-                >
-                  <g>
-                    <path d="M41.407,45.858c0.067,0.838,0.156,1.672,0.183,2.508   c0.005,0.152-0.205,0.376-0.37,0.461c-1.347,0.687-2.679,1.416-4.069,2.005c-3.305,1.396-6.715,2.5-10.277,3.009   c-1.447,0.206-2.936,0.154-4.403,0.153c-0.477-0.001-0.968-0.178-1.424-0.345c-1.313-0.481-1.98-1.443-1.948-2.85   c0.015-0.583,0.103-1.179,0.253-1.744c1.863-7.013,3.752-14.02,5.61-21.037c0.199-0.751,0.327-1.543,0.341-2.318   c0.021-1.142-0.615-1.925-1.667-2.331c-1.605-0.618-3.258-0.468-4.89-0.161c-1.764,0.332-3.468,0.873-5.149,1.884   c-0.074-0.978-0.157-1.863-0.187-2.75c-0.005-0.127,0.234-0.307,0.396-0.388c1.334-0.67,2.648-1.389,4.021-1.968   c3.327-1.403,6.755-2.512,10.337-3.021c1.465-0.208,2.994-0.294,4.457-0.125c2.782,0.323,3.808,2.02,3.073,4.73   c-0.94,3.474-1.914,6.941-2.838,10.419c-1.049,3.953-2.087,7.912-3.077,11.879c-0.524,2.107,0.385,3.449,2.526,3.839   c2.048,0.376,4.038-0.017,5.981-0.634C39.313,46.75,40.296,46.295,41.407,45.858z"></path>
-                    <circle cx="27.5" cy="7.608" r="6.609"></circle>
-                  </g>
-                </svg>
-              }
-              className="btn btn-sm btn-primary info-btn-trigger ms-1"
-            />
-          </div>
-        );
-      },
+          <CustomButton
+            onClick={() => handleClickInfo(record)}
+            size={"small"}
+            icon={
+              <svg
+                id='info_Layer_1'
+                x='0px'
+                y='0px'
+                width='12px'
+                height='12px'
+                fill='#ffffff'
+                viewBox='0 0 55 55'>
+                <g>
+                  <path d='M41.407,45.858c0.067,0.838,0.156,1.672,0.183,2.508   c0.005,0.152-0.205,0.376-0.37,0.461c-1.347,0.687-2.679,1.416-4.069,2.005c-3.305,1.396-6.715,2.5-10.277,3.009   c-1.447,0.206-2.936,0.154-4.403,0.153c-0.477-0.001-0.968-0.178-1.424-0.345c-1.313-0.481-1.98-1.443-1.948-2.85   c0.015-0.583,0.103-1.179,0.253-1.744c1.863-7.013,3.752-14.02,5.61-21.037c0.199-0.751,0.327-1.543,0.341-2.318   c0.021-1.142-0.615-1.925-1.667-2.331c-1.605-0.618-3.258-0.468-4.89-0.161c-1.764,0.332-3.468,0.873-5.149,1.884   c-0.074-0.978-0.157-1.863-0.187-2.75c-0.005-0.127,0.234-0.307,0.396-0.388c1.334-0.67,2.648-1.389,4.021-1.968   c3.327-1.403,6.755-2.512,10.337-3.021c1.465-0.208,2.994-0.294,4.457-0.125c2.782,0.323,3.808,2.02,3.073,4.73   c-0.94,3.474-1.914,6.941-2.838,10.419c-1.049,3.953-2.087,7.912-3.077,11.879c-0.524,2.107,0.385,3.449,2.526,3.839   c2.048,0.376,4.038-0.017,5.981-0.634C39.313,46.75,40.296,46.295,41.407,45.858z'></path>
+                  <circle cx='27.5' cy='7.608' r='6.609'></circle>
+                </g>
+              </svg>
+            }
+            className='btn btn-sm btn-primary info-btn-trigger ms-1 d-flex justify-content-center align-items-center'
+          />
+        </div>
+      ),
     },
   ];
 
   return (
     <>
-      <GlobalTable
-        pagination={false}
-        dataSource={blotterdata}
-        bordered={false}
-        prefixCls="OutStanding_Table"
-        columns={columns}
-        scroll={{ x: "max-content", y: 300 }}
-      />
-      {/* <DealViewModal dealData={dealData} /> */}
+      <TableContainer
+        ref={outstandingTableContainerRef}
+        sx={{ maxHeight: 400, overflow: "auto" }}
+        className={classes.tableContainer}>
+        <Table stickyHeader size='small'>
+          <TableHead>
+            <TableRow>
+              {columns.map((column) => (
+                <TableCell
+                  key={column.id}
+                  style={{ width: column.width, whiteSpace: "nowrap" }}
+                  align={column.align || "left"}>
+                  {column.label}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {treasuryOutStandingDeal.map((row, index) => {
+              const isLast = index === treasuryOutStandingDeal.length - 1;
+
+              return (
+                <TableRow
+                  key={`${row.pK_TransactionID}-${index}`}
+  
+                  ref={isLast ? lastRowRef : null}>
+                  {columns.map((column) => (
+                    <TableCell
+                      key={column.id}
+                      align={column.align || "left"}
+                      sx={{
+                        width: column.width,
+                        whiteSpace: "nowrap",
+                        fontSize: "13px",
+                        fontWeight: "500",
+                      }}>
+                      {column.render ? column.render(row) : row[column.id]}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
       {cancelReasonModal && (
         <CancelReasonModal
           cancelReasonModal={cancelReasonModal}

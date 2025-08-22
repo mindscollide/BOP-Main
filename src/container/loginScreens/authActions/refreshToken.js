@@ -47,7 +47,7 @@ export const refreshTokenAction = createAsyncThunk(
                 "ERM_AuthService_AuthManager_RefreshToken_02".toLowerCase()
               )
           ) {
-            localStorage.clear();
+            // localStorage.clear();
             window.location.href = "/"
             return rejectWithValue("Something went wrong");
           } else {
@@ -56,7 +56,7 @@ export const refreshTokenAction = createAsyncThunk(
           }
         } else {
           console.log("", response.data);
-          localStorage.clear();
+          // localStorage.clear();
           window.location.href = "/"
           return rejectWithValue("Something went wrong");
         }

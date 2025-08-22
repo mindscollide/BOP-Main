@@ -8,17 +8,14 @@ import React, {
 import { Row, Col } from "react-bootstrap";
 import GlobalModal from "../../common/globalModal/Modal";
 import InputFIeld from "../../common/inputField/InputField";
-import {
-  createTenorAction,
-  getAllTenorsAction,
-  getDealerDashboardApi,
-} from "@/container/pages/mainDealer/dealerActions";
+import { createTenorAction } from "@/container/pages/mainDealer/dealerActions";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setCreateTenorModal } from "@/store/modalSlice/modalSlicer";
 import { setTenorsCreated } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import NotificationSnackBar from "@/components/common/NotificationSnackbar";
+import SectionLoader from "@/components/common/sectionLoader/SectionLoader";
 const shouldIncludeComponents =
   import.meta.env.VITE_APP_INCLUDE_DEALER === "true" ||
   import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
@@ -89,13 +86,7 @@ const ForwardsForTreasuryAndDealer = () => {
   const forwardsForTreasuryBranch = useSelector(
     (state) => state.dealerReducer.forwardsForTreasuryBranch
   );
-  const getTenorWiseForwardsRates = useSelector(
-    (state) => state.dealerReducer.getTenorWiseForwardsRates
-  );
-  console.log(
-    tenorsCreated,
-    "forwardsForTreasuryBranchforwardsForTreasuryBranch"
-  );
+
   const getAllTenorsData = useSelector(
     (state) => state.dealerReducer.getAllTenors
   );
@@ -104,8 +95,6 @@ const ForwardsForTreasuryAndDealer = () => {
     tenorName: "",
     noOfDays: 0,
   });
-
-  console.log(createTenor, "tenorNametenorName");
 
   const [error, setError] = useState({ tenorName: "", noOfDays: "" });
   const [tenorValue, setTenorValue] = useState({
@@ -117,7 +106,6 @@ const ForwardsForTreasuryAndDealer = () => {
   const [snackbarData, setSnackbarData] = useState({
     message: "",
   });
-  console.log(snackbarData, "snackbarDatasnackbarData");
   useEffect(() => {
     if (snackbarData.message !== "") {
       const timer = setTimeout(() => {
@@ -217,6 +205,7 @@ const ForwardsForTreasuryAndDealer = () => {
         tenorName: tenorValue.label,
         currentBid: "",
         currentAsk: "",
+        tenorDays: tenorValue.tenorDays,
         lastAsk: "",
         lastBid: "",
         DateTime: new Date().toISOString(),
@@ -351,16 +340,16 @@ const ForwardsForTreasuryAndDealer = () => {
           </Col>
         )}
         {DealeAndTreasuryFeDiscountingTable && (
-          <Col sm={12} md={12} lg={12} className="mt-3">
-            <Suspense fallback={<div>Loading table...</div>}>
+          <Col sm={12} md={12} lg={12} className="mt-3 position-relative">
+            <Suspense fallback={<SectionLoader />}>
               <h6 className="fs-4 fw-bold color-primary">FE Discounting %</h6>
               <DealeAndTreasuryFeDiscountingTable />
             </Suspense>
           </Col>
         )}
         {DealeAndTreasuryNonFeDiscountingTable && (
-          <Col sm={12} md={12} lg={12} className="mt-3">
-            <Suspense fallback={<div>Loading table...</div>}>
+          <Col sm={12} md={12} lg={12} className="mt-3 position-relative">
+            <Suspense fallback={<SectionLoader />}>
               <h6 className="fs-4 fw-bold color-primary">
                 Non-FE Discounting %
               </h6>

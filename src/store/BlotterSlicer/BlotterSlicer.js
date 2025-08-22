@@ -77,22 +77,11 @@ const BlotterSlicer = createSlice({
     CalculateFESwapAndDiscountingRate: null,
   },
   reducers: {
-    updateRealtimeBlotterData: (state, { payload }) => {
-      console.log(
-        payload,
-        "updateRealtimeBlotterDataupdateRealtimeBlotterDatasss"
-      );
-      // state.getBlotterApiData = payload;
-      state.tnxTableNewData = payload?.tnxTableNewData;
+    setCalculateNonFeSwapAndDiscountingRate: (state, { payload }) => {
+      state.calculateNonFeSwapAndDiscountingRate = payload;
     },
-    updateOutstandingBlotterData: (state, { payload }) => {
-      console.log(
-        payload,
-        "updateRealtimeBlotterDataupdateRealtimeBlotterData"
-      );
-      // state.getBlotterOutstandingData = payload;
-      state.OutstandingTableNewData = payload?.OutstandingTableNewData;
-      state.totalCountOutstandingData = payload?.OutstandingTableNewData.length;
+    setCalculateFESwapAndDiscountingRate: (state, { payload }) => {
+      state.CalculateFESwapAndDiscountingRate = payload;
     },
     setSpotQuoteModalData: (state, { payload }) => {
       state.spotQuoteModalData = payload;
@@ -158,15 +147,8 @@ const BlotterSlicer = createSlice({
       })
       // Fulfilled state (when the API call succeeds CorporateBlotterDataAPI)
       .addCase(BlotterDataAPI.fulfilled, (state, { payload }) => {
-        let newData = [
-          ...state.tnxTableNewData,
-          ...payload?.response?.tnxSummary,
-        ];
-        console.log(payload, "getBlotterApiData");
-        console.log(newData, "getBlotterApiData");
         state.Loader = false;
         state.getBlotterApiData = payload?.response;
-        state.tnxTableNewData = newData;
         state.error = null;
         state.responseMessage = payload?.message;
       })
@@ -175,7 +157,6 @@ const BlotterSlicer = createSlice({
         console.log(action, "actionaction");
         state.Loader = false;
         state.error = action.payload;
-        state.tnxTableNewData = [];
         state.getBlotterApiData = null;
       })
       .addCase(GetBlotterOutstandingDealsDataAPI.pending, (state) => {
@@ -185,25 +166,15 @@ const BlotterSlicer = createSlice({
       .addCase(
         GetBlotterOutstandingDealsDataAPI.fulfilled,
         (state, { payload }) => {
-          let newData = [
-            ...state.OutstandingTableNewData,
-            ...payload?.response?.outstandingDeals,
-          ];
-          console.log(payload, "getBlotterApiData");
-          console.log(newData, "getBlotterApiData");
           state.Loader = false;
           state.getBlotterOutstandingData = payload?.response;
-          state.OutstandingTableNewData = newData;
           state.error = null;
           state.responseMessage = payload?.message;
-          state.totalCountOutstandingData = payload.response?.totalCount;
         }
       )
       .addCase(GetBlotterOutstandingDealsDataAPI.rejected, (state, action) => {
-        console.log(action, "actionaction");
         state.Loader = false;
         state.error = action.payload;
-        state.OutstandingTableNewData = [];
         state.getBlotterOutstandingData = null;
       })
       .addCase(SaveSpotTransactionAPI.pending, (state) => {
@@ -216,10 +187,11 @@ const BlotterSlicer = createSlice({
         state.error = null;
         state.responseMessage = payload?.message;
       })
-      .addCase(SaveSpotTransactionAPI.rejected, (state, action) => {
-        console.log(action, "actionaction");
+      .addCase(SaveSpotTransactionAPI.rejected, (state, { payload }) => {
+        console.log(payload, "actionaction");
         state.Loader = false;
-        state.error = action.payload;
+        state.responseMessage = payload;
+
         state.saveSpotTransaction = null;
       })
       .addCase(SaveForwardTransactionAPI.pending, (state) => {
@@ -255,6 +227,7 @@ const BlotterSlicer = createSlice({
         console.log(action, "actionaction");
         state.Loader = false;
         state.error = action.payload;
+        state.responseMessage = action?.payload;
         state.saveFedDiscountTransaction = null;
       })
       .addCase(SaveNonFEDiscountingTransactionAPI.pending, (state) => {
@@ -275,6 +248,7 @@ const BlotterSlicer = createSlice({
         state.Loader = false;
         state.error = action.payload;
         state.saveNonFeDiscountTransaction = null;
+        state.responseMessage = action?.payload;
       })
       .addCase(AssignTransactionAPI.pending, (state) => {
         state.Loader = true;
@@ -290,6 +264,7 @@ const BlotterSlicer = createSlice({
         console.log(action, "actionaction");
         state.Loader = false;
         state.error = action.payload;
+        state.responseMessage = action?.payload;
         state.assignTransaction = null;
       })
       .addCase(AcceptTransactionAPI.pending, (state) => {
@@ -306,6 +281,7 @@ const BlotterSlicer = createSlice({
         console.log(action, "actionaction");
         state.Loader = false;
         state.error = action.payload;
+        state.responseMessage = action?.payload;
         state.acceptTransaction = null;
       })
       .addCase(RejectTransactionAPI.pending, (state) => {
@@ -321,6 +297,7 @@ const BlotterSlicer = createSlice({
       .addCase(RejectTransactionAPI.rejected, (state, action) => {
         console.log(action, "actionaction");
         state.Loader = false;
+        state.responseMessage = action?.payload;
         state.error = action.payload;
         state.rejectedTransaction = null;
       })
@@ -338,6 +315,7 @@ const BlotterSlicer = createSlice({
         console.log(action, "actionaction");
         state.Loader = false;
         state.error = action.payload;
+        state.responseMessage = action?.payload;
         state.rfqSaveQuotation = null;
       })
       .addCase(CancelPendingTransactionApi.pending, (state) => {
@@ -354,6 +332,7 @@ const BlotterSlicer = createSlice({
         console.log(action, "actionaction");
         state.Loader = false;
         state.cancelPendingTransaction = null;
+        state.responseMessage = action?.payload;
         state.error = action.payload;
       })
       .addCase(calculateTenorSwapAndForwardRateApi.pending, (state) => {
@@ -375,6 +354,7 @@ const BlotterSlicer = createSlice({
           console.log(action, "actionaction");
           state.Loader = false;
           state.error = action.payload;
+          state.responseMessage = action?.payload;
           state.calculateTenorSwapAndForwardRateData = null;
         }
       )
@@ -397,6 +377,7 @@ const BlotterSlicer = createSlice({
         console.log(action, "actionaction");
         state.Loader = false;
         state.error = action.payload;
+        state.responseMessage = action?.payload;
         state.GetSpotRatesForCounterParty = null;
       })
       .addCase(SaveForwardTransactionRFQApi.pending, (state) => {
@@ -446,7 +427,7 @@ const BlotterSlicer = createSlice({
       .addCase(GetSpotTransactionDetailsApi.rejected, (state, { payload }) => {
         state.Loader = false;
         state.GetSpotTransactionDetails = null;
-        state.responseMessage = payload?.message;
+        state.responseMessage = payload;
       })
       .addCase(GetForwardTransactionDetailsApi.pending, (state) => {
         state.Loader = true;
@@ -464,7 +445,7 @@ const BlotterSlicer = createSlice({
         (state, { payload }) => {
           state.Loader = false;
           state.GetForwardTransactionDetails = null;
-          state.responseMessage = payload?.message;
+          state.responseMessage = payload;
         }
       )
       .addCase(GetNonFEDiscountingTransactionDetailsApi.pending, (state) => {
@@ -483,7 +464,7 @@ const BlotterSlicer = createSlice({
         (state, { payload }) => {
           state.Loader = false;
           state.GetNonFEDiscountingTransactionDetails = null;
-          state.responseMessage = payload?.message;
+          state.responseMessage = payload;
         }
       )
       .addCase(GetNOPDataAPI.pending, (state) => {
@@ -497,7 +478,7 @@ const BlotterSlicer = createSlice({
       .addCase(GetNOPDataAPI.rejected, (state, { payload }) => {
         state.Loader = false;
         state.GetNOPData = null;
-        state.responseMessage = payload?.message;
+        state.responseMessage = payload;
       })
       .addCase(
         calculateNonFeSwapAndDiscountingRateApi.pending,
@@ -550,8 +531,6 @@ const BlotterSlicer = createSlice({
 });
 
 export const {
-  updateOutstandingBlotterData,
-  updateRealtimeBlotterData,
   setDiscountingQuoteModalData,
   setForwardQuoteModalData,
   setActiveTreasuryTab,
@@ -562,7 +541,9 @@ export const {
   clearGetNonFEDiscountingTransactionDetails,
   clearGetForwardTransactionDetails,
   setSpotQuoteModalData,
-  setBlotterLoader
+  setBlotterLoader,
+  setCalculateFESwapAndDiscountingRate,
+  setCalculateNonFeSwapAndDiscountingRate
 } = BlotterSlicer.actions;
 
 export default BlotterSlicer.reducer;

@@ -11,12 +11,9 @@ import {
   clearGetNonFEDiscountingTransactionDetails,
   clearGetSpotTransactionDetails,
 } from "@/store/BlotterSlicer/BlotterSlicer";
-import {
-  extractTimeFromCompactDate,
-  formatCompactDateTime,
-  formatDateUTCToGMT,
-} from "@/components/utils/timeFunction";
+import { formatDateUTCToGMT } from "@/components/utils/timeFunction";
 import moment from "moment";
+import { formatPkAmount } from "@/utils/formatters";
 
 const InfoTransaction = () => {
   const dispatch = useDispatch();
@@ -36,7 +33,10 @@ const InfoTransaction = () => {
   const GetSpotTransactionDetails = useSelector(
     (state) => state.BlotterSlicer.GetSpotTransactionDetails
   );
-  console.log(GetForwardTransactionDetails, "GetForwardTransactionDetails");
+
+  const transactionInfoModal = useSelector(
+    (state) => state.modalReducer.transactionInfoModal
+  );
 
   useEffect(() => {
     if (GetFEDiscountingTransactionDetails !== null) {
@@ -69,7 +69,7 @@ const InfoTransaction = () => {
   return (
     <GlobalModal
       centered={true}
-      show={true}
+      show={transactionInfoModal}
       size={"md"}
       onHide={handleclose}
       bodyClassName={styles["transactionModal__body"]}
@@ -77,15 +77,34 @@ const InfoTransaction = () => {
         <>
           <Row>
             <Col
-              sm={12}
-              md={12}
-              lg={12}
+              sm={10}
+              md={10}
+              lg={10}
               className="d-flex align-items-center gap-1"
             >
               <p className={styles["company-name-hd"]}>
                 {InfoRecord?.corporateName}
               </p>
-              <span className={styles["dealstatus"]}>{InfoRecord?.status}</span>
+              <span
+                className={`${styles.dealstatus} ${
+                  InfoRecord?.status.toLowerCase() === "accepted"
+                    ? styles["dealstatus-accepted"]
+                    : InfoRecord?.status.toLowerCase() === "pending"
+                    ? styles["dealstatus-pending"]
+                    : styles["dealstatus-cancelled"]
+                }
+                }`}
+              >
+                {InfoRecord?.status}
+              </span>
+            </Col>
+            <Col
+              sm={2}
+              md={2}
+              lg={2}
+              className={styles["infoTransaction_modal-crossIcon"]}
+            >
+              <i className="icon-close cursor-pointer" onClick={handleclose} />
             </Col>
           </Row>
           <Row className="mt-2">
@@ -145,13 +164,11 @@ const InfoTransaction = () => {
               <Col sm={6} md={6} lg={6}>
                 <Row>
                   <p className={styles["transactionInfolabel"]}>
-                    {InfoRecord?.initiatedByUserName
-                      ? InfoRecord?.initiatedByUserName
-                      : "N/A"}
+                    {InfoRecord?.initiatedBy ? InfoRecord?.initiatedBy : "N/A"}
                   </p>
                   <p className={styles["transactionInfolabelEmail"]}>
-                    {InfoRecord?.initiatedByUserEmail
-                      ? InfoRecord?.initiatedByUserEmail
+                    {InfoRecord?.initiatedByEmail
+                      ? InfoRecord?.initiatedByEmail
                       : "N/A"}
                   </p>
                 </Row>
@@ -209,6 +226,22 @@ const InfoTransaction = () => {
               </Col>
             </Row>
           )}
+          {(InfoRecord?.natureType === 3 ||
+            InfoRecord?.natureType === 4 ||
+            InfoRecord?.natureType === 2 ||
+            InfoRecord?.natureType === 1) && (
+            <Row>
+              <span className={styles["span_underline"]} />
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>TXN Amount</p>
+              </Col>
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>
+                  {formatPkAmount(InfoRecord?.quantity)}
+                </p>
+              </Col>
+            </Row>
+          )}
 
           {InfoRecord?.natureType === 1 && (
             <Row>
@@ -218,7 +251,7 @@ const InfoTransaction = () => {
               </Col>
               <Col sm={6} md={6} lg={6}>
                 <p className={styles["transactionInfolabel"]}>
-                  {InfoRecord?.rate}
+                  {formatPkAmount(InfoRecord?.rate, { decimals: 5 })}
                 </p>
               </Col>
             </Row>
@@ -231,11 +264,11 @@ const InfoTransaction = () => {
             <Row>
               <span className={styles["span_underline"]} />
               <Col sm={6} md={6} lg={6}>
-                <p className={styles["transactionInfolabel"]}>Amount</p>
+                <p className={styles["transactionInfolabel"]}>Total Amount</p>
               </Col>
               <Col sm={6} md={6} lg={6}>
                 <p className={styles["transactionInfolabel"]}>
-                  {InfoRecord?.amount}
+                  {formatPkAmount(InfoRecord?.amount)}
                 </p>
               </Col>
             </Row>
@@ -299,7 +332,7 @@ const InfoTransaction = () => {
               </Col>
               <Col sm={6} md={6} lg={6}>
                 <p className={styles["transactionInfolabel"]}>
-                  {InfoRecord?.optionsDays}
+                  {InfoRecord?.optionsDays ? InfoRecord?.optionsDays : "N/A"}
                 </p>
               </Col>
             </Row>
@@ -317,9 +350,11 @@ const InfoTransaction = () => {
               </Col>
               <Col sm={6} md={6} lg={6}>
                 <p className={styles["transactionInfolabel"]}>
-                  {moment(formatDateUTCToGMT(InfoRecord?.optionsDate)).format(
-                    "ddd DD MMM, YYYY"
-                  )}
+                  {InfoRecord?.optionsDate
+                    ? moment(
+                        formatDateUTCToGMT(InfoRecord?.optionsDate)
+                      ).format("ddd DD MMM, YYYY")
+                    : "N/A"}
                 </p>
               </Col>
             </Row>
@@ -335,7 +370,7 @@ const InfoTransaction = () => {
               </Col>
               <Col sm={6} md={6} lg={6}>
                 <p className={styles["transactionInfolabel"]}>
-                  {InfoRecord?.ready}
+                  {formatPkAmount(InfoRecord?.ready, { decimals: 5 })}
                 </p>
               </Col>
             </Row>
@@ -400,7 +435,7 @@ const InfoTransaction = () => {
                     ? moment(
                         formatDateUTCToGMT(InfoRecord?.settlementDateTime)
                       ).format("hh:mm A")
-                    : InfoRecord?.cancelledTime}
+                    : "N/A"}
                 </p>
               </Col>
             </Row>
@@ -430,9 +465,12 @@ const InfoTransaction = () => {
                       : "N/A"}
                   </p>
                   <p className={styles["transactionInfolabelEmail"]}>
-                    {InfoRecord?.acceptedByUserEmail
-                      ? InfoRecord?.acceptedByUserEmail
-                      : "N/A"}
+                    {
+                      InfoRecord?.acceptedByUserName !== "Auto Accept" &&
+                        InfoRecord?.acceptedByUserEmail
+                      // ? InfoRecord?.acceptedByUserEmail
+                      // : "N/A"
+                    }
                   </p>
                 </Row>
               </Col>

@@ -10,7 +10,9 @@ import { useNavigate } from "react-router-dom";
 import { formatDateToUTC, formatPkAmount } from "@/utils/formatters";
 import { GetMisDataByRangeAPI } from "@/components/features/SpotBranch/WatchlistAction";
 import { Col, Row } from "react-bootstrap";
-
+import { Popover } from "antd";
+import excelImage from "@/assets/icons/excel.png";
+import pdfImage from "@/assets/icons/pdf.png";
 const MIS = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -22,30 +24,51 @@ const MIS = () => {
   const GetMisDataByRangeSpinner = useSelector(
     (state) => state.WatchListReducer.GetMisDataByRangeSpinner
   );
-  console.log(GetMisDataByRangeData);
+  console.log(GetMisDataByRangeData, "Checkerchekcrrrrr");
 
-  const [misTableData, setMisTableData] = useState(null);
+  const [misTableData, setMisTableData] = useState([]);
+
+  console.log(misTableData, "misTableDatamisTableData");
   const [MisDate, setMisDate] = useState({
-    StartDate: "",
-    EndDate: "",
+    StartDate: new Date(),
+    EndDate: new Date(),
   });
-
+  const [exportButton, setExportButton] = useState(false);
   console.log(MisDate, "misTableDatamisTableDatamisTableData");
 
   const [totalProfit, setTotalProfit] = useState(0);
 
   const [expandedRowKeys, setExpandedRowKeys] = useState([]);
 
+  // useEffect(() => {
+  //   let Data = { StartDate: "", EndDate: "" };
+  //   dispatch(GetMisDataByRangeAPI({ navigate, Data }));
+  // }, []);
+
   useEffect(() => {
-    let Data = { StartDate: "", EndDate: "" };
+    // Format dates for initial API call
+    const startDate = new Date(MisDate.StartDate);
+    startDate.setHours(0, 0, 0, 0);
+
+    const endDate = new Date(MisDate.EndDate);
+    endDate.setHours(23, 58, 59, 99);
+
+    const Data = {
+      StartDate: formatDateToUTC(startDate, 1),
+      EndDate: formatDateToUTC(endDate, 1),
+    };
+
     dispatch(GetMisDataByRangeAPI({ navigate, Data }));
-  }, []);
+  }, []); //
 
   useEffect(() => {
     if (GetMisDataByRangeData !== null) {
       try {
         const { profiteInPKRWiseMISData, volumeWiseMISData, totalProfit } =
           GetMisDataByRangeData;
+
+        console.log("VOLUME WISE DATA:", volumeWiseMISData?.misData);
+        console.log("PROFIT WISE DATA:", profiteInPKRWiseMISData?.misData);
         setMisTableData([
           volumeWiseMISData?.misData,
           profiteInPKRWiseMISData.misData,
@@ -54,6 +77,9 @@ const MIS = () => {
       } catch (error) {
         console.log(error);
       }
+    } else {
+      setMisTableData([]);
+      setTotalProfit(0);
     }
   }, [GetMisDataByRangeData]);
 
@@ -63,30 +89,33 @@ const MIS = () => {
       dataIndex: "topCustomer",
       key: "topCustomer",
       render: (text, record, index) => {
-        const isExpanded = expandedRowKeys.includes(record.corporateName);
+        console.log(index, "topCustomertopCustomer index");
+        const isExpanded = expandedRowKeys.includes(index);
         return (
           <>
             <span
               className={`${
                 isExpanded ? "expanded" : ""
-              } mis-volumwise-value bg-none color-black tp-customer-hd roboto-13`}>
+              } mis-volumwise-value bg-none color-black tp-customer-hd roboto-13`}
+            >
               {index === 0 ? "Volumewise" : "Profit-wise (PKR)"}
               {shouldIncludeComponents && (
-                <span className='view-detail cursor-pointer'>
+                <span className="view-detail cursor-pointer">
                   <IconElement
-                    onClick={() => handleExpandClick(record)}
+                    onClick={() => handleExpandClick(index)}
                     iconClass={`icon-add-circle-fill fs-6 mx-1 ${
                       index === 1 ? "color-green" : "color-blue"
-                    }`}></IconElement>
+                    }`}
+                  ></IconElement>
                 </span>
               )}
             </span>
-            {isExpanded ? (
-              <div className='d-grid'>
-                <span className='mis-volumwise-value bg-none color-black py-0 roboto-13'>
+            {isExpanded && expandedRowKeys.includes(index) ? (
+              <div className="d-grid">
+                <span className="mis-volumwise-value bg-none color-black py-0 roboto-13">
                   Import
                 </span>
-                <span className='mis-volumwise-value bg-none color-black py-0 roboto-13'>
+                <span className="mis-volumwise-value bg-none color-black py-0 roboto-13">
                   Export
                 </span>
               </div>
@@ -105,7 +134,8 @@ const MIS = () => {
           <span
             className={`${
               isExpanded ? "expanded" : ""
-            } roboto-13 mis-volumwise-value bg-none color-black`}>
+            } roboto-13 mis-volumwise-value bg-none color-black`}
+          >
             {record?.corporateName}
           </span>
         );
@@ -117,27 +147,32 @@ const MIS = () => {
       key: "value",
       className: "value",
       render: (text, record, index) => {
-        const isExpanded = expandedRowKeys.includes(record.key);
+        console.log(index, "topCustomertopCustomer index");
+
+        const isExpanded = expandedRowKeys.includes(index);
         return (
           <>
             <span
               className={`${isExpanded ? "expanded" : ""} ${
                 index === 1 ? "mis-profitwise-value" : "mis-volumwise-value"
-              } roboto-13`}>
+              } roboto-13`}
+            >
               {formatPkAmount(record?.value)}
             </span>
-            {isExpanded ? (
-              <div className='d-grid'>
+            {isExpanded && expandedRowKeys.includes(index) ? (
+              <div className="d-grid">
                 <span
                   className={`${
                     index === 1 ? "mis-profitwise-value" : "mis-volumwise-value"
-                  } bg-none py-0 roboto-13`}>
+                  } bg-none py-0 roboto-13`}
+                >
                   {formatPkAmount(record?.import)}
                 </span>
                 <span
                   className={`${
                     index === 1 ? "mis-profitwise-value" : "mis-volumwise-value"
-                  } bg-none py-0 roboto-13`}>
+                  } bg-none py-0 roboto-13`}
+                >
                   {formatPkAmount(record?.export)}
                 </span>
               </div>
@@ -148,18 +183,15 @@ const MIS = () => {
     },
   ];
 
-  const handleExpandClick = (record) => {
-    console.log(
-      expandedRowKeys,
-      record,
-      "expandedRowKeys expandedRowKeys expandedRowKeys"
-    );
-    const isExpanded = expandedRowKeys.includes(record.corporateName);
-    const newExpandedRowKeys = isExpanded ? [] : [record.corporateName]; // 👈 only one row at a time
+  const handleExpandClick = (index) => {
+    const isExpanded = expandedRowKeys.includes(index);
+
+    const newExpandedRowKeys = isExpanded ? [] : [index]; // 👈 only one row at a time
     setExpandedRowKeys(newExpandedRowKeys);
   };
 
   const handleChangeDate = (date, key) => {
+    console.log(date, "datedate");
     setMisDate((prevState) => ({
       ...prevState,
       [key]: new Date(date),
@@ -172,11 +204,11 @@ const MIS = () => {
       startDate.setHours(0, 0, 0, 0); // Set time to 00:00:00
 
       let endDate = new Date(MisDate.EndDate);
-      endDate.setHours(23, 58, 59, 999); // Set time to 23:58:59
+      endDate.setHours(23, 58, 59, 99); // Set time to 23:58:59
 
       const Data = {
-        StartDate: formatDateToUTC(startDate),
-        EndDate: formatDateToUTC(endDate),
+        StartDate: formatDateToUTC(startDate, 1),
+        EndDate: formatDateToUTC(endDate, 1),
       };
       dispatch(GetMisDataByRangeAPI({ navigate, Data }));
       console.log(Data, "Data");
@@ -187,18 +219,65 @@ const MIS = () => {
   const handleClickReset = () => {
     console.log("reset clicked");
     setMisDate({
-      StartDate: "",
-      EndDate: "",
+      StartDate: new Date(),
+      EndDate: new Date(),
     });
   };
+  const onClickOpenExport = () => {};
 
   return (
     <>
-      <div className='card-box position-relative mis-style'>
-        <div className='box-header bg-primary-orange px-3'>
-          <div className='text-start color-white fw-bold fs-6'>MIS</div>
+      <div className="card-box position-relative mis-style">
+        <div className="box-header bg-primary-orange px-3">
+          {/* <div className="text-start color-white fw-bold fs-6">MIS</div> */}
+          <Row>
+            <Col
+              sm={6}
+              md={6}
+              lg={6}
+              className="text-start color-white fw-bold fs-6"
+            >
+              MIS
+            </Col>
+            <Col
+              sm={6}
+              md={6}
+              lg={6}
+              className="d-flex align-item-center justify-content-end  color-white fw-bold fs-6"
+            >
+              <Popover
+                content={
+                  <div className={"export-options"}>
+                    <CustomButton
+                      // value={"Excel"}
+                      icon={<img src={excelImage} alt="Excel Icon" />}
+                      className={"bg-none"}
+                      // onClick={() => handleExport("excel")}
+                      // className={styles["export-button"]}
+                    />
+                    <CustomButton
+                      icon={<img src={pdfImage} alt="PDF Icon" />}
+                      // onClick={() => handleExport("pdf")}
+                      className={"bg-none"}
+                    />
+                  </div>
+                }
+                trigger="click"
+                open={exportButton}
+                onOpenChange={() => setExportButton(!exportButton)}
+                placement="bottom"
+                arrow={false}
+              >
+                <CustomButton
+                  applyClass={"Export-button_MIS"}
+                  value="Export"
+                  onClick={onClickOpenExport}
+                />
+              </Popover>
+            </Col>
+          </Row>
         </div>
-        <div className='p-2'>
+        <div className="p-2 position-relative">
           <Row>
             <Col sm={12} md={8} lg={8}>
               <GlobalTable
@@ -208,37 +287,40 @@ const MIS = () => {
                 prefixCls={"MIS_Table"}
                 pagination={false}
               />
-              <div className='expanded-row'>
-                <div className='expanded-column first-column'>
-                  <span className='color-hd border-0 roboto-13'>
+              <div className="expanded-row">
+                <div className="expanded-column first-column">
+                  <span className="color-hd border-0 roboto-13">
                     Total Profit (PKR)
                   </span>
                 </div>
-                <div className='expanded-column third-column'>
-                  <span className='mis-totalprofit-value'>
+                <div className="expanded-column third-column">
+                  <span className="mis-totalprofit-value">
                     {formatPkAmount(totalProfit)}
                   </span>
                 </div>
               </div>
             </Col>
             <Col sm={12} md={4} lg={4}>
-              <div className='mis-selectrange-form w-fix-210 bg-lighter p-2'>
-                <label className='mb-2 fs-6 color-blue'>Select Range</label>
-                <div className='form-group'>
-                  <div className='mb-1'>From</div>
+              <div className="mis-selectrange-form w-fix-210 bg-lighter p-2">
+                <label className="mb-2 fs-6 color-blue">Select Range</label>
+                <div className="form-group">
+                  <div className="mb-1">From</div>
                   <DatePickerCom
-                    placeholder='Select Date'
+                    placeholder="Select Date"
                     applyClass={"DatePickerField-MIS"}
+                    className={"d-block w-100"}
+                    format="MM-DD-YYYY"
                     value={MisDate.StartDate}
                     onChange={(date) => handleChangeDate(date, "StartDate")}
                   />
                 </div>
-                <div className='form-group'>
-                  <div className='mb-1'>To</div>
+                <div className="form-group">
+                  <div className="mb-1">To</div>
                   <DatePickerCom
-                    placeholder='Select Date'
+                    placeholder="Select Date"
                     applyClass={"DatePickerField-MIS"}
                     className={"d-block w-100"}
+                    format="MM-DD-YYYY"
                     value={MisDate.EndDate}
                     minDate={
                       MisDate.StartDate !== ""
@@ -248,15 +330,15 @@ const MIS = () => {
                     onChange={(date) => handleChangeDate(date, "EndDate")}
                   />
                 </div>
-                <div className='filter-mis-btn mt-3 d-flex gap-1'>
+                <div className="filter-mis-btn mt-3 d-flex gap-1">
                   <CustomButton
-                    value='Search'
+                    value="Search"
                     onClick={handleClickSearch}
-                    applyClass='searchBtn'
+                    applyClass="searchBtn"
                   />
                   <CustomButton
-                    value='Reset'
-                    applyClass='resetBtn'
+                    value="Reset"
+                    applyClass="resetBtn"
                     onClick={handleClickReset}
                   />
                 </div>

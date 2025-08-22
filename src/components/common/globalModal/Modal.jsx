@@ -13,7 +13,7 @@ const GlobalModal = ({
   scrollable,
   style,
   modalFooter,
-  backdrop = "static",
+  backdrop,
   closeButton,
   modalHeader,
   headerClassName,
@@ -24,6 +24,7 @@ const GlobalModal = ({
     <Modal
       show={show}
       onHide={onHide}
+      animation={true}
       backdrop={backdrop}
       keyboard={keyboard}
       className={className}

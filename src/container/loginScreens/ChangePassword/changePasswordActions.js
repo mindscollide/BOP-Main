@@ -6,10 +6,11 @@ import {
   CreateCorporateUserForgotPassword,
 } from "@/common/api_config";
 import createPostAPI from "@/utils/axiosInstance";
+import { setSettingModal } from "@/store/modalSlice/modalSlicer";
 
 export const ResetPasswordCorporateApi = createAsyncThunk(
   "auth/ResetPasswordCorporate", // A unique action type string
-  async ({ navigate, PasswordData }, { rejectWithValue }) => {
+  async ({ navigate, PasswordData }, { rejectWithValue, dispatch }) => {
     try {
       let ResetPasswordCorporateDate = createPostAPI(
         authApi,
@@ -25,30 +26,28 @@ export const ResetPasswordCorporateApi = createAsyncThunk(
           const msg = responseMessage.toLowerCase();
 
           switch (msg) {
-            case "ERM_AuthService_AuthManager_ResetPasswordCorporate_01".toLowerCase():
-              // const {
-              //   corporate,
-              //   userID,
-              //   firstName,
-              //   email,
-              //   contactNumber,
-              //   userRoleID,
-              //   userStatusID,
-              // } = response.data.responseResult.user;
-              // localStorage.setItem("token", token);
-              // localStorage.setItem("refreshToken", refreshToken);
-              // localStorage.setItem("name", firstName);
-              // localStorage.setItem("email", email);
-              // localStorage.setItem("roleId", userRoleID);
-              // localStorage.setItem("userID", userID);
-              // localStorage.setItem("corporate", JSON.stringify(corporate));
-              // localStorage.setItem("contactNumber", contactNumber);
-              // localStorage.setItem("userStatusID", userStatusID);
-              // roleBasedNavigation(navigate, userRoleID);
+            case "ERM_AuthService_AuthManager_ResetPasswordCorporate_01".toLowerCase(): //   email, //   firstName, //   userID, //   corporate, // const {
+            //   contactNumber,
+            //   userRoleID,
+            //   userStatusID,
+            // } = response.data.responseResult.user;
+            // localStorage.setItem("token", token);
+            // localStorage.setItem("refreshToken", refreshToken);
+            // localStorage.setItem("name", firstName);
+            // localStorage.setItem("email", email);
+            // localStorage.setItem("roleId", userRoleID);
+            // localStorage.setItem("userID", userID);
+            // localStorage.setItem("corporate", JSON.stringify(corporate));
+            // localStorage.setItem("contactNumber", contactNumber);
+            // localStorage.setItem("userStatusID", userStatusID);
+            // roleBasedNavigation(navigate, userRoleID);
+            {
+              dispatch(setSettingModal(false));
               return {
                 response: response.data.responseResult,
-                message: "",
+                message: "Password Updated Successfully",
               };
+            }
 
             case "ERM_AuthService_AuthManager_ResetPasswordCorporate_02".toLowerCase():
               return rejectWithValue("Password Not Reset");

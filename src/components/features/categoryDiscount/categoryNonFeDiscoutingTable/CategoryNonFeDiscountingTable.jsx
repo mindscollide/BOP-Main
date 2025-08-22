@@ -28,7 +28,6 @@ const CategoryNonFeDiscountingTable = () => {
     (state) => state.WatchListReducer.getMarketStatus
   );
 
-  console.log("marketStatusmarketStatus2434: ", marketStatus);
   useEffect(() => {
     if (getAllTenorsRecords !== null && allInstrumentForTreasuryData) {
       try {
@@ -36,7 +35,7 @@ const CategoryNonFeDiscountingTable = () => {
           GetCategoryWiseDiscountingRates !== null &&
           GetCategoryWiseDiscountingRates;
         let getAllInstrument = {
-          instruments: allInstrumentForTreasuryData.discountingInstruments,
+          instruments: allInstrumentForTreasuryData.nonFEDiscountingInstruments,
         };
         let getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
 

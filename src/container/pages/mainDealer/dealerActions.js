@@ -1,6 +1,5 @@
-import { setCustomHeaders } from "@/common/utils";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { authApi, uploadRatesApi, watchListApi } from "@/common/apiend_points";
+import { authApi, watchListApi } from "@/common/apiend_points";
 import {
   clearRatesRM,
   marketOnOffRM,
@@ -28,7 +27,7 @@ export const clearRatesAction = createAsyncThunk(
   async ({ navigate, Data }, { rejectWithValue, dispatch }) => {
     try {
       let clearRates = createPostAPI(
-        uploadRatesApi,
+        watchListApi,
         clearRatesRM.RequestMethod
       );
 
@@ -101,7 +100,7 @@ export const getLastPublishRatesAction = createAsyncThunk(
   async ({ navigate }, { dispatch, rejectWithValue }) => {
     try {
       let getLastPublishRates = createPostAPI(
-        uploadRatesApi,
+        watchListApi,
         getLastAndCurrentUSDRatesRM.RequestMethod
       );
 
@@ -173,7 +172,7 @@ export const PublishNewRatesAction = createAsyncThunk(
   async ({ navigate, Data }, { rejectWithValue, dispatch }) => {
     try {
       let PublishNewRates = createPostAPI(
-        uploadRatesApi,
+        watchListApi,
         publishCurrentUSDRatesRM.RequestMethod
       );
 
@@ -398,7 +397,7 @@ export const createTenorAction = createAsyncThunk(
   async ({ navigate, Data, setCreateTenor }, { dispatch, rejectWithValue }) => {
     try {
       let createTenor = createPostAPI(
-        uploadRatesApi,
+        watchListApi,
         createTenorRM.RequestMethod
       );
 
@@ -491,7 +490,7 @@ export const getTenorWiseForwardsAction = createAsyncThunk(
   async ({ navigate }, { dispatch, rejectWithValue }) => {
     try {
       let getTenorWiseForwards = createPostAPI(
-        uploadRatesApi,
+        watchListApi,
         getTenorWiseForwardRatesRM.RequestMethod
       );
 
@@ -563,7 +562,7 @@ export const PublishTenorWiseForwardsAction = createAsyncThunk(
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       let PublishTenorWiseForwards = createPostAPI(
-        uploadRatesApi,
+        watchListApi,
         publishTenorWiseForwardRatesRM.RequestMethod
       );
 
@@ -619,7 +618,7 @@ export const PublishTenorWiseForwardsAction = createAsyncThunk(
                 "UploadRate_UploadRateServiceManager_PublishTenorWiseForwardRates_05".toLowerCase()
               )
           ) {
-            return rejectWithValue("Something went wrong");
+            return rejectWithValue("Forward rates are published");
           } else {
             console.log("", response.data);
             return rejectWithValue("Something went wrong");
@@ -644,7 +643,7 @@ export const getDiscountingRatesAction = createAsyncThunk(
   async ({ navigate }, { dispatch, rejectWithValue }) => {
     try {
       let getDiscountingRates = createPostAPI(
-        uploadRatesApi,
+        watchListApi,
         getDiscountingRatesRM.RequestMethod
       );
 
@@ -759,7 +758,7 @@ export const publishDiscountingRatesAction = createAsyncThunk(
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       let publishDiscountingRates = createPostAPI(
-        uploadRatesApi,
+        watchListApi,
         getDiscountingRatesRM.RequestMethod
       );
       const response = await publishDiscountingRates(Data);
@@ -838,7 +837,7 @@ export const getDealerDashboardApi = createAsyncThunk(
   async ({ navigate }, { rejectWithValue, dispatch }) => {
     try {
       let DealerDashboardApi = createPostAPI(
-        uploadRatesApi,
+        watchListApi,
         getDealerDasboardDataRM.RequestMethod
       );
       const response = await DealerDashboardApi();
@@ -919,7 +918,7 @@ export const GetVoltMeterStatusApi = createAsyncThunk(
   async ({ navigate }, { rejectWithValue, dispatch }) => {
     try {
       let GetVoltMeterStatusData = createPostAPI(
-        uploadRatesApi,
+        watchListApi,
         GetVoltMeterStatus.RequestMethod
       );
       const response = await GetVoltMeterStatusData();
@@ -990,7 +989,7 @@ export const UpdateVoltMeterStatusApi = createAsyncThunk(
   async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
     try {
       let UpdateVoltMeterStatusData = createPostAPI(
-        uploadRatesApi,
+        watchListApi,
         UpdateVoltMeterStatus.RequestMethod
       );
       const response = await UpdateVoltMeterStatusData(Data);

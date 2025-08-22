@@ -31,6 +31,7 @@ const WatchListSlice = createSlice({
     GetBankForwardForTreasury: null,
     GetDiscountingRatesForTreasury: null,
     getMarketStatus: null,
+    watchlistTableDataCopy: null,
   },
   reducers: {
     clearWatchListResponseMessage: (state) => {
@@ -38,6 +39,9 @@ const WatchListSlice = createSlice({
     },
     setMarketStatus: (state, action) => {
       state.getMarketStatus = action.payload;
+    },
+    setWatchlistTableDataCopy(state, { payload }) {
+      state.watchlistTableDataCopy = payload; // Updates the state with the payload value for watchlistTableData.
     },
   },
   extraReducers: (builder) => {
@@ -239,6 +243,9 @@ const WatchListSlice = createSlice({
   },
 });
 
-export const { clearWatchListResponseMessage, setMarketStatus } =
-  WatchListSlice.actions;
+export const {
+  clearWatchListResponseMessage,
+  setMarketStatus,
+  setWatchlistTableDataCopy,
+} = WatchListSlice.actions;
 export default WatchListSlice.reducer;

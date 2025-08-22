@@ -75,7 +75,10 @@ const BranchRateCardsOfWatchList = ({
                 <span className='DroppableBoxCurrencyLabel'>
                   {currencyLabel.slice(0, 3)}
                 </span>
-                <span className="color-white fs-5 fw-normal"> {currencyLabel.slice(3, 6)}</span>
+                <span className='color-white fs-5 fw-normal'>
+                  {" "}
+                  {currencyLabel.slice(3, 6)}
+                </span>
               </Col>
             </Row>
             <Row className='mt-4'>
@@ -114,7 +117,7 @@ const BranchRateCardsOfWatchList = ({
                     <BidAmountBox
                       spot={true}
                       BidBoxHeading={sellHeading}
-                      BidAmountValue={sellValue}
+                      BidAmountValue={buyValue}
                       applyClass={
                         isSellDisabled
                           ? "SellandBuyCardBracnh"
@@ -127,7 +130,7 @@ const BranchRateCardsOfWatchList = ({
                     <BidAmountBox
                       spot={true}
                       BidBoxHeading={buyHeading}
-                      BidAmountValue={buyValue}
+                      BidAmountValue={sellValue}
                       applyClass={
                         isBuyDisabled
                           ? "SellandBuyCardBracnh"

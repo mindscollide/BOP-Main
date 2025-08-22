@@ -12,6 +12,7 @@ import {
   getAllActiveCorporatesApi,
   getAllCategoriesAction,
   getAllInstrumentsApi,
+  GetUsersEmailApi,
 } from "@/components/utils/globalApis";
 import {
   createCorporateCreatePasswordApi,
@@ -44,6 +45,7 @@ const authSlice = createSlice({
     CreateCorporateUserForgotPassword: null,
     VerifyOTP: null,
     GenerateOTP: null,
+    GetUsersEmail: null,
   },
   reducers: {
     clearAuthResponseMessage: (state) => {
@@ -286,7 +288,21 @@ const authSlice = createSlice({
       .addCase(GenerateOTPApi.rejected, (state, { payload }) => {
         console.log(payload);
         state.Loader = false;
-        state.GenerateOTP = null;
+        state.GetUsersEmail = null;
+        state.responseMessage = payload;
+      })
+      .addCase(GetUsersEmailApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(GetUsersEmailApi.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.GetUsersEmail = payload?.response;
+        state.responseMessage = payload?.message;
+      })
+      .addCase(GetUsersEmailApi.rejected, (state, { payload }) => {
+        console.log(payload);
+        state.Loader = false;
+        state.GetUsersEmail = null;
         state.responseMessage = payload;
       });
   },

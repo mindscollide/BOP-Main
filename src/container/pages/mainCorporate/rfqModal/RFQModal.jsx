@@ -45,6 +45,8 @@ import { NumericFormat } from "react-number-format";
  * - Uses Redux for global state (instruments, nature of business, etc.)
  * - Local state for form inputs and UI state
  */
+
+const isCorproate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
 const RFQModal = () => {
   // Hooks initialization
   const dispatch = useDispatch();
@@ -53,9 +55,12 @@ const RFQModal = () => {
 
   // State for confirmation modal visibility
   const [confirmationModal, setConfirmationModal] = useState(false);
-
   // State for main RFQ modal visibility
   const [rfqModal, setRfqModal] = useState(true);
+  const [errorMessage, setErrorMessage] = useState({
+    message: "",
+    status: false,
+  });
 
   /**
    * Redux Selectors for required data
@@ -83,8 +88,6 @@ const RFQModal = () => {
 
   // Get pre-filled buy/sell data from Redux store (if any)
   const iBuySellData = useSelector((state) => state.modalReducer.IBuySellData);
-
-  console.log(iBuySellData, "iBuySellDataiBuySellData");
 
   /**
    * Environment Configuration
@@ -205,20 +208,23 @@ const RFQModal = () => {
           label: typeOptions[0].label,
         });
         let val = typeOptions[0].value;
-        if (iBuySellData == null && formattedOptions.length > 0) {
+        if (iBuySellData === null && formattedOptions.length > 0) {
           let getNatureVal = formattedOptions.filter((listData, index) => {
             if (val === 1) {
-              return listData.isForBuy === true && listData.isForSpot === true;
+              return isCorproate
+                ? listData.isForSell === true && listData.isForSpot === true
+                : listData.isForBuy === true && listData.isForSpot === true;
             }
             if (val === 2) {
-              return listData.isForSell === true && listData.isForSpot === true;
+              return isCorproate
+                ? listData.isForBuy === true && listData.isForSpot === true
+                : listData.isForSell === true && listData.isForSpot === true;
             }
             return listData;
           });
           setSelectedNature(getNatureVal[0]);
+          setNatureOfBusinessOptions(getNatureVal);
         }
-
-        // setSelectedNature(formattedOptions.);
       } catch (error) {
         console.error("Error initializing nature of business options:", error);
       }
@@ -232,7 +238,6 @@ const RFQModal = () => {
   useEffect(() => {
     if (iBuySellData !== null && natureOfBusinessList?.natureOfTransactions) {
       try {
-        console.log(iBuySellData, "iBuySellDataiBuySellData");
         const isBuy = iBuySellData.type === "buy";
         const typeValue = isBuy ? 1 : 2;
         const baseCurrency = iBuySellData.currencyLabel.slice(0, 3);
@@ -248,23 +253,36 @@ const RFQModal = () => {
               { label: `Buy ${quoteCurrency}`, value: 1 },
             ];
 
-        const filteredOptions = natureOfBusinessList.natureOfTransactions
-          .filter(
-            (business) =>
-              business.isForSpot &&
-              (typeValue === 1 ? business.isForBuy : business.isForSell)
-          )
-          .map((business) => ({
-            ...business,
-            label: business.name,
-            value: business.id,
-          }));
+        const getFilteredNatureOptions = (typeValue, isCorporate) => {
+          return natureOfBusinessList?.natureOfTransactions
+            .filter((business) => {
+              if (!business.isForSpot) return false;
 
+              if (typeValue === 1) {
+                return isCorporate ? business.isForSell : business.isForBuy;
+              } else {
+                return isCorporate ? business.isForBuy : business.isForSell;
+              }
+            })
+            .map((business) => ({
+              ...business,
+              label: business.name,
+              value: business.id,
+            }));
+        };
+
+        // ✅ Call the function here (adjust `isCorporate` as per your app logic)
+        const filteredOptions = getFilteredNatureOptions(
+          typeValue,
+          isCorporate
+        );
+        console.log(filteredOptions, "filteredOptionsfilteredOptions");
         setNatureOfBusinessOptions(filteredOptions);
         setSelectedNature({
           value: filteredOptions[0].value,
           label: filteredOptions[0].label,
         });
+
         setSelectedCurrency({
           value: iBuySellData.instrumentID,
           label: `${iBuySellData.instrumentName}${
@@ -273,6 +291,7 @@ const RFQModal = () => {
           secondaryInstrumentID: iBuySellData.secondaryInstrumentID,
           secondaryInstrumentName: iBuySellData.secondaryInstrumentName,
         });
+
         setTypeOptions(newTypesData);
 
         const selected = newTypesData.find((opt) => opt.value === typeValue);
@@ -481,6 +500,12 @@ const RFQModal = () => {
 
         // Check transaction type compatibility
         if (selectType.value === 1) {
+          if (isCorporate) {
+            return isSpotTransaction && business.isForSell === true;
+          }
+          return isSpotTransaction && business.isForBuy === true;
+        }
+        if (isCorporate) {
           return isSpotTransaction && business.isForBuy === true;
         }
         return isSpotTransaction && business.isForSell === true;
@@ -490,11 +515,14 @@ const RFQModal = () => {
         label: business.name,
         value: business.id,
       }));
-    // Update state with new options and selections
-    setNatureOfBusinessOptions(filteredOptions);
+    if (iBuySellData === null) {
+      // Update state with new options and selections
 
-    // Set first option as default if available, otherwise null
-    setSelectedNature(filteredOptions[0] || null);
+      setNatureOfBusinessOptions(filteredOptions);
+
+      // Set first option as default if available, otherwise null
+      setSelectedNature(filteredOptions[0] || null);
+    }
 
     // Update selected transaction type
     setTypeOptionSelected(selectType);
@@ -551,7 +579,7 @@ const RFQModal = () => {
 
         // Dispatch appropriate action based on context
         if (iBuySellData !== null) {
-          dispatch(SaveSpotTransactionAPI({ navigate, Data }));
+          dispatch(SaveSpotTransactionAPI({ navigate, Data, setErrorMessage }));
         } else {
           dispatch(SaveSpotTransactionRFQ({ navigate, Data }));
         }
@@ -609,7 +637,7 @@ const RFQModal = () => {
                   <>
                     <Col lg={2} md={2} sm={2}>
                       <label className='LabelRFQTransactionModal'>
-                        Company Name*
+                        Customer Name*
                       </label>
                     </Col>
                     <Col lg={4} md={4} sm={4} className='mb-3'>
@@ -690,7 +718,7 @@ const RFQModal = () => {
                   />
                 </Col>
                 <Col lg={2} md={2} sm={2}>
-                  <label className='LabelRFQTransactionModal'>A/c No*</label>
+                  <label className='LabelRFQTransactionModal'>A/c No</label>
                 </Col>
                 <Col lg={4} md={4} sm={4} className='mb-2'>
                   <InputFIeld
@@ -712,26 +740,16 @@ const RFQModal = () => {
                   <SelectDropdown
                     placeholder=''
                     classNamePrefix='RfqSpot'
-                    options={natureOfBusinessOptions.filter((data) => {
-                      if (typeOptionSelected.value === 1) {
-                        return (
-                          data.isForSpot === true && data.isForBuy === true
-                        );
-                      }
-                      if (typeOptionSelected.value === 2) {
-                        return (
-                          data.isForSpot === true && data.isForSell === true
-                        );
-                      }
-                      return false; // Exclude all by default
-                    })}
+                    options={natureOfBusinessOptions}
                     onChange={handleNatureChange}
                     value={selectedNature}
                   />
                 </Col>
 
                 <Col lg={2} md={2} sm={2}>
-                  <label className='LabelRFQTransactionModal'>LC No</label>
+                  <label className='LabelRFQTransactionModal'>
+                    Reference No (LC/Contract/Doc)
+                  </label>
                 </Col>
                 <Col lg={4} md={4} sm={4} className='mb-2'>
                   <InputFIeld
@@ -744,58 +762,73 @@ const RFQModal = () => {
               </Row>
             </>
           ) : (
+            // ) : (
             confirmationModal && (
-              <Row>
-                <Col
-                  sm={12}
-                  md={12}
-                  lg={12}
-                  className='text-center d-flex justify-content-center align-items-center fs-6'>
-                  Do you want cancel the process
-                </Col>
-              </Row>
+              <>
+                <Row>
+                  <Col lg={12} md={12} sm={12}>
+                    <span className={"confirmationLabel"}>Confirmation</span>
+                  </Col>
+                </Row>
+                <Row className={"mt-2"}>
+                  <Col
+                    sm={12}
+                    md={12}
+                    lg={12}
+                    className={
+                      "d-flex justify-content-center align-items-center"
+                    }>
+                    <span className='confirmationModalText'>
+                      Do you want cancel the process?
+                    </span>
+                  </Col>
+                </Row>
+              </>
             )
           )
         }
         modalFooter={
           rfqModal ? (
-            <>
+            <Row>
+              <Col
+                lg={6}
+                md={6}
+                sm={6}
+                className={"d-flex justify-content-start rfqLimit_error-style"}>
+                {errorMessage.status === true && errorMessage.message !== ""
+                  ? errorMessage.message
+                  : ""}
+              </Col>
+              <Col
+                lg={6}
+                md={6}
+                sm={6}
+                className={"d-flex justify-content-end"}>
+                <CustomButton
+                  value='Submit'
+                  className={"btn btn-primary ms-auto"}
+                  onClick={handleConfirmButton}
+                />
+              </Col>
+            </Row>
+          ) : (
+            confirmationModal && (
               <Row>
                 <Col
                   lg={12}
                   md={12}
                   sm={12}
-                  className='d-flex justify-content-end'>
-                  <CustomButton
-                    value='Submit'
-                    className='btn btn-primary ms-auto px-4'
-                    onClick={handleConfirmButton}
-                  />
-                </Col>
-              </Row>
-            </>
-          ) : (
-            confirmationModal && (
-              <Row>
-                <Col
-                  lg={6}
-                  md={6}
-                  sm={6}
-                  className='d-flex justify-content-end'>
+                  className={"d-flex justify-content-center gap-2"}>
                   <CustomButton
                     value='Yes'
-                    className='btn btn-primary ms-auto px-4'
+                    icon={<i className={"icon-check"}></i>}
+                    className={"confirmationYesButton"}
                     onClick={handleConfimationModalYes}
                   />
-                </Col>
-                <Col
-                  lg={6}
-                  md={6}
-                  sm={6}
-                  className='d-flex justify-content-start'>
                   <CustomButton
                     value='No'
-                    className='btn btn-primary  px-4'
+                    icon={<i className={"icon-close"}></i>}
+                    className={"confirmationNoButton"}
                     onClick={() => {
                       setRfqModal(true);
                       setConfirmationModal(false);
@@ -806,6 +839,72 @@ const RFQModal = () => {
             )
           )
         }
+        //     confirmationModal && (
+        //       <Row>
+        //         <Col
+        //           sm={12}
+        //           md={12}
+        //           lg={12}
+        //           className="text-center d-flex justify-content-center align-items-center fs-6"
+        //         >
+        //           Do you want cancel the process?
+        //         </Col>
+        //       </Row>
+        //     )
+        //   )
+        // }
+        // modalFooter={
+        //   rfqModal ? (
+        //     <>
+        //       <Row>
+        //         <Col
+        //           lg={12}
+        //           md={12}
+        //           sm={12}
+        //           className="d-flex justify-content-end"
+        //         >
+        //           <CustomButton
+        //             value="Submit"
+        //             className="btn btn-primary ms-auto px-4"
+        //             onClick={handleConfirmButton}
+        //           />
+        //         </Col>
+        //       </Row>
+        //     </>
+        //   ) : (
+        //     confirmationModal && (
+        //       <Row>
+        //         <Col
+        //           lg={6}
+        //           md={6}
+        //           sm={6}
+        //           className="d-flex justify-content-end"
+        //         >
+        //           <CustomButton
+        //             value="Yes"
+        //             className="btn btn-primary ms-auto px-4"
+        //             onClick={handleConfimationModalYes}
+        //           />
+        //         </Col>
+        //         <Col
+        //           lg={6}
+        //           md={6}
+        //           sm={6}
+        //           className="d-flex justify-content-start"
+        //         >
+        //           <CustomButton
+        //             value="No"
+        //             className="btn btn-primary  px-4"
+        //             onClick={() => {
+        //               setRfqModal(true);
+        //               setConfirmationModal(false);
+        //             }}
+        //           />
+        //         </Col>
+        //       </Row>
+        //     )
+        //   )
+        // }
       />
     </>
   );

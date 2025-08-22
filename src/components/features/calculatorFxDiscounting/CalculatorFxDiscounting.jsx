@@ -6,7 +6,6 @@ import SelectDropdown from "../../common/selectDropdown/SelectDropdown";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { CalculateFxDiscountingAPI } from "@/container/pages/mainCalculator/CalculatorActions";
 import { formatDate } from "@/common/utils";
 import { CalculateFEDiscountingAPI } from "../blotter/BlotterActions";
 
@@ -20,9 +19,9 @@ const CalculatorFxDiscounting = () => {
   );
 
   //World Crosses Data to Get the Cross Rates Without Spread
-  const WorldCrossesData = useSelector(
-    (state) => state.WatchListReducer.GetBankSpotForTreasury
-  );
+  // const WorldCrossesData = useSelector(
+  //   (state) => state.WatchListReducer.GetBankSpotForTreasury
+  // );
 
   //Resulting Calculated value of FX Discounting
   const CalculatedFxDiscounting = useSelector(
@@ -34,7 +33,8 @@ const CalculatorFxDiscounting = () => {
   const [discountingApplicableList, setDiscountingApplicableList] = useState(
     []
   );
-  const [price, setPrice] = useState(285.2635);
+  const [price, setPrice] = useState(0);
+
   const [inputValue, setInputValue] = useState("0");
   const [resultFeRate, setResultFeRate] = useState(0);
   const [resultDiscountingFactor, setDiscountingFactor] = useState(0);
@@ -45,12 +45,13 @@ const CalculatorFxDiscounting = () => {
     try {
       if (
         InstrumentsData?.instruments &&
-        Array.isArray(InstrumentsData.instruments) &&
-        WorldCrossesData?.worldCrosses
+        Array.isArray(InstrumentsData.instruments)
+        //  &&
+        // WorldCrossesData?.worldCrosses
       ) {
-        const forwards = InstrumentsData.instruments.filter(
-          (item) => item.forwardsApplicable === true
-        );
+        // const forwards = InstrumentsData.instruments.filter(
+        //   (item) => item.forwardsApplicable === true
+        // );
 
         const discountings = InstrumentsData.instruments
           .filter((item) => item.discountingApplicable === true)
@@ -67,29 +68,31 @@ const CalculatorFxDiscounting = () => {
         if (defaultUSD) {
           setSelectedOption(defaultUSD); // use your actual discounting selected state if different
 
-          const matchedRate = WorldCrossesData.worldCrosses.find(
-            (cross) => cross.instrumentID === defaultUSD.value
-          );
+          // const matchedRate = WorldCrossesData.worldCrosses.find(
+          //   (cross) => cross.instrumentID === defaultUSD.value
+          // );
 
-          if (matchedRate) {
-            setPrice(matchedRate.bid);
-          } else {
-            setPrice(null); // fallback if no rate found
-          }
+          // if (matchedRate) {
+          //   setPrice(matchedRate.bid);
+          // } else {
+          //   setPrice(null); // fallback if no rate found
+          // }
         }
       }
     } catch (error) {
       console.error("Error processing instrument data:", error);
     }
-  }, [InstrumentsData, WorldCrossesData]);
+  }, [InstrumentsData]);
 
   //Extracting the Calculated FE Values
 
   useEffect(() => {
     try {
       if (CalculatedFxDiscounting && CalculatedFxDiscounting !== null) {
+        console.log(CalculatedFxDiscounting, "CalculatedFxDiscounting");
         setResultFeRate(CalculatedFxDiscounting.feRate);
         setDiscountingFactor(CalculatedFxDiscounting.discountingFactor);
+        setPrice(CalculatedFxDiscounting.readyRate);
       }
     } catch (error) {
       console.log(error, "error");
@@ -99,19 +102,6 @@ const CalculatorFxDiscounting = () => {
   //Handle onChange Currency
   const handleChangeCurrencyCalculator = (selected) => {
     setSelectedOption(selected);
-
-    const selectedInstrumentID = selected?.value;
-
-    // Get matching rate from WorldCrossesData
-    const matchedRate = WorldCrossesData?.worldCrosses?.find(
-      (cross) => cross.instrumentID === selectedInstrumentID
-    );
-
-    if (matchedRate) {
-      setPrice(matchedRate.bid);
-    } else {
-      setPrice(null);
-    }
   };
 
   //Handle onChange Tenor
@@ -121,7 +111,7 @@ const CalculatorFxDiscounting = () => {
     // Allow only digits and up to 4 characters
     if (/^\d{0,4}$/.test(value)) {
       const numericValue = parseInt(value, 10);
-
+      const newDate = new Date();
       // Allow empty input or numbers from 1 to 1000
       if (value === "" || (numericValue >= 1 && numericValue <= 1000)) {
         setInputValue(value);
@@ -131,26 +121,8 @@ const CalculatorFxDiscounting = () => {
           newDate.setDate(newDate.getDate() + numericValue); // Use numericValue here
           setTagText(formatDate(newDate));
         } else {
-          setTagText(""); // Optional: clear tag text if input is empty
+          setTagText(formatDate(newDate)); // Optional: clear tag text if input is empty
         }
-      }
-    }
-  };
-
-  // Handle Change Ready Value
-  const handleReadyValue = (e) => {
-    const value = e.target.value;
-
-    // Match format: up to 4 digits before decimal, up to 4 digits after
-    if (/^\d{0,4}(\.\d{0,4})?$/.test(value)) {
-      const [integerPart] = value.split(".");
-
-      // Allow empty string (for typing) or numeric part between 1 and 1000
-      if (
-        value === "" ||
-        (parseInt(integerPart, 10) >= 1 && parseInt(integerPart, 10) <= 1000)
-      ) {
-        setPrice(value);
       }
     }
   };
@@ -190,6 +162,7 @@ const CalculatorFxDiscounting = () => {
                 value={selectedOption}
                 onChange={handleChangeCurrencyCalculator}
                 placeholder="Select a currency"
+                classNamePrefix="RfqSpot"
               />
 
               <label className="mt-1">Ready</label>
@@ -199,7 +172,7 @@ const CalculatorFxDiscounting = () => {
                 defaultValue="0"
                 value={price}
                 applyClass={"CalculatorTextfield"}
-                onChange={handleReadyValue}
+                disabled={true}
               />
 
               <label className="mt-1">Tenor</label>
@@ -211,24 +184,24 @@ const CalculatorFxDiscounting = () => {
                 applyClass="inputField-calculator"
                 applyClassTag="tag-for-calculator"
                 width="100%"
-                inputWidth="60%"
+                inputWidth="50%"
                 tagText={tagText}
-                tagWidth="40%"
+                tagWidth="50%"
                 tagClassName="yourTagClass"
               />
 
               <label className="mt-1">Discounting Factor</label>
               <InputFieldWithTag
                 type="text"
-                value={resultDiscountingFactor}
+                value={Number(resultDiscountingFactor).toFixed(4)}
                 disabled={true}
                 placeholder="Enter value"
                 applyClass="inputField-calculator"
                 applyClassTag="tag-for-calculator"
                 width="100%"
-                inputWidth="90%"
+                inputWidth="85%"
                 tagText="%"
-                tagWidth="10%"
+                tagWidth="15%"
                 tagClassName="yourTagClass"
               />
             </div>

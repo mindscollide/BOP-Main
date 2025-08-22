@@ -3,6 +3,7 @@ import {
   getAllCategoriesRM,
   GetAllInstrumentsRM,
   GetAllNatureOfTransactionsRM,
+  GetUsersEmail,
 } from "@/common/api_config";
 import { authApi } from "@/common/apiend_points";
 import { setCustomHeaders } from "@/common/utils";
@@ -135,62 +136,112 @@ export const getAllInstrumentsApi = createAsyncThunk(
   }
 );
 
+export const getAllActiveCorporatesApi = createAsyncThunk(
+  "Auth/getAllActiveCorporates",
+  async ({ navigate }, { dispatch, rejectWithValue }) => {
+    try {
+      let getActiveCorporates = createPostAPI(
+        authApi,
+        GetActiveCorporatesRM.RequestMethod
+      );
 
-export const getAllActiveCorporatesApi = createAsyncThunk("Auth/getAllActiveCorporates", async ({ navigate }, { dispatch, rejectWithValue }) => {
-  try {
-    let getActiveCorporates = createPostAPI(
-      authApi,
-      GetActiveCorporatesRM.RequestMethod
-    );
+      const response = await getActiveCorporates();
 
-    const response = await getActiveCorporates();
-
-    if (response.data.responseCode === 417) {
-      await dispatch(refreshTokenAction({ navigate }));
-      dispatch(getAllActiveCorporatesApi({ navigate }));
-    } else if (response.data.responseCode === 200) {
-      const { isExecuted, responseMessage } = response.data.responseResult;
-      if (isExecuted) {
-        if (
-          responseMessage
-            .toLowerCase()
-            .includes(
-              "ERM_AuthService_CommonManager_GetActiveCorporates_01".toLowerCase()
-            )
-        ) {
-          return {
-            response: response.data.responseResult,
-            message: "",
-          };
-        } else if (
-          responseMessage
-            .toLowerCase()
-            .includes(
-              "ERM_AuthService_CommonManager_GetActiveCorporates_02".toLowerCase()
-            )
-        ) {
-          return rejectWithValue("");
-        } else if (
-          responseMessage
-            .toLowerCase()
-            .includes(
-              "ERM_AuthService_CommonManager_GetActiveCorporates_03".toLowerCase()
-            )
-        ) {
+      if (response.data.responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(getAllActiveCorporatesApi({ navigate }));
+      } else if (response.data.responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "ERM_AuthService_CommonManager_GetActiveCorporates_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message: "",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "ERM_AuthService_CommonManager_GetActiveCorporates_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "ERM_AuthService_CommonManager_GetActiveCorporates_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else {
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          console.log("", response.data);
           return rejectWithValue("Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      // Reject with error message
+      console.log("", error);
+      return rejectWithValue("Something went wrong");
+    }
+  }
+);
+
+export const GetUsersEmailApi = createAsyncThunk(
+  "auth/GetUsersEmail",
+  async ({ navigate }, { rejectWithValue, dispatch }) => {
+    try {
+      let GetUsersEmailData = createPostAPI(
+        authApi,
+        GetUsersEmail.RequestMethod
+      );
+
+      const response = await GetUsersEmailData();
+      const { responseCode } = response.data;
+
+      if (responseCode === 417) {
+        await dispatch(refreshTokenAction({ navigate }));
+        dispatch(GetUsersEmailApi({ navigate }));
+      } else if (response.data.responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          switch (responseMessage.toLowerCase()) {
+            case "ERM_AuthService_GetUsersEmail_01".toLowerCase():
+              return {
+                response: response.data.responseResult,
+                message: "",
+              };
+            // break;
+            case "ERM_AuthService_GetUsersEmail_02".toLowerCase():
+              return rejectWithValue("No Email Available");
+
+            case "ERM_AuthService_GetUsersEmail_03".toLowerCase():
+              return rejectWithValue("Something went wrong");
+
+            default:
+              break;
+          }
+          console.log(responseMessage, "responseMessage");
         } else {
           return rejectWithValue("Something went wrong");
         }
       } else {
-        console.log("", response.data);
         return rejectWithValue("Something went wrong");
       }
-    } else {
+    } catch (error) {
+      console.log("", error);
       return rejectWithValue("Something went wrong");
     }
-  } catch (error) {
-    // Reject with error message
-    console.log("", error);
-    return rejectWithValue("Something went wrong");
   }
-})
+);

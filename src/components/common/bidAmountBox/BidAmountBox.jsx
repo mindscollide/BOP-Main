@@ -12,7 +12,7 @@ const BidAmountBox = React.memo(({
 }) => {
   const divideTheValue = String(BidAmountValue || "0").split(".");
   const integerPart = divideTheValue[0] ?? "0";
-  const decimalPart = divideTheValue[1]?.substring(0, 4) || valueAfterDot;
+  const decimalPart = divideTheValue[1]?.substring(0, 5) || valueAfterDot;
 
   // Debug (optional – comment out in production)
   // console.log("Rendering BidAmountBox:", integerPart, decimalPart);

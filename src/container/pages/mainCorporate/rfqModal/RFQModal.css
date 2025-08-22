@@ -27,9 +27,9 @@
 }
 
 .LabelRFQTransactionModal {
-  font-weight: 800 !important;
+  font-weight: 700;
   font-size: 13px !important;
-  font-family: "Roboto", sans-serif !important;
+  font-family: "Roboto" !important;
 }
 
 span.RfqSpot__indicator-separator.css-1u9des2-indicatorSeparator {
@@ -39,15 +39,16 @@ span.RfqSpot__indicator-separator.css-1u9des2-indicatorSeparator {
 /* Control container (already applied) */
 .RfqSpot__control {
   min-height: 28px !important;
-  height: 28px !important;
+  /* height: 28px !important; */
   padding: 0 !important; /* Remove any inner control padding */
 }
 
 /* Value container (where the selected value appears) */
 .RfqSpot__value-container {
   padding: 0 10px !important;
-  height: 28px !important;
-  font-weight: 800 !important;
+  /* height: 28px !important; */
+  font-weight: 600 !important;
+  font-family: "Roboto" !important;
   /* display: flex; */
   /* align-items: center; */
 }
@@ -98,4 +99,68 @@ span.RfqSpot__indicator-separator.css-1u9des2-indicatorSeparator {
 .RfqSpot__option--is-focused {
   background-color: var(--color-blue) !important;
   color: white !important;
+}
+
+.confirmationLabel {
+  color: #f26522 !important;
+  font-size: 1.25rem !important;
+  display: flex !important;
+  justify-content: center !important;
+}
+
+.confirmationYesButton {
+  display: flex !important;
+  gap: 10px !important;
+  background: #096fed !important;
+  border-radius: 4px;
+  border: none !important;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  align-items: center !important;
+}
+
+.confirmationYesButton:is(:hover, :focus, :active, :focus-visible) {
+  display: flex !important;
+  gap: 10px !important;
+  background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
+  border-radius: 4px;
+  border: none !important;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  align-items: center !important;
+}
+.confirmationNoButton {
+  display: flex !important;
+  gap: 10px !important;
+  background: linear-gradient(to bottom, #feac78 0%, #e97225 100%) !important;
+  border-radius: 4px;
+  border: none !important;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  align-items: center !important;
+}
+
+.confirmationNoButton:is(:hover, :focus, :active, :focus-visible) {
+  display: flex !important;
+  gap: 10px !important;
+  background: #096fed !important;
+  border-radius: 4px;
+  border: none !important;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  align-items: center !important;
+}
+
+.confirmationModalText {
+  font-size: 1.25rem !important;
+  color: #4d4946 !important;
+  font-weight: 700 !important;
+}
+.rfqLimit_error-style {
+  color: #cf5b5b !important;
+  font-size: 13px !important;
 }
