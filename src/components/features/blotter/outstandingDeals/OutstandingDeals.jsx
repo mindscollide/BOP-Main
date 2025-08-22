@@ -62,7 +62,6 @@ import { useNotification } from "@/context/NotificationProvider";
 // Custom styles for the component
 const useStyles = makeStyles((theme) => ({
   tableContainer: {
-    maxHeight: 400,
     overflow: "auto",
     "& .MuiTableHead-root": {
       position: "sticky",
@@ -214,8 +213,7 @@ const OutstandingDeals = ({
   // Intersection Observer callback for infinite scrolling
   const lastRowRef = useCallback(
     (node) => {
-      if (hasBottomReachedOutstanding || !outstandingTableContainerRef.current)
-        return;
+      if (!node) return;
 
       // Disconnect previous observer
       if (observer.current) observer.current.disconnect();
@@ -223,30 +221,21 @@ const OutstandingDeals = ({
       // Create new observer to detect when last row is visible
       observer.current = new IntersectionObserver(
         (entries) => {
-          if (entries[0].isIntersecting && !hasBottomReachedOutstanding) {
+          if (entries[0].isIntersecting) {
             loadMore(); // Load more data when last row is visible
           }
         },
         {
           root: outstandingTableContainerRef.current, // Use table container as root
-          threshold: 0.5, // Fully visible threshold
+          threshold: 0.1, // Lower threshold to trigger earlier
+          rootMargin: "20px",
         }
       );
 
       if (node) observer.current.observe(node); // Observe the last row
     },
-    [hasBottomReachedOutstanding, loadMore]
+    [loadMore]
   );
-
-  // Cleanup observer on unmount
-  useEffect(() => {
-    return () => {
-      if (observer.current) {
-        observer.current.disconnect();
-      }
-    };
-  }, []);
-  // Other filter handlers would follow the same pattern...
 
   const handleShowCommentModal = (text) => {
     setShowCommentModal(true);
@@ -627,7 +616,7 @@ const OutstandingDeals = ({
     <>
       <TableContainer
         ref={outstandingTableContainerRef}
-        sx={{ maxHeight: 400, overflow: "auto" }}
+        sx={{ maxHeight: 300, overflow: "auto" }}
         className={classes.tableContainer}>
         <Table stickyHeader size='small'>
           <TableHead>
