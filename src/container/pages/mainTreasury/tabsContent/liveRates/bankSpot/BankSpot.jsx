@@ -145,7 +145,7 @@ const BankSpot = memo(() => {
             // Update spot rates
             if (
               instrumentParitySpot &&
-              data.instrumentID === instrumentParitySpot.instrumentID 
+              data.instrumentID === instrumentParitySpot.instrumentID
             ) {
               if (
                 Number(data.worldCurBid) !== Number(instrumentParitySpot.bid) ||
@@ -215,11 +215,13 @@ const BankSpot = memo(() => {
         width: 80,
         align: "center",
         render: (text, record) => (
-          <BidAmountBox
-            applyClass='BidCardBox'
-            bankSpot={true}
-            BidAmountValue={record?.worldCrossBid}
-          />
+          <span className='d-flex justify-content-center align-items-center'>
+            <BidAmountBox
+              applyClass='BidCardBox'
+              bankSpot={true}
+              BidAmountValue={record?.worldCrossBid}
+            />
+          </span>
         ),
       },
       {
@@ -229,11 +231,13 @@ const BankSpot = memo(() => {
         width: 80,
         align: "center",
         render: (text, record) => (
-          <BidAmountBox
-            applyClass='OfferCardBox'
-            bankSpot={true}
-            BidAmountValue={record?.worldCrossOffer}
-          />
+          <span className='d-flex justify-content-center align-items-center'>
+            <BidAmountBox
+              applyClass='OfferCardBox'
+              bankSpot={true}
+              BidAmountValue={record?.worldCrossOffer}
+            />
+          </span>
         ),
       },
       {
@@ -250,11 +254,13 @@ const BankSpot = memo(() => {
         width: 80,
         align: "center",
         render: (text, record) => (
-          <BidAmountBox
-            applyClass='BidCardBox'
-            bankSpot={true}
-            BidAmountValue={record?.worldCurBid}
-          />
+          <span className='d-flex justify-content-center align-items-center'>
+            <BidAmountBox
+              applyClass='BidCardBox'
+              bankSpot={true}
+              BidAmountValue={record?.worldCurBid}
+            />
+          </span>
         ),
       },
       {
@@ -264,11 +270,13 @@ const BankSpot = memo(() => {
         width: 80,
         align: "center",
         render: (text, record) => (
-          <BidAmountBox
-            applyClass='OfferCardBox'
-            bankSpot={true}
-            BidAmountValue={record?.worldCurOffer}
-          />
+          <span className='d-flex justify-content-center align-items-center'>
+            <BidAmountBox
+              applyClass='OfferCardBox'
+              bankSpot={true}
+              BidAmountValue={record?.worldCurOffer}
+            />
+          </span>
         ),
       },
       {

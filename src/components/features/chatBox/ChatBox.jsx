@@ -15,7 +15,7 @@ import moment from "moment";
 import { Col, Row } from "react-bootstrap";
 import { fileToBase64 } from "@/utils/converts";
 import { setChatModal } from "@/store/modalSlice/modalSlicer";
-import { setIncomingChat } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
+import { clearIncomingChat, setIncomingChat } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 // import styles from "./ChatBranch.css";
 
 const ChatBox = () => {
@@ -55,57 +55,84 @@ const ChatBox = () => {
     if (getAllUserData !== null) {
       try {
         const { chatID, getAllChat, transactionID } = getAllUserData;
+
         if (Array.isArray(getAllChat)) {
-          setTransactionChat({
-            chatID: chatID,
-            getAllChat: getAllChat,
-            transactionID: transactionID,
+          // Only update if data is different
+          setTransactionChat((prev) => {
+            if (
+              prev.chatID !== chatID ||
+              prev.transactionID !== transactionID ||
+              prev.getAllChat.length !== getAllChat.length
+            ) {
+              return {
+                chatID,
+                getAllChat,
+                transactionID,
+              };
+            }
+            return prev; // no update → no re-render
           });
-          setReceiverId(getAllChat[0]?.senderID);
+
+          // same for receiverId
+          const newReceiverId = getAllChat[0]?.senderID || 0;
+          setReceiverId((prev) =>
+            prev !== newReceiverId ? newReceiverId : prev
+          );
         }
-      } catch (error) {}
+      } catch (error) {
+        console.error(error);
+      }
     } else {
-      setTransactionChat({
-        chatID: 0,
-        getAllChat: [],
-        transactionID: 0,
+      setTransactionChat((prev) => {
+        if (
+          prev.chatID !== 0 ||
+          prev.transactionID !== 0 ||
+          prev.getAllChat.length > 0
+        ) {
+          return {
+            chatID: 0,
+            getAllChat: [],
+            transactionID: 0,
+          };
+        }
+        return prev;
       });
     }
   }, [getAllUserData]);
+
   useEffect(() => {
     if (!Array.isArray(IncomingChat) || IncomingChat.length === 0) return;
-
+  
     setTransactionChat((prevState) => {
       const existingChatIDs = new Set(
         prevState.getAllChat.map((chat) => chat.chatMessageID)
       );
-
+  
       const mergedChats = [...prevState.getAllChat];
       let hasNewChats = false;
-
+  
       IncomingChat.forEach((newChat) => {
         if (!existingChatIDs.has(newChat.chatMessageID)) {
-          mergedChats.unshift(newChat); // prepend only truly new messages
+          mergedChats.unshift(newChat);
           hasNewChats = true;
         } else {
-          // update existing one
           const index = mergedChats.findIndex(
             (c) => c.chatMessageID === newChat.chatMessageID
           );
-          if (index !== -1)
-            mergedChats[index] = { ...mergedChats[index], ...newChat };
+          if (index !== -1) mergedChats[index] = { ...mergedChats[index], ...newChat };
         }
       });
-
+  
       return {
         ...prevState,
         getAllChat: mergedChats,
       };
     });
-
-    // Clear IncomingChat after merge
-    dispatch(setIncomingChat([]));
+  
+    // ✅ now properly clear
+    dispatch(clearIncomingChat());
   }, [IncomingChat]);
+  
 
   const handleClickClose = () => {
     dispatch(setChatModal(false));

@@ -147,7 +147,7 @@ const BlotterHeader = () => {
         if (tnxSummary.length > 0) {
           if (isTreasury) {
             if (hasBottomReachedTreasuryTXN) {
-              setTreasuryTXNSummary((prev) => [...tnxSummary, ...prev]);
+              setTreasuryTXNSummary((prev) => [...prev, ...tnxSummary]);
               setTreasuryTXNSummaryTotalRecords(totalCount);
               setTreasuryTXNSummarysRow((prev) => prev + tnxSummary.length);
               setHasBottomReachedTreasuryTXN(false);
@@ -182,8 +182,8 @@ const BlotterHeader = () => {
             if (hasBottomReachedOutstanding) {
               setHasBottomReachedOutstanding(false);
               setTreasuryOutStandingDeal((prev) => [
-                ...outstandingDeals,
                 ...prev,
+                ...outstandingDeals,
               ]);
               setTreasuryOutStandingDealRecords(totalCount);
               setTreasuryOutStandingDealsRow(
