@@ -2522,6 +2522,14 @@ export const calculateNonFeSwapAndDiscountingRateApi = createAsyncThunk(
               )
           ) {
             return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_CalculateNonFESwapAndDiscounting_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("No rates available");
           } else return rejectWithValue;
         } else {
           return rejectWithValue("Something went wrong");
@@ -2754,6 +2762,14 @@ export const CalculateFEDiscountingAPI = createAsyncThunk(
               )
           ) {
             return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_CalculateFEDiscounting_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("No rates available");
           } else return rejectWithValue;
         } else {
           return rejectWithValue("Something went wrong");
