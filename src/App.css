@@ -603,11 +603,11 @@ input[type="number"] {
   padding: 0 3px !important;
 }
 
-.col-blotter-table tr td,
+/* .col-blotter-table tr td,
 .blotter-table tr td {
   padding-top: 12px !important;
   padding-bottom: 12px !important;
-}
+} */
 
 /* bootstrap modal*/
 .modal-content {

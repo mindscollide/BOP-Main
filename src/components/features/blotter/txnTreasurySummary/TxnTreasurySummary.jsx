@@ -66,7 +66,10 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#ffeeec",
   },
   statusCancelledVal: {
-    color: "#f26522",  // corrected hex + wrapped in quotes
+    color: "#f26522", // corrected hex + wrapped in quotes
+  },
+  statusExpiredVal: {
+    color: "#f21616",
   },
   filterButton: {
     cursor: "pointer",
@@ -352,6 +355,8 @@ const TXNTreasurySummary = React.memo(
                   ? classes.statusRejected
                   : record.status === "Cancelled"
                   ? classes.statusCancelledVal
+                  : record.status === "Expired" || record.status === "Rejected"
+                  ? classes.statusExpiredVal
                   : ""
               }>
               {record.status}
@@ -467,6 +472,7 @@ const TXNTreasurySummary = React.memo(
         <TableContainer
           ref={TxnTreasuryTableContainerRef}
           sx={{ maxHeight: 400, overflow: "auto" }}
+          style={{ width: "100%", fontSize: "14px" }}
           className={classes.tableContainer}>
           <Table stickyHeader size='small'>
             <TableHead>
@@ -492,8 +498,7 @@ const TXNTreasurySummary = React.memo(
                         ref={isLast ? lastRowRef : null}
                         className={
                           row.statusID === 7 ? classes.statusCancelled : ""
-                        }
-                        >
+                        }>
                         {Treasurycolumns.map((column) => (
                           <TableCell
                             key={column.id}
