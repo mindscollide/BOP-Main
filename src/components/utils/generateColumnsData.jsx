@@ -310,14 +310,14 @@ export const buildCurrentRatesPayload = (rowData) => {
       if (key.startsWith("rate_")) {
         const instrumentName = key.replace("rate_", "");
         const instrumentIDKey = `InstrumentID_${instrumentName}`;
-        const rate = parseFloat(row[key]);
+        const rate = row[key];
 
         if (!isNaN(rate)) {
           currentRates.push({
             TenorID: row.TenorID,
             InstrumentID: row[instrumentIDKey],
             InstrumentName: instrumentName,
-            Rate: rate,
+            Rate: String(rate),
           });
         }
       }

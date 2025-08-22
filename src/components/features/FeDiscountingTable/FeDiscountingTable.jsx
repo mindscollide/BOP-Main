@@ -168,33 +168,34 @@ const FeDiscountingTable = () => {
     let Data = { CurrentRates: payloadData };
 
     console.log(payloadData, "payloadDatapayloadDatapayloadData");
-    const checkDoNotempty = payloadData.every(
-      (item) => item.Rate !== "" && Number(item.Rate) !== 0
-    );
+    // const checkDoNotempty = payloadData.every(
+    //   (item) => item.Rate !== "" && Number(item.Rate) !== 0
+    // );
 
-    if (!checkDoNotempty) {
-      showMessage("Rate fields cannot be 0 or empty for any currency");
-      return;
-    }
+    // if (!checkDoNotempty) {
+    //   showMessage("Rate fields cannot be 0 or empty for any currency");
+    //   return;
+    // }
     dispatch(PublishFEDiscountingTableApi({ navigate, Data }));
   };
   return (
     <>
-      <div className='datetime fw-bold text-end mb-2 ff-roboto'>
-        {date !== "" &&
-          moment(formatDateUTCToGMT(date)).format("DD MMM YYYY, hh:mm:ss")}
+      <div className="datetime fw-bold text-end mb-2 ff-roboto">
+        {date
+          ? moment(formatDateUTCToGMT(date)).format("DD MMM YYYY, hh:mm:ss")
+          : ""}
         {/* 05 Aug 2025, 11:20:58 */}
       </div>
       <GlobalTable
-        prefixCls='DealerAndTreasuryDiscountTable'
+        prefixCls="DealerAndTreasuryDiscountTable"
         columns={columnsData}
         dataSource={rowData}
         pagination={false}
       />
 
-      <span className='d-flex justify-content-center mt-4'>
+      <span className="d-flex justify-content-center mt-4">
         <CustomButton
-          applyClass='publishForwardsBtn'
+          applyClass="publishForwardsBtn"
           value={"Publish FE Discounting"}
           disabled={marketStatus === false ? true : false}
           onClick={handlePublishDiscount}
