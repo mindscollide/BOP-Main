@@ -73,11 +73,8 @@ const SpotBranch = () => {
     (state) => state.RealtimeActionsSlice.ClearRatesData
   );
 
-  console.log(ClearRatesData, "ClearRatesDataClearRatesData");
+  const [watchlistData, setWatchlistData] = useState(initialWatchlistData);
 
-  const [watchlistData, setWatchlistData] = useState([]);
-
-  console.log(watchlistData, "watchlistDatawatchlistData");
   // Extracting out the Cards Wathlist data in the state
   useEffect(() => {
     try {
@@ -277,20 +274,12 @@ const SpotBranch = () => {
           Object.keys(prev).forEach((key, index) => {
             const sectionData = prev[key];
             const sectionKey = `watchlist${index + 1}`;
-            console.log(sectionKey,"sectionKeysectionKey")
-            // const matchingData = instrumentSpotData.find(
-            //   (data) =>
-            //     data.instrumentID === sectionData.instrumentID &&
-            //     data.secondaryInstrumentID === sectionData.secondaryInstrumentID
-            // );
-            console.log(sectionData, "sectionDatasectionDatasectionData");
-            // if (matchingData) {
+
             updated[sectionKey] = {
               ...sectionData,
               buyValue: 0,
               sellValue: 0,
             };
-            // }
           });
           return updated;
         });

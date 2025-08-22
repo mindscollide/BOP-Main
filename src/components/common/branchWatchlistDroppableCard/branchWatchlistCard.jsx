@@ -31,22 +31,7 @@ const BranchRateCardsOfWatchList = ({
   const navigate = useNavigate();
 
   const handleOpenModal = (type) => {
-    console.log(
-      {
-        currencyLabel,
-        buyHeading,
-        sellHeading,
-        buyValue,
-        sellValue,
-        isSellDisabled,
-        isBuyDisabled,
-        instrumentID,
-        secondaryInstrumentID,
-        instrumentName,
-        secondaryInstrumentName,
-      },
-      "handleOpenModalhandleOpenModal "
-    );
+ 
     let Data = {
       type: type, // 'buy' or 'sell'
       currencyLabel: currencyLabel,
@@ -67,7 +52,7 @@ const BranchRateCardsOfWatchList = ({
 
   return (
     <>
-      {currencyLabel && buyValue && sellValue ? (
+      {currencyLabel ? (
         <>
           <span className='DroppableBox'>
             <Row>

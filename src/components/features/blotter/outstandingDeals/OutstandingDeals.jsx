@@ -649,7 +649,6 @@ const OutstandingDeals = ({
               return (
                 <TableRow
                   key={`${row.pK_TransactionID}-${index}`}
-  
                   ref={isLast ? lastRowRef : null}>
                   {columns.map((column) => (
                     <TableCell
@@ -667,6 +666,12 @@ const OutstandingDeals = ({
                 </TableRow>
               );
             })}
+
+            {hasBottomReachedOutstanding && (
+              <Box display='flex' justifyContent='center' p={2}>
+                <CircularProgress size={24} />
+              </Box>
+            )}
           </TableBody>
         </Table>
       </TableContainer>

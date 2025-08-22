@@ -9,6 +9,8 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import isEqual from "lodash/isEqual";
 import {
+  Box,
+  CircularProgress,
   Table,
   TableBody,
   TableCell,
@@ -518,14 +520,11 @@ const TXNTreasurySummary = React.memo(
                     );
                   })
                 : ""}
+
               {hasBottomReachedTreasuryTXN && (
-                <TableRow>
-                  <TableCell
-                    colSpan={Treasurycolumns.length}
-                    className={classes.loadingRow}>
-                    Loading more data...
-                  </TableCell>
-                </TableRow>
+                <Box display='flex' justifyContent='center' p={2}>
+                  <CircularProgress size={24} />
+                </Box>
               )}
             </TableBody>
           </Table>
