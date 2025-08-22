@@ -28,7 +28,7 @@ const MIS = () => {
 
   const [misTableData, setMisTableData] = useState([]);
 
-  console.log(misTableData, "misTableDatamisTableData")
+  console.log(misTableData, "misTableDatamisTableData");
   const [MisDate, setMisDate] = useState({
     StartDate: new Date(),
     EndDate: new Date(),
@@ -89,7 +89,7 @@ const MIS = () => {
       dataIndex: "topCustomer",
       key: "topCustomer",
       render: (text, record, index) => {
-        console.log(index, "topCustomertopCustomer index")
+        console.log(index, "topCustomertopCustomer index");
         const isExpanded = expandedRowKeys.includes(index);
         return (
           <>
@@ -111,8 +111,8 @@ const MIS = () => {
               )}
             </span>
             {isExpanded && expandedRowKeys.includes(index) ? (
-              <div className='d-grid'>
-                <span className='mis-volumwise-value bg-none color-black py-0 roboto-13'>
+              <div className="d-grid">
+                <span className="mis-volumwise-value bg-none color-black py-0 roboto-13">
                   Import
                 </span>
                 <span className="mis-volumwise-value bg-none color-black py-0 roboto-13">
@@ -147,7 +147,7 @@ const MIS = () => {
       key: "value",
       className: "value",
       render: (text, record, index) => {
-        console.log(index, "topCustomertopCustomer index")
+        console.log(index, "topCustomertopCustomer index");
 
         const isExpanded = expandedRowKeys.includes(index);
         return (
@@ -160,7 +160,7 @@ const MIS = () => {
               {formatPkAmount(record?.value)}
             </span>
             {isExpanded && expandedRowKeys.includes(index) ? (
-              <div className='d-grid'>
+              <div className="d-grid">
                 <span
                   className={`${
                     index === 1 ? "mis-profitwise-value" : "mis-volumwise-value"
@@ -184,7 +184,6 @@ const MIS = () => {
   ];
 
   const handleExpandClick = (index) => {
-  
     const isExpanded = expandedRowKeys.includes(index);
 
     const newExpandedRowKeys = isExpanded ? [] : [index]; // 👈 only one row at a time

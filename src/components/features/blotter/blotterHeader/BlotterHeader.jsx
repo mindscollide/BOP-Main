@@ -37,6 +37,7 @@ import {
   BlotterTransactionRejected,
   BlotterTranscationCancelled,
 } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
+import { Popover } from "antd";
 
 // Lazy load components
 const TXNSummary = lazy(() => import("../txnSummary/TXNSummary"));
@@ -137,6 +138,7 @@ const BlotterHeader = () => {
   const blotterTransactionRejected = useSelector(
     (state) => state.RealtimeActionsSlice.BlotterTransactionRejected
   );
+  const [exportButton, setExportButton] = useState(false);
 
   useEffect(() => {
     try {
@@ -628,55 +630,55 @@ const BlotterHeader = () => {
                     TXN Summary
                   </span>
                 </Col>
+
                 <Col
                   sm={6}
                   md={6}
                   lg={6}
-                  className="d-flex justify-content-end align-items-center"
+                  className="d-flex align-item-center justify-content-end  color-white fw-bold fs-6"
                 >
-                  <CustomButton
-                    applyClass={"Export-button"}
-                    value="Export"
-                    onClick={() => setOpenExportDiv(!openExportDiv)}
-                  />
-
-                  {openExportDiv && (
-                    <div className="exportOptions">
-                      <div className="exportOptionsBox">
-                        <img
-                          src={pdfImage}
-                          width={30}
-                          height={30}
-                          className="cursor-pointer"
-                          alt="pdf"
+                  <Popover
+                    content={
+                      <div className={"export-options"}>
+                        <CustomButton
+                          // value={"Excel"}
+                          icon={<img src={pdfImage} alt="Excel Icon" />}
+                          className={"bg-none"}
                           onClick={HandlePDFDownloadFunc}
+
+                          // onClick={() => handleExport("excel")}
+                          // className={styles["export-button"]}
                         />
-                        <img
-                          src={excelImage}
-                          width={30}
-                          height={30}
-                          alt="excel"
-                          className="cursor-pointer"
+                        <CustomButton
+                          icon={<img src={excelImage} alt="PDF Icon" />}
+                          // onClick={() => handleExport("pdf")}
+                          className={"bg-none"}
                           onClick={HandleExcelDownloadFunc}
                         />
-                        <img
-                          src={emailImage}
-                          width={30}
-                          height={30}
-                          className="cursor-pointer"
-                          alt="email"
+                        <CustomButton
+                          // value={"Excel"}
+                          icon={<img src={emailImage} alt="Excel Icon" />}
+                          className={"bg-none"}
                           onClick={handleTransactionModal}
                         />
-                        <img
-                          src={printImage}
-                          className="cursor-pointer"
-                          width={30}
-                          height={30}
-                          alt="print"
+                        <CustomButton
+                          icon={<img src={printImage} alt="PDF Icon" />}
+                          className={"bg-none"}
                         />
                       </div>
-                    </div>
-                  )}
+                    }
+                    trigger="click"
+                    open={exportButton}
+                    onOpenChange={() => setExportButton(!exportButton)}
+                    placement="bottomRight"
+                    arrow={false}
+                  >
+                    <CustomButton
+                      applyClass={"Export-button"}
+                      value="Export"
+                      onClick={onClickOpenExport}
+                    />
+                  </Popover>
                 </Col>
               </Row>
               <Suspense fallback={<SectionLoader />}>
