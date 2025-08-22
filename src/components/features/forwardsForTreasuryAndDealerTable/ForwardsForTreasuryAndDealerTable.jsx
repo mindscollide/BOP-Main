@@ -127,10 +127,10 @@ const TenoreWiseCurrentAndLastRates = ({
             tenorID: tenor.tenorID,
             tenorName: tenor.tenorName,
             tenorDays: tenor.tenorDays,
-            currentBid: current?.bid ?? "0",
-            currentAsk: current?.ask ?? "0",
-            lastBid: last?.bid ?? "0",
-            lastAsk: last?.ask ?? "0",
+            currentBid: current?.bid ?? "",
+            currentAsk: current?.ask ?? "",
+            lastBid: last?.bid ?? "",
+            lastAsk: last?.ask ?? "",
             dateTime: current?.dateTime ?? "",
           };
         });
@@ -238,29 +238,26 @@ const TenoreWiseCurrentAndLastRates = ({
       forwardsForTreasuryBranch,
       "forwardsForTreasuryBranchforwardsForTreasuryBranch"
     );
-    let checkDoNotempty = forwardsForTreasuryBranch.every(
-      (item) =>
-        item.currentAsk !== "" &&
-        Number(item.currentAsk) !== 0 &&
-        item.currentBid !== "" &&
-        Number(item.currentBid) !== 0
-    );
-
+    // let checkDoNotempty = forwardsForTreasuryBranch.every(
+    //   (item) =>
+    //     item.currentAsk !== "" &&
+    //     Number(item.currentAsk) !== 0 &&
+    //     item.currentBid !== "" &&
+    //     Number(item.currentBid) !== 0
+    // );
+    //
     let checkAskValue = forwardsForTreasuryBranch.find(
-      (item) =>
-        Number(item.currentAsk) !== 0 &&
-        Number(item.currentBid) !== 0 &&
-        Number(item.currentAsk) < Number(item.currentBid)
+      (item) => Number(item.currentAsk) < Number(item.currentBid)
     );
 
-    if (!checkDoNotempty) {
-      const handleClick = () => {
-        showMessage("Bid and Ask fields cannot be 0 or empty");
-      };
+    // if (!checkDoNotempty) {
+    //   const handleClick = () => {
+    //     showMessage("Bid and Ask fields cannot be 0 or empty");
+    //   };
 
-      handleClick();
-      return;
-    }
+    // handleClick();
+    // return;
+    // }
 
     if (checkAskValue !== undefined) {
       const handleClick = () => {
@@ -296,8 +293,8 @@ const TenoreWiseCurrentAndLastRates = ({
     let Data = {
       CurrentTenorWiseForwardRates: forwardsForTreasuryBranch.map((item) => ({
         TenorID: item.tenorID,
-        Bid: Number(item.currentBid),
-        Ask: Number(item.currentAsk),
+        Bid: String(item.currentBid),
+        Ask: String(item.currentAsk),
         DateTime: "",
         NoOfDays: item.tenorDays,
       })),
@@ -405,7 +402,7 @@ const TenoreWiseCurrentAndLastRates = ({
             InputFIeld ? (
               <Suspense fallback={<div>Loading input...</div>}>
                 <InputFIeld
-                  type='number'
+                  type="number"
                   value={record.lastBid}
                   disabled={true}
                   applyClass={"DealerTableBitInput"}
@@ -422,7 +419,7 @@ const TenoreWiseCurrentAndLastRates = ({
             InputFIeld ? (
               <Suspense fallback={<div>Loading input...</div>}>
                 <InputFIeld
-                  type='number'
+                  type="number"
                   value={record.lastAsk}
                   disabled={true}
                   applyClass={"DealerTableBitInput"}
@@ -448,7 +445,7 @@ const TenoreWiseCurrentAndLastRates = ({
               IconElement && (
                 <Suspense fallback={<div>Loading button...</div>}>
                   <CustomButton
-                    type='link'
+                    type="link"
                     icon={
                       <Suspense fallback={<div>Loading icon...</div>}>
                         <IconElement
@@ -472,7 +469,7 @@ const TenoreWiseCurrentAndLastRates = ({
       {GlobalTable && (
         <>
           <Suspense fallback={<div>Loading Table...</div>}>
-            <div className='datetime fw-bold text-end mb-2 ff-roboto'>
+            <div className="datetime fw-bold text-end mb-2 ff-roboto">
               {date !== "" &&
                 moment(formatDateUTCToGMT(date)).format(
                   "DD MMM YYYY, hh:mm:ss"
@@ -486,9 +483,9 @@ const TenoreWiseCurrentAndLastRates = ({
               pagination={false}
             />
             {CustomButton && (
-              <span className='d-flex justify-content-center mt-4'>
+              <span className="d-flex justify-content-center mt-4">
                 <CustomButton
-                  applyClass='publishForwardsBtn'
+                  applyClass="publishForwardsBtn"
                   value={"Publish Forwards"}
                   onClick={handlePublishForwards}
                   disabled={
@@ -513,8 +510,9 @@ const TenoreWiseCurrentAndLastRates = ({
                       sm={12}
                       md={12}
                       lg={12}
-                      className='d-flex justify-content-center'>
-                      <span className='modalDescription'>
+                      className="d-flex justify-content-center"
+                    >
+                      <span className="modalDescription">
                         Are you sure you want to delete it ?
                       </span>
                     </Col>
@@ -528,7 +526,8 @@ const TenoreWiseCurrentAndLastRates = ({
                       sm={6}
                       md={6}
                       lg={6}
-                      className='d-flex justify-content-end'>
+                      className="d-flex justify-content-end"
+                    >
                       <CustomButton
                         value={"Yes"}
                         onClick={handleYesConfirmatonModal}
@@ -539,7 +538,8 @@ const TenoreWiseCurrentAndLastRates = ({
                       sm={6}
                       md={6}
                       lg={6}
-                      className='d-flex justify-content-start'>
+                      className="d-flex justify-content-start"
+                    >
                       <CustomButton
                         value={"No"}
                         onClick={() => setConfirmationModal(false)}

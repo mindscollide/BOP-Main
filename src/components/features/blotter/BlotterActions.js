@@ -2464,6 +2464,14 @@ export const calculateTenorSwapAndForwardRateApi = createAsyncThunk(
               )
           ) {
             return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_CalculateTenorSwapAndForwardRate_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Rates not available");
           } else return rejectWithValue;
         } else {
           return rejectWithValue("Something went wrong");

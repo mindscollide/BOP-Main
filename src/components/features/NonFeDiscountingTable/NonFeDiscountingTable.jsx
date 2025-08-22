@@ -156,14 +156,16 @@ const NonFeDiscountingTable = () => {
   const handlePublishDiscount = () => {
     const payloadData = buildCurrentRatesPayload(tableData);
 
-    const checkDoNotempty = payloadData.every(
-      (item) => item.Rate !== "" && Number(item.Rate) !== 0
-    );
+    console.log("payloadDatapayloadDatapayloadDataNonfe", payloadData);
 
-    if (!checkDoNotempty) {
-      showMessage("Rate fields cannot be 0 or empty for any currency");
-      return;
-    }
+    // const checkDoNotempty = payloadData.every(
+    //   (item) => item.Rate !== "" && Number(item.Rate) !== 0
+    // );
+
+    // if (!checkDoNotempty) {
+    //   showMessage("Rate fields cannot be 0 or empty for any currency");
+    //   return;
+    // }
     let Data = { CurrentRates: payloadData };
 
     dispatch(PublishNonFEDiscountingTableApi({ navigate, Data }));
@@ -171,8 +173,9 @@ const NonFeDiscountingTable = () => {
   return (
     <>
       <div className="datetime fw-bold text-end mb-2 ff-roboto">
-        {date !== "" &&
-          moment(formatDateUTCToGMT(date)).format("DD MMM YYYY, hh:mm:ss")}
+        {date
+          ? moment(formatDateUTCToGMT(date)).format("DD MMM YYYY, hh:mm:ss")
+          : ""}
       </div>
       <GlobalTable
         prefixCls="DealerAndTreasuryDiscountTable"
