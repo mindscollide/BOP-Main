@@ -12,7 +12,7 @@ import {
   Box,
   Checkbox,
   Popover,
-  CircularProgress
+  CircularProgress,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 
@@ -63,7 +63,7 @@ import { useNotification } from "@/context/NotificationProvider";
 const useStyles = makeStyles((theme) => ({
   tableContainer: {
     maxHeight: 400,
-    overflow: 'auto',
+    overflow: "auto",
     "& .MuiTableHead-root": {
       position: "sticky",
       top: 0,
@@ -116,7 +116,7 @@ const OutstandingDeals = ({
   treasuryOutStandingDealsRow,
   setHasBottomReachedOutstanding,
   treasuryOutStandingDeal,
-  hasBottomReachedOutstanding
+  hasBottomReachedOutstanding,
 }) => {
   const classes = useStyles();
   const { showMessage } = useNotification();
@@ -151,7 +151,9 @@ const OutstandingDeals = ({
   const [showCommentModal, setShowCommentModal] = useState(false);
   const [comment, setComment] = useState("");
   const [openCustomername, setOpenCustomername] = useState(false);
-  const [selectedItemsCustomerName, setSelectedItemsCustomerName] = useState([]);
+  const [selectedItemsCustomerName, setSelectedItemsCustomerName] = useState(
+    []
+  );
   const [openType, setOpenType] = useState(false);
   const [selectedItemsType, setSelectedItemsType] = useState([]);
   const [openNature, setOpenNature] = useState(false);
@@ -184,43 +186,66 @@ const OutstandingDeals = ({
   const handleOpenChange = (newOpen) => setOpen(newOpen);
   const handleSelectAll = () => setSelectedItemsTXNID(TXN_ID_OPTIONS);
   const handleDeselectAll = () => setSelectedItemsTXNID([]);
-  const handleCheckboxChange = (checkedValues) => setSelectedItemsTXNID(checkedValues);
+  const handleCheckboxChange = (checkedValues) =>
+    setSelectedItemsTXNID(checkedValues);
 
   // Load more data function for infinite scrolling
   const loadMore = useCallback(async () => {
     // Prevent loading if already at bottom or no more records
-    if (hasBottomReachedOutstanding || treasuryOutStandingDealRecords <= treasuryOutStandingDeal.length) return;
+    if (
+      hasBottomReachedOutstanding ||
+      treasuryOutStandingDealRecords <= treasuryOutStandingDeal.length
+    )
+      return;
 
     setHasBottomReachedOutstanding(true); // Set loading state
 
     // Prepare data for API call
     let Data = { sRow: treasuryOutStandingDealsRow, Length: 10 };
     dispatch(GetBlotterOutstandingDealsDataAPI({ navigate, Data }));
-  }, [hasBottomReachedOutstanding, treasuryOutStandingDealRecords, treasuryOutStandingDeal.length, treasuryOutStandingDealsRow]);
+  }, [
+    hasBottomReachedOutstanding,
+    setHasBottomReachedOutstanding,
+    treasuryOutStandingDealRecords,
+    treasuryOutStandingDeal.length,
+    treasuryOutStandingDealsRow,
+  ]);
 
   // Intersection Observer callback for infinite scrolling
   const lastRowRef = useCallback(
     (node) => {
-      if (hasBottomReachedOutstanding || !outstandingTableContainerRef.current) return;
+      if (hasBottomReachedOutstanding || !outstandingTableContainerRef.current)
+        return;
 
       // Disconnect previous observer
       if (observer.current) observer.current.disconnect();
 
       // Create new observer to detect when last row is visible
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) {
-          loadMore(); // Load more data when last row is visible
+      observer.current = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting && !hasBottomReachedOutstanding) {
+            loadMore(); // Load more data when last row is visible
+          }
+        },
+        {
+          root: outstandingTableContainerRef.current, // Use table container as root
+          threshold: 0.5, // Fully visible threshold
         }
-      }, {
-        root: outstandingTableContainerRef.current, // Use table container as root
-        threshold: 1.0 // Fully visible threshold
-      });
+      );
 
       if (node) observer.current.observe(node); // Observe the last row
     },
     [hasBottomReachedOutstanding, loadMore]
   );
 
+  // Cleanup observer on unmount
+  useEffect(() => {
+    return () => {
+      if (observer.current) {
+        observer.current.disconnect();
+      }
+    };
+  }, []);
   // Other filter handlers would follow the same pattern...
 
   const handleShowCommentModal = (text) => {
@@ -301,7 +326,12 @@ const OutstandingDeals = ({
         })
       );
     }
-  }, [cancelType, cancelTransactionID, cancelReasonComment, setCancelReasonModal]);
+  }, [
+    cancelType,
+    cancelTransactionID,
+    cancelReasonComment,
+    setCancelReasonModal,
+  ]);
 
   const handleCloseReasonModal = useCallback(() => {
     setCancelReasonModal(false);
@@ -326,95 +356,103 @@ const OutstandingDeals = ({
   // Table columns configuration
   const columns = [
     {
-      id: 'txnid',
-      label: 'TXN ID',
-      align: 'center',
+      id: "txnid",
+      label: "TXN ID",
+      align: "center",
       width: 120,
-      render: (record) => record.txnid
+      render: (record) => record.txnid,
     },
     {
-      id: 'corporateName',
-      label: 'Client',
+      id: "corporateName",
+      label: "Client",
       width: 120,
-      render: (record) => record.corporateName
+      render: (record) => record.corporateName,
     },
     {
-      id: 'branchCode',
-      label: 'Branch Code',
+      id: "branchCode",
+      label: "Branch Code",
       width: 120,
-      align: 'center',
-      render: (record) => record.branchCode
+      align: "center",
+      render: (record) => record.branchCode,
     },
     {
-      id: 'side',
-      label: 'Type',
+      id: "side",
+      label: "Type",
       width: 60,
-      render: (record) => record.side
+      render: (record) => record.side,
     },
     {
-      id: 'nature',
-      label: 'Nature',
+      id: "nature",
+      label: "Nature",
       width: 120,
-      align: 'center',
-      render: (record) => record.nature
+      align: "center",
+      render: (record) => record.nature,
     },
     {
-      id: 'bid',
-      label: 'Bid',
+      id: "bid",
+      label: "Bid",
       width: 60,
-      align: 'center',
-      render: (record) => <IndexCell value={formatPkAmount(record.bid, { decimals: 5 })} />
+      align: "center",
+      render: (record) => (
+        <IndexCell value={formatPkAmount(record.bid, { decimals: 5 })} />
+      ),
     },
     {
-      id: 'offer',
-      label: 'Offer',
+      id: "offer",
+      label: "Offer",
       width: 60,
-      align: 'center',
-      render: (record) => <IndexCell value={formatPkAmount(record.offer, { decimals: 5 })} />
+      align: "center",
+      render: (record) => (
+        <IndexCell value={formatPkAmount(record.offer, { decimals: 5 })} />
+      ),
     },
     {
-      id: 'ccY1',
-      label: 'CCY1',
+      id: "ccY1",
+      label: "CCY1",
       width: 80,
-      align: 'center',
-      render: (record) => record.ccY1
+      align: "center",
+      render: (record) => record.ccY1,
     },
     {
-      id: 'quantity',
-      label: 'TXN Amount',
+      id: "quantity",
+      label: "TXN Amount",
       width: 150,
-      align: 'center',
-      render: (record) => <IndexCell value={formatPkAmount(record.quantity)} />
+      align: "center",
+      render: (record) => <IndexCell value={formatPkAmount(record.quantity)} />,
     },
     {
-      id: 'ccY2',
-      label: 'CCY2',
+      id: "ccY2",
+      label: "CCY2",
       width: 80,
-      align: 'center',
-      render: (record) => record.ccY2
+      align: "center",
+      render: (record) => record.ccY2,
     },
     {
-      id: 'amount',
-      label: 'Total Amount',
+      id: "amount",
+      label: "Total Amount",
       width: 150,
-      align: 'center',
-      render: (record) => <IndexCell value={formatPkAmount(record.amount)} />
+      align: "center",
+      render: (record) => <IndexCell value={formatPkAmount(record.amount)} />,
     },
     {
-      id: 'tradeDateTime',
-      label: 'Time',
+      id: "tradeDateTime",
+      label: "Time",
       width: 60,
       render: (record) => {
         let Data = { PK_TransactionID: record.pK_TransactionID };
-        const isRFQ = record.isRFQ &&
+        const isRFQ =
+          record.isRFQ &&
           record.statusID === 2 &&
           record.rfqTimerDetails !== null &&
           record.rfqTimerDetails?.isEnded === false;
-        const isAssignedUser = record.statusID === 5 &&
-          Number(localStorage.getItem("userID")) === Number(record.treasuryPersonID);
-        const rfqTimer = (isRFQ || isAssignedUser) && record.rfqTimerDetails?.endTime
-          ? convertDateTimeIntoLocal(record.rfqTimerDetails.endTime)
-          : null;
+        const isAssignedUser =
+          record.statusID === 5 &&
+          Number(localStorage.getItem("userID")) ===
+            Number(record.treasuryPersonID);
+        const rfqTimer =
+          (isRFQ || isAssignedUser) && record.rfqTimerDetails?.endTime
+            ? convertDateTimeIntoLocal(record.rfqTimerDetails.endTime)
+            : null;
 
         return (
           <span>
@@ -430,26 +468,30 @@ const OutstandingDeals = ({
             )}
           </span>
         );
-      }
+      },
     },
     {
-      id: 'status',
-      label: 'Status',
+      id: "status",
+      label: "Status",
       width: 80,
       render: (record) => (
-        <span className={
-          record.status === "Accepted" ? classes.statusAccepted :
-            record.statusID === 5 ? classes.statusInProgress :
-              record.statusID === 2 ? classes.statusPending :
-                classes.statusRejected
-        }>
+        <span
+          className={
+            record.status === "Accepted"
+              ? classes.statusAccepted
+              : record.statusID === 5
+              ? classes.statusInProgress
+              : record.statusID === 2
+              ? classes.statusPending
+              : classes.statusRejected
+          }>
           {record.status}
         </span>
-      )
+      ),
     },
     {
-      id: 'actions1',
-      label: 'Action',
+      id: "actions1",
+      label: "Action",
       width: 120,
       render: (record) => (
         <div className={classes.actionButtons}>
@@ -466,16 +508,21 @@ const OutstandingDeals = ({
                 icon={<i className='icon-check'></i>}
                 className='btn btn-sm btn-danger d-flex justify-content-center align-items-center'
                 size={"small"}
-                onClick={() => handleAcceptTransactionCancellation(record.pK_TransactionID)}
+                onClick={() =>
+                  handleAcceptTransactionCancellation(record.pK_TransactionID)
+                }
               />
               <CustomButton
                 icon={<i className='icon-close'></i>}
                 className='btn btn-sm btn-success d-flex justify-content-center align-items-center'
                 size={"small"}
-                onClick={() => handleRejectTransactionCancellation(record.pK_TransactionID)}
+                onClick={() =>
+                  handleRejectTransactionCancellation(record.pK_TransactionID)
+                }
               />
             </>
-          ) : Number(record?.treasuryPersonID) === Number(localStorage.getItem("userID")) ? (
+          ) : Number(record?.treasuryPersonID) ===
+            Number(localStorage.getItem("userID")) ? (
             record.statusID === 5 ? (
               <>
                 {record.isRFQ === true ? (
@@ -485,7 +532,9 @@ const OutstandingDeals = ({
                     className='btn btn-sm btn-primary d-flex justify-content-center align-items-center'
                     onClick={() => openViewDeal(record, record.natureType)}
                   />
-                ) : record.natureType === 2 || record.natureType === 3 || record.natureType === 4 ? (
+                ) : record.natureType === 2 ||
+                  record.natureType === 3 ||
+                  record.natureType === 4 ? (
                   <CustomButton
                     icon={<i className='icon-open'></i>}
                     size={"small"}
@@ -519,33 +568,37 @@ const OutstandingDeals = ({
             ) : null
           ) : null}
         </div>
-      )
+      ),
     },
     {
-      id: 'actions2',
-      label: '',
+      id: "actions2",
+      label: "",
       width: 120,
       render: (record) => (
-        <div className="d-flex justify-content-center align-items-center">
+        <div className='d-flex justify-content-center align-items-center'>
           {record.statusID === 6 && (
             <CustomButton
-              icon={<i className='icon-view-comment d-flex justify-content-center align-items-center blotterTableIconSize'></i>}
+              icon={
+                <i className='icon-view-comment d-flex justify-content-center align-items-center blotterTableIconSize'></i>
+              }
               size={"small"}
               className='btn btn-primary'
               onClick={() => handleShowCommentModal(record.comment)}
             />
           )}
           {(record.statusID === 4 || record.statusID === 5) &&
-            Number(record.treasuryPersonID) === Number(localStorage.getItem("userID")) && (
+            Number(record.treasuryPersonID) ===
+              Number(localStorage.getItem("userID")) && (
               <CustomButton
                 icon={<i className='icon-chat2'></i>}
                 size={"small"}
                 className='btn btn-danger chat-btn-trigger d-flex justify-content-center align-items-center'
-                onClick={() => handleClickChat(record.pK_TransactionID, record.fK_UserID)}
+                onClick={() =>
+                  handleClickChat(record.pK_TransactionID, record.fK_UserID)
+                }
               />
-            )
-          }
-          < CustomButton
+            )}
+          <CustomButton
             onClick={() => handleClickInfo(record)}
             size={"small"}
             icon={
@@ -566,22 +619,24 @@ const OutstandingDeals = ({
             className='btn btn-sm btn-primary info-btn-trigger ms-1 d-flex justify-content-center align-items-center'
           />
         </div>
-      )
-    }
+      ),
+    },
   ];
 
   return (
     <>
-      <TableContainer ref={outstandingTableContainerRef} className={classes.tableContainer}>
-        <Table stickyHeader size="small">
+      <TableContainer
+        ref={outstandingTableContainerRef}
+        sx={{ maxHeight: 400, overflow: "auto" }}
+        className={classes.tableContainer}>
+        <Table stickyHeader size='small'>
           <TableHead>
             <TableRow>
               {columns.map((column) => (
                 <TableCell
                   key={column.id}
-                  style={{ width: column.width, whiteSpace: 'nowrap' }}
-                  align={column.align || 'left'}
-                >
+                  style={{ width: column.width, whiteSpace: "nowrap" }}
+                  align={column.align || "left"}>
                   {column.label}
                 </TableCell>
               ))}
@@ -592,20 +647,25 @@ const OutstandingDeals = ({
               const isLast = index === treasuryOutStandingDeal.length - 1;
 
               return (
-                <TableRow key={`${row.pK_TransactionID}-${index}`} ref={isLast ? lastRowRef : null}>
+                <TableRow
+                  key={`${row.pK_TransactionID}-${index}`}
+                  ref={isLast ? lastRowRef : null}>
                   {columns.map((column) => (
                     <TableCell
                       key={column.id}
-                      align={column.align || 'left'}
-                      sx={{ width: column.width, whiteSpace: 'nowrap', fontSize: '13px', fontWeight: "500" }}
-                    >
+                      align={column.align || "left"}
+                      sx={{
+                        width: column.width,
+                        whiteSpace: "nowrap",
+                        fontSize: "13px",
+                        fontWeight: "500",
+                      }}>
                       {column.render ? column.render(row) : row[column.id]}
                     </TableCell>
                   ))}
                 </TableRow>
-              )
-            }
-            )}
+              );
+            })}
           </TableBody>
         </Table>
       </TableContainer>

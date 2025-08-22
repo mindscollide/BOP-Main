@@ -145,25 +145,25 @@ const BlotterHeader = () => {
         if (tnxSummary.length > 0) {
           if (isTreasury) {
             if (hasBottomReachedTreasuryTXN) {
-              setHasBottomReachedTreasuryTXN(false);
               setTreasuryTXNSummary((prev) => [...tnxSummary, ...prev]);
               setTreasuryTXNSummaryTotalRecords(totalCount);
               setTreasuryTXNSummarysRow((prev) => prev + tnxSummary.length);
-            } else {
               setHasBottomReachedTreasuryTXN(false);
+            } else {
               setTreasuryTXNSummary(tnxSummary);
               setTreasuryTXNSummaryTotalRecords(totalCount);
               setTreasuryTXNSummarysRow(tnxSummary.length);
+              setHasBottomReachedTreasuryTXN(false);
             }
             return;
           }
         }
       } else if (GlobalStateGetBlotterData === null) {
         if (!hasBottomReachedTreasuryTXN) {
-          setHasBottomReachedTreasuryTXN(false);
           setTreasuryTXNSummary([]);
           setTreasuryTXNSummaryTotalRecords(0);
           setTreasuryTXNSummarysRow(0);
+          setHasBottomReachedTreasuryTXN(false);
         }
       }
     } catch (error) {

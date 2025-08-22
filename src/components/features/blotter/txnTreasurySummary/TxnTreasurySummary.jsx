@@ -1,4 +1,10 @@
-import React, { useCallback, useState, useMemo, useRef } from "react";
+import React, {
+  useCallback,
+  useState,
+  useMemo,
+  useRef,
+  useEffect,
+} from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import isEqual from "lodash/isEqual";
@@ -25,6 +31,7 @@ import {
   BlotterDataAPI,
   CancelPendingTransactionApi,
   CancelTransaction,
+  GetBlotterOutstandingDealsDataAPI,
   GetFEDiscountingTransactionDetailsApi,
   GetForwardTransactionDetailsApi,
   GetNonFEDiscountingTransactionDetailsApi,
@@ -36,7 +43,7 @@ import {
 const useStyles = makeStyles((theme) => ({
   tableContainer: {
     maxHeight: 400,
-    overflow: 'auto',
+    overflow: "auto",
     "& .MuiTableHead-root": {
       position: "sticky",
       top: 0,
@@ -72,6 +79,10 @@ const useStyles = makeStyles((theme) => ({
     gap: "4px",
     justifyContent: "center",
   },
+  loadingRow: {
+    textAlign: "center",
+    padding: "10px",
+  },
 }));
 
 const TXNTreasurySummary = React.memo(
@@ -80,15 +91,8 @@ const TXNTreasurySummary = React.memo(
     treasuryTXNSummarysRow,
     treasuryTXNSummaryTotalRecords,
     setHasBottomReachedTreasuryTXN,
-    hasBottomReachedTreasuryTXN
+    hasBottomReachedTreasuryTXN,
   }) => {
-    console.log({
-      treasuryTXNSummary,
-      treasuryTXNSummarysRow,
-      treasuryTXNSummaryTotalRecords,
-      setHasBottomReachedTreasuryTXN,
-      hasBottomReachedTreasuryTXN
-    }, "TXNTreasurySummary Props");
     const classes = useStyles();
     const { showMessage } = useNotification();
     const dispatch = useDispatch();
@@ -96,6 +100,7 @@ const TXNTreasurySummary = React.memo(
     const TxnTreasuryTableContainerRef = useRef();
     const observer = useRef();
     // Modal states
+    const [isLoading, setLoading] = useState(false);
     const [cancelReasonModal, setCancelReasonModal] = useState(false);
     const [cancelReasonComment, setCancelReasonComment] = useState("");
     const [cancelType, setCancelType] = useState("");
@@ -124,57 +129,59 @@ const TXNTreasurySummary = React.memo(
       []
     );
 
-    // // Handle infinite scroll
-    // useTableScrollBottom(
-    //   () => {
-    //     if (treasuryTXNSummaryTotalRecords !== treasuryTXNSummary.length) {
-    //       setHasBottomReachedTreasuryTXN(true);
-    //       let Data = { sRow: treasuryTXNSummarysRow, Length: 10 };
-    //       dispatch(BlotterDataAPI({ navigate, Data }));
-    //     }
-    //   },
-    //   0,
-    //   "TXNSummary_Table"
-    // );
-    console.log(treasuryTXNSummaryTotalRecords <= treasuryTXNSummary.length, treasuryTXNSummary, treasuryTXNSummaryTotalRecords, "TXNTreasurySummary");
-    // Load more data function for infinite scrolling
     const loadMore = useCallback(async () => {
-
-    console.log(treasuryTXNSummaryTotalRecords <= treasuryTXNSummary.length, treasuryTXNSummary, treasuryTXNSummaryTotalRecords, "TXNTreasurySummary");
-
-      // Prevent loading if already at bottom or no more records
-      if (hasBottomReachedTreasuryTXN || treasuryTXNSummaryTotalRecords <= treasuryTXNSummary.length) return;
+      // Prevent loading if already loading, at bottom, or no more records
+      if (
+        hasBottomReachedTreasuryTXN ||
+        treasuryTXNSummaryTotalRecords <= treasuryTXNSummary.length
+      )
+        return;
 
       setHasBottomReachedTreasuryTXN(true); // Set loading state
-    console.log(treasuryTXNSummaryTotalRecords <= treasuryTXNSummary.length, treasuryTXNSummary, treasuryTXNSummaryTotalRecords, "TXNTreasurySummary");
 
       // Prepare data for API call
       let Data = { sRow: treasuryTXNSummarysRow, Length: 10 };
-      dispatch(GetBlotterOutstandingDealsDataAPI({ navigate, Data }));
-    }, [hasBottomReachedTreasuryTXN, treasuryTXNSummaryTotalRecords, treasuryTXNSummary.length, treasuryTXNSummarysRow]);
+      dispatch(BlotterDataAPI({ navigate, Data }));
+    }, [
+      hasBottomReachedTreasuryTXN,
+      treasuryTXNSummaryTotalRecords,
+      treasuryTXNSummary.length,
+      treasuryTXNSummarysRow,
+      setHasBottomReachedTreasuryTXN,
+    ]);
 
     // Intersection Observer callback for infinite scrolling
     const lastRowRef = useCallback(
       (node) => {
-        if (hasBottomReachedTreasuryTXN || !TxnTreasuryTableContainerRef.current) return;
-
         // Disconnect previous observer
         if (observer.current) observer.current.disconnect();
 
         // Create new observer to detect when last row is visible
-        observer.current = new IntersectionObserver((entries) => {
-          if (entries[0].isIntersecting) {
-            loadMore(); // Load more data when last row is visible
+        observer.current = new IntersectionObserver(
+          (entries) => {
+            if (entries[0].isIntersecting && !hasBottomReachedTreasuryTXN) {
+              loadMore(); // Load more data when last row is visible
+            }
+          },
+          {
+            root: TxnTreasuryTableContainerRef.current, // Use table container as root
+            threshold: 0.5, // Reduced threshold for better detection
           }
-        }, {
-          root: TxnTreasuryTableContainerRef.current, // Use table container as root
-          threshold: 1.0 // Fully visible threshold
-        });
+        );
 
         if (node) observer.current.observe(node); // Observe the last row
       },
-      [hasBottomReachedTreasuryTXN, loadMore]
+      [loadMore, hasBottomReachedTreasuryTXN]
     );
+
+    // Cleanup observer on unmount
+    useEffect(() => {
+      return () => {
+        if (observer.current) {
+          observer.current.disconnect();
+        }
+      };
+    }, []);
 
     // Transaction action handlers
     const handleTransactionAction = useCallback((transactionID, type) => {
@@ -242,102 +249,116 @@ const TXNTreasurySummary = React.memo(
     const Treasurycolumns = useMemo(
       () => [
         {
-          id: 'txnid',
-          label: 'TXN ID',
+          id: "txnid",
+          label: "TXN ID",
           width: 120,
-          render: (record) => record.txnid
+          render: (record) => record.txnid,
         },
         {
-          id: 'corporateName',
-          label: 'Client',
+          id: "corporateName",
+          label: "Client",
           width: 120,
-          render: (record) => record.corporateName
+          render: (record) => record.corporateName,
         },
         {
-          id: 'branchCode',
-          label: 'Branch Code',
+          id: "branchCode",
+          label: "Branch Code",
           width: 120,
           align: "center",
-          render: (record) => record.branchCode
+          render: (record) => record.branchCode,
         },
         {
-          id: 'side',
-          label: 'Type',
+          id: "side",
+          label: "Type",
           width: 70,
           align: "center",
-          render: (record) => record.side
+          render: (record) => record.side,
         },
         {
-          id: 'nature',
-          label: 'Nature',
+          id: "nature",
+          label: "Nature",
           width: 120,
           align: "center",
-          render: (record) => record.nature
+          render: (record) => record.nature,
         },
         {
-          id: 'ccY1',
-          label: 'CCY1',
+          id: "ccY1",
+          label: "CCY1",
           width: 80,
           align: "center",
-          render: (record) => record.ccY1
+          render: (record) => record.ccY1,
         },
         {
-          id: 'quantity',
-          label: 'TXN Amount',
+          id: "quantity",
+          label: "TXN Amount",
           width: 130,
           align: "center",
-          render: (record) => <IndexCell value={formatPkAmount(record.quantity)} />
+          render: (record) => (
+            <IndexCell value={formatPkAmount(record.quantity)} />
+          ),
         },
         {
-          id: 'rate',
-          label: 'Rate',
+          id: "rate",
+          label: "Rate",
           width: 120,
           align: "center",
-          render: (record) => formatPkAmount(record.rate, { decimals: 5 })
+          render: (record) => formatPkAmount(record.rate, { decimals: 5 }),
         },
         {
-          id: 'tenorDays',
-          label: 'Tenor Days',
+          id: "tenorDays",
+          label: "Tenor Days",
           width: 120,
-          render: () => "" // Placeholder for tenor days
+          render: () => "", // Placeholder for tenor days
         },
         {
-          id: 'ccY2',
-          label: 'CCY2',
+          id: "ccY2",
+          label: "CCY2",
           width: 60,
           align: "center",
-          render: (record) => record.ccY2
+          render: (record) => record.ccY2,
         },
         {
-          id: 'amount',
-          label: 'Total Amount',
+          id: "amount",
+          label: "Total Amount",
           width: 140,
           align: "center",
-          render: (record) => <IndexCell value={formatPkAmount(record.amount)} />
+          render: (record) => (
+            <IndexCell value={formatPkAmount(record.amount)} />
+          ),
         },
         {
-          id: 'tradeDateTime',
-          label: 'Time',
+          id: "tradeDateTime",
+          label: "Time",
           width: 80,
           align: "center",
-          render: (record) => record.tradeDateTime !== "" ? formatDateTimeToUTCTime(record.tradeDateTime) : ""
+          render: (record) =>
+            record.tradeDateTime !== ""
+              ? formatDateTimeToUTCTime(record.tradeDateTime)
+              : "",
         },
         {
-          id: 'status',
-          label: 'Status',
+          id: "status",
+          label: "Status",
           width: 80,
           align: "center",
           render: (record) => (
-            <span className={record.status === "Accepted" ? classes.statusAccepted : classes.statusRejected}>
+            <span
+              className={
+                record.status === "Accepted"
+                  ? classes.statusAccepted
+                  : record.status === "Rejected"
+                  ? classes.statusRejected
+                  : ""
+              }>
               {record.status}
             </span>
-          )
+          ),
         },
         {
-          id: 'action',
-          label: 'Action',
+          id: "action",
+          label: "Action",
           width: 80,
-          align: 'center',
+          align: "center",
           render: (record) => (
             <div className={classes.actionButtons}>
               {record.statusID === 1 && (
@@ -354,13 +375,13 @@ const TXNTreasurySummary = React.memo(
                 />
               )}
             </div>
-          )
+          ),
         },
         {
-          id: 'actions',
-          label: '',
+          id: "actions",
+          label: "",
           width: 80,
-          align: 'center',
+          align: "center",
           render: (record) => (
             <div className={classes.actionButtons}>
               {record.statusID === 3 && (
@@ -394,7 +415,7 @@ const TXNTreasurySummary = React.memo(
                 }
               />
             </div>
-          )
+          ),
         },
       ],
       [
@@ -439,20 +460,18 @@ const TXNTreasurySummary = React.memo(
 
     return (
       <>
-        <TableContainer ref={TxnTreasuryTableContainerRef} 
-        sx={{ maxHeight: 400, overflow: 'auto' }}
-        
-        className={classes.tableContainer}
-        >
-          <Table stickyHeader size="small">
+        <TableContainer
+          ref={TxnTreasuryTableContainerRef}
+          sx={{ maxHeight: 400, overflow: "auto" }}
+          className={classes.tableContainer}>
+          <Table stickyHeader size='small'>
             <TableHead>
               <TableRow>
                 {Treasurycolumns.map((column) => (
                   <TableCell
                     key={column.id}
-                    style={{ width: column.width, whiteSpace: 'nowrap' }}
-                    align={column.align || 'left'}
-                  >
+                    style={{ width: column.width, whiteSpace: "nowrap" }}
+                    align={column.align || "left"}>
                     {column.label}
                   </TableCell>
                 ))}
@@ -461,26 +480,38 @@ const TXNTreasurySummary = React.memo(
             <TableBody>
               {treasuryTXNSummary.map((row, index) => {
                 const isLast = index === treasuryTXNSummary.length - 1;
-
+                console.log(isLast, "isLastisLastisLast");
                 return (
                   <TableRow
                     key={`${row.pK_TransactionID}-${index}`}
                     ref={isLast ? lastRowRef : null}
-                    
-                    className={row.statusID === 7 ? classes.statusCancelled : ""}
-                  >
+                    className={
+                      row.statusID === 7 ? classes.statusCancelled : ""
+                    }>
                     {Treasurycolumns.map((column) => (
                       <TableCell
                         key={column.id}
-                        align={column.align || 'left'}
-                        sx={{ width: column.width, whiteSpace: 'nowrap', fontSize: '13px', fontWeight: "500" }}
-                      >
+                        align={column.align || "left"}
+                        sx={{
+                          width: column.width,
+                          whiteSpace: "nowrap",
+                          fontSize: "13px",
+                          fontWeight: "500",
+                        }}>
                         {column.render ? column.render(row) : row[column.id]}
                       </TableCell>
                     ))}
                   </TableRow>
-                )
-              }
+                );
+              })}
+              {hasBottomReachedTreasuryTXN && (
+                <TableRow>
+                  <TableCell
+                    colSpan={Treasurycolumns.length}
+                    className={classes.loadingRow}>
+                    Loading more data...
+                  </TableCell>
+                </TableRow>
               )}
             </TableBody>
           </Table>
@@ -489,15 +520,6 @@ const TXNTreasurySummary = React.memo(
         {memoizedCommentModal}
         {memoizedCancelReasonModal}
       </>
-    );
-  },
-  (prevProps, nextProps) => {
-    // Custom comparison function for props
-    return (
-      isEqual(prevProps.treasuryTXNSummary, nextProps.treasuryTXNSummary) &&
-      prevProps.treasuryTXNSummarysRow === nextProps.treasuryTXNSummarysRow &&
-      prevProps.treasuryTXNSummaryTotalRecords ===
-      nextProps.treasuryTXNSummaryTotalRecords
     );
   }
 );
