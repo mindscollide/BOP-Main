@@ -649,6 +649,7 @@ const OutstandingDeals = ({
               return (
                 <TableRow
                   key={`${row.pK_TransactionID}-${index}`}
+  
                   ref={isLast ? lastRowRef : null}>
                   {columns.map((column) => (
                     <TableCell

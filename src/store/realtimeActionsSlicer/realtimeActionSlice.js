@@ -128,6 +128,9 @@ const RealtimeActionsSlice = createSlice({
     setIncomingChat(state, { payload }) {
       state.IncomingChat = [...state.IncomingChat, payload];
     },
+    clearIncomingChat(state) {
+      state.IncomingChat = []; // reset to empty
+    },
     setTenorsCreated(state, { payload }) {
       state.tenorsCreated = payload;
     },
@@ -270,6 +273,7 @@ export const {
   setCounterPartyForwardRates,
   setCounterPartyFeDiscounting,
   setCategoryNonFeDiscounting,
+  clearIncomingChat
 } = RealtimeActionsSlice.actions;
 
 export default RealtimeActionsSlice.reducer;

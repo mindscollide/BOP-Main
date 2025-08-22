@@ -42,7 +42,7 @@ import {
   IconButton,
   CircularProgress,
   Box,
-  Typography
+  Typography,
 } from "@mui/material";
 
 const TXNSummary = () => {
@@ -145,14 +145,17 @@ const TXNSummary = () => {
       if (observer.current) observer.current.disconnect();
 
       // Create new observer to detect when last row is visible
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting) {
-          loadMore(); // Load more data when last row is visible
+      observer.current = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) {
+            loadMore(); // Load more data when last row is visible
+          }
+        },
+        {
+          root: tableContainerRef.current, // Use table container as root
+          threshold: 1.0, // Fully visible threshold
         }
-      }, {
-        root: tableContainerRef.current, // Use table container as root
-        threshold: 1.0 // Fully visible threshold
-      });
+      );
 
       if (node) observer.current.observe(node); // Observe the last row
     },
@@ -167,10 +170,7 @@ const TXNSummary = () => {
 
         if (hasReachedBottom) {
           // Append new data when scrolling
-          setBlotterdata((prevData) => [
-            ...prevData,
-            ...tnxSummary,
-          ]);
+          setBlotterdata((prevData) => [...prevData, ...tnxSummary]);
           setTotalRecords(totalCount);
           setRow((prevRow) => prevRow + tnxSummary.length);
           setHasReachedBottom(false); // Reset loading state
@@ -523,7 +523,7 @@ const TXNSummary = () => {
   // ActionButtons component for table actions column
   const ActionButtons = ({ record }) => {
     return (
-      <Box display="flex" justifyContent="end" alignItems={"center"} gap={1}>
+      <Box display='flex' justifyContent='end' alignItems={"center"} gap={1}>
         {/* Conditional rendering based on transaction status */}
         {record.statusID === 5 || record.statusID === 4 ? (
           <CustomButton
@@ -531,17 +531,12 @@ const TXNSummary = () => {
             size={"small"}
             className='btn btn-sm btn-danger chat-btn-trigge blotterCheckerButtonr d-flex justify-content-center align-items-center'
             onClick={() =>
-              handleClickChat(
-                record.pK_TransactionID,
-                record.treasuryPersonID
-              )
+              handleClickChat(record.pK_TransactionID, record.treasuryPersonID)
             }
           />
         ) : record.statusID === 3 || record.statusID === 7 ? (
           <CustomButton
-            icon={
-              <i className='icon-view-comment blotterTableIconSize ' />
-            }
+            icon={<i className='icon-view-comment blotterTableIconSize ' />}
             size={"small"}
             className='btn btn-sm btn-primary d-flex justify-content-center align-items-center'
             onClick={() => handleShowCommentModal(record.comment)}
@@ -581,68 +576,68 @@ const TXNSummary = () => {
     // Common columns for all environments
     const commonColumns = [
       {
-        id: 'txnid',
-        label: 'TXN ID',
-        align: 'center',
+        id: "txnid",
+        label: "TXN ID",
+        align: "center",
         width: 120,
-        render: (record) => record.txnid
+        render: (record) => record.txnid,
       },
       {
-        id: 'corporateName',
-        label: 'Customer Name',
+        id: "corporateName",
+        label: "Customer Name",
         width: 150,
-        render: (record) => record.corporateName
+        render: (record) => record.corporateName,
       },
       {
-        id: 'side',
-        label: 'Type',
+        id: "side",
+        label: "Type",
         width: 60,
-        render: (record) => record.side
+        render: (record) => record.side,
       },
       {
-        id: 'nature',
-        label: 'Nature',
+        id: "nature",
+        label: "Nature",
         width: 120,
-        align: 'center',
-        render: (record) => record.nature
+        align: "center",
+        render: (record) => record.nature,
       },
       {
-        id: 'ccY1',
-        label: 'CCY1',
+        id: "ccY1",
+        label: "CCY1",
         width: 60,
-        render: (record) => record.ccY1
+        render: (record) => record.ccY1,
       },
       {
-        id: 'quantity',
-        label: 'TXN Amount',
-        align: 'center',
+        id: "quantity",
+        label: "TXN Amount",
+        align: "center",
         width: 120,
-        render: (record) => formatPkAmount(record.quantity)
+        render: (record) => formatPkAmount(record.quantity),
       },
       {
-        id: 'rate',
-        label: 'Rate',
+        id: "rate",
+        label: "Rate",
         width: 80,
         align: "center",
-        render: (record) => formatPkAmount(record.rate)
+        render: (record) => formatPkAmount(record.rate),
       },
       {
-        id: 'ccY2',
-        label: 'CCY2',
+        id: "ccY2",
+        label: "CCY2",
         width: 60,
         align: "center",
-        render: (record) => record.ccY2
+        render: (record) => record.ccY2,
       },
       {
-        id: 'amount',
-        label: 'Total Amount',
+        id: "amount",
+        label: "Total Amount",
         width: 120,
         align: "center",
-        render: (record) => formatPkAmount(record.amount)
+        render: (record) => formatPkAmount(record.amount),
       },
       {
-        id: 'tradeDateTime',
-        label: 'Time',
+        id: "tradeDateTime",
+        label: "Time",
         width: 80,
         align: "center",
         render: (record) => {
@@ -677,27 +672,32 @@ const TXNSummary = () => {
             );
           }
           return null;
-        }
+        },
       },
       {
-        id: 'status',
-        label: 'Status',
+        id: "status",
+        label: "Status",
         width: 80,
         align: "center",
         render: (record) => (
           <span
-            className={record.status === "Accepted" ? "color-green" : "color-red"}
-          >
+            className={
+              record.status === "Accepted"
+                ? "color-green"
+                : record.status === "Cancelled"
+                ? "statusCancelledVal"
+                : "color-red"
+            }>
             {record.status}
-          </span >
-        )
+          </span>
+        ),
       },
       {
-        id: 'checker',
-        label: '',
+        id: "checker",
+        label: "",
         width: 80,
         render: (record) => (
-          <Box display="flex" justifyContent="center" alignItems="center">
+          <Box display='flex' justifyContent='center' alignItems='center'>
             {/* Conditional action buttons based on transaction status */}
             {record.statusID === 4 && record.isRFQ === true ? (
               <>
@@ -741,14 +741,14 @@ const TXNSummary = () => {
               />
             ) : null}
           </Box>
-        )
+        ),
       },
       {
-        id: 'actions',
-        label: '',
+        id: "actions",
+        label: "",
         width: 120,
-        render: (record) => <ActionButtons record={record} />
-      }
+        render: (record) => <ActionButtons record={record} />,
+      },
     ];
 
     return commonColumns;
@@ -762,25 +762,23 @@ const TXNSummary = () => {
       {/* Table container with infinite scroll */}
       <TableContainer
         ref={tableContainerRef}
-        sx={{ maxHeight: 400, overflow: 'auto' }}
-        id="TXNSummary_Table"
-        style={{ width: '100%', fontSize: "14px" }}
-      >
-        <Table stickyHeader size="small">
-          <TableHead className="TXNSummary_TableHead">
+        sx={{ maxHeight: 400, overflow: "auto" }}
+        id='TXNSummary_Table'
+        style={{ width: "100%", fontSize: "14px" }}>
+        <Table stickyHeader size='small'>
+          <TableHead className='TXNSummary_TableHead'>
             <TableRow>
               {columns.map((column) => (
                 <TableCell
                   key={column.id}
-                  style={{ width: column.width, whiteSpace: 'nowrap' }}
-                  align={column.align || 'left'}
+                  style={{ width: column.width, whiteSpace: "nowrap" }}
+                  align={column.align || "left"}
                   sx={{
                     width: column.width,
-                    fontWeight: 'bold',
+                    fontWeight: "bold",
                     backgroundColor: "var(--color-primary) !important",
-                    color: 'white'
-                  }}
-                >
+                    color: "white",
+                  }}>
                   {column.label}
                 </TableCell>
               ))}
@@ -790,33 +788,34 @@ const TXNSummary = () => {
             {blotterdata.map((row, index) => {
               const isLast = index === blotterdata.length - 1;
               return (
-                (
-                  <TableRow
-                    key={`${row.pK_TransactionID}-${index}`}
-                    ref={isLast ? lastRowRef : null} // Attach ref to last row for infinite scroll
-                  >
-                    {columns.map((column) => {
-                      return (
-                        <TableCell
-                          key={column.id}
-                          align={column.align || 'left'}
-                          sx={{ width: column.width, whiteSpace: 'nowrap', fontSize: '13px', fontWeight: "500" }}
-                        >
-                          {column.render ? column.render(row) : row[column.id]}
-                        </TableCell>
-                      )
-                    }
-                    )}
-                  </TableRow>
-                )
-              )
-            }
-            )}
+                <TableRow
+                  key={`${row.pK_TransactionID}-${index}`}
+                  className={row.statusID === 7 ? "TransactionCancelled" : ""}
+                  ref={isLast ? lastRowRef : null} // Attach ref to last row for infinite scroll
+                >
+                  {columns.map((column) => {
+                    return (
+                      <TableCell
+                        key={column.id}
+                        align={column.align || "left"}
+                        sx={{
+                          width: column.width,
+                          whiteSpace: "nowrap",
+                          fontSize: "13px",
+                          fontWeight: "500",
+                        }}>
+                        {column.render ? column.render(row) : row[column.id]}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
         {/* Loading indicator for infinite scroll */}
         {hasReachedBottom && (
-          <Box display="flex" justifyContent="center" p={2}>
+          <Box display='flex' justifyContent='center' p={2}>
             <CircularProgress size={24} />
           </Box>
         )}

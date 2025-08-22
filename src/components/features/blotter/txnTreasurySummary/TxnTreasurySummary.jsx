@@ -63,8 +63,10 @@ const useStyles = makeStyles((theme) => ({
     color: "red",
   },
   statusCancelled: {
-    // textDecoration: "line-through",
-    // opacity: 0.7,
+    backgroundColor: "#ffeeec",
+  },
+  statusCancelledVal: {
+    color: "#f26522",  // corrected hex + wrapped in quotes
   },
   filterButton: {
     cursor: "pointer",
@@ -348,6 +350,8 @@ const TXNTreasurySummary = React.memo(
                   ? classes.statusAccepted
                   : record.status === "Rejected"
                   ? classes.statusRejected
+                  : record.status === "Cancelled"
+                  ? classes.statusCancelledVal
                   : ""
               }>
               {record.status}
@@ -478,32 +482,37 @@ const TXNTreasurySummary = React.memo(
               </TableRow>
             </TableHead>
             <TableBody>
-              {treasuryTXNSummary.map((row, index) => {
-                const isLast = index === treasuryTXNSummary.length - 1;
-                console.log(isLast, "isLastisLastisLast");
-                return (
-                  <TableRow
-                    key={`${row.pK_TransactionID}-${index}`}
-                    ref={isLast ? lastRowRef : null}
-                    className={
-                      row.statusID === 7 ? classes.statusCancelled : ""
-                    }>
-                    {Treasurycolumns.map((column) => (
-                      <TableCell
-                        key={column.id}
-                        align={column.align || "left"}
-                        sx={{
-                          width: column.width,
-                          whiteSpace: "nowrap",
-                          fontSize: "13px",
-                          fontWeight: "500",
-                        }}>
-                        {column.render ? column.render(row) : row[column.id]}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                );
-              })}
+              {treasuryTXNSummary.length > 0
+                ? treasuryTXNSummary.map((row, index) => {
+                    const isLast = index === treasuryTXNSummary.length - 1;
+                    console.log(isLast, "isLastisLastisLast");
+                    return (
+                      <TableRow
+                        key={`${row.pK_TransactionID}-${index}`}
+                        ref={isLast ? lastRowRef : null}
+                        className={
+                          row.statusID === 7 ? classes.statusCancelled : ""
+                        }
+                        >
+                        {Treasurycolumns.map((column) => (
+                          <TableCell
+                            key={column.id}
+                            align={column.align || "left"}
+                            sx={{
+                              width: column.width,
+                              whiteSpace: "nowrap",
+                              fontSize: "13px",
+                              fontWeight: "500",
+                            }}>
+                            {column.render
+                              ? column.render(row)
+                              : row[column.id]}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    );
+                  })
+                : ""}
               {hasBottomReachedTreasuryTXN && (
                 <TableRow>
                   <TableCell
