@@ -64,9 +64,10 @@
 .DealViewModal__body {
   margin: 0;
   padding: 0 !important;
-  min-height: 70vh !important;
-  max-height: 70vh !important;
+  /* min-height: 100vh !important; */
+  max-height: 100vh !important;
   overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 .company-name-hd {

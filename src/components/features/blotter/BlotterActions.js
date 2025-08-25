@@ -198,7 +198,7 @@ export const SaveSpotTransactionAPI = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(SaveSpotTransactionAPI({ navigate, Data }));
+        dispatch(SaveSpotTransactionAPI({ navigate, Data, setErrorMessage }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -1351,7 +1351,7 @@ export const RejectRFQTransaction = createAsyncThunk(
 export const SaveSpotTransactionRFQ = createAsyncThunk(
   "Blotter/SaveSpotTransactionRFQ",
   async (
-    { navigate, Data, setOpenRfqModal },
+    { navigate, Data, setOpenRfqModal, setErrorMessage },
     { dispatch, rejectWithValue }
   ) => {
     try {
@@ -1364,7 +1364,14 @@ export const SaveSpotTransactionRFQ = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(SaveSpotTransactionRFQ({ navigate, Data, setOpenRfqModal }));
+        dispatch(
+          SaveSpotTransactionRFQ({
+            navigate,
+            Data,
+            setOpenRfqModal,
+            setErrorMessage,
+          })
+        );
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -1404,6 +1411,50 @@ export const SaveSpotTransactionRFQ = createAsyncThunk(
               )
           ) {
             return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveSpotTransactionRFQ_06".toLowerCase()
+              )
+          ) {
+            setErrorMessage((prev) => {
+              return {
+                ...prev,
+                status: true,
+                message: `Daily Limit Exceeded from ${response.data.responseResult.dailyLimitRemaining.toFixed(
+                  2
+                )}`,
+              };
+            });
+            return {
+              response: response.data.responseResult,
+              message: `Daily Limit Exceeded from ${response.data.responseResult.dailyLimitRemaining.toFixed(
+                2
+              )}`,
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveSpotTransactionRFQ_07".toLowerCase()
+              )
+          ) {
+            setErrorMessage((prev) => {
+              return {
+                ...prev,
+                status: true,
+                message: `Max Transaction Limit Exceeded from ${response.data.responseResult.maxLimit.toFixed(
+                  2
+                )}`,
+              };
+            });
+            return {
+              response: response.data.responseResult,
+              message: `Max Transaction Limit Exceeded from ${response.data.responseResult.maxLimit.toFixed(
+                2
+              )}`,
+            };
           } else {
             return rejectWithValue("Something went wrong");
           }
@@ -1421,7 +1472,10 @@ export const SaveSpotTransactionRFQ = createAsyncThunk(
 
 export const SaveForwardTransactionRFQApi = createAsyncThunk(
   "Blotter/SaveForwardTransactionRFQ",
-  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+  async (
+    { navigate, Data, setErrorMessage },
+    { dispatch, rejectWithValue }
+  ) => {
     try {
       const postAPI = createPostAPI(
         blotterApi,
@@ -1432,7 +1486,9 @@ export const SaveForwardTransactionRFQApi = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(SaveForwardTransactionRFQApi({ navigate, Data }));
+        dispatch(
+          SaveForwardTransactionRFQApi({ navigate, Data, setErrorMessage })
+        );
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -1472,6 +1528,50 @@ export const SaveForwardTransactionRFQApi = createAsyncThunk(
               )
           ) {
             return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveForwardTransactionRFQ_06".toLowerCase()
+              )
+          ) {
+            setErrorMessage((prev) => {
+              return {
+                ...prev,
+                status: true,
+                message: `Daily Limit Exceeded from ${response.data.responseResult.dailyLimitRemaining.toFixed(
+                  2
+                )}`,
+              };
+            });
+            return {
+              response: response.data.responseResult,
+              message: `Daily Limit Exceeded from ${response.data.responseResult.dailyLimitRemaining.toFixed(
+                2
+              )}`,
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveForwardTransactionRFQ_07".toLowerCase()
+              )
+          ) {
+            setErrorMessage((prev) => {
+              return {
+                ...prev,
+                status: true,
+                message: `Max Transaction Limit Exceeded from ${response.data.responseResult.maxLimit.toFixed(
+                  2
+                )}`,
+              };
+            });
+            return {
+              response: response.data.responseResult,
+              message: `Max Transaction Limit Exceeded from ${response.data.responseResult.maxLimit.toFixed(
+                2
+              )}`,
+            };
           } else {
             return rejectWithValue("Something went wrong");
           }
