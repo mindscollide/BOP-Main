@@ -117,7 +117,7 @@ const SettingusersComponent = () => {
               )
             }
           />
-          Sound on every personal message
+          Sound on every message
         </label>
         {shouldIncludeCorporateComponents && (
           <div className="d-flex border-bottom pb-3 pt-3 mb-2 fs-normal">
