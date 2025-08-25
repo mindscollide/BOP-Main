@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "./NonFEDiscoutingModal.css";
-import Select from "react-select";
 import Modal from "@/components/common/globalModal/Modal";
 import { Col, Row } from "react-bootstrap";
 import InputFIeld from "@/components/common/inputField/InputField";

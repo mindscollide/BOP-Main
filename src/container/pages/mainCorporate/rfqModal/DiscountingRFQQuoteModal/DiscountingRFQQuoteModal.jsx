@@ -265,7 +265,7 @@ const DiscountingRFQQuoteModal = () => {
                   sm={2}
                   md={2}
                   lg={2}
-                  className="d-flex justify-content-center"
+                  className="d-flex justify-content-end "
                 >
                   <IconElement
                     onClick={closeModal}

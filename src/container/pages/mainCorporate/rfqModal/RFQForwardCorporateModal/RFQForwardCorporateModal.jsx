@@ -105,7 +105,10 @@ const RFQForwardCorporateModal = ({
     label: "",
   });
   const [getAllCorporates, setGetAllCorporates] = useState([]);
-
+  const [errorMessage, setErrorMessage] = useState({
+    message: "",
+    status: false,
+  });
   // Date calculations
   const [tenoreDate, setTenorDate] = useState(formatDate(new Date()));
   const [optionsDate, setOptionsDate] = useState(formatDate(new Date()));
@@ -367,7 +370,9 @@ const RFQForwardCorporateModal = ({
       };
 
       // Dispatch action to save forward RFQ
-      dispatch(SaveForwardTransactionRFQApi({ navigate, Data }));
+      dispatch(
+        SaveForwardTransactionRFQApi({ navigate, Data, setErrorMessage })
+      );
     } else if (accountNumber === "") {
       // Show validation error
       setAccountError({
@@ -574,10 +579,21 @@ const RFQForwardCorporateModal = ({
           <>
             <Row>
               <Col
-                lg={12}
-                md={12}
+                lg={6}
+                md={6}
                 sm={12}
-                className="d-flex justify-content-center"
+                className="d-flex justify-content-start align-items-center rfqLimit_error-style"
+              >
+                {errorMessage.status === true && errorMessage.message !== ""
+                  ? errorMessage.message
+                  : ""}
+                {/* Limit should be lower than 1000 */}
+              </Col>
+              <Col
+                lg={6}
+                md={6}
+                sm={12}
+                className="d-flex align-items-center justify-content-end"
               >
                 <CustomButton
                   value="Confirm"
