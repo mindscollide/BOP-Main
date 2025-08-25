@@ -181,6 +181,7 @@ const Dashboard = () => {
             newIsForwardtenorList:
               payload.tenorWiseForwardRates.newIsForwardtenorList,
             removedtenorList: payload.tenorWiseForwardRates.removedtenorList,
+            updateTenorsDays: payload.tenorWiseForwardRates.updatedTenorDaysList
           };
 
           dispatch(setCategoryFowardsTenorsChanges(tenorsData));

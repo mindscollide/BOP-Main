@@ -6,6 +6,7 @@ import {
 } from "@/store/dealerReducer/dealerSlicer";
 import {
   setCategoryFowardsTenorsChanges,
+  setTreasuryFowardsTenorsChanges,
   tenorWiseFowardsRatesPublishedActions,
 } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import React, { lazy, Suspense, useEffect, useState } from "react";
@@ -71,6 +72,10 @@ const TenoreWiseCurrentAndLastRates = ({
 
   const getAllTenorsData = useSelector(
     (state) => state.dealerReducer.getAllTenors
+  );
+
+  const treasuryFowardsTenorsChanges = useSelector(
+    (state) => state.RealtimeActionsSlice.treasuryFowardsTenorsChanges
   );
   const forwardsForTreasuryBranch = useSelector(
     (state) => state.dealerReducer.forwardsForTreasuryBranch
@@ -142,10 +147,15 @@ const TenoreWiseCurrentAndLastRates = ({
       }
     }
   }, [getDashboardForwards, getAllTenorsData]);
+  console.log(treasuryFowardsTenorsChanges, "treasuryFowardsTenorsChanges");
 
   useEffect(() => {
-    if (!getTenorWiseForwardsRates || !getAllTenorsData) return;
-
+    if (
+      !getTenorWiseForwardsRates ||
+      !getAllTenorsData ||
+      !treasuryFowardsTenorsChanges
+    )
+      return;
     try {
       const {
         currentTenorWiseForwardRates,
@@ -154,13 +164,15 @@ const TenoreWiseCurrentAndLastRates = ({
         // newIsForwardtenorList,
       } = getTenorWiseForwardsRates.tenorWiseForwardRates || {};
       const { tenors } = getAllTenorsData || {};
+      const { updateTenorsDays  = [] } = treasuryFowardsTenorsChanges;
 
       console.log(getTenorWiseForwardsRates, "viewing the data");
       // Early return if required data is missing
       if (
         !currentTenorWiseForwardRates ||
         !lastTenorWiseForwardRates ||
-        !tenors
+        !tenors ||
+        !updateTenorsDays
       ) {
         return;
       }
@@ -174,17 +186,16 @@ const TenoreWiseCurrentAndLastRates = ({
       // Process the remaining data
       const processedData = filteredRates
         .map((item) => {
-          const matchingTenor = tenors.find(
+          const matchingTenor = updateTenorsDays.find(
             (tenor) => tenor.tenorID === item.tenorID
           );
           const matchingLastRate = lastTenorWiseForwardRates.find(
             (lastRate) => lastRate.tenorID === item.tenorID
           );
-
           return {
             tenorID: item.tenorID,
             tenorName: item.tenorName,
-            tenorDays: matchingTenor?.tenorDays || item.tenorDays || 0,
+            tenorDays: matchingTenor?.noOfDays || item.noOfDays || 0,
             currentBid: item.bid,
             currentAsk: item.ask,
             lastBid: matchingLastRate?.bid || "",
@@ -196,11 +207,17 @@ const TenoreWiseCurrentAndLastRates = ({
       setDate(processedData[0]?.dateTime);
       dispatch(setForwardsForTreasuryBranch(processedData));
       dispatch(tenorWiseFowardsRatesPublishedActions(null));
+      dispatch(setTreasuryFowardsTenorsChanges(null));
+
     } catch (error) {
       console.error("Error processing forward rates:", error);
       // Consider adding error handling/notification here
     }
-  }, [getTenorWiseForwardsRates, getAllTenorsData]);
+  }, [
+    getTenorWiseForwardsRates,
+    getAllTenorsData,
+    treasuryFowardsTenorsChanges,
+  ]);
 
   const handleDeleteTenorRecord = (record) => {
     setTenorRemoveRecord(record);
@@ -402,7 +419,7 @@ const TenoreWiseCurrentAndLastRates = ({
             InputFIeld ? (
               <Suspense fallback={<div>Loading input...</div>}>
                 <InputFIeld
-                  type="number"
+                  type='number'
                   value={record.lastBid}
                   disabled={true}
                   applyClass={"DealerTableBitInput"}
@@ -419,7 +436,7 @@ const TenoreWiseCurrentAndLastRates = ({
             InputFIeld ? (
               <Suspense fallback={<div>Loading input...</div>}>
                 <InputFIeld
-                  type="number"
+                  type='number'
                   value={record.lastAsk}
                   disabled={true}
                   applyClass={"DealerTableBitInput"}
@@ -445,7 +462,7 @@ const TenoreWiseCurrentAndLastRates = ({
               IconElement && (
                 <Suspense fallback={<div>Loading button...</div>}>
                   <CustomButton
-                    type="link"
+                    type='link'
                     icon={
                       <Suspense fallback={<div>Loading icon...</div>}>
                         <IconElement
@@ -469,7 +486,7 @@ const TenoreWiseCurrentAndLastRates = ({
       {GlobalTable && (
         <>
           <Suspense fallback={<div>Loading Table...</div>}>
-            <div className="datetime fw-bold text-end mb-2 ff-roboto">
+            <div className='datetime fw-bold text-end mb-2 ff-roboto'>
               {date !== "" &&
                 moment(formatDateUTCToGMT(date)).format(
                   "DD MMM YYYY, hh:mm:ss"
@@ -483,9 +500,9 @@ const TenoreWiseCurrentAndLastRates = ({
               pagination={false}
             />
             {CustomButton && (
-              <span className="d-flex justify-content-center mt-4">
+              <span className='d-flex justify-content-center mt-4'>
                 <CustomButton
-                  applyClass="publishForwardsBtn"
+                  applyClass='publishForwardsBtn'
                   value={"Publish Forwards"}
                   onClick={handlePublishForwards}
                   disabled={
@@ -510,9 +527,8 @@ const TenoreWiseCurrentAndLastRates = ({
                       sm={12}
                       md={12}
                       lg={12}
-                      className="d-flex justify-content-center"
-                    >
-                      <span className="modalDescription">
+                      className='d-flex justify-content-center'>
+                      <span className='modalDescription'>
                         Are you sure you want to delete it ?
                       </span>
                     </Col>
@@ -526,8 +542,7 @@ const TenoreWiseCurrentAndLastRates = ({
                       sm={6}
                       md={6}
                       lg={6}
-                      className="d-flex justify-content-end"
-                    >
+                      className='d-flex justify-content-end'>
                       <CustomButton
                         value={"Yes"}
                         onClick={handleYesConfirmatonModal}
@@ -538,8 +553,7 @@ const TenoreWiseCurrentAndLastRates = ({
                       sm={6}
                       md={6}
                       lg={6}
-                      className="d-flex justify-content-start"
-                    >
+                      className='d-flex justify-content-start'>
                       <CustomButton
                         value={"No"}
                         onClick={() => setConfirmationModal(false)}
