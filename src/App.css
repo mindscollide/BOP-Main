@@ -2048,11 +2048,13 @@ thead .dropdown-menu-filter .dropdown-item label span {
 .message-outbox {
   background: #e0f3ff;
   color: #000000;
+  word-wrap: break-word;
 }
 
 .message-inbox {
   background: #faeae3;
   color: #000000;
+  word-wrap: break-word;
 }
 
 .mess-txt-wrapper {

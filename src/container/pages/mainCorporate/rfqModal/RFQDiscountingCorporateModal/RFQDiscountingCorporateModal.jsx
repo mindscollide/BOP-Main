@@ -311,10 +311,16 @@ const RFQDiscountingCorporateModal = () => {
     }
   };
   const handleClickConfirm = () => {
+    let corporateDetail =
+      localStorage.getItem("corporate") !== null
+        ? JSON.parse(localStorage.getItem("corporate"))
+        : null;
     if (typeOptionSelected.value === 14) {
       let AmountValue = amountData.replace(/,/g, "");
       let Data = {
-        CorporateID: corporateValue.value,
+        CorporateID: isBranch
+        ? corporateValue.value
+        : corporateDetail.corporateID,
         InstrumentID: selectedCurrency.value,
         Quantity: Number(AmountValue),
         AccountNumber: AccountNumber,
@@ -328,7 +334,9 @@ const RFQDiscountingCorporateModal = () => {
       let AmountValue = amountData.replace(/,/g, "");
 
       let Data = {
-        CorporateID: corporateValue.value,
+        CorporateID: isBranch
+          ? corporateValue.value
+          : corporateDetail.corporateID,
         InstrumentID: selectedCurrency.value,
         Quantity: Number(AmountValue),
         AccountNumber: AccountNumber,

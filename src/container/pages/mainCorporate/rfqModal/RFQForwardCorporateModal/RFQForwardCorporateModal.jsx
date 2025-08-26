@@ -110,8 +110,8 @@ const RFQForwardCorporateModal = ({
     status: false,
   });
   // Date calculations
-  const [tenoreDate, setTenorDate] = useState(formatDate(new Date()));
-  const [optionsDate, setOptionsDate] = useState(formatDate(new Date()));
+  const [tenoreDate, setTenorDate] = useState(new Date());
+  const [optionsDate, setOptionsDate] = useState(new Date());
 
   /**
    * Environment Configuration
@@ -292,9 +292,11 @@ const RFQForwardCorporateModal = ({
         if (value !== "") {
           const newDate = new Date();
           newDate.setDate(newDate.getDate() + numericValue);
-          setTenorDate(formatDate(newDate));
+          setTenorDate(newDate);
+          setOptionsDate(newDate); // Reset options date to new tenor date
         } else {
-          setTenorDate(formatDate(new Date()));
+          setTenorDate(new Date());
+          setOptionsDate(new Date());
         }
       }
     }
@@ -317,11 +319,11 @@ const RFQForwardCorporateModal = ({
         setOptions(value);
 
         if (value !== "") {
-          const newDate = new Date();
+          const newDate = new Date(tenoreDate); // start from tenorDate
           newDate.setDate(newDate.getDate() + numericValue);
-          setOptionsDate(formatDate(newDate));
+          setOptionsDate(newDate);
         } else {
-          setOptionsDate(formatDate(new Date()));
+          setOptionsDate(tenoreDate);
         }
       }
     }
@@ -543,7 +545,7 @@ const RFQForwardCorporateModal = ({
                   className="d-flex align-items-end justify-content-start ps-0 "
                 >
                   <span className="DateColumnTenorForwardTabRFQModal">
-                    {tenoreDate}
+                    {formatDate(tenoreDate)}
                   </span>
                 </Col>
               </Row>
@@ -568,7 +570,7 @@ const RFQForwardCorporateModal = ({
                   className="d-flex align-items-end ps-0"
                 >
                   <span className="DateColumnTenorForwardTabRFQModal">
-                    {optionsDate}
+                    {formatDate(optionsDate)}
                   </span>
                 </Col>
               </Row>

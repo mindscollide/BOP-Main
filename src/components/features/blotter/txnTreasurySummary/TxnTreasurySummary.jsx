@@ -275,12 +275,13 @@ const TXNTreasurySummary = ({
         align: "center",
         render: (record) => formatPkAmount(record.rate, { decimals: 5 }),
       },
-      // {
-      //   id: "tenorDays",
-      //   label: "Tenor Days",
-      //   width: 120,
-      //   render: () => "", // Placeholder for tenor days
-      // },
+      {
+        id: "tenorDays",
+        label: "Tenor Days",
+        width: 120,
+        align:"center",
+        render: (record) => Number(record.tenorDays) !== 0 ? record.tenorDays : "" // Placeholder for tenor days
+      },
       {
         id: "ccY2",
         label: "CCY2",

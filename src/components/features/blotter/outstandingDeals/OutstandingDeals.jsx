@@ -117,6 +117,8 @@ const OutstandingDeals = ({
   treasuryOutStandingDeal,
   hasBottomReachedOutstanding,
 }) => {
+
+  console.log(hasBottomReachedOutstanding, "hasBottomReachedOutstandinghasBottomReachedOutstanding")
   const classes = useStyles();
   const { showMessage } = useNotification();
   const dispatch = useDispatch();

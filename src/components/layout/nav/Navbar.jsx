@@ -147,8 +147,8 @@ const GlobalNavbar = () => {
       // setOpenRfqModalForwardCorporateComponent(true);
     } else if (activeTab === "Discounting") {
       console.log("Handle Discounting logic");
-
-      setOpenRfqModalDiscountingCorporateComponent(true);
+      dispatch(setDiscountingRFQModal(true))
+      // setOpenRfqModalDiscountingCorporateComponent(true);
     }
   };
 

@@ -22,6 +22,8 @@ import { useNavigate } from "react-router-dom";
 import { setForwardQuoteModalData } from "@/store/BlotterSlicer/BlotterSlicer";
 import { NumericFormat } from "react-number-format";
 
+const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
+
 const ForwardRFQQuoteModal = ({ dealData }) => {
   console.log(dealData, "dealDatadealData");
   const dispatch = useDispatch();
@@ -47,6 +49,7 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
     dispatch(setForwardQuoteModal(false));
     setReadyValue("");
     setSwapValue("");
+    setReadyRateValue("");
   };
 
   useEffect(() => {
@@ -62,7 +65,7 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
         };
         let val = 1;
         dispatch(GetForwardTransactionDetailsApi({ navigate, Data, val }));
-        setReadyValue(forwardQuoteModalData.rate);
+        setReadyValue(forwardQuoteModalData.treasuryRate);
       } catch (error) {
         console.log(error);
       }
@@ -125,9 +128,9 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
     let val = 1;
     dispatch(RejectTransactionAPI({ navigate, Data, val }));
   };
-  const calculateNewReadyValue = (instrumentName, ready, swap) => {
-    const numReady = parseFloat(ready) || 0;
-    const numSwap = parseFloat(swap) || 0;
+  const calculateNewReadyValue = (instrumentName) => {
+    const numReady = parseFloat(readyValue) || 0;
+    const numSwap = parseFloat(swapValue) || 0;
     const adjustedSwap =
       instrumentName?.toUpperCase() === "USD" ? numSwap / 100.0 : numSwap;
     return (numReady + adjustedSwap).toFixed(2); // return formatted string for view
@@ -146,8 +149,7 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
               sm={3}
               md={3}
               lg={3}
-              className={styles["DealViewModal_oneSide"]}
-            >
+              className={styles["DealViewModal_oneSide"]}>
               <Row>
                 <Col sm={12} md={12} lg={12}>
                   <label className={styles["DealViewModal__label"]}>Side</label>
@@ -243,22 +245,24 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
               sm={9}
               md={9}
               lg={9}
-              className={styles["DealViewModal_SecondSide"]}
-            >
-              <Row className="mb-3">
+              className={styles["DealViewModal_SecondSide"]}>
+              <Row className='mb-3'>
                 <Col sm={10} md={10} lg={10}>
-                  <div className="mb-3 color-black br-detail-hd">
-                    <span className={styles["company-name"]}>
-                      {forwardQuoteData?.branchName}
-                    </span>
-                    <span className="br-code fs-sm">
-                      ({forwardQuoteData?.branchCode})
-                    </span>
-                  </div>
+                  {isBranch && (
+                    <div className='mb-3 color-black br-detail-hd'>
+                      <span className={styles["company-name"]}>
+                        {forwardQuoteData?.branchName}
+                      </span>
+                      <span className='br-code fs-sm'>
+                        ({forwardQuoteData?.branchCode})
+                      </span>
+                    </div>
+                  )}
+
                   <div className={styles["company-name-hd"]}>
                     {forwardQuoteData?.corporateName}
                   </div>
-                  <div className="d-inline-block txn-id fs-normal color-black">
+                  <div className='d-inline-block txn-id fs-normal color-black'>
                     {forwardQuoteData?.txnid}
                   </div>
                 </Col>
@@ -266,113 +270,117 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                   sm={2}
                   md={2}
                   lg={2}
-                  className="d-flex justify-content-center"
-                >
+                  className='d-flex justify-content-center'>
                   <IconElement
                     onClick={closeModal}
                     iconClass={"icon-close fs-4 cursor-pointer"}
                   />
                 </Col>
               </Row>
-              <Row>
-                <Col
-                  sm={12}
-                  md={12}
-                  lg={12}
-                  className="d-flex align-items-center gap-2"
-                >
-                  <label className={styles["DealViewModal_label"]}>Ready</label>
-                  <NumericFormat
-                    customInput={InputFIeld}
-                    value={readyValue}
-                    thousandSeparator=","
-                    disabled={!forwardQuoteData?.isRFQ}
-                    applyClass={"DiscountingQuoteInput"}
-                    maxLength={10}
-                    onChange={(e) => handleChangeRate(e, "readyValue")}
-                  />
-                </Col>
-                <Col
-                  sm={12}
-                  md={12}
-                  lg={12}
-                  className="d-flex my-3 align-items-center gap-2"
-                >
-                  <label className={styles["DealViewModal_label"]}>Swap</label>
-                  <NumericFormat
-                    customInput={InputFIeld}
-                    value={Number(swapValue).toFixed(4)}
-                    disabled={!forwardQuoteData?.isRFQ}
-                    thousandSeparator=","
-                    applyClass={"DiscountingQuoteInput"}
-                    maxLength={10}
-                    onChange={(e) => handleChangeRate(e, "swapValue")}
-                  />
-                  {/* <InputFIeld
+              <section className='d-flex justify-content-center align-items-center overflow-hidden h-75'>
+                <Row>
+                  <Col
+                    sm={12}
+                    md={12}
+                    lg={12}
+                    className='d-flex align-items-center gap-2'>
+                    <label className={styles["DealViewModal_label"]}>
+                      Ready
+                    </label>
+                    <NumericFormat
+                      customInput={InputFIeld}
+                      value={readyValue}
+                      thousandSeparator=','
+                      disabled={!forwardQuoteData?.isRFQ}
+                      applyClass={"DiscountingQuoteInput"}
+                      maxLength={10}
+                      onChange={(e) => handleChangeRate(e, "readyValue")}
+                    />
+                  </Col>
+                  <Col
+                    sm={12}
+                    md={12}
+                    lg={12}
+                    className='d-flex my-3 align-items-center gap-2'>
+                    <label className={styles["DealViewModal_label"]}>
+                      Swap
+                    </label>
+                    <NumericFormat
+                      customInput={InputFIeld}
+                      value={Number(swapValue)}
+                      disabled={!forwardQuoteData?.isRFQ}
+                      thousandSeparator=','
+                      applyClass={"DiscountingQuoteInput"}
+                      maxLength={10}
+                      onChange={(e) => handleChangeRate(e, "swapValue")}
+                    />
+                    {/* <InputFIeld
                     applyClass={"DiscountingQuoteInput"}
                     value={swapValue}
                     onChange={(e) => handleChangeRate(e, "swapValue")}
                   /> */}
-                </Col>
-                <Col
-                  sm={12}
-                  md={12}
-                  lg={12}
-                  className="d-flex align-items-center gap-2"
-                >
-                  <label className={styles["DealViewModal_label"]}>Rate</label>
-                  <span className={styles["CalculateValue"]}>
-                    {readyRateValue}
-                  </span>
-                </Col>
+                  </Col>
+                  <Col
+                    sm={12}
+                    md={12}
+                    lg={12}
+                    className='d-flex align-items-center gap-2'>
+                    <label className={styles["DealViewModal_label"]}>
+                      Rate
+                    </label>
+                    <span className={styles["CalculateValue"]}>
+                      {forwardQuoteData?.isRFQ
+                        ? calculateNewReadyValue("USD", readyRateValue)
+                        : readyRateValue}
+                    </span>
+                  </Col>
 
-                {forwardQuoteData?.isRFQ ? (
-                  <Col
-                    sm={12}
-                    md={12}
-                    lg={12}
-                    className="d-flex align-items-center gap-2 mt-4"
-                  >
-                    <label className={styles["DealViewModal_label"]}></label>
-                    <CustomButton
-                      icon={<IconElement iconClass={"icon-send fs-5"} />}
-                      iconPosition={"left"}
-                      value={"Submit"}
-                      applyClass={"SubmitButtonFowardDealBox"}
-                      className={"px-4"}
-                      onClick={handleSubmit}
-                    />
-                  </Col>
-                ) : (
-                  <Col
-                    sm={12}
-                    md={12}
-                    lg={12}
-                    className="d-flex align-items-center justify-content-center gap-2 mt-4"
-                  >
-                    <CustomButton
-                      icon={<IconElement iconClass={"icon-send fs-5"} />}
-                      iconPosition={"left"}
-                      value={"Accept"}
-                      applyClass={"AcceptBtnDealBox"}
-                      className={"px-4"}
-                      onClick={() =>
-                        handleAccept(forwardQuoteData.pK_TransactionID)
-                      }
-                    />
-                    <CustomButton
-                      icon={<IconElement iconClass={"icon-send fs-5"} />}
-                      iconPosition={"left"}
-                      value={"Reject"}
-                      applyClass={"RejectBtnDealBox"}
-                      className={"px-4"}
-                      onClick={() =>
-                        handleReject(forwardQuoteData.pK_TransactionID)
-                      }
-                    />
-                  </Col>
-                )}
-              </Row>
+                  {forwardQuoteData?.isRFQ ? (
+                    <Col
+                      sm={12}
+                      md={12}
+                      lg={12}
+                      className='d-flex align-items-center gap-2 mt-4'>
+                      <label className={styles["DealViewModal_label"]}></label>
+                      <CustomButton
+                        icon={<IconElement iconClass={"icon-send fs-5"} />}
+                        iconPosition={"left"}
+                        value={"Submit"}
+                        applyClass={"SubmitButtonFowardDealBox"}
+                        className={"px-4"}
+                        onClick={handleSubmit}
+                      />
+                    </Col>
+                  ) : (
+                    <Col
+                      sm={12}
+                      md={12}
+                      lg={12}
+                      className='d-flex align-items-center justify-content-center gap-2 mt-4'>
+                      <CustomButton
+                        icon={<IconElement iconClass={"icon-send fs-5"} />}
+                        iconPosition={"left"}
+                        value={"Accept"}
+                        applyClass={"AcceptBtnDealBox"}
+                        className={"px-4"}
+                        onClick={() =>
+                          handleAccept(forwardQuoteData.pK_TransactionID)
+                        }
+                      />
+                      <CustomButton
+                        icon={<IconElement iconClass={"icon-send fs-5"} />}
+                        iconPosition={"left"}
+                        value={"Reject"}
+                        applyClass={"RejectBtnDealBox"}
+                        className={"px-4"}
+                        onClick={() =>
+                          handleReject(forwardQuoteData.pK_TransactionID)
+                        }
+                      />
+                    </Col>
+                  )}
+                </Row>
+              </section>
             </Col>
           </Row>
         </>

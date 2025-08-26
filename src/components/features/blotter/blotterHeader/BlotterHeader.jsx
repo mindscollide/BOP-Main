@@ -286,7 +286,7 @@ const BlotterHeader = () => {
         const updatedData = (prevData || []).filter(
           (item) => item.pK_TransactionID !== transaction.pK_TransactionID
         );
-        setTreasuryTXNSummaryTotalRecords((prev) => Math.max(0, prev - 1));
+        setTreasuryTXNSummaryTotalRecords((prev) => prev - 1);
         return updatedData;
       });
 

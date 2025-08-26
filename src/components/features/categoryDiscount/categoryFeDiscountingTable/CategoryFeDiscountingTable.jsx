@@ -33,7 +33,7 @@ const CategoryFeDiscountingTable = () => {
 
   console.log("marketStatusmarketStatus2434: ", marketStatus);
 
-  console.log("CategoryFeDiscounting: ", CategoryFeDiscounting);
+  console.log("CategoryFeDiscounting MQTT: ", CategoryFeDiscounting);
 
   console.log(
     "GetCategoryWiseDiscountingRates: ",
@@ -75,7 +75,7 @@ const CategoryFeDiscountingTable = () => {
     () =>
       throttle((discountingUpdate) => {
         const { instrumentFEDiscountingData } = discountingUpdate;
-
+        console.log(instrumentFEDiscountingData, "instrumentFEDiscountingData")
         setDataSource((prevData) =>
           prevData.map((row) => {
             let updatedRow = { ...row };
