@@ -60,7 +60,6 @@ const BankSpot = memo(() => {
   const marketStatus = useSelector(
     (state) => state.WatchListReducer.getMarketStatus
   );
-  console.log(marketStatus, "marketStatusinSpot");
   const worldCrosses = useSelector(selectWorldCrosses, shallowEqual);
   const worldCurrencies = useSelector(selectWorldCurrencies, shallowEqual);
   const isLoading = useSelector(selectTreasuryBankSpotSpinner);

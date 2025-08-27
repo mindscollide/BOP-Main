@@ -114,6 +114,8 @@ const Dashboard = () => {
   const marketStatus = useSelector(
     (state) => state.WatchListReducer.getMarketStatus
   );
+
+  console.log(marketStatus, "marketStatusmarketStatusmarketStatus")
   const IsBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
   const IsCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
   const isTreasury = import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
@@ -435,7 +437,7 @@ const Dashboard = () => {
   
     const isTreasuryPath = location.pathname.includes("treasury");
   
-    if (isTreasury) {
+    if (isTreasury || isDealer) {
       if (marketStatus && isTreasuryPath) {
         // Subscribe only when status is true AND path is treasury
         subscribeToTopics(["BOP_REAL_TIME_FEED_TREASURY"]);
