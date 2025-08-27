@@ -27,14 +27,14 @@ ul.nav.nav-tabs.buttonClassTab .nav-link:hover {
   margin: 0 !important;
   transform: translate(0px, 37px) !important;
 }
-.data-summary-heading  {
+.data-summary-heading {
   display: flex;
   align-items: center;
 }
 .moreOptionsNOPExport {
   position: absolute;
   top: 10px;
-  
+
   right: 15px;
   margin-bottom: 10px !important;
 }
@@ -43,7 +43,6 @@ ul.nav.nav-tabs.buttonClassTab .nav-link:hover {
   top: 36px;
   right: 0;
   z-index: 1000;
-
 }
 .exportOptionsBox {
   background-color: #fff;

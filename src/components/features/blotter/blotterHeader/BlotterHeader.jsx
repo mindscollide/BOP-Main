@@ -228,7 +228,7 @@ const BlotterHeader = () => {
         const existingIndex = updatedData.findIndex(
           (item) => item.pK_TransactionID === transaction.pK_TransactionID
         );
-  
+
         if (existingIndex !== -1) {
           console.log(updatedData, transaction, "transactiontransaction");
 
@@ -359,7 +359,6 @@ const BlotterHeader = () => {
             setTreasuryOutStandingDealRecords((prev) => prev - 1);
             setTreasuryOutStandingDealsRow((prev) => prev - 1);
 
-
             dispatch(dispatchMap[type](null));
             return updatedData;
           }
@@ -393,7 +392,6 @@ const BlotterHeader = () => {
               updatedData = [transaction, ...updatedData];
               setTreasuryOutStandingDealRecords((prev) => prev + 1);
               setTreasuryOutStandingDealsRow((prev) => prev + 1);
-
             }
 
             dispatch(BlotterTransactionCancellationRequest(null));
@@ -522,6 +520,7 @@ const BlotterHeader = () => {
   };
 
   const HandlePDFDownloadFunc = () => {
+    setExportButton(false);
     startTransition(() => {
       if (isTreasury) {
         dispatch(DownloadPDFReportBlotterTrasactionTreasuryAPI({ navigate }));
@@ -534,6 +533,7 @@ const BlotterHeader = () => {
   };
 
   const HandleExcelDownloadFunc = () => {
+    setExportButton(false);
     startTransition(() => {
       if (isTreasury) {
         dispatch(DownloadExcelReportBlotterTrasactionTreasuryAPI({ navigate }));
@@ -562,6 +562,7 @@ const BlotterHeader = () => {
   const handleTransactionModal = (e) => {
     e.preventDefault();
     setOpenMailModal(true);
+    setExportButton(false);
   };
   return (
     <>
@@ -695,6 +696,7 @@ const BlotterHeader = () => {
                         <CustomButton
                           icon={<img src={printImage} alt='PDF Icon' />}
                           className={"bg-none"}
+                          onClick={() => setExportButton(false)}
                         />
                       </div>
                     }

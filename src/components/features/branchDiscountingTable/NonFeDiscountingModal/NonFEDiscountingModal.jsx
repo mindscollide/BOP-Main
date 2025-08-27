@@ -125,7 +125,7 @@ const NonFEDiscountingModal = ({
   const validateForm = () => {
     const newErrors = {
       tenorValue: !tenorValue || isNaN(tenorValue) || parseInt(tenorValue) <= 0,
-      accNo: !accNo,
+      // accNo: !accNo,
     };
 
     setErrors(newErrors);
@@ -283,7 +283,7 @@ const NonFEDiscountingModal = ({
         : counterPartyDetails?.corporateID,
       InstrumentID: selectedCurrency.value,
       Quantity: Number(amountValue),
-      AccountNumber: accNo,
+      AccountNumber: accNo ? accNo : "",
       NatureOfTransactionID: selectedNature?.id,
       TenorDays: Number(tenorValue),
       Kibor: calculatedData.kiborValue,
@@ -400,17 +400,17 @@ const NonFEDiscountingModal = ({
                   </Col>
                   <Col lg={6} md={6} sm={6}>
                     <div className="d-flex flex-column flex-wrap">
-                      <span className="SubHeadings">A/c No*</span>
+                      <span className="SubHeadings">A/c No</span>
                       <InputFIeld
                         applyClass={"CalculatorTextfield"}
                         value={accNo}
                         onChange={(e) => handleChangeState("accNo", e)}
                       />
-                      {errors.accNo && (
+                      {/* {errors.accNo && (
                         <span className="text-danger small">
                           Account number is required
                         </span>
-                      )}
+                      )} */}
                     </div>
                   </Col>
                 </Row>

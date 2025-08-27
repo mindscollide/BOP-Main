@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
 import GlobalTable from "../../common/table/GlobalTable";
-import { createColumns, generateData } from "../../utils/generateData";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 // import { GetAllFowardsAndDiscountsRatesAPI } from "../SpotBranch/WatchlistAction";
@@ -46,17 +45,17 @@ const BranchForwardsTable = () => {
     (state) => state.RealtimeActionsSlice.ClearRatesData
   );
 
-  console.log(ClearRatesData, "ClearRatesData");
+  // console.log(ClearRatesData, "ClearRatesData");
 
-  console.log(
-    getAllInstrumentsForCounterPartiesData !== null &&
-      getAllTenorsRecords !== null &&
-      GetForwardRatesForCounterPartyData !== null,
-    getAllInstrumentsForCounterPartiesData,
-    getAllTenorsRecords,
-    GetForwardRatesForCounterPartyData,
-    "GetForwardRatesForCounterPartyDataGetForwardRatesForCounterPartyData"
-  );
+  // console.log(
+  //   getAllInstrumentsForCounterPartiesData !== null &&
+  //     getAllTenorsRecords !== null &&
+  //     GetForwardRatesForCounterPartyData !== null,
+  //   getAllInstrumentsForCounterPartiesData,
+  //   getAllTenorsRecords,
+  //   GetForwardRatesForCounterPartyData,
+  //   "GetForwardRatesForCounterPartyDataGetForwardRatesForCounterPartyData"
+  // );
   useEffect(() => {
     if (
       getAllInstrumentsForCounterPartiesData !== null &&
