@@ -622,6 +622,21 @@ const TXNSummary = () => {
         render: (record) => formatPkAmount(record.rate),
       },
       {
+        id: "tenorDays",
+        label: "Tenor Days",
+        width: 120,
+        align: "center",
+        render: (record) => {
+          if (
+            record?.rfqDealDetails !== null &&
+            record?.rfqDealDetails !== undefined
+          ) {
+            return record?.rfqDealDetails?.tenorDays;
+          }
+          return Number(record.tenorDays) !== 0 ? record.tenorDays : ""; // Placeholder for tenor days
+        },
+      },
+      {
         id: "ccY2",
         label: "CCY2",
         width: 60,

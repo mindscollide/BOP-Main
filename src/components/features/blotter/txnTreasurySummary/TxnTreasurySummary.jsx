@@ -279,8 +279,16 @@ const TXNTreasurySummary = ({
         id: "tenorDays",
         label: "Tenor Days",
         width: 120,
-        align:"center",
-        render: (record) => Number(record.tenorDays) !== 0 ? record.tenorDays : "" // Placeholder for tenor days
+        align: "center",
+        render: (record) => {
+          if (
+            record?.rfqDealDetails !== null &&
+            record?.rfqDealDetails !== undefined
+          ) {
+            return record?.rfqDealDetails?.tenorDays;
+          }
+          return Number(record.tenorDays) !== 0 ? record.tenorDays : ""; // Placeholder for tenor days
+        },
       },
       {
         id: "ccY2",
