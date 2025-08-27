@@ -27,11 +27,28 @@ const BranchRateCardsOfWatchList = ({
   instrumentName,
   secondaryInstrumentName,
 }) => {
+  console.log(
+    {
+      currencyLabel,
+      buyHeading,
+      sellHeading,
+      buyValue,
+      sellValue,
+      isSellDisabled,
+      isBuyDisabled,
+      instrumentID,
+      secondaryInstrumentID,
+      instrumentName,
+      secondaryInstrumentName,
+    },
+    "propspropsprops"
+  );
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const marketStatus = useSelector(
+    (state) => state.WatchListReducer.getMarketStatus
+  );
   const handleOpenModal = (type) => {
- 
     let Data = {
       type: type, // 'buy' or 'sell'
       currencyLabel: currencyLabel,

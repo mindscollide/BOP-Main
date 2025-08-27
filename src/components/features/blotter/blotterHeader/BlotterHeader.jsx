@@ -237,6 +237,7 @@ const BlotterHeader = () => {
           console.log(updatedData, transaction, "transactiontransaction");
 
           updatedData.unshift(transaction);
+          setTreasuryTXNSummarysRow((prev) => prev + 1);
           setTreasuryTXNSummaryTotalRecords((prev) => prev + 1);
         }
 
@@ -282,6 +283,8 @@ const BlotterHeader = () => {
           (item) => item.pK_TransactionID !== transaction.pK_TransactionID
         );
         setTreasuryTXNSummaryTotalRecords((prev) => prev - 1);
+        setTreasuryTXNSummarysRow((prev) => prev - 1);
+
         return updatedData;
       });
 
@@ -313,6 +316,7 @@ const BlotterHeader = () => {
             } else {
               updatedData = [transaction, ...updatedData];
               setTreasuryOutStandingDealRecords((prev) => prev + 1);
+              setTreasuryOutStandingDealsRow((prev) => prev + 1);
             }
 
             dispatch(BlotterTransactionAdded(null));
@@ -353,6 +357,8 @@ const BlotterHeader = () => {
               rejected: BlotterTransactionRejected,
             };
             setTreasuryOutStandingDealRecords((prev) => prev - 1);
+            setTreasuryOutStandingDealsRow((prev) => prev - 1);
+
 
             dispatch(dispatchMap[type](null));
             return updatedData;
@@ -386,6 +392,7 @@ const BlotterHeader = () => {
             if (!exists) {
               updatedData = [transaction, ...updatedData];
               setTreasuryOutStandingDealRecords((prev) => prev + 1);
+              setTreasuryOutStandingDealsRow((prev) => prev + 1);
 
             }
 
