@@ -110,6 +110,10 @@ const Dashboard = () => {
   const transactionInfoModal = useSelector(
     (state) => state.modalReducer.transactionInfoModal
   );
+  
+  const marketStatus = useSelector(
+    (state) => state.WatchListReducer.getMarketStatus
+  );
   const IsBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
   const IsCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
   const isTreasury = import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
@@ -428,20 +432,22 @@ const Dashboard = () => {
   }, [categoryValue]);
   useEffect(() => {
     if (!isConnected) return;
-
+  
     const isTreasuryPath = location.pathname.includes("treasury");
-    if (isTreasury || isDealer) {
-      // Subscribe if entering treasury path
-      if (isTreasuryPath) {
+  
+    if (isTreasury) {
+      if (marketStatus && isTreasuryPath) {
+        // Subscribe only when status is true AND path is treasury
         subscribeToTopics(["BOP_REAL_TIME_FEED_TREASURY"]);
         console.log("Subscribed to BOP_REAL_TIME_FEED_TREASURY");
       } else {
-        unsubscribeFromTopics([`BOP_REAL_TIME_FEED_TREASURY`]);
+        // Unsubscribe when status is false OR path is not treasury
+        unsubscribeFromTopics(["BOP_REAL_TIME_FEED_TREASURY"]);
+        console.log("Unsubscribed from BOP_REAL_TIME_FEED_TREASURY");
       }
     }
-
-    // No cleanup here - we'll handle unsubscription in the next effect
-  }, [location.pathname, isConnected]);
+  }, [location.pathname, isConnected, marketStatus]);
+  
 
   // Handle unsubscription only when leaving treasury path
   useEffect(() => {
