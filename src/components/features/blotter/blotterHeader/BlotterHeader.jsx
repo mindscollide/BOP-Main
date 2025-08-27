@@ -228,12 +228,7 @@ const BlotterHeader = () => {
         const existingIndex = updatedData.findIndex(
           (item) => item.pK_TransactionID === transaction.pK_TransactionID
         );
-        console.log(
-          updatedData,
-          transaction,
-          existingIndex,
-          "transactiontransaction"
-        );
+  
         if (existingIndex !== -1) {
           console.log(updatedData, transaction, "transactiontransaction");
 
@@ -317,6 +312,7 @@ const BlotterHeader = () => {
               updatedData[index] = transaction;
             } else {
               updatedData = [transaction, ...updatedData];
+              setTreasuryOutStandingDealRecords((prev) => prev + 1);
             }
 
             dispatch(BlotterTransactionAdded(null));
@@ -356,6 +352,7 @@ const BlotterHeader = () => {
               cancelled: BlotterTranscationCancelled,
               rejected: BlotterTransactionRejected,
             };
+            setTreasuryOutStandingDealRecords((prev) => prev - 1);
 
             dispatch(dispatchMap[type](null));
             return updatedData;
@@ -388,6 +385,8 @@ const BlotterHeader = () => {
 
             if (!exists) {
               updatedData = [transaction, ...updatedData];
+              setTreasuryOutStandingDealRecords((prev) => prev + 1);
+
             }
 
             dispatch(BlotterTransactionCancellationRequest(null));

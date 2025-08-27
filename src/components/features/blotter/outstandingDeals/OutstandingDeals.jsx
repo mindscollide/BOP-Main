@@ -202,7 +202,7 @@ const OutstandingDeals = ({
     setHasBottomReachedOutstanding(true); // Set loading state
 
     // Prepare data for API call
-    let Data = { sRow: treasuryOutStandingDealsRow, Length: 10 };
+    let Data = { sRow: treasuryOutStandingDeal.length, Length: 10 };
     dispatch(GetBlotterOutstandingDealsDataAPI({ navigate, Data }));
   }, [
     hasBottomReachedOutstanding,

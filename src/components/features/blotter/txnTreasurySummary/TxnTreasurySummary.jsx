@@ -116,7 +116,7 @@ const TXNTreasurySummary = ({
 
     setHasBottomReachedTreasuryTXN(true);
 
-    let Data = { sRow: treasuryTXNSummarysRow, Length: 10 };
+    let Data = { sRow: treasuryTXNSummary.length, Length: 10 };
 
     // Wait for dispatch to finish, then reset flag
     await dispatch(BlotterDataAPI({ navigate, Data }));

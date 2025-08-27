@@ -132,7 +132,7 @@ const TXNSummary = () => {
     setHasReachedBottom(true); // Set loading state
 
     // Prepare data for API call
-    let Data = { sRow: sRow, Length: 10 };
+    let Data = { sRow: blotterdata.length, Length: 10 };
     dispatch(BlotterDataAPI({ navigate, Data }));
   }, [hasReachedBottom, totalRecord, blotterdata.length, sRow]);
 
