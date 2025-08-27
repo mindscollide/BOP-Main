@@ -56,6 +56,11 @@ const BankSpot = memo(() => {
     selectedTreasurySpotRatesFeed,
     (prev, next) => !isFeedDifferent(prev, next)
   );
+
+  const marketStatus = useSelector(
+    (state) => state.WatchListReducer.getMarketStatus
+  );
+  console.log(marketStatus, "marketStatusinSpot");
   const worldCrosses = useSelector(selectWorldCrosses, shallowEqual);
   const worldCurrencies = useSelector(selectWorldCurrencies, shallowEqual);
   const isLoading = useSelector(selectTreasuryBankSpotSpinner);
@@ -215,9 +220,11 @@ const BankSpot = memo(() => {
         width: 80,
         align: "center",
         render: (text, record) => (
-          <span className='d-flex justify-content-center align-items-center'>
+          <span className="d-flex justify-content-center align-items-center">
             <BidAmountBox
-              applyClass='BidCardBox'
+              applyClass={
+                marketStatus === true ? "BidCardBox" : "BidCardBox_Disable"
+              }
               bankSpot={true}
               BidAmountValue={record?.worldCrossBid}
             />
@@ -231,9 +238,11 @@ const BankSpot = memo(() => {
         width: 80,
         align: "center",
         render: (text, record) => (
-          <span className='d-flex justify-content-center align-items-center'>
+          <span className="d-flex justify-content-center align-items-center">
             <BidAmountBox
-              applyClass='OfferCardBox'
+              applyClass={
+                marketStatus === true ? "OfferCardBox" : "OfferCardBox_Disable"
+              }
               bankSpot={true}
               BidAmountValue={record?.worldCrossOffer}
             />
@@ -254,9 +263,11 @@ const BankSpot = memo(() => {
         width: 80,
         align: "center",
         render: (text, record) => (
-          <span className='d-flex justify-content-center align-items-center'>
+          <span className="d-flex justify-content-center align-items-center">
             <BidAmountBox
-              applyClass='BidCardBox'
+              applyClass={
+                marketStatus === true ? "BidCardBox" : "BidCardBox_Disable"
+              }
               bankSpot={true}
               BidAmountValue={record?.worldCurBid}
             />
@@ -270,9 +281,11 @@ const BankSpot = memo(() => {
         width: 80,
         align: "center",
         render: (text, record) => (
-          <span className='d-flex justify-content-center align-items-center'>
+          <span className="d-flex justify-content-center align-items-center">
             <BidAmountBox
-              applyClass='OfferCardBox'
+              applyClass={
+                marketStatus === true ? "OfferCardBox" : "OfferCardBox_Disable"
+              }
               bankSpot={true}
               BidAmountValue={record?.worldCurOffer}
             />
@@ -291,23 +304,23 @@ const BankSpot = memo(() => {
             : "--:--:--",
       },
     ],
-    []
+    [marketStatus]
   );
 
   return (
-    <div className='bank-spot-container'>
-      <div className='box-header bg-primary-orange px-3'>
-        <div className='text-start color-white fw-bold fs-6'>Bank Spot</div>
+    <div className="bank-spot-container">
+      <div className="box-header bg-primary-orange px-3">
+        <div className="text-start color-white fw-bold fs-6">Bank Spot</div>
       </div>
 
-      <div className='mb-2 h-100 position-relative'>
+      <div className="mb-2 h-100 position-relative">
         <GlobalTable
           columns={columns}
           dataSource={processedData}
           rowKey={(record) =>
             `${record.instrumentID}-${record.secondaryInstrumentID}`
           }
-          prefixCls='BankSpot_Table'
+          prefixCls="BankSpot_Table"
           pagination={false}
           scroll={{ x: "hidden", y: 300 }}
           loading={isLoading}
