@@ -209,7 +209,6 @@ const OutstandingDeals = ({
     setHasBottomReachedOutstanding,
     treasuryOutStandingDealRecords,
     treasuryOutStandingDeal.length,
-    treasuryOutStandingDealsRow,
   ]);
 
   // Intersection Observer callback for infinite scrolling
