@@ -648,6 +648,11 @@
   border-color: #82756b !important;
   color: #ffffff !important;
 }
+.FowwardBranchBookaForwardBtn:disabled {
+  background: #06b0da !important;
+  filter: grayscale(1);
+  border: none;
+}
 
 .FEDiscounting {
   background: #feac78 !important;
@@ -675,7 +680,11 @@
   cursor: pointer !important;
 }
 .FEDiscounting:disabled {
+  background: #feac78 !important;
+  filter: grayscale(1);
+  border: none;
   cursor: not-allowed !important;
+  color: white;
 }
 .ConfirmButtonBookaForward {
   border-radius: 4px !important;
