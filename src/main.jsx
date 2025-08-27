@@ -17,7 +17,7 @@ if (import.meta.env.MODE === "production") {
   console.log = () => {};
   // console.error = () => {};
   console.debug = () => {};
-  console.warn = () => {};
+  // console.warn = () => {};
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(
