@@ -21,8 +21,9 @@
   color: #000;
 }
 
-.BuyCardMarketOff {
-  background-color: gray;
+.BuyCard_MarketOff {
+  background-color: #096fed;
+  filter: grayscale(1);
   max-width: 100%;
   width: 100%;
   display: flex;
@@ -35,13 +36,43 @@
   transition: background-color 0.3s ease, color 0.3s ease; /* Transition on background and color */
 }
 
-.BuyCardMarketOff p {
+.BuyCard_MarketOff p {
   font-size: 1rem;
   transition: color 0.3s ease; /* Apply transition to color */
 }
 
-.BuyCardMarketOff:hover p {
+.BuyCard_MarketOff:hover p {
   color: #000;
+}
+
+.BidCardBox_Disable {
+  background: #096fed;
+  filter: grayscale(1);
+
+  color: var(--color-white);
+  display: inline-block;
+  border-radius: 2px;
+  width: 60px;
+  cursor: pointer;
+  padding: 2px 3px;
+  white-space: nowrap;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.OfferCardBox_Disable {
+  background: #f8a041;
+  filter: grayscale(1);
+  color: var(--color-white);
+  display: inline-block;
+  border-radius: 2px;
+  width: 60px;
+  cursor: pointer;
+  padding: 2px 3px;
+  white-space: nowrap;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .afterDotValue {
   font-size: 1.25rem;
@@ -75,8 +106,9 @@
   color: #000;
 }
 
-.SellCardMarketOff {
-  background-color: gray;
+.SellCard_MarketOff {
+  background-color: #f26522;
+  filter: grayscale(1);
   max-width: 100%;
   width: 100%;
 
@@ -90,12 +122,12 @@
   transition: background-color 0.3s ease, color 0.3s ease; /* Transition on background and color */
 }
 
-.SellCardMarketOff p {
+.SellCard_MarketOff p {
   font-size: 1rem;
   transition: color 0.3s ease; /* Apply transition to color */
 }
 
-.SellCardMarketOff:hover p {
+.SellCard_MarketOff:hover p {
   color: #000;
 }
 

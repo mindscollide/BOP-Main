@@ -134,7 +134,7 @@ const SpotDealerAndTreasury = () => {
                             applyClass={
                               marketStatus === true
                                 ? "SellCard"
-                                : "SellCardMarketOff"
+                                : "SellCard_MarketOff"
                             }
                           />
                         </Col>
@@ -146,7 +146,7 @@ const SpotDealerAndTreasury = () => {
                             applyClass={
                               marketStatus === true
                                 ? "BuyCard"
-                                : "BuyCardMarketOff"
+                                : "BuyCard_MarketOff"
                             }
                           />
                         </Col>
