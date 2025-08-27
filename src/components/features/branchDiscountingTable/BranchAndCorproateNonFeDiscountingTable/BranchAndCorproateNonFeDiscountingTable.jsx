@@ -34,11 +34,7 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
 
   console.log(ClearRatesData, "ClearRatesData");
 
-  console.log(
-    typeof marketStatus,
-    typeof JSON.parse(marketStatus),
-    "marketStatusmarketStatus"
-  );
+
 
   //local states
   const [dataSource, setDataSource] = useState([]);

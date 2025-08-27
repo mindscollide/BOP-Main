@@ -115,7 +115,6 @@ const Dashboard = () => {
     (state) => state.WatchListReducer.getMarketStatus
   );
 
-  console.log(marketStatus, "marketStatusmarketStatusmarketStatus")
   const IsBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
   const IsCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
   const isTreasury = import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";

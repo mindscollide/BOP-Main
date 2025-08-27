@@ -53,7 +53,6 @@ const SpotRates = () => {
   const marketStatus = useSelector(
     (state) => state.WatchListReducer.getMarketStatus
   );
-  console.log(marketStatus, "marketStatusmarketStatusmarketStatus");
 
   const publishedSpotRates = useSelector(
     (state) => state.modalReducer.publishedSpotRates

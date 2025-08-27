@@ -684,7 +684,7 @@ export const getMarketStatusApi = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(getMarketStatus({ navigate }));
+        dispatch(getMarketStatusApi({ navigate }));
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage, marketStatus } =
           response.data.responseResult;

@@ -321,7 +321,7 @@ const BankSpot = memo(() => {
           }
           prefixCls="BankSpot_Table"
           pagination={false}
-          scroll={{ x: "hidden", y: 300 }}
+          scroll={{ x: "hidden", y: 245 }}
           loading={isLoading}
         />
         {isLoading && <SectionLoader />}

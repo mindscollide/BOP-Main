@@ -31,7 +31,6 @@ const CategoryFeDiscountingTable = () => {
   
   console.log("dataSourcedataSource: ", dataSource);
 
-  console.log("marketStatusmarketStatus2434: ", marketStatus);
 
   console.log("CategoryFeDiscounting MQTT: ", CategoryFeDiscounting);
 

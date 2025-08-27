@@ -16,3 +16,16 @@
   padding: 9px 12px !important;
   transition: all 0.3s ease-in;
 }
+.DroppableBox_disbaled {
+  display: inline-block !important;
+  /* filter: grayscale(1); */
+  pointer-events: none  ;
+  width: 100% !important;
+  border-radius: 8px;
+  border: 1px solid #e2e2e2;
+  padding: 0px 10px;
+  background: var(--color-light-gray);
+  height: 155px;
+  padding: 9px 12px !important;
+  transition: all 0.3s ease-in;
+}

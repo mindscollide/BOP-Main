@@ -13,7 +13,10 @@ import { useSelector } from "react-redux";
 import { formatDateUTCToGMT } from "@/components/utils/timeFunction";
 import moment from "moment";
 import { throttle } from "lodash";
-import { setFxTradingCards } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
+import {
+  setClearRates,
+  setFxTradingCards,
+} from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { setWatchlistTableDataCopy } from "@/store/watchListSlicer/WatchListSlicer";
 
 const initialWatchlistData = Object.fromEntries(
@@ -298,13 +301,18 @@ const SpotBranch = () => {
     }
   }, [marketStatus]);
 
+  console.log(
+    { ClearRatesData, marketStatus, watchlistTableData },
+    "ClearRatesDataClearRatesData"
+  );
+
   useEffect(() => {
     try {
-      if (ClearRatesData?.areRatesClear) {
+      if (ClearRatesData !== null && ClearRatesData?.areRatesClear === true) {
         setWatchlistData((prev) => {
           const updated = { ...prev };
           Object.keys(updated).forEach((key) => {
-            if (updated[key]?.secondaryInstrumentName === "PKR") {
+            if (Number(updated[key]?.secondaryInstrumentID) === 0) {
               updated[key] = {
                 ...updated[key],
                 buyValue: 0,
@@ -317,11 +325,12 @@ const SpotBranch = () => {
 
         setWatchlistTableData((prev) =>
           prev.map((data) =>
-            data.secondaryInstrumentName === "PKR"
+            Number(data.secondaryInstrumentID) === 0
               ? { ...data, bid: 0, offer: 0 }
               : data
           )
         );
+        dispatch(setClearRates(null))
       }
     } catch (error) {
       console.error(

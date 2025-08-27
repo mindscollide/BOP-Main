@@ -10,6 +10,7 @@ import {
   setISellAndBuyModal,
   setRfqModalOpen,
 } from "@/store/modalSlice/modalSlicer";
+import { useSelector } from "react-redux";
 
 const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
 const isCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
@@ -71,7 +72,10 @@ const BranchRateCardsOfWatchList = ({
     <>
       {currencyLabel ? (
         <>
-          <span className='DroppableBox'>
+          <span
+            className={
+              !marketStatus ? "DroppableBox_disbaled" : "DroppableBox"
+            }>
             <Row>
               <Col lg={12} md={12} sm={12}>
                 <span className='DroppableBoxCurrencyLabel'>
