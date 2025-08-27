@@ -228,7 +228,7 @@ const BlotterHeader = () => {
         const existingIndex = updatedData.findIndex(
           (item) => item.pK_TransactionID === transaction.pK_TransactionID
         );
-  
+
         if (existingIndex !== -1) {
           console.log(updatedData, transaction, "transactiontransaction");
 
@@ -386,7 +386,6 @@ const BlotterHeader = () => {
             if (!exists) {
               updatedData = [transaction, ...updatedData];
               setTreasuryOutStandingDealRecords((prev) => prev + 1);
-
             }
 
             dispatch(BlotterTransactionCancellationRequest(null));
@@ -452,7 +451,7 @@ const BlotterHeader = () => {
     {
       title: "TXN Summary",
       content: (
-        <section className='position-relative'>
+        <section className="position-relative">
           <Suspense fallback={<SectionLoader />}>
             {activeTab === "TXN Summary" && (
               <TXNTreasurySummary
@@ -470,7 +469,7 @@ const BlotterHeader = () => {
     {
       title: "Outstanding Deals",
       content: (
-        <section className='position-relative'>
+        <section className="position-relative">
           <Suspense fallback={<SectionLoader />}>
             {activeTab === "Outstanding Deals" && (
               <OutstandingDeals
@@ -515,6 +514,7 @@ const BlotterHeader = () => {
   };
 
   const HandlePDFDownloadFunc = () => {
+    setExportButton(false);
     startTransition(() => {
       if (isTreasury) {
         dispatch(DownloadPDFReportBlotterTrasactionTreasuryAPI({ navigate }));
@@ -527,6 +527,7 @@ const BlotterHeader = () => {
   };
 
   const HandleExcelDownloadFunc = () => {
+    setExportButton(false);
     startTransition(() => {
       if (isTreasury) {
         dispatch(DownloadExcelReportBlotterTrasactionTreasuryAPI({ navigate }));
@@ -555,85 +556,86 @@ const BlotterHeader = () => {
   const handleTransactionModal = (e) => {
     e.preventDefault();
     setOpenMailModal(true);
+    setExportButton(false);
   };
   return (
     <>
-      <section className='position-relative'>
+      <section className="position-relative">
         {isTreasury ? (
           <>
             <GlobalTabs
-              tabClass=' d-flex justify-content-start gap-2 mb-3 align-items-center position-relative'
+              tabClass=" d-flex justify-content-start gap-2 mb-3 align-items-center position-relative"
               tabs={tabsData}
               onTabChange={handleTabChange}
               activeKey={activeTab}
               defaultActiveKey={"0"}
               outStandingCounter={treasuryOutStandingDeal.length}
             />
-            <div className='moreOptionsNOPExport'>
-              <div className='nop-hd-container'>
-                <div className='d-flex align-items-center'>
+            <div className="moreOptionsNOPExport">
+              <div className="nop-hd-container">
+                <div className="d-flex align-items-center">
                   <>
                     {" "}
-                    <span className='hd-txt me-3'>NOP (US$)</span>
-                    <span className='hd-cr me-2'>
+                    <span className="hd-txt me-3">NOP (US$)</span>
+                    <span className="hd-cr me-2">
                       {GetNOPData !== null &&
                         GetNOPData !== undefined &&
                         (GetNOPData?.nop === 0 ? (
-                          <span className='color-black'>
+                          <span className="color-black">
                             {formatPkAmount(GetNOPData?.nop)}
                           </span>
                         ) : GetNOPData?.nop >= 0 ? (
                           <span>{formatPkAmount(GetNOPData?.nop)}</span>
                         ) : (
-                          <span className='color-red'>{`(${formatPkAmount(
+                          <span className="color-red">{`(${formatPkAmount(
                             Math.abs(GetNOPData?.nop)
                           )})`}</span>
                         ))}
                     </span>
                     <CustomButton
                       applyClass={"NOP-button"}
-                      value='+'
+                      value="+"
                       onClick={onClickNopModal}
                     />{" "}
                     <CustomButton
                       applyClass={"Export-button"}
-                      value='Export'
+                      value="Export"
                       onClick={onClickOpenExport}
                     />
                   </>
 
                   {openExportDiv && (
-                    <div className='exportOptions'>
-                      <div className='exportOptionsBox'>
+                    <div className="exportOptions">
+                      <div className="exportOptionsBox">
                         <img
                           src={pdfImage}
                           width={30}
                           height={30}
-                          className='cursor-pointer'
-                          alt='pdf'
+                          className="cursor-pointer"
+                          alt="pdf"
                           onClick={HandlePDFDownloadFunc}
                         />
                         <img
                           src={excelImage}
                           width={30}
                           height={30}
-                          alt='excel'
-                          className='cursor-pointer'
+                          alt="excel"
+                          className="cursor-pointer"
                           onClick={HandleExcelDownloadFunc}
                         />
                         <img
                           src={emailImage}
                           width={30}
                           height={30}
-                          className='cursor-pointer'
+                          className="cursor-pointer"
                           onClick={handleTransactionModal}
                         />
                         <img
                           src={printImage}
                           width={30}
                           height={30}
-                          className='cursor-pointer'
-                          alt='print'
+                          className="cursor-pointer"
+                          alt="print"
                         />
                       </div>
                     </div>
@@ -645,13 +647,14 @@ const BlotterHeader = () => {
         ) : (
           (isBranch || isCorporate) && (
             <>
-              <Row className='mb-3'>
+              <Row className="mb-3">
                 <Col
                   sm={6}
                   md={6}
                   lg={6}
-                  className='d-flex justify-content-start align-items-center'>
-                  <span className='fs-6 fw-bold color-hd data-summary-heading'>
+                  className="d-flex justify-content-start align-items-center"
+                >
+                  <span className="fs-6 fw-bold color-hd data-summary-heading">
                     TXN Summary
                   </span>
                 </Col>
@@ -660,13 +663,14 @@ const BlotterHeader = () => {
                   sm={6}
                   md={6}
                   lg={6}
-                  className='d-flex align-item-center justify-content-end  color-white fw-bold fs-6'>
+                  className="d-flex align-item-center justify-content-end  color-white fw-bold fs-6"
+                >
                   <Popover
                     content={
                       <div className={"export-options"}>
                         <CustomButton
                           // value={"Excel"}
-                          icon={<img src={pdfImage} alt='Excel Icon' />}
+                          icon={<img src={pdfImage} alt="Excel Icon" />}
                           className={"bg-none"}
                           onClick={HandlePDFDownloadFunc}
 
@@ -674,31 +678,33 @@ const BlotterHeader = () => {
                           // className={styles["export-button"]}
                         />
                         <CustomButton
-                          icon={<img src={excelImage} alt='PDF Icon' />}
+                          icon={<img src={excelImage} alt="PDF Icon" />}
                           // onClick={() => handleExport("pdf")}
                           className={"bg-none"}
                           onClick={HandleExcelDownloadFunc}
                         />
                         <CustomButton
                           // value={"Excel"}
-                          icon={<img src={emailImage} alt='Excel Icon' />}
+                          icon={<img src={emailImage} alt="Excel Icon" />}
                           className={"bg-none"}
                           onClick={handleTransactionModal}
                         />
                         <CustomButton
-                          icon={<img src={printImage} alt='PDF Icon' />}
+                          icon={<img src={printImage} alt="PDF Icon" />}
                           className={"bg-none"}
+                          onClick={() => setExportButton(false)}
                         />
                       </div>
                     }
-                    trigger='click'
+                    trigger="click"
                     open={exportButton}
                     onOpenChange={() => setExportButton(!exportButton)}
-                    placement='bottomRight'
-                    arrow={false}>
+                    placement="bottomRight"
+                    arrow={false}
+                  >
                     <CustomButton
                       applyClass={"Export-button"}
-                      value='Export'
+                      value="Export"
                       onClick={onClickOpenExport}
                     />
                   </Popover>

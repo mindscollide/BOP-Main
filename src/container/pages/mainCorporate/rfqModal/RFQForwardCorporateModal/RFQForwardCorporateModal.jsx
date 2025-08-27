@@ -117,6 +117,7 @@ const RFQForwardCorporateModal = ({
    * Environment Configuration
    */
   const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
+  const isCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
 
   // Get title details from localStorage based on user type
   let titleDetails =
@@ -141,10 +142,17 @@ const RFQForwardCorporateModal = ({
           (business, index) => business.isForForward === true
         );
         setNatureOfBusinessOptions(formattedOptions);
-        setTypeOptionSelected({
-          value: typeOptions[0].value,
-          label: typeOptions[0].label,
-        });
+        if (isCorporate) {
+          setTypeOptionSelected({
+            value: typeOptions[1].value,
+            label: typeOptions[1].label,
+          });
+        } else {
+          setTypeOptionSelected({
+            value: typeOptions[0].value,
+            label: typeOptions[0].label,
+          });
+        }
       } catch (error) {
         console.error("Error initializing nature of business options:", error);
       }
@@ -352,36 +360,34 @@ const RFQForwardCorporateModal = ({
    */
   const handleConfirmButton = () => {
     // Validate required fields
-    if (accountNumber !== "") {
-      setAccountError({ status: false, message: "" });
+    // if (accountNumber !== "") {
+    //   setAccountError({ status: false, message: "" });
 
-      // Prepare transaction data
-      let amountValue = amountData.replace(/,/g, "");
-      let Data = {
-        CorporateID: corporateValue.value,
-        InstrumentID: selectedCurrency.value,
-        SecondaryInstrumentID: 0,
-        IsBuySide: typeOptionSelected.value === 1 ? true : false,
-        IsBuyType: typeOptionSelected.value === 1 ? true : false,
-        Quantity: Number(amountValue),
-        AccountNumber: accountNumber,
-        NatureOfTransactionID:
-          natureOfBusinessOptions !== null && natureOfBusinessOptions?.id,
-        TenorDays: Number(Tenor),
-        OptionDays: Number(options),
-      };
+    // Prepare transaction data
+    let amountValue = amountData.replace(/,/g, "");
+    let Data = {
+      CorporateID: corporateValue.value,
+      InstrumentID: selectedCurrency.value,
+      SecondaryInstrumentID: 0,
+      IsBuySide: typeOptionSelected.value === 1 ? true : false,
+      IsBuyType: typeOptionSelected.value === 1 ? true : false,
+      Quantity: Number(amountValue),
+      AccountNumber: accountNumber ? accountNumber : "",
+      NatureOfTransactionID:
+        natureOfBusinessOptions !== null && natureOfBusinessOptions?.id,
+      TenorDays: Number(Tenor),
+      OptionDays: Number(options),
+    };
 
-      // Dispatch action to save forward RFQ
-      dispatch(
-        SaveForwardTransactionRFQApi({ navigate, Data, setErrorMessage })
-      );
-    } else if (accountNumber === "") {
-      // Show validation error
-      setAccountError({
-        message: "Account Number is Required",
-        status: true,
-      });
-    }
+    // Dispatch action to save forward RFQ
+    dispatch(SaveForwardTransactionRFQApi({ navigate, Data, setErrorMessage }));
+    // } else if (accountNumber === "") {
+    //   // Show validation error
+    //   setAccountError({
+    //     message: "Account Number is Required",
+    //     status: true,
+    //   });
+    // }
   };
 
   /**
@@ -490,7 +496,7 @@ const RFQForwardCorporateModal = ({
                 </Col>
                 <Col lg={6} md={6} sm={6}>
                   <div className="d-flex flex-column flex-wrap">
-                    <label className="LabelRFQTransactionModal">A/c No*</label>
+                    <label className="LabelRFQTransactionModal">A/c No</label>
                     <InputFIeld
                       applyClass="CalculatorTextfield"
                       onChange={handleChangeAcNo}
@@ -498,11 +504,11 @@ const RFQForwardCorporateModal = ({
                       value={accountNumber}
                     />
                   </div>
-                  {accountError.status === true && (
+                  {/* {accountError.status === true && (
                     <div className="rfq-error_message">
                       Account Number is required
                     </div>
-                  )}
+                  )} */}
                 </Col>
               </Row>
 

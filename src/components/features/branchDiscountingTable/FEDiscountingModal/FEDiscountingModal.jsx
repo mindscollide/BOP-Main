@@ -321,7 +321,7 @@ const FEDiscountingModal = ({
     const newErrors = {
       // corproateObj: !formData.corproateObj,
       InstrumentID: !formData.InstrumentID || !formData.InstrumentID.value,
-      AccountNumber: !formData.AccountNumber,
+      // AccountNumber: !formData.AccountNumber,
 
       TenorDays:
         !formData.TenorDays ||
@@ -359,7 +359,7 @@ const FEDiscountingModal = ({
         : Number(counterPartyDetails?.corporateID),
       InstrumentID: formData.InstrumentID.value,
       Quantity: parseFloat(convertIntoNumber),
-      AccountNumber: formData.AccountNumber,
+      AccountNumber: formData.AccountNumber ? formData.AccountNumber : "",
       NatureOfTransactionID: formData.NatureOfTransactionID,
       TenorDays: parseInt(formData.TenorDays),
       // DiscountingFactor: parseFloat(formData.DiscountingFactor),
@@ -492,7 +492,7 @@ const FEDiscountingModal = ({
                   </Col>
                   <Col lg={6} md={6} sm={6}>
                     <div className="d-flex flex-column flex-wrap">
-                      <span className="SubHeadings">A/c No*</span>
+                      <span className="SubHeadings">A/c No</span>
                       <InputFIeld
                         value={formData.AccountNumber}
                         onChange={(e) =>
@@ -500,11 +500,11 @@ const FEDiscountingModal = ({
                         }
                         applyClass={"CalculatorTextfield"}
                       />
-                      {errors.AccountNumber && (
+                      {/* {errors.AccountNumber && (
                         <span className="text-danger small">
                           Please enter a valid account number
                         </span>
-                      )}
+                      )} */}
                     </div>
                   </Col>
                 </Row>
