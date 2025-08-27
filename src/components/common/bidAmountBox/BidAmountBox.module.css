@@ -20,6 +20,29 @@
 .BuyCard:hover p {
   color: #000;
 }
+
+.BuyCardMarketOff {
+  background-color: gray;
+  max-width: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  flex-direction: column;
+  padding: 0.5rem;
+  border: 1px solid #ffffff;
+  transition: background-color 0.3s ease, color 0.3s ease; /* Transition on background and color */
+}
+
+.BuyCardMarketOff p {
+  font-size: 1rem;
+  transition: color 0.3s ease; /* Apply transition to color */
+}
+
+.BuyCardMarketOff:hover p {
+  color: #000;
+}
 .afterDotValue {
   font-size: 1.25rem;
   font-weight: 700;
@@ -49,6 +72,30 @@
 }
 
 .SellCard:hover p {
+  color: #000;
+}
+
+.SellCardMarketOff {
+  background-color: gray;
+  max-width: 100%;
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  flex-direction: column;
+  padding: 0.5rem;
+  border: 1px solid #ffffff;
+  transition: background-color 0.3s ease, color 0.3s ease; /* Transition on background and color */
+}
+
+.SellCardMarketOff p {
+  font-size: 1rem;
+  transition: color 0.3s ease; /* Apply transition to color */
+}
+
+.SellCardMarketOff:hover p {
   color: #000;
 }
 

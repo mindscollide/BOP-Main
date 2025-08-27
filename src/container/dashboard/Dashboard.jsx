@@ -152,6 +152,7 @@ const Dashboard = () => {
         dispatch(setMarketTimingsUpdated(payload));
         break;
       case "MARKET_STATUS_UPDATED":
+        console.log("MARKET_STATUS_UPDATED");
         dispatch(marketStatusUpdated(payload.marketStatus.isMarketOn));
         dispatch(setMarketStatus(payload.marketStatus.isMarketOn));
         break;
@@ -181,7 +182,8 @@ const Dashboard = () => {
             newIsForwardtenorList:
               payload.tenorWiseForwardRates.newIsForwardtenorList,
             removedtenorList: payload.tenorWiseForwardRates.removedtenorList,
-            updateTenorsDays: payload.tenorWiseForwardRates.updatedTenorDaysList
+            updateTenorsDays:
+              payload.tenorWiseForwardRates.updatedTenorDaysList,
           };
 
           dispatch(setCategoryFowardsTenorsChanges(tenorsData));
@@ -479,12 +481,12 @@ const Dashboard = () => {
     }
   }, []);
   return (
-    <Layout className='roboto-13'>
+    <Layout className="roboto-13">
       {!location.pathname.includes("calculator") && <Header />}
 
       <GlobalNavbar />
       <Content>
-        <main className='px-3'>
+        <main className="px-3">
           <Outlet />
           {/* <AnimatePresence>
             {blotterTransactionAdded && isTreasury && <DealBox />}

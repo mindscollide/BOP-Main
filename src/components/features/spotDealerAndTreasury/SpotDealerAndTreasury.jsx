@@ -131,7 +131,11 @@ const SpotDealerAndTreasury = () => {
                             spot={true}
                             BidBoxHeading={"I Sell"}
                             BidAmountValue={spotCardsData.bid}
-                            applyClass={"SellCard"}
+                            applyClass={
+                              marketStatus === true
+                                ? "SellCard"
+                                : "SellCardMarketOff"
+                            }
                           />
                         </Col>
                         <Col>
@@ -139,7 +143,11 @@ const SpotDealerAndTreasury = () => {
                             spot={true}
                             BidBoxHeading={"I Buy"}
                             BidAmountValue={spotCardsData.offer}
-                            applyClass={"BuyCard"}
+                            applyClass={
+                              marketStatus === true
+                                ? "BuyCard"
+                                : "BuyCardMarketOff"
+                            }
                           />
                         </Col>
                       </div>
