@@ -408,7 +408,7 @@ const Dashboard = () => {
   } = useMqttClient(mqttConfig);
 
   useEffect(() => {
-    if (isTreasury || isDealer) {
+    if (IsCorporate || IsBranch) {
       if (!categoryValue) return;
 
       const newTopic = `BOP_TREASURY_CATEGORY_RATES_${categoryValue.value}`;
