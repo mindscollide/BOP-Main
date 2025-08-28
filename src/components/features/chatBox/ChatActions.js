@@ -9,6 +9,7 @@ import { refreshTokenAction } from "@/container/loginScreens/authActions/refresh
 import {
   setChatModal,
   setChatModalTransactionId,
+  setChatRecordInfoData,
   setTreasuryPersonID,
 } from "@/store/modalSlice/modalSlicer";
 import createPostAPI from "@/utils/axiosInstance";
@@ -19,7 +20,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 export const getAllChatByTransactionId = createAsyncThunk(
   "chat/getAllUserChatByTransactionId",
   async (
-    { navigate, Data, treasuryPersonID },
+    { navigate, Data, treasuryPersonID, ChatData },
     { rejectWithValue, dispatch }
   ) => {
     try {
@@ -37,6 +38,7 @@ export const getAllChatByTransactionId = createAsyncThunk(
             navigate,
             Data,
             treasuryPersonID,
+            ChatData,
           })
         );
       } else if (responseCode === 200) {
@@ -55,6 +57,7 @@ export const getAllChatByTransactionId = createAsyncThunk(
           dispatch(setChatModal(true));
           dispatch(setChatModalTransactionId(Data.TranscationID));
           dispatch(setTreasuryPersonID(treasuryPersonID));
+          dispatch(setChatRecordInfoData(ChatData));
           return {
             response: response.data.responseResult,
             message: "",

@@ -70,7 +70,7 @@ const SpotRates = () => {
     dateTime: "",
   });
   const [refreshInterval, setRefreshInterval] = useState(1);
-
+  console.log(getLastPublishRates, "getLastPublishRatesgetLastPublishRates");
   useEffect(() => {
     if (getLastPublishRates !== null) {
       try {
@@ -135,7 +135,7 @@ const SpotRates = () => {
       }
     }
   }, [currentUpdatedRates]);
-  console.log(getLastPublishRates, "getLastPublishRatesgetLastPublishRates");
+  // console.log(getLastPublishRates, "getLastPublishRatesgetLastPublishRates");
 
   useEffect(() => {
     if (marketStatus !== null) {

@@ -1,21 +1,23 @@
 import IconElement from "@/components/common/IconElement/IconElement";
 import InputFIeld from "@/components/common/inputField/InputField";
 import styles from "./ChatBox.module.css";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { DownloadFileApi, saveChatApi, uploadDocumentApi } from "./ChatActions";
 import { useNavigate } from "react-router-dom";
-import {
-  convertDateTimeIntoGMT,
-  convertDateTimeIntoLocal,
-  formatDateToUTC,
-} from "@/utils/formatters";
+import { convertDateTimeIntoLocal } from "@/utils/formatters";
 import moment from "moment";
 import { Col, Row } from "react-bootstrap";
-import { fileToBase64 } from "@/utils/converts";
 import { setChatModal } from "@/store/modalSlice/modalSlicer";
-import { clearIncomingChat, setIncomingChat } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
+import { clearIncomingChat } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
+import CustomButton from "@/components/common/globalButton/button";
+import {
+  GetFEDiscountingTransactionDetailsApi,
+  GetForwardTransactionDetailsApi,
+  GetNonFEDiscountingTransactionDetailsApi,
+  GetSpotTransactionDetailsApi,
+} from "../blotter/BlotterActions";
 // import styles from "./ChatBranch.css";
 
 const ChatBox = () => {
@@ -29,7 +31,11 @@ const ChatBox = () => {
     (state) => state.modalReducer.treasuryPersonID
   );
 
-  console.log(receiverPersonID, "receiverPersonID");
+  const ChatData = useSelector(
+    (state) => state.modalReducer.ChatRecordInfoData
+  );
+
+  console.log(ChatData, "ChatDataChatData");
 
   const [receiverId, setReceiverId] = useState(0);
 
@@ -102,15 +108,15 @@ const ChatBox = () => {
 
   useEffect(() => {
     if (!Array.isArray(IncomingChat) || IncomingChat.length === 0) return;
-  
+
     setTransactionChat((prevState) => {
       const existingChatIDs = new Set(
         prevState.getAllChat.map((chat) => chat.chatMessageID)
       );
-  
+
       const mergedChats = [...prevState.getAllChat];
       let hasNewChats = false;
-  
+
       IncomingChat.forEach((newChat) => {
         if (!existingChatIDs.has(newChat.chatMessageID)) {
           mergedChats.unshift(newChat);
@@ -119,20 +125,20 @@ const ChatBox = () => {
           const index = mergedChats.findIndex(
             (c) => c.chatMessageID === newChat.chatMessageID
           );
-          if (index !== -1) mergedChats[index] = { ...mergedChats[index], ...newChat };
+          if (index !== -1)
+            mergedChats[index] = { ...mergedChats[index], ...newChat };
         }
       });
-  
+
       return {
         ...prevState,
         getAllChat: mergedChats,
       };
     });
-  
+
     // ✅ now properly clear
     dispatch(clearIncomingChat());
   }, [IncomingChat]);
-  
 
   const handleClickClose = () => {
     dispatch(setChatModal(false));
@@ -211,33 +217,109 @@ const ChatBox = () => {
     dispatch(DownloadFileApi({ navigate, Data, fileName, ext }));
     console.log(fileName, ext, "imgData in handleDownload");
   };
+  // const handleClickInfo = useCallback((getAllUserData) => {
+  //   let Data = {
+  //     PK_TransactionID: getAllUserData.transactionID,
+  //   };
+  //   if (natureType === 1) {
+  //     dispatch(GetSpotTransactionDetailsApi({ navigate, Data }));
+  //   } else if (natureType === 2) {
+  //     dispatch(GetForwardTransactionDetailsApi({ navigate, Data }));
+  //   } else if (natureType === 3) {
+  //     dispatch(GetFEDiscountingTransactionDetailsApi({ navigate, Data }));
+  //   } else if (natureType === 4) {
+  //     dispatch(GetNonFEDiscountingTransactionDetailsApi({ navigate, Data }));
+  //   }
+  // }, []);
+
+  const handleClickInfo = () => {
+    let Data = {
+      PK_TransactionID: chatModalTransactionId,
+    };
+    if (ChatData.natureType === 1) {
+      dispatch(GetSpotTransactionDetailsApi({ navigate, Data }));
+    } else if (ChatData.natureType === 2) {
+      dispatch(GetForwardTransactionDetailsApi({ navigate, Data }));
+    } else if (ChatData.natureType === 3) {
+      dispatch(GetFEDiscountingTransactionDetailsApi({ navigate, Data }));
+    } else if (ChatData.natureType === 4) {
+      dispatch(GetNonFEDiscountingTransactionDetailsApi({ navigate, Data }));
+    }
+  };
 
   return (
-    <div className='user-chat-box active-chat' id='chat-len1'>
-      <div className='chat-box-inner'>
-        <div className='chat-box-header'>
-          <div className='d-flex align-items-center'>
-            <span className='user-name fw-bold'>{userName}</span>{" "}
-            {/* <span className='Company'>(ABC Corporation)</span> */}
-            <span className='ms-auto'>
+    <div className="user-chat-box active-chat" id="chat-len1">
+      <div className="chat-box-inner">
+        <div className="chat-box-header">
+          {/* <div className="d-flex align-items-center"> */}
+          <Row>
+            <Col
+              sm={9}
+              md={9}
+              lg={9}
+              className="d-flex justify-content-start align-items-center user-name fw-bold"
+            >
+              {userName}
+            </Col>
+            <Col
+              sm={2}
+              md={2}
+              lg={2}
+              d-flex
+              className="d-flex justify-content-end
+              align-items-center"
+            >
+              <CustomButton
+                size="small"
+                onClick={handleClickInfo}
+                applyClass="d-flex justify-content-center align-items-center"
+                icon={
+                  <svg
+                    id="info_Layer_1"
+                    x="0px"
+                    y="0px"
+                    width="12px"
+                    height="12px"
+                    fill="#ffffff"
+                    viewBox="0 0 55 55"
+                  >
+                    <g>
+                      <path d="M41.407,45.858c0.067,0.838,0.156,1.672,0.183,2.508   c0.005,0.152-0.205,0.376-0.37,0.461c-1.347,0.687-2.679,1.416-4.069,2.005c-3.305,1.396-6.715,2.5-10.277,3.009   c-1.447,0.206-2.936,0.154-4.403,0.153c-0.477-0.001-0.968-0.178-1.424-0.345c-1.313-0.481-1.98-1.443-1.948-2.85   c0.015-0.583,0.103-1.179,0.253-1.744c1.863-7.013,3.752-14.02,5.61-21.037c0.199-0.751,0.327-1.543,0.341-2.318   c0.021-1.142-0.615-1.925-1.667-2.331c-1.605-0.618-3.258-0.468-4.89-0.161c-1.764,0.332-3.468,0.873-5.149,1.884   c-0.074-0.978-0.157-1.863-0.187-2.75c-0.005-0.127,0.234-0.307,0.396-0.388c1.334-0.67,2.648-1.389,4.021-1.968   c3.327-1.403,6.755-2.512,10.337-3.021c1.465-0.208,2.994-0.294,4.457-0.125c2.782,0.323,3.808,2.02,3.073,4.73   c-0.94,3.474-1.914,6.941-2.838,10.419c-1.049,3.953-2.087,7.912-3.077,11.879c-0.524,2.107,0.385,3.449,2.526,3.839   c2.048,0.376,4.038-0.017,5.981-0.634C39.313,46.75,40.296,46.295,41.407,45.858z"></path>
+                      <circle cx="27.5" cy="7.608" r="6.609"></circle>
+                    </g>
+                  </svg>
+                }
+              />
+            </Col>
+            <Col
+              sm={1}
+              md={1}
+              lg={1}
+              className="d-flex justify-content-end align-items-center"
+            >
+              {/* <span className="ms-auto"> */}
               <IconElement
                 applyClass={"icon-close cursor-pointer"}
                 onClick={handleClickClose}
               />
-            </span>
-          </div>
+              {/* </span> */}
+            </Col>
+          </Row>
+          {/* <span className="user-name fw-bold">{userName}</span>{" "} */}
+          {/* <span className='Company'>(ABC Corporation)</span> */}
+          {/* </div> */}
         </div>
-        <div className='chat-box-content'>
+        <div className="chat-box-content">
           {transactionChat.getAllChat.length > 0
             ? transactionChat.getAllChat.map((data, index) => {
                 if (
                   data.receiverID === Number(localStorage.getItem("userID"))
                 ) {
                   return (
-                    <div className='text-start mb-3' key={data.chatMessageID}>
-                      <div className='message-inbox message-box text-start'>
-                        <div className='mess-txt-wrapper'>
-                          <div className='mess-txt'>{data.message}</div>
+                    <div className="text-start mb-3" key={data.chatMessageID}>
+                      <div className="message-inbox message-box text-start">
+                        <div className="mess-txt-wrapper">
+                          <div className="mess-txt">{data.message}</div>
                           {data.attachments.length > 0 &&
                             data.attachments.map((imgData, index) => {
                               let extractExt =
@@ -251,7 +333,7 @@ const ChatBox = () => {
                               );
 
                               return (
-                                <div className='w-100 mt-2' key={index}>
+                                <div className="w-100 mt-2" key={index}>
                                   {extractExt === "png" ||
                                   extractExt === "jpeg" ||
                                   extractExt === "jpg" ? (
@@ -269,11 +351,11 @@ const ChatBox = () => {
                               );
                             })}
                         </div>
-                        <div className='mess-datetime mt-1'>
-                          <div className='d-flex'>
-                            <div className='message-status' />
-                            <div className='ms-auto'>
-                              <span className='chat-datetime'>
+                        <div className="mess-datetime mt-1">
+                          <div className="d-flex">
+                            <div className="message-status" />
+                            <div className="ms-auto">
+                              <span className="chat-datetime">
                                 {moment(
                                   convertDateTimeIntoLocal(
                                     data.creationDateTime
@@ -288,10 +370,10 @@ const ChatBox = () => {
                   );
                 } else {
                   return (
-                    <div className='text-end mb-3' key={data.chatMessageID}>
-                      <div className='message-outbox message-box text-start'>
-                        <div className='mess-txt-wrapper'>
-                          <div className='mess-txt'>{data.message}</div>
+                    <div className="text-end mb-3" key={data.chatMessageID}>
+                      <div className="message-outbox message-box text-start">
+                        <div className="mess-txt-wrapper">
+                          <div className="mess-txt">{data.message}</div>
                           {data.attachments.length > 0 &&
                             data.attachments.map((imgData, index) => {
                               let extractExt =
@@ -305,7 +387,7 @@ const ChatBox = () => {
                                 extractExt === "jpg"
                               ) {
                                 return (
-                                  <div className='w-100 mt-2' key={index}>
+                                  <div className="w-100 mt-2" key={index}>
                                     <IconElement
                                       applyClass={
                                         "icon-download d-flex justify-content-start"
@@ -319,11 +401,11 @@ const ChatBox = () => {
                               }
                             })}
                         </div>
-                        <div className='mess-datetime mt-1'>
-                          <div className='d-flex'>
-                            <div className='message-status' />
-                            <div className='ms-auto'>
-                              <span className='chat-datetime'>
+                        <div className="mess-datetime mt-1">
+                          <div className="d-flex">
+                            <div className="message-status" />
+                            <div className="ms-auto">
+                              <span className="chat-datetime">
                                 {moment(
                                   convertDateTimeIntoLocal(
                                     data.creationDateTime
@@ -340,9 +422,9 @@ const ChatBox = () => {
               })
             : null}
         </div>
-        <div className='chat-box-footer'>
+        <div className="chat-box-footer">
           <form>
-            <div className='d-flex align-items-center position-relative'>
+            <div className="d-flex align-items-center position-relative">
               {file && (
                 <div className={styles["uploaded-file-section"]}>
                   <div className={styles["file-upload"]}>
@@ -351,7 +433,8 @@ const ChatBox = () => {
                         lg={3}
                         md={3}
                         sm={3}
-                        className={styles["chat-upload-icon"]}>
+                        className={styles["chat-upload-icon"]}
+                      >
                         <IconElement applyClass={"icon-file"} />
                         <p className={styles["chat-upload-text"]}>
                           {file.name}
@@ -369,10 +452,10 @@ const ChatBox = () => {
                 </div>
               )}
 
-              <div className='textarea-block col pe-1'>
+              <div className="textarea-block col pe-1">
                 <InputFIeld
-                  type='text'
-                  applyClass='chatSenderInput'
+                  type="text"
+                  applyClass="chatSenderInput"
                   value={message}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
@@ -387,12 +470,12 @@ const ChatBox = () => {
 
               <div>
                 <IconElement
-                  applyClass='icon-send cursor-pointer'
+                  applyClass="icon-send cursor-pointer"
                   onClick={handleClickSaveChat}
                 />
-                <span className='fw-bold cursor-pointer upload-file-wrapper'>
+                <span className="fw-bold cursor-pointer upload-file-wrapper">
                   <IconElement
-                    applyClass='icon-attachment'
+                    applyClass="icon-attachment"
                     isFile={true}
                     onFileChange={(e) => {
                       const selectedFile = e.target.files[0];
