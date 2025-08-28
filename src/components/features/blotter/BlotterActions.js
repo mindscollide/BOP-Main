@@ -39,6 +39,7 @@ import { blotterApi, watchListApi } from "@/common/apiend_points";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
 import { setForwardQuoteModalData } from "@/store/BlotterSlicer/BlotterSlicer";
 import {
+  setChatModal,
   setDiscountingQuoteModal,
   setDiscountingRFQModal,
   setForwardQuoteModal,
@@ -2174,6 +2175,7 @@ export const GetSpotTransactionDetailsApi = createAsyncThunk(
               )
           ) {
             dispatch(setTransactionInfoModal(true));
+            dispatch(setChatModal(false));
 
             return {
               response: response.data.responseResult,
@@ -2244,6 +2246,7 @@ export const GetForwardTransactionDetailsApi = createAsyncThunk(
           ) {
             if (val !== 1) {
               dispatch(setTransactionInfoModal(true));
+              dispatch(setChatModal(false));
             }
 
             return {
@@ -2317,6 +2320,7 @@ export const GetFEDiscountingTransactionDetailsApi = createAsyncThunk(
           ) {
             if (val !== 1) {
               dispatch(setTransactionInfoModal(true));
+              dispatch(setChatModal(false));
             }
             return {
               response: response.data.responseResult,
@@ -2391,6 +2395,7 @@ export const GetNonFEDiscountingTransactionDetailsApi = createAsyncThunk(
           ) {
             if (val !== 1) {
               dispatch(setTransactionInfoModal(true));
+              dispatch(setChatModal(false));
             }
 
             return {

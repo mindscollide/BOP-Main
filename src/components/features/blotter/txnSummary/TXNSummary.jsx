@@ -425,15 +425,27 @@ const TXNSummary = () => {
   };
 
   // Handler for opening chat modal
-  const handleClickChat = (txnID, treasuryPersonID) => {
+  const handleClickChat = (
+    txnID,
+    treasuryPersonID,
+    natureType,
+    natureTypeId,
+    clientName
+  ) => {
     let Data = {
       TranscationID: txnID,
+    };
+    let ChatData = {
+      natureType,
+      natureTypeId,
+      clientName,
     };
     dispatch(
       getAllChatByTransactionId({
         navigate,
         Data,
         treasuryPersonID,
+        ChatData,
       })
     );
   };
@@ -524,22 +536,28 @@ const TXNSummary = () => {
   // ActionButtons component for table actions column
   const ActionButtons = ({ record }) => {
     return (
-      <Box display='flex' justifyContent='end' alignItems={"center"} gap={1}>
+      <Box display="flex" justifyContent="end" alignItems={"center"} gap={1}>
         {/* Conditional rendering based on transaction status */}
         {record.statusID === 5 || record.statusID === 4 ? (
           <CustomButton
-            icon={<i className='icon-chat2'></i>}
+            icon={<i className="icon-chat2"></i>}
             size={"small"}
-            className='btn btn-sm btn-danger chat-btn-trigge blotterCheckerButtonr d-flex justify-content-center align-items-center'
+            className="btn btn-sm btn-danger chat-btn-trigge blotterCheckerButtonr d-flex justify-content-center align-items-center"
             onClick={() =>
-              handleClickChat(record.pK_TransactionID, record.treasuryPersonID)
+              handleClickChat(
+                record.pK_TransactionID,
+                record.treasuryPersonID,
+                record.natureType,
+                record.natureTypeId,
+                record.corporateName
+              )
             }
           />
         ) : record.statusID === 3 || record.statusID === 7 ? (
           <CustomButton
-            icon={<i className='icon-view-comment blotterTableIconSize ' />}
+            icon={<i className="icon-view-comment blotterTableIconSize " />}
             size={"small"}
-            className='btn btn-sm btn-primary d-flex justify-content-center align-items-center'
+            className="btn btn-sm btn-primary d-flex justify-content-center align-items-center"
             onClick={() => handleShowCommentModal(record.comment)}
           />
         ) : null}
@@ -550,20 +568,21 @@ const TXNSummary = () => {
           size={"small"}
           icon={
             <svg
-              id='info_Layer_1'
-              x='0px'
-              y='0px'
-              width='12px'
-              height='12px'
-              fill='#ffffff'
-              viewBox='0 0 55 55'>
+              id="info_Layer_1"
+              x="0px"
+              y="0px"
+              width="12px"
+              height="12px"
+              fill="#ffffff"
+              viewBox="0 0 55 55"
+            >
               <g>
-                <path d='M41.407,45.858c0.067,0.838,0.156,1.672,0.183,2.508   c0.005,0.152-0.205,0.376-0.37,0.461c-1.347,0.687-2.679,1.416-4.069,2.005c-3.305,1.396-6.715,2.5-10.277,3.009   c-1.447,0.206-2.936,0.154-4.403,0.153c-0.477-0.001-0.968-0.178-1.424-0.345c-1.313-0.481-1.98-1.443-1.948-2.85   c0.015-0.583,0.103-1.179,0.253-1.744c1.863-7.013,3.752-14.02,5.61-21.037c0.199-0.751,0.327-1.543,0.341-2.318   c0.021-1.142-0.615-1.925-1.667-2.331c-1.605-0.618-3.258-0.468-4.89-0.161c-1.764,0.332-3.468,0.873-5.149,1.884   c-0.074-0.978-0.157-1.863-0.187-2.75c-0.005-0.127,0.234-0.307,0.396-0.388c1.334-0.67,2.648-1.389,4.021-1.968   c3.327-1.403,6.755-2.512,10.337-3.021c1.465-0.208,2.994-0.294,4.457-0.125c2.782,0.323,3.808,2.02,3.073,4.73   c-0.94,3.474-1.914,6.941-2.838,10.419c-1.049,3.953-2.087,7.912-3.077,11.879c-0.524,2.107,0.385,3.449,2.526,3.839   c2.048,0.376,4.038-0.017,5.981-0.634C39.313,46.75,40.296,46.295,41.407,45.858z'></path>
-                <circle cx='27.5' cy='7.608' r='6.609'></circle>
+                <path d="M41.407,45.858c0.067,0.838,0.156,1.672,0.183,2.508   c0.005,0.152-0.205,0.376-0.37,0.461c-1.347,0.687-2.679,1.416-4.069,2.005c-3.305,1.396-6.715,2.5-10.277,3.009   c-1.447,0.206-2.936,0.154-4.403,0.153c-0.477-0.001-0.968-0.178-1.424-0.345c-1.313-0.481-1.98-1.443-1.948-2.85   c0.015-0.583,0.103-1.179,0.253-1.744c1.863-7.013,3.752-14.02,5.61-21.037c0.199-0.751,0.327-1.543,0.341-2.318   c0.021-1.142-0.615-1.925-1.667-2.331c-1.605-0.618-3.258-0.468-4.89-0.161c-1.764,0.332-3.468,0.873-5.149,1.884   c-0.074-0.978-0.157-1.863-0.187-2.75c-0.005-0.127,0.234-0.307,0.396-0.388c1.334-0.67,2.648-1.389,4.021-1.968   c3.327-1.403,6.755-2.512,10.337-3.021c1.465-0.208,2.994-0.294,4.457-0.125c2.782,0.323,3.808,2.02,3.073,4.73   c-0.94,3.474-1.914,6.941-2.838,10.419c-1.049,3.953-2.087,7.912-3.077,11.879c-0.524,2.107,0.385,3.449,2.526,3.839   c2.048,0.376,4.038-0.017,5.981-0.634C39.313,46.75,40.296,46.295,41.407,45.858z"></path>
+                <circle cx="27.5" cy="7.608" r="6.609"></circle>
               </g>
             </svg>
           }
-          className='btn btn-sm btn-primary info-btn-trigger ms-1 d-flex justify-content-center align-items-center'
+          className="btn btn-sm btn-primary info-btn-trigger ms-1 d-flex justify-content-center align-items-center"
         />
       </Box>
     );
@@ -703,7 +722,8 @@ const TXNSummary = () => {
                 : record.status === "Cancelled"
                 ? "statusCancelledVal"
                 : "color-red"
-            }>
+            }
+          >
             {record.status}
           </span>
         ),
@@ -713,22 +733,22 @@ const TXNSummary = () => {
         label: "",
         width: 80,
         render: (record) => (
-          <Box display='flex' justifyContent='center' alignItems='center'>
+          <Box display="flex" justifyContent="center" alignItems="center">
             {/* Conditional action buttons based on transaction status */}
             {record.statusID === 4 && record.isRFQ === true ? (
               <>
                 <CustomButton
-                  icon={<i className='icon-check'></i>}
+                  icon={<i className="icon-check"></i>}
                   size={"small"}
-                  className='btn btn-sm btn-success me-1 blotterCheckerButton d-flex justify-content-center align-items-center'
+                  className="btn btn-sm btn-success me-1 blotterCheckerButton d-flex justify-content-center align-items-center"
                   onClick={() =>
                     handleCheckerAccept(record.pK_TransactionID, "Accepted")
                   }
                 />
                 <CustomButton
-                  icon={<i className='icon-close'></i>}
+                  icon={<i className="icon-close"></i>}
                   size={"small"}
-                  className='btn btn-sm btn-danger me-1 blotterCheckerButton d-flex justify-content-center align-items-center '
+                  className="btn btn-sm btn-danger me-1 blotterCheckerButton d-flex justify-content-center align-items-center "
                   onClick={() =>
                     handleCheckerAccept(record.pK_TransactionID, "Rejected")
                   }
@@ -736,18 +756,18 @@ const TXNSummary = () => {
               </>
             ) : record.statusID === 1 ? (
               <CustomButton
-                icon={<i className='icon-close'></i>}
+                icon={<i className="icon-close"></i>}
                 size={"small"}
-                className='btn btn-sm btn-danger me-1 blotterCheckerButton d-flex justify-content-center align-items-center '
+                className="btn btn-sm btn-danger me-1 blotterCheckerButton d-flex justify-content-center align-items-center "
                 onClick={() =>
                   handleCheckerAccept(record.pK_TransactionID, "Cancelled")
                 }
               />
             ) : record.statusID === 2 || record.statusID === 5 ? (
               <CustomButton
-                icon={<i className='icon-close'></i>}
+                icon={<i className="icon-close"></i>}
                 size={"small"}
-                className='btn btn-sm btn-danger me-1 blotterCheckerButton d-flex justify-content-center align-items-center'
+                className="btn btn-sm btn-danger me-1 blotterCheckerButton d-flex justify-content-center align-items-center"
                 onClick={() =>
                   handleCheckerAccept(
                     record.pK_TransactionID,
@@ -779,10 +799,11 @@ const TXNSummary = () => {
       <TableContainer
         ref={tableContainerRef}
         sx={{ maxHeight: 400, overflow: "auto" }}
-        id='TXNSummary_Table'
-        style={{ width: "100%", fontSize: "14px" }}>
-        <Table stickyHeader size='small'>
-          <TableHead className='TXNSummary_TableHead'>
+        id="TXNSummary_Table"
+        style={{ width: "100%", fontSize: "14px" }}
+      >
+        <Table stickyHeader size="small">
+          <TableHead className="TXNSummary_TableHead">
             <TableRow>
               {columns.map((column) => (
                 <TableCell
@@ -794,7 +815,8 @@ const TXNSummary = () => {
                     fontWeight: "bold",
                     backgroundColor: "var(--color-primary) !important",
                     color: "white",
-                  }}>
+                  }}
+                >
                   {column.label}
                 </TableCell>
               ))}
@@ -819,7 +841,8 @@ const TXNSummary = () => {
                           whiteSpace: "nowrap",
                           fontSize: "13px",
                           fontWeight: "500",
-                        }}>
+                        }}
+                      >
                         {column.render ? column.render(row) : row[column.id]}
                       </TableCell>
                     );
@@ -831,7 +854,7 @@ const TXNSummary = () => {
         </Table>
         {/* Loading indicator for infinite scroll */}
         {hasReachedBottom && (
-          <Box display='flex' justifyContent='center' p={2}>
+          <Box display="flex" justifyContent="center" p={2}>
             <CircularProgress size={24} />
           </Box>
         )}

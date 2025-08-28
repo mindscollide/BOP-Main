@@ -579,8 +579,10 @@ const RFQModal = () => {
 
         // Dispatch appropriate action based on context
         if (iBuySellData !== null) {
+          console.log("Payload of SaveSpotTransaction", Data);
           dispatch(SaveSpotTransactionAPI({ navigate, Data, setErrorMessage }));
         } else {
+          console.log("Payload of SaveSpotTransactionRFQ", Data);
           dispatch(SaveSpotTransactionRFQ({ navigate, Data, setErrorMessage }));
         }
       }
@@ -610,7 +612,7 @@ const RFQModal = () => {
                   {isBranch ? (
                     <>
                       <p className="heading-RfqModal">
-                        {counterPartyDetails.branchName}
+                        {counterPartyDetails?.branchName}
                       </p>
                       <p className="heading-branchCode">
                         Branch Code: {counterPartyDetails.branchCode}
