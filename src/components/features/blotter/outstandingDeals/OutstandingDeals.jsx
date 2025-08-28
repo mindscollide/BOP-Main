@@ -58,6 +58,7 @@ import {
 } from "@/store/BlotterSlicer/BlotterSlicer";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import { useNotification } from "@/context/NotificationProvider";
+import { Empty } from "antd";
 
 // Custom styles for the component
 const useStyles = makeStyles((theme) => ({
@@ -117,8 +118,10 @@ const OutstandingDeals = ({
   treasuryOutStandingDeal,
   hasBottomReachedOutstanding,
 }) => {
-
-  console.log(hasBottomReachedOutstanding, "hasBottomReachedOutstandinghasBottomReachedOutstanding")
+  console.log(
+    hasBottomReachedOutstanding,
+    "hasBottomReachedOutstandinghasBottomReachedOutstanding"
+  );
   const classes = useStyles();
   const { showMessage } = useNotification();
   const dispatch = useDispatch();
@@ -656,13 +659,27 @@ const OutstandingDeals = ({
                 </TableRow>
               );
             })}
-
-            {hasBottomReachedOutstanding && (
-              <Box display='flex' justifyContent='center' p={2}>
-                <CircularProgress size={24} />
-              </Box>
-            )}
           </TableBody>
+          {Array.isArray(treasuryOutStandingDeal) &&
+            treasuryOutStandingDeal.length === 0 && (
+              <>
+                <Empty
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    flexDirection: "column",
+                    maxWidth: "100%",
+                    textAlign: "center",
+                  }}
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}></Empty>
+              </>
+            )}
+          {hasBottomReachedOutstanding && (
+            <Box display='flex' justifyContent='center' p={2}>
+              <CircularProgress size={24} />
+            </Box>
+          )}
         </Table>
       </TableContainer>
 

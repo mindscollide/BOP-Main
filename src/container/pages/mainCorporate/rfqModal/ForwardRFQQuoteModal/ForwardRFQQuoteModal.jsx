@@ -21,6 +21,8 @@ import {
 import { useNavigate } from "react-router-dom";
 import { setForwardQuoteModalData } from "@/store/BlotterSlicer/BlotterSlicer";
 import { NumericFormat } from "react-number-format";
+import moment from "moment";
+import { formatDateUTCToGMT } from "@/components/utils/timeFunction";
 
 const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
 
@@ -33,6 +35,8 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
   const [readyRateValue, setReadyRateValue] = useState("");
 
   const [forwardQuoteData, setForwardQuoteData] = useState(null);
+
+  console.log(forwardQuoteData, "forwardQuoteData")
   const forwardQuoteModal = useSelector(
     (state) => state.modalReducer.forwardQuoteModal
   );
@@ -206,9 +210,18 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                     Maturity Date
                   </label>
                   <p className={styles["DealViewModal__value"]}>
-                    {forwardQuoteData?.rfqDealDetails !== null
-                      ? forwardQuoteData?.rfqDealDetails.tenorDate
-                      : "N/A"}
+                    {forwardQuoteData?.rfqDealDetails !== null ? (
+                      <>
+                        {" "}
+                        {moment(
+                          formatDateUTCToGMT(
+                            forwardQuoteData?.rfqDealDetails.tenorDate
+                          )
+                        ).format("ddd, MMM DD, YYYY")}
+                      </>
+                    ) : (
+                      "N/A"
+                    )}
                   </p>
                 </Col>
                 <Col sm={12} md={12} lg={12}>
@@ -226,9 +239,18 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                     Option End Date
                   </label>
                   <p className={styles["DealViewModal__value"]}>
-                    {forwardQuoteData?.rfqDealDetails !== null
-                      ? forwardQuoteData?.rfqDealDetails.optionsDate
-                      : "N/A"}
+                    {forwardQuoteData?.rfqDealDetails !== null ? (
+                      <>
+                        {" "}
+                        {moment(
+                          formatDateUTCToGMT(
+                            forwardQuoteData?.rfqDealDetails.optionsDate
+                          )
+                        ).format("ddd, MMM DD, YYYY")}
+                      </>
+                    ) : (
+                      "N/A"
+                    )}
                   </p>
                 </Col>
                 <Col sm={12} md={12} lg={12}>

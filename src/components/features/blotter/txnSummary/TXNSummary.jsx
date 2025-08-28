@@ -44,6 +44,7 @@ import {
   Box,
   Typography,
 } from "@mui/material";
+import { Empty } from "antd";
 
 const TXNSummary = () => {
   // Hook initializations
@@ -833,6 +834,20 @@ const TXNSummary = () => {
           <Box display='flex' justifyContent='center' p={2}>
             <CircularProgress size={24} />
           </Box>
+        )}
+        {Array.isArray(blotterdata) && blotterdata.length === 0 && (
+          <>
+            <Empty
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "column",
+                maxWidth: "100%",
+                textAlign: "center",
+              }}
+              image={Empty.PRESENTED_IMAGE_SIMPLE}></Empty>
+          </>
         )}
       </TableContainer>
 

@@ -31,6 +31,7 @@ import {
   GetSpotTransactionDetailsApi,
   RejectRFQTransaction,
 } from "../BlotterActions";
+import { Empty } from "antd";
 
 // Custom styles for the component
 const useStyles = makeStyles((theme) => ({
@@ -477,6 +478,21 @@ const TXNTreasurySummary = ({
             })}
           </TableBody>
         </Table>
+        {Array.isArray(treasuryTXNSummary) &&
+          treasuryTXNSummary.length === 0 && (
+            <>
+              <Empty
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  flexDirection: "column",
+                  maxWidth: "100%",
+                  textAlign: "center",
+                }}
+                image={Empty.PRESENTED_IMAGE_SIMPLE}></Empty>
+            </>
+          )}
         {hasBottomReachedTreasuryTXN && (
           <Box
             display='flex'

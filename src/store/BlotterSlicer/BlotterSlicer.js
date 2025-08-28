@@ -37,6 +37,8 @@ import {
   CalculateFEDiscountingAPI,
   CalculateFESwapAndDiscountingApi,
   SaveSpotTransactionRFQ,
+  RFQForwardTransactionQuotation,
+  RFQFEDiscountingTransactionQuotation,
 } from "@/components/features/blotter/BlotterActions";
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -46,6 +48,13 @@ const BlotterSlicer = createSlice({
     responseMessage: "",
     Loader: false,
     error: null,
+    txnSummaryData: [],
+    txnSummaryDataTotalRecords: 0,
+    txnSummarysRow: 0,
+
+    outStandingDealData: [],
+    outStandingDealDataTotalRecords: 0,
+    outStandingDealsRow: 0,
     getBlotterApiData: null,
     getBlotterOutstandingData: null,
     saveSpotTransaction: null,
@@ -75,8 +84,27 @@ const BlotterSlicer = createSlice({
     totalCountOutstandingData: 0,
     CalculateFEDiscountingData: null,
     CalculateFESwapAndDiscountingRate: null,
+    forwardRfqQuotation: null,
   },
   reducers: {
+    setTxnSummaryData: (state, { payload }) => {
+      state.txnSummaryData = payload;
+    },
+    setTxnSummaryDataTotalRecords: (state, { payload }) => {
+      state.txnSummaryDataTotalRecords = payload;
+    },
+    setTxnSummarysRow: (state, { payload }) => {
+      state.txnSummarysRow = payload;
+    },
+    setOutstandingDealData: (state, { payload }) => {
+      state.outStandingDealData = payload;
+    },
+    setOutstandingDealTotalRecords: (state, { payload }) => {
+      state.outStandingDealDataTotalRecords = payload;
+    },
+    setOutstandingDealsRow: (state, { payload }) => {
+      state.outStandingDealsRow = payload;
+    },
     setCalculateNonFeSwapAndDiscountingRate: (state, { payload }) => {
       state.calculateNonFeSwapAndDiscountingRate = payload;
     },
@@ -118,6 +146,114 @@ const BlotterSlicer = createSlice({
     setBlotterLoader: (state, { payload }) => {
       state.Loader = payload; // Set the loader state for Blotter operations
     },
+    // Replace txn if exists, else prepend it
+    updateTreasuryTxnSummary: (state, { payload }) => {
+      const existingIndex = state.txnSummaryData.findIndex(
+        (item) => item.pK_TransactionID === payload.pK_TransactionID
+      );
+
+      if (existingIndex !== -1) {
+        state.txnSummaryData[existingIndex] = payload;
+      } else {
+        state.txnSummaryData.unshift(payload);
+        state.txnSummaryDataTotalRecords += 1;
+      }
+
+      state.txnSummarysRow = state.txnSummaryData.length;
+    },
+
+    // Remove txn by ID
+    removeTreasuryTxnFromSummary: (state, { payload: transactionId }) => {
+      state.txnSummaryData = state.txnSummaryData.filter(
+        (item) => item.pK_TransactionID !== transactionId
+      );
+      state.txnSummaryDataTotalRecords -= 1;
+      state.txnSummarysRow = state.txnSummaryData.length;
+    },
+    updateOutstandingDeals: (state, { payload }) => {
+      const { transaction, type } = payload;
+      let updated = [...state.outStandingDealData];
+
+      switch (type) {
+        case "added": {
+          const index = updated.findIndex(
+            (item) => item.pK_TransactionID === transaction.pK_TransactionID
+          );
+
+          if (index !== -1) {
+            updated[index] = transaction;
+          } else {
+            updated.unshift(transaction);
+            state.outStandingDealDataTotalRecords += 1;
+          }
+          break;
+        }
+
+        case "quoted": {
+          updated = updated.map((item) =>
+            item.pK_TransactionID === transaction.pK_TransactionID
+              ? {
+                  ...item,
+                  bid: transaction.bid,
+                  offer: transaction.offer,
+                  amount: transaction.amount,
+                  statusID: transaction.statusID,
+                  rfqTimerDetails:
+                    transaction.rfqTimerDetails ?? item.rfqTimerDetails,
+                }
+              : item
+          );
+          break;
+        }
+
+        case "expired":
+        case "accepted":
+        case "cancelled":
+        case "rejected": {
+          updated = updated.filter(
+            (item) => item.pK_TransactionID !== transaction.pK_TransactionID
+          );
+          state.outStandingDealDataTotalRecords -= 1;
+          break;
+        }
+
+        case "assigned": {
+          updated = updated.map((item) =>
+            item.pK_TransactionID === transaction.transactionID
+              ? {
+                  ...item,
+                  status:
+                    Number(localStorage.getItem("userID")) ===
+                    Number(transaction.treasuryPersonID)
+                      ? transaction.statusForAssignedUser
+                      : transaction.statusForOtherTreasury,
+                  statusID: transaction.statusID,
+                  treasuryPersonID: transaction.treasuryPersonID,
+                }
+              : item
+          );
+          break;
+        }
+
+        case "cancellationRequest": {
+          const exists = updated.find(
+            (item) => item.pK_TransactionID === transaction.pK_TransactionID
+          );
+
+          if (!exists) {
+            updated.unshift(transaction);
+            state.outStandingDealDataTotalRecords += 1;
+          }
+          break;
+        }
+
+        default:
+          break;
+      }
+
+      state.outStandingDealData = updated;
+      state.outStandingDealsRow = updated.length;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -148,15 +284,25 @@ const BlotterSlicer = createSlice({
       // Fulfilled state (when the API call succeeds CorporateBlotterDataAPI)
       .addCase(BlotterDataAPI.fulfilled, (state, { payload }) => {
         state.Loader = false;
-        state.getBlotterApiData = payload?.response;
+        state.getBlotterApiData = payload?.response ?? null;
+
+        state.txnSummaryData.push(...(payload?.response?.tnxSummary ?? []));
+
+        state.txnSummaryDataTotalRecords = payload?.response?.totalCount ?? 0;
+        state.txnSummarysRow = state.txnSummaryData.length;
+
         state.error = null;
-        state.responseMessage = payload?.message;
+        state.responseMessage = payload?.message ?? "";
       })
+
       // Rejected state (when the API call fails CorporateBlotterDataAPI)
       .addCase(BlotterDataAPI.rejected, (state, action) => {
         console.log(action, "actionaction");
         state.Loader = false;
         state.error = action.payload;
+        state.txnSummarysRow = 0;
+        state.txnSummaryDataTotalRecords = 0;
+        state.txnSummaryData = [];
         state.getBlotterApiData = null;
       })
       .addCase(GetBlotterOutstandingDealsDataAPI.pending, (state) => {
@@ -167,15 +313,23 @@ const BlotterSlicer = createSlice({
         GetBlotterOutstandingDealsDataAPI.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
-          state.getBlotterOutstandingData = payload?.response;
+          state.getBlotterOutstandingData = payload?.response ?? null;
+          state.outStandingDealData.push(
+            ...(payload?.response?.outstandingDeals ?? [])
+          );
+          state.outStandingDealDataTotalRecords = payload?.response?.totalCount;
+          state.outStandingDealsRow = state.outStandingDealData.length;
           state.error = null;
-          state.responseMessage = payload?.message;
+          state.responseMessage = payload?.message ?? "";
         }
       )
       .addCase(GetBlotterOutstandingDealsDataAPI.rejected, (state, action) => {
         state.Loader = false;
         state.error = action.payload;
         state.getBlotterOutstandingData = null;
+        state.outStandingDealDataTotalRecords = 0;
+        state.outStandingDealsRow = 0;
+        state.outStandingDealData = [];
       })
       .addCase(SaveSpotTransactionAPI.pending, (state) => {
         state.Loader = true;
@@ -526,11 +680,58 @@ const BlotterSlicer = createSlice({
       .addCase(SaveSpotTransactionRFQ.rejected, (state, { payload }) => {
         state.Loader = false;
         state.responseMessage = payload;
-      });
+      })
+      .addCase(RFQForwardTransactionQuotation.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(
+        RFQForwardTransactionQuotation.fulfilled,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.rfqSaveQuotation = payload?.response;
+          state.error = null;
+          state.responseMessage = payload?.message;
+        }
+      )
+      .addCase(RFQForwardTransactionQuotation.rejected, (state, action) => {
+        console.log(action, "actionaction");
+        state.Loader = false;
+        state.error = action.payload;
+        state.responseMessage = action?.payload;
+        state.rfqSaveQuotation = null;
+      })
+      .addCase(RFQFEDiscountingTransactionQuotation.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(
+        RFQFEDiscountingTransactionQuotation.fulfilled,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.forwardRfqQuotation = payload?.response;
+          state.error = null;
+          state.responseMessage = payload?.message;
+        }
+      )
+      .addCase(
+        RFQFEDiscountingTransactionQuotation.rejected,
+        (state, { payload }) => {
+          state.Loader = false;
+          state.error = payload;
+          state.responseMessage = payload;
+          state.forwardRfqQuotation = null;
+        }
+      );
   },
 });
 
 export const {
+  updateOutstandingDeals,
+  setTxnSummaryData,
+  setOutstandingDealData,
+  setOutstandingDealTotalRecords,
+  setOutstandingDealsRow,
+  setTxnSummaryDataTotalRecords,
+  setTxnSummarysRow,
   setDiscountingQuoteModalData,
   setForwardQuoteModalData,
   setActiveTreasuryTab,
@@ -543,7 +744,9 @@ export const {
   setSpotQuoteModalData,
   setBlotterLoader,
   setCalculateFESwapAndDiscountingRate,
-  setCalculateNonFeSwapAndDiscountingRate
+  setCalculateNonFeSwapAndDiscountingRate,
+  updateTreasuryTxnSummary,
+  removeTreasuryTxnFromSummary,
 } = BlotterSlicer.actions;
 
 export default BlotterSlicer.reducer;

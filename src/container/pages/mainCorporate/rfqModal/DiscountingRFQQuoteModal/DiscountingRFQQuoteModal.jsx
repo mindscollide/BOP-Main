@@ -137,7 +137,7 @@ const DiscountingRFQQuoteModal = () => {
       };
       dispatch(RFQNonFEDiscountingTransactionQuotation({ navigate, Data }));
     } else if (DiscountingQuoteData?.natureType === 3) {
-      let Date = {
+      let Data= {
         PK_TransactionID: DiscountingQuoteData.pK_TransactionID,
         Ready: Number(readyValue),
         DiscountingFactor: Number(kiborValue),
