@@ -7,10 +7,7 @@ import InputFIeld from "@/components/common/inputField/InputField";
 import CustomButton from "@/components/common/globalButton/button";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import {
-  setForwardQuoteModal,
-  setViewDealModal,
-} from "@/store/modalSlice/modalSlicer";
+import { setForwardQuoteModal } from "@/store/modalSlice/modalSlicer";
 import {
   AcceptTransactionAPI,
   GetForwardTransactionDetailsApi,
@@ -23,6 +20,7 @@ import { setForwardQuoteModalData } from "@/store/BlotterSlicer/BlotterSlicer";
 import { NumericFormat } from "react-number-format";
 import moment from "moment";
 import { formatDateUTCToGMT } from "@/components/utils/timeFunction";
+import CancelReasonModal from "@/components/features/blotter/cancelReasonModal/cancelReasonModal";
 
 const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
 
@@ -33,10 +31,13 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
   const [readyValue, setReadyValue] = useState("");
   const [swapValue, setSwapValue] = useState("");
   const [readyRateValue, setReadyRateValue] = useState("");
+  const [cancelReasonModal, setCancelReasonModal] = useState(false);
+  const [cancelReasonComment, setCancelReasonComment] = useState("");
+  const [selectedTransactionID, setSelectedTransactionID] = useState(null);
 
   const [forwardQuoteData, setForwardQuoteData] = useState(null);
 
-  console.log(forwardQuoteData, "forwardQuoteData")
+  console.log(forwardQuoteData, "forwardQuoteData");
   const forwardQuoteModal = useSelector(
     (state) => state.modalReducer.forwardQuoteModal
   );
@@ -127,10 +128,34 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
     let val = 1;
     dispatch(AcceptTransactionAPI({ navigate, Data, val }));
   };
+  // const handleReject = (transactionID) => {
+  //   const Data = { PK_TransactionID: transactionID, Comment: "Hello" };
+  //   let val = 1;
+  //   dispatch(RejectTransactionAPI({ navigate, Data, val }));
+  // };
   const handleReject = (transactionID) => {
-    const Data = { PK_TransactionID: transactionID, Comment: "Hello" };
+    // Store the transaction ID and open the modal
+    setSelectedTransactionID(transactionID);
+    setCancelReasonModal(true);
+  };
+  const handleRejectWithReason = () => {
+    if (cancelReasonComment.trim() === "") {
+      // empty msg
+      return;
+    }
+
+    // Use the stored transaction ID and user's comment
+    const Data = {
+      PK_TransactionID: selectedTransactionID,
+      Comment: cancelReasonComment,
+    };
     let val = 1;
+    //Reject API Call
     dispatch(RejectTransactionAPI({ navigate, Data, val }));
+
+    // Reset Modal State
+    setCancelReasonModal(false);
+    setCancelReasonComment("");
   };
   const calculateNewReadyValue = (instrumentName) => {
     const numReady = parseFloat(readyValue) || 0;
@@ -153,7 +178,8 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
               sm={3}
               md={3}
               lg={3}
-              className={styles["DealViewModal_oneSide"]}>
+              className={styles["DealViewModal_oneSide"]}
+            >
               <Row>
                 <Col sm={12} md={12} lg={12}>
                   <label className={styles["DealViewModal__label"]}>Side</label>
@@ -267,15 +293,16 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
               sm={9}
               md={9}
               lg={9}
-              className={styles["DealViewModal_SecondSide"]}>
-              <Row className='mb-3'>
+              className={styles["DealViewModal_SecondSide"]}
+            >
+              <Row className="mb-3">
                 <Col sm={10} md={10} lg={10}>
                   {isBranch && (
-                    <div className='mb-3 color-black br-detail-hd'>
+                    <div className="mb-3 color-black br-detail-hd">
                       <span className={styles["company-name"]}>
                         {forwardQuoteData?.branchName}
                       </span>
-                      <span className='br-code fs-sm'>
+                      <span className="br-code fs-sm">
                         ({forwardQuoteData?.branchCode})
                       </span>
                     </div>
@@ -284,7 +311,7 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                   <div className={styles["company-name-hd"]}>
                     {forwardQuoteData?.corporateName}
                   </div>
-                  <div className='d-inline-block txn-id fs-normal color-black'>
+                  <div className="d-inline-block txn-id fs-normal color-black">
                     {forwardQuoteData?.txnid}
                   </div>
                 </Col>
@@ -292,27 +319,29 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                   sm={2}
                   md={2}
                   lg={2}
-                  className='d-flex justify-content-center'>
+                  className="d-flex justify-content-center"
+                >
                   <IconElement
                     onClick={closeModal}
                     iconClass={"icon-close fs-4 cursor-pointer"}
                   />
                 </Col>
               </Row>
-              <section className='d-flex justify-content-center align-items-center overflow-hidden h-75'>
+              <section className="d-flex justify-content-center align-items-center overflow-hidden h-75">
                 <Row>
                   <Col
                     sm={12}
                     md={12}
                     lg={12}
-                    className='d-flex align-items-center gap-2'>
+                    className="d-flex align-items-center gap-2"
+                  >
                     <label className={styles["DealViewModal_label"]}>
                       Ready
                     </label>
                     <NumericFormat
                       customInput={InputFIeld}
                       value={readyValue}
-                      thousandSeparator=','
+                      thousandSeparator=","
                       disabled={!forwardQuoteData?.isRFQ}
                       applyClass={"DiscountingQuoteInput"}
                       maxLength={10}
@@ -323,7 +352,8 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                     sm={12}
                     md={12}
                     lg={12}
-                    className='d-flex my-3 align-items-center gap-2'>
+                    className="d-flex my-3 align-items-center gap-2"
+                  >
                     <label className={styles["DealViewModal_label"]}>
                       Swap
                     </label>
@@ -331,7 +361,7 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                       customInput={InputFIeld}
                       value={Number(swapValue)}
                       disabled={!forwardQuoteData?.isRFQ}
-                      thousandSeparator=','
+                      thousandSeparator=","
                       applyClass={"DiscountingQuoteInput"}
                       maxLength={10}
                       onChange={(e) => handleChangeRate(e, "swapValue")}
@@ -346,7 +376,8 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                     sm={12}
                     md={12}
                     lg={12}
-                    className='d-flex align-items-center gap-2'>
+                    className="d-flex align-items-center gap-2"
+                  >
                     <label className={styles["DealViewModal_label"]}>
                       Rate
                     </label>
@@ -362,7 +393,8 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                       sm={12}
                       md={12}
                       lg={12}
-                      className='d-flex align-items-center gap-2 mt-4'>
+                      className="d-flex align-items-center gap-2 mt-4"
+                    >
                       <label className={styles["DealViewModal_label"]}></label>
                       <CustomButton
                         icon={<IconElement iconClass={"icon-send fs-5"} />}
@@ -378,7 +410,8 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                       sm={12}
                       md={12}
                       lg={12}
-                      className='d-flex align-items-center justify-content-center gap-2 mt-4'>
+                      className="d-flex align-items-center justify-content-center gap-2 mt-4"
+                    >
                       <CustomButton
                         icon={<IconElement iconClass={"icon-send fs-5"} />}
                         iconPosition={"left"}
@@ -405,6 +438,17 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
               </section>
             </Col>
           </Row>
+          <CancelReasonModal
+            cancelReasonModal={cancelReasonModal}
+            setCancelReasonModal={setCancelReasonModal}
+            handleClickReasonSubmit={handleRejectWithReason}
+            handleCloseReasonModal={() => {
+              setCancelReasonModal(false);
+              setCancelReasonComment("");
+            }}
+            cancelReasonComment={cancelReasonComment}
+            setCancelReasonComment={setCancelReasonComment}
+          />
         </>
       }
     />

@@ -184,10 +184,15 @@ const MIS = () => {
   ];
 
   const handleExpandClick = (index) => {
-    const isExpanded = expandedRowKeys.includes(index);
-
-    const newExpandedRowKeys = isExpanded ? [] : [index]; // 👈 only one row at a time
-    setExpandedRowKeys(newExpandedRowKeys);
+    setExpandedRowKeys((prevKeys) => {
+      if (prevKeys.includes(index)) {
+        // If already expanded, collapse it
+        return prevKeys.filter((key) => key !== index);
+      } else {
+        // Otherwise, expand along with existing ones
+        return [...prevKeys, index];
+      }
+    });
   };
 
   const handleChangeDate = (date, key) => {

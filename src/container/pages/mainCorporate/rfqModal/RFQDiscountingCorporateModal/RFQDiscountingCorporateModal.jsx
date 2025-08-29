@@ -441,6 +441,7 @@ const RFQDiscountingCorporateModal = () => {
                       value={AccountNumber}
                       name="AccountNumber"
                       applyClass="CalculatorTextfield"
+                      maxLength={25}
                     />
                   </div>
                 </Col>

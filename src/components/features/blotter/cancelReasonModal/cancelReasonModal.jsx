@@ -19,7 +19,7 @@ const CancelReasonModal = ({
   const handleHideModal = () => {
     setCancelReasonModal(false);
     setCancelReasonComment("");
-  }
+  };
   return (
     <GlobalModal
       show={cancelReasonModal}

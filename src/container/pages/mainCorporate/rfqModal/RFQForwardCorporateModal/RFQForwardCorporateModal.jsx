@@ -502,6 +502,7 @@ const RFQForwardCorporateModal = ({
                       onChange={handleChangeAcNo}
                       type="text"
                       value={accountNumber}
+                      maxLength={25}
                     />
                   </div>
                   {/* {accountError.status === true && (
