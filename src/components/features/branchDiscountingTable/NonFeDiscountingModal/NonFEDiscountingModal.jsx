@@ -47,7 +47,6 @@ const NonFEDiscountingModal = ({
   const GetAllActiveCorproates = useSelector(
     (state) => state.authReducer.GetAllActiveCorproates
   );
-  const [natureOfBusinessOptions, setNatureOfBusinessOptions] = useState(null);
   const [selectedNature, setSelectedNature] = useState(null);
   const [selectedCurrency, setSelectedCurrency] = useState(null);
   const [currencyOptions, setCurrencyOptions] = useState([]);
@@ -139,17 +138,17 @@ const NonFEDiscountingModal = ({
     }
     console.log(
       getAllInstrumentsForCounterPartiesData,
-      "getAllInstrumentsForCounterPartiesData"
+      "getAllInstrumentsForCounterPartiesData..."
     );
     try {
-      const { discountingApplicableInstruments } =
+      const { nonFEDiscountingApplicableInstruments } =
         getAllInstrumentsForCounterPartiesData;
       console.log(
-        discountingApplicableInstruments,
+        nonFEDiscountingApplicableInstruments,
         "getAllInstrumentsForCounterPartiesData"
       );
       // Process instruments to create dropdown options
-      const validInstruments = discountingApplicableInstruments
+      const validInstruments = nonFEDiscountingApplicableInstruments
         .map((instrument) => {
           // Only include instruments valid for both buy and sell
           if (instrument.isBuy) {
@@ -405,6 +404,7 @@ const NonFEDiscountingModal = ({
                         applyClass={"CalculatorTextfield"}
                         value={accNo}
                         onChange={(e) => handleChangeState("accNo", e)}
+                        maxLength={25}
                       />
                       {/* {errors.accNo && (
                         <span className="text-danger small">

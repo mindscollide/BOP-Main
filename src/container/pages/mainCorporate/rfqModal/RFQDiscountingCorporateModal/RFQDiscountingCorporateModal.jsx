@@ -69,7 +69,7 @@ const RFQDiscountingCorporateModal = () => {
     value: 0,
     label: "",
   });
-  console.log(typeOptionSelected, "typeOptionSelectedtypeOptionSelected")
+  console.log(typeOptionSelected, "typeOptionSelectedtypeOptionSelected");
   const [calculatedData, setCalulatedData] = useState({
     kiborValue: "",
     swapValue: "",
@@ -446,6 +446,7 @@ const RFQDiscountingCorporateModal = () => {
                       value={AccountNumber}
                       name='AccountNumber'
                       applyClass='CalculatorTextfield'
+                      maxLength={25}
                     />
                   </div>
                 </Col>

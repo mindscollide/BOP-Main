@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "./FEDiscountingModal.css";
-import Select from "react-select";
 import Modal from "@/components/common/globalModal/Modal";
 import { Col, Row } from "react-bootstrap";
 import InputFIeld from "@/components/common/inputField/InputField";
@@ -498,6 +497,7 @@ const FEDiscountingModal = ({
                         onChange={(e) =>
                           handleInputChange("AccountNumber", e.target.value)
                         }
+                        maxLength={25}
                         applyClass={"CalculatorTextfield"}
                       />
                       {/* {errors.AccountNumber && (

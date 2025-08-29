@@ -728,6 +728,7 @@ const RFQModal = () => {
                     value={acNumberData}
                     name="AcNumber"
                     applyClass="CalculatorTextfield"
+                    maxLength={25}
                   />
                 </Col>
               </Row>
@@ -759,6 +760,7 @@ const RFQModal = () => {
                     value={lcNumberData}
                     name="LcNumber"
                     applyClass="CalculatorTextfield"
+                    maxLength={35}
                   />
                 </Col>
               </Row>

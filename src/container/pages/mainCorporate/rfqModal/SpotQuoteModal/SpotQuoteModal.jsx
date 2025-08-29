@@ -8,9 +8,13 @@ import CustomButton from "@/components/common/globalButton/button";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { setViewDealModal } from "@/store/modalSlice/modalSlicer";
-import { RFQTransactionQuotation } from "@/components/features/blotter/BlotterActions";
+import {
+  RejectTransactionAPI,
+  RFQTransactionQuotation,
+} from "@/components/features/blotter/BlotterActions";
 import { useNavigate } from "react-router-dom";
 import { NumericFormat } from "react-number-format";
+import CancelReasonModal from "@/components/features/blotter/cancelReasonModal/cancelReasonModal";
 
 const SpotQuoteModal = ({ dealData }) => {
   console.log(dealData, "dealDatadealData");
@@ -18,6 +22,10 @@ const SpotQuoteModal = ({ dealData }) => {
   const navigate = useNavigate();
   const [bid, setBid] = useState("");
   const [offer, setOffer] = useState("");
+  const [cancelReasonModal, setCancelReasonModal] = useState(false);
+  const [cancelReasonComment, setCancelReasonComment] = useState("");
+  const [selectedTransactionID, setSelectedTransactionID] = useState(null);
+
   const spotQuoteModalState = useSelector(
     (state) => state.modalReducer.spotQuoteModal
   );
@@ -64,7 +72,30 @@ const SpotQuoteModal = ({ dealData }) => {
     };
     dispatch(RFQTransactionQuotation({ navigate, Data }));
   };
+  const handleReject = (transactionID) => {
+    // Store the transaction ID and open the modal
+    setSelectedTransactionID(transactionID);
+    setCancelReasonModal(true);
+  };
+  const handleRejectWithReason = () => {
+    if (cancelReasonComment.trim() === "") {
+      // empty msg
+      return;
+    }
 
+    // Use the stored transaction ID and user's comment
+    const Data = {
+      PK_TransactionID: selectedTransactionID,
+      Comment: cancelReasonComment,
+    };
+    let val = 1;
+    //Reject API Call
+    dispatch(RejectTransactionAPI({ navigate, Data, val }));
+
+    // Reset Modal State
+    setCancelReasonModal(false);
+    setCancelReasonComment("");
+  };
   return (
     <GlobalModal
       show={spotQuoteModalState}
@@ -255,6 +286,9 @@ const SpotQuoteModal = ({ dealData }) => {
                         iconPosition={"left"}
                         applyClass={"RejectBtnDealBox"}
                         className={"px-4"}
+                        onClick={() =>
+                          handleReject(spotQuoteModalData.pK_TransactionID)
+                        }
                       />{" "}
                     </>
                   )}
@@ -262,6 +296,17 @@ const SpotQuoteModal = ({ dealData }) => {
               </Row>
             </Col>
           </Row>
+          <CancelReasonModal
+            cancelReasonModal={cancelReasonModal}
+            setCancelReasonModal={setCancelReasonModal}
+            handleClickReasonSubmit={handleRejectWithReason}
+            handleCloseReasonModal={() => {
+              setCancelReasonModal(false);
+              setCancelReasonComment("");
+            }}
+            cancelReasonComment={cancelReasonComment}
+            setCancelReasonComment={setCancelReasonComment}
+          />
         </>
       }
     />
