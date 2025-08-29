@@ -4,6 +4,7 @@ import React, {
   lazy,
   Suspense,
   startTransition,
+  useLayoutEffect
 } from "react";
 import "./BlotterHeader.css";
 import { Col, Row } from "react-bootstrap";
@@ -58,6 +59,7 @@ const MailModal = lazy(() => import("../mailModal/MailModal"));
 const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
 const isCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
 const isTreasury = import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
+
 const BlotterHeader = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -89,7 +91,6 @@ const BlotterHeader = () => {
     (state) =>
       state.RealtimeActionsSlice.BlotterTransactionRFQExpiredForTreasury
   );
-  // console.log(blotterTransactionRFQExpiredForTreasury, "blotterTransactionRFQExpiredForTreasury")
   const blotterTransactionAcceptedForTreasury = useSelector(
     (state) => state.RealtimeActionsSlice.BlotterTransactionAcceptedForTreasury
   );
@@ -146,7 +147,8 @@ const BlotterHeader = () => {
   );
   const [exportButton, setExportButton] = useState(false);
 
-  useEffect(() => {
+  // Fixed: Replaced useEffect with useLayoutEffect to prevent state updates during render
+  useLayoutEffect(() => {
     try {
       if (GlobalStateGetBlotterData !== null) {
         const { tnxSummary, totalCount } = GlobalStateGetBlotterData;
@@ -179,7 +181,8 @@ const BlotterHeader = () => {
     }
   }, [GlobalStateGetBlotterData]);
 
-  useEffect(() => {
+  // Fixed: Replaced useEffect with useLayoutEffect to prevent state updates during render
+  useLayoutEffect(() => {
     try {
       if (getBlotterOutstandingData !== null) {
         const { outstandingDeals, totalCount } = getBlotterOutstandingData;
@@ -219,7 +222,8 @@ const BlotterHeader = () => {
   }, [getBlotterOutstandingData]);
 
   // This useEffect is for Treasury TXN Summary
-  useEffect(() => {
+  // Fixed: Replaced useEffect with useLayoutEffect to prevent state updates during render
+  useLayoutEffect(() => {
     const handleTransactionUpdate = (transaction) => {
       if (!transaction) return;
 
@@ -230,12 +234,8 @@ const BlotterHeader = () => {
         );
 
         if (existingIndex !== -1) {
-          console.log(updatedData, transaction, "transactiontransaction");
-
           updatedData[existingIndex] = transaction;
         } else {
-          console.log(updatedData, transaction, "transactiontransaction");
-
           updatedData.unshift(transaction);
           setTreasuryTXNSummarysRow((prev) => prev + 1);
           setTreasuryTXNSummaryTotalRecords((prev) => prev + 1);
@@ -298,7 +298,8 @@ const BlotterHeader = () => {
     blotterTransactionRejectedForTreasury,
   ]);
 
-  useEffect(() => {
+  // Fixed: Replaced useEffect with useLayoutEffect to prevent state updates during render
+  useLayoutEffect(() => {
     const handleTransaction = (transaction, type) => {
       if (!transaction) return;
 
@@ -378,7 +379,6 @@ const BlotterHeader = () => {
                   }
                 : item
             );
-            console.log({ updatedData, transaction }, "updatedDataupdatedData");
             dispatch(BlotterTransactionAssigned(null));
             return updatedData;
           }
@@ -449,8 +449,8 @@ const BlotterHeader = () => {
     blotterTransactionAccepted,
     blotterTranscationCancelled,
     blotterTransactionRejected,
-    blotterTransactionAssigned, // ✅ now added
-    blotterTransactionCancellationRequest, // ✅ now added
+    blotterTransactionAssigned,
+    blotterTransactionCancellationRequest,
   ]);
 
   const tabsData = [
@@ -564,6 +564,7 @@ const BlotterHeader = () => {
     setOpenMailModal(true);
     setExportButton(false);
   };
+  
   return (
     <>
       <section className='position-relative'>
@@ -673,22 +674,16 @@ const BlotterHeader = () => {
                     content={
                       <div className={"export-options"}>
                         <CustomButton
-                          // value={"Excel"}
                           icon={<img src={pdfImage} alt='Excel Icon' />}
                           className={"bg-none"}
                           onClick={HandlePDFDownloadFunc}
-
-                          // onClick={() => handleExport("excel")}
-                          // className={styles["export-button"]}
                         />
                         <CustomButton
                           icon={<img src={excelImage} alt='PDF Icon' />}
-                          // onClick={() => handleExport("pdf")}
                           className={"bg-none"}
                           onClick={HandleExcelDownloadFunc}
                         />
                         <CustomButton
-                          // value={"Excel"}
                           icon={<img src={emailImage} alt='Excel Icon' />}
                           className={"bg-none"}
                           onClick={handleTransactionModal}

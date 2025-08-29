@@ -427,6 +427,13 @@ const OutstandingDeals = ({
       render: (record) => <IndexCell value={formatPkAmount(record.quantity)} />,
     },
     {
+      id: "tenorDays",
+      label: "Tenor Days",
+      width: 100,
+      align: "center",
+      render: (record) => record.rfqDealDetails !== null && record.rfqDealDetails?.tenorDays,
+    },
+    {
       id: "ccY2",
       label: "CCY2",
       width: 80,
