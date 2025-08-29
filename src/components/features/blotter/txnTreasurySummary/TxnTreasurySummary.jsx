@@ -274,7 +274,7 @@ const TXNTreasurySummary = ({
         label: "Rate",
         width: 120,
         align: "center",
-        render: (record) => formatPkAmount(record.rate, { decimals: 5 }),
+        render: (record) => formatPkAmount(record.rate, { decimals: 4 }),
       },
       {
         id: "tenorDays",

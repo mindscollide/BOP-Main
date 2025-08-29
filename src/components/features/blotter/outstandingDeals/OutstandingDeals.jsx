@@ -400,7 +400,7 @@ const OutstandingDeals = ({
       width: 60,
       align: "center",
       render: (record) => (
-        <IndexCell value={formatPkAmount(record.bid, { decimals: 5 })} />
+        <IndexCell value={formatPkAmount(record.bid, { decimals: 4 })} />
       ),
     },
     {
@@ -409,7 +409,7 @@ const OutstandingDeals = ({
       width: 60,
       align: "center",
       render: (record) => (
-        <IndexCell value={formatPkAmount(record.offer, { decimals: 5 })} />
+        <IndexCell value={formatPkAmount(record.offer, { decimals: 4 })} />
       ),
     },
     {

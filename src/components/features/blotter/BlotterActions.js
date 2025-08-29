@@ -1957,7 +1957,7 @@ export const RFQFEDiscountingTransactionQuotation = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "Blotter_BlotterServiceManager_RFQFEDiscountingTransactionQuotation_05".toLowerCase()
+                "Blotter_BlotterServiceManager_RFQFEDiscountingTransactionQuotation_06".toLowerCase()
               )
           ) {
             return rejectWithValue("Invalid Transaction Status");

@@ -20,6 +20,8 @@ import { useNavigate } from "react-router-dom";
 import { setDiscountingQuoteModalData } from "@/store/BlotterSlicer/BlotterSlicer";
 import { NumericFormat } from "react-number-format";
 import CancelReasonModal from "@/components/features/blotter/cancelReasonModal/cancelReasonModal";
+import moment from "moment";
+import { formatDateUTCToGMT } from "@/components/utils/timeFunction";
 
 const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
 const DiscountingRFQQuoteModal = () => {
@@ -255,7 +257,9 @@ const DiscountingRFQQuoteModal = () => {
                     Maturity Date
                   </label>
                   <p className={styles["DealViewModal__value"]}>
-                    {DiscountingQuoteData?.rfqDealDetails?.tenorDate}
+                    {moment(formatDateUTCToGMT(DiscountingQuoteData?.rfqDealDetails?.tenorDate)).format(
+                    "ddd DD MMM, YYYY"
+                  )}
                   </p>
                 </Col>
                 <Col sm={12} md={12} lg={12}>
