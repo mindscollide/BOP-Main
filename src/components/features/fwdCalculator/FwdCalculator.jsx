@@ -209,7 +209,7 @@ const FwdCalculator = () => {
 
               <label className="mt-1">Swap</label>
               <InputFIeld
-                value={Number(resulteSwap).toFixed(4)}
+                value={Number(resulteSwap).toFixed(2)}
                 disabled={true}
                 applyClass="CalculatorTextfield-withTagInputfield"
               />

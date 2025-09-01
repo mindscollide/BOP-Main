@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { formatDate } from "@/common/utils";
 import { calculateNonFeSwapAndDiscountingRateApi } from "../blotter/BlotterActions";
+import { formatPkAmount } from "@/utils/formatters";
 
 const CalculatorNonFxDiscounting = () => {
   const dispatch = useDispatch();
@@ -183,7 +184,7 @@ const CalculatorNonFxDiscounting = () => {
                 <span className="d-flex flex-column">
                   <label>Swap</label>
                   <InputFIeld
-                    value={calculatedSwap}
+                    value={formatPkAmount(calculatedSwap, { decimals: 2 })}
                     disabled={true}
                     applyClass="CalculatorTextfield-withTagInputfield"
                   />

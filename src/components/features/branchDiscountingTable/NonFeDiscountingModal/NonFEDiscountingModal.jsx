@@ -492,7 +492,7 @@ const NonFEDiscountingModal = ({
                           <span className="SubHeadings">Swap</span>
                           <InputFIeld
                             applyClass={"CalculatorTextfield"}
-                            value={Number(calculatedData.swapValue).toFixed(4)}
+                            value={Number(calculatedData.swapValue).toFixed(2)}
                             disabled={true}
                           />
                         </div>

@@ -595,7 +595,7 @@ const FEDiscountingModal = ({
                           </span>
                           <InputFIeld
                             value={Number(formData.DiscountingFactor).toFixed(
-                              4
+                              2
                             )}
                             // onChange={(e) => handleInputChange('Swap', e.target.value)}
                             disabled={true}
