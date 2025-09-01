@@ -557,10 +557,12 @@ const RFQModal = () => {
           showMessage("Amount should be greater than 1 ");
           return;
         }
+
         const IsBuySide =
           iBuySellData === null
             ? typeOptionSelected.value === 1
-            : iBuySellData.type === "buy";
+            : iBuySellData?.type === "buy";
+
         // Prepare transaction data
         let amountValue = amountData.replace(/,/g, "");
         let Data = {
@@ -569,15 +571,15 @@ const RFQModal = () => {
             : counterPartyDetails.corporateID,
           InstrumentID: selectedCurrency?.value, // TODO: Should this be selectedCurrency.value?
           SecondaryInstrumentID: selectedCurrency?.secondaryInstrumentID,
-          IsBuyType: typeOptionSelected.value === 1 ? true : false,
-          IsBuySide: IsBuySide,
+          isBuyType: IsBuySide,
+          IsBuySide: typeOptionSelected.value === 1 ? true : false,
           Quantity: Number(amountValue),
           AccountNumber: acNumberData,
           NatureOfTransactionID: selectedNature.value,
           LCNumber: lcNumberData,
         };
 
-        // Dispatch appropriate action based on context
+        // // Dispatch appropriate action based on context
         if (iBuySellData !== null) {
           console.log("Payload of SaveSpotTransaction", Data);
           dispatch(SaveSpotTransactionAPI({ navigate, Data, setErrorMessage }));
