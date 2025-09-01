@@ -479,7 +479,7 @@ const CorporateBookaForwardModal = ({
                     {counterPartyDetails?.branchName}
                   </span>
                   <p className='Header_BranchCode'>
-                  Branch Code: {counterPartyDetails?.branchCode}
+                    Branch Code: {counterPartyDetails?.branchCode}
                   </p>
                 </Col>
               </Row>
@@ -600,8 +600,10 @@ const CorporateBookaForwardModal = ({
                         value={forwardRFQState.TenorDays}
                         name={"TenorDays"}
                         allowNegative={false}
-                        minLength={1}
-                        maxLength={1000}
+                        isAllowed={(values) => {
+                          const { value } = values;
+                          return value.length <= 4; // max 4 digits
+                        }}
                         onChange={handleChangeValues}
                         onBlur={handleUpdateRate}
                       />
@@ -620,8 +622,12 @@ const CorporateBookaForwardModal = ({
                         applyClass={"CalculatorTextfield"}
                         value={forwardRFQState.Options}
                         name={"Options"}
-                        minLength={1}
-                        maxLength={1000}
+                        allowNegative={false}
+
+                        isAllowed={(values) => {
+                          const { value } = values;
+                          return value.length <= 4; // max 4 digits
+                        }}
                         onChange={handleChangeValues}
                       />
                     </div>
