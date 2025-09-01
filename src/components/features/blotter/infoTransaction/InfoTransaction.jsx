@@ -432,7 +432,7 @@ const InfoTransaction = () => {
                   {extractTimeFromCompactDate(InfoRecord?.settlementDateTime)}
                 </p> */}
                 <p className={styles["transactionInfolabel"]}>
-                  {InfoRecord?.settlementDateTime !== "N/A"
+                  {InfoRecord?.settlementDateTime !== "17530101000000"
                     ? moment(
                         formatDateUTCToGMT(InfoRecord?.settlementDateTime)
                       ).format("hh:mm A")
