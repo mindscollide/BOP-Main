@@ -22,23 +22,23 @@ import { NumericFormat } from "react-number-format";
 import CancelReasonModal from "@/components/features/blotter/cancelReasonModal/cancelReasonModal";
 import moment from "moment";
 import { formatDateUTCToGMT } from "@/components/utils/timeFunction";
+import TextArea from "@/components/common/textArea/TextArea";
 
 const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
 const DiscountingRFQQuoteModal = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [bid, setBid] = useState("");
-  const [offer, setOffer] = useState("");
 
   const [readyValue, setReadyValue] = useState("");
-  const [rateValue, setRateValue] = useState("");
-  const [discoutingFactorValue, setDiscoutingFactorValue] = useState("");
+  // const [rateValue, setRateValue] = useState("");
   const [kiborValue, setKiborValue] = useState("");
   const [swapValue, setSwapValue] = useState("");
   const [finalValue, setFinalValue] = useState("");
-  const [cancelReasonModal, setCancelReasonModal] = useState(false);
+  // const [cancelReasonModal, setCancelReasonModal] = useState(false);
   const [cancelReasonComment, setCancelReasonComment] = useState("");
-  const [selectedTransactionID, setSelectedTransactionID] = useState(null);
+
+  const [quoteDataModal, setQuoteDataModal] = useState(true);
+  const [cancelReasonModal, setCancelReasonModal] = useState(false);
 
   const discountingQuoteModalState = useSelector(
     (state) => state.modalReducer.discountingQuoteModal
@@ -73,6 +73,7 @@ const DiscountingRFQQuoteModal = () => {
       }
     }
   }, [GetNonFEDiscountingTransactionDetails]);
+
   useEffect(() => {
     if (GetFEDiscountingTransactionDetails !== null) {
       try {
@@ -119,7 +120,7 @@ const DiscountingRFQQuoteModal = () => {
     if (name === "readyVal") {
       setReadyValue(value.trimStart());
     } else if (name === "rateVal") {
-      setRateValue(value.trimStart());
+      // setRateValue(value.trimStart());
     } else if (name === "swapVal") {
       setSwapValue(value.trimStart());
     } else if (name === "kiborValue") {
@@ -151,20 +152,15 @@ const DiscountingRFQQuoteModal = () => {
       dispatch(RFQFEDiscountingTransactionQuotation({ navigate, Data }));
     }
   };
-  const handleAccept = (transactionID) => {
-    let Data = { PK_TransactionID: transactionID };
+  const handleAccept = () => {
+    let Data = { PK_TransactionID: DiscountingQuoteData.pK_TransactionID };
     let val = 1;
     dispatch(AcceptTransactionAPI({ Data, navigate, val }));
   };
-  // const handleReject = (transactionID) => {
-  //   let Data = { PK_TransactionID: transactionID, Comment: "Hello" };
-  //   let val = 1;
 
-  //   dispatch(RejectTransactionAPI({ Data, navigate, val }));
-  // };
-  const handleReject = (transactionID) => {
+  const handleReject = () => {
     // Store the transaction ID and open the modal
-    setSelectedTransactionID(transactionID);
+    setQuoteDataModal(false);
     setCancelReasonModal(true);
   };
   const handleRejectWithReason = () => {
@@ -175,7 +171,7 @@ const DiscountingRFQQuoteModal = () => {
 
     // Use the stored transaction ID and user's comment
     const Data = {
-      PK_TransactionID: selectedTransactionID,
+      PK_TransactionID: DiscountingQuoteData.pK_TransactionID,
       Comment: cancelReasonComment,
     };
     let val = 1;
@@ -185,281 +181,353 @@ const DiscountingRFQQuoteModal = () => {
     // Reset Modal State
     setCancelReasonModal(false);
     setCancelReasonComment("");
+    setQuoteDataModal(true);
   };
-  const handleCancel = () => {};
-  // if (!viewDealModal && !dealData) return null;
+  const handeClickHide = () => {
+    if (cancelReasonModal) {
+      setCancelReasonModal(false);
+      setQuoteDataModal(true);
+      dispatch(setDiscountingQuoteModal(false));
+    }
+  };
   return (
     <GlobalModal
       show={discountingQuoteModalState}
       size={"md"}
+      onHide={handeClickHide}
       centered={true}
-      bodyClassName={styles["DealViewModal__body"]}
+      bodyClassName={!cancelReasonModal && styles["DealViewModal__body"]}
+      footerClassName={cancelReasonModal && "d-block border-0"}
       modalBody={
-        <>
-          <Row>
-            <Col
-              sm={3}
-              md={3}
-              lg={3}
-              className={styles["DealViewModal_oneSide"]}
-            >
-              <Row>
-                <Col sm={12} md={12} lg={12}>
-                  <label className={styles["DealViewModal__label"]}>Side</label>
-                  <p className={styles["DealViewModal__value"]}>
-                    {DiscountingQuoteData?.side}
-                  </p>
-                </Col>
-                <Col sm={12} md={12} lg={12}>
-                  <label className={styles["DealViewModal__label"]}>
-                    Nature
-                  </label>
-                  <p className={styles["DealViewModal__value"]}>
-                    {DiscountingQuoteData?.nature}
-                  </p>
-                </Col>
-                <Col sm={12} md={12} lg={12}>
-                  <label className={styles["DealViewModal__label"]}>CCY1</label>
-                  <p className={styles["DealViewModal__value"]}>
-                    {DiscountingQuoteData?.ccY1}
-                  </p>
-                </Col>
-                <Col sm={12} md={12} lg={12}>
-                  <label className={styles["DealViewModal__label"]}>
-                    Amount
-                  </label>
-                  <p className={styles["DealViewModal__value"]}>
-                    {DiscountingQuoteData?.quantity}
-                  </p>
-                </Col>
-                <Col sm={12} md={12} lg={12}>
-                  <label className={styles["DealViewModal__label"]}>CCY2</label>
-                  <p className={styles["DealViewModal__value"]}>PKR</p>
-                </Col>
-                <Col sm={12} md={12} lg={12}>
-                  <label className={styles["DealViewModal__label"]}>
-                    Amount
-                  </label>
-                  <p className={styles["DealViewModal__value"]}>
-                    {DiscountingQuoteData?.amount.toFixed(2)}
-                  </p>
-                </Col>
-                <Col sm={12} md={12} lg={12}>
-                  <label className={styles["DealViewModal__label"]}>
-                    Tenor
-                  </label>
-                  <p className={styles["DealViewModal__value"]}>
-                    {DiscountingQuoteData?.rfqDealDetails?.tenorDays}
-                  </p>
-                </Col>
-                <Col sm={12} md={12} lg={12}>
-                  <label className={styles["DealViewModal__label"]}>
-                    Maturity Date
-                  </label>
-                  <p className={styles["DealViewModal__value"]}>
-                    {moment(formatDateUTCToGMT(DiscountingQuoteData?.rfqDealDetails?.tenorDate)).format(
-                    "ddd DD MMM, YYYY"
-                  )}
-                  </p>
-                </Col>
-                <Col sm={12} md={12} lg={12}>
-                  <label className={styles["DealViewModal__label"]}>
-                    Account No.
-                  </label>
-                  <p className={styles["DealViewModal__value"]}>
-                    {DiscountingQuoteData?.accountNumber}
-                  </p>
-                </Col>
-              </Row>
-            </Col>
-            <Col
-              sm={9}
-              md={9}
-              lg={9}
-              className={styles["DealViewModal_SecondSide"]}
-            >
-              <Row className="mb-3">
-                <Col sm={10} md={10} lg={10}>
-                  {isBranch && (
-                    <div className="mb-3 color-black br-detail-hd">
-                      <span className={styles["company-name"]}>
-                        {DiscountingQuoteData?.branchName}
-                      </span>
-                      <span className="br-code fs-sm">
-                        ({DiscountingQuoteData?.branchCode})
-                      </span>
-                    </div>
-                  )}
-
-                  <div className={styles["company-name-hd"]}>
-                    {DiscountingQuoteData?.corporateName}
-                  </div>
-                  <div className="d-inline-block txn-id fs-normal color-black">
-                    {DiscountingQuoteData?.txnid}
-                  </div>
-                </Col>
-                <Col
-                  sm={2}
-                  md={2}
-                  lg={2}
-                  className="d-flex justify-content-end "
-                >
-                  <IconElement
-                    onClick={closeModal}
-                    iconClass={"icon-close fs-4 cursor-pointer"}
-                  />
-                </Col>
-              </Row>
-              <section className="d-flex justify-content-center align-items-center overflow-hidden h-75">
+        quoteDataModal ? (
+          <>
+            <Row>
+              <Col
+                sm={3}
+                md={3}
+                lg={3}
+                className={styles["DealViewModal_oneSide"]}
+              >
                 <Row>
-                  <Col
-                    sm={12}
-                    md={12}
-                    lg={12}
-                    className="d-flex align-items-center gap-2"
-                  >
-                    <label className={styles["DealViewModal_label"]}>
-                      Ready
+                  <Col sm={12} md={12} lg={12}>
+                    <label className={styles["DealViewModal__label"]}>
+                      Side
                     </label>
-                    <NumericFormat
-                      customInput={InputFIeld}
-                      applyClass={"DiscountingQuoteInput"}
-                      value={readyValue}
-                      onChange={(event) =>
-                        handleChangeRate("readyVal", event.target.value)
-                      }
-                      thousandSeparator=","
-                      maxLength={10}
-                      disabled={!DiscountingQuoteData?.isRFQ}
-                    />
+                    <p className={styles["DealViewModal__value"]}>
+                      {DiscountingQuoteData?.side}
+                    </p>
+                  </Col>
+                  <Col sm={12} md={12} lg={12}>
+                    <label className={styles["DealViewModal__label"]}>
+                      Nature
+                    </label>
+                    <p className={styles["DealViewModal__value"]}>
+                      {DiscountingQuoteData?.nature}
+                    </p>
+                  </Col>
+                  <Col sm={12} md={12} lg={12}>
+                    <label className={styles["DealViewModal__label"]}>
+                      CCY1
+                    </label>
+                    <p className={styles["DealViewModal__value"]}>
+                      {DiscountingQuoteData?.ccY1}
+                    </p>
+                  </Col>
+                  <Col sm={12} md={12} lg={12}>
+                    <label className={styles["DealViewModal__label"]}>
+                      Amount
+                    </label>
+                    <p className={styles["DealViewModal__value"]}>
+                      {DiscountingQuoteData?.quantity}
+                    </p>
+                  </Col>
+                  <Col sm={12} md={12} lg={12}>
+                    <label className={styles["DealViewModal__label"]}>
+                      CCY2
+                    </label>
+                    <p className={styles["DealViewModal__value"]}>PKR</p>
+                  </Col>
+                  <Col sm={12} md={12} lg={12}>
+                    <label className={styles["DealViewModal__label"]}>
+                      Amount
+                    </label>
+                    <p className={styles["DealViewModal__value"]}>
+                      {DiscountingQuoteData?.amount.toFixed(2)}
+                    </p>
+                  </Col>
+                  <Col sm={12} md={12} lg={12}>
+                    <label className={styles["DealViewModal__label"]}>
+                      Tenor
+                    </label>
+                    <p className={styles["DealViewModal__value"]}>
+                      {DiscountingQuoteData?.rfqDealDetails?.tenorDays}
+                    </p>
+                  </Col>
+                  <Col sm={12} md={12} lg={12}>
+                    <label className={styles["DealViewModal__label"]}>
+                      Maturity Date
+                    </label>
+                    <p className={styles["DealViewModal__value"]}>
+                      {moment(
+                        formatDateUTCToGMT(
+                          DiscountingQuoteData?.rfqDealDetails?.tenorDate
+                        )
+                      ).format("ddd DD MMM, YYYY")}
+                    </p>
+                  </Col>
+                  <Col sm={12} md={12} lg={12}>
+                    <label className={styles["DealViewModal__label"]}>
+                      Account No.
+                    </label>
+                    <p className={styles["DealViewModal__value"]}>
+                      {DiscountingQuoteData?.accountNumber}
+                    </p>
+                  </Col>
+                </Row>
+              </Col>
+              <Col
+                sm={9}
+                md={9}
+                lg={9}
+                className={styles["DealViewModal_SecondSide"]}
+              >
+                <Row className="mb-3">
+                  <Col sm={10} md={10} lg={10}>
+                    {isBranch && (
+                      <div className="mb-3 color-black br-detail-hd">
+                        <span className={styles["company-name"]}>
+                          {DiscountingQuoteData?.branchName}
+                        </span>
+                        <span className="br-code fs-sm">
+                          ({DiscountingQuoteData?.branchCode})
+                        </span>
+                      </div>
+                    )}
+
+                    <div className={styles["company-name-hd"]}>
+                      {DiscountingQuoteData?.corporateName}
+                    </div>
+                    <div className="d-inline-block txn-id fs-normal color-black">
+                      {DiscountingQuoteData?.txnid}
+                    </div>
                   </Col>
                   <Col
-                    sm={12}
-                    md={12}
-                    lg={12}
-                    className="d-flex mt-3  align-items-center gap-2"
+                    sm={2}
+                    md={2}
+                    lg={2}
+                    className="d-flex justify-content-end "
                   >
-                    <label className={styles["DealViewModal_label"]}>
-                      Rate
-                    </label>
-                    <NumericFormat
-                      customInput={InputFIeld}
-                      value={kiborValue}
-                      applyClass={"DiscountingQuoteInput"}
-                      onChange={(event) =>
-                        handleChangeRate("kiborValue", event.target.value)
-                      }
-                      thousandSeparator=","
-                      maxLength={10}
-                      disabled={!DiscountingQuoteData?.isRFQ}
+                    <IconElement
+                      onClick={closeModal}
+                      iconClass={"icon-close fs-4 cursor-pointer"}
                     />
                   </Col>
-                  {DiscountingQuoteData?.natureType === 4 && (
+                </Row>
+                <section className="d-flex justify-content-center align-items-center overflow-hidden h-75">
+                  <Row>
                     <Col
                       sm={12}
                       md={12}
                       lg={12}
-                      className="d-flex mt-3 align-items-center gap-2"
+                      className="d-flex align-items-center gap-2"
                     >
                       <label className={styles["DealViewModal_label"]}>
-                        Swap
+                        Ready
                       </label>
                       <NumericFormat
-                        disabled={!DiscountingQuoteData?.isRFQ}
                         customInput={InputFIeld}
-                        value={swapValue}
                         applyClass={"DiscountingQuoteInput"}
+                        value={readyValue}
                         onChange={(event) =>
-                          handleChangeRate("swapVal", event.target.value)
+                          handleChangeRate("readyVal", event.target.value)
                         }
                         thousandSeparator=","
                         maxLength={10}
+                        disabled={!DiscountingQuoteData?.isRFQ}
                       />
                     </Col>
-                  )}
+                    <Col
+                      sm={12}
+                      md={12}
+                      lg={12}
+                      className="d-flex mt-3  align-items-center gap-2"
+                    >
+                      <label className={styles["DealViewModal_label"]}>
+                        Rate
+                      </label>
+                      <NumericFormat
+                        customInput={InputFIeld}
+                        value={kiborValue}
+                        applyClass={"DiscountingQuoteInput"}
+                        onChange={(event) =>
+                          handleChangeRate("kiborValue", event.target.value)
+                        }
+                        thousandSeparator=","
+                        maxLength={10}
+                        disabled={!DiscountingQuoteData?.isRFQ}
+                      />
+                    </Col>
+                    {DiscountingQuoteData?.natureType === 4 && (
+                      <Col
+                        sm={12}
+                        md={12}
+                        lg={12}
+                        className="d-flex mt-3 align-items-center gap-2"
+                      >
+                        <label className={styles["DealViewModal_label"]}>
+                          Swap
+                        </label>
+                        <NumericFormat
+                          disabled={!DiscountingQuoteData?.isRFQ}
+                          customInput={InputFIeld}
+                          value={swapValue}
+                          applyClass={"DiscountingQuoteInput"}
+                          onChange={(event) =>
+                            handleChangeRate("swapVal", event.target.value)
+                          }
+                          thousandSeparator=","
+                          maxLength={10}
+                        />
+                      </Col>
+                    )}
 
-                  <Col
-                    sm={12}
-                    md={12}
-                    lg={12}
-                    className="d-flex mt-3  align-items-center gap-2"
-                  >
-                    <label className={styles["DealViewModal_label"]}></label>
-                    <NumericFormat
-                      customInput={InputFIeld}
-                      applyClass={"DiscountingQuoteInput"}
-                      value={finalValue}
-                      disabled={!DiscountingQuoteData?.isRFQ}
-                    />
-                    {/* <InputFIeld
+                    <Col
+                      sm={12}
+                      md={12}
+                      lg={12}
+                      className="d-flex mt-3  align-items-center gap-2"
+                    >
+                      <label className={styles["DealViewModal_label"]}></label>
+                      <NumericFormat
+                        customInput={InputFIeld}
+                        applyClass={"DiscountingQuoteInput"}
+                        value={finalValue}
+                        disabled={!DiscountingQuoteData?.isRFQ}
+                      />
+                      {/* <InputFIeld
                     applyClass={"DiscountingQuoteInput"}
                     // value={"280"}
                     // disabled={true}
                     onChange={(e) => handleChangeRate(e, "bid")}
                   /> */}
-                  </Col>
-                  {DiscountingQuoteData?.isRFQ ? (
-                    <Col
-                      sm={12}
-                      md={12}
-                      lg={12}
-                      className="d-flex align-items-center gap-2 mt-4"
-                    >
-                      <label className={styles["DealViewModal_label"]}></label>
-                      <CustomButton
-                        icon={<IconElement iconClass={"icon-send fs-5"} />}
-                        iconPosition={"left"}
-                        value={"Submit"}
-                        applyClass={"SubmitButtonFowardDealBox"}
-                        className={"px-4"}
-                        onClick={handleSubmit}
-                      />
                     </Col>
-                  ) : (
-                    <Col
-                      sm={12}
-                      md={12}
-                      lg={12}
-                      className="d-flex align-items-center justify-content-center gap-2 mt-4"
-                    >
-                      <CustomButton
-                        icon={<IconElement iconClass={"icon-send fs-5"} />}
-                        iconPosition={"left"}
-                        value={"Accept"}
-                        applyClass={"AcceptBtnDealBox"}
-                        className={"px-4"}
-                        onClick={() =>
-                          handleAccept(DiscountingQuoteData.pK_TransactionID)
-                        }
-                      />
-                      <CustomButton
-                        icon={<IconElement iconClass={"icon-send fs-5"} />}
-                        iconPosition={"left"}
-                        value={"Reject"}
-                        applyClass={"RejectBtnDealBox"}
-                        className={"px-4"}
-                        onClick={() =>
-                          handleReject(DiscountingQuoteData.pK_TransactionID)
-                        }
-                      />
-                    </Col>
-                  )}
-                </Row>
-              </section>
+                    {DiscountingQuoteData?.isRFQ ? (
+                      <Col
+                        sm={12}
+                        md={12}
+                        lg={12}
+                        className="d-flex align-items-center gap-2 mt-4"
+                      >
+                        <label
+                          className={styles["DealViewModal_label"]}
+                        ></label>
+                        <CustomButton
+                          icon={<IconElement iconClass={"icon-send fs-5"} />}
+                          iconPosition={"left"}
+                          value={"Submit"}
+                          applyClass={"SubmitButtonFowardDealBox"}
+                          className={"px-4"}
+                          onClick={handleSubmit}
+                        />
+                      </Col>
+                    ) : (
+                      <Col
+                        sm={12}
+                        md={12}
+                        lg={12}
+                        className="d-flex align-items-center justify-content-center gap-2 mt-4"
+                      >
+                        <CustomButton
+                          icon={<IconElement iconClass={"icon-send fs-5"} />}
+                          iconPosition={"left"}
+                          value={"Accept"}
+                          applyClass={"AcceptBtnDealBox"}
+                          className={"px-4"}
+                          onClick={handleAccept}
+                        />
+                        <CustomButton
+                          icon={<IconElement iconClass={"icon-send fs-5"} />}
+                          iconPosition={"left"}
+                          value={"Reject"}
+                          applyClass={"RejectBtnDealBox"}
+                          className={"px-4"}
+                          onClick={
+                            handleReject
+                            // () =>
+                            // handleReject(DiscountingQuoteData.pK_TransactionID)
+                          }
+                        />
+                      </Col>
+                    )}
+                  </Row>
+                </section>
+              </Col>
+            </Row>
+            <CancelReasonModal
+              cancelReasonModal={cancelReasonModal}
+              setCancelReasonModal={setCancelReasonModal}
+              handleClickReasonSubmit={handleRejectWithReason}
+              handleCloseReasonModal={() => {
+                setCancelReasonModal(false);
+                setCancelReasonComment("");
+              }}
+              cancelReasonComment={cancelReasonComment}
+              setCancelReasonComment={setCancelReasonComment}
+            />
+          </>
+        ) : cancelReasonModal ? (
+          <>
+            <Row>
+              <Col
+                sm={12}
+                md={12}
+                lg={12}
+                className="modal-title fw-bold color-blue h5"
+              >
+                Cancel Reason
+              </Col>
+            </Row>
+            <Row className="form-group">
+              <span className="col-form-label mt-4">Cancel Reason</span>
+              <Col sm={12} md={12} lg={12}>
+                <TextArea
+                  className="form-control"
+                  name={"cancelReasonInput"}
+                  value={cancelReasonComment}
+                  onChange={(event) =>
+                    setCancelReasonComment(event.target.value.trim())
+                  }
+                  placeholder={"Please enter cancel reason"}
+                  applyClass={"cancelReasonModalInputField"}
+                />
+              </Col>
+            </Row>
+          </>
+        ) : null
+      }
+      modalFooter={
+        cancelReasonModal && (
+          <Row>
+            <Col
+              lg={12}
+              md={12}
+              sm={12}
+              className="d-flex gap-1 justify-content-center"
+            >
+              <CustomButton
+                applyClass={"cancelReasonModalSubmitBtn"}
+                value="Submit"
+                onClick={handleRejectWithReason}
+                disabled={cancelReasonComment !== "" ? false : true}
+              />
+              <CustomButton
+                applyClass={"cancelReasonModalCancelBtn"}
+                value="Close"
+                onClick={handeClickHide}
+              />
             </Col>
           </Row>
-          <CancelReasonModal
-            cancelReasonModal={cancelReasonModal}
-            setCancelReasonModal={setCancelReasonModal}
-            handleClickReasonSubmit={handleRejectWithReason}
-            handleCloseReasonModal={() => {
-              setCancelReasonModal(false);
-              setCancelReasonComment("");
-            }}
-            cancelReasonComment={cancelReasonComment}
-            setCancelReasonComment={setCancelReasonComment}
-          />
-        </>
+        )
       }
     />
   );

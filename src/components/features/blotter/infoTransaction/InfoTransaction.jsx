@@ -411,7 +411,7 @@ const InfoTransaction = () => {
               </Col>
               <Col sm={6} md={6} lg={6}>
                 <p className={styles["transactionInfolabel"]}>
-                  {InfoRecord?.swap}
+                  {formatPkAmount(InfoRecord?.swap, { decimals: 2 })}
                 </p>
               </Col>
             </Row>

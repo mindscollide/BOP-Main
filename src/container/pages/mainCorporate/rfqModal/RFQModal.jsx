@@ -615,7 +615,7 @@ const RFQModal = () => {
                         {counterPartyDetails?.branchName}
                       </p>
                       <p className="heading-branchCode">
-                        Branch Code: {counterPartyDetails.branchCode}
+                        Branch Code: {counterPartyDetails?.branchCode}
                       </p>
                     </>
                   ) : (
