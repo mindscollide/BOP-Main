@@ -623,7 +623,6 @@ const CorporateBookaForwardModal = ({
                         value={forwardRFQState.Options}
                         name={"Options"}
                         allowNegative={false}
-
                         isAllowed={(values) => {
                           const { value } = values;
                           return value.length <= 4; // max 4 digits
