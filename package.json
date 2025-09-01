@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
-    "clean": "rmdir /s /q node_modules\\.vite && rmdir /s /q dist",
+    "clean": "rimraf node_modules/.vite dist",
     "start:dealer": "env-cmd -f .env.dealer vite",
     "start:corporate": "env-cmd -f .env.corporate vite",
     "start:branch": "env-cmd -f .env.branch vite",
