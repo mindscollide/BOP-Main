@@ -557,10 +557,12 @@ const RFQModal = () => {
           showMessage("Amount should be greater than 1 ");
           return;
         }
+
         const IsBuySide =
           iBuySellData === null
             ? typeOptionSelected.value === 1
-            : iBuySellData.type === "buy";
+            : iBuySellData?.type === "buy";
+
         // Prepare transaction data
         let amountValue = amountData.replace(/,/g, "");
         let Data = {
@@ -569,15 +571,15 @@ const RFQModal = () => {
             : counterPartyDetails.corporateID,
           InstrumentID: selectedCurrency?.value, // TODO: Should this be selectedCurrency.value?
           SecondaryInstrumentID: selectedCurrency?.secondaryInstrumentID,
-          IsBuyType: typeOptionSelected.value === 1 ? true : false,
-          IsBuySide: IsBuySide,
+          isBuyType: IsBuySide,
+          IsBuySide: typeOptionSelected.value === 1 ? true : false,
           Quantity: Number(amountValue),
           AccountNumber: acNumberData,
           NatureOfTransactionID: selectedNature.value,
           LCNumber: lcNumberData,
         };
 
-        // Dispatch appropriate action based on context
+        // // Dispatch appropriate action based on context
         if (iBuySellData !== null) {
           console.log("Payload of SaveSpotTransaction", Data);
           dispatch(SaveSpotTransactionAPI({ navigate, Data, setErrorMessage }));
@@ -603,24 +605,24 @@ const RFQModal = () => {
         centered={true}
         size={rfqModal ? "lg" : null}
         footerClassName={"d-block border-0"}
-        headerClassName="RFQ-header-className"
+        headerClassName='RFQ-header-className'
         modalHeader={
           rfqModal && (
             <>
               <Row>
-                <Col lg={12} md={12} sm={12} className="">
+                <Col lg={12} md={12} sm={12} className=''>
                   {isBranch ? (
                     <>
-                      <p className="heading-RfqModal">
+                      <p className='heading-RfqModal'>
                         {counterPartyDetails?.branchName}
                       </p>
-                      <p className="heading-branchCode">
+                      <p className='heading-branchCode'>
                         Branch Code: {counterPartyDetails.branchCode}
                       </p>
                     </>
                   ) : (
                     isCorporate && (
-                      <p className="heading-RfqModal">
+                      <p className='heading-RfqModal'>
                         {counterPartyDetails.corporateName}
                       </p>
                     )
@@ -634,18 +636,18 @@ const RFQModal = () => {
           rfqModal ? (
             <>
               {/* Corporate Selection (for branch users) */}
-              <Row className="m-0 ">
+              <Row className='m-0 '>
                 {isBranch && (
                   <>
                     <Col lg={2} md={2} sm={2}>
-                      <label className="LabelRFQTransactionModal">
+                      <label className='LabelRFQTransactionModal'>
                         Customer Name*
                       </label>
                     </Col>
-                    <Col lg={4} md={4} sm={4} className="mb-3">
+                    <Col lg={4} md={4} sm={4} className='mb-3'>
                       <SelectDropdown
-                        classNamePrefix="RfqSpot"
-                        placeholder=""
+                        classNamePrefix='RfqSpot'
+                        placeholder=''
                         options={getAllCorporates}
                         onChange={handleChangeCorporate}
                         isSearchable={true}
@@ -653,18 +655,18 @@ const RFQModal = () => {
                       />
                     </Col>
                     <Col lg={2} md={2} sm={2}></Col>
-                    <Col lg={4} md={4} sm={4} className="mb-2"></Col>
+                    <Col lg={4} md={4} sm={4} className='mb-2'></Col>
                   </>
                 )}
 
                 {/* Currency Selection */}
                 <Col lg={2} md={2} sm={2}>
-                  <label className="LabelRFQTransactionModal">Currency*</label>
+                  <label className='LabelRFQTransactionModal'>Currency*</label>
                 </Col>
-                <Col lg={4} md={4} sm={4} className="mb-2">
+                <Col lg={4} md={4} sm={4} className='mb-2'>
                   <SelectDropdown
-                    classNamePrefix="RfqSpot"
-                    placeholder=""
+                    classNamePrefix='RfqSpot'
+                    placeholder=''
                     options={currencyOptions}
                     // options={currencyOptions.filter((option) => {
                     //   // For Buy transactions (value === 1), check if option supports buying
@@ -686,12 +688,12 @@ const RFQModal = () => {
 
                 {/* Transaction Type Selection */}
                 <Col lg={2} md={2} sm={2}>
-                  <label className="LabelRFQTransactionModal">Type*</label>
+                  <label className='LabelRFQTransactionModal'>Type*</label>
                 </Col>
-                <Col lg={4} md={4} sm={4} className="mb-2">
+                <Col lg={4} md={4} sm={4} className='mb-2'>
                   <SelectDropdown
-                    placeholder="Select Type"
-                    classNamePrefix="RfqSpot"
+                    placeholder='Select Type'
+                    classNamePrefix='RfqSpot'
                     value={
                       typeOptionSelected.value === 0 ? null : typeOptionSelected
                     }
@@ -703,46 +705,46 @@ const RFQModal = () => {
               </Row>
 
               {/* Amount and Account Number Inputs */}
-              <Row className="m-0 mt-2">
+              <Row className='m-0 mt-2'>
                 <Col lg={2} md={2} sm={2}>
-                  <label className="LabelRFQTransactionModal">Amount*</label>
+                  <label className='LabelRFQTransactionModal'>Amount*</label>
                 </Col>
-                <Col lg={4} md={4} sm={4} className="mb-2">
+                <Col lg={4} md={4} sm={4} className='mb-2'>
                   <NumericFormat
                     customInput={InputFIeld}
-                    thousandSeparator=","
+                    thousandSeparator=','
                     allowNegative={false}
                     onChange={handleChangeAmount}
                     maxLength={10}
                     value={amountData}
-                    name="Amount"
+                    name='Amount'
                     applyClass={"CalculatorTextfield"}
                   />
                 </Col>
                 <Col lg={2} md={2} sm={2}>
-                  <label className="LabelRFQTransactionModal">A/c No</label>
+                  <label className='LabelRFQTransactionModal'>A/c No</label>
                 </Col>
-                <Col lg={4} md={4} sm={4} className="mb-2">
+                <Col lg={4} md={4} sm={4} className='mb-2'>
                   <InputFIeld
                     onChange={handleChangeAcNumber}
                     value={acNumberData}
-                    name="AcNumber"
-                    applyClass="CalculatorTextfield"
+                    name='AcNumber'
+                    applyClass='CalculatorTextfield'
                     maxLength={25}
                   />
                 </Col>
               </Row>
 
               {/* Nature of Business and LC Number Inputs */}
-              <Row className="m-0 mt-2">
+              <Row className='m-0 mt-2'>
                 <Col lg={2} md={2} sm={2}>
-                  <label className="LabelRFQTransactionModal">Nature*</label>
+                  <label className='LabelRFQTransactionModal'>Nature*</label>
                 </Col>
 
-                <Col lg={4} md={4} sm={4} className="mb-2">
+                <Col lg={4} md={4} sm={4} className='mb-2'>
                   <SelectDropdown
-                    placeholder=""
-                    classNamePrefix="RfqSpot"
+                    placeholder=''
+                    classNamePrefix='RfqSpot'
                     options={natureOfBusinessOptions}
                     onChange={handleNatureChange}
                     value={selectedNature}
@@ -750,16 +752,16 @@ const RFQModal = () => {
                 </Col>
 
                 <Col lg={2} md={2} sm={2}>
-                  <label className="LabelRFQTransactionModal">
+                  <label className='LabelRFQTransactionModal'>
                     Reference No (LC/Contract/Doc)
                   </label>
                 </Col>
-                <Col lg={4} md={4} sm={4} className="mb-2">
+                <Col lg={4} md={4} sm={4} className='mb-2'>
                   <InputFIeld
                     onChange={handleChangeLcNumber}
                     value={lcNumberData}
-                    name="LcNumber"
-                    applyClass="CalculatorTextfield"
+                    name='LcNumber'
+                    applyClass='CalculatorTextfield'
                     maxLength={35}
                   />
                 </Col>
@@ -781,9 +783,8 @@ const RFQModal = () => {
                     lg={12}
                     className={
                       "d-flex justify-content-center align-items-center"
-                    }
-                  >
-                    <span className="confirmationModalText">
+                    }>
+                    <span className='confirmationModalText'>
                       Do you want cancel the process?
                     </span>
                   </Col>
@@ -799,8 +800,7 @@ const RFQModal = () => {
                 lg={6}
                 md={6}
                 sm={6}
-                className={"d-flex justify-content-start rfqLimit_error-style"}
-              >
+                className={"d-flex justify-content-start rfqLimit_error-style"}>
                 {errorMessage.status === true && errorMessage.message !== ""
                   ? errorMessage.message
                   : ""}
@@ -809,10 +809,9 @@ const RFQModal = () => {
                 lg={6}
                 md={6}
                 sm={6}
-                className={"d-flex justify-content-end"}
-              >
+                className={"d-flex justify-content-end"}>
                 <CustomButton
-                  value="Submit"
+                  value='Submit'
                   className={"btn btn-primary ms-auto"}
                   onClick={handleConfirmButton}
                 />
@@ -825,16 +824,15 @@ const RFQModal = () => {
                   lg={12}
                   md={12}
                   sm={12}
-                  className={"d-flex justify-content-center gap-2"}
-                >
+                  className={"d-flex justify-content-center gap-2"}>
                   <CustomButton
-                    value="Yes"
+                    value='Yes'
                     icon={<i className={"icon-check"}></i>}
                     className={"confirmationYesButton"}
                     onClick={handleConfimationModalYes}
                   />
                   <CustomButton
-                    value="No"
+                    value='No'
                     icon={<i className={"icon-close"}></i>}
                     className={"confirmationNoButton"}
                     onClick={() => {

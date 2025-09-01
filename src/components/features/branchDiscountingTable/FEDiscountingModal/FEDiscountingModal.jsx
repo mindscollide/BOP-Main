@@ -417,7 +417,7 @@ const FEDiscountingModal = ({
                       {counterPartyDetails?.branchName}
                     </span>
                     <p className="FeDiscountingHeader_BranchCode">
-                      {counterPartyDetails?.branchCode}
+                    Branch Code:   {counterPartyDetails?.branchCode}
                     </p>
                   </>
                 ) : isCorporate ? (

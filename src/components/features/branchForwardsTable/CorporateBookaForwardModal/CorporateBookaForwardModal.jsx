@@ -469,17 +469,17 @@ const CorporateBookaForwardModal = ({
         footerClassName={"BookaforwardCorporateFooterClassname"}
         headerClassName={"BookaforwardCorporateHeaderClassname"}
         bodyClassName={"BookaforwardCorporateBodyClassname"}
-        className=""
+        className=''
         modalHeader={
           isBranch ? (
             <>
               <Row>
                 <Col lg={12} md={12} sm={12}>
-                  <span className="Header_BranchName">
+                  <span className='Header_BranchName'>
                     {counterPartyDetails?.branchName}
                   </span>
-                  <p className="Header_BranchCode">
-                    {counterPartyDetails?.branchCode}
+                  <p className='Header_BranchCode'>
+                  Branch Code: {counterPartyDetails?.branchCode}
                   </p>
                 </Col>
               </Row>
@@ -487,7 +487,7 @@ const CorporateBookaForwardModal = ({
           ) : isCorporate ? (
             <Row>
               <Col lg={12} md={12} sm={12}>
-                <span className="Header_BranchName">
+                <span className='Header_BranchName'>
                   {counterPartyDetails?.corporateName}
                 </span>
               </Col>
@@ -496,43 +496,43 @@ const CorporateBookaForwardModal = ({
         }
         modalBody={
           <>
-            <Row className="position-relative">
+            <Row className='position-relative'>
               <Col lg={9} md={9} sm={9}>
                 <Row>
                   {import.meta.env.VITE_APP_INCLUDE_BRANCH === "true" && (
-                    <Col lg={12} md={12} sm={12} className="mb-2">
-                      <div className="d-flex flex-column flex-wrap">
-                        <span className="SubHeadings">Client Name</span>
+                    <Col lg={12} md={12} sm={12} className='mb-2'>
+                      <div className='d-flex flex-column flex-wrap'>
+                        <span className='SubHeadings'>Client Name</span>
                         <Select
                           options={getAllCorporates}
-                          placeholder=""
+                          placeholder=''
                           value={corporateValue}
                           onChange={handleChangeCorporate}
-                          classNamePrefix="RfqSpot"
+                          classNamePrefix='RfqSpot'
                         />
                       </div>
                     </Col>
                   )}
 
                   <Col lg={6} md={6} sm={6}>
-                    <div className="d-flex flex-column flex-wrap">
-                      <span className="SubHeadings">Currency</span>
+                    <div className='d-flex flex-column flex-wrap'>
+                      <span className='SubHeadings'>Currency</span>
                       <Select
                         options={currencyOptions}
-                        placeholder=""
+                        placeholder=''
                         value={selectedCurrency}
                         isSearchable={false}
                         onChange={handleChangeCurrency}
-                        classNamePrefix="RfqSpot"
+                        classNamePrefix='RfqSpot'
                       />
                     </div>
                   </Col>
                   <Col lg={6} md={6} sm={6}>
-                    <div className="d-flex flex-column flex-wrap">
-                      <span className="SubHeadings">Type</span>
+                    <div className='d-flex flex-column flex-wrap'>
+                      <span className='SubHeadings'>Type</span>
                       <Select
                         options={typeOptions}
-                        placeholder=""
+                        placeholder=''
                         isSearchable={false}
                         value={
                           typeOptionSelected.value === 0
@@ -540,15 +540,15 @@ const CorporateBookaForwardModal = ({
                             : typeOptionSelected
                         }
                         onChange={handleChangeType}
-                        classNamePrefix="RfqSpot"
+                        classNamePrefix='RfqSpot'
                       />
                     </div>
                   </Col>
                 </Row>
-                <Row className="mt-2">
+                <Row className='mt-2'>
                   <Col lg={6} md={6} sm={6}>
-                    <div className="d-flex flex-column flex-wrap">
-                      <span className="SubHeadings">Nature</span>
+                    <div className='d-flex flex-column flex-wrap'>
+                      <span className='SubHeadings'>Nature</span>
                       <InputFIeld
                         applyClass={"CalculatorTextfield"}
                         value={natureOfBusinessSelcted?.label || ""}
@@ -557,8 +557,8 @@ const CorporateBookaForwardModal = ({
                     </div>
                   </Col>
                   <Col lg={6} md={6} sm={6}>
-                    <div className="d-flex flex-column flex-wrap">
-                      <span className="SubHeadings">A/c No</span>
+                    <div className='d-flex flex-column flex-wrap'>
+                      <span className='SubHeadings'>A/c No</span>
                       <InputFIeld
                         applyClass={"CalculatorTextfield"}
                         value={forwardRFQState.AccNo}
@@ -573,16 +573,16 @@ const CorporateBookaForwardModal = ({
                     )} */}
                   </Col>
                 </Row>
-                <Row className="mt-2">
+                <Row className='mt-2'>
                   <Col lg={12} md={12} sm={12}>
-                    <div className="d-flex flex-column flex-wrap">
-                      <span className="SubHeadings">Amount</span>
+                    <div className='d-flex flex-column flex-wrap'>
+                      <span className='SubHeadings'>Amount</span>
                       <NumericFormat
                         value={forwardRFQState.Amount}
                         name={"Amount"}
                         onChange={handleChangeValues}
                         customInput={InputFIeld}
-                        thousandSeparator=","
+                        thousandSeparator=','
                         maxLength={10}
                         allowNegative={false}
                         applyClass={"CalculatorTextfield"}
@@ -590,10 +590,10 @@ const CorporateBookaForwardModal = ({
                     </div>
                   </Col>
                 </Row>
-                <Row className="mt-2  g-0">
+                <Row className='mt-2  g-0'>
                   <Col lg={7} md={7} sm={7}>
-                    <div className="d-flex flex-column flex-wrap">
-                      <span className="SubHeadings">Tenor</span>
+                    <div className='d-flex flex-column flex-wrap'>
+                      <span className='SubHeadings'>Tenor</span>
                       <NumericFormat
                         customInput={InputFIeld}
                         applyClass={"CalculatorTextfield"}
@@ -607,30 +607,33 @@ const CorporateBookaForwardModal = ({
                       />
                     </div>
                   </Col>
-                  <Col lg={5} md={5} sm={5} className="d-flex align-items-end">
-                    <span className="dateSpan">{formatDate(tenorDate)}</span>
+                  <Col lg={5} md={5} sm={5} className='d-flex align-items-end'>
+                    <span className='dateSpan'>{formatDate(tenorDate)}</span>
                   </Col>
                 </Row>
-                <Row className="mt-2  g-0">
+                <Row className='mt-2  g-0'>
                   <Col lg={7} md={7} sm={7}>
-                    <div className="d-flex flex-column flex-wrap">
-                      <span className="SubHeadings">Options</span>
-                      <InputFIeld
+                    <div className='d-flex flex-column flex-wrap'>
+                      <span className='SubHeadings'>Options</span>
+                      <NumericFormat
+                        customInput={InputFIeld}
                         applyClass={"CalculatorTextfield"}
                         value={forwardRFQState.Options}
                         name={"Options"}
+                        minLength={1}
+                        maxLength={1000}
                         onChange={handleChangeValues}
                       />
                     </div>
                   </Col>
-                  <Col lg={5} md={5} sm={5} className="d-flex align-items-end">
-                    <span className="dateSpan">{formatDate(optionsDate)}</span>
+                  <Col lg={5} md={5} sm={5} className='d-flex align-items-end'>
+                    <span className='dateSpan'>{formatDate(optionsDate)}</span>
                   </Col>
                 </Row>
-                <Row className="mt-2">
+                <Row className='mt-2'>
                   <Col lg={6} md={6} sm={6}>
-                    <div className="d-flex flex-column flex-wrap">
-                      <span className="SubHeadings">Ready</span>
+                    <div className='d-flex flex-column flex-wrap'>
+                      <span className='SubHeadings'>Ready</span>
                       <InputFIeld
                         applyClass={"CalculatorTextfield"}
                         value={Number(forwardRFQState.Ready).toFixed(2)}
@@ -639,8 +642,8 @@ const CorporateBookaForwardModal = ({
                     </div>
                   </Col>
                   <Col lg={6} md={6} sm={6}>
-                    <div className="d-flex flex-column flex-wrap">
-                      <span className="SubHeadings">Swap</span>
+                    <div className='d-flex flex-column flex-wrap'>
+                      <span className='SubHeadings'>Swap</span>
                       <InputFIeld
                         applyClass={"CalculatorTextfield"}
                         value={Number(forwardRFQState.Swap).toFixed(4)}
@@ -650,8 +653,8 @@ const CorporateBookaForwardModal = ({
                   </Col>
                 </Row>
               </Col>
-              <Col lg={3} md={3} sm={3} className="BlueboxStyles  ">
-                <span className="BlueBackGroundbox d-flex justify-content-center align-items-centerF ">
+              <Col lg={3} md={3} sm={3} className='BlueboxStyles  '>
+                <span className='BlueBackGroundbox d-flex justify-content-center align-items-centerF '>
                   {forwardRFQState.CalculateRate}
                 </span>
               </Col>
@@ -665,8 +668,7 @@ const CorporateBookaForwardModal = ({
                 lg={6}
                 md={6}
                 sm={12}
-                className="d-flex justify-content-start align-items-center rfqLimit_error-style"
-              >
+                className='d-flex justify-content-start align-items-center rfqLimit_error-style'>
                 {errorMessage.status === true && errorMessage.message !== ""
                   ? errorMessage.message
                   : ""}
@@ -676,8 +678,7 @@ const CorporateBookaForwardModal = ({
                 lg={6}
                 md={6}
                 sm={12}
-                className="d-flex align-items-center justify-content-end"
-              >
+                className='d-flex align-items-center justify-content-end'>
                 <CustomButton
                   value={"Confirm"}
                   onClick={handleConfirm}
