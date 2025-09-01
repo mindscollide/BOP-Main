@@ -20,6 +20,7 @@ import {
 } from "../../blotter/BlotterActions";
 
 import { NumericFormat } from "react-number-format";
+import { formatPkAmount } from "@/utils/formatters";
 const CorporateBookaForwardModal = ({
   bookaForwardModalCall,
   setBookaForwardModalCall,
@@ -642,7 +643,9 @@ const CorporateBookaForwardModal = ({
                       <span className="SubHeadings">Ready</span>
                       <InputFIeld
                         applyClass={"CalculatorTextfield"}
-                        value={Number(forwardRFQState.Ready).toFixed(2)}
+                        value={formatPkAmount(forwardRFQState.Ready, {
+                          decimals: 2,
+                        })}
                         disabled={true}
                       />
                     </div>
@@ -652,7 +655,9 @@ const CorporateBookaForwardModal = ({
                       <span className="SubHeadings">Swap</span>
                       <InputFIeld
                         applyClass={"CalculatorTextfield"}
-                        value={Number(forwardRFQState.Swap).toFixed(4)}
+                        value={formatPkAmount(forwardRFQState.Swap, {
+                          decimals: 2,
+                        })}
                         disabled={true}
                       />
                     </div>
