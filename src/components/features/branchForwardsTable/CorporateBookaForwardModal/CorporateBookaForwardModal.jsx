@@ -564,6 +564,7 @@ const CorporateBookaForwardModal = ({
                         value={forwardRFQState.AccNo}
                         name={"AccNo"}
                         onChange={handleChangeValues}
+                        maxLength={25}
                       />
                     </div>
                     {/* {errorState.accoutErrorStatus === true && (
