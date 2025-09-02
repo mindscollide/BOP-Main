@@ -110,7 +110,7 @@ const Dashboard = () => {
   const transactionInfoModal = useSelector(
     (state) => state.modalReducer.transactionInfoModal
   );
-  
+
   const marketStatus = useSelector(
     (state) => state.WatchListReducer.getMarketStatus
   );
@@ -383,7 +383,31 @@ const Dashboard = () => {
       case "CATEGORY_DELETED":
         dispatch(categoryisDeleted(payload));
         break;
+      case "LOGIN":
+        console.log("LOGIN event received", payload);
+        // Handle login event if necessary
+        let token = localStorage.getItem("token");
+        let userId = localStorage.getItem("userID");
+        console.log(
+          "LOGIN event received",
+          token,
+          userId,
+          payload.loginDetials.token,
+          payload.loginDetials.userID,
+          token !== payload.loginDetials.token &&
+            Number(userId) === Number(payload.loginDetials.userID)
+        );
 
+        if (
+          token !== payload.loginDetials.token &&
+          Number(userId) === Number(payload.loginDetials.userID)
+        ) {
+          console.log("LOGIN event received", payload);
+
+          // localStorage.clear();
+          dispatch(LogoutApi({ navigate }));
+        }
+        break;
       default:
         console.warn("No specific handler for this message type", payload);
         break;
@@ -433,9 +457,9 @@ const Dashboard = () => {
   }, [categoryValue]);
   useEffect(() => {
     if (!isConnected) return;
-  
+
     const isTreasuryPath = location.pathname.includes("treasury");
-  
+
     if (isTreasury || isDealer) {
       if (marketStatus && isTreasuryPath) {
         // Subscribe only when status is true AND path is treasury
@@ -448,7 +472,6 @@ const Dashboard = () => {
       }
     }
   }, [location.pathname, isConnected, marketStatus]);
-  
 
   // Handle unsubscription only when leaving treasury path
   useEffect(() => {
@@ -488,12 +511,12 @@ const Dashboard = () => {
     }
   }, []);
   return (
-    <Layout className="roboto-13">
+    <Layout className='roboto-13'>
       {!location.pathname.includes("calculator") && <Header />}
 
       <GlobalNavbar />
       <Content>
-        <main className="px-3">
+        <main className='px-3'>
           <Outlet />
           {/* <AnimatePresence>
             {blotterTransactionAdded && isTreasury && <DealBox />}
