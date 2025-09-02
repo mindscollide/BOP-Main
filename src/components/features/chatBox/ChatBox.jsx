@@ -259,7 +259,7 @@ const ChatBox = () => {
               lg={9}
               className="d-flex justify-content-start align-items-center user-name fw-bold"
             >
-              {userName}
+              {ChatData?.clientName}
             </Col>
             <Col
               sm={2}
