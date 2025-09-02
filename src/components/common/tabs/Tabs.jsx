@@ -7,20 +7,18 @@ const GlobalTabs = ({
   activeKey,
   onTabChange,
   tabClass,
-  outStandingCounter,
+  outStandingCounter = 0,
 }) => {
-
   return (
     <Tabs
       activeKey={activeKey}
       onSelect={onTabChange}
-      id="uncontrolled-tab-example"
-      className={`${tabClass} ${"position-relative"}`}
-    >
+      id='uncontrolled-tab-example'
+      className={`${tabClass} ${"position-relative"}`}>
       {tabs.map((tab, index) => (
         <Tab eventKey={tab.title} title={tab.title} key={index}>
           {(activeKey === "Outstanding Deals" || activeKey === "TXN Summary") &&
-         outStandingCounter !== 0 ? (
+          outStandingCounter !== 0 ? (
             <span
               style={{
                 background: "red",
@@ -37,8 +35,7 @@ const GlobalTabs = ({
                 position: "absolute",
                 top: "-8px",
                 left: "315px",
-              }}
-            >
+              }}>
               {outStandingCounter}
             </span>
           ) : null}

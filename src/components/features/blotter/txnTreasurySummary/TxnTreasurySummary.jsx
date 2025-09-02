@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo, useRef } from "react";
+import React, { useCallback, useState, useMemo, useRef, useLayoutEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
@@ -32,6 +32,8 @@ import {
   RejectRFQTransaction,
 } from "../BlotterActions";
 import { Empty } from "antd";
+import { useSelector } from "react-redux";
+import { BlotterTransactionCancellationRequestForTreasury } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 
 // Custom styles for the component
 const useStyles = makeStyles((theme) => ({
@@ -78,29 +80,38 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TXNTreasurySummary = ({
-  treasuryTXNSummary,
-  treasuryTXNSummarysRow,
-  treasuryTXNSummaryTotalRecords,
-  setHasBottomReachedTreasuryTXN,
-  hasBottomReachedTreasuryTXN,
-}) => {
-  console.log(
-    {
-      treasuryTXNSummary,
-      treasuryTXNSummarysRow,
-      treasuryTXNSummaryTotalRecords,
-      setHasBottomReachedTreasuryTXN,
-      hasBottomReachedTreasuryTXN,
-    },
-    "treasuryTXNSummarytreasuryTXNSummary"
-  );
+const TXNTreasurySummary = () => {
   const classes = useStyles();
   const { showMessage } = useNotification();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const observer = useRef();
   const TxnTreasuryTableContainerRef = useRef();
+
+  // Treasury and CounterParty Data
+  const GlobalStateGetBlotterData = useSelector(
+    (state) => state.BlotterSlicer.getBlotterApiData
+  );
+
+    // This is Treasury Actions which is based on actions performed on Blotter Transaction
+    const blotterTransactionRFQExpiredForTreasury = useSelector(
+      (state) =>
+        state.RealtimeActionsSlice.BlotterTransactionRFQExpiredForTreasury
+    );
+    const blotterTransactionAcceptedForTreasury = useSelector(
+      (state) => state.RealtimeActionsSlice.BlotterTransactionAcceptedForTreasury
+    );
+    const blotterTransactionCancellationRequestDataForTreasury = useSelector(
+      (state) =>
+        state.RealtimeActionsSlice
+          .BlotterTransactionCancellationRequestDataForTreasury
+    );
+    const blotterTranscationCancelledForTreasury = useSelector(
+      (state) => state.RealtimeActionsSlice.BlotterTranscationCancelledForTreasury
+    );
+    const blotterTransactionRejectedForTreasury = useSelector(
+      (state) => state.RealtimeActionsSlice.BlotterTransactionRejectedForTreasury
+    );
   // Modal states
   const [cancelReasonModal, setCancelReasonModal] = useState(false);
   const [cancelReasonComment, setCancelReasonComment] = useState("");
@@ -108,6 +119,14 @@ const TXNTreasurySummary = ({
   const [cancelTransactionID, setCancelTransactionID] = useState(0);
   const [showCommentModal, setShowCommentModal] = useState(false);
   const [comment, setComment] = useState("");
+
+  const [hasBottomReachedTreasuryTXN, setHasBottomReachedTreasuryTXN] =
+    useState(false);
+  const [treasuryTXNSummary, setTreasuryTXNSummary] = useState([]);
+  const [treasuryTXNSummaryTotalRecords, setTreasuryTXNSummaryTotalRecords] =
+    useState(0);
+
+  const [treasuryTXNSummarysRow, setTreasuryTXNSummarysRow] = useState(0);
   const loadMore = useCallback(async () => {
     if (
       hasBottomReachedTreasuryTXN ||
@@ -130,6 +149,114 @@ const TXNTreasurySummary = ({
     treasuryTXNSummary.length,
     treasuryTXNSummarysRow,
   ]);
+
+  // Fixed: Replaced useEffect with useLayoutEffect to prevent state updates during render
+  useLayoutEffect(() => {
+    try {
+      if (GlobalStateGetBlotterData !== null) {
+        const { tnxSummary, totalCount } = GlobalStateGetBlotterData;
+        if (tnxSummary.length > 0) {
+            if (hasBottomReachedTreasuryTXN) {
+              setTreasuryTXNSummary((prev) => [...prev, ...tnxSummary]);
+              setTreasuryTXNSummaryTotalRecords(totalCount);
+              setTreasuryTXNSummarysRow((prev) => prev + tnxSummary.length);
+              setHasBottomReachedTreasuryTXN(false);
+            } else {
+              setTreasuryTXNSummary(tnxSummary);
+              setTreasuryTXNSummaryTotalRecords(totalCount);
+              setTreasuryTXNSummarysRow(tnxSummary.length);
+              setHasBottomReachedTreasuryTXN(false);
+            }
+            return;
+        }
+      } else if (GlobalStateGetBlotterData === null) {
+        if (!hasBottomReachedTreasuryTXN) {
+          setTreasuryTXNSummary([]);
+          setTreasuryTXNSummaryTotalRecords(0);
+          setTreasuryTXNSummarysRow(0);
+          setHasBottomReachedTreasuryTXN(false);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }, [GlobalStateGetBlotterData]);
+
+  useLayoutEffect(() => {
+    const handleTransactionUpdate = (transaction) => {
+      if (!transaction) return;
+
+      setTreasuryTXNSummary((prevData) => {
+        const updatedData = [...(prevData || [])];
+        const existingIndex = updatedData.findIndex(
+          (item) => item.pK_TransactionID === transaction.pK_TransactionID
+        );
+
+        if (existingIndex !== -1) {
+          updatedData[existingIndex] = transaction;
+        } else {
+          updatedData.unshift(transaction);
+          setTreasuryTXNSummarysRow((prev) => prev + 1);
+          setTreasuryTXNSummaryTotalRecords((prev) => prev + 1);
+        }
+
+        return updatedData;
+      });
+    };
+
+    // Handle RFQ Expired
+    if (blotterTransactionRFQExpiredForTreasury?.transaction) {
+      handleTransactionUpdate(
+        blotterTransactionRFQExpiredForTreasury.transaction
+      );
+    }
+
+    // Handle Transaction Accepted
+    if (blotterTransactionAcceptedForTreasury?.transaction) {
+      handleTransactionUpdate(
+        blotterTransactionAcceptedForTreasury.transaction
+      );
+    }
+
+    // Handle Transaction Cancelled
+    if (blotterTranscationCancelledForTreasury?.transaction) {
+      handleTransactionUpdate(
+        blotterTranscationCancelledForTreasury.transaction
+      );
+    }
+
+    // Handle Transaction Rejected
+    if (blotterTransactionRejectedForTreasury?.transaction) {
+      handleTransactionUpdate(
+        blotterTransactionRejectedForTreasury.transaction
+      );
+    }
+
+    // Handle Transaction Cancellation Request
+    if (blotterTransactionCancellationRequestDataForTreasury?.transaction) {
+      const { transaction } =
+        blotterTransactionCancellationRequestDataForTreasury;
+
+      setTreasuryTXNSummary((prevData) => {
+        const updatedData = (prevData || []).filter(
+          (item) => item.pK_TransactionID !== transaction.pK_TransactionID
+        );
+        setTreasuryTXNSummaryTotalRecords((prev) => prev - 1);
+        setTreasuryTXNSummarysRow((prev) => prev - 1);
+
+        return updatedData;
+      });
+
+      dispatch(BlotterTransactionCancellationRequestForTreasury(null));
+    }
+  }, [
+    blotterTransactionRFQExpiredForTreasury,
+    blotterTransactionAcceptedForTreasury,
+    blotterTransactionCancellationRequestDataForTreasury,
+    blotterTranscationCancelledForTreasury,
+    blotterTransactionRejectedForTreasury,
+  ]);
+
 
   const lastRowRef = useCallback(
     (node) => {

@@ -51,7 +51,7 @@ const BlotterSlicer = createSlice({
     txnSummaryData: [],
     txnSummaryDataTotalRecords: 0,
     txnSummarysRow: 0,
-
+    totalOutStandingCounter: 0,
     outStandingDealData: [],
     outStandingDealDataTotalRecords: 0,
     outStandingDealsRow: 0,
@@ -87,6 +87,9 @@ const BlotterSlicer = createSlice({
     forwardRfqQuotation: null,
   },
   reducers: {
+    setOutStandingTotalCount: (state, { payload }) => {
+      state.totalOutStandingCounter = payload;
+    },
     setTxnSummaryData: (state, { payload }) => {
       state.txnSummaryData = payload;
     },
@@ -725,6 +728,7 @@ const BlotterSlicer = createSlice({
 });
 
 export const {
+  setOutStandingTotalCount,
   updateOutstandingDeals,
   setTxnSummaryData,
   setOutstandingDealData,
