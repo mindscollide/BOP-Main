@@ -143,7 +143,7 @@ const CalculatorFxDiscounting = () => {
       <div className="card-box h-auto">
         <div className="box-header bg-primary-orange px-2 color-white">
           <div className="d-flex align-items-center">
-            <div className="fs-6 fw-bold">FX Discounting</div>
+            <div className="fs-6 fw-bold">FE Discounting</div>
             <div className="clc-btn-wrapper ms-auto">
               <CustomButton
                 value="Calculate Rate"
