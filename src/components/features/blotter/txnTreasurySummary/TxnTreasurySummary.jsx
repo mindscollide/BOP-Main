@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo, useRef, useLayoutEffect } from "react";
+import React, { useCallback, useState, useMemo, useRef, useLayoutEffect, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
@@ -151,7 +151,7 @@ const TXNTreasurySummary = () => {
   ]);
 
   // Fixed: Replaced useEffect with useLayoutEffect to prevent state updates during render
-  useLayoutEffect(() => {
+  useEffect(() => {
     try {
       if (GlobalStateGetBlotterData !== null) {
         const { tnxSummary, totalCount } = GlobalStateGetBlotterData;
@@ -182,7 +182,7 @@ const TXNTreasurySummary = () => {
     }
   }, [GlobalStateGetBlotterData]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const handleTransactionUpdate = (transaction) => {
       if (!transaction) return;
 

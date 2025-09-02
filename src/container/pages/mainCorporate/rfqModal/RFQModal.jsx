@@ -571,7 +571,7 @@ const RFQModal = () => {
             : counterPartyDetails.corporateID,
           InstrumentID: selectedCurrency?.value, // TODO: Should this be selectedCurrency.value?
           SecondaryInstrumentID: selectedCurrency?.secondaryInstrumentID,
-          isBuyType: IsBuySide,
+          IsBuyType: IsBuySide,
           IsBuySide: typeOptionSelected.value === 1 ? true : false,
           Quantity: Number(amountValue),
           AccountNumber: acNumberData,
