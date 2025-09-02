@@ -46,7 +46,7 @@ export const LogoutApi = createAsyncThunk(
         return rejectWithValue("Something went wrong");
       }
     } catch (error) {
-      return rejectWithValue(error);
+      return rejectWithValue("Something went wrong");
     }
   }
 );
