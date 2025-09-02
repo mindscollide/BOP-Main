@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -60,7 +54,6 @@ import CancelReasonModal from "../cancelReasonModal/cancelReasonModal";
 import {
   setDiscountingQuoteModalData,
   setForwardQuoteModalData,
-  setOutStandingTotalCount,
   setSpotQuoteModalData,
 } from "@/store/BlotterSlicer/BlotterSlicer";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
@@ -118,48 +111,23 @@ const useStyles = makeStyles((theme) => ({
  * @component
  * @returns {JSX.Element} The rendered OutstandingDeals component.
  */
-const OutstandingDeals = () => {
+const OutstandingDeals = ({
+  treasuryOutStandingDealRecords,
+  treasuryOutStandingDealsRow,
+  setHasBottomReachedOutstanding,
+  treasuryOutStandingDeal,
+  hasBottomReachedOutstanding,
+}) => {
+  console.log(
+    hasBottomReachedOutstanding,
+    "hasBottomReachedOutstandinghasBottomReachedOutstanding"
+  );
   const classes = useStyles();
   const { showMessage } = useNotification();
   const dispatch = useDispatch();
   const observer = useRef(null);
   const outstandingTableContainerRef = useRef(null);
   const navigate = useNavigate();
-
-  //Global State For Blotter OutStanding
-  const getBlotterOutstandingData = useSelector(
-    (state) => state.BlotterSlicer.getBlotterOutstandingData
-  );
-
-  const blotterTransactionRFQExpired = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTransactionRFQExpired
-  );
-
-  const blotterTransactionAssigned = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTransactionAssigned
-  );
-  const blotterTransactionAdded = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTransactionAdded
-  );
-  const blotterTransactionRFQQuoted = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTransactionRFQQuoted
-  );
-  const blotterTransactionAccepted = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTransactionAccepted
-  );
-
-  const blotterTranscationCancelled = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTranscationCancelled
-  );
-
-  const blotterTransactionCancellationRequest = useSelector(
-    (state) =>
-      state.RealtimeActionsSlice.BlotterTransactionCancellationRequestData
-  );
-
-  const blotterTransactionRejected = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTransactionRejected
-  );
 
   // Hardcoded filter options
   const TXN_ID_OPTIONS = [
@@ -186,16 +154,6 @@ const OutstandingDeals = () => {
   const [selectedItemsTXNID, setSelectedItemsTXNID] = useState([]);
   const [showCommentModal, setShowCommentModal] = useState(false);
   const [comment, setComment] = useState("");
-
-  const [hasBottomReachedOutstanding, setHasBottomReachedOutstanding] =
-    useState(false);
-
-  const [treasuryOutStandingDeal, setTreasuryOutStandingDeal] = useState([]);
-  const [treasuryOutStandingDealRecords, setTreasuryOutStandingDealRecords] =
-    useState(0);
-  const [treasuryOutStandingDealsRow, setTreasuryOutStandingDealsRow] =
-    useState(0);
-
   const [openCustomername, setOpenCustomername] = useState(false);
   const [selectedItemsCustomerName, setSelectedItemsCustomerName] = useState(
     []
@@ -255,219 +213,6 @@ const OutstandingDeals = () => {
     treasuryOutStandingDealRecords,
     treasuryOutStandingDeal.length,
   ]);
-
-  // Fixed: Replaced useEffect with useLayoutEffect to prevent state updates during render
-  useLayoutEffect(() => {
-    try {
-      if (getBlotterOutstandingData !== null) {
-        const { outstandingDeals, totalCount } = getBlotterOutstandingData;
-  
-        if (outstandingDeals.length > 0) {
-          if (hasBottomReachedOutstanding) {
-            setHasBottomReachedOutstanding(false);
-  
-            setTreasuryOutStandingDeal((prev) => {
-              const merged = [...prev, ...outstandingDeals];
-  
-              // ✅ keep global counter in sync
-              dispatch(setOutStandingTotalCount(merged.length));
-  
-              return merged;
-            });
-  
-            setTreasuryOutStandingDealRecords(totalCount);
-            setTreasuryOutStandingDealsRow(
-              (prev) => prev + outstandingDeals.length
-            );
-          } else {
-            setHasBottomReachedOutstanding(false);
-  
-            setTreasuryOutStandingDeal(outstandingDeals);
-  
-            // ✅ counter from the fresh list
-            dispatch(setOutStandingTotalCount(outstandingDeals.length));
-  
-            setTreasuryOutStandingDealRecords(totalCount);
-            setTreasuryOutStandingDealsRow(outstandingDeals.length);
-          }
-        }
-      } else {
-        // when data is cleared
-        if (!hasBottomReachedOutstanding) {
-          setHasBottomReachedOutstanding(false);
-  
-          setTreasuryOutStandingDeal([]);
-          setTreasuryOutStandingDealRecords(0);
-          setTreasuryOutStandingDealsRow(0);
-  
-          dispatch(setOutStandingTotalCount(0));
-        }
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  }, [getBlotterOutstandingData]);
-  
-
-  useLayoutEffect(() => {
-    const handleTransaction = (transaction, type) => {
-      if (!transaction) return;
-  
-      setTreasuryOutStandingDeal((prevData) => {
-        let updatedData = [...(prevData || [])];
-  
-        switch (type) {
-          case "added": {
-            const index = updatedData.findIndex(
-              (item) => item.pK_TransactionID === transaction.pK_TransactionID
-            );
-  
-            if (index !== -1) {
-              updatedData[index] = transaction;
-            } else {
-              updatedData = [transaction, ...updatedData];
-              setTreasuryOutStandingDealRecords((prev) => prev + 1);
-              setTreasuryOutStandingDealsRow((prev) => prev + 1);
-            }
-  
-            dispatch(BlotterTransactionAdded(null));
-            break;
-          }
-  
-          case "quoted": {
-            updatedData = updatedData.map((item) =>
-              item.pK_TransactionID === transaction.pK_TransactionID
-                ? {
-                    ...item,
-                    bid: transaction.bid,
-                    offer: transaction.offer,
-                    amount: transaction.amount,
-                    statusID: transaction.statusID,
-                    rfqTimerDetails:
-                      transaction.rfqTimerDetails ?? item.rfqTimerDetails,
-                  }
-                : item
-            );
-  
-            dispatch(BlotterTransactionRFQQuoted(null));
-            break;
-          }
-  
-          case "expired":
-          case "accepted":
-          case "cancelled":
-          case "rejected": {
-            updatedData = updatedData.filter(
-              (item) => item.pK_TransactionID !== transaction.pK_TransactionID
-            );
-  
-            const dispatchMap = {
-              expired: BlotterTransactionRFQExpired,
-              accepted: BlotterTransactionAccepted,
-              cancelled: BlotterTranscationCancelled,
-              rejected: BlotterTransactionRejected,
-            };
-            setTreasuryOutStandingDealRecords((prev) => prev - 1);
-            setTreasuryOutStandingDealsRow((prev) => prev - 1);
-  
-            dispatch(dispatchMap[type](null));
-            break;
-          }
-  
-          case "assigned": {
-            updatedData = updatedData.map((item) =>
-              item.pK_TransactionID === transaction.transactionID
-                ? {
-                    ...item,
-                    status:
-                      Number(localStorage.getItem("userID")) ===
-                      Number(transaction.treasuryPersonID)
-                        ? transaction.statusForAssignedUser
-                        : transaction.statusForOtherTreasury,
-                    statusID: transaction.statusID,
-                    treasuryPersonID: transaction.treasuryPersonID,
-                  }
-                : item
-            );
-            dispatch(BlotterTransactionAssigned(null));
-            break;
-          }
-  
-          case "cancellationRequest": {
-            const exists = updatedData.find(
-              (item) => item.pK_TransactionID === transaction.pK_TransactionID
-            );
-  
-            if (!exists) {
-              updatedData = [transaction, ...updatedData];
-              setTreasuryOutStandingDealRecords((prev) => prev + 1);
-              setTreasuryOutStandingDealsRow((prev) => prev + 1);
-            }
-  
-            dispatch(BlotterTransactionCancellationRequest(null));
-            break;
-          }
-  
-          default:
-            break;
-        }
-  
-        // ✅ Always update the counter after modifications
-        dispatch(setOutStandingTotalCount(updatedData.length));
-  
-        return updatedData;
-      });
-    };
-  
-    try {
-      if (blotterTransactionAdded?.transaction) {
-        handleTransaction(blotterTransactionAdded.transaction, "added");
-      }
-  
-      if (blotterTransactionRFQQuoted?.transaction) {
-        handleTransaction(blotterTransactionRFQQuoted.transaction, "quoted");
-      }
-  
-      if (blotterTransactionRFQExpired?.transaction) {
-        handleTransaction(blotterTransactionRFQExpired.transaction, "expired");
-      }
-  
-      if (blotterTransactionAccepted?.transaction) {
-        handleTransaction(blotterTransactionAccepted.transaction, "accepted");
-      }
-  
-      if (blotterTranscationCancelled?.transaction) {
-        handleTransaction(blotterTranscationCancelled.transaction, "cancelled");
-      }
-  
-      if (blotterTransactionRejected?.transaction) {
-        handleTransaction(blotterTransactionRejected.transaction, "rejected");
-      }
-  
-      if (blotterTransactionAssigned) {
-        handleTransaction(blotterTransactionAssigned, "assigned");
-      }
-  
-      if (blotterTransactionCancellationRequest?.transaction) {
-        handleTransaction(
-          blotterTransactionCancellationRequest.transaction,
-          "cancellationRequest"
-        );
-      }
-    } catch (error) {
-      console.error("Error in unified transaction handler:", error);
-    }
-  }, [
-    blotterTransactionAdded,
-    blotterTransactionRFQQuoted,
-    blotterTransactionRFQExpired,
-    blotterTransactionAccepted,
-    blotterTranscationCancelled,
-    blotterTransactionRejected,
-    blotterTransactionAssigned,
-    blotterTransactionCancellationRequest,
-  ]);
-  
 
   // Intersection Observer callback for infinite scrolling
   const lastRowRef = useCallback(
@@ -686,8 +431,7 @@ const OutstandingDeals = () => {
       label: "Tenor Days",
       width: 100,
       align: "center",
-      render: (record) =>
-        record.rfqDealDetails !== null && record.rfqDealDetails?.tenorDays,
+      render: (record) => record.rfqDealDetails !== null && record.rfqDealDetails?.tenorDays,
     },
     {
       id: "ccY2",
