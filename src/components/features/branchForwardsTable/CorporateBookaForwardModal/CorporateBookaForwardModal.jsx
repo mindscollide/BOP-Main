@@ -443,16 +443,17 @@ const CorporateBookaForwardModal = ({
       selectedCurrency.value !== "" &&
       typeOptionSelected.value !== 0 &&
       forwardRFQState.Amount !== "" &&
+      Number(forwardRFQState.Amount) > 0 &&
       // forwardRFQState.AccNo !== "" &&
       natureOfBusinessSelcted.value !== 0 &&
       forwardRFQState.TenorDays !== "" &&
       forwardRFQState.Options !== "" &&
       forwardRFQState.Swap !== ""
     ) {
-      if (forwardRFQState.Amount === 0) {
-        setIsError(true);
-        return alert("Amount should greater than 0 ");
-      }
+      // if (forwardRFQState.Amount === "0") {
+      //   setIsError(true);
+      //   // return alert("Amount should greater than 0 ");
+      // }
       setIsError(false);
       let amountValue = forwardRFQState.Amount.replace(/,/g, "");
       let Data = {
@@ -613,15 +614,16 @@ const CorporateBookaForwardModal = ({
                         customInput={InputFIeld}
                         thousandSeparator=","
                         maxLength={10}
+                        decimalScale={0}
                         allowNegative={false}
                         applyClass={"CalculatorTextfield"}
                       />
                     </div>
                     <div className={"rfq-error_message"}>
                       {isError &&
-                        (forwardRFQState.Amount === "0" ||
+                        (Number(forwardRFQState.Amount) === 0 ||
                           forwardRFQState.Amount === "") &&
-                        "This is a Required Field"}
+                        "Please enter a valid amount"}
                     </div>
                   </Col>
                 </Row>
@@ -640,7 +642,7 @@ const CorporateBookaForwardModal = ({
                           const { value, floatValue } = values;
                           return (
                             (!floatValue || Number.isInteger(floatValue)) &&
-                            value < 1000
+                            value <= 1000
                           ); // max 4 digits
                         }}
                         onChange={handleDateValues}
@@ -653,7 +655,8 @@ const CorporateBookaForwardModal = ({
                   </Col>
                   <span className={"rfq-error_message"}>
                     {isError &&
-                      forwardRFQState.TenorDays === "" &&
+                      (Number(forwardRFQState.TenorDays) === 0 ||
+                        forwardRFQState.TenorDays === "") &&
                       "Please enter valid tenor days (1-1000)"}
                   </span>
                 </Row>
@@ -665,11 +668,15 @@ const CorporateBookaForwardModal = ({
                         customInput={InputFIeld}
                         applyClass={"CalculatorTextfield"}
                         value={forwardRFQState.Options}
+                        decimalScale={0}
                         name={"Options"}
                         allowNegative={false}
                         isAllowed={(values) => {
-                          const { value } = values;
-                          return value.length <= 4; // max 4 digits
+                          const { value, floatValue } = values;
+                          return (
+                            (!floatValue || Number.isInteger(floatValue)) &&
+                            value <= 1000
+                          ); // max 4 digits
                         }}
                         onChange={handleDateValues}
                       />
@@ -680,8 +687,9 @@ const CorporateBookaForwardModal = ({
                   </Col>
                   <span className={"rfq-error_message"}>
                     {isError &&
-                      forwardRFQState.Options === "" &&
-                      "This is a Required Field"}
+                      (forwardRFQState.Options === "" ||
+                        Number(forwardRFQState.Options) === 0) &&
+                      "Please enter valid option days (1-1000)"}
                   </span>
                 </Row>
                 <Row className="mt-2">

@@ -6,7 +6,7 @@ import SelectDropdown from "@/components/common/selectDropdown/SelectDropdown";
 import InputFIeld from "@/components/common/inputField/InputField";
 import CustomButton from "@/components/common/globalButton/button";
 import { useSelector } from "react-redux";
-import { formatDate } from "@/common/utils";
+import { calculateDates, formatDate } from "@/common/utils";
 import { useDispatch } from "react-redux";
 import { SaveForwardTransactionRFQApi } from "@/components/features/blotter/BlotterActions";
 import { useNavigate } from "react-router-dom";
@@ -43,6 +43,7 @@ const RFQForwardCorporateModal = ({
   // Hooks initialization
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [isError, setIsError] = useState(false);
 
   /**
    * Redux Selectors for required data
@@ -288,56 +289,56 @@ const RFQForwardCorporateModal = ({
    * Validates input (1-1000 days) and calculates maturity date
    * @param {Object} event - The input change event
    */
-  const handleChangeTenor = (event) => {
-    const { value } = event.target;
+  // const handleChangeTenor = (event) => {
+  //   const { value } = event.target;
 
-    // Allow only digits and up to 4 characters
-    if (/^\d{0,4}$/.test(value)) {
-      const numericValue = parseInt(value, 10);
+  //   // Allow only digits and up to 4 characters
+  //   if (/^\d{0,4}$/.test(value)) {
+  //     const numericValue = parseInt(value, 10);
 
-      // Allow empty input or numbers from 1 to 1000
-      if (value === "" || (numericValue >= 1 && numericValue <= 1000)) {
-        setTenor(value);
+  //     // Allow empty input or numbers from 1 to 1000
+  //     if (value === "" || (numericValue >= 1 && numericValue <= 1000)) {
+  //       setTenor(value);
 
-        if (value !== "") {
-          const newDate = new Date();
-          newDate.setDate(newDate.getDate() + numericValue);
-          setTenorDate(newDate);
-          setOptionsDate(newDate); // Reset options date to new tenor date
-        } else {
-          setTenorDate(new Date());
-          setOptionsDate(new Date());
-        }
-      }
-    }
-  };
+  //       if (value !== "") {
+  //         const newDate = new Date();
+  //         newDate.setDate(newDate.getDate() + numericValue);
+  //         setTenorDate(newDate);
+  //         setOptionsDate(newDate); // Reset options date to new tenor date
+  //       } else {
+  //         setTenorDate(new Date());
+  //         setOptionsDate(new Date());
+  //       }
+  //     }
+  //   }
+  // };
 
   /**
    * Handles options input change
    * Validates input (1-1000 days) and calculates options date
    * @param {Object} event - The input change event
    */
-  const handleChangeOptions = (event) => {
-    const { value } = event.target;
+  // const handleChangeOptions = (event) => {
+  //   const { value } = event.target;
 
-    // Allow only digits and up to 4 characters
-    if (/^\d{0,4}$/.test(value)) {
-      const numericValue = parseInt(value, 10);
+  //   // Allow only digits and up to 4 characters
+  //   if (/^\d{0,4}$/.test(value)) {
+  //     const numericValue = parseInt(value, 10);
 
-      // Allow empty input or numbers from 1 to 1000
-      if (value === "" || (numericValue >= 1 && numericValue <= 1000)) {
-        setOptions(value);
+  //     // Allow empty input or numbers from 1 to 1000
+  //     if (value === "" || (numericValue >= 1 && numericValue <= 1000)) {
+  //       setOptions(value);
 
-        if (value !== "") {
-          const newDate = new Date(tenoreDate); // start from tenorDate
-          newDate.setDate(newDate.getDate() + numericValue);
-          setOptionsDate(newDate);
-        } else {
-          setOptionsDate(tenoreDate);
-        }
-      }
-    }
-  };
+  //       if (value !== "") {
+  //         const newDate = new Date(tenoreDate); // start from tenorDate
+  //         newDate.setDate(newDate.getDate() + numericValue);
+  //         setOptionsDate(newDate);
+  //       } else {
+  //         setOptionsDate(tenoreDate);
+  //       }
+  //     }
+  //   }
+  // };
 
   /**
    * Handles transaction type (Buy/Sell) selection change
@@ -360,41 +361,64 @@ const RFQForwardCorporateModal = ({
    *
    * Validates form and dispatches action to save forward RFQ transaction
    */
-  const handleConfirmButton = () => {
-    // Validate required fields
-    // if (accountNumber !== "") {
-    //   setAccountError({ status: false, message: "" });
+  const handleDateValues = (event) => {
+    const { name, value } = event.target;
 
-    // Prepare transaction data
-    let amountValue = amountData.replace(/,/g, "");
-    let Data = {
-      CorporateID: corporateValue.value,
-      InstrumentID: selectedCurrency.value,
-      SecondaryInstrumentID: 0,
-      IsBuySide: typeOptionSelected.value === 1 ? true : false,
-      IsBuyType: typeOptionSelected.value === 1 ? true : false,
-      Quantity: Number(amountValue),
-      AccountNumber: accountNumber ? accountNumber : "",
-      NatureOfTransactionID:
-        natureOfBusinessOptions !== null && natureOfBusinessOptions?.id,
-      TenorDays: Number(Tenor),
-      OptionDays: Number(options),
-    };
+    let newTenor = Tenor;
+    let newOptions = options;
+    // const [Tenor, setTenor] = useState("");
+    // const [options, setOptions] = useState("");
+    if (name === "Tenor") {
+      newTenor = value;
+      setTenor(value);
+    }
+    if (name === "Options") {
+      newOptions = value;
 
-    // Dispatch action to save forward RFQ
-    dispatch(SaveForwardTransactionRFQApi({ navigate, Data, setErrorMessage }));
-    // } else if (accountNumber === "") {
-    //   // Show validation error
-    //   setAccountError({
-    //     message: "Account Number is Required",
-    //     status: true,
-    //   });
-    // }
+      setOptions(value);
+    }
+    // const updatedState = {
+    //   ...forwardRFQState,
+    //   [name]: value,
+    // };
+    // setForwardRFQState(updatedState);
+
+    console.log({ Tenor, options }, "testtsststst");
+    const { tenorDt, optionDt } = calculateDates(newTenor, newOptions);
+
+    setTenorDate(tenorDt);
+    setOptionsDate(optionDt);
   };
 
-  /**
-   * Render Method
-   */
+  const handleConfirmButton = () => {
+    if (
+      Number(Tenor) !== 0 &&
+      Number(options) !== 0 &&
+      Number(amountData) > 0
+    ) {
+      setIsError(false);
+      let amountValue = amountData.replace(/,/g, "");
+      let Data = {
+        CorporateID: corporateValue.value,
+        InstrumentID: selectedCurrency.value,
+        SecondaryInstrumentID: 0,
+        IsBuySide: typeOptionSelected.value === 1 ? true : false,
+        IsBuyType: typeOptionSelected.value === 1 ? true : false,
+        Quantity: Number(amountValue),
+        AccountNumber: accountNumber ? accountNumber : "",
+        NatureOfTransactionID:
+          natureOfBusinessOptions !== null && natureOfBusinessOptions?.id,
+        TenorDays: Number(Tenor),
+        OptionDays: Number(options),
+      };
+      dispatch(
+        SaveForwardTransactionRFQApi({ navigate, Data, setErrorMessage })
+      );
+    } else {
+      setIsError(true);
+    }
+  };
+
   return (
     <div>
       <Modal
@@ -521,6 +545,9 @@ const RFQForwardCorporateModal = ({
                   <div className="d-flex flex-column flex-wrap">
                     <label className="LabelRFQTransactionModal">Amount*</label>
                     <NumericFormat
+                      allowLeadingZeros={false}
+                      value={amountData}
+                      decimalScale={0}
                       maxLength={10}
                       allowNegative={false}
                       name={"Amount"}
@@ -530,6 +557,11 @@ const RFQForwardCorporateModal = ({
                       thousandSeparator=","
                     />
                   </div>
+                  <div className={"rfq-error_message"}>
+                    {isError &&
+                      (Number(amountData) === 0 || amountData === "") &&
+                      "Please enter a valid amount"}
+                  </div>
                 </Col>
               </Row>
 
@@ -538,12 +570,23 @@ const RFQForwardCorporateModal = ({
                 <Col lg={7} md={7} sm={7} className="pe-0">
                   <div className="d-flex flex-column flex-wrap">
                     <label className="LabelRFQTransactionModal">Tenor</label>
-                    <InputFIeld
-                      value={Tenor}
-                      name="Tenor"
-                      onChange={handleChangeTenor}
+                    <NumericFormat
+                      customInput={InputFIeld}
                       applyClass="CalculatorTextfield"
+                      value={Tenor}
+                      decimalScale={0}
+                      allowNegative={false}
+                      name="Tenor"
                       maxLength={4}
+                      isAllowed={(values) => {
+                        const { value, floatValue } = values;
+                        return (
+                          (!floatValue || Number.isInteger(floatValue)) &&
+                          value <= 1000
+                        ); // max 4 digits
+                      }}
+                      // onChange={handleChangeTenor}
+                      onChange={handleDateValues}
                     />
                   </div>
                 </Col>
@@ -557,6 +600,11 @@ const RFQForwardCorporateModal = ({
                     {formatDate(tenoreDate)}
                   </span>
                 </Col>
+                <span className={"rfq-error_message"}>
+                  {isError &&
+                    (Number(Tenor) === 0 || Tenor === "") &&
+                    "Please enter valid tenor days (1-1000)"}
+                </span>
               </Row>
 
               {/* Options Input with Date Calculation */}
@@ -564,14 +612,26 @@ const RFQForwardCorporateModal = ({
                 <Col lg={7} md={7} sm={7} className="pe-0">
                   <div className="d-flex flex-column flex-wrap">
                     <label className="LabelRFQTransactionModal">Options</label>
-                    <InputFIeld
+                    <NumericFormat
+                      customInput={InputFIeld}
                       value={options}
-                      onChange={handleChangeOptions}
+                      decimalScale={0}
+                      allowNegative={false}
+                      onChange={handleDateValues}
                       name="Options"
                       applyClass="CalculatorTextfield"
+                      isAllowed={(values) => {
+                        const { value, floatValue } = values;
+                        return (
+                          (!floatValue || Number.isInteger(floatValue)) &&
+                          value <= 1000 &&
+                          value.length < 5
+                        ); // max 4 digits
+                      }}
                     />
                   </div>
                 </Col>
+
                 <Col
                   lg={5}
                   md={5}
@@ -582,6 +642,11 @@ const RFQForwardCorporateModal = ({
                     {formatDate(optionsDate)}
                   </span>
                 </Col>
+                <span className={"rfq-error_message"}>
+                  {isError &&
+                    (options === "" || Number(options) === 0) &&
+                    "Please enter valid option days (1-1000)"}
+                </span>
               </Row>
             </div>
           </>
