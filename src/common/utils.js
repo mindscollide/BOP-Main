@@ -38,7 +38,6 @@ const setCustomHeaders = (isDoc, ext) => {
   }
 };
 
-
 const emailValidation = (text) => {
   // Correct regex pattern for email validation
   let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -163,4 +162,35 @@ export const decryptFormData = (encrypted, key) => {
   const decryptedText = bytes.toString(CryptoJS.enc.Utf8);
   const parsed = JSON.parse(decryptedText);
   return objectToFormData(parsed);
+};
+
+// utils/dateUtils.js (or inside same file if small)
+export const calculateDates = (tenorDays, optionDays) => {
+  const today = new Date();
+  let tenorDt = new Date(today);
+  let optionDt = new Date(today);
+
+  const tenorNum = parseInt(tenorDays || "0", 10);
+  const optionNum = parseInt(optionDays || "0", 10);
+
+  if (!tenorNum && !optionNum) {
+    // Case 1: both empty
+    tenorDt = today;
+    optionDt = today;
+  } else if (tenorNum && !optionNum) {
+    // Case 2: only tenor filled
+    tenorDt.setDate(today.getDate() + tenorNum);
+    optionDt = new Date(tenorDt);
+  } else if (!tenorNum && optionNum) {
+    // Case 3: only option filled
+    tenorDt = today;
+    optionDt.setDate(today.getDate() + optionNum);
+  } else {
+    // Case 4: both filled
+    tenorDt.setDate(today.getDate() + tenorNum);
+    optionDt = new Date(tenorDt);
+    optionDt.setDate(optionDt.getDate() + optionNum);
+  }
+
+  return { tenorDt, optionDt };
 };

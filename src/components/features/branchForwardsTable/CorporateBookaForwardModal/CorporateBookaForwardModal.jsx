@@ -6,7 +6,7 @@ import { Col, Row } from "react-bootstrap";
 import InputFIeld from "@/components/common/inputField/InputField";
 import CustomButton from "@/components/common/globalButton/button";
 import { useSelector } from "react-redux";
-import { formatDate } from "@/common/utils";
+import { calculateDates, formatDate } from "@/common/utils";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 // import {
@@ -21,6 +21,7 @@ import {
 
 import { NumericFormat } from "react-number-format";
 import { formatPkAmount } from "@/utils/formatters";
+
 const CorporateBookaForwardModal = ({
   bookaForwardModalCall,
   setBookaForwardModalCall,
@@ -85,6 +86,7 @@ const CorporateBookaForwardModal = ({
     value: 0,
     label: "",
   });
+  const [isError, setIsError] = useState(false);
   const [forwardRFQState, setForwardRFQState] = useState({
     AccNo: "",
     Amount: "",
@@ -132,7 +134,6 @@ const CorporateBookaForwardModal = ({
       console.log("Error in Calculating rated: ", error);
     }
   };
-  const options = [];
 
   useEffect(() => {
     if (natureOfBusinessList !== null) {
@@ -200,9 +201,9 @@ const CorporateBookaForwardModal = ({
         const { forwardRate, swap, readyRate } = calculatedForwardsSwapandRate;
         setForwardRFQState({
           ...forwardRFQState,
-          Swap: swap,
+          Swap: formatPkAmount(swap, { decimals: 2 }),
           CalculateRate: forwardRate,
-          Ready: readyRate,
+          Ready: formatPkAmount(readyRate, { decimals: 2 }),
         });
         dispatch(clearCalculateTenorSwapAndForwardRateData(null));
       } catch (error) {
@@ -303,12 +304,13 @@ const CorporateBookaForwardModal = ({
     const { name, value } = event.target;
 
     if (name === "Amount") {
-      if (value !== "") {
-        setForwardRFQState({
-          ...forwardRFQState,
-          [name]: value,
-        });
-      }
+      // if (value !== "") {
+      setForwardRFQState({
+        ...forwardRFQState,
+        [name]: value,
+        // }
+      });
+      // }
     } else if (name === "Options") {
       setForwardRFQState({
         ...forwardRFQState,
@@ -346,6 +348,23 @@ const CorporateBookaForwardModal = ({
         setErrorState({ ...errorState, accoutErrorStatus: false });
       }
     }
+  };
+  const handleDateValues = (event) => {
+    const { name, value } = event.target;
+
+    const updatedState = {
+      ...forwardRFQState,
+      [name]: value,
+    };
+    setForwardRFQState(updatedState);
+
+    const { tenorDt, optionDt } = calculateDates(
+      updatedState.TenorDays,
+      updatedState.Options
+    );
+
+    setTenorDate(tenorDt);
+    setOptionsDate(optionDt);
   };
 
   // const handleClickCalculatureForwards = () => {
@@ -430,6 +449,11 @@ const CorporateBookaForwardModal = ({
       forwardRFQState.Options !== "" &&
       forwardRFQState.Swap !== ""
     ) {
+      if (forwardRFQState.Amount === 0) {
+        setIsError(true);
+        return alert("Amount should greater than 0 ");
+      }
+      setIsError(false);
       let amountValue = forwardRFQState.Amount.replace(/,/g, "");
       let Data = {
         CorporateID: isBranch
@@ -454,6 +478,8 @@ const CorporateBookaForwardModal = ({
           setErrorMessage,
         })
       );
+    } else {
+      setIsError(true);
     }
   };
 
@@ -578,8 +604,9 @@ const CorporateBookaForwardModal = ({
                 <Row className="mt-2">
                   <Col lg={12} md={12} sm={12}>
                     <div className="d-flex flex-column flex-wrap">
-                      <span className="SubHeadings">Amount</span>
+                      <span className="SubHeadings">Amount*</span>
                       <NumericFormat
+                        allowLeadingZeros={false}
                         value={forwardRFQState.Amount}
                         name={"Amount"}
                         onChange={handleChangeValues}
@@ -589,6 +616,12 @@ const CorporateBookaForwardModal = ({
                         allowNegative={false}
                         applyClass={"CalculatorTextfield"}
                       />
+                    </div>
+                    <div className={"rfq-error_message"}>
+                      {isError &&
+                        (forwardRFQState.Amount === "0" ||
+                          forwardRFQState.Amount === "") &&
+                        "This is a Required Field"}
                     </div>
                   </Col>
                 </Row>
@@ -600,13 +633,17 @@ const CorporateBookaForwardModal = ({
                         customInput={InputFIeld}
                         applyClass={"CalculatorTextfield"}
                         value={forwardRFQState.TenorDays}
+                        decimalScale={0}
                         name={"TenorDays"}
                         allowNegative={false}
                         isAllowed={(values) => {
-                          const { value } = values;
-                          return value.length <= 4; // max 4 digits
+                          const { value, floatValue } = values;
+                          return (
+                            (!floatValue || Number.isInteger(floatValue)) &&
+                            value < 1000
+                          ); // max 4 digits
                         }}
-                        onChange={handleChangeValues}
+                        onChange={handleDateValues}
                         onBlur={handleUpdateRate}
                       />
                     </div>
@@ -614,11 +651,16 @@ const CorporateBookaForwardModal = ({
                   <Col lg={5} md={5} sm={5} className="d-flex align-items-end">
                     <span className="dateSpan">{formatDate(tenorDate)}</span>
                   </Col>
+                  <span className={"rfq-error_message"}>
+                    {isError &&
+                      forwardRFQState.TenorDays === "" &&
+                      "Please enter valid tenor days (1-1000)"}
+                  </span>
                 </Row>
                 <Row className="mt-2  g-0">
                   <Col lg={7} md={7} sm={7}>
                     <div className="d-flex flex-column flex-wrap">
-                      <span className="SubHeadings">Options</span>
+                      <span className="SubHeadings">Options*</span>
                       <NumericFormat
                         customInput={InputFIeld}
                         applyClass={"CalculatorTextfield"}
@@ -629,13 +671,18 @@ const CorporateBookaForwardModal = ({
                           const { value } = values;
                           return value.length <= 4; // max 4 digits
                         }}
-                        onChange={handleChangeValues}
+                        onChange={handleDateValues}
                       />
                     </div>
                   </Col>
                   <Col lg={5} md={5} sm={5} className="d-flex align-items-end">
                     <span className="dateSpan">{formatDate(optionsDate)}</span>
                   </Col>
+                  <span className={"rfq-error_message"}>
+                    {isError &&
+                      forwardRFQState.Options === "" &&
+                      "This is a Required Field"}
+                  </span>
                 </Row>
                 <Row className="mt-2">
                   <Col lg={6} md={6} sm={6}>
@@ -643,10 +690,11 @@ const CorporateBookaForwardModal = ({
                       <span className="SubHeadings">Ready</span>
                       <InputFIeld
                         applyClass={"CalculatorTextfield"}
-                        value={formatPkAmount(forwardRFQState.Ready, {
-                          decimals: 2,
-                        })}
+                        // value={formatPkAmount(forwardRFQState.Ready, {
+                        //   decimals: ,
+                        // })}
                         disabled={true}
+                        value={forwardRFQState.Ready}
                       />
                     </div>
                   </Col>

@@ -417,7 +417,7 @@ const FEDiscountingModal = ({
                       {counterPartyDetails?.branchName}
                     </span>
                     <p className="FeDiscountingHeader_BranchCode">
-                    Branch Code:   {counterPartyDetails?.branchCode}
+                      Branch Code: {counterPartyDetails?.branchCode}
                     </p>
                   </>
                 ) : isCorporate ? (
@@ -513,7 +513,7 @@ const FEDiscountingModal = ({
                 <Row className="my-2">
                   <Col lg={12} md={12} sm={12}>
                     <div className="d-flex flex-column flex-wrap">
-                      <span className="SubHeadings">Amount</span>
+                      <span className="SubHeadings">Amount*</span>
                       <NumericFormat
                         customInput={InputFIeld}
                         value={formData.Quantity}

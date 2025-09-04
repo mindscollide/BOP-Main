@@ -402,24 +402,24 @@ const RFQForwardCorporateModal = ({
         // setShow={openRfqModalForwardCorporateComponent}
         onHide={() => dispatch(setForwardRFQModal(false))}
         closeButton
-        headerClassName='RFQModalHeaderForwardTabCorporate'
-        footerClassName='RFQModalFooterForwardTabCorporate'
-        bodyClassName='RFQModalBodyForwardTabCorporate'
+        headerClassName="RFQModalHeaderForwardTabCorporate"
+        footerClassName="RFQModalFooterForwardTabCorporate"
+        bodyClassName="RFQModalBodyForwardTabCorporate"
         modalHeader={
           <>
             <Row>
               <Col lg={12} md={12} sm={12}>
                 {isBranch ? (
                   <>
-                    <p className='heading-RfqModal'>
+                    <p className="heading-RfqModal">
                       {titleDetails.branchName}
                     </p>
-                    <p className='heading-branchCode'>
+                    <p className="heading-branchCode">
                       Branch Code: {titleDetails.branchCode}
                     </p>
                   </>
                 ) : (
-                  <p className='heading-RfqModal'>
+                  <p className="heading-RfqModal">
                     {titleDetails.corporateName}
                   </p>
                 )}
@@ -433,13 +433,13 @@ const RFQForwardCorporateModal = ({
               {/* Corporate Selection (for branch users) */}
               <Row>
                 {isBranch && (
-                  <Col lg={12} md={12} sm={12} className='mb-2'>
-                    <label className='LabelRFQTransactionModal'>
+                  <Col lg={12} md={12} sm={12} className="mb-2">
+                    <label className="LabelRFQTransactionModal">
                       Customer Name*
                     </label>
                     <SelectDropdown
-                      classNamePrefix='RfqSpot'
-                      placeholder=''
+                      classNamePrefix="RfqSpot"
+                      placeholder=""
                       options={getAllCorporates}
                       onChange={handleChangeCorporate}
                       isSearchable={true}
@@ -450,13 +450,13 @@ const RFQForwardCorporateModal = ({
 
                 {/* Currency and Type Selection */}
                 <Col lg={6} md={6} sm={6}>
-                  <div className='d-flex flex-column flex-wrap'>
-                    <label className='LabelRFQTransactionModal'>
+                  <div className="d-flex flex-column flex-wrap">
+                    <label className="LabelRFQTransactionModal">
                       Currency*
                     </label>
                     <SelectDropdown
-                      classNamePrefix='RfqSpot'
-                      placeholder=''
+                      classNamePrefix="RfqSpot"
+                      placeholder=""
                       options={currencyOptions}
                       value={selectedCurrency}
                       onChange={(selectCurrency) =>
@@ -467,11 +467,11 @@ const RFQForwardCorporateModal = ({
                 </Col>
 
                 <Col lg={6} md={6} sm={6}>
-                  <div className='d-flex flex-column flex-wrap'>
-                    <label className='LabelRFQTransactionModal'>Type*</label>
+                  <div className="d-flex flex-column flex-wrap">
+                    <label className="LabelRFQTransactionModal">Type*</label>
                     <SelectDropdown
-                      placeholder=''
-                      classNamePrefix='RfqSpot'
+                      placeholder=""
+                      classNamePrefix="RfqSpot"
                       options={typeOptions}
                       value={typeOptionSelected}
                       onChange={handleChangeType}
@@ -481,12 +481,12 @@ const RFQForwardCorporateModal = ({
               </Row>
 
               {/* Nature and Account Number */}
-              <Row className='mt-2'>
+              <Row className="mt-2">
                 <Col lg={6} md={6} sm={6}>
-                  <div className='d-flex flex-column flex-wrap'>
-                    <label className='LabelRFQTransactionModal'>Nature</label>
+                  <div className="d-flex flex-column flex-wrap">
+                    <label className="LabelRFQTransactionModal">Nature</label>
                     <InputFIeld
-                      applyClass='CalculatorTextfield'
+                      applyClass="CalculatorTextfield"
                       disabled={true}
                       value={
                         natureOfBusinessOptions !== null
@@ -497,12 +497,12 @@ const RFQForwardCorporateModal = ({
                   </div>
                 </Col>
                 <Col lg={6} md={6} sm={6}>
-                  <div className='d-flex flex-column flex-wrap'>
-                    <label className='LabelRFQTransactionModal'>A/c No</label>
+                  <div className="d-flex flex-column flex-wrap">
+                    <label className="LabelRFQTransactionModal">A/c No</label>
                     <InputFIeld
-                      applyClass='CalculatorTextfield'
+                      applyClass="CalculatorTextfield"
                       onChange={handleChangeAcNo}
-                      type='text'
+                      type="text"
                       value={accountNumber}
                       maxLength={25}
                     />
@@ -516,10 +516,10 @@ const RFQForwardCorporateModal = ({
               </Row>
 
               {/* Amount Input */}
-              <Row className='mt-2'>
+              <Row className="mt-2">
                 <Col lg={12} md={12} sm={12}>
-                  <div className='d-flex flex-column flex-wrap'>
-                    <label className='LabelRFQTransactionModal'>Amount</label>
+                  <div className="d-flex flex-column flex-wrap">
+                    <label className="LabelRFQTransactionModal">Amount*</label>
                     <NumericFormat
                       maxLength={10}
                       allowNegative={false}
@@ -527,22 +527,22 @@ const RFQForwardCorporateModal = ({
                       applyClass={"CalculatorTextfield"}
                       customInput={InputFIeld}
                       onChange={handleChangeAmount}
-                      thousandSeparator=','
+                      thousandSeparator=","
                     />
                   </div>
                 </Col>
               </Row>
 
               {/* Tenor Input with Date Calculation */}
-              <Row className='mt-2 '>
-                <Col lg={7} md={7} sm={7} className='pe-0'>
-                  <div className='d-flex flex-column flex-wrap'>
-                    <label className='LabelRFQTransactionModal'>Tenor</label>
+              <Row className="mt-2 ">
+                <Col lg={7} md={7} sm={7} className="pe-0">
+                  <div className="d-flex flex-column flex-wrap">
+                    <label className="LabelRFQTransactionModal">Tenor</label>
                     <InputFIeld
                       value={Tenor}
-                      name='Tenor'
+                      name="Tenor"
                       onChange={handleChangeTenor}
-                      applyClass='CalculatorTextfield'
+                      applyClass="CalculatorTextfield"
                       maxLength={4}
                     />
                   </div>
@@ -551,23 +551,24 @@ const RFQForwardCorporateModal = ({
                   lg={5}
                   md={5}
                   sm={5}
-                  className='d-flex align-items-end justify-content-start ps-0 '>
-                  <span className='DateColumnTenorForwardTabRFQModal'>
+                  className="d-flex align-items-end justify-content-start ps-0 "
+                >
+                  <span className="DateColumnTenorForwardTabRFQModal">
                     {formatDate(tenoreDate)}
                   </span>
                 </Col>
               </Row>
 
               {/* Options Input with Date Calculation */}
-              <Row className='mt-2 '>
-                <Col lg={7} md={7} sm={7} className='pe-0'>
-                  <div className='d-flex flex-column flex-wrap'>
-                    <label className='LabelRFQTransactionModal'>Options</label>
+              <Row className="mt-2 ">
+                <Col lg={7} md={7} sm={7} className="pe-0">
+                  <div className="d-flex flex-column flex-wrap">
+                    <label className="LabelRFQTransactionModal">Options</label>
                     <InputFIeld
                       value={options}
                       onChange={handleChangeOptions}
-                      name='Options'
-                      applyClass='CalculatorTextfield'
+                      name="Options"
+                      applyClass="CalculatorTextfield"
                     />
                   </div>
                 </Col>
@@ -575,8 +576,9 @@ const RFQForwardCorporateModal = ({
                   lg={5}
                   md={5}
                   sm={5}
-                  className='d-flex align-items-end ps-0'>
-                  <span className='DateColumnTenorForwardTabRFQModal'>
+                  className="d-flex align-items-end ps-0"
+                >
+                  <span className="DateColumnTenorForwardTabRFQModal">
                     {formatDate(optionsDate)}
                   </span>
                 </Col>
@@ -591,7 +593,8 @@ const RFQForwardCorporateModal = ({
                 lg={6}
                 md={6}
                 sm={12}
-                className='d-flex justify-content-start align-items-center rfqLimit_error-style'>
+                className="d-flex justify-content-start align-items-center rfqLimit_error-style"
+              >
                 {errorMessage.status === true && errorMessage.message !== ""
                   ? errorMessage.message
                   : ""}
@@ -601,10 +604,11 @@ const RFQForwardCorporateModal = ({
                 lg={6}
                 md={6}
                 sm={12}
-                className='d-flex align-items-center justify-content-end'>
+                className="d-flex align-items-center justify-content-end"
+              >
                 <CustomButton
-                  value='Confirm'
-                  applyClass='ConfirmButtonBookaForward'
+                  value="Confirm"
+                  applyClass="ConfirmButtonBookaForward"
                   onClick={handleConfirmButton}
                 />
               </Col>
