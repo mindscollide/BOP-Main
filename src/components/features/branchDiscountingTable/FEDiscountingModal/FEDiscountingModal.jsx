@@ -267,6 +267,11 @@ const FEDiscountingModal = ({
         const newDate = new Date();
         newDate.setDate(newDate.getDate() + numericValue);
         setTenorDate(formatDate(newDate));
+        setErrors((prev) => ({
+          ...prev,
+          TenorDays: false,
+          Ready: false,
+        }));
       }
     }
   };
