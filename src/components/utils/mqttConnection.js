@@ -83,11 +83,7 @@ export const useMqttClient = ({
   const connectToMqtt = useCallback(
     ({ subscribeID, userID }) => {
       if (!subscribeID || clientRef.current?.isConnected()) {
-        console.warn(
-          "Already connected or missing subscribeID",
-          subscribeID,
-          clientRef.current.isConnected()
-        );
+        console.warn("Already connected or missing subscribeID", subscribeID, clientRef.current.isConnected());
         return;
       }
 
@@ -104,17 +100,14 @@ export const useMqttClient = ({
       clientRef.current.onConnected = () => {
         console.log("MQTT connected successfully");
         setIsConnected(true);
-
         let userData = isBranch
           ? JSON.parse(localStorage.getItem("branch"))
           : JSON.parse(localStorage.getItem("corporate"));
-
         let subscribeIDNew = userData?.branchID || userData?.corporateID;
 
         let newTopic = isBranch
           ? `BOP_BRANCH_${subscribeIDNew}`
           : `BOP_CORPORATE_${subscribeIDNew}`;
-
         if (isCorporate || isBranch) {
           subscribeToTopics([subscribeID, `BOP_${userID}`, newTopic]);
         } else {
@@ -123,20 +116,18 @@ export const useMqttClient = ({
       };
 
       clientRef.current.connect({
-        onSuccess: () => {
-          console.log("MQTT connecting...");
-        },
+        onSuccess: () => console.log("MQTT connecting..."),
         onFailure: (err) => {
           console.log("Connection failed:", err.errorMessage);
           setIsConnected(false);
-          // ❌ Don't manually reconnect if you're already using reconnect: true
+          setTimeout(() => connectToMqtt({ subscribeID, userID }), 6000);
         },
-        keepAliveInterval: 60, // Ping every 60s
-        reconnect: true, // Auto reconnect
+        keepAliveInterval: 120,
+        reconnect: true,
         userName: import.meta.env.VITE_MQTT_USERNAME,
         password: import.meta.env.VITE_MQTT_PASSWORD,
-        cleanSession: true, // Change to false if you want broker to remember subs
-        useSSL: import.meta.env.VITE_MQTT_PORT === "8883",
+        cleanSession: true,
+        useSSL: import.meta.env.VITE_MQTT_PORT === "8883" ? true : false,
       });
     },
     [onMessageArrived, onConnectionLost, randomString, subscribeToTopics]
@@ -150,6 +141,6 @@ export const useMqttClient = ({
     unsubscribeFromTopics,
     onMessageArrived,
     onConnectionLost,
-    setSubscribedTopics,
+    setSubscribedTopics
   };
 };

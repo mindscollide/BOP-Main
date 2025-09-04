@@ -39,6 +39,7 @@ import {
   SaveSpotTransactionRFQ,
   RFQForwardTransactionQuotation,
   RFQFEDiscountingTransactionQuotation,
+  RFQNonFEDiscountingTransactionQuotation,
 } from "@/components/features/blotter/BlotterActions";
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -85,6 +86,8 @@ const BlotterSlicer = createSlice({
     CalculateFEDiscountingData: null,
     CalculateFESwapAndDiscountingRate: null,
     forwardRfqQuotation: null,
+    feDiscountingQuotation: null,
+    nonFeDiscountingQuotation: null,
   },
   reducers: {
     setOutStandingTotalCount: (state, { payload }) => {
@@ -691,7 +694,7 @@ const BlotterSlicer = createSlice({
         RFQForwardTransactionQuotation.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
-          state.rfqSaveQuotation = payload?.response;
+          state.forwardRfqQuotation = payload?.response;
           state.error = null;
           state.responseMessage = payload?.message;
         }
@@ -701,7 +704,7 @@ const BlotterSlicer = createSlice({
         state.Loader = false;
         state.error = action.payload;
         state.responseMessage = action?.payload;
-        state.rfqSaveQuotation = null;
+        state.forwardRfqQuotation = null;
       })
       .addCase(RFQFEDiscountingTransactionQuotation.pending, (state) => {
         state.Loader = true;
@@ -710,7 +713,7 @@ const BlotterSlicer = createSlice({
         RFQFEDiscountingTransactionQuotation.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
-          state.forwardRfqQuotation = payload?.response;
+          state.feDiscountingQuotation = payload?.response;
           state.error = null;
           state.responseMessage = payload?.message;
         }
@@ -721,9 +724,21 @@ const BlotterSlicer = createSlice({
           state.Loader = false;
           state.error = payload;
           state.responseMessage = payload;
-          state.forwardRfqQuotation = null;
+          state.feDiscountingQuotation = null;
         }
-      );
+      ).addCase(RFQNonFEDiscountingTransactionQuotation.pending, (state) => {
+        state.Loader = true;
+      }).addCase(RFQNonFEDiscountingTransactionQuotation.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.nonFeDiscountingQuotation = payload?.response;
+        state.error = null;
+        state.responseMessage = payload?.message;
+      }).addCase(RFQNonFEDiscountingTransactionQuotation.rejected, (state, { payload }) => {
+        state.Loader = false;
+        state.error = payload;
+        state.responseMessage = payload;
+        state.nonFeDiscountingQuotation = null;
+      })
   },
 });
 

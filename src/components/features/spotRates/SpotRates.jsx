@@ -422,7 +422,7 @@ const SpotRates = () => {
             </div>
             <div className="box-content-wrapper h-auto p-2">
               <div className="row m-0">
-                <div className="col-12 mb-2">
+                <div className="col-12 mb-2 px-0">
                   <div className="d-flex justify-content-end">
                     <div className="col-6">
                       <div className="d-flex align-items-center justify-content-end refresh-interval-wrapper">
