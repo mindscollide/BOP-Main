@@ -391,10 +391,11 @@ const RFQForwardCorporateModal = ({
   };
 
   const handleConfirmButton = () => {
+    let amountValue = amountData.replace(/,/g, "");
     if (
       Number(Tenor) !== 0 &&
       Number(options) !== 0 &&
-      Number(amountData) > 0
+      Number(amountValue) > 0
     ) {
       setIsError(false);
       let amountValue = amountData.replace(/,/g, "");

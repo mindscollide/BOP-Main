@@ -317,6 +317,7 @@ const FEDiscountingModal = ({
 
   // Form validation function
   const validateForm = () => {
+    let convertIntoNumber = formData.Quantity.replace(/,/g, "");
     const newErrors = {
       // corproateObj: !formData.corproateObj,
       InstrumentID: !formData.InstrumentID || !formData.InstrumentID.value,
@@ -329,6 +330,10 @@ const FEDiscountingModal = ({
       DiscountingFactor:
         !formData.DiscountingFactor || isNaN(formData.DiscountingFactor),
       Ready: !formData.Ready || isNaN(formData.Ready),
+      Quantity:
+        !convertIntoNumber ||
+        isNaN(convertIntoNumber) ||
+        parseInt(convertIntoNumber) <= 0,
     };
 
     setErrors(newErrors);
@@ -516,7 +521,9 @@ const FEDiscountingModal = ({
                       <span className="SubHeadings">Amount*</span>
                       <NumericFormat
                         customInput={InputFIeld}
+                        decimalScale={0}
                         value={formData.Quantity}
+                        allowNegative={false}
                         onChange={(e) =>
                           handleInputChange("Quantity", e.target.value)
                         }
@@ -545,11 +552,6 @@ const FEDiscountingModal = ({
                         applyClass={"CalculatorTextfield"}
                         onBlur={onBlurTenorDays}
                       />
-                      {errors.TenorDays && (
-                        <span className="text-danger small">
-                          Please enter valid tenor days (1-1000)
-                        </span>
-                      )}
                     </div>
                   </Col>
                   <Col
@@ -562,6 +564,11 @@ const FEDiscountingModal = ({
                       {tenoreDate}
                     </span>
                   </Col>
+                  {errors.TenorDays && (
+                    <span className="text-danger small">
+                      Please enter valid tenor days (1-1000)
+                    </span>
+                  )}
                 </Row>
 
                 {/* Ready and Swap Fields */}

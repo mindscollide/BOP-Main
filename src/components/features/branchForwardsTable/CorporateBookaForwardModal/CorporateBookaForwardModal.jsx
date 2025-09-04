@@ -433,6 +433,8 @@ const CorporateBookaForwardModal = ({
   };
 
   const handleConfirm = () => {
+    let amountValue = forwardRFQState.Amount.replace(/,/g, "");
+
     // if (forwardRFQState.AccNo === "") {
     //   setErrorState({
     //     accoutErrorStatus: true,
@@ -443,7 +445,7 @@ const CorporateBookaForwardModal = ({
       selectedCurrency.value !== "" &&
       typeOptionSelected.value !== 0 &&
       forwardRFQState.Amount !== "" &&
-      Number(forwardRFQState.Amount) > 0 &&
+      Number(amountValue) > 0 &&
       // forwardRFQState.AccNo !== "" &&
       natureOfBusinessSelcted.value !== 0 &&
       forwardRFQState.TenorDays !== "" &&
