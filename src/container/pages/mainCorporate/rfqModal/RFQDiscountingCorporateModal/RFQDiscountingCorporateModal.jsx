@@ -358,25 +358,25 @@ const RFQDiscountingCorporateModal = () => {
         show={rfqDiscountingModal}
         onHide={() => dispatch(setDiscountingRFQModal(false))}
         closeButton
-        headerClassName='RFQModalHeaderForwardTabCorporate'
-        footerClassName='RFQModalFooterForwardTabCorporate'
-        bodyClassName='RFQModalBodyForwardTabCorporate'
-        className=''
+        headerClassName="RFQModalHeaderForwardTabCorporate"
+        footerClassName="RFQModalFooterForwardTabCorporate"
+        bodyClassName="RFQModalBodyForwardTabCorporate"
+        className=""
         modalHeader={
           <>
             <Row>
               <Col lg={12} md={12} sm={12}>
                 {isBranch ? (
                   <>
-                    <p className='heading-RfqModal'>
+                    <p className="heading-RfqModal">
                       {titleDetails.branchName}
                     </p>
-                    <p className='heading-branchCode'>
+                    <p className="heading-branchCode">
                       Branch Code: {titleDetails.branchCode}
                     </p>
                   </>
                 ) : (
-                  <p className='heading-RfqModal'>
+                  <p className="heading-RfqModal">
                     {titleDetails.corporateName}
                   </p>
                 )}
@@ -388,16 +388,16 @@ const RFQDiscountingCorporateModal = () => {
           <>
             <div>
               {import.meta.env.VITE_APP_INCLUDE_BRANCH === "true" && (
-                <Row className='mb-2'>
+                <Row className="mb-2">
                   <Col lg={12} md={12} sm={12}>
-                    <div className='d-flex flex-column flex-wrap'>
-                      <label className='LabelRFQTransactionModal'>
-                        Customer name
+                    <div className="d-flex flex-column flex-wrap">
+                      <label className="LabelRFQTransactionModal">
+                        Customer name*
                       </label>
                       <SelectDropdown
-                        classNamePrefix='RfqSpot'
+                        classNamePrefix="RfqSpot"
                         options={getAllCorporates}
-                        placeholder=''
+                        placeholder=""
                         value={corporateValue}
                         onChange={handleChangeCorporate}
                         isSearchable={true}
@@ -409,13 +409,13 @@ const RFQDiscountingCorporateModal = () => {
 
               <Row>
                 <Col lg={12} md={12} sm={12}>
-                  <div className='d-flex flex-column flex-wrap'>
-                    <label className='LabelRFQTransactionModal'>
+                  <div className="d-flex flex-column flex-wrap">
+                    <label className="LabelRFQTransactionModal">
                       Currency*
                     </label>
                     <SelectDropdown
-                      classNamePrefix='RfqSpot'
-                      placeholder=''
+                      classNamePrefix="RfqSpot"
+                      placeholder=""
                       options={currencyOptions}
                       onChange={(selectCurrency) =>
                         setSelectedCurrency(selectCurrency)
@@ -426,12 +426,12 @@ const RFQDiscountingCorporateModal = () => {
                 </Col>
               </Row>
 
-              <Row className='mt-2'>
+              <Row className="mt-2">
                 <Col lg={6} md={6} sm={6}>
-                  <div className='d-flex flex-column flex-wrap'>
-                    <label className='LabelRFQTransactionModal'>Nature</label>
+                  <div className="d-flex flex-column flex-wrap">
+                    <label className="LabelRFQTransactionModal">Nature*</label>
                     <SelectDropdown
-                      classNamePrefix='RfqSpot'
+                      classNamePrefix="RfqSpot"
                       options={natureOfBusinessOptions}
                       value={typeOptionSelected}
                       onChange={handleChangeNature}
@@ -439,45 +439,46 @@ const RFQDiscountingCorporateModal = () => {
                   </div>
                 </Col>
                 <Col lg={6} md={6} sm={6}>
-                  <div className='d-flex flex-column flex-wrap'>
-                    <label className='LabelRFQTransactionModal'>A/c No</label>
+                  <div className="d-flex flex-column flex-wrap">
+                    <label className="LabelRFQTransactionModal">A/c No</label>
                     <InputFIeld
                       onChange={handleChangeAccountNumber}
                       value={AccountNumber}
-                      name='AccountNumber'
-                      applyClass='CalculatorTextfield'
+                      name="AccountNumber"
+                      applyClass="CalculatorTextfield"
                       maxLength={25}
                     />
                   </div>
                 </Col>
               </Row>
 
-              <Row className='mt-2'>
+              <Row className="mt-2">
                 <Col lg={12} md={12} sm={12}>
-                  <div className='d-flex flex-column flex-wrap'>
-                    <label className='LabelRFQTransactionModal'>Amount</label>
+                  <div className="d-flex flex-column flex-wrap">
+                    <label className="LabelRFQTransactionModal">Amount*</label>
                     <NumericFormat
                       customInput={InputFIeld}
                       value={amountData}
-                      name='Amount'
-                      applyClass='CalculatorTextfield'
+                      name="Amount"
+                      applyClass="CalculatorTextfield"
                       thousandSeparator={true}
                       maxLength={10}
                       onChange={handleChangeAmount}
+                      allowNegative={false}
                     />
                   </div>
                 </Col>
               </Row>
 
-              <Row className='mt-2'>
-                <Col lg={7} md={7} sm={7} className='pe-0'>
-                  <div className='d-flex flex-column flex-wrap'>
-                    <label className='LabelRFQTransactionModal'>Tenor</label>
+              <Row className="mt-2">
+                <Col lg={7} md={7} sm={7} className="pe-0">
+                  <div className="d-flex flex-column flex-wrap">
+                    <label className="LabelRFQTransactionModal">Tenor*</label>
                     <InputFIeld
                       onChange={handleChangeTenor}
                       value={Tenor}
-                      name='Tenor'
-                      applyClass='CalculatorTextfield'
+                      name="Tenor"
+                      applyClass="CalculatorTextfield"
                       onBlur={handleBlurTenor}
                     />
                   </div>
@@ -486,8 +487,9 @@ const RFQDiscountingCorporateModal = () => {
                   lg={5}
                   md={5}
                   sm={5}
-                  className='ps-0 d-flex align-items-end'>
-                  <span className='DateColumnTenorForwardTabRFQModal'>
+                  className="ps-0 d-flex align-items-end"
+                >
+                  <span className="DateColumnTenorForwardTabRFQModal">
                     {tenoreDate}
                   </span>
                 </Col>
@@ -502,10 +504,11 @@ const RFQDiscountingCorporateModal = () => {
                 lg={12}
                 md={12}
                 sm={12}
-                className='d-flex justify-content-center'>
+                className="d-flex justify-content-center"
+              >
                 <CustomButton
-                  value='Confirm'
-                  applyClass='ConfirmButtonBookaForward'
+                  value="Confirm"
+                  applyClass="ConfirmButtonBookaForward"
                   onClick={handleClickConfirm}
                 />
               </Col>

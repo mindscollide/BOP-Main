@@ -2469,7 +2469,7 @@ export const CancelPendingTransactionApi = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "Blotter_BlotterServiceManager_CancelPendingRFQTransaction_01".toLowerCase()
+                "Blotter_BlotterServiceManager_CancelPendingTransaction_01".toLowerCase()
               )
           ) {
             setCancelReasonModal(false);
@@ -2481,7 +2481,7 @@ export const CancelPendingTransactionApi = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "Blotter_BlotterServiceManager_CancelPendingRFQTransaction_02".toLowerCase()
+                "Blotter_BlotterServiceManager_CancelPendingTransaction_02".toLowerCase()
               )
           ) {
             return rejectWithValue("Something went wrong");
@@ -2489,7 +2489,7 @@ export const CancelPendingTransactionApi = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "Blotter_BlotterServiceManager_CancelPendingRFQTransaction_03".toLowerCase()
+                "Blotter_BlotterServiceManager_CancelPendingTransaction_03".toLowerCase()
               )
           ) {
             return rejectWithValue("Invalid Role");
@@ -2497,7 +2497,7 @@ export const CancelPendingTransactionApi = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "Blotter_BlotterServiceManager_CancelPendingRFQTransaction_04".toLowerCase()
+                "Blotter_BlotterServiceManager_CancelPendingTransaction_04".toLowerCase()
               )
           ) {
             return rejectWithValue("Something went wrong");
@@ -2505,7 +2505,7 @@ export const CancelPendingTransactionApi = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "Blotter_BlotterServiceManager_CancelPendingRFQTransaction_05".toLowerCase()
+                "Blotter_BlotterServiceManager_CancelPendingTransaction_05".toLowerCase()
               )
           ) {
             return rejectWithValue("Invalid Transaction");
@@ -2513,7 +2513,7 @@ export const CancelPendingTransactionApi = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "Blotter_BlotterServiceManager_CancelPendingRFQTransaction_06".toLowerCase()
+                "Blotter_BlotterServiceManager_CancelPendingTransaction_06".toLowerCase()
               )
           ) {
             return rejectWithValue("Invalid Transaction Status");
@@ -2559,7 +2559,7 @@ export const calculateTenorSwapAndForwardRateApi = createAsyncThunk(
             console.log("Checking", response.data.responseResult);
             return {
               response: response.data.responseResult,
-              message: "Forward RFQ data calculated successfully",
+              message: "Rates calculated",
             };
           } else if (
             responseMessage
@@ -2617,7 +2617,7 @@ export const calculateNonFeSwapAndDiscountingRateApi = createAsyncThunk(
             console.log("Checking", response.data.responseResult);
             return {
               response: response.data.responseResult,
-              message: "Forward RFQ data calculated successfully",
+              message: "Rates calculated",
             };
           } else if (
             responseMessage
@@ -2857,7 +2857,7 @@ export const CalculateFEDiscountingAPI = createAsyncThunk(
             console.log("Checking", response.data.responseResult);
             return {
               response: response.data.responseResult,
-              message: "Forward RFQ data calculated successfully",
+              message: "Rates calculated",
             };
           } else if (
             responseMessage

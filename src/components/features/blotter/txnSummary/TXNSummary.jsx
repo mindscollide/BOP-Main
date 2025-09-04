@@ -869,7 +869,8 @@ const TXNSummary = () => {
                 maxWidth: "100%",
                 textAlign: "center",
               }}
-              image={Empty.PRESENTED_IMAGE_SIMPLE}></Empty>
+              image={Empty.PRESENTED_IMAGE_SIMPLE}
+            ></Empty>
           </>
         )}
       </TableContainer>

@@ -70,7 +70,10 @@ const NonFEDiscountingModal = ({
   const [errors, setErrors] = useState({
     tenorValue: false,
     accNo: false,
+    amount: false,
   });
+
+  const [isError, setIsError] = useState(false);
 
   const handleChangeTenor = (event) => {
     const { value } = event.target;
@@ -119,12 +122,24 @@ const NonFEDiscountingModal = ({
         setAcc(value);
       }
     }
+    // if (errors.Quantity) {
+    //   setErrors((prev) => ({
+    //     ...prev,
+    //     Quantity: false,
+    //   }));
+    // }
   };
   // Form validation function
   const validateForm = () => {
+    let convertIntoNumber = amount.replace(/,/g, "");
+
     const newErrors = {
       tenorValue: !tenorValue || isNaN(tenorValue) || parseInt(tenorValue) <= 0,
       // accNo: !accNo,
+      Quantity:
+        !convertIntoNumber ||
+        isNaN(convertIntoNumber) ||
+        parseInt(convertIntoNumber) <= 0,
     };
 
     setErrors(newErrors);
@@ -357,7 +372,7 @@ const NonFEDiscountingModal = ({
                   <Row className="mb-2">
                     <Col lg={12} md={12} sm={12}>
                       <div className="d-flex flex-column flex-wrap">
-                        <span className="SubHeadings">Client name</span>
+                        <span className="SubHeadings">Client name*</span>
                         <SelectDropdown
                           classNamePrefix="RfqSpot"
                           options={getAllCorporates}
@@ -376,7 +391,7 @@ const NonFEDiscountingModal = ({
                 <Row>
                   <Col lg={12} md={12} sm={12}>
                     <div className="d-flex flex-column flex-wrap">
-                      <span className="SubHeadings">Currency</span>
+                      <span className="SubHeadings">Currency*</span>
                       <SelectDropdown
                         classNamePrefix="RfqSpot"
                         options={currencyOptions}
@@ -432,7 +447,7 @@ const NonFEDiscountingModal = ({
                     </div>
                     {errors.tenorValue && (
                       <span className="text-danger small">
-                        Valid tenor is required
+                        Please enter valid tenor days (1-1000)
                       </span>
                     )}
                   </Col>
@@ -443,6 +458,8 @@ const NonFEDiscountingModal = ({
                       <span className="SubHeadings">Amount</span>
                       <NumericFormat
                         customInput={InputFIeld}
+                        decimalScale={0}
+                        allowNegative={false}
                         value={amount}
                         applyClass={"CalculatorTextfield"}
                         name={"amount"}
@@ -450,6 +467,11 @@ const NonFEDiscountingModal = ({
                         maxLength={10}
                         onChange={(e) => handleChangeState("amount", e)}
                       />
+                      {errors.Quantity && (
+                        <span className="text-danger small">
+                          Please enter a valid amount
+                        </span>
+                      )}
                     </div>
                   </Col>
                 </Row>
