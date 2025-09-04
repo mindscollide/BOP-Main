@@ -20,6 +20,7 @@ import { NumericFormat } from "react-number-format";
 import moment from "moment";
 import { formatDateUTCToGMT } from "@/components/utils/timeFunction";
 import TextArea from "@/components/common/textArea/TextArea";
+import { formatPkAmount } from "@/utils/formatters";
 
 const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
 
@@ -380,7 +381,7 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                       </label>
                       <NumericFormat
                         customInput={InputFIeld}
-                        value={Number(swapValue)}
+                        value={(formatPkAmount(swapValue), { decimal: 4 })}
                         disabled={!forwardQuoteData?.isRFQ}
                         thousandSeparator=","
                         applyClass={"DiscountingQuoteInput"}
