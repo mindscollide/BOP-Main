@@ -473,7 +473,7 @@ const FEDiscountingModal = ({
                 <Row>
                   <Col lg={12} md={12} sm={12}>
                     <div className="d-flex flex-column flex-wrap">
-                      <span className="SubHeadings">Currency</span>
+                      <span className="SubHeadings">Currency*</span>
                       <SelectDropdown
                         classNamePrefix="RfqSpot"
                         options={currencyOptions}
