@@ -2875,7 +2875,7 @@ export const CalculateFEDiscountingAPI = createAsyncThunk(
               )
           ) {
             return rejectWithValue("No rates available");
-          } else return rejectWithValue;
+          } else return rejectWithValue("Something went wrong");
         } else {
           return rejectWithValue("Something went wrong");
         }

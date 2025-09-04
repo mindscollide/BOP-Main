@@ -279,3 +279,37 @@ export const formatNumberWithCommas = (value) => {
 export const removeCommas = (value) => {
   return value?.toString().replace(/,/g, "") || "";
 };
+
+// Calculate FE Discounting Rates
+export const calculateFeRatesReadyRate = (
+  readyRate,
+  usdInterestRate,
+  noOfDays
+) => {
+  if (!readyRate || !usdInterestRate || !noOfDays) {
+    return null;
+  }
+  let interestRate = usdInterestRate / 100;
+  const denominator = 1 + (interestRate * noOfDays) / 360;
+  return readyRate / denominator;
+};
+
+export const calculateNonFeDiscountingRate = (
+  forwardRate,
+  kibor,
+  swap,
+  noOfDays
+) => {
+  console.log(
+    { forwardRate, swap, kibor, noOfDays },
+    "calculateNonFeDiscountingRate"
+  );
+  if (!forwardRate || !swap || !kibor || !noOfDays) {
+    return null;
+  }
+  let adjustedForwardRate = forwardRate + swap;
+  let interestRate = kibor / 100;
+
+  const denominator = 1 + (interestRate * noOfDays) / 365;
+  return adjustedForwardRate / denominator;
+};

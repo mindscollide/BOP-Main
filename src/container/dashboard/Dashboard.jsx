@@ -134,7 +134,6 @@ const Dashboard = () => {
   const handleMqttMessage = useCallback((data) => {
     const type = data?.payload?.message;
     const payload = data?.payload;
-
     switch (type) {
       // ✅ Chat (real-time but low frequency)
       case "INCOMING_CHAT":

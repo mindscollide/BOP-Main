@@ -253,7 +253,7 @@ const BankSpot = memo(() => {
         title: "Instrument",
         dataIndex: "instrumentName",
         width: 80,
-        className: "roboto-13",
+        className: "color-hd fw-bold title-col text-nowrap roboto-13",
       },
       {
         key: "currencyBid",
@@ -321,7 +321,7 @@ const BankSpot = memo(() => {
           }
           prefixCls="BankSpot_Table"
           pagination={false}
-          scroll={{ x: "hidden", y: 245 }}
+          scroll={{ x: "max-content", y: 245 }}
           loading={isLoading}
         />
         {isLoading && <SectionLoader />}

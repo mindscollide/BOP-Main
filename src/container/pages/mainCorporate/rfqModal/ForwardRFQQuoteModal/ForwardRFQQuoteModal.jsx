@@ -15,7 +15,10 @@ import {
   RFQForwardTransactionQuotation,
 } from "@/components/features/blotter/BlotterActions";
 import { useNavigate } from "react-router-dom";
-import { setForwardQuoteModalData } from "@/store/BlotterSlicer/BlotterSlicer";
+import {
+  clearGetForwardTransactionDetails,
+  setForwardQuoteModalData,
+} from "@/store/BlotterSlicer/BlotterSlicer";
 import { NumericFormat } from "react-number-format";
 import moment from "moment";
 import { formatDateUTCToGMT } from "@/components/utils/timeFunction";
@@ -52,6 +55,7 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
 
   const closeModal = () => {
     dispatch(setForwardQuoteModalData(null));
+    dispatch(clearGetForwardTransactionDetails());
     dispatch(setForwardQuoteModal(false));
     setReadyValue("");
     setSwapValue("");
@@ -88,7 +92,8 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
         const { rate, ready, swap } =
           GetForwardTransactionDetails.transactionDetailsModel;
         setReadyValue(ready);
-        setSwapValue(swap);
+
+        setSwapValue(swap.toFixed(4));
         setReadyRateValue(rate);
       } catch (error) {}
     }
@@ -194,8 +199,7 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                 sm={3}
                 md={3}
                 lg={3}
-                className={styles["DealViewModal_oneSide"]}
-              >
+                className={styles["DealViewModal_oneSide"]}>
                 <Row>
                   <Col sm={12} md={12} lg={12}>
                     <label className={styles["DealViewModal__label"]}>
@@ -315,25 +319,25 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                 sm={9}
                 md={9}
                 lg={9}
-                className={styles["DealViewModal_SecondSide"]}
-              >
-                <Row className="mb-3">
+                className={styles["DealViewModal_SecondSide"]}>
+                <Row className='mb-3'>
                   <Col sm={10} md={10} lg={10}>
-                    {isBranch && (
-                      <div className="mb-3 color-black br-detail-hd">
+                    {forwardQuoteData?.branchName !== "" &&
+                    forwardQuoteData?.branchCode !== "" ? (
+                      <div className='mb-3 color-black br-detail-hd'>
                         <span className={styles["company-name"]}>
                           {forwardQuoteData?.branchName}
                         </span>
-                        <span className="br-code fs-sm">
+                        <span className='br-code fs-sm'>
                           ({forwardQuoteData?.branchCode})
                         </span>
                       </div>
-                    )}
+                    ) : null}
 
                     <div className={styles["company-name-hd"]}>
                       {forwardQuoteData?.corporateName}
                     </div>
-                    <div className="d-inline-block txn-id fs-normal color-black">
+                    <div className='d-inline-block txn-id fs-normal color-black'>
                       {forwardQuoteData?.txnid}
                     </div>
                   </Col>
@@ -341,29 +345,27 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                     sm={2}
                     md={2}
                     lg={2}
-                    className="d-flex justify-content-end"
-                  >
+                    className='d-flex justify-content-end'>
                     <IconElement
                       onClick={closeModal}
                       iconClass={"icon-close fs-4 cursor-pointer"}
                     />
                   </Col>
                 </Row>
-                <section className="d-flex justify-content-center align-items-center overflow-hidden h-75">
+                <section className='d-flex justify-content-center align-items-center overflow-hidden h-75'>
                   <Row>
                     <Col
                       sm={12}
                       md={12}
                       lg={12}
-                      className="d-flex align-items-center gap-2"
-                    >
+                      className='d-flex align-items-center gap-2'>
                       <label className={styles["DealViewModal_label"]}>
                         Ready
                       </label>
                       <NumericFormat
                         customInput={InputFIeld}
                         value={readyValue}
-                        thousandSeparator=","
+                        thousandSeparator=','
                         disabled={!forwardQuoteData?.isRFQ}
                         applyClass={"DiscountingQuoteInput"}
                         maxLength={10}
@@ -374,16 +376,15 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                       sm={12}
                       md={12}
                       lg={12}
-                      className="d-flex my-3 align-items-center gap-2"
-                    >
+                      className='d-flex my-3 align-items-center gap-2'>
                       <label className={styles["DealViewModal_label"]}>
                         Swap
                       </label>
                       <NumericFormat
                         customInput={InputFIeld}
-                        value={(formatPkAmount(swapValue), { decimal: 4 })}
+                        value={formatPkAmount(swapValue)}
                         disabled={!forwardQuoteData?.isRFQ}
-                        thousandSeparator=","
+                        thousandSeparator=','
                         applyClass={"DiscountingQuoteInput"}
                         maxLength={10}
                         onChange={(e) => handleChangeRate(e, "swapValue")}
@@ -398,8 +399,7 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                       sm={12}
                       md={12}
                       lg={12}
-                      className="d-flex align-items-center gap-2"
-                    >
+                      className='d-flex align-items-center gap-2'>
                       <label className={styles["DealViewModal_label"]}>
                         Rate
                       </label>
@@ -415,11 +415,9 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                         sm={12}
                         md={12}
                         lg={12}
-                        className="d-flex align-items-center gap-2 mt-4"
-                      >
+                        className='d-flex align-items-center gap-2 mt-4'>
                         <label
-                          className={styles["DealViewModal_label"]}
-                        ></label>
+                          className={styles["DealViewModal_label"]}></label>
                         <CustomButton
                           icon={<IconElement iconClass={"icon-send fs-5"} />}
                           iconPosition={"left"}
@@ -434,8 +432,7 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                         sm={12}
                         md={12}
                         lg={12}
-                        className="d-flex align-items-center justify-content-center gap-2 mt-4"
-                      >
+                        className='d-flex align-items-center justify-content-center gap-2 mt-4'>
                         <CustomButton
                           icon={<IconElement iconClass={"icon-send fs-5"} />}
                           iconPosition={"left"}
@@ -466,16 +463,15 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                 sm={12}
                 md={12}
                 lg={12}
-                className="modal-title fw-bold color-blue h5"
-              >
+                className='modal-title fw-bold color-blue h5'>
                 Cancel Reason
               </Col>
             </Row>
-            <Row className="form-group">
-              <span className="col-form-label mt-4">Cancel Reason</span>
+            <Row className='form-group'>
+              <span className='col-form-label mt-4'>Cancel Reason</span>
               <Col sm={12} md={12} lg={12}>
                 <TextArea
-                  className="form-control"
+                  className='form-control'
                   name={"cancelReasonInput"}
                   value={cancelReasonComment}
                   onChange={(event) =>
@@ -496,17 +492,16 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
               lg={12}
               md={12}
               sm={12}
-              className="d-flex gap-1 justify-content-center"
-            >
+              className='d-flex gap-1 justify-content-center'>
               <CustomButton
                 applyClass={"cancelReasonModalSubmitBtn"}
-                value="Submit"
+                value='Submit'
                 onClick={handleRejectWithReason}
                 disabled={cancelReasonComment !== "" ? false : true}
               />
               <CustomButton
                 applyClass={"cancelReasonModalCancelBtn"}
-                value="Close"
+                value='Close'
                 onClick={handeClickHide}
               />
             </Col>

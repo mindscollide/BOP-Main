@@ -17,12 +17,20 @@ import {
   RejectTransactionAPI,
 } from "@/components/features/blotter/BlotterActions";
 import { useNavigate } from "react-router-dom";
-import { setDiscountingQuoteModalData } from "@/store/BlotterSlicer/BlotterSlicer";
+import {
+  clearGetFEDiscountingTransactionDetails,
+  clearGetNonFEDiscountingTransactionDetails,
+  setDiscountingQuoteModalData,
+} from "@/store/BlotterSlicer/BlotterSlicer";
 import { NumericFormat } from "react-number-format";
 import CancelReasonModal from "@/components/features/blotter/cancelReasonModal/cancelReasonModal";
 import moment from "moment";
 import { formatDateUTCToGMT } from "@/components/utils/timeFunction";
 import TextArea from "@/components/common/textArea/TextArea";
+import {
+  calculateFeRatesReadyRate,
+  calculateNonFeDiscountingRate,
+} from "@/utils/formatters";
 
 const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
 const DiscountingRFQQuoteModal = () => {
@@ -34,6 +42,8 @@ const DiscountingRFQQuoteModal = () => {
   const [kiborValue, setKiborValue] = useState("");
   const [swapValue, setSwapValue] = useState("");
   const [finalValue, setFinalValue] = useState("");
+
+  console.log(readyValue, "finalValuefinalValuefinalValue");
   // const [cancelReasonModal, setCancelReasonModal] = useState(false);
   const [cancelReasonComment, setCancelReasonComment] = useState("");
 
@@ -43,11 +53,11 @@ const DiscountingRFQQuoteModal = () => {
   const discountingQuoteModalState = useSelector(
     (state) => state.modalReducer.discountingQuoteModal
   );
-  const GetNonFEDiscountingTransactionDetails = useSelector(
+  const GetNonFEDiscountingTransactionDetail = useSelector(
     (state) => state.BlotterSlicer.GetNonFEDiscountingTransactionDetails
   );
 
-  const GetFEDiscountingTransactionDetails = useSelector(
+  const GetFEDiscountingTransactionDetail = useSelector(
     (state) => state.BlotterSlicer.GetFEDiscountingTransactionDetails
   );
   const discountingQuoteModalData = useSelector(
@@ -57,13 +67,20 @@ const DiscountingRFQQuoteModal = () => {
   const closeModal = () => {
     dispatch(setDiscountingQuoteModalData(null));
     dispatch(setDiscountingQuoteModal(false));
+    dispatch(clearGetNonFEDiscountingTransactionDetails(null));
+    dispatch(clearGetFEDiscountingTransactionDetails(null));
   };
 
   useEffect(() => {
-    if (GetNonFEDiscountingTransactionDetails !== null) {
+    if (GetNonFEDiscountingTransactionDetail !== null) {
       try {
         const { rate, ready, swap, kibor } =
-          GetNonFEDiscountingTransactionDetails.transactionDetailsModel;
+          GetNonFEDiscountingTransactionDetail.transactionDetailsModel;
+
+        console.log(
+          GetNonFEDiscountingTransactionDetail.transactionDetailsModel,
+          "GetNonFEDiscountingTransactionDetails"
+        );
         setReadyValue(ready);
         setKiborValue(kibor.toFixed(4));
         setSwapValue(swap);
@@ -72,19 +89,24 @@ const DiscountingRFQQuoteModal = () => {
         console.log(error);
       }
     }
-  }, [GetNonFEDiscountingTransactionDetails]);
+  }, [GetNonFEDiscountingTransactionDetail]);
 
   useEffect(() => {
-    if (GetFEDiscountingTransactionDetails !== null) {
+    if (GetFEDiscountingTransactionDetail !== null) {
       try {
         const { discountingFactor, ready, rate } =
-          GetFEDiscountingTransactionDetails.transactionDetailsModel;
+          GetFEDiscountingTransactionDetail.transactionDetailsModel;
+        console.log(
+          GetFEDiscountingTransactionDetail.transactionDetailsModel,
+          "GetNonFEDiscountingTransactionDetails"
+        );
+
         setKiborValue(discountingFactor.toFixed(4));
         setReadyValue(ready);
         setFinalValue(rate);
       } catch (error) {}
     }
-  }, [GetFEDiscountingTransactionDetails]);
+  }, [GetFEDiscountingTransactionDetail]);
 
   useEffect(() => {
     if (discountingQuoteModalData !== null) {
@@ -127,7 +149,31 @@ const DiscountingRFQQuoteModal = () => {
       setKiborValue(value.trimStart());
     }
   };
+  const handleBlur = () => {
+    let ready = parseFloat(readyValue) || 0;
+    let kibor = parseFloat(kiborValue) || 0;
+    let swap = parseFloat(swapValue) || 0;
+    let final = 0;
 
+    if (DiscountingQuoteData?.natureType === 3) {
+      // FEDiscounting
+      // final = ready - kibor;
+      final = calculateFeRatesReadyRate(
+        ready,
+        kibor,
+        DiscountingQuoteData?.rfqDealDetails?.tenorDays
+      );
+    } else if (DiscountingQuoteData?.natureType === 4) {
+      final = calculateNonFeDiscountingRate(
+        ready,
+        kibor,
+        swap,
+        DiscountingQuoteData?.rfqDealDetails?.tenorDays
+      );
+    }
+
+    setFinalValue(final.toFixed(2));
+  };
   const handleSubmit = () => {
     // scenario is if side is "buy" then bid should be disabled and offer should be enabled
     // RFQTransactionQuotation naturetype 1
@@ -206,8 +252,7 @@ const DiscountingRFQQuoteModal = () => {
                 sm={3}
                 md={3}
                 lg={3}
-                className={styles["DealViewModal_oneSide"]}
-              >
+                className={styles["DealViewModal_oneSide"]}>
                 <Row>
                   <Col sm={12} md={12} lg={12}>
                     <label className={styles["DealViewModal__label"]}>
@@ -289,16 +334,15 @@ const DiscountingRFQQuoteModal = () => {
                 sm={9}
                 md={9}
                 lg={9}
-                className={styles["DealViewModal_SecondSide"]}
-              >
-                <Row className="mb-3">
+                className={styles["DealViewModal_SecondSide"]}>
+                <Row className='mb-3'>
                   <Col sm={10} md={10} lg={10}>
-                    {isBranch && (
-                      <div className="mb-3 color-black br-detail-hd">
+                    {DiscountingQuoteData?.branchName !== "" && (
+                      <div className='mb-3 color-black br-detail-hd'>
                         <span className={styles["company-name"]}>
                           {DiscountingQuoteData?.branchName}
                         </span>
-                        <span className="br-code fs-sm">
+                        <span className='br-code fs-sm'>
                           ({DiscountingQuoteData?.branchCode})
                         </span>
                       </div>
@@ -307,7 +351,7 @@ const DiscountingRFQQuoteModal = () => {
                     <div className={styles["company-name-hd"]}>
                       {DiscountingQuoteData?.corporateName}
                     </div>
-                    <div className="d-inline-block txn-id fs-normal color-black">
+                    <div className='d-inline-block txn-id fs-normal color-black'>
                       {DiscountingQuoteData?.txnid}
                     </div>
                   </Col>
@@ -315,22 +359,20 @@ const DiscountingRFQQuoteModal = () => {
                     sm={2}
                     md={2}
                     lg={2}
-                    className="d-flex justify-content-end "
-                  >
+                    className='d-flex justify-content-end '>
                     <IconElement
                       onClick={closeModal}
                       iconClass={"icon-close fs-4 cursor-pointer"}
                     />
                   </Col>
                 </Row>
-                <section className="d-flex justify-content-center align-items-center overflow-hidden h-75">
+                <section className='d-flex justify-content-center align-items-center overflow-hidden h-75'>
                   <Row>
                     <Col
                       sm={12}
                       md={12}
                       lg={12}
-                      className="d-flex align-items-center gap-2"
-                    >
+                      className='d-flex align-items-center gap-2'>
                       <label className={styles["DealViewModal_label"]}>
                         Ready
                       </label>
@@ -341,17 +383,17 @@ const DiscountingRFQQuoteModal = () => {
                         onChange={(event) =>
                           handleChangeRate("readyVal", event.target.value)
                         }
-                        thousandSeparator=","
+                        thousandSeparator=','
                         maxLength={10}
                         disabled={!DiscountingQuoteData?.isRFQ}
+                        onBlur={handleBlur}
                       />
                     </Col>
                     <Col
                       sm={12}
                       md={12}
                       lg={12}
-                      className="d-flex mt-3  align-items-center gap-2"
-                    >
+                      className='d-flex mt-3  align-items-center gap-2'>
                       <label className={styles["DealViewModal_label"]}>
                         Rate
                       </label>
@@ -362,9 +404,17 @@ const DiscountingRFQQuoteModal = () => {
                         onChange={(event) =>
                           handleChangeRate("kiborValue", event.target.value)
                         }
-                        thousandSeparator=","
-                        maxLength={10}
+                        isAllowed={(value) => {
+                          const { formattedValue, floatValue } = value;
+                          return (
+                            formattedValue === "" ||
+                            (floatValue >= 0 && floatValue <= 100)
+                          );
+                        }}
+                        decimalScale={2}
+                        allowNegative={false}
                         disabled={!DiscountingQuoteData?.isRFQ}
+                        onBlur={handleBlur}
                       />
                     </Col>
                     {DiscountingQuoteData?.natureType === 4 && (
@@ -372,8 +422,7 @@ const DiscountingRFQQuoteModal = () => {
                         sm={12}
                         md={12}
                         lg={12}
-                        className="d-flex mt-3 align-items-center gap-2"
-                      >
+                        className='d-flex mt-3 align-items-center gap-2'>
                         <label className={styles["DealViewModal_label"]}>
                           Swap
                         </label>
@@ -385,8 +434,16 @@ const DiscountingRFQQuoteModal = () => {
                           onChange={(event) =>
                             handleChangeRate("swapVal", event.target.value)
                           }
-                          thousandSeparator=","
-                          maxLength={10}
+                          isAllowed={(value) => {
+                            const { formattedValue, floatValue } = value;
+                            return (
+                              formattedValue === "" ||
+                              (floatValue >= 0 && floatValue <= 100)
+                            );
+                          }}
+                          decimalScale={2}
+                          allowNegative={false}
+                          onBlur={handleBlur}
                         />
                       </Col>
                     )}
@@ -395,14 +452,13 @@ const DiscountingRFQQuoteModal = () => {
                       sm={12}
                       md={12}
                       lg={12}
-                      className="d-flex mt-3  align-items-center gap-2"
-                    >
+                      className='d-flex mt-3  align-items-center gap-2'>
                       <label className={styles["DealViewModal_label"]}></label>
                       <NumericFormat
                         customInput={InputFIeld}
                         applyClass={"DiscountingQuoteInput"}
                         value={finalValue}
-                        disabled={!DiscountingQuoteData?.isRFQ}
+                        disabled={true}
                       />
                       {/* <InputFIeld
                     applyClass={"DiscountingQuoteInput"}
@@ -416,11 +472,9 @@ const DiscountingRFQQuoteModal = () => {
                         sm={12}
                         md={12}
                         lg={12}
-                        className="d-flex align-items-center gap-2 mt-4"
-                      >
+                        className='d-flex align-items-center gap-2 mt-4'>
                         <label
-                          className={styles["DealViewModal_label"]}
-                        ></label>
+                          className={styles["DealViewModal_label"]}></label>
                         <CustomButton
                           icon={<IconElement iconClass={"icon-send fs-5"} />}
                           iconPosition={"left"}
@@ -435,8 +489,7 @@ const DiscountingRFQQuoteModal = () => {
                         sm={12}
                         md={12}
                         lg={12}
-                        className="d-flex align-items-center justify-content-center gap-2 mt-4"
-                      >
+                        className='d-flex align-items-center justify-content-center gap-2 mt-4'>
                         <CustomButton
                           icon={<IconElement iconClass={"icon-send fs-5"} />}
                           iconPosition={"left"}
@@ -482,16 +535,15 @@ const DiscountingRFQQuoteModal = () => {
                 sm={12}
                 md={12}
                 lg={12}
-                className="modal-title fw-bold color-blue h5"
-              >
+                className='modal-title fw-bold color-blue h5'>
                 Cancel Reason
               </Col>
             </Row>
-            <Row className="form-group">
-              <span className="col-form-label mt-4">Cancel Reason</span>
+            <Row className='form-group'>
+              <span className='col-form-label mt-4'>Cancel Reason</span>
               <Col sm={12} md={12} lg={12}>
                 <TextArea
-                  className="form-control"
+                  className='form-control'
                   name={"cancelReasonInput"}
                   value={cancelReasonComment}
                   onChange={(event) =>
@@ -512,17 +564,16 @@ const DiscountingRFQQuoteModal = () => {
               lg={12}
               md={12}
               sm={12}
-              className="d-flex gap-1 justify-content-center"
-            >
+              className='d-flex gap-1 justify-content-center'>
               <CustomButton
                 applyClass={"cancelReasonModalSubmitBtn"}
-                value="Submit"
+                value='Submit'
                 onClick={handleRejectWithReason}
                 disabled={cancelReasonComment !== "" ? false : true}
               />
               <CustomButton
                 applyClass={"cancelReasonModalCancelBtn"}
-                value="Close"
+                value='Close'
                 onClick={handeClickHide}
               />
             </Col>
