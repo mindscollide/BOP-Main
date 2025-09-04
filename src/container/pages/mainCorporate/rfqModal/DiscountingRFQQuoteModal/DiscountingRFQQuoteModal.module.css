@@ -71,8 +71,10 @@
 .company-name-hd {
   color: var(--color-primary);
   font-size: 1.25rem;
+  word-wrap: break-word;
 }
 .company-name {
   font-size: 1.25rem;
   margin-right: 10px;
+  word-wrap: break-word;
 }
