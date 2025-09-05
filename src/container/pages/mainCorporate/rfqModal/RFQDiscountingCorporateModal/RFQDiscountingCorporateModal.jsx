@@ -347,7 +347,7 @@ const RFQDiscountingCorporateModal = () => {
         };
         dispatch(SaveNonFEDiscountingTransactionRFQ({ Data, navigate }));
       } else {
-        setIsError(false);
+        setIsError(true);
       }
     } else {
       let AmountValue = amountData.replace(/,/g, "");
@@ -487,7 +487,9 @@ const RFQDiscountingCorporateModal = () => {
                   </div>
                   {isError &&
                     (Number(amountData) <= 0 || amountData === "") && (
-                      <span>Please Enter valid AMount from 0 - 1000</span>
+                      <span className="text-danger small">
+                        Please enter a valid amount
+                      </span>
                     )}
                 </Col>
               </Row>
@@ -516,7 +518,9 @@ const RFQDiscountingCorporateModal = () => {
                   </span>
                 </Col>
                 {isError && (Number(Tenor) <= 0 || Tenor === "") && (
-                  <span>Please Enter valid AMount from 0 - 1000</span>
+                  <span className="text-danger small">
+                    Please enter valid tenor days (1-1000)
+                  </span>
                 )}
               </Row>
             </div>
