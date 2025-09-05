@@ -156,7 +156,6 @@ const Dashboard = () => {
         dispatch(setMarketTimingsUpdated(payload));
         break;
       case "MARKET_STATUS_UPDATED":
-        console.log("MARKET_STATUS_UPDATED");
         dispatch(marketStatusUpdated(payload.marketStatus.isMarketOn));
         dispatch(setMarketStatus(payload.marketStatus.isMarketOn));
         break;
@@ -387,22 +386,11 @@ const Dashboard = () => {
         // Handle login event if necessary
         let token = localStorage.getItem("token");
         let userId = localStorage.getItem("userID");
-        console.log(
-          "LOGIN event received",
-          token,
-          userId,
-          payload.loginDetials.token,
-          payload.loginDetials.userID,
-          token !== payload.loginDetials.token &&
-            Number(userId) === Number(payload.loginDetials.userID)
-        );
 
         if (
           token !== payload.loginDetials.token &&
           Number(userId) === Number(payload.loginDetials.userID)
         ) {
-          console.log("LOGIN event received", payload);
-
           // localStorage.clear();
           dispatch(LogoutApi({ navigate }));
         }
