@@ -46,6 +46,7 @@ const RFQDiscountingCorporateModal = () => {
   const [AccountNumber, setAccountNumber] = useState("");
   const [natureOfBusinessOptions, setNatureOfBusinessOptions] = useState([]);
   const [getAllCorporates, setGetAllCorporates] = useState([]);
+  const [isError, setIsError] = useState(false);
 
   const [corporateValue, setCorporateValue] = useState({
     value: 0,
@@ -244,12 +245,20 @@ const RFQDiscountingCorporateModal = () => {
       } catch (error) {}
     }
   }, [calculateNonFeSwapAndDiscountingRate]);
+
   // handle Change amount
   const handleChangeAmount = (event) => {
     const { name, value } = event.target;
+    console.log(name, value);
+
     if (name === "Amount") {
-      if (value !== "") {
+      // Allow only positive numbers
+      if (value === "" || Number(value) <= 0) {
+        setIsError(true);
+        setAmountData(""); // reset if invalid
+      } else {
         setAmountData(value);
+        setIsError(false);
       }
     }
   };
@@ -322,34 +331,43 @@ const RFQDiscountingCorporateModal = () => {
         : null;
     if (typeOptionSelected.value === 14) {
       let AmountValue = amountData.replace(/,/g, "");
-      let Data = {
-        CorporateID: isBranch
-          ? corporateValue.value
-          : corporateDetail.corporateID,
-        InstrumentID: selectedCurrency.value,
-        Quantity: Number(AmountValue),
-        AccountNumber: AccountNumber,
-        NatureOfTransactionID: Number(typeOptionSelected.value),
-        TenorDays: Number(Tenor),
-        Kibor: Number(calculatedData.kiborValue),
-        Swap: Number(calculatedData.swapValue),
-      };
-      dispatch(SaveNonFEDiscountingTransactionRFQ({ Data, navigate }));
+      if (Number(AmountValue) > 0 && Number(Tenor) > 0) {
+        setIsError(false);
+        let Data = {
+          CorporateID: isBranch
+            ? corporateValue.value
+            : corporateDetail.corporateID,
+          InstrumentID: selectedCurrency.value,
+          Quantity: Number(AmountValue),
+          AccountNumber: AccountNumber,
+          NatureOfTransactionID: Number(typeOptionSelected.value),
+          TenorDays: Number(Tenor),
+          Kibor: Number(calculatedData.kiborValue),
+          Swap: Number(calculatedData.swapValue),
+        };
+        dispatch(SaveNonFEDiscountingTransactionRFQ({ Data, navigate }));
+      } else {
+        setIsError(false);
+      }
     } else {
       let AmountValue = amountData.replace(/,/g, "");
-
-      let Data = {
-        CorporateID: isBranch
-          ? corporateValue.value
-          : corporateDetail.corporateID,
-        InstrumentID: selectedCurrency.value,
-        Quantity: Number(AmountValue),
-        AccountNumber: AccountNumber,
-        NatureOfTransactionID: Number(typeOptionSelected.value),
-        TenorDays: Number(Tenor),
-        DiscountingFactor: Number(calculatedData.DiscountingFactor),
-      };
-      dispatch(SaveFEDiscountingTransactionRFQ({ Data, navigate }));
+      if (Number(AmountValue) > 0 && Number(Tenor) > 0) {
+        setIsError(false);
+        let Data = {
+          CorporateID: isBranch
+            ? corporateValue.value
+            : corporateDetail.corporateID,
+          InstrumentID: selectedCurrency.value,
+          Quantity: Number(AmountValue),
+          AccountNumber: AccountNumber,
+          NatureOfTransactionID: Number(typeOptionSelected.value),
+          TenorDays: Number(Tenor),
+          DiscountingFactor: Number(calculatedData.DiscountingFactor),
+        };
+        dispatch(SaveFEDiscountingTransactionRFQ({ Data, navigate }));
+      } else {
+        setIsError(true);
+      }
     }
   };
   return (
@@ -467,6 +485,10 @@ const RFQDiscountingCorporateModal = () => {
                       allowNegative={false}
                     />
                   </div>
+                  {isError &&
+                    (Number(amountData) <= 0 || amountData === "") && (
+                      <span>Please Enter valid AMount from 0 - 1000</span>
+                    )}
                 </Col>
               </Row>
 
@@ -493,6 +515,9 @@ const RFQDiscountingCorporateModal = () => {
                     {tenoreDate}
                   </span>
                 </Col>
+                {isError && (Number(Tenor) <= 0 || Tenor === "") && (
+                  <span>Please Enter valid AMount from 0 - 1000</span>
+                )}
               </Row>
             </div>
           </>
