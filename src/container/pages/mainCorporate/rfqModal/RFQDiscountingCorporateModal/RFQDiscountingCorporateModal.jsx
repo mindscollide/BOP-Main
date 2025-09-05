@@ -46,6 +46,10 @@ const RFQDiscountingCorporateModal = () => {
   const [AccountNumber, setAccountNumber] = useState("");
   const [natureOfBusinessOptions, setNatureOfBusinessOptions] = useState([]);
   const [getAllCorporates, setGetAllCorporates] = useState([]);
+  const [errorMessage, setErrorMessage] = useState({
+    message: "",
+    status: false,
+  });
   const [isError, setIsError] = useState(false);
 
   const [corporateValue, setCorporateValue] = useState({
@@ -345,7 +349,13 @@ const RFQDiscountingCorporateModal = () => {
           Kibor: Number(calculatedData.kiborValue),
           Swap: Number(calculatedData.swapValue),
         };
-        dispatch(SaveNonFEDiscountingTransactionRFQ({ Data, navigate }));
+        dispatch(
+          SaveNonFEDiscountingTransactionRFQ({
+            Data,
+            navigate,
+            setErrorMessage,
+          })
+        );
       } else {
         setIsError(true);
       }
@@ -364,7 +374,9 @@ const RFQDiscountingCorporateModal = () => {
           TenorDays: Number(Tenor),
           DiscountingFactor: Number(calculatedData.DiscountingFactor),
         };
-        dispatch(SaveFEDiscountingTransactionRFQ({ Data, navigate }));
+        dispatch(
+          SaveFEDiscountingTransactionRFQ({ Data, navigate, setErrorMessage })
+        );
       } else {
         setIsError(true);
       }
@@ -530,11 +542,16 @@ const RFQDiscountingCorporateModal = () => {
           <>
             <Row>
               <Col
-                lg={12}
-                md={12}
+                lg={6}
+                md={6}
                 sm={12}
-                className="d-flex justify-content-center"
+                className="d-flex justify-content-start align-items-center rfqLimit_error-style"
               >
+                {errorMessage.status === true && errorMessage.message !== ""
+                  ? errorMessage.message
+                  : ""}
+              </Col>
+              <Col lg={6} md={6} sm={12} className="d-flex justify-content-end">
                 <CustomButton
                   value="Confirm"
                   applyClass="ConfirmButtonBookaForward"
