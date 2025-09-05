@@ -6,7 +6,7 @@ import { Col, Row } from "react-bootstrap";
 import InputFIeld from "@/components/common/inputField/InputField";
 import CustomButton from "@/components/common/globalButton/button";
 import { useSelector } from "react-redux";
-import { calculateDates, formatDate } from "@/common/utils";
+import { calculateDates, formatDate, isWeekend } from "@/common/utils";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 // import {
@@ -754,6 +754,13 @@ const CorporateBookaForwardModal = ({
                   value={"Confirm"}
                   onClick={handleConfirm}
                   applyClass={"ConfirmButtonBookaForward"}
+                  disabled={
+                    // !forwardRFQState.TenorDays ||
+                    // !forwardRFQState.Options ||
+                    (forwardRFQState.TenorDays !== "" &&
+                      isWeekend(tenorDate)) ||
+                    (forwardRFQState.Options !== "" && isWeekend(optionsDate))
+                  }
                 />
               </Col>
             </Row>

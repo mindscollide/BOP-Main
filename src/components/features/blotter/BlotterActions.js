@@ -1590,7 +1590,10 @@ export const SaveForwardTransactionRFQApi = createAsyncThunk(
 
 export const SaveFEDiscountingTransactionRFQ = createAsyncThunk(
   "Blotter/SaveFEDiscountingTransactionRFQ",
-  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+  async (
+    { navigate, Data, setErrorMessage },
+    { dispatch, rejectWithValue }
+  ) => {
     try {
       const postAPI = createPostAPI(
         blotterApi,
@@ -1601,7 +1604,9 @@ export const SaveFEDiscountingTransactionRFQ = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(SaveFEDiscountingTransactionRFQ({ navigate, Data }));
+        dispatch(
+          SaveFEDiscountingTransactionRFQ({ navigate, Data, setErrorMessage })
+        );
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -1641,6 +1646,50 @@ export const SaveFEDiscountingTransactionRFQ = createAsyncThunk(
               )
           ) {
             return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveFEDiscountingTransactionRFQ_06".toLowerCase()
+              )
+          ) {
+            setErrorMessage((prev) => {
+              return {
+                ...prev,
+                status: true,
+                message: `Daily Limit Exceeded from ${response.data.responseResult.dailyLimitRemaining.toFixed(
+                  2
+                )}`,
+              };
+            });
+            return {
+              response: response.data.responseResult,
+              message: `Daily Limit Exceeded from ${response.data.responseResult.dailyLimitRemaining.toFixed(
+                2
+              )}`,
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveFEDiscountingTransactionRFQ_07".toLowerCase()
+              )
+          ) {
+            setErrorMessage((prev) => {
+              return {
+                ...prev,
+                status: true,
+                message: `Max Transaction Limit Exceeded from ${response.data.responseResult.maxLimit.toFixed(
+                  2
+                )}`,
+              };
+            });
+            return {
+              response: response.data.responseResult,
+              message: `Max Transaction Limit Exceeded from ${response.data.responseResult.maxLimit.toFixed(
+                2
+              )}`,
+            };
           } else {
             return rejectWithValue("Something went wrong");
           }
@@ -1658,7 +1707,10 @@ export const SaveFEDiscountingTransactionRFQ = createAsyncThunk(
 
 export const SaveNonFEDiscountingTransactionRFQ = createAsyncThunk(
   "Blotter/SaveNonFEDiscountingTransactionRFQ",
-  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+  async (
+    { navigate, Data, setErrorMessage },
+    { dispatch, rejectWithValue }
+  ) => {
     try {
       const postAPI = createPostAPI(
         blotterApi,
@@ -1669,7 +1721,13 @@ export const SaveNonFEDiscountingTransactionRFQ = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(SaveNonFEDiscountingTransactionRFQ({ navigate, Data }));
+        dispatch(
+          SaveNonFEDiscountingTransactionRFQ({
+            navigate,
+            Data,
+            setErrorMessage,
+          })
+        );
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -1709,6 +1767,50 @@ export const SaveNonFEDiscountingTransactionRFQ = createAsyncThunk(
               )
           ) {
             return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveNonFEDiscountingTransactionRFQ_06".toLowerCase()
+              )
+          ) {
+            setErrorMessage((prev) => {
+              return {
+                ...prev,
+                status: true,
+                message: `Daily Limit Exceeded from ${response.data.responseResult.dailyLimitRemaining.toFixed(
+                  2
+                )}`,
+              };
+            });
+            return {
+              response: response.data.responseResult,
+              message: `Daily Limit Exceeded from ${response.data.responseResult.dailyLimitRemaining.toFixed(
+                2
+              )}`,
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveNonFEDiscountingTransactionRFQ_07".toLowerCase()
+              )
+          ) {
+            setErrorMessage((prev) => {
+              return {
+                ...prev,
+                status: true,
+                message: `Max Transaction Limit Exceeded from ${response.data.responseResult.maxLimit.toFixed(
+                  2
+                )}`,
+              };
+            });
+            return {
+              response: response.data.responseResult,
+              message: `Max Transaction Limit Exceeded from ${response.data.responseResult.maxLimit.toFixed(
+                2
+              )}`,
+            };
           } else {
             return rejectWithValue("Something went wrong");
           }
@@ -2676,7 +2778,7 @@ export const CalculateFESwapAndDiscountingApi = createAsyncThunk(
             console.log("Checking", response.data.responseResult);
             return {
               response: response.data.responseResult,
-              message: "FE Swap and Discounting data calculated successfully",
+              message: "Rates Calculated",
             };
           } else if (
             responseMessage
