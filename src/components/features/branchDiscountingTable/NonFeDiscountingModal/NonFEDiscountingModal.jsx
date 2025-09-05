@@ -11,7 +11,7 @@ import {
   SaveNonFEDiscountingTransactionAPI,
   calculateNonFeSwapAndDiscountingRateApi,
 } from "../../blotter/BlotterActions";
-import { formatDate } from "@/common/utils";
+import { formatDate, isWeekend } from "@/common/utils";
 import { useSelector } from "react-redux";
 import { NumericFormat } from "react-number-format";
 import { setCalculateNonFeSwapAndDiscountingRate } from "@/store/BlotterSlicer/BlotterSlicer";
@@ -51,7 +51,7 @@ const NonFEDiscountingModal = ({
   const [selectedCurrency, setSelectedCurrency] = useState(null);
   const [currencyOptions, setCurrencyOptions] = useState([]);
 
-  const [tenoreDate, setTenorDate] = useState(formatDate(new Date()));
+  const [tenoreDate, setTenorDate] = useState(new Date());
   const [tenorValue, setTenorValue] = useState("");
   const [amount, setAmount] = useState("");
   const [accNo, setAcc] = useState("");
@@ -89,9 +89,9 @@ const NonFEDiscountingModal = ({
         if (value !== "") {
           const newDate = new Date();
           newDate.setDate(newDate.getDate() + numericValue); // Use numericValue here
-          setTenorDate(formatDate(newDate));
+          setTenorDate(newDate);
         } else {
-          setTenorDate(formatDate(new Date())); // Optional: clear tag text if input is empty
+          setTenorDate(new Date()); // Optional: clear tag text if input is empty
         }
       }
     }
@@ -442,7 +442,7 @@ const NonFEDiscountingModal = ({
                         />
                       </div>
                       <span className="dateSpanNonFeDiscoutingmodal">
-                        {tenoreDate}
+                        {formatDate(tenoreDate)}
                       </span>
                     </div>
                     {errors.tenorValue && (
@@ -556,6 +556,7 @@ const NonFEDiscountingModal = ({
                   value={"Confirm"}
                   applyClass={"ConfirmButtonBookaForward"}
                   onClick={handleConfirm}
+                  disabled={tenorValue !== "" && isWeekend(tenoreDate)}
                 />
               </Col>
             </Row>

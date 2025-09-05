@@ -5,7 +5,7 @@ import { Col, Row } from "react-bootstrap";
 import InputFIeld from "@/components/common/inputField/InputField";
 import CustomButton from "@/components/common/globalButton/button";
 import { useSelector } from "react-redux";
-import { formatDate } from "@/common/utils";
+import { formatDate, isWeekend } from "@/common/utils";
 import SelectDropdown from "@/components/common/selectDropdown/SelectDropdown";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -61,7 +61,7 @@ const FEDiscountingModal = ({
   // State for form fields
   const [selectedNature, setSelectedNature] = useState(null);
   const [selectedCurrency, setSelectedCurrency] = useState(null);
-  const [tenoreDate, setTenorDate] = useState(formatDate(new Date()));
+  const [tenoreDate, setTenorDate] = useState(new Date());
   const [tenorValue, setTenorValue] = useState("");
 
   // Main form state
@@ -259,14 +259,14 @@ const FEDiscountingModal = ({
 
         // Clear tenor date if input is empty
         if (value === "") {
-          setTenorDate(formatDate(new Date()));
+          setTenorDate(new Date());
           return;
         }
 
         // Calculate new date based on tenor days
         const newDate = new Date();
         newDate.setDate(newDate.getDate() + numericValue);
-        setTenorDate(formatDate(newDate));
+        setTenorDate(newDate);
         setErrors((prev) => ({
           ...prev,
           TenorDays: false,
@@ -566,7 +566,7 @@ const FEDiscountingModal = ({
                     className="d-flex align-items-end justify-content-start ps-0"
                   >
                     <span className="feDiscuntingBookAForward_tenorDateSpan">
-                      {tenoreDate}
+                      {formatDate(tenoreDate)}
                     </span>
                   </Col>
                   {errors.TenorDays && (
@@ -664,6 +664,7 @@ const FEDiscountingModal = ({
                   value={"Confirm"}
                   applyClass={"ConfirmButtonBookaForward"}
                   onClick={handleClickConfirmFERFQ}
+                  disabled={tenorValue !== "" && isWeekend(tenoreDate)}
                 />
               </Col>
             </Row>

@@ -6,7 +6,7 @@ import SelectDropdown from "@/components/common/selectDropdown/SelectDropdown";
 import InputFIeld from "@/components/common/inputField/InputField";
 import CustomButton from "@/components/common/globalButton/button";
 import { useSelector } from "react-redux";
-import { formatDate } from "@/common/utils";
+import { formatDate, isWeekend } from "@/common/utils";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
@@ -56,7 +56,7 @@ const RFQDiscountingCorporateModal = () => {
     value: 0,
     label: "",
   });
-  const [tenoreDate, setTenorDate] = useState(formatDate(new Date()));
+  const [tenoreDate, setTenorDate] = useState(new Date());
   const [currencyOptions, setCurrencyOptions] = useState([]);
 
   const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
@@ -281,9 +281,9 @@ const RFQDiscountingCorporateModal = () => {
         if (value !== "") {
           const newDate = new Date();
           newDate.setDate(newDate.getDate() + numericValue); // Use numericValue here
-          setTenorDate(formatDate(newDate));
+          setTenorDate(newDate);
         } else {
-          setTenorDate(formatDate(new Date())); // Optional: clear tag text if input is empty
+          setTenorDate(new Date()); // Optional: clear tag text if input is empty
         }
       }
     }
@@ -526,7 +526,7 @@ const RFQDiscountingCorporateModal = () => {
                   className="ps-0 d-flex align-items-end"
                 >
                   <span className="DateColumnTenorForwardTabRFQModal">
-                    {tenoreDate}
+                    {formatDate(tenoreDate)}
                   </span>
                 </Col>
                 {isError && (Number(Tenor) <= 0 || Tenor === "") && (
@@ -556,6 +556,7 @@ const RFQDiscountingCorporateModal = () => {
                   value="Confirm"
                   applyClass="ConfirmButtonBookaForward"
                   onClick={handleClickConfirm}
+                  disabled={Tenor !== "" && isWeekend(tenoreDate)}
                 />
               </Col>
             </Row>
