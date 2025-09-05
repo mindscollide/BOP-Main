@@ -6,7 +6,7 @@ import SelectDropdown from "@/components/common/selectDropdown/SelectDropdown";
 import InputFIeld from "@/components/common/inputField/InputField";
 import CustomButton from "@/components/common/globalButton/button";
 import { useSelector } from "react-redux";
-import { calculateDates, formatDate } from "@/common/utils";
+import { calculateDates, formatDate, isWeekend } from "@/common/utils";
 import { useDispatch } from "react-redux";
 import { SaveForwardTransactionRFQApi } from "@/components/features/blotter/BlotterActions";
 import { useNavigate } from "react-router-dom";
@@ -676,6 +676,12 @@ const RFQForwardCorporateModal = ({
                   value="Confirm"
                   applyClass="ConfirmButtonBookaForward"
                   onClick={handleConfirmButton}
+                  disabled={
+                    // !forwardRFQState.TenorDays ||
+                    // !forwardRFQState.Options ||
+                    (Tenor !== "" && isWeekend(tenoreDate)) ||
+                    (options !== "" && isWeekend(optionsDate))
+                  }
                 />
               </Col>
             </Row>

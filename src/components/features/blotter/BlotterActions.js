@@ -2778,7 +2778,7 @@ export const CalculateFESwapAndDiscountingApi = createAsyncThunk(
             console.log("Checking", response.data.responseResult);
             return {
               response: response.data.responseResult,
-              message: "FE Swap and Discounting data calculated successfully",
+              message: "Rates Calculated",
             };
           } else if (
             responseMessage

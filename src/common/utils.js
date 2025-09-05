@@ -194,3 +194,8 @@ export const calculateDates = (tenorDays, optionDays) => {
 
   return { tenorDt, optionDt };
 };
+
+export const isWeekend = (date) => {
+  const day = date.getDay(); // 0 = Sunday, 6 = Saturday
+  return day === 0 || day === 6;
+};
