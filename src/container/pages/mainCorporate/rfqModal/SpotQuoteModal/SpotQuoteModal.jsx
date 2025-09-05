@@ -62,10 +62,12 @@ const SpotQuoteModal = ({ dealData }) => {
     // RFQForwardTransactionQuotation naturetype 2
     // RFQFEDiscountingTransactionQuotation naturetype 3
     // RFQNonFEDiscountingTransactionQuotation naturetype 4
+    //  for Branch Transaction if branch buy then set bid rate
     let getRate =
-      spotQuoteModalData.side.toLowerCase() === "sell"
+      spotQuoteModalData?.side.toLowerCase() === "buy"
         ? bid.replace(/,/g, "")
         : offer.replace(/,/g, "");
+        
     let Data = {
       PK_TransactionID: spotQuoteModalData?.pK_TransactionID,
       Rate: Number(getRate),
@@ -192,7 +194,7 @@ const SpotQuoteModal = ({ dealData }) => {
                   sm={2}
                   md={2}
                   lg={2}
-                  className='d-flex justify-content-center'>
+                  className='d-flex justify-content-center justify-content-end'>
                   <IconElement
                     onClick={closeModal}
                     iconClass={"icon-close fs-4 cursor-pointer"}
@@ -221,10 +223,15 @@ const SpotQuoteModal = ({ dealData }) => {
                       onChange={(e) => handleChangeRate(e, "bid")}
                       value={bid}
                       disabled={
-                        spotQuoteModalData?.side.toLowerCase() === "sell"
+                        spotQuoteModalData?.side.toLowerCase() === "buy"
                           ? false
                           : true
                       }
+                      // disabled={
+                      //   spotQuoteModalData?.side.toLowerCase() === "sell"
+                      //     ? false
+                      //     : true
+                      // }
                       applyClass={"DealBoxBitInput"}
                       thousandSeparator=','
                       maxLength={10}
@@ -241,10 +248,15 @@ const SpotQuoteModal = ({ dealData }) => {
                       onChange={(e) => handleChangeRate(e, "offer")}
                       value={offer}
                       disabled={
-                        spotQuoteModalData?.side.toLowerCase() === "buy"
+                        spotQuoteModalData?.side.toLowerCase() === "sell"
                           ? false
                           : true
                       }
+                      // disabled={
+                      //   spotQuoteModalData?.side.toLowerCase() === "buy"
+                      //     ? false
+                      //     : true
+                      // }
                       applyClass={"DealBoxOfferInput"}
                       thousandSeparator=','
                       maxLength={10}
