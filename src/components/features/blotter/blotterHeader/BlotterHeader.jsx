@@ -4,7 +4,7 @@ import React, {
   lazy,
   Suspense,
   startTransition,
-  useLayoutEffect
+  useLayoutEffect,
 } from "react";
 import "./BlotterHeader.css";
 import { Col, Row } from "react-bootstrap";
@@ -564,7 +564,7 @@ const BlotterHeader = () => {
     setOpenMailModal(true);
     setExportButton(false);
   };
-  
+
   return (
     <>
       <section className='position-relative'>
@@ -604,14 +604,50 @@ const BlotterHeader = () => {
                       value='+'
                       onClick={onClickNopModal}
                     />{" "}
-                    <CustomButton
+                    {/* <CustomButton
                       applyClass={"Export-button"}
                       value='Export'
                       onClick={onClickOpenExport}
-                    />
+                    /> */}
+                    <Popover
+                      content={
+                        <div className={"export-options"}>
+                          <CustomButton
+                            icon={<img src={pdfImage} alt='Excel Icon' />}
+                            className={"bg-none"}
+                            onClick={HandlePDFDownloadFunc}
+                          />
+                          <CustomButton
+                            icon={<img src={excelImage} alt='PDF Icon' />}
+                            className={"bg-none"}
+                            onClick={HandleExcelDownloadFunc}
+                          />
+                          <CustomButton
+                            icon={<img src={emailImage} alt='Excel Icon' />}
+                            className={"bg-none"}
+                            onClick={handleTransactionModal}
+                          />
+                          <CustomButton
+                            icon={<img src={printImage} alt='PDF Icon' />}
+                            className={"bg-none"}
+                            onClick={() => setExportButton(false)}
+                          />
+                        </div>
+                      }
+                      trigger='click'
+                      open={exportButton}
+                      onOpenChange={() => setExportButton(!exportButton)}
+                      placement='bottomRight'
+                      arrow={false}>
+                      <CustomButton
+                        applyClass={"Export-button"}
+                        value='Export'
+                        onClick={onClickOpenExport}
+                      />
+                    </Popover>
                   </>
 
-                  {openExportDiv && (
+                  {/* {openExportDiv && (
                     <div className='exportOptions'>
                       <div className='exportOptionsBox'>
                         <img
@@ -646,7 +682,7 @@ const BlotterHeader = () => {
                         />
                       </div>
                     </div>
-                  )}
+                  )} */}
                 </div>
               </div>
             </div>

@@ -17,6 +17,7 @@
   font-weight: 500 !important;
   color: #f26522 !important;
   margin: 0;
+  word-break: break-all;
 }
 .heading-branchCode {
   font-size: 11px !important;

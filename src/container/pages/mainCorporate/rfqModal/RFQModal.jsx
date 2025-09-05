@@ -572,24 +572,25 @@ const RFQModal = () => {
           InstrumentID: selectedCurrency?.value, // TODO: Should this be selectedCurrency.value?
           SecondaryInstrumentID: selectedCurrency?.secondaryInstrumentID,
           IsBuyType: IsBuySide,
-          IsBuySide:
-            iBuySellData !== null && iBuySellData?.type === "buy" && isBranch
-              ? false
-              : iBuySellData !== null &&
-                iBuySellData?.type === "sell" &&
-                isBranch
-              ? true
-              : iBuySellData !== null &&
-                iBuySellData?.type === "buy" &&
-                isCorporate
-              ? true
-              : iBuySellData !== null &&
-                iBuySellData?.type === "sell" &&
-                isCorporate
-              ? false
-              : typeOptionSelected.value === 1
-              ? true
-              : false,
+          IsBuySide: typeOptionSelected.value === 1 ? true : false,
+          // IsBuySide:
+          //   iBuySellData !== null && iBuySellData?.type === "buy" && isBranch
+          //     ? false
+          //     : iBuySellData !== null &&
+          //       iBuySellData?.type === "sell" &&
+          //       isBranch
+          //     ? true
+          //     : iBuySellData !== null &&
+          //       iBuySellData?.type === "buy" &&
+          //       isCorporate
+          //     ? true
+          //     : iBuySellData !== null &&
+          //       iBuySellData?.type === "sell" &&
+          //       isCorporate
+          //     ? false
+          //     : typeOptionSelected.value === 1
+          //     ? true
+          //     : false,
           Quantity: Number(amountValue),
           AccountNumber: acNumberData,
           NatureOfTransactionID: selectedNature.value,
