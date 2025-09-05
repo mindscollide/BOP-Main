@@ -30,7 +30,7 @@ function App() {
   useEffect(() => {
     const checkVersion = async () => {
       try {
-        const response = await fetch("../public/version.json");
+        const response = await fetch("/version.json", { cache: "no-cache" }); // ✅ root path
 
         const data = await response.json();
 
