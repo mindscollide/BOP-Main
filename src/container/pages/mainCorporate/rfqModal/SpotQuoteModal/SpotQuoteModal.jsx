@@ -67,6 +67,7 @@ const SpotQuoteModal = ({ dealData }) => {
       spotQuoteModalData?.side.toLowerCase() === "buy"
         ? bid.replace(/,/g, "")
         : offer.replace(/,/g, "");
+        
     let Data = {
       PK_TransactionID: spotQuoteModalData?.pK_TransactionID,
       Rate: Number(getRate),

@@ -109,7 +109,6 @@ const CorporateBookaForwardModal = ({
     value: 0,
     label: "",
   });
-
   const handleChangeType = (selectType) => {
     console.log("selectType", selectType);
     setTypeOptionSelected(selectType);
@@ -247,6 +246,8 @@ const CorporateBookaForwardModal = ({
                 ...data, // Spread all existing instrument properties
                 label: `${data.instrumentName}`, // Display name for dropdown
                 value: data.instrumentID, // Unique identifier for selection
+                isSell: data.isSell,
+                isBuy: data.isBuy
               };
             }
             return null; // Explicitly return null for non-matching instruments
