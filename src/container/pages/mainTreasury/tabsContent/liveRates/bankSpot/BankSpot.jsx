@@ -53,6 +53,7 @@ const BankSpot = memo(() => {
     shallowEqual
   );
   const feedEssentials = useSelector(selectTreasurySpotRatesEssentials);
+  const fullFeed = useSelector(selectTreasurySpotRatesFeedRaw);
   const marketStatus = useSelector(selectMarketStatus);
   const worldCrosses = useSelector(selectWorldCrosses, shallowEqual);
   const worldCurrencies = useSelector(selectWorldCurrencies, shallowEqual);
@@ -95,13 +96,13 @@ const BankSpot = memo(() => {
           worldCrossBid: matchedCross?.bid ?? 0,
           worldCrossOffer: matchedCross?.offer ?? 0,
           worldCurBid:
-          instrument.instrumentID === 21
-            ? matchedCross?.bid ?? 0
-            : matchedCurrency?.bid ?? 0,
-        worldCurOffer:
-          instrument.instrumentID === 21
-            ? matchedCross?.offer ?? 0
-            : matchedCurrency?.offer ?? 0,
+            instrument.instrumentID === 21
+              ? matchedCross?.bid ?? 0
+              : matchedCurrency?.bid ?? 0,
+          worldCurOffer:
+            instrument.instrumentID === 21
+              ? matchedCross?.offer ?? 0
+              : matchedCurrency?.offer ?? 0,
 
           // Add version tracking
           version: 0,
@@ -129,73 +130,81 @@ const BankSpot = memo(() => {
       animationFrameRef.current = null;
       return;
     }
-
+  
     const updates = updateQueueRef.current;
     updateQueueRef.current = [];
-
+  
     setProcessedData((prevData) => {
-      const updatedData = [...prevData];
       let hasChanges = false;
-
-      updates.forEach((update) => {
-        const { instrumentCrossRate, instrumentParitySpot } = update;
-
-        updatedData.forEach((item, index) => {
-          let changed = false;
-
+      const updatedData = prevData.map((item) => {
+        let updatedItem = { ...item };
+        let changed = false;
+  
+        updates.forEach((update) => {
+          const { instrumentCrossRate, instrumentParitySpot } = update;
+  
           // Update cross rates
           if (
             instrumentCrossRate &&
             item.instrumentID === instrumentCrossRate.instrumentID &&
-            item.secondaryInstrumentID ===
-              instrumentCrossRate.secondaryInstrumentID
+            item.secondaryInstrumentID === instrumentCrossRate.secondaryInstrumentID
           ) {
+            // Update cross rates
             if (item.worldCrossBid !== instrumentCrossRate.bid) {
-              updatedData[index] = {
-                ...item,
+              updatedItem = {
+                ...updatedItem,
                 worldCrossBid: instrumentCrossRate.bid,
                 worldCrossOffer: instrumentCrossRate.ask,
                 time: instrumentCrossRate.updateDateTime,
-                version: item.version + 1,
+                version: updatedItem.version + 1,
+              };
+              changed = true;
+            }
+  
+            // Special case for instrumentID 21 - update currency rates from cross rates
+            if (item.instrumentID === 21) {
+              updatedItem = {
+                ...updatedItem,
+                worldCurBid: instrumentCrossRate.bid,
+                worldCurOffer: instrumentCrossRate.ask,
+                version: updatedItem.version + 1,
               };
               changed = true;
             }
           }
-          if (data.instrumentID === 21) {
-            updatedItem.worldCurBid = instrumentCrossRate.bid;
-            updatedItem.worldCurOffer = instrumentCrossRate.ask;
-            hasUpdates = true;
-          }
-
-          // Update spot rates
+  
+          // Update spot rates (for all instruments except the special case)
           if (
             instrumentParitySpot &&
-            item.instrumentID === instrumentParitySpot.instrumentID
+            item.instrumentID === instrumentParitySpot.instrumentID &&
+            item.instrumentID !== 21 // Don't apply spot updates to instrument 21 if we're using cross rates
           ) {
             if (
-              Number(item.worldCurBid) !== Number(instrumentParitySpot.bid) ||
-              Number(item.worldCurOffer) !== Number(instrumentParitySpot.ask)
+              Number(updatedItem.worldCurBid) !== Number(instrumentParitySpot.bid) ||
+              Number(updatedItem.worldCurOffer) !== Number(instrumentParitySpot.ask)
             ) {
-              updatedData[index] = {
-                ...item,
+              updatedItem = {
+                ...updatedItem,
                 worldCurBid: instrumentParitySpot.bid,
                 worldCurOffer: instrumentParitySpot.ask,
-                version: item.version + 1,
+                version: updatedItem.version + 1,
               };
               changed = true;
             }
           }
-
-          if (changed) hasChanges = true;
         });
+  
+        return changed ? updatedItem : item;
       });
-
+  
+      // Check if any items were actually changed
+      hasChanges = updatedData.some((newItem, index) => newItem !== prevData[index]);
+  
       return hasChanges ? updatedData : prevData;
     });
-
+  
     animationFrameRef.current = requestAnimationFrame(processUpdateQueue);
   }, []);
-
   /**
    * Add update to queue and schedule processing
    */
@@ -222,12 +231,10 @@ const BankSpot = memo(() => {
 
   // Handle real-time feed updates
   useEffect(() => {
-    if (!feedEssentials) return;
+    if (!feedEssentials || !fullFeed) return;
 
-    // Get the full feed data for processing
-    const fullFeed = useSelector(selectTreasurySpotRatesFeedRaw);
     queueUpdate(fullFeed);
-  }, [feedEssentials, queueUpdate]);
+  }, [feedEssentials, fullFeed, queueUpdate]);
 
   // Cleanup animation frame on unmount
   useEffect(() => {
@@ -356,7 +363,7 @@ const BankSpot = memo(() => {
           columns={columns}
           dataSource={processedData}
           rowKey={(record) =>
-            `${record.instrumentID}-${record.secondaryInstrumentID}`
+            `${record.instrumentID}-${record.secondaryInstrumentID}-${record.version}`
           }
           prefixCls='BankSpot_Table'
           pagination={false}
