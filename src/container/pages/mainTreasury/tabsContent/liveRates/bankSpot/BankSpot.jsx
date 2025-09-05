@@ -15,10 +15,10 @@ import BidAmountBox from "../../../../../../components/common/bidAmountBox/BidAm
 import { formatDateUTCToGMT } from "../../../../../../components/utils/timeFunction";
 import SectionLoader from "@/components/common/sectionLoader/SectionLoader";
 
-// Memoized selectors outside component
+// Memoized selectors
 const selectGetAllInstrumentForTreasury = (state) =>
   state.WatchListReducer.GetAllInstrumentForTreasury?.crossInstruments;
-const selectedTreasurySpotRatesFeed = (state) =>
+const selectTreasurySpotRatesFeedRaw = (state) =>
   state.RealtimeActionsSlice.TreasurySpotRatesFeed;
 const selectWorldCrosses = (state) =>
   state.WatchListReducer.GetBankSpotForTreasury?.worldCrosses || [];
@@ -26,24 +26,24 @@ const selectWorldCurrencies = (state) =>
   state.WatchListReducer.GetBankSpotForTreasury?.worldCurrencies || [];
 const selectTreasuryBankSpotSpinner = (state) =>
   state.WatchListReducer.GetBankSpotForTreasurySpinner;
+const selectMarketStatus = (state) => state.WatchListReducer.getMarketStatus;
 
-// Custom comparison for feed data
-const isFeedDifferent = (prevFeed, newFeed) => {
-  if (!prevFeed || !newFeed) return true;
-  if (prevFeed === newFeed) return false;
+// Custom selector that extracts only the essential data for comparison
+const selectTreasurySpotRatesEssentials = (state) => {
+  const feed = state.RealtimeActionsSlice.TreasurySpotRatesFeed;
+  if (!feed) return null;
 
-  const prevCross = prevFeed.instrumentCrossRate;
-  const newCross = newFeed.instrumentCrossRate;
-  const prevSpot = prevFeed.instrumentParitySpot;
-  const newSpot = newFeed.instrumentParitySpot;
-
-  return (
-    prevCross?.bid !== newCross?.bid ||
-    prevCross?.ask !== newCross?.ask ||
-    prevCross?.updateDateTime !== newCross?.updateDateTime ||
-    prevSpot?.bid !== newSpot?.bid ||
-    prevSpot?.ask !== newSpot?.ask
-  );
+  return {
+    crossBid: feed.instrumentCrossRate?.bid,
+    crossAsk: feed.instrumentCrossRate?.ask,
+    crossUpdateTime: feed.instrumentCrossRate?.updateDateTime,
+    crossInstrumentID: feed.instrumentCrossRate?.instrumentID,
+    crossSecondaryID: feed.instrumentCrossRate?.secondaryInstrumentID,
+    spotBid: feed.instrumentParitySpot?.bid,
+    spotAsk: feed.instrumentParitySpot?.ask,
+    spotInstrumentID: feed.instrumentParitySpot?.instrumentID,
+    timestamp: Date.now(), // Add timestamp to force updates when data changes
+  };
 };
 
 const BankSpot = memo(() => {
@@ -52,23 +52,20 @@ const BankSpot = memo(() => {
     selectGetAllInstrumentForTreasury,
     shallowEqual
   );
-  const TreasurySpotRatesFeed = useSelector(
-    selectedTreasurySpotRatesFeed,
-    (prev, next) => !isFeedDifferent(prev, next)
-  );
-
-  const marketStatus = useSelector(
-    (state) => state.WatchListReducer.getMarketStatus
-  );
+  const feedEssentials = useSelector(selectTreasurySpotRatesEssentials);
+  const marketStatus = useSelector(selectMarketStatus);
   const worldCrosses = useSelector(selectWorldCrosses, shallowEqual);
   const worldCurrencies = useSelector(selectWorldCurrencies, shallowEqual);
   const isLoading = useSelector(selectTreasuryBankSpotSpinner);
 
   // Local state for processed data
   const [processedData, setProcessedData] = useState([]);
-  // Refs for throttled function and previous feed
-  const throttledUpdateRef = useRef();
-  const prevFeedRef = useRef(TreasurySpotRatesFeed);
+
+  // Refs for data and updates
+  const dataRef = useRef([]);
+  const lastUpdateRef = useRef(0);
+  const updateQueueRef = useRef([]);
+  const animationFrameRef = useRef(null);
 
   /**
    * Safely enriches instrument data with cross and currency rates
@@ -99,6 +96,9 @@ const BankSpot = memo(() => {
           worldCrossOffer: matchedCross?.offer ?? 0,
           worldCurBid: matchedCurrency?.bid ?? 0,
           worldCurOffer: matchedCurrency?.offer ?? 0,
+
+          // Add version tracking
+          version: 0,
         };
       });
     } catch (error) {
@@ -110,94 +110,122 @@ const BankSpot = memo(() => {
   // Initialize processed data when enriched data changes
   useEffect(() => {
     if (enrichedData.length > 0) {
+      dataRef.current = enrichedData;
       setProcessedData(enrichedData);
     }
   }, [enrichedData]);
 
   /**
-   * Updates bank spot data with new feed data
+   * Batch update function using requestAnimationFrame
    */
-  const updateData = useCallback((feed) => {
-    if (!feed) return;
-
-    try {
-      startTransition(() => {
-        setProcessedData((prevData) => {
-          const { instrumentCrossRate, instrumentParitySpot } = feed;
-          let hasUpdates = false;
-
-          const updatedData = prevData.map((data) => {
-            const updatedItem = { ...data };
-
-            // Update cross rates
-            if (
-              instrumentCrossRate &&
-              data.instrumentID === instrumentCrossRate.instrumentID &&
-              data.secondaryInstrumentID ===
-                instrumentCrossRate.secondaryInstrumentID
-            ) {
-              if (
-                data.worldCrossBid !== instrumentCrossRate.bid ||
-                data.worldCrossOffer !== instrumentCrossRate.ask
-              ) {
-                updatedItem.worldCrossBid = instrumentCrossRate.bid;
-                updatedItem.worldCrossOffer = instrumentCrossRate.ask;
-                updatedItem.time = instrumentCrossRate.updateDateTime;
-                hasUpdates = true;
-              }
-            }
-            // Update spot rates
-            if (
-              instrumentParitySpot &&
-              data.instrumentID === instrumentParitySpot.instrumentID
-            ) {
-              if (
-                Number(data.worldCurBid) !== Number(instrumentParitySpot.bid) ||
-                Number(data.worldCurOffer) !== Number(instrumentParitySpot.ask)
-              ) {
-                updatedItem.worldCurBid = instrumentParitySpot.bid;
-                updatedItem.worldCurOffer = instrumentParitySpot.ask;
-                hasUpdates = true;
-              }
-            }
-
-            return updatedItem;
-          });
-
-          return hasUpdates ? updatedData : prevData;
-        });
-      });
-    } catch (error) {
-      console.error("Error updating data:", error);
-    }
-  }, []);
-
-  // Initialize and cleanup throttled function
-  useEffect(() => {
-    const throttledUpdate = throttle(updateData, 40, {
-      leading: true,
-      trailing: true,
-    });
-    throttledUpdateRef.current = throttledUpdate;
-
-    return () => {
-      throttledUpdate.cancel();
-      throttledUpdateRef.current = null;
-    };
-  }, [updateData]);
-
-  // Handle real-time feed updates
-  useEffect(() => {
-    if (!isFeedDifferent(prevFeedRef.current, TreasurySpotRatesFeed)) {
+  const processUpdateQueue = useCallback(() => {
+    if (updateQueueRef.current.length === 0) {
+      animationFrameRef.current = null;
       return;
     }
 
-    prevFeedRef.current = TreasurySpotRatesFeed;
+    const updates = updateQueueRef.current;
+    updateQueueRef.current = [];
 
-    startTransition(() => {
-      throttledUpdateRef.current?.(TreasurySpotRatesFeed);
+    setProcessedData((prevData) => {
+      const updatedData = [...prevData];
+      let hasChanges = false;
+
+      updates.forEach((update) => {
+        const { instrumentCrossRate, instrumentParitySpot } = update;
+
+        updatedData.forEach((item, index) => {
+          let changed = false;
+
+          // Update cross rates
+          if (
+            instrumentCrossRate &&
+            item.instrumentID === instrumentCrossRate.instrumentID &&
+            item.secondaryInstrumentID ===
+              instrumentCrossRate.secondaryInstrumentID
+          ) {
+            if (item.worldCrossBid !== instrumentCrossRate.bid) {
+              updatedData[index] = {
+                ...item,
+                worldCrossBid: instrumentCrossRate.bid,
+                worldCrossOffer: instrumentCrossRate.ask,
+                time: instrumentCrossRate.updateDateTime,
+                version: item.version + 1,
+              };
+              changed = true;
+            }
+          }
+
+          // Update spot rates
+          if (
+            instrumentParitySpot &&
+            item.instrumentID === instrumentParitySpot.instrumentID
+          ) {
+            if (
+              Number(item.worldCurBid) !== Number(instrumentParitySpot.bid) ||
+              Number(item.worldCurOffer) !== Number(instrumentParitySpot.ask)
+            ) {
+              updatedData[index] = {
+                ...item,
+                worldCurBid: instrumentParitySpot.bid,
+                worldCurOffer: instrumentParitySpot.ask,
+                version: item.version + 1,
+              };
+              changed = true;
+            }
+          }
+
+          if (changed) hasChanges = true;
+        });
+      });
+
+      return hasChanges ? updatedData : prevData;
     });
-  }, [TreasurySpotRatesFeed]);
+
+    animationFrameRef.current = requestAnimationFrame(processUpdateQueue);
+  }, []);
+
+  /**
+   * Add update to queue and schedule processing
+   */
+  const queueUpdate = useCallback(
+    (feed) => {
+      if (!feed) return;
+
+      // Throttle updates to prevent overwhelming the UI
+      const now = Date.now();
+      if (now - lastUpdateRef.current < 16) {
+        // ~60fps
+        return;
+      }
+      lastUpdateRef.current = now;
+
+      updateQueueRef.current.push(feed);
+
+      if (!animationFrameRef.current) {
+        animationFrameRef.current = requestAnimationFrame(processUpdateQueue);
+      }
+    },
+    [processUpdateQueue]
+  );
+
+  // Handle real-time feed updates
+  useEffect(() => {
+    if (!feedEssentials) return;
+
+    // Get the full feed data for processing
+    const fullFeed = useSelector(selectTreasurySpotRatesFeedRaw);
+    queueUpdate(fullFeed);
+  }, [feedEssentials, queueUpdate]);
+
+  // Cleanup animation frame on unmount
+  useEffect(() => {
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, []);
 
   // Memoized table columns configuration
   const columns = useMemo(
@@ -219,7 +247,7 @@ const BankSpot = memo(() => {
         width: 80,
         align: "center",
         render: (text, record) => (
-          <span className="d-flex justify-content-center align-items-center">
+          <span className='d-flex justify-content-center align-items-center'>
             <BidAmountBox
               applyClass={
                 marketStatus === true ? "BidCardBox" : "BidCardBox_Disable"
@@ -237,7 +265,7 @@ const BankSpot = memo(() => {
         width: 80,
         align: "center",
         render: (text, record) => (
-          <span className="d-flex justify-content-center align-items-center">
+          <span className='d-flex justify-content-center align-items-center'>
             <BidAmountBox
               applyClass={
                 marketStatus === true ? "OfferCardBox" : "OfferCardBox_Disable"
@@ -262,7 +290,7 @@ const BankSpot = memo(() => {
         width: 80,
         align: "center",
         render: (text, record) => (
-          <span className="d-flex justify-content-center align-items-center">
+          <span className='d-flex justify-content-center align-items-center'>
             <BidAmountBox
               applyClass={
                 marketStatus === true ? "BidCardBox" : "BidCardBox_Disable"
@@ -280,7 +308,7 @@ const BankSpot = memo(() => {
         width: 80,
         align: "center",
         render: (text, record) => (
-          <span className="d-flex justify-content-center align-items-center">
+          <span className='d-flex justify-content-center align-items-center'>
             <BidAmountBox
               applyClass={
                 marketStatus === true ? "OfferCardBox" : "OfferCardBox_Disable"
@@ -307,19 +335,19 @@ const BankSpot = memo(() => {
   );
 
   return (
-    <div className="bank-spot-container">
-      <div className="box-header bg-primary-orange px-3">
-        <div className="text-start color-white fw-bold fs-6">Bank Spot</div>
+    <div className='bank-spot-container'>
+      <div className='box-header bg-primary-orange px-3'>
+        <div className='text-start color-white fw-bold fs-6'>Bank Spot</div>
       </div>
 
-      <div className="mb-2 h-100 position-relative">
+      <div className='mb-2 h-100 position-relative'>
         <GlobalTable
           columns={columns}
           dataSource={processedData}
           rowKey={(record) =>
             `${record.instrumentID}-${record.secondaryInstrumentID}`
           }
-          prefixCls="BankSpot_Table"
+          prefixCls='BankSpot_Table'
           pagination={false}
           scroll={{ x: "max-content", y: 245 }}
           loading={isLoading}

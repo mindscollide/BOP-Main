@@ -38,3 +38,6 @@
   display: flex !important;
   gap: 12px !important;
 }
+.export-options button {
+  box-shadow: none !important;
+}
