@@ -94,8 +94,14 @@ const BankSpot = memo(() => {
 
           worldCrossBid: matchedCross?.bid ?? 0,
           worldCrossOffer: matchedCross?.offer ?? 0,
-          worldCurBid: matchedCurrency?.bid ?? 0,
-          worldCurOffer: matchedCurrency?.offer ?? 0,
+          worldCurBid:
+          instrument.instrumentID === 21
+            ? matchedCross?.bid ?? 0
+            : matchedCurrency?.bid ?? 0,
+        worldCurOffer:
+          instrument.instrumentID === 21
+            ? matchedCross?.offer ?? 0
+            : matchedCurrency?.offer ?? 0,
 
           // Add version tracking
           version: 0,
@@ -154,6 +160,11 @@ const BankSpot = memo(() => {
               };
               changed = true;
             }
+          }
+          if (data.instrumentID === 21) {
+            updatedItem.worldCurBid = instrumentCrossRate.bid;
+            updatedItem.worldCurOffer = instrumentCrossRate.ask;
+            hasUpdates = true;
           }
 
           // Update spot rates
