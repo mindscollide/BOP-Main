@@ -15,6 +15,9 @@ export default defineConfig({
     },
   },
   build: {
-    assetsInclude: ['**/*.ttf'],
-  }
+    assetsInclude: ["**/*.ttf"],
+  },
+  optimizeDeps: {
+    include: ["react-error-boundary"], // 👈 Force pre-bundle
+  },
 });
