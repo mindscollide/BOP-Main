@@ -67,7 +67,7 @@ const SpotQuoteModal = ({ dealData }) => {
       spotQuoteModalData?.side.toLowerCase() === "buy"
         ? bid.replace(/,/g, "")
         : offer.replace(/,/g, "");
-        
+
     let Data = {
       PK_TransactionID: spotQuoteModalData?.pK_TransactionID,
       Rate: Number(getRate),
@@ -135,7 +135,7 @@ const SpotQuoteModal = ({ dealData }) => {
                 </Col>
                 <Col sm={12} md={12} lg={12}>
                   <label className={styles["DealViewModal__label"]}>
-                    Amount
+                    TXN Amount
                   </label>
                   <p className={styles["DealViewModal__value"]}>
                     {spotQuoteModalData?.quantity}
@@ -147,7 +147,7 @@ const SpotQuoteModal = ({ dealData }) => {
                 </Col>
                 <Col sm={12} md={12} lg={12}>
                   <label className={styles["DealViewModal__label"]}>
-                    Amount
+                    Total Amount
                   </label>
                   <p className={styles["DealViewModal__value"]}>
                     {spotQuoteModalData?.amount}

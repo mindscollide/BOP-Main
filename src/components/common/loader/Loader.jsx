@@ -69,8 +69,7 @@ const Loader = () => {
   }, [isLoading]);
 
   return (
-    isLoader &&
-    !location.pathname.includes("BOP") && (
+    isLoader &&(
       <div className='body-loader overflow-hidden'>
         <div className='body-loader-inner'>
           <div className='logo-loader-wrapper'>

@@ -592,7 +592,7 @@ const BlotterHeader = () => {
                             {formatPkAmount(GetNOPData?.nop)}
                           </span>
                         ) : GetNOPData?.nop >= 0 ? (
-                          <span>{formatPkAmount(GetNOPData?.nop)}</span>
+                          <span className="color-green">{formatPkAmount(GetNOPData?.nop)}</span>
                         ) : (
                           <span className='color-red'>{`(${formatPkAmount(
                             Math.abs(GetNOPData?.nop)

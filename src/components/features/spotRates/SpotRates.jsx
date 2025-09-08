@@ -427,7 +427,7 @@ const SpotRates = () => {
                     <div className="col-6">
                       <div className="d-flex align-items-center justify-content-end refresh-interval-wrapper">
                         <span className="updloadrates-hd fs-6 me-1 ff-roboto">
-                          Refresh Interval
+                          Refresh Interval (min)
                         </span>
                         <InputFIeld
                           min={1}
