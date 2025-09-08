@@ -45,21 +45,15 @@ const RFQForwardCorporateModal = ({
   const navigate = useNavigate();
   const [isError, setIsError] = useState(false);
 
-  /**
-   * Redux Selectors for required data
-   */
-
-  // Get nature of business list from Redux store
+  // Redux Selectors for required data
   const natureOfBusinessList = useSelector(
     (state) => state.authReducer.GetAllNatureOfTransactions
   );
 
-  // Get all active corporates from Redux store
   const GetAllActiveCorproates = useSelector(
     (state) => state.authReducer.GetAllActiveCorproates
   );
 
-  // Get all instruments for counterparties from Redux store
   const getAllInstrumentsForCounterPartiesData = useSelector(
     (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
   );
@@ -68,39 +62,26 @@ const RFQForwardCorporateModal = ({
     (state) => state.modalReducer.forwardRFQModal
   );
 
-  /**
-   * Local State for Form Data
-   */
-
-  // Transaction details
+  // Local State for Form Data
   const [amountData, setAmountData] = useState("");
   const [Tenor, setTenor] = useState("");
   const [options, setOptions] = useState("");
   const [accountNumber, setAcNumberData] = useState("");
-
-  // Form validation state
   const [accountError, setAccountError] = useState({
     message: "",
     status: false,
   });
-
-  // Dropdown options and selections
   const [natureOfBusinessOptions, setNatureOfBusinessOptions] = useState(null);
   const [currencyOptions, setCurrencyOptions] = useState([]);
   const [selectedCurrency, setSelectedCurrency] = useState(null);
-
-  // Transaction type options (Buy/Sell)
   const [typeOptions] = useState([
     { label: "Buy", value: 1 },
     { label: "Sell", value: 2 },
   ]);
-
   const [typeOptionSelected, setTypeOptionSelected] = useState({
     value: 0,
     label: "",
   });
-
-  // Corporate selection (for branch users)
   const [corporateValue, setCorporateValue] = useState({
     value: 0,
     label: "",
@@ -110,13 +91,10 @@ const RFQForwardCorporateModal = ({
     message: "",
     status: false,
   });
-  // Date calculations
   const [tenoreDate, setTenorDate] = useState(new Date());
   const [optionsDate, setOptionsDate] = useState(new Date());
 
-  /**
-   * Environment Configuration
-   */
+  // Environment Configuration
   const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
   const isCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
 
@@ -129,10 +107,6 @@ const RFQForwardCorporateModal = ({
       : null;
 
   /**
-   * Effect Hooks
-   */
-
-  /**
    * Initialize nature of business options
    * Filters for forward transactions only
    */
@@ -143,17 +117,6 @@ const RFQForwardCorporateModal = ({
           (business, index) => business.isForForward === true
         );
         setNatureOfBusinessOptions(formattedOptions);
-        if (isCorporate) {
-          setTypeOptionSelected({
-            value: typeOptions[1].value,
-            label: typeOptions[1].label,
-          });
-        } else {
-          setTypeOptionSelected({
-            value: typeOptions[0].value,
-            label: typeOptions[0].label,
-          });
-        }
       } catch (error) {
         console.error("Error initializing nature of business options:", error);
       }
@@ -195,63 +158,62 @@ const RFQForwardCorporateModal = ({
    *
    * Dependencies:
    * - getAllInstrumentsForCounterPartiesData: Redux state containing available instruments
-   *
-   * Behavior:
-   * - Only runs when getAllInstrumentsForCounterPartiesData changes
-   * - Filters instruments where both isBuy and isSell are true
-   * - Formats instrument data for dropdown display
-   * - Sets first valid instrument as default selection
-   * - Handles errors gracefully with console logging
    */
   useEffect(() => {
-    // Only proceed if instrument data is available
     if (getAllInstrumentsForCounterPartiesData !== null) {
       try {
-        // Destructure spot applicable instruments from the data
         const { forwardApplicableInstruments } =
           getAllInstrumentsForCounterPartiesData;
 
-        // Filter and map instruments to create dropdown options
         const spotApplicableInstrumentList = forwardApplicableInstruments
           .map((data) => {
-            // Only include instruments that are valid for both buy and sell
             if (data.isBuy === true || data.isSell === true) {
               return {
-                ...data, // Spread all existing instrument properties
-                label: `${data.instrumentName}`, // Display name for dropdown
-                value: data.instrumentID, // Unique identifier for selection
+                ...data,
+                label: `${data.instrumentName}`,
+                value: data.instrumentID,
                 isSell: data.isSell,
                 isBuy: data.isBuy,
               };
             }
-            return null; // Explicitly return null for non-matching instruments
+            return null;
           })
-          .filter(Boolean); // Remove any null values from the array
+          .filter(Boolean);
 
-        // Set the first valid instrument as default selection if available
         if (spotApplicableInstrumentList.length > 0) {
-          setSelectedCurrency(spotApplicableInstrumentList[0]);
+          const firstInstrument = spotApplicableInstrumentList[0];
+          setSelectedCurrency(firstInstrument);
+
+          let defaultType = { value: 0, label: "" };
+
+          if (firstInstrument.isBuy && firstInstrument.isSell) {
+            defaultType = isCorporate
+              ? { value: 2, label: "Sell" }
+              : { value: 1, label: "Buy" };
+          } else if (firstInstrument.isBuy) {
+            defaultType = { value: 1, label: "Buy" };
+          } else if (firstInstrument.isSell) {
+            defaultType = { value: 2, label: "Sell" };
+          }
+
+          setTypeOptionSelected(defaultType);
           setCurrencyOptions(spotApplicableInstrumentList);
         } else {
-          // Handle case where no valid instruments were found
-          console.warn("No instruments available for both buy and sell");
+          console.warn("No instruments available for buy or sell");
           setSelectedCurrency(null);
+          setTypeOptionSelected({ value: 0, label: "" });
           setCurrencyOptions([]);
         }
       } catch (error) {
-        // Error handling with detailed error message
         console.error("Error initializing currency options:", error);
-
-        // Reset currency options to empty array on error
         setSelectedCurrency(null);
         setCurrencyOptions([]);
       }
     } else {
-      // Handle case where instrument data is not yet loaded
       setSelectedCurrency(null);
       setCurrencyOptions([]);
     }
-  }, [getAllInstrumentsForCounterPartiesData]); // Only re-run when instrument data changes
+  }, [getAllInstrumentsForCounterPartiesData]);
 
   /**
    * Handles account number input change
@@ -261,7 +223,6 @@ const RFQForwardCorporateModal = ({
   const handleChangeAcNo = (event) => {
     const { value } = event.target;
 
-    // Accept only alphanumeric characters
     if (/^[a-zA-Z0-9]*$/.test(value)) {
       setAcNumberData(value);
       setAccountError({
@@ -285,62 +246,6 @@ const RFQForwardCorporateModal = ({
   };
 
   /**
-   * Handles tenor input change
-   * Validates input (1-1000 days) and calculates maturity date
-   * @param {Object} event - The input change event
-   */
-  // const handleChangeTenor = (event) => {
-  //   const { value } = event.target;
-
-  //   // Allow only digits and up to 4 characters
-  //   if (/^\d{0,4}$/.test(value)) {
-  //     const numericValue = parseInt(value, 10);
-
-  //     // Allow empty input or numbers from 1 to 1000
-  //     if (value === "" || (numericValue >= 1 && numericValue <= 1000)) {
-  //       setTenor(value);
-
-  //       if (value !== "") {
-  //         const newDate = new Date();
-  //         newDate.setDate(newDate.getDate() + numericValue);
-  //         setTenorDate(newDate);
-  //         setOptionsDate(newDate); // Reset options date to new tenor date
-  //       } else {
-  //         setTenorDate(new Date());
-  //         setOptionsDate(new Date());
-  //       }
-  //     }
-  //   }
-  // };
-
-  /**
-   * Handles options input change
-   * Validates input (1-1000 days) and calculates options date
-   * @param {Object} event - The input change event
-   */
-  // const handleChangeOptions = (event) => {
-  //   const { value } = event.target;
-
-  //   // Allow only digits and up to 4 characters
-  //   if (/^\d{0,4}$/.test(value)) {
-  //     const numericValue = parseInt(value, 10);
-
-  //     // Allow empty input or numbers from 1 to 1000
-  //     if (value === "" || (numericValue >= 1 && numericValue <= 1000)) {
-  //       setOptions(value);
-
-  //       if (value !== "") {
-  //         const newDate = new Date(tenoreDate); // start from tenorDate
-  //         newDate.setDate(newDate.getDate() + numericValue);
-  //         setOptionsDate(newDate);
-  //       } else {
-  //         setOptionsDate(tenoreDate);
-  //       }
-  //     }
-  //   }
-  // };
-
-  /**
    * Handles transaction type (Buy/Sell) selection change
    * @param {Object} selectedValue - The selected type
    */
@@ -357,39 +262,57 @@ const RFQForwardCorporateModal = ({
   };
 
   /**
-   * Form Submission Handler
-   *
-   * Validates form and dispatches action to save forward RFQ transaction
+   * Handles date calculation for tenor and options
+   * Updates the corresponding dates based on input values
+   * @param {Object} event - The input change event
    */
   const handleDateValues = (event) => {
     const { name, value } = event.target;
 
     let newTenor = Tenor;
     let newOptions = options;
-    // const [Tenor, setTenor] = useState("");
-    // const [options, setOptions] = useState("");
+
     if (name === "Tenor") {
       newTenor = value;
       setTenor(value);
     }
     if (name === "Options") {
       newOptions = value;
-
       setOptions(value);
     }
-    // const updatedState = {
-    //   ...forwardRFQState,
-    //   [name]: value,
-    // };
-    // setForwardRFQState(updatedState);
 
-    console.log({ Tenor, options }, "testtsststst");
     const { tenorDt, optionDt } = calculateDates(newTenor, newOptions);
-
     setTenorDate(tenorDt);
     setOptionsDate(optionDt);
   };
 
+  /**
+   * Handles currency selection change
+   * Automatically sets appropriate transaction type based on currency capabilities
+   * @param {Object} selectCurrency - The selected currency
+   */
+  const handleChangeCurrency = (selectCurrency) => {
+    setSelectedCurrency(selectCurrency);
+    if (selectCurrency?.isBuy && selectCurrency?.isSell) {
+      const defaultType = isCorporate
+        ? { value: 2, label: "Sell" }
+        : { value: 1, label: "Buy" };
+      setTypeOptionSelected(defaultType);
+    } else if (selectCurrency?.isBuy && !selectCurrency?.isSell) {
+      const defaultType = { value: 1, label: "Buy" };
+      setTypeOptionSelected(defaultType);
+    } else if (!selectCurrency?.isBuy && selectCurrency?.isSell) {
+      const defaultType = { value: 2, label: "Sell" };
+      setTypeOptionSelected(defaultType);
+    } else {
+      setTypeOptionSelected({ value: 0, label: "" });
+    }
+  };
+
+  /**
+   * Form Submission Handler
+   * Validates form and dispatches action to save forward RFQ transaction
+   */
   const handleConfirmButton = () => {
     let amountValue = amountData.replace(/,/g, "");
     if (
@@ -424,27 +347,26 @@ const RFQForwardCorporateModal = ({
     <div>
       <Modal
         show={rfqForwardModal}
-        // setShow={openRfqModalForwardCorporateComponent}
         onHide={() => dispatch(setForwardRFQModal(false))}
         closeButton
-        headerClassName="RFQModalHeaderForwardTabCorporate"
-        footerClassName="RFQModalFooterForwardTabCorporate"
-        bodyClassName="RFQModalBodyForwardTabCorporate"
+        headerClassName='RFQModalHeaderForwardTabCorporate'
+        footerClassName='RFQModalFooterForwardTabCorporate'
+        bodyClassName='RFQModalBodyForwardTabCorporate'
         modalHeader={
           <>
             <Row>
               <Col lg={12} md={12} sm={12}>
                 {isBranch ? (
                   <>
-                    <p className="heading-RfqModal">
+                    <p className='heading-RfqModal'>
                       {titleDetails.branchName}
                     </p>
-                    <p className="heading-branchCode">
+                    <p className='heading-branchCode'>
                       Branch Code: {titleDetails.branchCode}
                     </p>
                   </>
                 ) : (
-                  <p className="heading-RfqModal">
+                  <p className='heading-RfqModal'>
                     {titleDetails.corporateName}
                   </p>
                 )}
@@ -455,16 +377,15 @@ const RFQForwardCorporateModal = ({
         modalBody={
           <>
             <div>
-              {/* Corporate Selection (for branch users) */}
               <Row>
                 {isBranch && (
-                  <Col lg={12} md={12} sm={12} className="mb-2">
-                    <label className="LabelRFQTransactionModal">
+                  <Col lg={12} md={12} sm={12} className='mb-2'>
+                    <label className='LabelRFQTransactionModal'>
                       Customer Name*
                     </label>
                     <SelectDropdown
-                      classNamePrefix="RfqSpot"
-                      placeholder=""
+                      classNamePrefix='RfqSpot'
+                      placeholder=''
                       options={getAllCorporates}
                       onChange={handleChangeCorporate}
                       isSearchable={true}
@@ -473,31 +394,42 @@ const RFQForwardCorporateModal = ({
                   </Col>
                 )}
 
-                {/* Currency and Type Selection */}
                 <Col lg={6} md={6} sm={6}>
-                  <div className="d-flex flex-column flex-wrap">
-                    <label className="LabelRFQTransactionModal">
+                  <div className='d-flex flex-column flex-wrap'>
+                    <label className='LabelRFQTransactionModal'>
                       Currency*
                     </label>
                     <SelectDropdown
-                      classNamePrefix="RfqSpot"
-                      placeholder=""
+                      classNamePrefix='RfqSpot'
+                      placeholder=''
                       options={currencyOptions}
                       value={selectedCurrency}
-                      onChange={(selectCurrency) =>
-                        setSelectedCurrency(selectCurrency)
-                      }
+                      onChange={handleChangeCurrency}
                     />
                   </div>
                 </Col>
 
                 <Col lg={6} md={6} sm={6}>
-                  <div className="d-flex flex-column flex-wrap">
-                    <label className="LabelRFQTransactionModal">Type*</label>
+                  <div className='d-flex flex-column flex-wrap'>
+                    <label className='LabelRFQTransactionModal'>Type*</label>
                     <SelectDropdown
-                      placeholder=""
-                      classNamePrefix="RfqSpot"
-                      options={typeOptions}
+                      placeholder=''
+                      classNamePrefix='RfqSpot'
+                      options={typeOptions.filter((option) => {
+                        if (
+                          selectedCurrency?.isBuy &&
+                          selectedCurrency?.isSell
+                        ) {
+                          return option.value === 1 || option.value === 2;
+                        }
+                        if (selectedCurrency?.isBuy) {
+                          return option.value === 1;
+                        }
+                        if (selectedCurrency?.isSell) {
+                          return option.value === 2;
+                        }
+                        return true;
+                      })}
                       value={typeOptionSelected}
                       onChange={handleChangeType}
                     />
@@ -505,13 +437,12 @@ const RFQForwardCorporateModal = ({
                 </Col>
               </Row>
 
-              {/* Nature and Account Number */}
-              <Row className="mt-2">
+              <Row className='mt-2'>
                 <Col lg={6} md={6} sm={6}>
-                  <div className="d-flex flex-column flex-wrap">
-                    <label className="LabelRFQTransactionModal">Nature</label>
+                  <div className='d-flex flex-column flex-wrap'>
+                    <label className='LabelRFQTransactionModal'>Nature</label>
                     <InputFIeld
-                      applyClass="CalculatorTextfield"
+                      applyClass='CalculatorTextfield'
                       disabled={true}
                       value={
                         natureOfBusinessOptions !== null
@@ -522,29 +453,23 @@ const RFQForwardCorporateModal = ({
                   </div>
                 </Col>
                 <Col lg={6} md={6} sm={6}>
-                  <div className="d-flex flex-column flex-wrap">
-                    <label className="LabelRFQTransactionModal">A/c No</label>
+                  <div className='d-flex flex-column flex-wrap'>
+                    <label className='LabelRFQTransactionModal'>A/c No</label>
                     <InputFIeld
-                      applyClass="CalculatorTextfield"
+                      applyClass='CalculatorTextfield'
                       onChange={handleChangeAcNo}
-                      type="text"
+                      type='text'
                       value={accountNumber}
                       maxLength={25}
                     />
                   </div>
-                  {/* {accountError.status === true && (
-                    <div className="rfq-error_message">
-                      Account Number is required
-                    </div>
-                  )} */}
                 </Col>
               </Row>
 
-              {/* Amount Input */}
-              <Row className="mt-2">
+              <Row className='mt-2'>
                 <Col lg={12} md={12} sm={12}>
-                  <div className="d-flex flex-column flex-wrap">
-                    <label className="LabelRFQTransactionModal">Amount*</label>
+                  <div className='d-flex flex-column flex-wrap'>
+                    <label className='LabelRFQTransactionModal'>Amount*</label>
                     <NumericFormat
                       allowLeadingZeros={false}
                       value={amountData}
@@ -555,7 +480,7 @@ const RFQForwardCorporateModal = ({
                       applyClass={"CalculatorTextfield"}
                       customInput={InputFIeld}
                       onChange={handleChangeAmount}
-                      thousandSeparator=","
+                      thousandSeparator=','
                     />
                   </div>
                   <div className={"rfq-error_message"}>
@@ -566,27 +491,25 @@ const RFQForwardCorporateModal = ({
                 </Col>
               </Row>
 
-              {/* Tenor Input with Date Calculation */}
-              <Row className="mt-2 ">
-                <Col lg={7} md={7} sm={7} className="pe-0">
-                  <div className="d-flex flex-column flex-wrap">
-                    <label className="LabelRFQTransactionModal">Tenor</label>
+              <Row className='mt-2 '>
+                <Col lg={7} md={7} sm={7} className='pe-0'>
+                  <div className='d-flex flex-column flex-wrap'>
+                    <label className='LabelRFQTransactionModal'>Tenor</label>
                     <NumericFormat
                       customInput={InputFIeld}
-                      applyClass="CalculatorTextfield"
+                      applyClass='CalculatorTextfield'
                       value={Tenor}
                       decimalScale={0}
                       allowNegative={false}
-                      name="Tenor"
+                      name='Tenor'
                       maxLength={4}
                       isAllowed={(values) => {
                         const { value, floatValue } = values;
                         return (
                           (!floatValue || Number.isInteger(floatValue)) &&
                           value <= 1000
-                        ); // max 4 digits
+                        );
                       }}
-                      // onChange={handleChangeTenor}
                       onChange={handleDateValues}
                     />
                   </div>
@@ -595,9 +518,8 @@ const RFQForwardCorporateModal = ({
                   lg={5}
                   md={5}
                   sm={5}
-                  className="d-flex align-items-end justify-content-start ps-0 "
-                >
-                  <span className="DateColumnTenorForwardTabRFQModal">
+                  className='d-flex align-items-end justify-content-start ps-0 '>
+                  <span className='DateColumnTenorForwardTabRFQModal'>
                     {formatDate(tenoreDate)}
                   </span>
                 </Col>
@@ -608,26 +530,25 @@ const RFQForwardCorporateModal = ({
                 </span>
               </Row>
 
-              {/* Options Input with Date Calculation */}
-              <Row className="mt-2 ">
-                <Col lg={7} md={7} sm={7} className="pe-0">
-                  <div className="d-flex flex-column flex-wrap">
-                    <label className="LabelRFQTransactionModal">Options</label>
+              <Row className='mt-2 '>
+                <Col lg={7} md={7} sm={7} className='pe-0'>
+                  <div className='d-flex flex-column flex-wrap'>
+                    <label className='LabelRFQTransactionModal'>Options</label>
                     <NumericFormat
                       customInput={InputFIeld}
                       value={options}
                       decimalScale={0}
                       allowNegative={false}
                       onChange={handleDateValues}
-                      name="Options"
-                      applyClass="CalculatorTextfield"
+                      name='Options'
+                      applyClass='CalculatorTextfield'
                       isAllowed={(values) => {
                         const { value, floatValue } = values;
                         return (
                           (!floatValue || Number.isInteger(floatValue)) &&
                           value <= 1000 &&
                           value.length < 5
-                        ); // max 4 digits
+                        );
                       }}
                     />
                   </div>
@@ -637,9 +558,8 @@ const RFQForwardCorporateModal = ({
                   lg={5}
                   md={5}
                   sm={5}
-                  className="d-flex align-items-end ps-0"
-                >
-                  <span className="DateColumnTenorForwardTabRFQModal">
+                  className='d-flex align-items-end ps-0'>
+                  <span className='DateColumnTenorForwardTabRFQModal'>
                     {formatDate(optionsDate)}
                   </span>
                 </Col>
@@ -659,26 +579,21 @@ const RFQForwardCorporateModal = ({
                 lg={6}
                 md={6}
                 sm={12}
-                className="d-flex justify-content-start align-items-center rfqLimit_error-style"
-              >
+                className='d-flex justify-content-start align-items-center rfqLimit_error-style'>
                 {errorMessage.status === true && errorMessage.message !== ""
                   ? errorMessage.message
                   : ""}
-                {/* Limit should be lower than 1000 */}
               </Col>
               <Col
                 lg={6}
                 md={6}
                 sm={12}
-                className="d-flex align-items-center justify-content-end"
-              >
+                className='d-flex align-items-center justify-content-end'>
                 <CustomButton
-                  value="Confirm"
-                  applyClass="ConfirmButtonBookaForward"
+                  value='Confirm'
+                  applyClass='ConfirmButtonBookaForward'
                   onClick={handleConfirmButton}
                   disabled={
-                    // !forwardRFQState.TenorDays ||
-                    // !forwardRFQState.Options ||
                     (Tenor !== "" && isWeekend(tenoreDate)) ||
                     (options !== "" && isWeekend(optionsDate))
                   }
