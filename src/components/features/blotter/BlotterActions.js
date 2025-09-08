@@ -2019,6 +2019,7 @@ export const RFQFEDiscountingTransactionQuotation = createAsyncThunk(
                 "Blotter_BlotterServiceManager_RFQFEDiscountingTransactionQuotation_01".toLowerCase()
               )
           ) {
+            dispatch(setDiscountingQuoteModal(false));
             return {
               response: response.data.responseResult,
               message: "FE Discounting quotation generated successfully",
