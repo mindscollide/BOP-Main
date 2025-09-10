@@ -87,6 +87,11 @@ const CalculatorNonFxDiscounting = () => {
         setCalculatedSwap(CalculatedNonFxDiscounting.swap);
         setCalculatedKibor(CalculatedNonFxDiscounting.kibor);
         setReady(CalculatedNonFxDiscounting.readyRate);
+      } else {
+        setNonFERate(0);
+        setCalculatedSwap(0);
+        setCalculatedKibor(0);
+        setReady(0);
       }
     } catch (error) {
       console.log(error);

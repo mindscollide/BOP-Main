@@ -227,7 +227,7 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                   </Col>
                   <Col sm={12} md={12} lg={12}>
                     <label className={styles["DealViewModal__label"]}>
-                      Amount
+                     TXN Amount
                     </label>
                     <p className={styles["DealViewModal__value"]}>
                       {forwardQuoteData?.quantity}
@@ -241,7 +241,7 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                   </Col>
                   <Col sm={12} md={12} lg={12}>
                     <label className={styles["DealViewModal__label"]}>
-                      Amount
+                      Total Amount
                     </label>
                     <p className={styles["DealViewModal__value"]}>
                       {forwardQuoteData?.amount.toFixed(2)}

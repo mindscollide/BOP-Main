@@ -363,7 +363,7 @@ const TXNTreasurySummary = ({
         id: "actions",
         label: "",
         width: 80,
-        align: "end",
+        align: "right",
         render: (record) => (
           <div className={classes.actionButtons}>
             {(record.statusID === 3 || record.statusID === 7) && (

@@ -4,8 +4,12 @@ import BidAmountBox from "../../common/bidAmountBox/BidAmountBox";
 import styles from "./spotDealerAndTreasury.module.css";
 import { useSelector } from "react-redux";
 import { throttle } from "lodash";
-import { setClearRates } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
+import {
+  clearCategorySpotClearRates,
+  setClearRates,
+} from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { useDispatch } from "react-redux";
+import { UpdatetCategoryWiseSpotRates } from "@/store/categoryReducer/categoryReducer";
 
 const SpotDealerAndTreasury = () => {
   const dispatch = useDispatch();
@@ -15,7 +19,7 @@ const SpotDealerAndTreasury = () => {
     (state) => state.WatchListReducer.GetAllInstrumentForTreasury
   );
   const ClearRatesData = useSelector(
-    (state) => state.RealtimeActionsSlice.ClearRatesData
+    (state) => state.RealtimeActionsSlice.CategorySpotClearRates
   );
   const GetCategoryWiseSpotRatesDaata = useSelector(
     (state) => state.categoryReducer.GetCategoryWiseSpotRates
@@ -110,23 +114,16 @@ const SpotDealerAndTreasury = () => {
   }, [marketStatus]);
   // For clear Rates
 
-  console.log("Cgcecececec", spotsData);
-
+  console.log(ClearRatesData, "ClearRatesDataClearRatesData");
   useEffect(() => {
-    if (ClearRatesData?.areRatesClear) {
-      console.log("Cgcecececec", spotsData);
-      setSpotsData((prevData) =>
-        prevData.map((row) => {
-          const updatedRow = { ...row };
-          // check if this row is secondaryInstrument
-          if (updatedRow.secondaryInstrumentID === 0) {
-            updatedRow.bid = 0;
-            updatedRow.offer = 0;
-          }
-          return updatedRow;
-        })
+    if (ClearRatesData && ClearRatesData?.areRatesClear) {
+      let Rates = GetCategoryWiseSpotRatesDaata?.instruments.map((item) =>
+        item.secondaryInstrumentID === 0 ? { ...item, bid: 0, offer: 0 } : item
       );
-      dispatch(setClearRates(null));
+      let newData = { ...GetCategoryWiseSpotRatesDaata, instruments: Rates };
+      dispatch(UpdatetCategoryWiseSpotRates(newData));
+      dispatch(clearCategorySpotClearRates(null));
+
     }
   }, [ClearRatesData]);
 

@@ -17,6 +17,15 @@ const categoryReducer = createSlice({
     GetCategoryWiseDiscountingRates: null,
   },
   reducers: {
+    UpdateGetCategoryWiseForwardRates: (state) => {
+      state.GetCategoryWiseForwardRates = null;
+    },
+    UpdatetCategoryWiseSpotRates: (state, { payload }) => {
+      state.GetCategoryWiseSpotRates = payload;
+    },
+    UpdateGetCategoryWiseDiscountingRates: (state) => {
+      state.GetCategoryWiseDiscountingRates = null;
+    },
     clearCatgeoryResponseMessage: (state) => {
       state.responseMessage = "";
     },
@@ -90,6 +99,11 @@ const categoryReducer = createSlice({
   },
 });
 
-export const { clearCatgeoryResponseMessage } = categoryReducer.actions;
+export const {
+  clearCatgeoryResponseMessage,
+  UpdatetCategoryWiseSpotRates,
+  UpdateGetCategoryWiseDiscountingRates,
+  UpdateGetCategoryWiseForwardRates,
+} = categoryReducer.actions;
 
 export default categoryReducer.reducer;

@@ -93,6 +93,10 @@ const CalculatorFxDiscounting = () => {
         setResultFeRate(CalculatedFxDiscounting.feRate);
         setDiscountingFactor(CalculatedFxDiscounting.discountingFactor);
         setPrice(CalculatedFxDiscounting.readyRate);
+      } else {
+        setResultFeRate(0);
+        setDiscountingFactor(0);
+        setPrice(0);
       }
     } catch (error) {
       console.log(error, "error");

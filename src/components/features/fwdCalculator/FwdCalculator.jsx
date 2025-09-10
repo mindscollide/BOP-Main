@@ -98,6 +98,10 @@ const FwdCalculator = () => {
         setResulteForwards(CalculatedForwards.forwardRate);
         setResulteSwap(CalculatedForwards.swap);
         setReady(CalculatedForwards.readyRate);
+      } else {
+        setResulteForwards(0);
+        setResulteSwap(0);
+        setReady(0);
       }
     } catch (error) {
       console.log(error, "error");
