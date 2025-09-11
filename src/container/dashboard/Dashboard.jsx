@@ -94,6 +94,9 @@ const Dashboard = () => {
   const prevTopicRef = useRef(null);
   const prevPathRef = useRef(null);
   const chatModal = useSelector((state) => state.modalReducer.chatModal);
+  const settingState = useSelector((state) => state.settingSlicer)
+
+  console.log(settingState, "settingStatesettingState")
   const categoryValue = useSelector(
     (state) => state.dealerReducer.categoryValue
   );
@@ -101,6 +104,8 @@ const Dashboard = () => {
     (state) =>
       state.RealtimeActionsSlice.BlotterTransactionAddedForTreasuryDealBox
   );
+
+  console.log(blotterTransactionAdded, "blotterTransactionAddedblotterTransactionAdded")
   const chatModalTransactionId = useSelector(
     (state) => state.modalReducer.chatModalTransactionId
   );
@@ -511,9 +516,9 @@ const Dashboard = () => {
       <Content>
         <main className="px-3">
           <Outlet />
-          {/* <AnimatePresence>
+          <AnimatePresence>
             {blotterTransactionAdded && isTreasury && <DealBox />}
-          </AnimatePresence> */}
+          </AnimatePresence>
           {transactionInfoModal && <InfoTransaction />}
 
           {chatModal && <ChatBox />}

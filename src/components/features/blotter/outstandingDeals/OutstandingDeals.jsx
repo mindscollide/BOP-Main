@@ -431,7 +431,8 @@ const OutstandingDeals = ({
       label: "Tenor Days",
       width: 100,
       align: "center",
-      render: (record) => record.rfqDealDetails !== null && record.rfqDealDetails?.tenorDays,
+      render: (record) =>
+        record.rfqDealDetails !== null && record.rfqDealDetails?.tenorDays,
     },
     {
       id: "ccY2",
@@ -466,12 +467,18 @@ const OutstandingDeals = ({
           (isRFQ || isAssignedUser) && record.rfqTimerDetails?.endTime
             ? convertDateTimeIntoLocal(record.rfqTimerDetails.endTime)
             : null;
-
+        const serverTime =
+          (isRFQ || isAssignedUser) && record.rfqTimerDetails?.serverTime
+            ? convertDateTimeIntoLocal(
+                record.rfqTimerDetails?.serverTime.replace(/[-:\s]/g, "")
+              )
+            : null;
         return (
           <span>
             {formatDateTimeToUTCTime(record.tradeDateTime)}{" "}
             {(isRFQ || isAssignedUser) && rfqTimer && (
               <RFQTImer
+                severTime={serverTime}
                 endTime={rfqTimer}
                 dispatch={dispatch}
                 apiFunction={ExpireRFQTransaction}
