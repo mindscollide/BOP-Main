@@ -724,7 +724,7 @@ const CorporateBookaForwardModal = ({
               </Col>
               <Col lg={3} md={3} sm={3} className='BlueboxStyles  '>
                 <span className='BlueBackGroundbox d-flex justify-content-center align-items-centerF '>
-                  {forwardRFQState.CalculateRate}
+                  {forwardRFQState.CalculateRate.toFixed(4)}
                 </span>
               </Col>
             </Row>

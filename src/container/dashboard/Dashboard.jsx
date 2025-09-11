@@ -142,12 +142,18 @@ const Dashboard = () => {
             ...payload.chat,
             creationDateTime: formatDateToUTC(new Date()),
           };
+      
           dispatch(setIncomingChat(chatObj));
+      
+          // 🔔 Play ringtone one time
+          const audio = new Audio("../../../public/message_tone.mp3"); // make sure ringtone.mp3 is in /public folder
+          audio.play().catch((err) => console.log("Ringtone play blocked:", err));
+      
         } catch (error) {
           console.log(error);
         }
         break;
-
+      
       // ✅ Market & Tenor
       case "TENOR_CREATED":
         dispatch(setTenorsCreated(payload));

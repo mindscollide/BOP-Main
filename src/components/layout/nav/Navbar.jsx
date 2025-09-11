@@ -147,7 +147,7 @@ const GlobalNavbar = () => {
       // setOpenRfqModalForwardCorporateComponent(true);
     } else if (activeTab === "Discounting") {
       console.log("Handle Discounting logic");
-      dispatch(setDiscountingRFQModal(true))
+      dispatch(setDiscountingRFQModal(true));
       // setOpenRfqModalDiscountingCorporateComponent(true);
     }
   };
@@ -330,10 +330,7 @@ const GlobalNavbar = () => {
                     ) : null}
                     {shouldIncludeTreasury &&
                     location.pathname.includes("treasury") ? (
-                      <Voltmeter
-                      // activeValue={selectedValue}
-                      // onSelect={(value) => setSelectedValue(value)}
-                      />
+                      <Voltmeter />
                     ) : null}
                     {location.pathname.includes("category") && (
                       <SelectDropdown
@@ -353,7 +350,6 @@ const GlobalNavbar = () => {
         </div>
       </div>
 
-   
       <SpotQuoteModal />
       <DiscountingRFQQuoteModal />
       <ForwardRFQQuoteModal />
