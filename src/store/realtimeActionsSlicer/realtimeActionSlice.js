@@ -66,8 +66,12 @@ const RealtimeActionsSlice = createSlice({
     categoryFowardsTenorsChanges: null,
     counterPartyFowardsTenorsChanges: null,
     treasuryFowardsTenorsChanges: null,
+    tradeRightsStatusUpdated: null,
   },
   reducers: {
+    setTradeRightsStatusUpdated: (state, { payload }) => {
+      state.tradeRightsStatusUpdated = payload;
+    },
     clearCategoryForwardClearRates: (state) => {
       state.CategoryForwardClearRates = null;
     },
@@ -239,6 +243,7 @@ const RealtimeActionsSlice = createSlice({
 });
 
 export const {
+  setTradeRightsStatusUpdated,
   setCategoryFowardsTenorsChanges,
   setTreasuryFowardsTenorsChanges,
   setCounterPartyFowardsTenorsChanges,
@@ -291,7 +296,7 @@ export const {
   clearIncomingChat,
   clearCategoryDiscountingClearRates,
   clearCategoryForwardClearRates,
-  clearCategorySpotClearRates
+  clearCategorySpotClearRates,
 } = RealtimeActionsSlice.actions;
 
 export default RealtimeActionsSlice.reducer;

@@ -1,7 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
 import GlobalTable from "@/components/common/table/GlobalTable";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Col, Row } from "react-bootstrap";
 import CustomButton from "@/components/common/globalButton/button";
@@ -11,6 +9,11 @@ import { IndexCell } from "@/components/common/inputField/IndexCell";
 import { throttle } from "lodash";
 
 const BranchAndCorporateNonFeDiscountingTable = () => {
+  const [rfqButtonState, setRFqButtonState] = useState(null);
+
+  const isTradeRights = useSelector(
+    (state) => state.RealtimeActionsSlice.tradeRightsStatusUpdated
+  );
   const getAllInstrumentsForCounterPartiesData = useSelector(
     (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
   );
@@ -32,10 +35,6 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
     (state) => state.RealtimeActionsSlice.ClearRatesData
   );
 
-  console.log(ClearRatesData, "ClearRatesData");
-
-
-
   //local states
   const [dataSource, setDataSource] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
@@ -43,6 +42,13 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
   //NON-FE Dsicounting Modal Modal State
   const [nonfeDiscountingModalCall, setNonfeDiscountingModalCall] =
     useState(false);
+
+  useEffect(() => {
+    if (isTradeRights !== null) {
+      setRFqButtonState(JSON.parse(isTradeRights));
+      console.log(isTradeRights, "isTradeRightsisTradeRights");
+    }
+  }, [isTradeRights]);
 
   useEffect(() => {
     if (
@@ -189,7 +195,10 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
             applyClass={"FowwardBranchBookaForwardBtn"}
             onClick={handleNonFEDiscountingModal}
             disabled={
-              marketStatus !== null && marketStatus === false ? true : false
+              (marketStatus !== null && marketStatus === false) ||
+              !isTradeRights
+                ? true
+                : false
             }
           />
         </Col>

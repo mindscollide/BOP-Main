@@ -61,6 +61,7 @@ import {
   setIncomingChat,
   setMarketTimingsUpdated,
   setTenorsCreated,
+  setTradeRightsStatusUpdated,
   setTreasuryFeDiscounting,
   setTreasuryForwardRates,
   setTreasuryFowardsTenorsChanges,
@@ -97,7 +98,6 @@ const Dashboard = () => {
   const prevTopicRef = useRef(null);
   const prevPathRef = useRef(null);
   const chatModal = useSelector((state) => state.modalReducer.chatModal);
-
 
   const categoryValue = useSelector(
     (state) => state.dealerReducer.categoryValue
@@ -142,7 +142,6 @@ const Dashboard = () => {
 
   // Update setting response when settingState changes
 
-
   // Memoized MQTT message handler
   const handleMqttMessage = useCallback((data) => {
     const type = data?.payload?.message;
@@ -151,7 +150,6 @@ const Dashboard = () => {
       // ✅ Chat (real-time but low frequency)
       case "INCOMING_CHAT":
         try {
-          
           const chatObj = {
             ...payload.chat,
             creationDateTime: formatDateToUTC(new Date()),
@@ -219,6 +217,35 @@ const Dashboard = () => {
       case "BRANCH_STATUS_INACTIVE":
       case "CORPORATE_STATUS_INACTIVE":
         dispatch(LogoutApi({ navigate }));
+        break;
+
+      case "BRANCH_TRADE_STATUS_UPDATED":
+        if (IsBranch) {
+          if (payload.isTrade === true) {
+            dispatch(setTradeRightsStatusUpdated(true));
+            localStorage.setItem("isTradeRights", true);
+          } else {
+            dispatch(setTradeRightsStatusUpdated(false));
+
+            localStorage.setItem("isTradeRights", false);
+          }
+        }
+
+        break;
+
+      case "CORPORATE_TRADE_STATUS_UPDATED":
+        if (IsCorporate) {
+          if (payload.isTrade === true) {
+            dispatch(setTradeRightsStatusUpdated(true));
+
+            localStorage.setItem("isTradeRights", true);
+          } else {
+            dispatch(setTradeRightsStatusUpdated(false));
+
+            localStorage.setItem("isTradeRights", false);
+          }
+        }
+
         break;
 
       // ✅ Blotter Transaction Events (heavy updates → use startTransition)
@@ -500,6 +527,8 @@ const Dashboard = () => {
   }, [location.pathname]);
 
   useEffect(() => {
+    let getTradeRights = JSON.parse(localStorage.getItem("isTradeRights"));
+    dispatch(setTradeRightsStatusUpdated(getTradeRights));
     connectToMqtt({ subscribeID, userID });
     dispatch(getMarketStatusApi({ navigate }));
     if (isTreasury === "true") {
@@ -518,12 +547,12 @@ const Dashboard = () => {
     }
   }, []);
   return (
-    <Layout className='roboto-13'>
+    <Layout className="roboto-13">
       {!location.pathname.includes("calculator") && <Header />}
 
       <GlobalNavbar />
       <Content>
-        <main className='px-3'>
+        <main className="px-3">
           <Outlet />
           {/* <AnimatePresence>
             {blotterTransactionAdded && isTreasury && <DealBox />}

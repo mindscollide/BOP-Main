@@ -262,6 +262,24 @@
   border-color: #feac78 !important;
   outline: none;
 }
+.rfqBtn_disabled {
+  border-radius: 4px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  position: relative !important;
+  transition: all 0.3s ease-in !important;
+  -webkit-transition: all 0.3s ease-in !important;
+  background-color: #096fed !important;
+  border-color: #096fed !important;
+  /* margin-right: 0.5rem !important; */
+  cursor: default !important;
+  height: 35px;
+  min-width: 100px;
+  font-weight: 700;
+  font-family: "POPPINS";
+  filter: grayscale(1);
+  color: #fff !important;
+}
 
 /* button for calculator start */
 .calculatorButton {
@@ -652,6 +670,7 @@
   background: #06b0da !important;
   filter: grayscale(1);
   border: none;
+  cursor: default !important;
 }
 
 .FEDiscounting {
@@ -683,7 +702,7 @@
   background: #feac78 !important;
   filter: grayscale(1);
   border: none;
-  cursor: not-allowed !important;
+  cursor: default !important;
   color: white;
 }
 .ConfirmButtonBookaForward {
