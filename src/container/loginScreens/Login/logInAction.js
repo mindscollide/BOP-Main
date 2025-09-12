@@ -78,7 +78,11 @@ export const loginInApi = createAsyncThunk(
               localStorage.setItem("ldapAccount", ldapAccount);
               localStorage.setItem("contactNumber", contactNumber);
               localStorage.setItem("userStatusID", userStatusID);
-              localStorage.setItem("isTradeRights", branch.isTrade);
+              {
+                branch !== null &&
+                  branch !== undefined &&
+                  localStorage.setItem("isTradeRights", branch.isTrade);
+              }
 
               roleBasedNavigation(navigate, userRoleID);
 
