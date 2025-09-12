@@ -17,6 +17,8 @@ const BranchForwardsTable = () => {
 
   const [dataSource, setDataSource] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
+  const [rfqButtonState, setRFqButtonState] = useState(null);
+
   //Book a Forward Modal State
   const [bookaForwardModalCall, setBookaForwardModalCall] = useState(false);
 
@@ -44,6 +46,13 @@ const BranchForwardsTable = () => {
   const ClearRatesData = useSelector(
     (state) => state.RealtimeActionsSlice.ClearRatesData
   );
+  const isTradeRights = useSelector(
+    (state) => state.RealtimeActionsSlice.tradeRightsStatusUpdated
+  );
+
+  // const isTradeRights =
+  //   localStorage.getItem("isTradeRights") !== null &&
+  //   JSON.parse(localStorage.getItem("isTradeRights"));
 
   // console.log(ClearRatesData, "ClearRatesData");
 
@@ -56,6 +65,14 @@ const BranchForwardsTable = () => {
   //   GetForwardRatesForCounterPartyData,
   //   "GetForwardRatesForCounterPartyDataGetForwardRatesForCounterPartyData"
   // );
+
+  useEffect(() => {
+    if (isTradeRights !== null) {
+      setRFqButtonState(JSON.parse(isTradeRights));
+      console.log(isTradeRights, "isTradeRightsisTradeRights");
+    }
+  }, [isTradeRights]);
+
   useEffect(() => {
     if (
       getAllInstrumentsForCounterPartiesData !== null &&
@@ -206,7 +223,10 @@ const BranchForwardsTable = () => {
             applyClass={"FowwardBranchBookaForwardBtn"}
             onClick={handleBookaForwardCorporate}
             disabled={
-              marketStatus !== null && marketStatus === false ? true : false
+              (marketStatus !== null && marketStatus === false) ||
+              !isTradeRights
+                ? true
+                : false
             }
           />
         </Col>

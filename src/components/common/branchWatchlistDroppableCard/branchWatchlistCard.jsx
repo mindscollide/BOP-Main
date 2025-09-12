@@ -49,6 +49,12 @@ const BranchRateCardsOfWatchList = ({
   const marketStatus = useSelector(
     (state) => state.WatchListReducer.getMarketStatus
   );
+
+  //disable trade buttons when trade rights changes from MQTT
+  const isTradeRights =
+    localStorage.getItem("isTradeRights") !== null &&
+    JSON.parse(localStorage.getItem("isTradeRights"));
+
   const handleOpenModal = (type) => {
     let Data = {
       type: type, // 'buy' or 'sell'
@@ -73,7 +79,11 @@ const BranchRateCardsOfWatchList = ({
       {currencyLabel ? (
         <>
           <span
-            className={!marketStatus ? "DroppableBox_disbaled" : "DroppableBox"}
+            className={
+              !marketStatus || !isTradeRights
+                ? "DroppableBox_disbaled"
+                : "DroppableBox"
+            }
           >
             <Row>
               <Col lg={12} md={12} sm={12}>

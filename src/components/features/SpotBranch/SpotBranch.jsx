@@ -56,12 +56,15 @@ const SpotBranch = () => {
   // const [watchlistCardData, setWatchlistCardData] = useState([]);
   const [watchlistTableData, setWatchlistTableData] = useState([]);
   const [watchListDateTime, setWatchListDateTime] = useState(null);
+  const [rfqButtonState, setRFqButtonState] = useState(null);
 
   //Global State for Watchlist Card Data
   const getAllInstrumentsForCounterPartiesData = useSelector(
     (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
   );
-
+  const isTradeRights = useSelector(
+    (state) => state.RealtimeActionsSlice.tradeRightsStatusUpdated
+  );
   const GetSpotRatesForCounterParty = useSelector(
     (state) => state.BlotterSlicer.GetSpotRatesForCounterParty
   );
@@ -77,6 +80,13 @@ const SpotBranch = () => {
   );
 
   const [watchlistData, setWatchlistData] = useState(initialWatchlistData);
+
+  useEffect(() => {
+    if (isTradeRights !== null) {
+      setRFqButtonState(JSON.parse(isTradeRights));
+      console.log(isTradeRights, "isTradeRightsisTradeRights");
+    }
+  }, [isTradeRights]);
 
   // Extracting out the Cards Wathlist data in the state
   useEffect(() => {

@@ -13,7 +13,11 @@ const BranchAndCorporateFeDiscountingTable = () => {
   const [dataSource, setDataSource] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
   const [feDiscountingModalCall, setFeDiscountingModalCall] = useState(false);
+  const [rfqButtonState, setRFqButtonState] = useState(null);
 
+  const isTradeRights = useSelector(
+    (state) => state.RealtimeActionsSlice.tradeRightsStatusUpdated
+  );
   const getAllInstrumentsForCounterPartiesData = useSelector(
     (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
   );
@@ -35,6 +39,13 @@ const BranchAndCorporateFeDiscountingTable = () => {
   const ClearRatesData = useSelector(
     (state) => state.RealtimeActionsSlice.ClearRatesData
   );
+
+  useEffect(() => {
+    if (isTradeRights !== null) {
+      setRFqButtonState(JSON.parse(isTradeRights));
+      console.log(isTradeRights, "isTradeRightsisTradeRights");
+    }
+  }, [isTradeRights]);
 
   useEffect(() => {
     if (
@@ -188,7 +199,10 @@ const BranchAndCorporateFeDiscountingTable = () => {
             applyClass={"FEDiscounting"}
             onClick={handleFEDiscountingModal}
             disabled={
-              marketStatus !== null && marketStatus === false ? true : false
+              (marketStatus !== null && marketStatus === false) ||
+              !isTradeRights
+                ? true
+                : false
             }
           />
         </Col>
