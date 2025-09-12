@@ -233,7 +233,7 @@ const InfoTransaction = () => {
             <Row>
               <span className={styles["span_underline"]} />
               <Col sm={6} md={6} lg={6}>
-                <p className={styles["transactionInfolabel"]}>TXN Amount</p>
+                <p className={styles["transactionInfolabel"]}>{`TXN Amount (${InfoRecord?.ccY1})`}</p>
               </Col>
               <Col sm={6} md={6} lg={6}>
                 <p className={styles["transactionInfolabel"]}>
@@ -264,7 +264,7 @@ const InfoTransaction = () => {
             <Row>
               <span className={styles["span_underline"]} />
               <Col sm={6} md={6} lg={6}>
-                <p className={styles["transactionInfolabel"]}>Total Amount</p>
+                <p className={styles["transactionInfolabel"]}>{`Total Amount (${InfoRecord?.ccY2})`}</p>
               </Col>
               <Col sm={6} md={6} lg={6}>
                 <p className={styles["transactionInfolabel"]}>
@@ -315,7 +315,7 @@ const InfoTransaction = () => {
               </Col>
               <Col sm={6} md={6} lg={6}>
                 <p className={styles["transactionInfolabel"]}>
-                  {moment(formatDateUTCToGMT(InfoRecord?.tradeDateTime)).format(
+                  {moment(formatDateUTCToGMT(InfoRecord?.tenorDate)).format(
                     "ddd DD MMM, YYYY"
                   )}
                 </p>

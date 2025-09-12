@@ -86,7 +86,6 @@ import {
 import { setMarketStatus } from "@/store/watchListSlicer/WatchListSlicer";
 import { setUpdateVolMeterRealtime } from "@/store/dealerReducer/dealerSlicer";
 import { GetNOPDataAPI } from "@/components/features/blotter/BlotterActions";
-import { getUserSettingDataAPI } from "@/components/features/settingsModal/settingActions";
 const Dashboard = () => {
   const { Content } = Layout;
   const dispatch = useDispatch();
@@ -98,7 +97,6 @@ const Dashboard = () => {
   const prevPathRef = useRef(null);
   const chatModal = useSelector((state) => state.modalReducer.chatModal);
 
-
   const categoryValue = useSelector(
     (state) => state.dealerReducer.categoryValue
   );
@@ -107,10 +105,6 @@ const Dashboard = () => {
       state.RealtimeActionsSlice.BlotterTransactionAddedForTreasuryDealBox
   );
 
-  console.log(
-    blotterTransactionAdded,
-    "blotterTransactionAddedblotterTransactionAdded"
-  );
   const chatModalTransactionId = useSelector(
     (state) => state.modalReducer.chatModalTransactionId
   );
@@ -142,7 +136,6 @@ const Dashboard = () => {
 
   // Update setting response when settingState changes
 
-
   // Memoized MQTT message handler
   const handleMqttMessage = useCallback((data) => {
     const type = data?.payload?.message;
@@ -151,7 +144,6 @@ const Dashboard = () => {
       // ✅ Chat (real-time but low frequency)
       case "INCOMING_CHAT":
         try {
-          
           const chatObj = {
             ...payload.chat,
             creationDateTime: formatDateToUTC(new Date()),

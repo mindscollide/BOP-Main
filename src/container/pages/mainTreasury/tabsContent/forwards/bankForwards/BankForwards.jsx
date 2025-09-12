@@ -158,7 +158,7 @@ const BankForwards = () => {
             })
           );
         },
-        50,
+        2,
         { leading: true, trailing: true }
       ),
     [] // sirf ek baar banega
