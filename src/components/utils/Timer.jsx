@@ -9,7 +9,6 @@ export const RFQTImer = ({
   navigate,
 }) => {
 
-  console.log(severTime, "severTimeseverTime")
   // calculate client-server offset only once
   const offset = useMemo(() => Date.now() - severTime, [severTime]);
 

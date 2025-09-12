@@ -72,7 +72,7 @@ export const getAllChatByTransactionId = createAsyncThunk(
           dispatch(setChatModal(true));
           dispatch(setChatModalTransactionId(Data.TranscationID));
           dispatch(setTreasuryPersonID(treasuryPersonID));
-
+          dispatch(setChatRecordInfoData(ChatData));
           return rejectWithValue("No Found");
         } else if (
           responseMessage

@@ -5,6 +5,7 @@ import React, {
   useEffect,
   useMemo,
   useRef,
+  useState,
 } from "react";
 import Header from "@/components/layout/header/header";
 import GlobalNavbar from "@/components/layout/nav/Navbar";
@@ -85,18 +86,19 @@ import {
 import { setMarketStatus } from "@/store/watchListSlicer/WatchListSlicer";
 import { setUpdateVolMeterRealtime } from "@/store/dealerReducer/dealerSlicer";
 import { GetNOPDataAPI } from "@/components/features/blotter/BlotterActions";
+import { getUserSettingDataAPI } from "@/components/features/settingsModal/settingActions";
 const Dashboard = () => {
   const { Content } = Layout;
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
   const location = useLocation();
+  const audioRef = useRef(null);
   const prevTopicRef = useRef(null);
   const prevPathRef = useRef(null);
   const chatModal = useSelector((state) => state.modalReducer.chatModal);
-  const settingState = useSelector((state) => state.settingSlicer)
 
-  console.log(settingState, "settingStatesettingState")
+
   const categoryValue = useSelector(
     (state) => state.dealerReducer.categoryValue
   );
@@ -105,7 +107,10 @@ const Dashboard = () => {
       state.RealtimeActionsSlice.BlotterTransactionAddedForTreasuryDealBox
   );
 
-  console.log(blotterTransactionAdded, "blotterTransactionAddedblotterTransactionAdded")
+  console.log(
+    blotterTransactionAdded,
+    "blotterTransactionAddedblotterTransactionAdded"
+  );
   const chatModalTransactionId = useSelector(
     (state) => state.modalReducer.chatModalTransactionId
   );
@@ -135,6 +140,9 @@ const Dashboard = () => {
     : null;
   const userID = localStorage.getItem("userID");
 
+  // Update setting response when settingState changes
+
+
   // Memoized MQTT message handler
   const handleMqttMessage = useCallback((data) => {
     const type = data?.payload?.message;
@@ -143,22 +151,24 @@ const Dashboard = () => {
       // ✅ Chat (real-time but low frequency)
       case "INCOMING_CHAT":
         try {
+          
           const chatObj = {
             ...payload.chat,
             creationDateTime: formatDateToUTC(new Date()),
           };
-      
           dispatch(setIncomingChat(chatObj));
-      
-          // 🔔 Play ringtone one time
-          const audio = new Audio("../../../public/message_tone.mp3"); // make sure ringtone.mp3 is in /public folder
-          audio.play().catch((err) => console.log("Ringtone play blocked:", err));
-      
+
+          if (audioRef.current) {
+            audioRef.current.currentTime = 0;
+            audioRef.current
+              .play()
+              .catch((err) => console.log("Ringtone play blocked:", err));
+          }
         } catch (error) {
-          console.log(error);
+          console.log("Error handling INCOMING_CHAT:", error);
         }
         break;
-      
+
       // ✅ Market & Tenor
       case "TENOR_CREATED":
         dispatch(setTenorsCreated(payload));
@@ -492,7 +502,6 @@ const Dashboard = () => {
   useEffect(() => {
     connectToMqtt({ subscribeID, userID });
     dispatch(getMarketStatusApi({ navigate }));
-
     if (isTreasury === "true") {
       setTimeout(() => {
         dispatch(setDealModalRequest(true));
@@ -509,16 +518,16 @@ const Dashboard = () => {
     }
   }, []);
   return (
-    <Layout className="roboto-13">
+    <Layout className='roboto-13'>
       {!location.pathname.includes("calculator") && <Header />}
 
       <GlobalNavbar />
       <Content>
-        <main className="px-3">
+        <main className='px-3'>
           <Outlet />
-          <AnimatePresence>
+          {/* <AnimatePresence>
             {blotterTransactionAdded && isTreasury && <DealBox />}
-          </AnimatePresence>
+          </AnimatePresence> */}
           {transactionInfoModal && <InfoTransaction />}
 
           {chatModal && <ChatBox />}
