@@ -4,13 +4,12 @@ import axios from "axios";
 import { ensureTokenRefreshed } from "./refreshHandler";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL, // adjust to your backend
+  baseURL: import.meta.env.VITE_API_URL,
 });
 
-// 🔑 Request interceptor → attach token
+// 🔑 Request interceptor
 api.interceptors.request.use(
   (config) => {
-    console.log(config, "configconfigconfig");
     const token = localStorage.getItem("token");
     config.headers = {
       ...config.headers,
@@ -21,64 +20,41 @@ api.interceptors.request.use(
   },
   (error) => Promise.reject(error)
 );
+
+// 🔑 Response interceptor
 api.interceptors.response.use(
-  async (response) => {
-    // 🔎 Check for token expired inside success case
-    if (response.data?.responseCode === 417) {
-      const originalRequest = response.config;
+  (response) => response, // success passthrough
+  async (error) => {
+    const originalRequest = error.config;
 
-      if (!originalRequest._retry) {
-        originalRequest._retry = true;
+    if (!error.response) return Promise.reject(error);
 
-        try {
-          const newToken = await ensureTokenRefreshed();
+    const { status, data } = error.response;
+    const code = data?.responseCode || status;
 
-          // Update token header
-          originalRequest.headers.Authorization = `Bearer ${newToken}`;
-
-          // Retry the request
-          return api(originalRequest);
-        } catch (err) {
-          console.log("responseresponse", response);
-
-          console.error("Refresh failed → redirecting to login", err);
-          // localStorage.clear();
-          window.location.href = "/";
-          return Promise.reject(err);
-        }
+    // ⚠️ Token expired → refresh
+    if (code === 417 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      try {
+        const newToken = await ensureTokenRefreshed();
+        localStorage.setItem("token", newToken);
+        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+        return api(originalRequest);
+      } catch (refreshErr) {
+        console.error("Token refresh failed:", refreshErr);
+        localStorage.clear();
+        window.location.href = "/";
+        return Promise.reject(refreshErr);
       }
     }
-    if (response.data?.responseCode === 401) {
-      console.log("responseresponse", response);
-      // localStorage.clear();
-      // window.location.href = "/";
-      return Promise.reject(err);
-      // const originalRequest = response.config;
 
-      // if (!originalRequest._retry) {
-      //   originalRequest._retry = true;
-
-      //   try {
-      //     const newToken = await ensureTokenRefreshed();
-
-      //     // Update token header
-      //     originalRequest.headers.Authorization = `Bearer ${newToken}`;
-
-      //     // Retry the request
-      //     return api(originalRequest);
-      //   } catch (err) {
-      //     console.error("Refresh failed → redirecting to login", err);
-      //     localStorage.clear();
-      //     window.location.href = "/";
-      //     return Promise.reject(err);
-      //   }
-      // }
+    // 🚨 Unauthorized → clear and redirect home
+    if (code === 401) {
+      localStorage.clear();
+      window.location.href = "/";
+      return Promise.reject(error);
     }
 
-    return response; // Normal response
-  },
-  (error) => {
-    // Network errors, HTTP 4xx/5xx still handled here
     return Promise.reject(error);
   }
 );
@@ -108,8 +84,6 @@ const createPostAPI =
       };
 
       const response = await api(config);
-
-      console.log(response, "responseresponse");
       return response;
     } catch (error) {
       console.error(`Error calling ${url}:`, error);
