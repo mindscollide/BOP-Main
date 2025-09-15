@@ -86,6 +86,7 @@ const Voltmeter = () => {
    * Effect hook to handle initial voltmeter status
    * Runs when GetVoltMeterStatus changes (initial load)
    */
+  console.log(GetVoltMeterStatus, "GetVoltMeterStatusGetVoltMeterStatus")
   useEffect(() => {
     if (GetVoltMeterStatus !== null) {
       try {

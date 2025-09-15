@@ -24,7 +24,7 @@ export const getAllCategoriesAction = createAsyncThunk(
       const response = await getBlotterData();
 
       if (response.data.responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(getAllCategoriesAction({ navigate }));
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -86,7 +86,7 @@ export const getAllInstrumentsApi = createAsyncThunk(
       const response = await getInstruments();
 
       if (response.data.responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(getAllInstrumentsApi({ navigate }));
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -148,7 +148,7 @@ export const getAllActiveCorporatesApi = createAsyncThunk(
       const response = await getActiveCorporates();
 
       if (response.data.responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(getAllActiveCorporatesApi({ navigate }));
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -211,7 +211,7 @@ export const GetUsersEmailApi = createAsyncThunk(
       const { responseCode } = response.data;
 
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(GetUsersEmailApi({ navigate }));
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;

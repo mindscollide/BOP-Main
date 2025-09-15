@@ -312,6 +312,7 @@ const dealerReducer = createSlice({
         state.Loader = true;
       })
       .addCase(GetVoltMeterStatusApi.fulfilled, (state, { payload }) => {
+        console.log(payload, "GetVoltMeterStatusApiGetVoltMeterStatusApi")
         state.Loader = false;
         state.GetVoltMeterStatus = payload?.response;
         state.responseMessage = payload?.message;

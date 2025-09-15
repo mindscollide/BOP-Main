@@ -9,6 +9,8 @@ import { useSelector } from "react-redux";
 import { formatDate } from "@/common/utils";
 import { calculateTenorSwapAndForwardRateApi } from "../blotter/BlotterActions";
 
+const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
+
 const FwdCalculator = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -134,7 +136,7 @@ const FwdCalculator = () => {
 
   const handleCalculateForwardsRate = () => {
     let Data = {
-      IsBuySide: selectedOptionImportExport.value === 1 ? true : false,
+      IsBuySide: selectedOptionImportExport.value === 1 ? false : true,
       TenorDays: Number(inputValue),
       InstrumentName: selectedOption.label,
       InstrumentID: Number(selectedOption.value),
@@ -144,82 +146,82 @@ const FwdCalculator = () => {
 
   return (
     <>
-      <div className="card-box h-auto">
-        <div className="box-header bg-primary-orange px-2 color-white">
-          <div className="d-flex align-items-center">
-            <div className="fs-6 fw-bold">FWD Calculator</div>
-            <div className="clc-btn-wrapper ms-auto">
+      <div className='card-box h-auto'>
+        <div className='box-header bg-primary-orange px-2 color-white'>
+          <div className='d-flex align-items-center'>
+            <div className='fs-6 fw-bold'>FWD Calculator</div>
+            <div className='clc-btn-wrapper ms-auto'>
               <CustomButton
-                value="Calculate Rate"
-                applyClass="calculatorButton"
+                value='Calculate Rate'
+                applyClass='calculatorButton'
                 onClick={handleCalculateForwardsRate}
               />
             </div>
           </div>
         </div>
-        <div className="box-content-wrapper h-auto">
-          <div className="d-flex align-items-center w-100">
-            <div className="flex-fill px-2 p-2">
-              <div className="d-flex flex-row gap-4  w-100">
-                <div className="d-flex flex-column flex-fill">
+        <div className='box-content-wrapper h-auto'>
+          <div className='d-flex align-items-center w-100'>
+            <div className='flex-fill px-2 p-2'>
+              <div className='d-flex flex-row gap-4  w-100'>
+                <div className='d-flex flex-column flex-fill'>
                   <label className={"mt-1"}>Currency</label>
                   <SelectDropdown
                     options={forwardApplicableList}
                     value={selectedOption}
                     onChange={(selected) => setSelectedOption(selected)}
-                    placeholder="Select a currency"
-                    classNamePrefix="RfqSpot"
+                    placeholder='Select a currency'
+                    classNamePrefix='RfqSpot'
                   />
                 </div>
 
-                <div className="d-flex flex-column flex-fill justify-content-center mt-4">
+                <div className='d-flex flex-column flex-fill justify-content-center mt-4'>
                   <SelectDropdown
                     options={options}
                     value={selectedOptionImportExport}
                     onChange={(selected) =>
                       setSelectedOptionImportExport(selected)
                     }
-                    placeholder="Import"
-                    classNamePrefix="RfqSpot"
+                    placeholder='Import'
+                    classNamePrefix='RfqSpot'
                   />
                 </div>
               </div>
 
-              <label className="mt-1">Ready</label>
+              <label className='mt-1'>Ready</label>
               <InputFIeld
-                type="number"
-                name="price"
-                defaultValue="0"
+                type='number'
+                name='price'
+                defaultValue='0'
                 value={ready}
                 applyClass={"CalculatorTextfield"}
                 // onChange={handleReadyValue}
                 disabled={true}
               />
 
-              <label className="mt-1">Tenor</label>
+              <label className='mt-1'>Tenor</label>
               <InputFieldWithTag
-                type="text"
+                type='text'
                 value={inputValue}
                 onChange={handleInputChangeTenor}
-                placeholder="Enter value"
-                applyClass="inputField-calculator"
-                applyClassTag="tag-for-calculator"
-                width="100%"
-                inputWidth="50%"
+                placeholder='Enter value'
+                applyClass='inputField-calculator'
+                applyClassTag='tag-for-calculator'
+                width='100%'
+                inputWidth='50%'
                 tagText={tagText}
-                tagWidth="50%"
-                tagClassName="yourTagClass"
+                tagWidth='50%'
+                tagClassName='yourTagClass'
               />
 
-              <label className="mt-1">Swap</label>
+              <label className='mt-1'>Swap</label>
               <InputFIeld
                 value={Number(resulteSwap).toFixed(2)}
                 disabled={true}
-                applyClass="CalculatorTextfield-withTagInputfield"
+                applyClass='CalculatorTextfield-withTagInputfield'
               />
             </div>
-            <div className="px-2 text-center">
-              <div className="clc-amount fs-4 fw-bold px-4 py-3 bg-dark-gray color-white">
+            <div className='px-2 text-center'>
+              <div className='clc-amount fs-4 fw-bold px-4 py-3 bg-dark-gray color-white'>
                 {resulteForwards}
               </div>
             </div>

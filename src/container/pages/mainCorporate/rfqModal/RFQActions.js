@@ -21,7 +21,7 @@ export const ViewAllNatureOfBussinessAPI = createAsyncThunk(
       const { responseCode } = response.data;
     
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(ViewAllNatureOfBussinessAPI({ Data, navigate }));
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -83,7 +83,7 @@ export const GetAllNatureOfTransactionsApi = createAsyncThunk(
       const response = await getNatureOfTransactions();
  
       if (response.data.responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(GetAllNatureOfTransactionsApi({ navigate }));
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -141,7 +141,7 @@ export const SaveTransactionRFQAPI = createAsyncThunk(
       const { responseCode } = response.data;
     
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {

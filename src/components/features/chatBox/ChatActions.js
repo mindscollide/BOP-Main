@@ -32,7 +32,7 @@ export const getAllChatByTransactionId = createAsyncThunk(
       const { responseCode } = response.data;
 
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(
           getAllChatByTransactionId({
             navigate,
@@ -124,7 +124,7 @@ export const saveChatApi = createAsyncThunk(
       const { responseCode } = response.data;
 
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(
           saveChatApi({
             navigate,
@@ -245,7 +245,7 @@ export const uploadDocumentApi = createAsyncThunk(
       const { responseCode } = response.data;
 
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(uploadDocumentApi({ Data, navigate }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -338,7 +338,7 @@ export const DownloadFileApi = createAsyncThunk(
       // const { responseCode } = response.data;
 
       // if (responseCode === 417) {
-      //   await dispatch(refreshTokenAction({ navigate }));
+      //   await dispatch(refreshTokenAction({ navigate }));return
       //   dispatch(DownloadFileApi({ navigate, Data, fileName, ext }));
       // } else if (responseCode === 200) {
       //   console.log(response, "response in DownloadFileApi");

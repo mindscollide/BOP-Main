@@ -66,7 +66,8 @@ export const BlotterDataAPI = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(BlotterDataAPI({ navigate, Data }));
+        return;
+        // dispatch(BlotterDataAPI({ navigate, Data }));
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -132,7 +133,8 @@ export const GetBlotterOutstandingDealsDataAPI = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(GetBlotterOutstandingDealsDataAPI({ navigate, Data }));
+        return;
+        // dispatch(GetBlotterOutstandingDealsDataAPI({ navigate, Data }));
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -199,7 +201,8 @@ export const SaveSpotTransactionAPI = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(SaveSpotTransactionAPI({ navigate, Data, setErrorMessage }));
+        return;
+        // dispatch(SaveSpotTransactionAPI({ navigate, Data, setErrorMessage }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -316,6 +319,7 @@ export const SaveForwardTransactionAPI = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(
           SaveForwardTransactionAPI({
             navigate,
@@ -438,6 +442,7 @@ export const SaveFEDiscountingTransactionAPI = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(
           SaveFEDiscountingTransactionAPI({
             navigate,
@@ -560,6 +565,7 @@ export const SaveNonFEDiscountingTransactionAPI = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(
           SaveNonFEDiscountingTransactionAPI({
             navigate,
@@ -679,6 +685,7 @@ export const AssignTransactionAPI = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(AssignTransactionAPI({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -762,6 +769,7 @@ export const AcceptTransactionAPI = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(AcceptTransactionAPI({ navigate, Data, val }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -852,6 +860,7 @@ export const RejectTransactionAPI = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(
           RejectTransactionAPI({ navigate, Data, setCancelReasonModal, val })
         );
@@ -944,6 +953,7 @@ export const AcceptTransactionCancellationRequest = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(AcceptTransactionCancellationRequest({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -980,6 +990,7 @@ export const RejectTransactionCancellationRequest = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(RejectTransactionCancellationRequest({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -1019,6 +1030,7 @@ export const CancelTransaction = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(CancelTransaction({ navigate, Data, setCancelReasonModal }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -1106,6 +1118,7 @@ export const RequestCancellation = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(RequestCancellation({ navigate, Data, setCancelReasonModal }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -1190,6 +1203,7 @@ export const AcceptRFQTransaction = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(AcceptRFQTransaction({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -1276,6 +1290,7 @@ export const RejectRFQTransaction = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(
           RejectRFQTransaction({ navigate, Data, setCancelReasonModal })
         );
@@ -1365,6 +1380,7 @@ export const SaveSpotTransactionRFQ = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(
           SaveSpotTransactionRFQ({
             navigate,
@@ -1487,6 +1503,7 @@ export const SaveForwardTransactionRFQApi = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(
           SaveForwardTransactionRFQApi({ navigate, Data, setErrorMessage })
         );
@@ -1604,6 +1621,7 @@ export const SaveFEDiscountingTransactionRFQ = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(
           SaveFEDiscountingTransactionRFQ({ navigate, Data, setErrorMessage })
         );
@@ -1721,6 +1739,7 @@ export const SaveNonFEDiscountingTransactionRFQ = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(
           SaveNonFEDiscountingTransactionRFQ({
             navigate,
@@ -1839,6 +1858,7 @@ export const RFQTransactionQuotation = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(RFQTransactionQuotation({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -1923,6 +1943,7 @@ export const RFQForwardTransactionQuotation = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(RFQForwardTransactionQuotation({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -2008,6 +2029,7 @@ export const RFQFEDiscountingTransactionQuotation = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(RFQFEDiscountingTransactionQuotation({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -2092,6 +2114,7 @@ export const RFQNonFEDiscountingTransactionQuotation = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(RFQNonFEDiscountingTransactionQuotation({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -2179,6 +2202,7 @@ export const ExpireRFQTransaction = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(ExpireRFQTransaction({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -2266,6 +2290,7 @@ export const GetSpotTransactionDetailsApi = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(GetSpotTransactionDetailsApi({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -2336,6 +2361,7 @@ export const GetForwardTransactionDetailsApi = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(GetForwardTransactionDetailsApi({ navigate, Data, val }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -2408,6 +2434,7 @@ export const GetFEDiscountingTransactionDetailsApi = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(
           GetFEDiscountingTransactionDetailsApi({ navigate, Data, val })
         );
@@ -2483,6 +2510,7 @@ export const GetNonFEDiscountingTransactionDetailsApi = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(
           GetNonFEDiscountingTransactionDetailsApi({ navigate, Data, val })
         );
@@ -2562,6 +2590,7 @@ export const CancelPendingTransactionApi = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(
           CancelPendingTransactionApi({ navigate, Data, setCancelReasonModal })
         );
@@ -2648,6 +2677,7 @@ export const calculateTenorSwapAndForwardRateApi = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(calculateTenorSwapAndForwardRateApi({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -2706,6 +2736,7 @@ export const calculateNonFeSwapAndDiscountingRateApi = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(calculateNonFeSwapAndDiscountingRateApi({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -2765,6 +2796,7 @@ export const CalculateFESwapAndDiscountingApi = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(CalculateFESwapAndDiscountingApi({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -2815,10 +2847,12 @@ export const GetSpotRatesForCounterPartyAPI = createAsyncThunk(
       const response = await GetSpotRatesForCounterPartyM();
       const { responseCode } = response.data;
 
-      if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
-        dispatch(GetSpotRatesForCounterPartyAPI({ navigate }));
-      } else if (responseCode === 200) {
+      // if (responseCode === 417) {
+      //   await dispatch(refreshTokenAction({ navigate }));
+      //   return;
+      //   dispatch(GetSpotRatesForCounterPartyAPI({ navigate }));
+      // } else 
+      if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (
@@ -2891,6 +2925,7 @@ export const GetNOPDataAPI = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(GetNOPDataAPI({ navigate }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -2946,6 +2981,7 @@ export const CalculateFEDiscountingAPI = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(CalculateFEDiscountingAPI({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;

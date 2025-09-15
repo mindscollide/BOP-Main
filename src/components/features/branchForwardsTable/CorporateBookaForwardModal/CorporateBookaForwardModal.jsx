@@ -16,6 +16,7 @@ import {
 } from "../../blotter/BlotterActions";
 import { NumericFormat } from "react-number-format";
 import { formatPkAmount } from "@/utils/formatters";
+import { useNotification } from "@/context/NotificationProvider";
 
 /**
  * CorporateBookaForwardModal Component
@@ -47,11 +48,13 @@ const CorporateBookaForwardModal = ({
   // Hooks initialization
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  
+
+  const { showMessage } = useNotification();
+
   // Environment Configuration
   const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
   const isCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
-  
+
   // Error state management
   const [errorMessage, setErrorMessage] = useState({
     message: "",
@@ -70,11 +73,11 @@ const CorporateBookaForwardModal = ({
   const natureOfBusinessList = useSelector(
     (state) => state.authReducer.GetAllNatureOfTransactions
   );
-  
+
   const calculatedForwardsSwapandRate = useSelector(
     (state) => state.BlotterSlicer.calculateTenorSwapAndForwardRateData
   );
-  
+
   const currentRatesData = useSelector(
     (state) => state.WatchListReducer.watchlistTableDataCopy
   );
@@ -92,7 +95,7 @@ const CorporateBookaForwardModal = ({
     value: 0,
     label: "",
   });
-  
+
   const [currencyOptions, setCurrencyOptions] = useState([]);
   const [tenorDate, setTenorDate] = useState(new Date());
   const [optionsDate, setOptionsDate] = useState(new Date());
@@ -105,7 +108,7 @@ const CorporateBookaForwardModal = ({
     label: "",
   });
   const [isError, setIsError] = useState(false);
-  
+
   // Main form state
   const [forwardRFQState, setForwardRFQState] = useState({
     AccNo: "",
@@ -116,9 +119,9 @@ const CorporateBookaForwardModal = ({
     Swap: "",
     CalculateRate: 0,
   });
-  
+
   const [selectedCurrency, setSelectedCurrency] = useState(null);
-  
+
   // Transaction type options (Buy/Sell)
   const [typeOptions] = useState([
     { label: "Buy", value: 1 },
@@ -442,7 +445,7 @@ const CorporateBookaForwardModal = ({
     let amountValue = forwardRFQState.Amount.replace(/,/g, "");
 
     if (
-      selectedCurrency.value !== "" &&
+      selectedCurrency &&
       typeOptionSelected.value !== 0 &&
       forwardRFQState.Amount !== "" &&
       Number(amountValue) > 0 &&
@@ -478,8 +481,10 @@ const CorporateBookaForwardModal = ({
       );
     } else {
       setIsError(true);
+      // showMessage("Please fill all the required fields");
     }
   };
+
 
   return (
     <div>
@@ -549,6 +554,11 @@ const CorporateBookaForwardModal = ({
                         onChange={handleChangeCurrency}
                         classNamePrefix='RfqSpot'
                       />
+                      <div className={"rfq-error_message"}>
+                        {isError && selectedCurrency === null
+                          ? "Please select currency"
+                          : null}
+                      </div>
                     </div>
                   </Col>
                   <Col lg={6} md={6} sm={6}>

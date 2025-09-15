@@ -9,7 +9,6 @@ export const InputCell = memo(({
     applyClass = "amountValue",
     ...inputProps 
   }) => {
-    console.log("Rendering InputCell:", record, value);
     
     const handleChange = (e) => {
       if (onInputChange) {

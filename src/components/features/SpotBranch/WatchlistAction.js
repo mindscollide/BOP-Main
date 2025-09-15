@@ -32,7 +32,7 @@ export const GetDashboardDataAPI = createAsyncThunk(
 
       if (responseCode === 417) {
         console.log(responseCode, "responseCoderesponseCode");
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(GetDashboardDataAPI({ navigate }));
         console.log(responseCode, "responseCoderesponseCode");
       } else if (response.data.responseCode === 200) {
@@ -104,7 +104,7 @@ export const SaveUserDashboardAPI = createAsyncThunk(
       const { responseCode } = response.data;
 
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(SaveUserDashboardAPI({ Data, navigate }));
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -171,7 +171,7 @@ export const getAllTreasuryInstrumentsApi = createAsyncThunk(
       const { responseCode } = response.data;
 
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(getAllTreasuryInstrumentsApi({ navigate }));
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -247,7 +247,7 @@ export const GetForwardRatesForCounterPartyApi = createAsyncThunk(
       const { responseCode } = response.data;
 
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(GetForwardRatesForCounterPartyApi({ navigate }));
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -323,7 +323,7 @@ export const GetDiscountingRatesForCounterPartyApi = createAsyncThunk(
       const { responseCode } = response.data;
 
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(GetDiscountingRatesForCounterPartyApi({ navigate }));
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -398,7 +398,7 @@ export const GetBankSpotForTreasuryApi = createAsyncThunk(
       const { responseCode } = response.data;
 
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(GetBankSpotForTreasuryApi({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -470,7 +470,7 @@ export const GetBankForwardForTreasuryApi = createAsyncThunk(
       const { responseCode } = response.data;
 
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(GetBankForwardForTreasuryApi({ navigate }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -542,7 +542,7 @@ export const GetMisDataByRangeAPI = createAsyncThunk(
       const { responseCode } = response.data;
 
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(GetMisDataByRangeAPI({ navigate, Data }));
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -608,7 +608,7 @@ export const GetDiscountingRatesForTreasuryApi = createAsyncThunk(
       const { responseCode } = response.data;
 
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(GetDiscountingRatesForTreasuryApi({ navigate }));
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -683,7 +683,7 @@ export const getMarketStatusApi = createAsyncThunk(
       const { responseCode } = response.data;
 
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(getMarketStatusApi({ navigate }));
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage, marketStatus } =

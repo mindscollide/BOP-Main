@@ -62,7 +62,7 @@ const MIS = () => {
   }, []); //
 
   useEffect(() => {
-    if (GetMisDataByRangeData !== null) {
+    if (GetMisDataByRangeData && GetMisDataByRangeData !== null) {
       try {
         const { profiteInPKRWiseMISData, volumeWiseMISData, totalProfit } =
           GetMisDataByRangeData;
@@ -342,7 +342,9 @@ const MIS = () => {
                 <div className='expanded-column third-column'>
                   <span className='mis-totalprofit-value'>
                     {totalProfit === 0 ? (
-                      <span className="color-black">{formatPkAmount(totalProfit)}</span>
+                      <span className='color-black'>
+                        {formatPkAmount(totalProfit)}
+                      </span>
                     ) : totalProfit > 0 ? (
                       <span className='color-green'>
                         {formatPkAmount(totalProfit)}

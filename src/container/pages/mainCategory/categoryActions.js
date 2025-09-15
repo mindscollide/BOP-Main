@@ -22,7 +22,7 @@ export const getAllCategoryTableData = createAsyncThunk(
       const { responseCode } = response.data;
     
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(getAllCategoryTableData({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -94,7 +94,7 @@ export const GetCategoryWiseSpotRatesApi = createAsyncThunk(
     
 
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(GetCategoryWiseSpotRatesApi({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -171,7 +171,7 @@ export const GetCategoryWiseForwardRatesApi = createAsyncThunk(
     
 
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(GetCategoryWiseForwardRatesApi({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -248,7 +248,7 @@ export const GetCategoryWiseDiscountingRatesApi = createAsyncThunk(
     
 
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(GetCategoryWiseDiscountingRatesApi({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
