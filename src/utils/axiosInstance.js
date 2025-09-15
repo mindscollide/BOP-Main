@@ -39,16 +39,19 @@ api.interceptors.response.use(
           // Retry the request
           return api(originalRequest);
         } catch (err) {
+          console.log("responseresponse", response);
+
           console.error("Refresh failed → redirecting to login", err);
-          localStorage.clear();
-          // window.location.href = "/";
+          // localStorage.clear();
+          window.location.href = "/";
           return Promise.reject(err);
         }
       }
     }
     if (response.data?.responseCode === 401) {
-      localStorage.clear();
-      window.location.href = "/";
+      console.log("responseresponse", response);
+      // localStorage.clear();
+      // window.location.href = "/";
       return Promise.reject(err);
       // const originalRequest = response.config;
 
