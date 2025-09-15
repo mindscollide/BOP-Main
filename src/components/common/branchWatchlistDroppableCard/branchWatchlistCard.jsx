@@ -1,4 +1,4 @@
-import React, { startTransition, useEffect } from "react";
+import React, { startTransition, useEffect, useState } from "react";
 import { Row, Col } from "react-bootstrap";
 import "./branchWatchlistCard.css";
 import BidAmountBox from "../../common/bidAmountBox/BidAmountBox";
@@ -28,32 +28,16 @@ const BranchRateCardsOfWatchList = ({
   instrumentName,
   secondaryInstrumentName,
 }) => {
-  console.log(
-    {
-      currencyLabel,
-      buyHeading,
-      sellHeading,
-      buyValue,
-      sellValue,
-      isSellDisabled,
-      isBuyDisabled,
-      instrumentID,
-      secondaryInstrumentID,
-      instrumentName,
-      secondaryInstrumentName,
-    },
-    "propspropsprops"
-  );
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [rfqButtonState, setRFqButtonState] = useState(true);
+
+  const isTradeRights = useSelector(
+    (state) => state.RealtimeActionsSlice.tradeRightsStatusUpdated
+  );
   const marketStatus = useSelector(
     (state) => state.WatchListReducer.getMarketStatus
   );
-
-  //disable trade buttons when trade rights changes from MQTT
-  const isTradeRights =
-    localStorage.getItem("isTradeRights") !== null &&
-    JSON.parse(localStorage.getItem("isTradeRights"));
 
   const handleOpenModal = (type) => {
     let Data = {
@@ -71,8 +55,13 @@ const BranchRateCardsOfWatchList = ({
     dispatch(setIBuySellData(Data)); // Dispatch the action to set the data in the Redux store
     dispatch(setRfqModalOpen(true));
   };
-
-  // const
+  
+  useEffect(() => {
+    if (isTradeRights !== null) {
+      setRFqButtonState(JSON.parse(isTradeRights));
+      console.log(isTradeRights, "isTradeRightsisTradeRights");
+    }
+  }, [isTradeRights]);
 
   return (
     <>
@@ -80,23 +69,22 @@ const BranchRateCardsOfWatchList = ({
         <>
           <span
             className={
-              !marketStatus || !isTradeRights
+              !marketStatus || !rfqButtonState
                 ? "DroppableBox_disbaled"
                 : "DroppableBox"
-            }
-          >
+            }>
             <Row>
               <Col lg={12} md={12} sm={12}>
-                <span className="DroppableBoxCurrencyLabel">
+                <span className='DroppableBoxCurrencyLabel'>
                   {currencyLabel.slice(0, 3)}
                 </span>
-                <span className="color-white fs-5 fw-normal">
+                <span className='color-white fs-5 fw-normal'>
                   {" "}
                   {currencyLabel.slice(3, 6)}
                 </span>
               </Col>
             </Row>
-            <Row className="mt-4">
+            <Row className='mt-4'>
               {isBranch ? (
                 <>
                   <Col lg={6} md={6} sm={6}>

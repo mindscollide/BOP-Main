@@ -259,6 +259,10 @@ export const corporateUserLoginInApi = createAsyncThunk(
                 "isNonFEEnabled",
                 JSON.parse(response.data.responseResult.user.isNonFEEnabled)
               );
+              localStorage.setItem(
+                "isTradeRights",
+                response.data.responseResult.user.corporate.isTrade
+              );
 
               navigate("/2fa");
               // roleBasedNavigation(navigate, userRoleID);
