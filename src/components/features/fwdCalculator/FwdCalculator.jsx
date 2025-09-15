@@ -136,7 +136,7 @@ const FwdCalculator = () => {
 
   const handleCalculateForwardsRate = () => {
     let Data = {
-      IsBuySide: selectedOptionImportExport.value === 1 ? false : true,
+      IsBuySide: selectedOptionImportExport.value === 1 ? true : false,
       TenorDays: Number(inputValue),
       InstrumentName: selectedOption.label,
       InstrumentID: Number(selectedOption.value),
