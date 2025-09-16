@@ -54,28 +54,32 @@ const FeDiscountingTable = () => {
     (state) => state.dealerReducer.publishFeDiscountingLoading
   );
 
-  console.log(FeDiscountingButtonLoading, "FeDiscountingButtonLoading")
-
+  console.log(FeDiscountingButtonLoading, "FeDiscountingButtonLoading");
 
   const getAllTenorsData = useSelector(
     (state) => state.dealerReducer.getAllTenors
   );
-
+  console.log(
+    getDashboardForwards,
+    getAllTenorsData,
+    GetAllInstrumentForTreasury,
+    GetAllInstrumentForTreasury,
+    "getDashboardForwardsgetDashboardForwards"
+  );
   useEffect(() => {
     if (
-      getDashboardForwards !== null &&
       getAllTenorsData !== null &&
       GetAllInstrumentForTreasury !== null &&
       GetAllInstrumentForTreasury
     ) {
       try {
-     
         const { feDiscountingRates = [] } =
           getDashboardForwards !== null &&
           getDashboardForwards !== undefined &&
           getDashboardForwards;
         const DiscountingInstruments =
           GetAllInstrumentForTreasury?.discountingInstruments;
+
         const getAllInstrument = { instruments: DiscountingInstruments };
         const { rowData, columnsData } = buildDiscountingTable(
           5,

@@ -25,6 +25,8 @@ import {
   RFQForwardTransactionQuotation,
   RFQFEDiscountingTransactionQuotation,
   RFQNonFEDiscountingTransactionQuotation,
+  SaveNonFEDiscountingTransactionRFQ,
+  SaveFEDiscountingTransactionRFQ,
 } from "@/components/features/blotter/BlotterActions";
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -47,6 +49,9 @@ const BlotterSlicer = createSlice({
     saveForwardsTransaction: null,
     saveFedDiscountTransaction: null,
     saveNonFeDiscountTransaction: null,
+    saveNonFEDiscountingTransactionRFQ: null,
+    saveFEDiscountingTransactionRFQ: null,
+
     assignTransaction: null,
     acceptTransaction: null,
     rejectedTransaction: null,
@@ -101,6 +106,8 @@ const BlotterSlicer = createSlice({
     RFQForwardTransactionQuotationLoading: false,
     RFQFEDiscountingTransactionQuotationLoading: false,
     RFQNonFEDiscountingTransactionQuotationLoading: false,
+    SaveNonFEDiscountingTransactionRFQLoading: false,
+    SaveFEDiscountingTransactionRFQLoading: false,
   },
   reducers: {
     setOutStandingTotalCount: (state, { payload }) => {
@@ -838,6 +845,46 @@ const BlotterSlicer = createSlice({
           state.error = payload;
           state.responseMessage = payload;
           state.nonFeDiscountingQuotation = null;
+        }
+      )
+      .addCase(SaveNonFEDiscountingTransactionRFQ.pending, (state) => {
+        state.SaveNonFEDiscountingTransactionRFQLoading = true;
+      })
+      .addCase(
+        SaveNonFEDiscountingTransactionRFQ.fulfilled,
+        (state, { payload }) => {
+          state.SaveNonFEDiscountingTransactionRFQLoading = false;
+          state.saveFEDiscountingTransactionRFQ = payload?.response;
+          state.responseMessage = payload?.message;
+        }
+      )
+      .addCase(
+        SaveNonFEDiscountingTransactionRFQ.rejected,
+        (state, { payload }) => {
+          state.SaveNonFEDiscountingTransactionRFQLoading = false;
+          state.saveFEDiscountingTransactionRFQ = null;
+
+          state.responseMessage = payload;
+        }
+      )
+      .addCase(SaveFEDiscountingTransactionRFQ.pending, (state) => {
+        state.SaveFEDiscountingTransactionRFQLoading = true;
+      })
+      .addCase(
+        SaveFEDiscountingTransactionRFQ.fulfilled,
+        (state, { payload }) => {
+          state.SaveFEDiscountingTransactionRFQLoading = false;
+          state.saveFEDiscountingTransactionRFQ = payload?.response;
+          state.responseMessage = payload?.message;
+        }
+      )
+      .addCase(
+        SaveFEDiscountingTransactionRFQ.rejected,
+        (state, { payload }) => {
+          state.SaveFEDiscountingTransactionRFQLoading = false;
+          state.saveFEDiscountingTransactionRFQ = null;
+
+          state.responseMessage = payload;
         }
       );
   },

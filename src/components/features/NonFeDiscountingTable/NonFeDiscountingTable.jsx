@@ -55,15 +55,15 @@ const NonFeDiscountingTable = () => {
   );
 
   useEffect(() => {
-    if (
-      getDashboardForwards !== null &&
-      getAllTenorsData !== null &&
-      GetAllInstrumentForTreasury !== null
-    ) {
+    if (getAllTenorsData !== null && GetAllInstrumentForTreasury !== null) {
       try {
-        const { nonFEDiscountingRates } = getDashboardForwards;
+        const { nonFEDiscountingRates = [] } =
+          getDashboardForwards !== null &&
+          getDashboardForwards !== undefined &&
+          getDashboardForwards;
+
         const DiscountingInstruments =
-          GetAllInstrumentForTreasury.nonFEDiscountingInstruments;
+          GetAllInstrumentForTreasury?.nonFEDiscountingInstruments;
         const getAllInstrument = { instruments: DiscountingInstruments };
         const { rowData, columnsData } = buildDiscountingTable(
           5,
@@ -79,18 +79,19 @@ const NonFeDiscountingTable = () => {
           setTableData(rowData);
           setColumnsData(columnsData);
         }
-      } catch (error) {}
+      } catch (error) {
+        console.log(error);
+      }
     }
   }, [getDashboardForwards, getAllTenorsData, GetAllInstrumentForTreasury]);
 
   useEffect(() => {
-    if (
-      getAllTenorsData !== null &&
-      GetAllInstrumentForTreasury !== null &&
-      NonFeDiscountingPublishedData !== null
-    ) {
+    if (getAllTenorsData !== null && GetAllInstrumentForTreasury !== null) {
       try {
-        const { rates } = NonFeDiscountingPublishedData;
+        const { rates } = 
+        NonFeDiscountingPublishedData !== null &&
+        NonFeDiscountingPublishedData !== undefined &&
+        NonFeDiscountingPublishedData; ;
         const DiscountingInstruments =
           GetAllInstrumentForTreasury.nonFEDiscountingInstruments;
         const getAllInstrument = { instruments: DiscountingInstruments };
@@ -172,21 +173,21 @@ const NonFeDiscountingTable = () => {
   };
   return (
     <>
-      <div className="datetime fw-bold text-end mb-2 ff-roboto">
+      <div className='datetime fw-bold text-end mb-2 ff-roboto'>
         {date
           ? moment(formatDateUTCToGMT(date)).format("DD MMM YYYY, hh:mm:ss")
           : ""}
       </div>
       <GlobalTable
-        prefixCls="DealerAndTreasuryDiscountTable"
+        prefixCls='DealerAndTreasuryDiscountTable'
         columns={columnsData}
         dataSource={tableData}
         pagination={false}
       />
 
-      <span className="d-flex justify-content-center mt-4">
+      <span className='d-flex justify-content-center mt-4'>
         <CustomButton
-          applyClass="publishForwardsBtn"
+          applyClass='publishForwardsBtn'
           value={"Publish Non FE Discounting"}
           onClick={handlePublishDiscount}
           disabled={marketStatus === false ? true : false}
