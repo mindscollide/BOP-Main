@@ -41,6 +41,14 @@ const RFQDiscountingCorporateModal = () => {
   const getAllInstrumentsForCounterPartiesData = useSelector(
     (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
   );
+
+  const SaveNonFEDiscountingTransactionRFQLoading = useSelector(
+    (state) => state.BlotterSlicer.SaveNonFEDiscountingTransactionRFQLoading
+  );
+
+  const SaveFEDiscountingTransactionRFQLoading = useSelector(
+    (state) => state.BlotterSlicer.SaveFEDiscountingTransactionRFQLoading
+  );
   const [amountData, setAmountData] = useState("");
   const [Tenor, setTenor] = useState("");
   const [AccountNumber, setAccountNumber] = useState("");
@@ -557,6 +565,11 @@ const RFQDiscountingCorporateModal = () => {
                   applyClass="ConfirmButtonBookaForward"
                   onClick={handleClickConfirm}
                   disabled={Tenor !== "" && isWeekend(tenoreDate)}
+                  loading={
+                    typeOptionSelected.value === 14
+                      ? SaveNonFEDiscountingTransactionRFQLoading
+                      : SaveFEDiscountingTransactionRFQLoading
+                  }
                 />
               </Col>
             </Row>

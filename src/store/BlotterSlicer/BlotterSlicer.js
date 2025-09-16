@@ -82,10 +82,10 @@ const BlotterSlicer = createSlice({
     // Individual loading states for each action
     BlotterDataAPILoading: false,
     GetBlotterOutstandingDealsDataAPILoading: false,
-    SaveSpotTransactionAPILoading: false,
-    SaveForwardTransactionAPILoading: false,
-    SaveFEDiscountingTransactionAPILoading: false,
-    SaveNonFEDiscountingTransactionAPILoading: false,
+    SaveSpotTransactionAPILoading: false, //done
+    SaveForwardTransactionAPILoading: false, //done
+    SaveFEDiscountingTransactionAPILoading: false, //done
+    SaveNonFEDiscountingTransactionAPILoading: false, //done
     AssignTransactionAPILoading: false,
     AcceptTransactionAPILoading: false,
     RejectTransactionAPILoading: false,

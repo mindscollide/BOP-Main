@@ -1739,7 +1739,7 @@ export const SaveNonFEDiscountingTransactionRFQ = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        return;
+
         dispatch(
           SaveNonFEDiscountingTransactionRFQ({
             navigate,
@@ -1747,6 +1747,7 @@ export const SaveNonFEDiscountingTransactionRFQ = createAsyncThunk(
             setErrorMessage,
           })
         );
+        return;
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -2851,7 +2852,7 @@ export const GetSpotRatesForCounterPartyAPI = createAsyncThunk(
       //   await dispatch(refreshTokenAction({ navigate }));
       //   return;
       //   dispatch(GetSpotRatesForCounterPartyAPI({ navigate }));
-      // } else 
+      // } else
       if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {

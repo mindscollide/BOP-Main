@@ -64,6 +64,23 @@ const DiscountingRFQQuoteModal = () => {
     (state) => state.BlotterSlicer.discountingQuoteModalData
   );
   const [DiscountingQuoteData, setDiscountingQuoteData] = useState(null);
+
+  const RFQNonFEDiscountingTransactionQuotationLoading = useSelector(
+    (state) =>
+      state.BlotterSlicer.RFQNonFEDiscountingTransactionQuotationLoading
+  );
+  const RFQFEDiscountingTransactionQuotationLoading = useSelector(
+    (state) => state.BlotterSlicer.RFQFEDiscountingTransactionQuotationLoading
+  );
+
+  const AcceptTransactionAPILoading = useSelector(
+    (state) => state.BlotterSlicer.AcceptTransactionAPILoading
+  );
+
+  const RejectTransactionAPILoading = useSelector(
+    (state) => state.BlotterSlicer.RejectTransactionAPILoading
+  );
+
   const closeModal = () => {
     dispatch(setDiscountingQuoteModalData(null));
     dispatch(setDiscountingQuoteModal(false));
@@ -177,7 +194,7 @@ const DiscountingRFQQuoteModal = () => {
   const handleSubmit = () => {
     // scenario is if side is "buy" then bid should be disabled and offer should be enabled
     // RFQTransactionQuotation naturetype 1
-    // RFQForwardTransactionQuotation naturetype 2
+
     // RFQFEDiscountingTransactionQuotation naturetype 3
     // RFQNonFEDiscountingTransactionQuotation naturetype 4
     // let val = 1;
@@ -252,7 +269,8 @@ const DiscountingRFQQuoteModal = () => {
                 sm={3}
                 md={3}
                 lg={3}
-                className={styles["DealViewModal_oneSide"]}>
+                className={styles["DealViewModal_oneSide"]}
+              >
                 <Row>
                   <Col sm={12} md={12} lg={12}>
                     <label className={styles["DealViewModal__label"]}>
@@ -334,15 +352,16 @@ const DiscountingRFQQuoteModal = () => {
                 sm={9}
                 md={9}
                 lg={9}
-                className={styles["DealViewModal_SecondSide"]}>
-                <Row className='mb-3'>
+                className={styles["DealViewModal_SecondSide"]}
+              >
+                <Row className="mb-3">
                   <Col sm={10} md={10} lg={10}>
                     {DiscountingQuoteData?.branchName !== "" && (
-                      <div className='mb-3 color-black br-detail-hd'>
+                      <div className="mb-3 color-black br-detail-hd">
                         <span className={styles["company-name"]}>
                           {DiscountingQuoteData?.branchName}
                         </span>
-                        <span className='br-code fs-sm'>
+                        <span className="br-code fs-sm">
                           ({DiscountingQuoteData?.branchCode})
                         </span>
                       </div>
@@ -351,7 +370,7 @@ const DiscountingRFQQuoteModal = () => {
                     <div className={styles["company-name-hd"]}>
                       {DiscountingQuoteData?.corporateName}
                     </div>
-                    <div className='d-inline-block txn-id fs-normal color-black'>
+                    <div className="d-inline-block txn-id fs-normal color-black">
                       {DiscountingQuoteData?.txnid}
                     </div>
                   </Col>
@@ -359,20 +378,22 @@ const DiscountingRFQQuoteModal = () => {
                     sm={2}
                     md={2}
                     lg={2}
-                    className='d-flex justify-content-end '>
+                    className="d-flex justify-content-end "
+                  >
                     <IconElement
                       onClick={closeModal}
                       iconClass={"icon-close fs-4 cursor-pointer"}
                     />
                   </Col>
                 </Row>
-                <section className='d-flex justify-content-center align-items-center overflow-hidden h-75'>
+                <section className="d-flex justify-content-center align-items-center overflow-hidden h-75">
                   <Row>
                     <Col
                       sm={12}
                       md={12}
                       lg={12}
-                      className='d-flex align-items-center gap-2'>
+                      className="d-flex align-items-center gap-2"
+                    >
                       <label className={styles["DealViewModal_label"]}>
                         Ready
                       </label>
@@ -383,7 +404,7 @@ const DiscountingRFQQuoteModal = () => {
                         onChange={(event) =>
                           handleChangeRate("readyVal", event.target.value)
                         }
-                        thousandSeparator=','
+                        thousandSeparator=","
                         maxLength={10}
                         disabled={!DiscountingQuoteData?.isRFQ}
                         onBlur={handleBlur}
@@ -393,7 +414,8 @@ const DiscountingRFQQuoteModal = () => {
                       sm={12}
                       md={12}
                       lg={12}
-                      className='d-flex mt-3  align-items-center gap-2'>
+                      className="d-flex mt-3  align-items-center gap-2"
+                    >
                       <label className={styles["DealViewModal_label"]}>
                         Rate
                       </label>
@@ -422,7 +444,8 @@ const DiscountingRFQQuoteModal = () => {
                         sm={12}
                         md={12}
                         lg={12}
-                        className='d-flex mt-3 align-items-center gap-2'>
+                        className="d-flex mt-3 align-items-center gap-2"
+                      >
                         <label className={styles["DealViewModal_label"]}>
                           Swap
                         </label>
@@ -452,7 +475,8 @@ const DiscountingRFQQuoteModal = () => {
                       sm={12}
                       md={12}
                       lg={12}
-                      className='d-flex mt-3  align-items-center gap-2'>
+                      className="d-flex mt-3  align-items-center gap-2"
+                    >
                       <label className={styles["DealViewModal_label"]}></label>
                       <NumericFormat
                         customInput={InputFIeld}
@@ -472,9 +496,11 @@ const DiscountingRFQQuoteModal = () => {
                         sm={12}
                         md={12}
                         lg={12}
-                        className='d-flex align-items-center gap-2 mt-4'>
+                        className="d-flex align-items-center gap-2 mt-4"
+                      >
                         <label
-                          className={styles["DealViewModal_label"]}></label>
+                          className={styles["DealViewModal_label"]}
+                        ></label>
                         <CustomButton
                           icon={<IconElement iconClass={"icon-send fs-5"} />}
                           iconPosition={"left"}
@@ -482,6 +508,13 @@ const DiscountingRFQQuoteModal = () => {
                           applyClass={"SubmitButtonFowardDealBox"}
                           className={"px-4"}
                           onClick={handleSubmit}
+                          loading={
+                            DiscountingQuoteData?.natureType === 4
+                              ? RFQNonFEDiscountingTransactionQuotationLoading
+                              : DiscountingQuoteData?.natureType === 3
+                              ? RFQFEDiscountingTransactionQuotationLoading
+                              : false
+                          }
                         />
                       </Col>
                     ) : (
@@ -489,7 +522,8 @@ const DiscountingRFQQuoteModal = () => {
                         sm={12}
                         md={12}
                         lg={12}
-                        className='d-flex align-items-center justify-content-center gap-2 mt-4'>
+                        className="d-flex align-items-center justify-content-center gap-2 mt-4"
+                      >
                         <CustomButton
                           icon={<IconElement iconClass={"icon-send fs-5"} />}
                           iconPosition={"left"}
@@ -497,6 +531,7 @@ const DiscountingRFQQuoteModal = () => {
                           applyClass={"AcceptBtnDealBox"}
                           className={"px-4"}
                           onClick={handleAccept}
+                          loading={AcceptTransactionAPILoading}
                         />
                         <CustomButton
                           icon={<IconElement iconClass={"icon-send fs-5"} />}
@@ -509,6 +544,7 @@ const DiscountingRFQQuoteModal = () => {
                             // () =>
                             // handleReject(DiscountingQuoteData.pK_TransactionID)
                           }
+                          loading={RejectTransactionAPILoading}
                         />
                       </Col>
                     )}
@@ -535,15 +571,16 @@ const DiscountingRFQQuoteModal = () => {
                 sm={12}
                 md={12}
                 lg={12}
-                className='modal-title fw-bold color-blue h5'>
+                className="modal-title fw-bold color-blue h5"
+              >
                 Cancel Reason
               </Col>
             </Row>
-            <Row className='form-group'>
-              <span className='col-form-label mt-4'>Cancel Reason</span>
+            <Row className="form-group">
+              <span className="col-form-label mt-4">Cancel Reason</span>
               <Col sm={12} md={12} lg={12}>
                 <TextArea
-                  className='form-control'
+                  className="form-control"
                   name={"cancelReasonInput"}
                   value={cancelReasonComment}
                   onChange={(event) =>
@@ -564,16 +601,17 @@ const DiscountingRFQQuoteModal = () => {
               lg={12}
               md={12}
               sm={12}
-              className='d-flex gap-1 justify-content-center'>
+              className="d-flex gap-1 justify-content-center"
+            >
               <CustomButton
                 applyClass={"cancelReasonModalSubmitBtn"}
-                value='Submit'
+                value="Submit"
                 onClick={handleRejectWithReason}
                 disabled={cancelReasonComment !== "" ? false : true}
               />
               <CustomButton
                 applyClass={"cancelReasonModalCancelBtn"}
-                value='Close'
+                value="Close"
                 onClick={handeClickHide}
               />
             </Col>
