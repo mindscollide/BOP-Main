@@ -494,7 +494,6 @@ const TenoreWiseCurrentAndLastRates = ({
                 moment(formatDateUTCToGMT(date)).format(
                   "DD MMM YYYY, hh:mm:ss"
                 )}
-              {/* 05 Aug 2025, 11:20:58 */}
             </div>
             <GlobalTable
               columns={columns}
