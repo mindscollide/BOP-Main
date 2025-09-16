@@ -89,6 +89,10 @@ const ForwardsForTreasuryAndDealer = () => {
   const treasuryFowardsTenorsChanges = useSelector(
     (state) => state.RealtimeActionsSlice.treasuryFowardsTenorsChanges
   );
+
+  const createTenorLoading = useSelector(
+    (state) => state.dealerReducer.createTenorLoading
+  );
   console.log(
     treasuryFowardsTenorsChanges,
     "treasuryFowardsTenorsChangestreasuryFowardsTenorsChanges"
@@ -433,6 +437,7 @@ const ForwardsForTreasuryAndDealer = () => {
                       value={"Create Tenor"}
                       applyClass={"createTenorModalFooterBtn"}
                       onClick={handleCreateTenor}
+                      loading={createTenorLoading}
                       disabled={
                         Number(createTenor.noOfDays) !== 0 &&
                         createTenor.noOfDays !== "" &&

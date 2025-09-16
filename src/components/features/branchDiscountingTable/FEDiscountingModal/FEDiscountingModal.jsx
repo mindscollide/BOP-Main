@@ -53,6 +53,10 @@ const FEDiscountingModal = ({
     (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
   );
 
+  const SaveFEDiscountingTransactionAPILoading = useSelector(
+    (state) => state.BlotterSlicer.SaveFEDiscountingTransactionAPILoading
+  );
+
   // State for dropdown options
   const [currencyOptions, setCurrencyOptions] = useState([]);
   console.log(currencyOptions, "currencyOptionscurrencyOptions");
@@ -665,6 +669,7 @@ const FEDiscountingModal = ({
                   applyClass={"ConfirmButtonBookaForward"}
                   onClick={handleClickConfirmFERFQ}
                   disabled={tenorValue !== "" && isWeekend(tenoreDate)}
+                  loading={SaveFEDiscountingTransactionAPILoading}
                 />
               </Col>
             </Row>

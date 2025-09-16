@@ -53,6 +53,9 @@ const NonFeDiscountingTable = () => {
   const getAllTenorsData = useSelector(
     (state) => state.dealerReducer.getAllTenors
   );
+  const publishNonFeDiscountingLoading = useSelector(
+    (state) => state.dealerReducer.publishNonFeDiscountingLoading
+  );
 
   useEffect(() => {
     if (getAllTenorsData !== null && GetAllInstrumentForTreasury !== null) {
@@ -191,6 +194,7 @@ const NonFeDiscountingTable = () => {
           value={"Publish Non FE Discounting"}
           onClick={handlePublishDiscount}
           disabled={marketStatus === false ? true : false}
+          loading={publishNonFeDiscountingLoading}
         />
       </span>
     </>
