@@ -90,7 +90,7 @@ const RFQModal = () => {
   const iBuySellData = useSelector((state) => state.modalReducer.IBuySellData);
 
   const SaveSpotTransactionLoading = useSelector(
-    (state) => state.BlotterSlicer.SaveSpotTransactionLoading
+    (state) => state.BlotterSlicer.SaveSpotTransactionAPILoading
   );
   const SaveSpotTransactionRFQLoading = useSelector(
     (state) => state.BlotterSlicer.SaveSpotTransactionRFQLoading

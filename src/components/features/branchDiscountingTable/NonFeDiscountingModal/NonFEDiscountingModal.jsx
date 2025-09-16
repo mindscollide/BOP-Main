@@ -47,6 +47,10 @@ const NonFEDiscountingModal = ({
   const GetAllActiveCorproates = useSelector(
     (state) => state.authReducer.GetAllActiveCorproates
   );
+
+  const SaveNonFEDiscountingTransactionAPILoading = useSelector(
+    (state) => state.BlotterSlicer.SaveNonFEDiscountingTransactionAPILoading
+  );
   const [selectedNature, setSelectedNature] = useState(null);
   const [selectedCurrency, setSelectedCurrency] = useState(null);
   const [currencyOptions, setCurrencyOptions] = useState([]);
@@ -557,6 +561,7 @@ const NonFEDiscountingModal = ({
                   applyClass={"ConfirmButtonBookaForward"}
                   onClick={handleConfirm}
                   disabled={tenorValue !== "" && isWeekend(tenoreDate)}
+                  loading={SaveNonFEDiscountingTransactionAPILoading}
                 />
               </Col>
             </Row>
