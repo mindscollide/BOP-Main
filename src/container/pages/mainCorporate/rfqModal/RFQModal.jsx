@@ -89,6 +89,12 @@ const RFQModal = () => {
   // Get pre-filled buy/sell data from Redux store (if any)
   const iBuySellData = useSelector((state) => state.modalReducer.IBuySellData);
 
+  const SaveSpotTransactionLoading = useSelector(
+    (state) => state.BlotterSlicer.SaveSpotTransactionLoading
+  );
+  const SaveSpotTransactionRFQLoading = useSelector(
+    (state) => state.BlotterSlicer.SaveSpotTransactionRFQLoading
+  );
   /**
    * Environment Configuration
    */
@@ -835,6 +841,12 @@ const RFQModal = () => {
                   value="Submit"
                   className={"btn btn-primary ms-auto"}
                   onClick={handleConfirmButton}
+                  loading={
+                    iBuySellData !== null
+                      ? SaveSpotTransactionLoading
+                      : SaveSpotTransactionRFQLoading
+                  }
+                  SaveSpotTransactionRFQLoading
                 />
               </Col>
             </Row>

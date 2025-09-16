@@ -54,8 +54,7 @@ const FeDiscountingTable = () => {
     (state) => state.dealerReducer.publishFeDiscountingLoading
   );
 
-  console.log(FeDiscountingButtonLoading, "FeDiscountingButtonLoading")
-
+  console.log(FeDiscountingButtonLoading, "FeDiscountingButtonLoading");
 
   const getAllTenorsData = useSelector(
     (state) => state.dealerReducer.getAllTenors
@@ -69,7 +68,6 @@ const FeDiscountingTable = () => {
       GetAllInstrumentForTreasury
     ) {
       try {
-     
         const { feDiscountingRates = [] } =
           getDashboardForwards !== null &&
           getDashboardForwards !== undefined &&
@@ -180,22 +178,22 @@ const FeDiscountingTable = () => {
   };
   return (
     <>
-      <div className='datetime fw-bold text-end mb-2 ff-roboto'>
+      <div className="datetime fw-bold text-end mb-2 ff-roboto">
         {date
           ? moment(formatDateUTCToGMT(date)).format("DD MMM YYYY, hh:mm:ss")
           : ""}
         {/* 05 Aug 2025, 11:20:58 */}
       </div>
       <GlobalTable
-        prefixCls='DealerAndTreasuryDiscountTable'
+        prefixCls="DealerAndTreasuryDiscountTable"
         columns={columnsData}
         dataSource={rowData}
         pagination={false}
       />
 
-      <span className='d-flex justify-content-center mt-4'>
+      <span className="d-flex justify-content-center mt-4">
         <CustomButton
-          applyClass='publishForwardsBtn'
+          applyClass="publishForwardsBtn"
           value={"Publish FE Discounting"}
           loading={FeDiscountingButtonLoading}
           disabled={marketStatus === false ? true : false}

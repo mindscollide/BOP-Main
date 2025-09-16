@@ -170,6 +170,7 @@ const Dashboard = () => {
         dispatch(setMarketTimingsUpdated(payload));
         break;
       case "MARKET_STATUS_UPDATED":
+        console.log("MARKET_STATUS_UPDATED", payload);
         dispatch(marketStatusUpdated(payload.marketStatus.isMarketOn));
         dispatch(setMarketStatus(payload.marketStatus.isMarketOn));
         break;
