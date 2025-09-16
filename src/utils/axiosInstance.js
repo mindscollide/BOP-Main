@@ -10,7 +10,6 @@ const api = axios.create({
 // 🔑 Request interceptor → attach token
 api.interceptors.request.use(
   (config) => {
-    console.log(config, "configconfigconfig");
     const token = localStorage.getItem("token");
     config.headers = {
       ...config.headers,
@@ -41,7 +40,7 @@ api.interceptors.response.use(
         } catch (err) {
           console.error("Refresh failed → redirecting to login", err);
           localStorage.clear();
-          // window.location.href = "/";
+          window.location.href = "/";
           return Promise.reject(err);
         }
       }

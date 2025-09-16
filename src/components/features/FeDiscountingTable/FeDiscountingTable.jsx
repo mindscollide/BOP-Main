@@ -50,6 +50,12 @@ const FeDiscountingTable = () => {
   const getFeDiscountingData = useSelector(
     (state) => state.RealtimeActionsSlice.FeDiscountingPublished
   );
+  const FeDiscountingButtonLoading = useSelector(
+    (state) => state.dealerReducer.publishFeDiscountingLoading
+  );
+
+  console.log(FeDiscountingButtonLoading, "FeDiscountingButtonLoading")
+
 
   const getAllTenorsData = useSelector(
     (state) => state.dealerReducer.getAllTenors
@@ -63,14 +69,7 @@ const FeDiscountingTable = () => {
       GetAllInstrumentForTreasury
     ) {
       try {
-        console.log(
-          {
-            getDashboardForwards,
-            getAllTenorsData,
-            GetAllInstrumentForTreasury,
-          },
-          "hellohello"
-        );
+     
         const { feDiscountingRates = [] } =
           getDashboardForwards !== null &&
           getDashboardForwards !== undefined &&
@@ -198,6 +197,7 @@ const FeDiscountingTable = () => {
         <CustomButton
           applyClass='publishForwardsBtn'
           value={"Publish FE Discounting"}
+          loading={FeDiscountingButtonLoading}
           disabled={marketStatus === false ? true : false}
           onClick={handlePublishDiscount}
         />

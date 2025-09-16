@@ -15,6 +15,7 @@ const CustomButton = ({
   applyClass,
   className,
   disabled,
+  loading = false,
 }) => {
   return (
     <>
@@ -30,6 +31,7 @@ const CustomButton = ({
         size={size}
         onClick={onClick}
         iconPosition={iconPosition}
+        loading={loading}
       >
         {value}
       </Button>

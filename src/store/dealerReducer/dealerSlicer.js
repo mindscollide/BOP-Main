@@ -21,7 +21,6 @@ import {
   marketOnOffAction,
   publishDiscountingRatesAction,
 } from "@/container/pages/mainDealer/dealerActions";
-import { formatCurrencyInputForNegativeValAlso } from "@/utils/formatters";
 import { createSlice } from "@reduxjs/toolkit";
 
 const dealerReducer = createSlice({
@@ -29,8 +28,28 @@ const dealerReducer = createSlice({
   initialState: {
     ratesData: null,
     responseMessage: "",
-    Loader: false,
     error: null,
+
+    // 🔄 Loading states per action
+    marketOnOffLoading: false,
+    clearRatesLoading: false,
+    getLastPublishRatesLoading: false,
+    publishNewRatesLoading: false,
+    getAllTenorsLoading: false,
+    createTenorLoading: false,
+    getTenorWiseForwardsLoading: false,
+    publishTenorWiseForwardsLoading: false,
+    getDiscountingRatesLoading: false,
+    publishDiscountingRatesLoading: false,
+    getFeDiscountingLoading: false,
+    publishFeDiscountingLoading: false,
+    getNonFeDiscountingLoading: false,
+    publishNonFeDiscountingLoading: false,
+    getDealerDashboardLoading: false,
+    getVoltMeterStatusLoading: false,
+    updateVoltMeterStatusLoading: false,
+
+    // 🔄 Data states
     marketOnOff: null,
     clearRates: null,
     getLastPublishRates: null,
@@ -87,258 +106,260 @@ const dealerReducer = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // ✅ Market On/Off
       .addCase(marketOnOffAction.pending, (state) => {
-        state.Loader = true;
-        state.error = null;
+        state.marketOnOffLoading = true;
       })
       .addCase(marketOnOffAction.fulfilled, (state, { payload }) => {
-        state.Loader = false;
+        state.marketOnOffLoading = false;
         state.responseMessage = payload?.message;
         state.marketOnOff = payload?.response;
-        state.error = null;
       })
-      .addCase(marketOnOffAction.rejected, (state, action) => {
-        state.Loader = false;
-        state.error = action.payload;
+      .addCase(marketOnOffAction.rejected, (state, { payload }) => {
+        state.marketOnOffLoading = false;
         state.marketOnOff = null;
+        state.error = payload;
       })
+
+      // ✅ Clear Rates
       .addCase(clearRatesAction.pending, (state) => {
-        state.Loader = true;
+        state.clearRatesLoading = true;
       })
       .addCase(clearRatesAction.fulfilled, (state, { payload }) => {
-        state.Loader = false;
+        state.clearRatesLoading = false;
         state.clearRates = payload?.response;
-        state.error = null;
       })
-      .addCase(clearRatesAction.rejected, (state, action) => {
-        state.Loader = false;
+      .addCase(clearRatesAction.rejected, (state, { payload }) => {
+        state.clearRatesLoading = false;
         state.clearRates = null;
-        state.error = action.payload;
+        state.error = payload;
       })
+
+      // ✅ Get Last Publish Rates
       .addCase(getLastPublishRatesAction.pending, (state) => {
-        state.Loader = true;
+        state.getLastPublishRatesLoading = true;
       })
       .addCase(getLastPublishRatesAction.fulfilled, (state, { payload }) => {
-        console.log(payload, "getLastPublishRatesAction payload");
-        state.Loader = false;
+        state.getLastPublishRatesLoading = false;
         state.getLastPublishRates = payload?.response;
         state.responseMessage = payload?.message;
-        state.error = null;
       })
-      .addCase(getLastPublishRatesAction.rejected, (state, action) => {
-        state.Loader = false;
-        state.error = action.payload;
+      .addCase(getLastPublishRatesAction.rejected, (state, { payload }) => {
+        state.getLastPublishRatesLoading = false;
         state.getLastPublishRates = null;
-        state.responseMessage = payload;
+        state.error = payload;
       })
+
+      // ✅ Publish New Rates
       .addCase(PublishNewRatesAction.pending, (state) => {
-        state.Loader = true;
+        state.publishNewRatesLoading = true;
       })
       .addCase(PublishNewRatesAction.fulfilled, (state, { payload }) => {
-        state.Loader = false;
+        state.publishNewRatesLoading = false;
         state.getCurrentPublishRate = payload?.response;
         state.getLastPublishRates = payload?.response;
         state.responseMessage = payload?.message;
       })
       .addCase(PublishNewRatesAction.rejected, (state, { payload }) => {
-        state.Loader = false;
+        state.publishNewRatesLoading = false;
         state.getCurrentPublishRate = null;
-        state.responseMessage = payload;
+        state.error = payload;
       })
+
+      // ✅ Get All Tenors
       .addCase(getAllTenorsAction.pending, (state) => {
-        state.Loader = true;
+        state.getAllTenorsLoading = true;
       })
       .addCase(getAllTenorsAction.fulfilled, (state, { payload }) => {
-        state.Loader = false;
+        state.getAllTenorsLoading = false;
         state.getAllTenors = payload?.response;
         state.responseMessage = payload?.message;
       })
       .addCase(getAllTenorsAction.rejected, (state, { payload }) => {
-        state.Loader = false;
+        state.getAllTenorsLoading = false;
         state.getAllTenors = null;
-        state.responseMessage = payload;
+        state.error = payload;
       })
+
+      // ✅ Create Tenor
       .addCase(createTenorAction.pending, (state) => {
-        state.Loader = true;
+        state.createTenorLoading = true;
       })
       .addCase(createTenorAction.fulfilled, (state, { payload }) => {
-        state.Loader = false;
+        state.createTenorLoading = false;
         state.createTenor = payload?.response;
         state.responseMessage = payload?.message;
       })
       .addCase(createTenorAction.rejected, (state, { payload }) => {
-        state.Loader = false;
+        state.createTenorLoading = false;
         state.createTenor = null;
-        state.responseMessage = payload;
+        state.error = payload;
       })
+
+      // ✅ Get Tenor Wise Forwards
       .addCase(getTenorWiseForwardsAction.pending, (state) => {
-        state.Loader = true;
+        state.getTenorWiseForwardsLoading = true;
       })
       .addCase(getTenorWiseForwardsAction.fulfilled, (state, { payload }) => {
-        state.Loader = false;
+        state.getTenorWiseForwardsLoading = false;
         state.getTenorWiseForwardsRates = payload?.response;
         state.responseMessage = payload?.message;
       })
       .addCase(getTenorWiseForwardsAction.rejected, (state, { payload }) => {
-        state.Loader = false;
+        state.getTenorWiseForwardsLoading = false;
         state.getTenorWiseForwardsRates = null;
-        state.responseMessage = payload;
+        state.error = payload;
       })
+
+      // ✅ Publish Tenor Wise Forwards
       .addCase(PublishTenorWiseForwardsAction.pending, (state) => {
-        state.Loader = true;
+        state.publishTenorWiseForwardsLoading = true;
       })
-      .addCase(
-        PublishTenorWiseForwardsAction.fulfilled,
-        (state, { payload }) => {
-          state.Loader = false;
-          state.publishTenorwiseForwardRates = payload?.response;
-          state.responseMessage = payload?.message;
-        }
-      )
-      .addCase(
-        PublishTenorWiseForwardsAction.rejected,
-        (state, { payload }) => {
-          state.Loader = false;
-          state.publishTenorwiseForwardRates = null;
-          state.responseMessage = payload;
-        }
-      )
+      .addCase(PublishTenorWiseForwardsAction.fulfilled, (state, { payload }) => {
+        state.publishTenorWiseForwardsLoading = false;
+        state.publishTenorwiseForwardRates = payload?.response;
+        state.responseMessage = payload?.message;
+      })
+      .addCase(PublishTenorWiseForwardsAction.rejected, (state, { payload }) => {
+        state.publishTenorWiseForwardsLoading = false;
+        state.publishTenorwiseForwardRates = null;
+        state.error = payload;
+      })
+
+      // ✅ Get Discounting Rates
       .addCase(getDiscountingRatesAction.pending, (state) => {
-        state.Loader = true;
+        state.getDiscountingRatesLoading = true;
       })
       .addCase(getDiscountingRatesAction.fulfilled, (state, { payload }) => {
-        state.Loader = false;
+        state.getDiscountingRatesLoading = false;
         state.getDiscountingWiseRates = payload?.response;
         state.responseMessage = payload?.message;
       })
       .addCase(getDiscountingRatesAction.rejected, (state, { payload }) => {
-        state.Loader = false;
+        state.getDiscountingRatesLoading = false;
         state.getDiscountingWiseRates = null;
-        state.responseMessage = payload;
+        state.error = payload;
       })
+
+      // ✅ Publish Discounting Rates
       .addCase(publishDiscountingRatesAction.pending, (state) => {
-        state.Loader = true;
+        state.publishDiscountingRatesLoading = true;
       })
-      .addCase(
-        publishDiscountingRatesAction.fulfilled,
-        (state, { payload }) => {
-          state.Loader = false;
-          state.publishDiscountRates = payload?.response;
-          state.responseMessage = payload?.message;
-        }
-      )
+      .addCase(publishDiscountingRatesAction.fulfilled, (state, { payload }) => {
+        state.publishDiscountingRatesLoading = false;
+        state.publishDiscountRates = payload?.response;
+        state.responseMessage = payload?.message;
+      })
       .addCase(publishDiscountingRatesAction.rejected, (state, { payload }) => {
-        state.Loader = false;
+        state.publishDiscountingRatesLoading = false;
         state.publishDiscountRates = null;
-        state.responseMessage = payload;
+        state.error = payload;
       })
+
+      // ✅ FE Discounting
       .addCase(GetFEDiscountingTableApi.pending, (state) => {
-        state.Loader = true;
+        state.getFeDiscountingLoading = true;
       })
       .addCase(GetFEDiscountingTableApi.fulfilled, (state, { payload }) => {
-        state.Loader = false;
+        state.getFeDiscountingLoading = false;
         state.getFeDiscounting = payload?.response;
         state.responseMessage = payload?.message;
       })
       .addCase(GetFEDiscountingTableApi.rejected, (state, { payload }) => {
-        state.Loader = false;
+        state.getFeDiscountingLoading = false;
         state.getFeDiscounting = null;
         state.error = payload;
-        state.responseMessage = payload;
       })
+
       .addCase(PublishFEDiscountingTableApi.pending, (state) => {
-        state.Loader = true;
+        state.publishFeDiscountingLoading = true;
       })
       .addCase(PublishFEDiscountingTableApi.fulfilled, (state, { payload }) => {
-        state.Loader = false;
+        state.publishFeDiscountingLoading = false;
         state.publishFeDiscounting = payload?.response;
         state.responseMessage = payload?.message;
       })
       .addCase(PublishFEDiscountingTableApi.rejected, (state, { payload }) => {
-        state.Loader = false;
+        state.publishFeDiscountingLoading = false;
         state.publishFeDiscounting = null;
         state.error = payload;
-        state.responseMessage = payload;
       })
+
+      // ✅ Non-FE Discounting
       .addCase(GetNonFEDiscountingTableApi.pending, (state) => {
-        state.Loader = true;
+        state.getNonFeDiscountingLoading = true;
       })
       .addCase(GetNonFEDiscountingTableApi.fulfilled, (state, { payload }) => {
-        state.Loader = false;
+        state.getNonFeDiscountingLoading = false;
         state.getNonFeDiscounting = payload?.response;
         state.responseMessage = payload?.message;
       })
       .addCase(GetNonFEDiscountingTableApi.rejected, (state, { payload }) => {
-        state.Loader = false;
+        state.getNonFeDiscountingLoading = false;
         state.getNonFeDiscounting = null;
         state.error = payload;
-        state.responseMessage = payload;
       })
+
       .addCase(PublishNonFEDiscountingTableApi.pending, (state) => {
-        state.Loader = true;
+        state.publishNonFeDiscountingLoading = true;
       })
-      .addCase(
-        PublishNonFEDiscountingTableApi.fulfilled,
-        (state, { payload }) => {
-          state.Loader = false;
-          state.publishNonFeDiscounting = payload?.response;
-          state.responseMessage = payload?.message;
-        }
-      )
-      .addCase(
-        PublishNonFEDiscountingTableApi.rejected,
-        (state, { payload }) => {
-          state.Loader = false;
-          state.publishNonFeDiscounting = null;
-          state.error = payload;
-          state.responseMessage = payload;
-        }
-      )
+      .addCase(PublishNonFEDiscountingTableApi.fulfilled, (state, { payload }) => {
+        state.publishNonFeDiscountingLoading = false;
+        state.publishNonFeDiscounting = payload?.response;
+        state.responseMessage = payload?.message;
+      })
+      .addCase(PublishNonFEDiscountingTableApi.rejected, (state, { payload }) => {
+        state.publishNonFeDiscountingLoading = false;
+        state.publishNonFeDiscounting = null;
+        state.error = payload;
+      })
+
+      // ✅ Dealer Dashboard
       .addCase(getDealerDashboardApi.pending, (state) => {
-        state.Loader = true;
+        state.getDealerDashboardLoading = true;
       })
       .addCase(getDealerDashboardApi.fulfilled, (state, { payload }) => {
-        state.Loader = false;
+        state.getDealerDashboardLoading = false;
         state.getDealerDashboardData = payload?.response;
         state.responseMessage = payload?.message;
       })
       .addCase(getDealerDashboardApi.rejected, (state, { payload }) => {
-        state.Loader = false;
+        state.getDealerDashboardLoading = false;
         state.getDealerDashboardData = null;
         state.error = payload;
-        state.responseMessage = payload;
       })
+
+      // ✅ Volt Meter
       .addCase(GetVoltMeterStatusApi.pending, (state) => {
-        state.Loader = true;
+        state.getVoltMeterStatusLoading = true;
       })
       .addCase(GetVoltMeterStatusApi.fulfilled, (state, { payload }) => {
-        console.log(payload, "GetVoltMeterStatusApiGetVoltMeterStatusApi")
-        state.Loader = false;
+        state.getVoltMeterStatusLoading = false;
         state.GetVoltMeterStatus = payload?.response;
         state.responseMessage = payload?.message;
       })
       .addCase(GetVoltMeterStatusApi.rejected, (state, { payload }) => {
-        state.Loader = false;
+        state.getVoltMeterStatusLoading = false;
         state.GetVoltMeterStatus = null;
         state.error = payload;
-        state.responseMessage = payload;
       })
+
       .addCase(UpdateVoltMeterStatusApi.pending, (state) => {
-        state.Loader = true;
+        state.updateVoltMeterStatusLoading = true;
       })
       .addCase(UpdateVoltMeterStatusApi.fulfilled, (state, { payload }) => {
-        state.Loader = false;
+        state.updateVoltMeterStatusLoading = false;
         state.UpdateVoltMeterStatus = payload?.response;
         state.responseMessage = payload?.message;
       })
       .addCase(UpdateVoltMeterStatusApi.rejected, (state, { payload }) => {
-        state.Loader = false;
+        state.updateVoltMeterStatusLoading = false;
         state.UpdateVoltMeterStatus = null;
         state.error = payload;
-        state.responseMessage = payload;
       });
   },
 });
+
 export const {
   clearDealerResponseMessage,
   setForwardsForTreasuryBranch,
