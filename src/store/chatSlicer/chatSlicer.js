@@ -16,22 +16,28 @@ const chatSlicer = createSlice({
     saveChatResponse: null,
     uploadDocument: null,
     DownloadFile: null,
+
+    getAllChatByTransactionIdLoading: false,
   },
   extraReducers: (builder) => {
     builder
       .addCase(getAllChatByTransactionId.pending, (state) => {
-        state.Loader = false;
+        state.Loader = true;
+        state.getAllChatByTransactionIdLoading = true;
       })
       .addCase(getAllChatByTransactionId.fulfilled, (state, { payload }) => {
         state.Loader = false;
+        state.getAllChatByTransactionIdLoading = false;
         state.getAllChatByTransactions = payload?.response;
         state.error = null;
         state.responseMessage = payload?.message;
       })
       .addCase(getAllChatByTransactionId.rejected, (state, { payload }) => {
         state.Loader = false;
+        state.getAllChatByTransactionIdLoading = false;
         state.responseMessage = payload?.message;
       })
+
       .addCase(saveChatApi.pending, (state) => {
         state.Loader = false;
       })

@@ -39,16 +39,6 @@ import {
 } from "@/store/modalSlice/modalSlicer";
 import { RFQTImer } from "@/components/utils/Timer";
 import { convertDateTimeIntoLocal, formatPkAmount } from "@/utils/formatters";
-import {
-  BlotterTransactionAccepted,
-  BlotterTransactionAdded,
-  BlotterTransactionAssigned,
-  BlotterTransactionCancellationRequest,
-  BlotterTransactionRFQExpired,
-  BlotterTransactionRFQQuoted,
-  BlotterTransactionRejected,
-  BlotterTranscationCancelled,
-} from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { getAllChatByTransactionId } from "@/components/features/chatBox/ChatActions";
 import CancelReasonModal from "../cancelReasonModal/cancelReasonModal";
 import {
@@ -136,18 +126,6 @@ const OutstandingDeals = ({
     "09-09-2024/bd2e",
     "09-09-2024/d1f2",
   ];
-  const CustomerName_OPTIONS = ["Gul Ahmed"];
-  const TYPE_OPTIONS = ["Buy", "Sell"];
-  const Nature_OPTIONS = ["1", "6"];
-  const CCY1_OPTIONS = ["USD"];
-  const Amount_OPTIONS = ["098,098", "234,234"];
-  const Rate_OPTIONS = ["288.00", "289.00"];
-  const CCY2_OPTIONS = ["PKR"];
-  const Amount2_OPTIONS = ["NaN"];
-  const Time_OPTIONS = ["16:33 pm", "16:47 pm", "16:48 pm", "16:50 pm"];
-  const LCno_OPTIONS = ["098098", "234234"];
-  const Accno_OPTIONS = ["234234234234234234234234"];
-  const Status_OPTIONS = ["Pending"];
 
   // State for filters
   const [open, setOpen] = useState(false);
@@ -193,6 +171,35 @@ const OutstandingDeals = ({
   const handleCheckboxChange = (checkedValues) =>
     setSelectedItemsTXNID(checkedValues);
 
+  const GetSpotTransactionDetailsApiLoading = useSelector(
+    (state) => state.BlotterSlicer.GetSpotTransactionDetailsApiLoading
+  );
+  const GetForwardTransactionDetailsApiLoading = useSelector(
+    (state) => state.BlotterSlicer.GetForwardTransactionDetailsApiLoading
+  );
+  const GetNonFEDiscountingTransactionDetailsApiLoading = useSelector(
+    (state) =>
+      state.BlotterSlicer.GetNonFEDiscountingTransactionDetailsApiLoading
+  );
+  const GetFEDiscountingTransactionDetailsApiLoading = useSelector(
+    (state) => state.BlotterSlicer.GetFEDiscountingTransactionDetailsApiLoading
+  );
+
+  const getAllChatByTransactionIdLoading = useSelector(
+    (state) => state.chatSlicer.getAllChatByTransactionIdLoading
+  );
+
+  const AssignTransactionAPILoading = useSelector(
+    (state) => state.BlotterSlicer.AssignTransactionAPILoading
+  );
+
+  const AcceptTransactionAPILoading = useSelector(
+    (state) => state.BlotterSlicer.AcceptTransactionAPILoading
+  );
+
+  const RejectTransactionAPILoading = useSelector(
+    (state) => state.BlotterSlicer.RejectTransactionAPILoading
+  );
   // Load more data function for infinite scrolling
   const loadMore = useCallback(async () => {
     // Prevent loading if already at bottom or no more records
@@ -245,9 +252,10 @@ const OutstandingDeals = ({
     setShowCommentModal(true);
     setComment(text);
   };
-
+  const [assignTranId, setAssignTranId] = useState(null);
   const handleClickAssignTransaction = (record) => {
     let Data = { PK_TransactionID: Number(record.pK_TransactionID) };
+    setAssignTranId(record.pK_TransactionID);
     dispatch(AssignTransactionAPI({ navigate, Data }));
   };
 
@@ -263,8 +271,9 @@ const OutstandingDeals = ({
       dispatch(setDiscountingQuoteModalData(record));
     }
   };
-
+  const [acceptTranId, setAcceptTranId] = useState(null);
   const acceptTransaction = (record) => {
+    setAcceptTranId(record.pK_TransactionID);
     dispatch(
       AcceptTransactionAPI({
         navigate,
@@ -273,7 +282,9 @@ const OutstandingDeals = ({
     );
   };
 
+  const [rejectTranId, setRejectTranId] = useState(null);
   const rejectTransaction = (record) => {
+    setRejectTranId(record.pK_TransactionID);
     setCancelReasonModal(true);
     setCancelType("Rejected");
     setCancelTransactionID(record.pK_TransactionID);
@@ -290,6 +301,7 @@ const OutstandingDeals = ({
     setCancelTransactionID(transactionID);
   };
 
+  const [chatUserId, setChatUserId] = useState(null);
   const handleClickChat = (
     txnID,
     treasuryPersonID,
@@ -298,6 +310,7 @@ const OutstandingDeals = ({
     clientName
   ) => {
     let Data = { TranscationID: txnID };
+    setChatUserId(txnID);
     let ChatData = {
       natureType,
       natureTypeId,
@@ -345,9 +358,10 @@ const OutstandingDeals = ({
     setCancelTransactionID(0);
     setCancelReasonComment("");
   }, []);
-
+  const [infoTransID, setInfoTransID] = useState(null);
   const handleClickInfo = (record) => {
     let Data = { PK_TransactionID: record.pK_TransactionID };
+    setInfoTransID(record.pK_TransactionID);
     if (record.natureType === 1) {
       dispatch(GetSpotTransactionDetailsApi({ navigate, Data }));
     } else if (record.natureType === 2) {
@@ -518,6 +532,10 @@ const OutstandingDeals = ({
         <div className={classes.actionButtons}>
           {record.statusID === 2 ? (
             <CustomButton
+              loading={
+                assignTranId === record.pK_TransactionID &&
+                AssignTransactionAPILoading
+              }
               icon={<i className="icon-user-check"></i>}
               size={"small"}
               className="btn btn-primary btn-sm d-flex justify-content-center align-items-center"
@@ -565,12 +583,20 @@ const OutstandingDeals = ({
                 ) : (
                   <>
                     <CustomButton
+                      loading={
+                        acceptTranId === record.pK_TransactionID &&
+                        AcceptTransactionAPILoading
+                      }
                       icon={<i className="icon-check"></i>}
                       size={"small"}
                       className="btn btn-sm btn-success blotterCheckerButton d-flex justify-content-center align-items-center"
                       onClick={() => acceptTransaction(record)}
                     />
                     <CustomButton
+                      loading={
+                        rejectTranId === record.pK_TransactionID &&
+                        RejectTransactionAPILoading
+                      }
                       icon={<i className="icon-close"></i>}
                       size={"small"}
                       className="btn btn-sm btn-danger blotterCheckerButton d-flex justify-content-center align-items-center"
@@ -611,6 +637,10 @@ const OutstandingDeals = ({
             Number(record.treasuryPersonID) ===
               Number(localStorage.getItem("userID")) && (
               <CustomButton
+                loading={
+                  record.pK_TransactionID === chatUserId &&
+                  getAllChatByTransactionIdLoading
+                }
                 icon={<i className="icon-chat2"></i>}
                 size={"small"}
                 className="btn btn-danger chat-btn-trigger d-flex justify-content-center align-items-center"
@@ -626,6 +656,13 @@ const OutstandingDeals = ({
               />
             )}
           <CustomButton
+            loading={
+              infoTransID === record.pK_TransactionID &&
+              (GetSpotTransactionDetailsApiLoading ||
+                GetForwardTransactionDetailsApiLoading ||
+                GetNonFEDiscountingTransactionDetailsApiLoading ||
+                GetFEDiscountingTransactionDetailsApiLoading)
+            }
             onClick={() => handleClickInfo(record)}
             size={"small"}
             icon={
