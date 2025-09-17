@@ -29,6 +29,9 @@ import {
   SaveFEDiscountingTransactionRFQ,
   AcceptTransactionCancellationRequest,
   RejectTransactionCancellationRequest,
+  AcceptRFQTransaction,
+  CancelTransaction,
+  RejectRFQTransaction,
 } from "@/components/features/blotter/BlotterActions";
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -112,6 +115,9 @@ const BlotterSlicer = createSlice({
     SaveFEDiscountingTransactionRFQLoading: false,
     AcceptTransactionCancellationRequestLoading: false,
     RejectTransactionCancellationRequestLoading: false,
+    AcceptRFQTransactionLoading: false,
+    CancelTransactionLoading: false,
+    RejectRFQTransactionLoading: false,
   },
   reducers: {
     setOutStandingTotalCount: (state, { payload }) => {
@@ -908,6 +914,33 @@ const BlotterSlicer = createSlice({
       })
       .addCase(RejectTransactionCancellationRequest.rejected, (state) => {
         state.RejectTransactionCancellationRequestLoading = false;
+      })
+      .addCase(AcceptRFQTransaction.pending, (state) => {
+        state.AcceptRFQTransactionLoading = true;
+      })
+      .addCase(AcceptRFQTransaction.fulfilled, (state) => {
+        state.AcceptRFQTransactionLoading = false;
+      })
+      .addCase(AcceptRFQTransaction.rejected, (state) => {
+        state.AcceptRFQTransactionLoading = false;
+      })
+      .addCase(CancelTransaction.pending, (state) => {
+        state.CancelTransactionLoading = true;
+      })
+      .addCase(CancelTransaction.fulfilled, (state) => {
+        state.CancelTransactionLoading = false;
+      })
+      .addCase(CancelTransaction.rejected, (state) => {
+        state.CancelTransactionLoading = false;
+      })
+      .addCase(RejectRFQTransaction.pending, (state) => {
+        state.RejectRFQTransactionLoading = true;
+      })
+      .addCase(RejectRFQTransaction.fulfilled, (state) => {
+        state.RejectRFQTransactionLoading = false;
+      })
+      .addCase(RejectRFQTransaction.rejected, (state) => {
+        state.RejectRFQTransactionLoading = false;
       });
   },
 });

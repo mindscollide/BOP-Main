@@ -171,7 +171,25 @@ const TXNTreasurySummary = ({
     (state) => state.BlotterSlicer.GetFEDiscountingTransactionDetailsApiLoading
   );
 
+  const AcceptRFQTransactionLoading = useSelector(
+    (state) => state.BlotterSlicer.AcceptRFQTransactionLoading
+  );
+
+  const CancelTransactionLoading = useSelector(
+    (state) => state.BlotterSlicer.CancelTransactionLoading
+  );
+
+  const CancelPendingTransactionApiLoading = useSelector(
+    (state) => state.BlotterSlicer.CancelPendingTransactionApiLoading
+  );
+
+  const RejectRFQTransactionLoading = useSelector(
+    (state) => state.BlotterSlicer.RejectRFQTransactionLoading
+  );
+
+  const [tranAcceptId, setTranAcceptId] = useState(null);
   const handleTransactionAction = useCallback((transactionID, type) => {
+    setTranAcceptId(transactionID);
     if (type === "Accepted") {
       dispatch(
         AcceptRFQTransaction({ PK_TransactionID: transactionID }, navigate)
@@ -367,6 +385,13 @@ const TXNTreasurySummary = ({
           <div className={classes.actionButtons}>
             {record.statusID === 1 && (
               <CustomButton
+                loading={
+                  tranAcceptId === record.pK_TransactionID &&
+                  (AcceptRFQTransactionLoading ||
+                    CancelTransactionLoading ||
+                    CancelPendingTransactionApiLoading ||
+                    RejectRFQTransactionLoading)
+                }
                 icon={<i className="icon-close blotterTableIconSize" />}
                 size="small"
                 applyClass="ActionButton_danger"
@@ -440,6 +465,10 @@ const TXNTreasurySummary = ({
       GetNonFEDiscountingTransactionDetailsApiLoading,
       GetFEDiscountingTransactionDetailsApiLoading,
       infoTransID,
+      AcceptRFQTransactionLoading,
+      CancelTransactionLoading,
+      CancelPendingTransactionApiLoading,
+      RejectRFQTransactionLoading,
     ]
   );
 
