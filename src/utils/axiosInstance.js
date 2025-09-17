@@ -22,6 +22,8 @@ api.interceptors.request.use(
 );
 api.interceptors.response.use(
   async (response) => {
+
+    console.log(response, "response from interceptor");
     // 🔎 Check for token expired inside success case
     if (response.data?.responseCode === 417) {
       const originalRequest = response.config;
