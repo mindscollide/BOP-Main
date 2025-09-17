@@ -27,6 +27,8 @@ import {
   RFQNonFEDiscountingTransactionQuotation,
   SaveNonFEDiscountingTransactionRFQ,
   SaveFEDiscountingTransactionRFQ,
+  AcceptTransactionCancellationRequest,
+  RejectTransactionCancellationRequest,
 } from "@/components/features/blotter/BlotterActions";
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -108,6 +110,8 @@ const BlotterSlicer = createSlice({
     RFQNonFEDiscountingTransactionQuotationLoading: false,
     SaveNonFEDiscountingTransactionRFQLoading: false,
     SaveFEDiscountingTransactionRFQLoading: false,
+    AcceptTransactionCancellationRequestLoading: false,
+    RejectTransactionCancellationRequestLoading: false,
   },
   reducers: {
     setOutStandingTotalCount: (state, { payload }) => {
@@ -886,7 +890,25 @@ const BlotterSlicer = createSlice({
 
           state.responseMessage = payload;
         }
-      );
+      )
+      .addCase(AcceptTransactionCancellationRequest.pending, (state) => {
+        state.AcceptTransactionCancellationRequestLoading = true;
+      })
+      .addCase(AcceptTransactionCancellationRequest.fulfilled, (state) => {
+        state.AcceptTransactionCancellationRequestLoading = false;
+      })
+      .addCase(AcceptTransactionCancellationRequest.rejected, (state) => {
+        state.AcceptTransactionCancellationRequestLoading = false;
+      })
+      .addCase(RejectTransactionCancellationRequest.pending, (state) => {
+        state.RejectTransactionCancellationRequestLoading = true;
+      })
+      .addCase(RejectTransactionCancellationRequest.fulfilled, (state) => {
+        state.RejectTransactionCancellationRequestLoading = false;
+      })
+      .addCase(RejectTransactionCancellationRequest.rejected, (state) => {
+        state.RejectTransactionCancellationRequestLoading = false;
+      });
   },
 });
 

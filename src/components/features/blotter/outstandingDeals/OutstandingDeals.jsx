@@ -49,6 +49,7 @@ import {
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import { useNotification } from "@/context/NotificationProvider";
 import { Empty } from "antd";
+import { set } from "lodash";
 
 // Custom styles for the component
 const useStyles = makeStyles((theme) => ({
@@ -197,9 +198,18 @@ const OutstandingDeals = ({
     (state) => state.BlotterSlicer.AcceptTransactionAPILoading
   );
 
+  const AcceptTransactionCancellationRequestLoading = useSelector(
+    (state) => state.BlotterSlicer.AcceptTransactionCancellationRequestLoading
+  );
+
   const RejectTransactionAPILoading = useSelector(
     (state) => state.BlotterSlicer.RejectTransactionAPILoading
   );
+
+  const RejectTransactionCancellationRequestLoading = useSelector(
+    (state) => state.BlotterSlicer.RejectTransactionCancellationRequestLoading
+  );
+
   // Load more data function for infinite scrolling
   const loadMore = useCallback(async () => {
     // Prevent loading if already at bottom or no more records
@@ -290,12 +300,17 @@ const OutstandingDeals = ({
     setCancelTransactionID(record.pK_TransactionID);
   };
 
+  const [acceptTranCancelReqId, setAcceptTranCancelReqId] = useState(null);
   const handleAcceptTransactionCancellation = (transactionID) => {
     let Data = { PK_TransactionID: transactionID };
+    setAcceptTranCancelReqId(transactionID);
     dispatch(AcceptTransactionCancellationRequest({ navigate, Data }));
   };
 
+  const [rejectTranCancelRqtId, setRejectTranCancelRqtId] = useState(null);
+
   const handleRejectTransactionCancellation = (transactionID) => {
+    setRejectTranCancelRqtId(transactionID);
     setCancelReasonModal(true);
     setCancelType("Cancellation");
     setCancelTransactionID(transactionID);
@@ -544,6 +559,10 @@ const OutstandingDeals = ({
           ) : record.statusID === 6 ? (
             <>
               <CustomButton
+                loading={
+                  acceptTranCancelReqId === record.pK_TransactionID &&
+                  AcceptTransactionCancellationRequestLoading
+                }
                 icon={<i className="icon-check"></i>}
                 className="btn btn-sm btn-danger d-flex justify-content-center align-items-center"
                 size={"small"}
@@ -552,6 +571,11 @@ const OutstandingDeals = ({
                 }
               />
               <CustomButton
+                loading={
+                  rejectTranCancelRqtId === record.pK_TransactionID &&
+                  (RejectTransactionAPILoading ||
+                    RejectTransactionCancellationRequestLoading)
+                }
                 icon={<i className="icon-close"></i>}
                 className="btn btn-sm btn-success d-flex justify-content-center align-items-center"
                 size={"small"}
@@ -593,10 +617,10 @@ const OutstandingDeals = ({
                       onClick={() => acceptTransaction(record)}
                     />
                     <CustomButton
-                      loading={
-                        rejectTranId === record.pK_TransactionID &&
-                        RejectTransactionAPILoading
-                      }
+                      // loading={
+                      //   rejectTranId === record.pK_TransactionID &&
+                      //   RejectTransactionAPILoading
+                      // }
                       icon={<i className="icon-close"></i>}
                       size={"small"}
                       className="btn btn-sm btn-danger blotterCheckerButton d-flex justify-content-center align-items-center"
