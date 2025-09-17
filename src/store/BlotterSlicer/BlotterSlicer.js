@@ -32,6 +32,7 @@ import {
   AcceptRFQTransaction,
   CancelTransaction,
   RejectRFQTransaction,
+  RequestCancellation,
 } from "@/components/features/blotter/BlotterActions";
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -118,6 +119,7 @@ const BlotterSlicer = createSlice({
     AcceptRFQTransactionLoading: false,
     CancelTransactionLoading: false,
     RejectRFQTransactionLoading: false,
+    RequestCancellationLoading: false,
   },
   reducers: {
     setOutStandingTotalCount: (state, { payload }) => {
@@ -941,6 +943,15 @@ const BlotterSlicer = createSlice({
       })
       .addCase(RejectRFQTransaction.rejected, (state) => {
         state.RejectRFQTransactionLoading = false;
+      })
+      .addCase(RequestCancellation.pending, (state) => {
+        state.RequestCancellationLoading = true;
+      })
+      .addCase(RequestCancellation.fulfilled, (state) => {
+        state.RequestCancellationLoading = false;
+      })
+      .addCase(RequestCancellation.rejected, (state) => {
+        state.RequestCancellationLoading = false;
       });
   },
 });

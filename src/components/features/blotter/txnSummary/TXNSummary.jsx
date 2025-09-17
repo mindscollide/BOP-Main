@@ -100,7 +100,19 @@ const TXNSummary = () => {
   const getAllChatByTransactionIdLoading = useSelector(
     (state) => state.chatSlicer.getAllChatByTransactionIdLoading
   );
+  const AcceptRFQTransactionLoading = useSelector(
+    (state) => state.BlotterSlicer.AcceptRFQTransactionLoading
+  );
+  const RequestCancellationLoading = useSelector(
+    (state) => state.BlotterSlicer.RequestCancellationLoading
+  );
+  const CancelPendingTransactionApiLoading = useSelector(
+    (state) => state.BlotterSlicer.CancelPendingTransactionApiLoading
+  );
 
+  const RejectRFQTransactionLoading = useSelector(
+    (state) => state.BlotterSlicer.RejectRFQTransactionLoading
+  );
   // State for cancellation modal and related data
   const [cancelReasonModal, setCancelReasonModal] = useState(false);
   const [cancelReasonComment, setCancelReasonComment] = useState("");
@@ -491,8 +503,10 @@ const TXNSummary = () => {
     }
   };
 
+  const [acceptRejTranId, setacceptRejTranId] = useState(null);
   // Handler for various transaction actions (accept, reject, cancel)
   const handleCheckerAccept = (transactionID, type) => {
+    setacceptRejTranId(transactionID);
     if (type === "Accepted") {
       let Data = { PK_TransactionID: transactionID };
       dispatch(AcceptRFQTransaction({ Data, navigate }));
@@ -778,6 +792,10 @@ const TXNSummary = () => {
             {record.statusID === 4 && record.isRFQ === true ? (
               <>
                 <CustomButton
+                  loading={
+                    acceptRejTranId === record.pK_TransactionID &&
+                    AcceptRFQTransactionLoading
+                  }
                   //  loading =  {rejectTranId === record.pK_TransactionID && }
                   icon={<i className="icon-check"></i>}
                   size={"small"}
@@ -787,6 +805,10 @@ const TXNSummary = () => {
                   }
                 />
                 <CustomButton
+                  loading={
+                    acceptRejTranId === record.pK_TransactionID &&
+                    RejectRFQTransactionLoading
+                  }
                   icon={<i className="icon-close"></i>}
                   size={"small"}
                   className="btn btn-sm btn-danger me-1 blotterCheckerButton d-flex justify-content-center align-items-center "
@@ -797,6 +819,10 @@ const TXNSummary = () => {
               </>
             ) : record.statusID === 1 ? (
               <CustomButton
+                loading={
+                  acceptRejTranId === record.pK_TransactionID &&
+                  RequestCancellationLoading
+                }
                 icon={<i className="icon-close"></i>}
                 size={"small"}
                 className="btn btn-sm btn-danger me-1 blotterCheckerButton d-flex justify-content-center align-items-center "
@@ -806,6 +832,10 @@ const TXNSummary = () => {
               />
             ) : record.statusID === 2 || record.statusID === 5 ? (
               <CustomButton
+                loading={
+                  acceptRejTranId === record.pK_TransactionID &&
+                  CancelPendingTransactionApiLoading
+                }
                 icon={<i className="icon-close"></i>}
                 size={"small"}
                 className="btn btn-sm btn-danger me-1 blotterCheckerButton d-flex justify-content-center align-items-center"
