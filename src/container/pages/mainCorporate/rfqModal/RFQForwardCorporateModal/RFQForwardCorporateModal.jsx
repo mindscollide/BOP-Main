@@ -595,7 +595,7 @@ const RFQForwardCorporateModal = ({
                 lg={6}
                 md={6}
                 sm={12}
-                className="d-flex align-items-center justify-content-end"
+                className="d-flex align-items-center justify-content-end "
               >
                 <CustomButton
                   value="Confirm"

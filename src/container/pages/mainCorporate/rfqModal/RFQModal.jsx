@@ -839,7 +839,9 @@ const RFQModal = () => {
               >
                 <CustomButton
                   value="Submit"
-                  className={"btn btn-primary ms-auto"}
+                  className={
+                    "btn btn-primary ms-auto d-flex gap-2 align-items-center justify-content-center"
+                  }
                   onClick={handleConfirmButton}
                   loading={
                     iBuySellData !== null
