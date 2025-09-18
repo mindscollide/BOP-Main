@@ -31,6 +31,9 @@ const initialWatchlistData = Object.fromEntries(
       sellValue: "",
       instrumentName: "",
       secondaryInstrumentName: "",
+      instrumentTitle: "",
+      viewInstumentName: "",
+      viewSecondaryInstumentName: "",
     },
   ])
 );
@@ -80,6 +83,10 @@ const SpotBranch = () => {
   );
 
   const [watchlistData, setWatchlistData] = useState(initialWatchlistData);
+  console.log(
+    { watchlistTableData, watchlistData },
+    "watchlistDatawatchlistData"
+  );
 
   useEffect(() => {
     if (isTradeRights !== null) {
@@ -115,6 +122,9 @@ const SpotBranch = () => {
               ...item,
               bid: matched?.bid ?? 0,
               offer: matched?.offer ?? 0,
+              instrumentTitle: item.isWeakCurrency
+                ? `${item.secondaryInstrumentName}${item.instrumentName}`
+                : `${item.instrumentName}${item.secondaryInstrumentName}`,
             };
           });
 
@@ -148,6 +158,12 @@ const SpotBranch = () => {
                   isBuy: item.isBuy,
                   instrumentName: item.instrumentName,
                   secondaryInstrumentName: item.secondaryInstrumentName,
+                  viewInstumentName: item.isWeakCurrency
+                    ? `${item.secondaryInstrumentName}`
+                    : `${item.instrumentName}`,
+                  viewSecondaryInstumentName: item.isWeakCurrency
+                    ? `${item.instrumentName}`
+                    : `${item.secondaryInstrumentName}`,
                 },
               }));
             });
@@ -265,6 +281,12 @@ const SpotBranch = () => {
               isBuy: matchingData.isBuy,
               instrumentName: matchingData.instrumentName,
               secondaryInstrumentName: matchingData.secondaryInstrumentName,
+              viewInstumentName: matchingData.isWeakCurrency
+                ? `${matchingData.secondaryInstrumentName}`
+                : `${matchingData.instrumentName}`,
+              viewSecondaryInstumentName: matchingData.isWeakCurrency
+                ? `${matchingData.instrumentName}`
+                : `${matchingData.secondaryInstrumentName}`,
             },
           }));
         }
@@ -361,7 +383,7 @@ const SpotBranch = () => {
       render: (text, record) => {
         return (
           <span className="instrument-column">
-            {`${record.instrumentName}${record.secondaryInstrumentName}`}
+            {`${record.instrumentTitle}`}
           </span>
         );
       },
@@ -490,6 +512,10 @@ const SpotBranch = () => {
                               secondaryInstrumentID={
                                 data.secondaryInstrumentID || 0
                               }
+                              viewSecondaryInstrumentName={
+                                data.viewSecondaryInstumentName
+                              }
+                              viewInstumentName={data.viewInstumentName}
                               instrumentName={data.instrumentName}
                               secondaryInstrumentName={
                                 data.secondaryInstrumentName

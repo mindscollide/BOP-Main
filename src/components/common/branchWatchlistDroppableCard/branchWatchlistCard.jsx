@@ -27,6 +27,8 @@ const BranchRateCardsOfWatchList = ({
   secondaryInstrumentID,
   instrumentName,
   secondaryInstrumentName,
+  viewInstumentName,
+  viewSecondaryInstrumentName,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -55,7 +57,7 @@ const BranchRateCardsOfWatchList = ({
     dispatch(setIBuySellData(Data)); // Dispatch the action to set the data in the Redux store
     dispatch(setRfqModalOpen(true));
   };
-  
+
   useEffect(() => {
     if (isTradeRights !== null) {
       setRFqButtonState(JSON.parse(isTradeRights));
@@ -72,19 +74,20 @@ const BranchRateCardsOfWatchList = ({
               !marketStatus || !rfqButtonState
                 ? "DroppableBox_disbaled"
                 : "DroppableBox"
-            }>
+            }
+          >
             <Row>
               <Col lg={12} md={12} sm={12}>
-                <span className='DroppableBoxCurrencyLabel'>
-                  {currencyLabel.slice(0, 3)}
+                <span className="DroppableBoxCurrencyLabel">
+                  {viewInstumentName}
                 </span>
-                <span className='color-white fs-5 fw-normal'>
+                <span className="color-white fs-5 fw-normal">
                   {" "}
-                  {currencyLabel.slice(3, 6)}
+                  {viewSecondaryInstrumentName}
                 </span>
               </Col>
             </Row>
-            <Row className='mt-4'>
+            <Row className="mt-4">
               {isBranch ? (
                 <>
                   <Col lg={6} md={6} sm={6}>
