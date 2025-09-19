@@ -459,7 +459,7 @@ const NonFEDiscountingModal = ({
                 <Row className="mt-2">
                   <Col lg={6} md={6} sm={6}>
                     <div className="d-flex flex-column flex-wrap">
-                      <span className="SubHeadings">Amount</span>
+                      <span className="SubHeadings">Amount*</span>
                       <NumericFormat
                         customInput={InputFIeld}
                         decimalScale={0}

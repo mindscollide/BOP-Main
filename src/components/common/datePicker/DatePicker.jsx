@@ -15,7 +15,7 @@ const DatePickerCom = ({
 }) => {
   return (
     <DatePicker
-      containerClassName='d-block'
+      containerClassName="d-block"
       value={value}
       onChange={onChange}
       format={format}
@@ -25,6 +25,7 @@ const DatePickerCom = ({
       maxDate={maxDate}
       zIndex={zIndex}
       render={<InputField placeholder={placeholder} applyClass={applyClass} />}
+      editable={false}
     />
   );
 };
