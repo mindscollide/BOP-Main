@@ -187,7 +187,6 @@ const TenoreWiseCurrentAndLastRates = ({
           !tenorList?.some((data) => data.tenorID === tenorData.tenorID)
       );
 
-      // Process the remaining data
       const processedData = filteredRates
         .map((item) => {
           const matchingTenor = updateTenorsDays.find(
@@ -207,7 +206,15 @@ const TenoreWiseCurrentAndLastRates = ({
             dateTime: item.dateTime,
           };
         })
+        // ✅ remove duplicates by tenorID
+        .reduce((acc, curr) => {
+          if (!acc.some((item) => item.tenorID === curr.tenorID)) {
+            acc.push(curr);
+          }
+          return acc;
+        }, [])
         .sort((a, b) => (a.tenorDays || 0) - (b.tenorDays || 0));
+
       setDate(processedData[0]?.dateTime);
       dispatch(setForwardsForTreasuryBranch(processedData));
       dispatch(tenorWiseFowardsRatesPublishedActions(null));
