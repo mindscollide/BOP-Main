@@ -113,20 +113,24 @@ const FeDiscountingTable = () => {
     ) {
       try {
         const { rates } = getFeDiscountingData;
+
+        console.log(
+          { rates, getAllTenorsData, GetAllInstrumentForTreasury, InputCell },
+          "buildDiscountingTable"
+        );
+        const DiscountingInstruments =
+          GetAllInstrumentForTreasury?.discountingInstruments;
+
+        const getAllInstrument = { instruments: DiscountingInstruments };
         const { rowData, columnsData } = buildDiscountingTable(
           5,
           rates,
           getAllTenorsData,
-          GetAllInstrumentForTreasury,
+          getAllInstrument,
           InputCell,
           onInputChange
         );
-        console.log(
-          rowData,
-          columnsData,
-          rates,
-          "getFeDiscountingDatagetFeDiscountingData"
-        );
+
         if (rowData.length > 0) {
           setRowData(rowData);
           setColumnsData(columnsData);

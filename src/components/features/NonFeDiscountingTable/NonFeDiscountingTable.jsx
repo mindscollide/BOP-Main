@@ -91,10 +91,10 @@ const NonFeDiscountingTable = () => {
   useEffect(() => {
     if (getAllTenorsData !== null && GetAllInstrumentForTreasury !== null) {
       try {
-        const { rates } = 
-        NonFeDiscountingPublishedData !== null &&
-        NonFeDiscountingPublishedData !== undefined &&
-        NonFeDiscountingPublishedData; ;
+        const { rates } =
+          NonFeDiscountingPublishedData !== null &&
+          NonFeDiscountingPublishedData !== undefined &&
+          NonFeDiscountingPublishedData;
         const DiscountingInstruments =
           GetAllInstrumentForTreasury.nonFEDiscountingInstruments;
         const getAllInstrument = { instruments: DiscountingInstruments };
@@ -106,12 +106,7 @@ const NonFeDiscountingTable = () => {
           InputCell,
           onInputChange
         );
-        console.log(
-          rowData,
-          columnsData,
-          rates,
-          "getFeDiscountingDatagetFeDiscountingData"
-        );
+
         if (rowData.length > 0) {
           setTableData(rowData);
           setColumnsData(columnsData);
@@ -176,21 +171,21 @@ const NonFeDiscountingTable = () => {
   };
   return (
     <>
-      <div className='datetime fw-bold text-end mb-2 ff-roboto'>
+      <div className="datetime fw-bold text-end mb-2 ff-roboto">
         {date
           ? moment(formatDateUTCToGMT(date)).format("DD MMM YYYY, hh:mm:ss")
           : ""}
       </div>
       <GlobalTable
-        prefixCls='DealerAndTreasuryDiscountTable'
+        prefixCls="DealerAndTreasuryDiscountTable"
         columns={columnsData}
         dataSource={tableData}
         pagination={false}
       />
 
-      <span className='d-flex justify-content-center mt-4'>
+      <span className="d-flex justify-content-center mt-4">
         <CustomButton
-          applyClass='publishForwardsBtn'
+          applyClass="publishForwardsBtn"
           value={"Publish Non FE Discounting"}
           onClick={handlePublishDiscount}
           disabled={marketStatus === false ? true : false}
