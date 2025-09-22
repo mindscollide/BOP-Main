@@ -46,6 +46,7 @@ const CancelReasonModal = ({
                 name={"cancelReasonInput"}
                 value={cancelReasonComment}
                 onChange={handleChange}
+                maxLength={1500}
                 placeholder={"Please enter cancel reason"}
                 applyClass={"cancelReasonModalInputField"}
               />

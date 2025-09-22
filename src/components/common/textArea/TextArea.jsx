@@ -8,6 +8,7 @@ const TextArea = ({
   className,
   name,
   onChange,
+  maxLength,
   required,
 }) => {
   return (
@@ -18,7 +19,9 @@ const TextArea = ({
       name={name}
       onChange={onChange}
       required={required}
-      placeholder={placeholder}>
+      maxLength={maxLength}
+      placeholder={placeholder}
+    >
       {text}
     </textarea>
   );

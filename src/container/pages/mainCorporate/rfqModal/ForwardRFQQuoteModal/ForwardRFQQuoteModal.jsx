@@ -499,6 +499,7 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                   className="form-control"
                   name={"cancelReasonInput"}
                   value={cancelReasonComment}
+                  maxLength={1500}
                   onChange={(event) =>
                     setCancelReasonComment(event.target.value.trim())
                   }

@@ -40,10 +40,12 @@ export const buildDiscountingTable = (
         TenorID: tenor.tenorID,
         tenorName: tenor.tenorName,
         tenorDays: tenor.tenorDays,
+        discountDays: tenor.discountingDays,
       };
 
       applicableInstruments.forEach((instrument) => {
         const compositeKey = `${instrument.instrumentID}-${tenor.tenorID}`;
+
         const rateValue = rateMap[compositeKey] ?? 0;
 
         row[`rate_${instrument.instrumentName}`] = rateValue;
@@ -63,6 +65,13 @@ export const buildDiscountingTable = (
           dataIndex: "tenorName",
           key: "tenorName",
           width: 80,
+        },
+        {
+          title: "Tenor Days",
+          dataIndex: "discountDays",
+          key: "discountingDays",
+          align: "center",
+          width: 50,
         },
         ...applicableInstruments.map((inst) => ({
           title: inst.instrumentName,
@@ -94,6 +103,13 @@ export const buildDiscountingTable = (
               key: "tenorName",
               align: "center",
               width: 80,
+            },
+            {
+              title: "Tenor Days",
+              dataIndex: "discountDays",
+              key: "discountingDays",
+              align: "center",
+              width: 50,
             },
           ],
         },
