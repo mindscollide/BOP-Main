@@ -17,7 +17,7 @@ const Header = () => {
   console.log(branchDetails, "branchNamebranchName");
   return (
     <Navbar className={styles["top-header"]}>
-      <Nav className='ms-auto'>
+      <Nav className="ms-auto">
         {import.meta.env.VITE_APP_INCLUDE_BRANCH === "true" ||
         import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true" ? (
           <>
@@ -38,11 +38,13 @@ const Header = () => {
                 active={true}
                 to={"dealer"}
                 className={
-                  location.pathname.toLowerCase() === "/BOP/dealer".toLowerCase()
+                  location.pathname.toLowerCase() ===
+                  "/BOP/dealer".toLowerCase()
                     ? `${styles["nav-link_active"]} `
                     : `${styles["nav-link"]}`
-                }>
-                Dealer
+                }
+              >
+                FX Trading (Interbank)
               </Nav.Link>
             </Nav.Item>
             <Nav.Item className={styles["nav-item"]}>
@@ -50,10 +52,12 @@ const Header = () => {
                 as={Link}
                 to={"category"}
                 className={
-                  location.pathname.toLowerCase() === "/BOP/category".toLowerCase()
+                  location.pathname.toLowerCase() ===
+                  "/BOP/category".toLowerCase()
                     ? `${styles["nav-link_active"]} `
                     : `${styles["nav-link"]}`
-                }>
+                }
+              >
                 Category
               </Nav.Link>
             </Nav.Item>
@@ -62,11 +66,13 @@ const Header = () => {
                 as={Link}
                 to={"treasury"}
                 className={
-                  location.pathname.toLowerCase() === "/BOP/treasury".toLowerCase()
+                  location.pathname.toLowerCase() ===
+                  "/BOP/treasury".toLowerCase()
                     ? `${styles["nav-link_active"]}`
                     : `${styles["nav-link"]}`
-                }>
-                Treasury
+                }
+              >
+                Treasury Sales (Dealer)
               </Nav.Link>
             </Nav.Item>
           </>

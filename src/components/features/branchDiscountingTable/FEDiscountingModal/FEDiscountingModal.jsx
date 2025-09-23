@@ -554,7 +554,7 @@ const FEDiscountingModal = ({
                 <Row className="">
                   <Col lg={8} md={8} sm={8} className="pe-0">
                     <div className="d-flex flex-column flex-wrap">
-                      <span className="SubHeadings">Tenor*</span>
+                      <span className="SubHeadings">Fixed Days*</span>
                       <InputFIeld
                         onChange={handleChangeTenor}
                         value={tenorValue}
@@ -575,7 +575,7 @@ const FEDiscountingModal = ({
                   </Col>
                   {errors.TenorDays && (
                     <span className="text-danger small">
-                      Please enter valid tenor days (1-1000)
+                      Please enter valid fixed days (1-1000)
                     </span>
                   )}
                 </Row>

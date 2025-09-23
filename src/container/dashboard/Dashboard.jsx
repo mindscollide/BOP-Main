@@ -302,6 +302,24 @@ const Dashboard = () => {
         startTransition(() => {
           dispatch(BlotterTranscationCancelled(payload));
           dispatch(BlotterTranscationCancelledForTreasury(payload));
+
+          //if treasury and dealer true then
+          if (isTreasury || isDealer) {
+            const startDate = new Date();
+            startDate.setHours(0, 0, 0, 0);
+
+            const endDate = new Date();
+            endDate.setHours(23, 58, 59, 99);
+
+            const Data = {
+              StartDate: formatDateToUTC(startDate, 1),
+              EndDate: formatDateToUTC(endDate, 1),
+            };
+            dispatch(GetMisDataByRangeAPI({ navigate, Data }));
+            if (isTreasury) {
+              dispatch(GetNOPDataAPI({ navigate }));
+            }
+          }
         });
         break;
 

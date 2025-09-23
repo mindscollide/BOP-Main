@@ -89,6 +89,7 @@ const RFQModal = () => {
   // Get pre-filled buy/sell data from Redux store (if any)
   const iBuySellData = useSelector((state) => state.modalReducer.IBuySellData);
 
+  console.log(iBuySellData, "iBuySellData");
   const SaveSpotTransactionLoading = useSelector(
     (state) => state.BlotterSlicer.SaveSpotTransactionAPILoading
   );
@@ -369,27 +370,43 @@ const RFQModal = () => {
       // Process instruments to create dropdown options
       const validInstruments = spotApplicableInstruments
         .map((instrument) => {
+          if (instrument.isBuy === true || instrument.isSell == true) {
+            return {
+              ...instrument,
+              // Combine primary and secondary instrument names for display
+              label: `${instrument.instrumentName}${
+                instrument.secondaryInstrumentName || ""
+              }`,
+              value: instrument.instrumentID,
+              secondaryInstrumentID: instrument.secondaryInstrumentID,
+              secondaryInstrumentName: instrument.secondaryInstrumentName,
+            };
+          }
+          return null;
           // Only include instruments valid for both buy and sell
-
-          return {
-            ...instrument,
-            // Combine primary and secondary instrument names for display
-            label: `${instrument.instrumentName}${
-              instrument.secondaryInstrumentName || ""
-            }`,
-            value: instrument.instrumentID,
-            secondaryInstrumentID: instrument.secondaryInstrumentID,
-            secondaryInstrumentName: instrument.secondaryInstrumentName,
-          };
         })
         .filter(Boolean); // Remove null entries
 
       // Update state only if valid instruments were found
       if (validInstruments.length > 0) {
+        const firstInstrument = validInstruments[0];
+
         if (iBuySellData === null) {
-          setSelectedCurrency(validInstruments[0]);
+          setSelectedCurrency(firstInstrument);
+          let defaultType = { value: 0, label: "" };
+          if (firstInstrument.isBuy && firstInstrument.isSell) {
+            defaultType = isCorporate
+              ? { value: 2, label: "Sell" }
+              : { value: 1, label: "Buy" };
+          } else if (firstInstrument.isBuy) {
+            defaultType = { value: 1, label: "Buy" };
+          } else if (firstInstrument.isSell) {
+            defaultType = { value: 2, label: "Sell" };
+          }
+
+          setTypeOptionSelected(defaultType);
+          setCurrencyOptions(validInstruments);
         }
-        setCurrencyOptions(validInstruments);
       } else {
         // Handle empty state
         console.warn(
@@ -426,8 +443,22 @@ const RFQModal = () => {
    * Handles currency selection change
    * @param {Object} selectedOption - The selected option
    */
-  const handleCurrencyChange = (selectedOption) => {
-    setSelectedCurrency(selectedOption);
+  const handleCurrencyChange = (selectCurrency) => {
+    setSelectedCurrency(selectCurrency);
+    if (selectCurrency?.isBuy && selectCurrency?.isSell) {
+      const defaultType = isCorporate
+        ? { value: 2, label: "Sell" }
+        : { value: 1, label: "Buy" };
+      setTypeOptionSelected(defaultType);
+    } else if (selectCurrency?.isBuy && !selectCurrency?.isSell) {
+      const defaultType = { value: 1, label: "Buy" };
+      setTypeOptionSelected(defaultType);
+    } else if (!selectCurrency?.isBuy && selectCurrency?.isSell) {
+      const defaultType = { value: 2, label: "Sell" };
+      setTypeOptionSelected(defaultType);
+    } else {
+      setTypeOptionSelected({ value: 0, label: "" });
+    }
   };
 
   /**
@@ -492,48 +523,50 @@ const RFQModal = () => {
    * 3. Updates all related state (selectedNature, natureOfBusinessOptions, typeOptionSelected)
    * 4. Sets first valid option as default selection
    */
-  const handleChangeType = (selectType) => {
-    // Validate input data exists
-    if (!natureOfBusinessList?.natureOfTransactions) {
-      console.error("Nature of business data not available");
-      return;
-    }
+  // const handleChangeType = (selectType) => {
+  //   // Validate input data exists
+  //   if (!natureOfBusinessList?.natureOfTransactions) {
+  //     console.error("Nature of business data not available");
+  //     return;
+  //   }
 
-    // Filter and transform options based on transaction type
-    const filteredOptions = natureOfBusinessList.natureOfTransactions
-      .filter((business) => {
-        const isSpotTransaction = business.isForSpot === true;
+  //   // Filter and transform options based on transaction type
+  //   const filteredOptions = natureOfBusinessList.natureOfTransactions
+  //     .filter((business) => {
+  //       const isSpotTransaction = business.isForSpot === true;
 
-        // Check transaction type compatibility
-        if (selectType.value === 1) {
-          if (isCorporate) {
-            return isSpotTransaction && business.isForSell === true;
-          }
-          return isSpotTransaction && business.isForBuy === true;
-        }
-        if (isCorporate) {
-          return isSpotTransaction && business.isForBuy === true;
-        }
-        return isSpotTransaction && business.isForSell === true;
-      })
-      .map((business) => ({
-        ...business,
-        label: business.name,
-        value: business.id,
-      }));
-    if (iBuySellData === null) {
-      // Update state with new options and selections
+  //       // Check transaction type compatibility
+  //       if (selectType.value === 1) {
+  //         if (isCorporate) {
+  //           return isSpotTransaction && business.isForSell === true;
+  //         }
+  //         return isSpotTransaction && business.isForBuy === true;
+  //       }
+  //       if (isCorporate) {
+  //         return isSpotTransaction && business.isForBuy === true;
+  //       }
+  //       return isSpotTransaction && business.isForSell === true;
+  //     })
+  //     .map((business) => ({
+  //       ...business,
+  //       label: business.name,
+  //       value: business.id,
+  //     }));
+  //   if (iBuySellData === null) {
+  //     // Update state with new options and selections
 
-      setNatureOfBusinessOptions(filteredOptions);
+  //     setNatureOfBusinessOptions(filteredOptions);
 
-      // Set first option as default if available, otherwise null
-      setSelectedNature(filteredOptions[0] || null);
-    }
+  //     // Set first option as default if available, otherwise null
+  //     setSelectedNature(filteredOptions[0] || null);
+  //   }
 
-    // Update selected transaction type
-    setTypeOptionSelected(selectType);
+  //   // Update selected transaction type
+  //   setTypeOptionSelected(selectType);
+  // };
+  const handleChangeType = (selectedValue) => {
+    setTypeOptionSelected(selectedValue);
   };
-
   /**
    * Handles corporate selection change (for branch users)
    * @param {Object} selectedOption - The selected corporate
@@ -718,11 +751,21 @@ const RFQModal = () => {
                   <SelectDropdown
                     placeholder="Select Type"
                     classNamePrefix="RfqSpot"
-                    value={
-                      typeOptionSelected.value === 0 ? null : typeOptionSelected
-                    }
+                    value={typeOptionSelected}
                     onChange={handleChangeType}
-                    options={typeOptions}
+                    // options={typeOptions}
+                    options={typeOptions.filter((option) => {
+                      if (selectedCurrency?.isBuy && selectedCurrency?.isSell) {
+                        return option.value === 1 || option.value === 2;
+                      }
+                      if (selectedCurrency?.isBuy) {
+                        return option.value === 1;
+                      }
+                      if (selectedCurrency?.isSell) {
+                        return option.value === 2;
+                      }
+                      return true;
+                    })}
                     // isDisabled={iBuySellData !== null ? true : false}
                   />
                 </Col>

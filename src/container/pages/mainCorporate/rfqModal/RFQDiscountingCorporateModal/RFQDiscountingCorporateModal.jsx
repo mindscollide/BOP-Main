@@ -517,7 +517,9 @@ const RFQDiscountingCorporateModal = () => {
               <Row className="mt-2">
                 <Col lg={7} md={7} sm={7} className="pe-0">
                   <div className="d-flex flex-column flex-wrap">
-                    <label className="LabelRFQTransactionModal">Tenor*</label>
+                    <label className="LabelRFQTransactionModal">
+                      Fixed Days*
+                    </label>
                     <InputFIeld
                       onChange={handleChangeTenor}
                       value={Tenor}
