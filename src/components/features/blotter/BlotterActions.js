@@ -39,6 +39,7 @@ import { blotterApi, watchListApi } from "@/common/apiend_points";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
 import { setForwardQuoteModalData } from "@/store/BlotterSlicer/BlotterSlicer";
 import {
+  setChatModal,
   setDiscountingQuoteModal,
   setDiscountingRFQModal,
   setForwardQuoteModal,
@@ -65,7 +66,8 @@ export const BlotterDataAPI = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(BlotterDataAPI({ navigate, Data }));
+        return;
+        // dispatch(BlotterDataAPI({ navigate, Data }));
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -131,7 +133,8 @@ export const GetBlotterOutstandingDealsDataAPI = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(GetBlotterOutstandingDealsDataAPI({ navigate, Data }));
+        return;
+        // dispatch(GetBlotterOutstandingDealsDataAPI({ navigate, Data }));
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -198,7 +201,8 @@ export const SaveSpotTransactionAPI = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(SaveSpotTransactionAPI({ navigate, Data }));
+        return;
+        // dispatch(SaveSpotTransactionAPI({ navigate, Data, setErrorMessage }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -315,6 +319,7 @@ export const SaveForwardTransactionAPI = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(
           SaveForwardTransactionAPI({
             navigate,
@@ -437,6 +442,7 @@ export const SaveFEDiscountingTransactionAPI = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(
           SaveFEDiscountingTransactionAPI({
             navigate,
@@ -559,6 +565,7 @@ export const SaveNonFEDiscountingTransactionAPI = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(
           SaveNonFEDiscountingTransactionAPI({
             navigate,
@@ -678,6 +685,7 @@ export const AssignTransactionAPI = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(AssignTransactionAPI({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -761,6 +769,7 @@ export const AcceptTransactionAPI = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(AcceptTransactionAPI({ navigate, Data, val }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -851,6 +860,7 @@ export const RejectTransactionAPI = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(
           RejectTransactionAPI({ navigate, Data, setCancelReasonModal, val })
         );
@@ -943,6 +953,7 @@ export const AcceptTransactionCancellationRequest = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(AcceptTransactionCancellationRequest({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -979,6 +990,7 @@ export const RejectTransactionCancellationRequest = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(RejectTransactionCancellationRequest({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -1018,6 +1030,7 @@ export const CancelTransaction = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(CancelTransaction({ navigate, Data, setCancelReasonModal }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -1105,6 +1118,7 @@ export const RequestCancellation = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(RequestCancellation({ navigate, Data, setCancelReasonModal }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -1189,6 +1203,7 @@ export const AcceptRFQTransaction = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(AcceptRFQTransaction({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -1275,6 +1290,7 @@ export const RejectRFQTransaction = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(
           RejectRFQTransaction({ navigate, Data, setCancelReasonModal })
         );
@@ -1351,7 +1367,7 @@ export const RejectRFQTransaction = createAsyncThunk(
 export const SaveSpotTransactionRFQ = createAsyncThunk(
   "Blotter/SaveSpotTransactionRFQ",
   async (
-    { navigate, Data, setOpenRfqModal },
+    { navigate, Data, setOpenRfqModal, setErrorMessage },
     { dispatch, rejectWithValue }
   ) => {
     try {
@@ -1364,7 +1380,15 @@ export const SaveSpotTransactionRFQ = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(SaveSpotTransactionRFQ({ navigate, Data, setOpenRfqModal }));
+        return;
+        dispatch(
+          SaveSpotTransactionRFQ({
+            navigate,
+            Data,
+            setOpenRfqModal,
+            setErrorMessage,
+          })
+        );
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -1404,6 +1428,50 @@ export const SaveSpotTransactionRFQ = createAsyncThunk(
               )
           ) {
             return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveSpotTransactionRFQ_06".toLowerCase()
+              )
+          ) {
+            setErrorMessage((prev) => {
+              return {
+                ...prev,
+                status: true,
+                message: `Daily Limit Exceeded from ${response.data.responseResult.dailyLimitRemaining.toFixed(
+                  2
+                )}`,
+              };
+            });
+            return {
+              response: response.data.responseResult,
+              message: `Daily Limit Exceeded from ${response.data.responseResult.dailyLimitRemaining.toFixed(
+                2
+              )}`,
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveSpotTransactionRFQ_07".toLowerCase()
+              )
+          ) {
+            setErrorMessage((prev) => {
+              return {
+                ...prev,
+                status: true,
+                message: `Max Transaction Limit Exceeded from ${response.data.responseResult.maxLimit.toFixed(
+                  2
+                )}`,
+              };
+            });
+            return {
+              response: response.data.responseResult,
+              message: `Max Transaction Limit Exceeded from ${response.data.responseResult.maxLimit.toFixed(
+                2
+              )}`,
+            };
           } else {
             return rejectWithValue("Something went wrong");
           }
@@ -1421,7 +1489,10 @@ export const SaveSpotTransactionRFQ = createAsyncThunk(
 
 export const SaveForwardTransactionRFQApi = createAsyncThunk(
   "Blotter/SaveForwardTransactionRFQ",
-  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+  async (
+    { navigate, Data, setErrorMessage },
+    { dispatch, rejectWithValue }
+  ) => {
     try {
       const postAPI = createPostAPI(
         blotterApi,
@@ -1432,7 +1503,10 @@ export const SaveForwardTransactionRFQApi = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(SaveForwardTransactionRFQApi({ navigate, Data }));
+        return;
+        dispatch(
+          SaveForwardTransactionRFQApi({ navigate, Data, setErrorMessage })
+        );
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -1472,6 +1546,50 @@ export const SaveForwardTransactionRFQApi = createAsyncThunk(
               )
           ) {
             return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveForwardTransactionRFQ_06".toLowerCase()
+              )
+          ) {
+            setErrorMessage((prev) => {
+              return {
+                ...prev,
+                status: true,
+                message: `Daily Limit Exceeded from ${response.data.responseResult.dailyLimitRemaining.toFixed(
+                  2
+                )}`,
+              };
+            });
+            return {
+              response: response.data.responseResult,
+              message: `Daily Limit Exceeded from ${response.data.responseResult.dailyLimitRemaining.toFixed(
+                2
+              )}`,
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveForwardTransactionRFQ_07".toLowerCase()
+              )
+          ) {
+            setErrorMessage((prev) => {
+              return {
+                ...prev,
+                status: true,
+                message: `Max Transaction Limit Exceeded from ${response.data.responseResult.maxLimit.toFixed(
+                  2
+                )}`,
+              };
+            });
+            return {
+              response: response.data.responseResult,
+              message: `Max Transaction Limit Exceeded from ${response.data.responseResult.maxLimit.toFixed(
+                2
+              )}`,
+            };
           } else {
             return rejectWithValue("Something went wrong");
           }
@@ -1489,7 +1607,10 @@ export const SaveForwardTransactionRFQApi = createAsyncThunk(
 
 export const SaveFEDiscountingTransactionRFQ = createAsyncThunk(
   "Blotter/SaveFEDiscountingTransactionRFQ",
-  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+  async (
+    { navigate, Data, setErrorMessage },
+    { dispatch, rejectWithValue }
+  ) => {
     try {
       const postAPI = createPostAPI(
         blotterApi,
@@ -1500,7 +1621,10 @@ export const SaveFEDiscountingTransactionRFQ = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(SaveFEDiscountingTransactionRFQ({ navigate, Data }));
+        return;
+        dispatch(
+          SaveFEDiscountingTransactionRFQ({ navigate, Data, setErrorMessage })
+        );
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -1540,6 +1664,50 @@ export const SaveFEDiscountingTransactionRFQ = createAsyncThunk(
               )
           ) {
             return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveFEDiscountingTransactionRFQ_06".toLowerCase()
+              )
+          ) {
+            setErrorMessage((prev) => {
+              return {
+                ...prev,
+                status: true,
+                message: `Daily Limit Exceeded from ${response.data.responseResult.dailyLimitRemaining.toFixed(
+                  2
+                )}`,
+              };
+            });
+            return {
+              response: response.data.responseResult,
+              message: `Daily Limit Exceeded from ${response.data.responseResult.dailyLimitRemaining.toFixed(
+                2
+              )}`,
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveFEDiscountingTransactionRFQ_07".toLowerCase()
+              )
+          ) {
+            setErrorMessage((prev) => {
+              return {
+                ...prev,
+                status: true,
+                message: `Max Transaction Limit Exceeded from ${response.data.responseResult.maxLimit.toFixed(
+                  2
+                )}`,
+              };
+            });
+            return {
+              response: response.data.responseResult,
+              message: `Max Transaction Limit Exceeded from ${response.data.responseResult.maxLimit.toFixed(
+                2
+              )}`,
+            };
           } else {
             return rejectWithValue("Something went wrong");
           }
@@ -1557,7 +1725,10 @@ export const SaveFEDiscountingTransactionRFQ = createAsyncThunk(
 
 export const SaveNonFEDiscountingTransactionRFQ = createAsyncThunk(
   "Blotter/SaveNonFEDiscountingTransactionRFQ",
-  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+  async (
+    { navigate, Data, setErrorMessage },
+    { dispatch, rejectWithValue }
+  ) => {
     try {
       const postAPI = createPostAPI(
         blotterApi,
@@ -1568,7 +1739,15 @@ export const SaveNonFEDiscountingTransactionRFQ = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
-        dispatch(SaveNonFEDiscountingTransactionRFQ({ navigate, Data }));
+
+        dispatch(
+          SaveNonFEDiscountingTransactionRFQ({
+            navigate,
+            Data,
+            setErrorMessage,
+          })
+        );
+        return;
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
@@ -1608,6 +1787,50 @@ export const SaveNonFEDiscountingTransactionRFQ = createAsyncThunk(
               )
           ) {
             return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveNonFEDiscountingTransactionRFQ_06".toLowerCase()
+              )
+          ) {
+            setErrorMessage((prev) => {
+              return {
+                ...prev,
+                status: true,
+                message: `Daily Limit Exceeded from ${response.data.responseResult.dailyLimitRemaining.toFixed(
+                  2
+                )}`,
+              };
+            });
+            return {
+              response: response.data.responseResult,
+              message: `Daily Limit Exceeded from ${response.data.responseResult.dailyLimitRemaining.toFixed(
+                2
+              )}`,
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_SaveNonFEDiscountingTransactionRFQ_07".toLowerCase()
+              )
+          ) {
+            setErrorMessage((prev) => {
+              return {
+                ...prev,
+                status: true,
+                message: `Max Transaction Limit Exceeded from ${response.data.responseResult.maxLimit.toFixed(
+                  2
+                )}`,
+              };
+            });
+            return {
+              response: response.data.responseResult,
+              message: `Max Transaction Limit Exceeded from ${response.data.responseResult.maxLimit.toFixed(
+                2
+              )}`,
+            };
           } else {
             return rejectWithValue("Something went wrong");
           }
@@ -1636,6 +1859,7 @@ export const RFQTransactionQuotation = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(RFQTransactionQuotation({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -1720,6 +1944,7 @@ export const RFQForwardTransactionQuotation = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(RFQForwardTransactionQuotation({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -1805,6 +2030,7 @@ export const RFQFEDiscountingTransactionQuotation = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(RFQFEDiscountingTransactionQuotation({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -1816,6 +2042,7 @@ export const RFQFEDiscountingTransactionQuotation = createAsyncThunk(
                 "Blotter_BlotterServiceManager_RFQFEDiscountingTransactionQuotation_01".toLowerCase()
               )
           ) {
+            dispatch(setDiscountingQuoteModal(false));
             return {
               response: response.data.responseResult,
               message: "FE Discounting quotation generated successfully",
@@ -1856,7 +2083,7 @@ export const RFQFEDiscountingTransactionQuotation = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "Blotter_BlotterServiceManager_RFQFEDiscountingTransactionQuotation_05".toLowerCase()
+                "Blotter_BlotterServiceManager_RFQFEDiscountingTransactionQuotation_06".toLowerCase()
               )
           ) {
             return rejectWithValue("Invalid Transaction Status");
@@ -1888,6 +2115,7 @@ export const RFQNonFEDiscountingTransactionQuotation = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(RFQNonFEDiscountingTransactionQuotation({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -1975,6 +2203,7 @@ export const ExpireRFQTransaction = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(ExpireRFQTransaction({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -2062,6 +2291,7 @@ export const GetSpotTransactionDetailsApi = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(GetSpotTransactionDetailsApi({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -2074,6 +2304,7 @@ export const GetSpotTransactionDetailsApi = createAsyncThunk(
               )
           ) {
             dispatch(setTransactionInfoModal(true));
+            dispatch(setChatModal(false));
 
             return {
               response: response.data.responseResult,
@@ -2131,6 +2362,7 @@ export const GetForwardTransactionDetailsApi = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(GetForwardTransactionDetailsApi({ navigate, Data, val }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -2144,6 +2376,7 @@ export const GetForwardTransactionDetailsApi = createAsyncThunk(
           ) {
             if (val !== 1) {
               dispatch(setTransactionInfoModal(true));
+              dispatch(setChatModal(false));
             }
 
             return {
@@ -2202,6 +2435,7 @@ export const GetFEDiscountingTransactionDetailsApi = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(
           GetFEDiscountingTransactionDetailsApi({ navigate, Data, val })
         );
@@ -2217,6 +2451,7 @@ export const GetFEDiscountingTransactionDetailsApi = createAsyncThunk(
           ) {
             if (val !== 1) {
               dispatch(setTransactionInfoModal(true));
+              dispatch(setChatModal(false));
             }
             return {
               response: response.data.responseResult,
@@ -2276,6 +2511,7 @@ export const GetNonFEDiscountingTransactionDetailsApi = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(
           GetNonFEDiscountingTransactionDetailsApi({ navigate, Data, val })
         );
@@ -2291,6 +2527,7 @@ export const GetNonFEDiscountingTransactionDetailsApi = createAsyncThunk(
           ) {
             if (val !== 1) {
               dispatch(setTransactionInfoModal(true));
+              dispatch(setChatModal(false));
             }
 
             return {
@@ -2354,6 +2591,7 @@ export const CancelPendingTransactionApi = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(
           CancelPendingTransactionApi({ navigate, Data, setCancelReasonModal })
         );
@@ -2364,7 +2602,7 @@ export const CancelPendingTransactionApi = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "Blotter_BlotterServiceManager_CancelPendingRFQTransaction_01".toLowerCase()
+                "Blotter_BlotterServiceManager_CancelPendingTransaction_01".toLowerCase()
               )
           ) {
             setCancelReasonModal(false);
@@ -2376,7 +2614,7 @@ export const CancelPendingTransactionApi = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "Blotter_BlotterServiceManager_CancelPendingRFQTransaction_02".toLowerCase()
+                "Blotter_BlotterServiceManager_CancelPendingTransaction_02".toLowerCase()
               )
           ) {
             return rejectWithValue("Something went wrong");
@@ -2384,7 +2622,7 @@ export const CancelPendingTransactionApi = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "Blotter_BlotterServiceManager_CancelPendingRFQTransaction_03".toLowerCase()
+                "Blotter_BlotterServiceManager_CancelPendingTransaction_03".toLowerCase()
               )
           ) {
             return rejectWithValue("Invalid Role");
@@ -2392,7 +2630,7 @@ export const CancelPendingTransactionApi = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "Blotter_BlotterServiceManager_CancelPendingRFQTransaction_04".toLowerCase()
+                "Blotter_BlotterServiceManager_CancelPendingTransaction_04".toLowerCase()
               )
           ) {
             return rejectWithValue("Something went wrong");
@@ -2400,7 +2638,7 @@ export const CancelPendingTransactionApi = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "Blotter_BlotterServiceManager_CancelPendingRFQTransaction_05".toLowerCase()
+                "Blotter_BlotterServiceManager_CancelPendingTransaction_05".toLowerCase()
               )
           ) {
             return rejectWithValue("Invalid Transaction");
@@ -2408,7 +2646,7 @@ export const CancelPendingTransactionApi = createAsyncThunk(
             responseMessage
               .toLowerCase()
               .includes(
-                "Blotter_BlotterServiceManager_CancelPendingRFQTransaction_06".toLowerCase()
+                "Blotter_BlotterServiceManager_CancelPendingTransaction_06".toLowerCase()
               )
           ) {
             return rejectWithValue("Invalid Transaction Status");
@@ -2440,6 +2678,7 @@ export const calculateTenorSwapAndForwardRateApi = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(calculateTenorSwapAndForwardRateApi({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -2454,7 +2693,7 @@ export const calculateTenorSwapAndForwardRateApi = createAsyncThunk(
             console.log("Checking", response.data.responseResult);
             return {
               response: response.data.responseResult,
-              message: "Forward RFQ data calculated successfully",
+              message: "Rates calculated",
             };
           } else if (
             responseMessage
@@ -2464,6 +2703,14 @@ export const calculateTenorSwapAndForwardRateApi = createAsyncThunk(
               )
           ) {
             return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_CalculateTenorSwapAndForwardRate_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Rates not available");
           } else return rejectWithValue;
         } else {
           return rejectWithValue("Something went wrong");
@@ -2490,6 +2737,7 @@ export const calculateNonFeSwapAndDiscountingRateApi = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(calculateNonFeSwapAndDiscountingRateApi({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -2504,7 +2752,7 @@ export const calculateNonFeSwapAndDiscountingRateApi = createAsyncThunk(
             console.log("Checking", response.data.responseResult);
             return {
               response: response.data.responseResult,
-              message: "Forward RFQ data calculated successfully",
+              message: "Rates calculated",
             };
           } else if (
             responseMessage
@@ -2514,6 +2762,14 @@ export const calculateNonFeSwapAndDiscountingRateApi = createAsyncThunk(
               )
           ) {
             return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_CalculateNonFESwapAndDiscounting_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("No rates available");
           } else return rejectWithValue;
         } else {
           return rejectWithValue("Something went wrong");
@@ -2541,6 +2797,7 @@ export const CalculateFESwapAndDiscountingApi = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(CalculateFESwapAndDiscountingApi({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -2555,7 +2812,7 @@ export const CalculateFESwapAndDiscountingApi = createAsyncThunk(
             console.log("Checking", response.data.responseResult);
             return {
               response: response.data.responseResult,
-              message: "FE Swap and Discounting data calculated successfully",
+              message: "Rates Calculated",
             };
           } else if (
             responseMessage
@@ -2591,10 +2848,12 @@ export const GetSpotRatesForCounterPartyAPI = createAsyncThunk(
       const response = await GetSpotRatesForCounterPartyM();
       const { responseCode } = response.data;
 
-      if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
-        dispatch(GetSpotRatesForCounterPartyAPI({ navigate }));
-      } else if (responseCode === 200) {
+      // if (responseCode === 417) {
+      //   await dispatch(refreshTokenAction({ navigate }));
+      //   return;
+      //   dispatch(GetSpotRatesForCounterPartyAPI({ navigate }));
+      // } else
+      if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (
@@ -2667,6 +2926,7 @@ export const GetNOPDataAPI = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(GetNOPDataAPI({ navigate }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -2722,6 +2982,7 @@ export const CalculateFEDiscountingAPI = createAsyncThunk(
 
       if (responseCode === 417) {
         await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(CalculateFEDiscountingAPI({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -2736,7 +2997,7 @@ export const CalculateFEDiscountingAPI = createAsyncThunk(
             console.log("Checking", response.data.responseResult);
             return {
               response: response.data.responseResult,
-              message: "Forward RFQ data calculated successfully",
+              message: "Rates calculated",
             };
           } else if (
             responseMessage
@@ -2746,7 +3007,15 @@ export const CalculateFEDiscountingAPI = createAsyncThunk(
               )
           ) {
             return rejectWithValue("Something went wrong");
-          } else return rejectWithValue;
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_CalculateFEDiscounting_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("No rates available");
+          } else return rejectWithValue("Something went wrong");
         } else {
           return rejectWithValue("Something went wrong");
         }

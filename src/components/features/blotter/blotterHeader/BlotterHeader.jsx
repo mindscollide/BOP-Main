@@ -4,6 +4,7 @@ import React, {
   lazy,
   Suspense,
   startTransition,
+  useLayoutEffect,
 } from "react";
 import "./BlotterHeader.css";
 import { Col, Row } from "react-bootstrap";
@@ -24,7 +25,7 @@ import {
   DownloadPDFReportBlotterTrasactionCorporateAPI,
   DownloadPDFReportBlotterTrasactionTreasuryAPI,
 } from "@/store/ReportSlicer/ReportActions";
-import { formatPkAmount } from "@/utils/formatters";
+import { formatDateToUTC, formatPkAmount } from "@/utils/formatters";
 import SectionLoader from "@/components/common/loader/SectionLoader";
 import {
   BlotterTransactionAccepted,
@@ -38,6 +39,12 @@ import {
   BlotterTranscationCancelled,
 } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { Popover } from "antd";
+import {
+  BlotterDataAPI,
+  GetBlotterOutstandingDealsDataAPI,
+  GetNOPDataAPI,
+} from "../BlotterActions";
+import { GetMisDataByRangeAPI } from "../../SpotBranch/WatchlistAction";
 
 // Lazy load components
 const TXNSummary = lazy(() => import("../txnSummary/TXNSummary"));
@@ -52,6 +59,7 @@ const MailModal = lazy(() => import("../mailModal/MailModal"));
 const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
 const isCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
 const isTreasury = import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
+
 const BlotterHeader = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -83,7 +91,6 @@ const BlotterHeader = () => {
     (state) =>
       state.RealtimeActionsSlice.BlotterTransactionRFQExpiredForTreasury
   );
-  // console.log(blotterTransactionRFQExpiredForTreasury, "blotterTransactionRFQExpiredForTreasury")
   const blotterTransactionAcceptedForTreasury = useSelector(
     (state) => state.RealtimeActionsSlice.BlotterTransactionAcceptedForTreasury
   );
@@ -140,7 +147,8 @@ const BlotterHeader = () => {
   );
   const [exportButton, setExportButton] = useState(false);
 
-  useEffect(() => {
+  // Fixed: Replaced useEffect with useLayoutEffect to prevent state updates during render
+  useLayoutEffect(() => {
     try {
       if (GlobalStateGetBlotterData !== null) {
         const { tnxSummary, totalCount } = GlobalStateGetBlotterData;
@@ -173,7 +181,8 @@ const BlotterHeader = () => {
     }
   }, [GlobalStateGetBlotterData]);
 
-  useEffect(() => {
+  // Fixed: Replaced useEffect with useLayoutEffect to prevent state updates during render
+  useLayoutEffect(() => {
     try {
       if (getBlotterOutstandingData !== null) {
         const { outstandingDeals, totalCount } = getBlotterOutstandingData;
@@ -213,7 +222,8 @@ const BlotterHeader = () => {
   }, [getBlotterOutstandingData]);
 
   // This useEffect is for Treasury TXN Summary
-  useEffect(() => {
+  // Fixed: Replaced useEffect with useLayoutEffect to prevent state updates during render
+  useLayoutEffect(() => {
     const handleTransactionUpdate = (transaction) => {
       if (!transaction) return;
 
@@ -222,20 +232,12 @@ const BlotterHeader = () => {
         const existingIndex = updatedData.findIndex(
           (item) => item.pK_TransactionID === transaction.pK_TransactionID
         );
-        console.log(
-          updatedData,
-          transaction,
-          existingIndex,
-          "transactiontransaction"
-        );
-        if (existingIndex !== -1) {
-          console.log(updatedData, transaction, "transactiontransaction");
 
+        if (existingIndex !== -1) {
           updatedData[existingIndex] = transaction;
         } else {
-          console.log(updatedData, transaction, "transactiontransaction");
-
           updatedData.unshift(transaction);
+          setTreasuryTXNSummarysRow((prev) => prev + 1);
           setTreasuryTXNSummaryTotalRecords((prev) => prev + 1);
         }
 
@@ -280,7 +282,9 @@ const BlotterHeader = () => {
         const updatedData = (prevData || []).filter(
           (item) => item.pK_TransactionID !== transaction.pK_TransactionID
         );
-        setTreasuryTXNSummaryTotalRecords((prev) => Math.max(0, prev - 1));
+        setTreasuryTXNSummaryTotalRecords((prev) => prev - 1);
+        setTreasuryTXNSummarysRow((prev) => prev - 1);
+
         return updatedData;
       });
 
@@ -294,7 +298,8 @@ const BlotterHeader = () => {
     blotterTransactionRejectedForTreasury,
   ]);
 
-  useEffect(() => {
+  // Fixed: Replaced useEffect with useLayoutEffect to prevent state updates during render
+  useLayoutEffect(() => {
     const handleTransaction = (transaction, type) => {
       if (!transaction) return;
 
@@ -311,6 +316,8 @@ const BlotterHeader = () => {
               updatedData[index] = transaction;
             } else {
               updatedData = [transaction, ...updatedData];
+              setTreasuryOutStandingDealRecords((prev) => prev + 1);
+              setTreasuryOutStandingDealsRow((prev) => prev + 1);
             }
 
             dispatch(BlotterTransactionAdded(null));
@@ -350,6 +357,8 @@ const BlotterHeader = () => {
               cancelled: BlotterTranscationCancelled,
               rejected: BlotterTransactionRejected,
             };
+            setTreasuryOutStandingDealRecords((prev) => prev - 1);
+            setTreasuryOutStandingDealsRow((prev) => prev - 1);
 
             dispatch(dispatchMap[type](null));
             return updatedData;
@@ -370,7 +379,6 @@ const BlotterHeader = () => {
                   }
                 : item
             );
-            console.log({ updatedData, transaction }, "updatedDataupdatedData");
             dispatch(BlotterTransactionAssigned(null));
             return updatedData;
           }
@@ -382,6 +390,8 @@ const BlotterHeader = () => {
 
             if (!exists) {
               updatedData = [transaction, ...updatedData];
+              setTreasuryOutStandingDealRecords((prev) => prev + 1);
+              setTreasuryOutStandingDealsRow((prev) => prev + 1);
             }
 
             dispatch(BlotterTransactionCancellationRequest(null));
@@ -439,15 +449,15 @@ const BlotterHeader = () => {
     blotterTransactionAccepted,
     blotterTranscationCancelled,
     blotterTransactionRejected,
-    blotterTransactionAssigned, // ✅ now added
-    blotterTransactionCancellationRequest, // ✅ now added
+    blotterTransactionAssigned,
+    blotterTransactionCancellationRequest,
   ]);
 
   const tabsData = [
     {
       title: "TXN Summary",
       content: (
-        <section className="position-relative">
+        <section className='position-relative'>
           <Suspense fallback={<SectionLoader />}>
             {activeTab === "TXN Summary" && (
               <TXNTreasurySummary
@@ -457,7 +467,7 @@ const BlotterHeader = () => {
                 setHasBottomReachedTreasuryTXN={setHasBottomReachedTreasuryTXN}
                 hasBottomReachedTreasuryTXN={hasBottomReachedTreasuryTXN}
               />
-            )}
+            )}{" "}
           </Suspense>
         </section>
       ),
@@ -465,7 +475,7 @@ const BlotterHeader = () => {
     {
       title: "Outstanding Deals",
       content: (
-        <section className="position-relative">
+        <section className='position-relative'>
           <Suspense fallback={<SectionLoader />}>
             {activeTab === "Outstanding Deals" && (
               <OutstandingDeals
@@ -485,10 +495,32 @@ const BlotterHeader = () => {
   const handleTabChange = (tabTitle) => {
     startTransition(() => {
       dispatch(setActiveTreasuryTab(tabTitle));
+      let Data3 = { sRow: 0, Length: 10 };
+      if (tabTitle === "TXN Summary") {
+        dispatch(BlotterDataAPI({ navigate, Data: Data3 }));
+      } else {
+        dispatch(GetBlotterOutstandingDealsDataAPI({ navigate, Data: Data3 }));
+      }
+
+      dispatch(GetNOPDataAPI({ navigate }));
+      const startDate = new Date();
+
+      startDate.setHours(0, 0, 0, 0);
+
+      const endDate = new Date();
+      endDate.setHours(23, 58, 59, 99);
+
+      const Data2 = {
+        StartDate: formatDateToUTC(startDate, 1),
+        EndDate: formatDateToUTC(endDate, 1),
+      };
+
+      dispatch(GetMisDataByRangeAPI({ navigate, Data: Data2 }));
     });
   };
 
   const HandlePDFDownloadFunc = () => {
+    setExportButton(false);
     startTransition(() => {
       if (isTreasury) {
         dispatch(DownloadPDFReportBlotterTrasactionTreasuryAPI({ navigate }));
@@ -501,6 +533,7 @@ const BlotterHeader = () => {
   };
 
   const HandleExcelDownloadFunc = () => {
+    setExportButton(false);
     startTransition(() => {
       if (isTreasury) {
         dispatch(DownloadExcelReportBlotterTrasactionTreasuryAPI({ navigate }));
@@ -529,89 +562,127 @@ const BlotterHeader = () => {
   const handleTransactionModal = (e) => {
     e.preventDefault();
     setOpenMailModal(true);
+    setExportButton(false);
   };
+
   return (
     <>
-      <section className="position-relative">
+      <section className='position-relative'>
         {isTreasury ? (
           <>
             <GlobalTabs
-              tabClass=" d-flex justify-content-start gap-2 mb-3 align-items-center position-relative"
+              tabClass=' d-flex justify-content-start gap-2 mb-3 align-items-center position-relative'
               tabs={tabsData}
               onTabChange={handleTabChange}
               activeKey={activeTab}
               defaultActiveKey={"0"}
               outStandingCounter={treasuryOutStandingDeal.length}
             />
-            <div className="moreOptionsNOPExport">
-              <div className="nop-hd-container">
-                <div className="d-flex align-items-center">
+            <div className='moreOptionsNOPExport'>
+              <div className='nop-hd-container'>
+                <div className='d-flex align-items-center'>
                   <>
                     {" "}
-                    <span className="hd-txt me-3">NOP (US$)</span>
-                    <span className="hd-cr me-2">
+                    <span className='hd-txt me-3'>NOP (US$)</span>
+                    <span className='hd-cr me-2'>
                       {GetNOPData !== null &&
                         GetNOPData !== undefined &&
                         (GetNOPData?.nop === 0 ? (
-                          <span className="color-black">
+                          <span className='color-black'>
                             {formatPkAmount(GetNOPData?.nop)}
                           </span>
                         ) : GetNOPData?.nop >= 0 ? (
-                          <span>{formatPkAmount(GetNOPData?.nop)}</span>
+                          <span className="color-green">{formatPkAmount(GetNOPData?.nop)}</span>
                         ) : (
-                          <span className="color-red">{`(${formatPkAmount(
+                          <span className='color-red'>{`(${formatPkAmount(
                             Math.abs(GetNOPData?.nop)
                           )})`}</span>
                         ))}
                     </span>
                     <CustomButton
                       applyClass={"NOP-button"}
-                      value="+"
+                      value='+'
                       onClick={onClickNopModal}
                     />{" "}
-                    <CustomButton
+                    {/* <CustomButton
                       applyClass={"Export-button"}
-                      value="Export"
+                      value='Export'
                       onClick={onClickOpenExport}
-                    />
+                    /> */}
+                    <Popover
+                      content={
+                        <div className={"export-options"}>
+                          <CustomButton
+                            icon={<img src={pdfImage} alt='Excel Icon' />}
+                            className={"bg-none"}
+                            onClick={HandlePDFDownloadFunc}
+                          />
+                          <CustomButton
+                            icon={<img src={excelImage} alt='PDF Icon' />}
+                            className={"bg-none"}
+                            onClick={HandleExcelDownloadFunc}
+                          />
+                          <CustomButton
+                            icon={<img src={emailImage} alt='Excel Icon' />}
+                            className={"bg-none"}
+                            onClick={handleTransactionModal}
+                          />
+                          <CustomButton
+                            icon={<img src={printImage} alt='PDF Icon' />}
+                            className={"bg-none"}
+                            onClick={() => setExportButton(false)}
+                          />
+                        </div>
+                      }
+                      trigger='click'
+                      open={exportButton}
+                      onOpenChange={() => setExportButton(!exportButton)}
+                      placement='bottomRight'
+                      arrow={false}>
+                      <CustomButton
+                        applyClass={"Export-button"}
+                        value='Export'
+                        onClick={onClickOpenExport}
+                      />
+                    </Popover>
                   </>
 
-                  {openExportDiv && (
-                    <div className="exportOptions">
-                      <div className="exportOptionsBox">
+                  {/* {openExportDiv && (
+                    <div className='exportOptions'>
+                      <div className='exportOptionsBox'>
                         <img
                           src={pdfImage}
                           width={30}
                           height={30}
-                          className="cursor-pointer"
-                          alt="pdf"
+                          className='cursor-pointer'
+                          alt='pdf'
                           onClick={HandlePDFDownloadFunc}
                         />
                         <img
                           src={excelImage}
                           width={30}
                           height={30}
-                          alt="excel"
-                          className="cursor-pointer"
+                          alt='excel'
+                          className='cursor-pointer'
                           onClick={HandleExcelDownloadFunc}
                         />
                         <img
                           src={emailImage}
                           width={30}
                           height={30}
-                          className="cursor-pointer"
+                          className='cursor-pointer'
                           onClick={handleTransactionModal}
                         />
                         <img
                           src={printImage}
                           width={30}
                           height={30}
-                          className="cursor-pointer"
-                          alt="print"
+                          className='cursor-pointer'
+                          alt='print'
                         />
                       </div>
                     </div>
-                  )}
+                  )} */}
                 </div>
               </div>
             </div>
@@ -619,14 +690,13 @@ const BlotterHeader = () => {
         ) : (
           (isBranch || isCorporate) && (
             <>
-              <Row className="mb-3">
+              <Row className='mb-3'>
                 <Col
                   sm={6}
                   md={6}
                   lg={6}
-                  className="d-flex justify-content-start align-items-center"
-                >
-                  <span className="fs-6 fw-bold color-hd data-summary-heading">
+                  className='d-flex justify-content-start align-items-center'>
+                  <span className='fs-6 fw-bold color-hd data-summary-heading'>
                     TXN Summary
                   </span>
                 </Col>
@@ -635,47 +705,40 @@ const BlotterHeader = () => {
                   sm={6}
                   md={6}
                   lg={6}
-                  className="d-flex align-item-center justify-content-end  color-white fw-bold fs-6"
-                >
+                  className='d-flex align-item-center justify-content-end  color-white fw-bold fs-6'>
                   <Popover
                     content={
                       <div className={"export-options"}>
                         <CustomButton
-                          // value={"Excel"}
-                          icon={<img src={pdfImage} alt="Excel Icon" />}
+                          icon={<img src={pdfImage} alt='Excel Icon' />}
                           className={"bg-none"}
                           onClick={HandlePDFDownloadFunc}
-
-                          // onClick={() => handleExport("excel")}
-                          // className={styles["export-button"]}
                         />
                         <CustomButton
-                          icon={<img src={excelImage} alt="PDF Icon" />}
-                          // onClick={() => handleExport("pdf")}
+                          icon={<img src={excelImage} alt='PDF Icon' />}
                           className={"bg-none"}
                           onClick={HandleExcelDownloadFunc}
                         />
                         <CustomButton
-                          // value={"Excel"}
-                          icon={<img src={emailImage} alt="Excel Icon" />}
+                          icon={<img src={emailImage} alt='Excel Icon' />}
                           className={"bg-none"}
                           onClick={handleTransactionModal}
                         />
                         <CustomButton
-                          icon={<img src={printImage} alt="PDF Icon" />}
+                          icon={<img src={printImage} alt='PDF Icon' />}
                           className={"bg-none"}
+                          onClick={() => setExportButton(false)}
                         />
                       </div>
                     }
-                    trigger="click"
+                    trigger='click'
                     open={exportButton}
                     onOpenChange={() => setExportButton(!exportButton)}
-                    placement="bottomRight"
-                    arrow={false}
-                  >
+                    placement='bottomRight'
+                    arrow={false}>
                     <CustomButton
                       applyClass={"Export-button"}
-                      value="Export"
+                      value='Export'
                       onClick={onClickOpenExport}
                     />
                   </Popover>

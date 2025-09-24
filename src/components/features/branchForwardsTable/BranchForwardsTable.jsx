@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
 import GlobalTable from "../../common/table/GlobalTable";
-import { createColumns, generateData } from "../../utils/generateData";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 // import { GetAllFowardsAndDiscountsRatesAPI } from "../SpotBranch/WatchlistAction";
@@ -18,6 +17,8 @@ const BranchForwardsTable = () => {
 
   const [dataSource, setDataSource] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
+  const [rfqButtonState, setRFqButtonState] = useState(null);
+
   //Book a Forward Modal State
   const [bookaForwardModalCall, setBookaForwardModalCall] = useState(false);
 
@@ -45,18 +46,33 @@ const BranchForwardsTable = () => {
   const ClearRatesData = useSelector(
     (state) => state.RealtimeActionsSlice.ClearRatesData
   );
-
-  console.log(ClearRatesData, "ClearRatesData");
-
-  console.log(
-    getAllInstrumentsForCounterPartiesData !== null &&
-      getAllTenorsRecords !== null &&
-      GetForwardRatesForCounterPartyData !== null,
-    getAllInstrumentsForCounterPartiesData,
-    getAllTenorsRecords,
-    GetForwardRatesForCounterPartyData,
-    "GetForwardRatesForCounterPartyDataGetForwardRatesForCounterPartyData"
+  const isTradeRights = useSelector(
+    (state) => state.RealtimeActionsSlice.tradeRightsStatusUpdated
   );
+
+  // const isTradeRights =
+  //   localStorage.getItem("isTradeRights") !== null &&
+  //   JSON.parse(localStorage.getItem("isTradeRights"));
+
+  // console.log(ClearRatesData, "ClearRatesData");
+
+  // console.log(
+  //   getAllInstrumentsForCounterPartiesData !== null &&
+  //     getAllTenorsRecords !== null &&
+  //     GetForwardRatesForCounterPartyData !== null,
+  //   getAllInstrumentsForCounterPartiesData,
+  //   getAllTenorsRecords,
+  //   GetForwardRatesForCounterPartyData,
+  //   "GetForwardRatesForCounterPartyDataGetForwardRatesForCounterPartyData"
+  // );
+
+  useEffect(() => {
+    if (isTradeRights !== null) {
+      setRFqButtonState(JSON.parse(isTradeRights));
+      console.log(isTradeRights, "isTradeRightsisTradeRights");
+    }
+  }, [isTradeRights]);
+
   useEffect(() => {
     if (
       getAllInstrumentsForCounterPartiesData !== null &&
@@ -207,7 +223,10 @@ const BranchForwardsTable = () => {
             applyClass={"FowwardBranchBookaForwardBtn"}
             onClick={handleBookaForwardCorporate}
             disabled={
-              marketStatus !== null && marketStatus === false ? true : false
+              (marketStatus !== null && marketStatus === false) ||
+              !isTradeRights
+                ? true
+                : false
             }
           />
         </Col>

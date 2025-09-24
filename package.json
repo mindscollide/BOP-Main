@@ -7,14 +7,15 @@
     "dev": "vite",
     "build": "vite build",
     "serve": "vite preview",
+    "clean": "rimraf node_modules/.vite dist",
     "start:dealer": "env-cmd -f .env.dealer vite",
     "start:corporate": "env-cmd -f .env.corporate vite",
     "start:branch": "env-cmd -f .env.branch vite",
     "start:treasury": "env-cmd -f .env.treasury vite",
-    "build:dealer": "env-cmd -f .env.dealer vite build",
-    "build:corporate": "env-cmd -f .env.corporate vite build",
-    "build:branch": "env-cmd -f .env.branch vite build",
-    "build:treasury": "env-cmd -f .env.treasury vite build"
+    "build:dealer": "npm run clean && env-cmd -f .env.dealer vite build",
+    "build:corporate": "npm run clean && env-cmd -f .env.corporate vite build",
+    "build:branch": "npm run clean && env-cmd -f .env.branch vite build",
+    "build:treasury": "npm run clean && env-cmd -f .env.treasury vite build"
   },
   "dependencies": {
     "@ant-design/icons": "^5.6.1",
@@ -38,6 +39,7 @@
     "react-beautiful-dnd": "^13.1.1",
     "react-bootstrap": "^2.10.4",
     "react-dom": "^18.3.1",
+    "react-error-boundary": "^6.0.0",
     "react-multi-date-picker": "^4.5.2",
     "react-number-format": "^5.4.4",
     "react-otp-input": "^3.1.1",

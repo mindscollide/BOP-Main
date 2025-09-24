@@ -20,6 +20,11 @@ const ReportSlicer = createSlice({
     error: null,
     responseMessage: "",
     downloadPDFReportBlotterTransactionTreasury: null,
+
+    //loading State
+    EmailBlotterTransactionDetailsForBranchAPILoading: false,
+    EmailBlotterTransactionDetailsForTreasuryAPILoading: false,
+    EmailBlotterTransactionDetailsForCorporateAPILoading: false,
   },
   reducers: {
     clearReportResponseMessage: (state) => {
@@ -242,6 +247,7 @@ const ReportSlicer = createSlice({
       // Pending state
       .addCase(EmailBlotterTransactionDetailsForBranchAPI.pending, (state) => {
         state.Loader = true;
+        state.EmailBlotterTransactionDetailsForBranchAPILoading = true;
         state.error = null;
         state.responseMessage = "Request Initiated";
       })
@@ -250,6 +256,7 @@ const ReportSlicer = createSlice({
         EmailBlotterTransactionDetailsForBranchAPI.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
+          state.EmailBlotterTransactionDetailsForBranchAPILoading = false;
           state.error = null;
           state.responseMessage = payload.message || "Email Sent successful";
         }
@@ -259,6 +266,7 @@ const ReportSlicer = createSlice({
         EmailBlotterTransactionDetailsForBranchAPI.rejected,
         (state, action) => {
           state.Loader = false;
+          state.EmailBlotterTransactionDetailsForBranchAPILoading = false;
           state.error = action.payload || "Download failed";
           state.responseMessage = "";
         }
@@ -269,6 +277,7 @@ const ReportSlicer = createSlice({
         EmailBlotterTransactionDetailsForCorporateAPI.pending,
         (state) => {
           state.Loader = true;
+          state.EmailBlotterTransactionDetailsForCorporateAPILoading = true;
           state.error = null;
           state.responseMessage = "Request Initiated";
         }
@@ -278,6 +287,8 @@ const ReportSlicer = createSlice({
         EmailBlotterTransactionDetailsForCorporateAPI.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
+          state.EmailBlotterTransactionDetailsForCorporateAPILoading = false;
+
           state.error = null;
           state.responseMessage = payload.message || "Email Sent successful";
         }
@@ -287,6 +298,7 @@ const ReportSlicer = createSlice({
         EmailBlotterTransactionDetailsForCorporateAPI.rejected,
         (state, action) => {
           state.Loader = false;
+          state.EmailBlotterTransactionDetailsForCorporateAPILoading = false;
           state.error = action.payload || "Download failed";
           state.responseMessage = "";
         }
@@ -297,6 +309,7 @@ const ReportSlicer = createSlice({
         EmailBlotterTransactionDetailsForTreasuryAPI.pending,
         (state) => {
           state.Loader = true;
+          state.EmailBlotterTransactionDetailsForTreasuryAPILoading = true;
           state.error = null;
           state.responseMessage = "Request Initiated";
         }
@@ -306,6 +319,7 @@ const ReportSlicer = createSlice({
         EmailBlotterTransactionDetailsForTreasuryAPI.fulfilled,
         (state, { payload }) => {
           state.Loader = false;
+          state.EmailBlotterTransactionDetailsForTreasuryAPILoading = false;
           state.error = null;
           state.responseMessage = payload.message || "Email Sent successful";
         }
@@ -315,6 +329,7 @@ const ReportSlicer = createSlice({
         EmailBlotterTransactionDetailsForTreasuryAPI.rejected,
         (state, action) => {
           state.Loader = false;
+          state.EmailBlotterTransactionDetailsForTreasuryAPILoading = false;
           state.error = action.payload || "Download failed";
           state.responseMessage = "";
         }

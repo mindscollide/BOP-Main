@@ -4,12 +4,22 @@ import BidAmountBox from "../../common/bidAmountBox/BidAmountBox";
 import styles from "./spotDealerAndTreasury.module.css";
 import { useSelector } from "react-redux";
 import { throttle } from "lodash";
+import {
+  clearCategorySpotClearRates,
+  setClearRates,
+} from "@/store/realtimeActionsSlicer/realtimeActionSlice";
+import { useDispatch } from "react-redux";
+import { UpdatetCategoryWiseSpotRates } from "@/store/categoryReducer/categoryReducer";
 
 const SpotDealerAndTreasury = () => {
+  const dispatch = useDispatch();
   const [spotsData, setSpotsData] = useState([]);
   console.log(spotsData, "spotsDataspotsData");
   const allInstrumentForTreasuryData = useSelector(
     (state) => state.WatchListReducer.GetAllInstrumentForTreasury
+  );
+  const ClearRatesData = useSelector(
+    (state) => state.RealtimeActionsSlice.CategorySpotClearRates
   );
   const GetCategoryWiseSpotRatesDaata = useSelector(
     (state) => state.categoryReducer.GetCategoryWiseSpotRates
@@ -102,6 +112,20 @@ const SpotDealerAndTreasury = () => {
       );
     }
   }, [marketStatus]);
+  // For clear Rates
+
+  console.log(ClearRatesData, "ClearRatesDataClearRatesData");
+  useEffect(() => {
+    if (ClearRatesData && ClearRatesData?.areRatesClear) {
+      let Rates = GetCategoryWiseSpotRatesDaata?.instruments.map((item) =>
+        item.secondaryInstrumentID === 0 ? { ...item, bid: 0, offer: 0 } : item
+      );
+      let newData = { ...GetCategoryWiseSpotRatesDaata, instruments: Rates };
+      dispatch(UpdatetCategoryWiseSpotRates(newData));
+      dispatch(clearCategorySpotClearRates(null));
+
+    }
+  }, [ClearRatesData]);
 
   return (
     <>
@@ -112,11 +136,11 @@ const SpotDealerAndTreasury = () => {
             .map((spotCardsData, index) => {
               console.log(spotCardsData, "spotCardsDataspotCardsDataF");
               return (
-                <Col sm={6} md={3} className="px-1" key={index}>
+                <Col sm={6} md={3} className='px-1' key={index}>
                   <div className={styles["SpotBoxCard"]}>
                     <div>
                       {/* box header */}
-                      <div className="mb-3">
+                      <div className='mb-3'>
                         <span className={styles["SpotCurrentHeading"]}>
                           {spotCardsData.instrumentName}
                         </span>
@@ -125,13 +149,17 @@ const SpotDealerAndTreasury = () => {
                         </span>
                       </div>
                       {/* box content */}
-                      <div className="d-flex gap-2 mt-2">
+                      <div className='d-flex gap-2 mt-2'>
                         <Col>
                           <BidAmountBox
                             spot={true}
                             BidBoxHeading={"I Sell"}
                             BidAmountValue={spotCardsData.bid}
-                            applyClass={"SellCard"}
+                            applyClass={
+                              marketStatus === true
+                                ? "SellCard"
+                                : "SellCard_MarketOff"
+                            }
                           />
                         </Col>
                         <Col>
@@ -139,7 +167,11 @@ const SpotDealerAndTreasury = () => {
                             spot={true}
                             BidBoxHeading={"I Buy"}
                             BidAmountValue={spotCardsData.offer}
-                            applyClass={"BuyCard"}
+                            applyClass={
+                              marketStatus === true
+                                ? "BuyCard"
+                                : "BuyCard_MarketOff"
+                            }
                           />
                         </Col>
                       </div>

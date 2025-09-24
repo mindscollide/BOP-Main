@@ -62,7 +62,7 @@ const MIS = () => {
   }, []); //
 
   useEffect(() => {
-    if (GetMisDataByRangeData !== null) {
+    if (GetMisDataByRangeData && GetMisDataByRangeData !== null) {
       try {
         const { profiteInPKRWiseMISData, volumeWiseMISData, totalProfit } =
           GetMisDataByRangeData;
@@ -157,8 +157,25 @@ const MIS = () => {
                 index === 1 ? "mis-profitwise-value" : "mis-volumwise-value"
               } roboto-13`}
             >
-              {formatPkAmount(record?.value)}
+              {index === 1 ? (
+                record?.value === 0 ? (
+                  <span className="color-black">
+                    {formatPkAmount(record?.value)}
+                  </span>
+                ) : record?.value > 0 ? (
+                  <span className="color-green">
+                    {formatPkAmount(record?.value)}
+                  </span>
+                ) : (
+                  <span className="color-red">
+                    ({formatPkAmount(Math.abs(record?.value))})
+                  </span>
+                )
+              ) : (
+                formatPkAmount(record?.value)
+              )}
             </span>
+
             {isExpanded && expandedRowKeys.includes(index) ? (
               <div className="d-grid">
                 <span
@@ -166,14 +183,47 @@ const MIS = () => {
                     index === 1 ? "mis-profitwise-value" : "mis-volumwise-value"
                   } bg-none py-0 roboto-13`}
                 >
-                  {formatPkAmount(record?.import)}
+                  {index === 1 ? (
+                    record?.import === 0 ? (
+                      <span className="color-black">
+                        {formatPkAmount(record?.import)}
+                      </span>
+                    ) : record?.import > 0 ? (
+                      <span className="color-green">
+                        {formatPkAmount(record?.import)}
+                      </span>
+                    ) : (
+                      <span className="color-red">
+                        ({formatPkAmount(Math.abs(record?.import))})
+                      </span>
+                    )
+                  ) : (
+                    formatPkAmount(record?.import)
+                  )}
                 </span>
+
                 <span
                   className={`${
                     index === 1 ? "mis-profitwise-value" : "mis-volumwise-value"
                   } bg-none py-0 roboto-13`}
                 >
-                  {formatPkAmount(record?.export)}
+                  {index === 1 ? (
+                    record?.export === 0 ? (
+                      <span className="color-black">
+                        {formatPkAmount(record?.export)}
+                      </span>
+                    ) : record?.export > 0 ? (
+                      <span className="color-green">
+                        {formatPkAmount(record?.export)}
+                      </span>
+                    ) : (
+                      <span className="color-red">
+                        ({formatPkAmount(Math.abs(record?.export))})
+                      </span>
+                    )
+                  ) : (
+                    formatPkAmount(record?.export)
+                  )}
                 </span>
               </div>
             ) : null}
@@ -184,10 +234,15 @@ const MIS = () => {
   ];
 
   const handleExpandClick = (index) => {
-    const isExpanded = expandedRowKeys.includes(index);
-
-    const newExpandedRowKeys = isExpanded ? [] : [index]; // 👈 only one row at a time
-    setExpandedRowKeys(newExpandedRowKeys);
+    setExpandedRowKeys((prevKeys) => {
+      if (prevKeys.includes(index)) {
+        // If already expanded, collapse it
+        return prevKeys.filter((key) => key !== index);
+      } else {
+        // Otherwise, expand along with existing ones
+        return [...prevKeys, index];
+      }
+    });
   };
 
   const handleChangeDate = (date, key) => {
@@ -239,7 +294,7 @@ const MIS = () => {
             >
               MIS
             </Col>
-            <Col
+            {/* <Col
               sm={6}
               md={6}
               lg={6}
@@ -274,7 +329,7 @@ const MIS = () => {
                   onClick={onClickOpenExport}
                 />
               </Popover>
-            </Col>
+            </Col> */}
           </Row>
         </div>
         <div className="p-2 position-relative">
@@ -295,7 +350,19 @@ const MIS = () => {
                 </div>
                 <div className="expanded-column third-column">
                   <span className="mis-totalprofit-value">
-                    {formatPkAmount(totalProfit)}
+                    {totalProfit === 0 ? (
+                      <span className="color-black">
+                        {formatPkAmount(totalProfit)}
+                      </span>
+                    ) : totalProfit > 0 ? (
+                      <span className="color-green">
+                        {formatPkAmount(totalProfit)}
+                      </span>
+                    ) : (
+                      <span className="color-red">
+                        ({formatPkAmount(Math.abs(totalProfit))})
+                      </span>
+                    )}
                   </span>
                 </div>
               </div>
@@ -328,6 +395,7 @@ const MIS = () => {
                         : null
                     }
                     onChange={(date) => handleChangeDate(date, "EndDate")}
+                    // inputReadOnly={true}
                   />
                 </div>
                 <div className="filter-mis-btn mt-3 d-flex gap-1">

@@ -1,7 +1,6 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   createBrowserRouter,
-  createHashRouter,
   Navigate,
   RouterProvider,
 } from "react-router-dom";
@@ -22,10 +21,45 @@ import PrivateRoute from "./routes/PrivateRoutes";
 import Loader from "./components/common/loader/Loader";
 import { ResponseMessage } from "./components/utils/ResponseMessageToast";
 import ForgotPasswordEmailSentTo from "./container/loginScreens/forgetPassword/ForgotPasswordEmailSentTo";
+import { ErrorBoundary } from "react-error-boundary";
+import { ErrorFallback, logErrors } from "./components/common/errorBoundary/ErrorBoundary";
 
 function App() {
-  const [routes, setRoutes] = useState([]); // Initially an empty array
+  const [routes, setRoutes] = useState([]);
+  const currentVersion = useRef(null);
 
+  // 🔹 Auto-update page when version.json changes
+  useEffect(() => {
+    const checkVersion = async () => {
+      try {
+        const response = await fetch("/version.json", { cache: "no-cache" }); // ✅ root path
+
+        const data = await response.json();
+
+        if (currentVersion.current && currentVersion.current !== data.version) {
+          // 🔹 Clear browser caches (for service workers / cache API)
+          if ("caches" in window) {
+            caches.keys().then((names) => {
+              for (let name of names) {
+                caches.delete(name);
+              }
+            });
+          }
+          window.location.reload(true); // force reload
+        }
+
+        currentVersion.current = data.version;
+      } catch (err) {
+        console.error("Error checking version.json:", err);
+      }
+    };
+
+    checkVersion();
+    const interval = setInterval(checkVersion, 30000); // check every 30 sec
+    return () => clearInterval(interval);
+  }, []);
+
+  // 🔹 Set document title based on env flags
   useEffect(() => {
     document.title =
       import.meta.env.VITE_APP_INCLUDE_BRANCH === "true"
@@ -36,29 +70,39 @@ function App() {
         ? "BOP - Treasury"
         : import.meta.env.VITE_APP_INCLUDE_DEALER === "true"
         ? "BOP - Dealer"
-        : "BOP"; // Set the document title
-  }, []); // empty dependency array means this runs once on mount
+        : "BOP";
+  }, []);
 
+  // 🔹 Load routes dynamically
   const loadRoutes = async () => {
     const dashboardRoute = {
       path: "/BOP",
       element: <Dashboard />,
       children: [],
     };
-
+  
+    const withErrorBoundary = (component) => (
+      <ErrorBoundary FallbackComponent={ErrorFallback} onError={logErrors}>
+        {component}
+      </ErrorBoundary>
+    );
+  
     dashboardRoute.children.push({
-      path: "calculator", // Use relative path
-      element: <PrivateRoute element={<MainCalculator />} />,
+      path: "calculator",
+      element: withErrorBoundary(<PrivateRoute element={<MainCalculator />} />),
     });
+  
     if (import.meta.env.VITE_APP_INCLUDE_BRANCH === "true") {
       const Branch = (await import("./container/pages/mainBranch/MainBranch"))
         .default;
       dashboardRoute.children.push({
-        path: "branch", // Use relative path
-        element: <PrivateRoute element={<Branch />} />,
+        path: "branch",
+        element: withErrorBoundary(
+          <PrivateRoute element={Branch && <Branch />} />
+        ),
       });
     }
-
+  
     if (import.meta.env.VITE_APP_INCLUDE_DEALER === "true") {
       const Dealer = (await import("./container/pages/mainDealer/MainDealer"))
         .default;
@@ -68,21 +112,27 @@ function App() {
       const Category = (
         await import("./container/pages/mainCategory/MainCategory")
       ).default;
-
+  
       dashboardRoute.children.push({
-        path: "dealer", // Use relative path
-        element: <PrivateRoute element={<Dealer />} />,
+        path: "dealer",
+        element: withErrorBoundary(
+          <PrivateRoute element={Dealer && <Dealer />} />
+        ),
       });
       dashboardRoute.children.push({
-        path: "treasury", // Use relative path
-        element: <PrivateRoute element={<Treasury />} />,
+        path: "treasury",
+        element: withErrorBoundary(
+          <PrivateRoute element={Treasury && <Treasury />} />
+        ),
       });
       dashboardRoute.children.push({
-        path: "category", // Use relative path
-        element: <PrivateRoute element={<Category />} />,
+        path: "category",
+        element: withErrorBoundary(
+          <PrivateRoute element={Category && <Category />} />
+        ),
       });
     }
-
+  
     if (import.meta.env.VITE_APP_INCLUDE_TREASURY === "true") {
       const Treasury = (
         await import("./container/pages/mainTreasury/MainTreasury")
@@ -92,54 +142,64 @@ function App() {
       const Category = (
         await import("./container/pages/mainCategory/MainCategory")
       ).default;
-
+  
       dashboardRoute.children.push({
-        path: "dealer", // Use relative path
-        element: <PrivateRoute element={<Dealer />} />,
+        path: "dealer",
+        element: withErrorBoundary(
+          <PrivateRoute element={Dealer && <Dealer />} />
+        ),
       });
       dashboardRoute.children.push({
-        path: "treasury", // Use relative path
-        element: <PrivateRoute element={<Treasury />} />,
+        path: "treasury",
+        element: withErrorBoundary(
+          <PrivateRoute element={Treasury && <Treasury />} />
+        ),
       });
       dashboardRoute.children.push({
-        path: "category", // Use relative path
-        element: <PrivateRoute element={<Category />} />,
+        path: "category",
+        element: withErrorBoundary(
+          <PrivateRoute element={Category && <Category />} />
+        ),
       });
     }
-
+  
     if (import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true") {
       const Corporate = (
         await import("./container/pages/mainCorporate/MainCorporate")
       ).default;
       dashboardRoute.children.push({
-        path: "corporate", // Use relative path
-        element: <PrivateRoute element={<Corporate />} />,
+        path: "corporate",
+        element: withErrorBoundary(
+          <PrivateRoute element={Corporate && <Corporate />} />
+        ),
       });
     }
-
+  
     const tempRoutes = [
       dashboardRoute,
-      { path: "/", element: <BopLogin /> },
-      { path: "/changePassword", element: <ChangePassword /> },
-      { path: "/forgotpassword", element: <ForgotPassword /> },
-      { path: "/emailsent", element: <ForgotPasswordEmailSentTo /> },
-      { path: "/createPassword", element: <CreatePassword /> },
-      { path: "/2fa", element: <TwoFaVerification /> },
-      { path: "/resetPassword", element: <ResetPassword /> },
+      { path: "/", element: withErrorBoundary(<BopLogin />) },
+      { path: "/changePassword", element: withErrorBoundary(<ChangePassword />) },
+      { path: "/forgotpassword", element: withErrorBoundary(<ForgotPassword />) },
+      {
+        path: "/emailsent",
+        element: withErrorBoundary(<ForgotPasswordEmailSentTo />),
+      },
+      { path: "/createPassword", element: withErrorBoundary(<CreatePassword />) },
+      { path: "/2fa", element: withErrorBoundary(<TwoFaVerification />) },
+      { path: "/resetPassword", element: withErrorBoundary(<ResetPassword />) },
       { path: "*", element: <Navigate to={"/"} /> },
     ];
-
-    setRoutes(tempRoutes); // Set the routes after Loader
+  
+    setRoutes(tempRoutes);
   };
+  
 
   useEffect(() => {
     loadRoutes();
   }, []);
 
   if (!routes.length) {
-    return;
-    // <div>Loading...</div>;
-    // Better check for array length than null
+    return null; // prevent blank screen flash
   }
 
   const router = createBrowserRouter(routes);

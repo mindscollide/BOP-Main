@@ -29,7 +29,7 @@ export const getUserSettingDataAPI = createAsyncThunk(
       if (responseCode === 417) {
         console.log(result, "result");
 
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(getUserSettingDataAPI({ navigate }));
       } else if (responseCode === 200) {
         console.log(result, "result");
@@ -96,7 +96,7 @@ export const updateUserSettingDataAPI = createAsyncThunk(
       if (responseCode === 417) {
         console.log(response, "result");
 
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(getUserSettingDataAPI({ navigate }));
       } else if (responseCode === 200) {
         console.log(response, "result");
@@ -166,7 +166,7 @@ export const getMarkingTimingApi = createAsyncThunk(
       if (responseCode === 417) {
         console.log(response, "result");
 
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(getMarkingTimingApi({ navigate }));
       } else if (responseCode === 200) {
         console.log(response, "result");

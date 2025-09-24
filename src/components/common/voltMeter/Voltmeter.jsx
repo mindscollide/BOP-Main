@@ -86,6 +86,7 @@ const Voltmeter = () => {
    * Effect hook to handle initial voltmeter status
    * Runs when GetVoltMeterStatus changes (initial load)
    */
+  console.log(GetVoltMeterStatus, "GetVoltMeterStatusGetVoltMeterStatus")
   useEffect(() => {
     if (GetVoltMeterStatus !== null) {
       try {
@@ -106,21 +107,21 @@ const Voltmeter = () => {
   }, [GetVoltMeterStatus]);
 
   return (
-    <div className="vol-meter-container">
-      <div className="d-flex align-items-center vol-meter-inner-wrapper">
+    <div className='vol-meter-container'>
+      <div className='d-flex align-items-center vol-meter-inner-wrapper'>
         {/* Voltmeter title/heading */}
-        <div className="heading-vol-meter fs-6 fw-semibold ff-poppins">
+        <div className='heading-vol-meter fs-6 fw-semibold ff-poppins'>
           Vol Meter
         </div>
 
         {/* Render voltmeter control buttons */}
         {buttons.map((button) => (
           <button
+            key={button.value}
             className={`btn btn-default vol-meter ms-1 ${
               activeValue === button.value ? "active-vol" : ""
             } ${button.value === 0 ? "vol-meter-off" : ""}`} // Special class for 'off' button
-            onClick={() => handleButtonClick(button.value)}
-          >
+            onClick={() => handleButtonClick(button.value)}>
             {button.label}
           </button>
         ))}

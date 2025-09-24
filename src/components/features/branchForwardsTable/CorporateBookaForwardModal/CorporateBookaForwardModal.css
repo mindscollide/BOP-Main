@@ -150,6 +150,7 @@ span.bookaForwardCorporate__indicator-separator.css-1u9des2-indicatorSeparator {
   position: absolute;
   bottom: 0;
   right: 0;
+  width: auto;
 }
 .rfq-error_message {
   font-size: 13px;

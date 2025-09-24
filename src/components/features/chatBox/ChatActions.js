@@ -9,6 +9,7 @@ import { refreshTokenAction } from "@/container/loginScreens/authActions/refresh
 import {
   setChatModal,
   setChatModalTransactionId,
+  setChatRecordInfoData,
   setTreasuryPersonID,
 } from "@/store/modalSlice/modalSlicer";
 import createPostAPI from "@/utils/axiosInstance";
@@ -19,7 +20,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 export const getAllChatByTransactionId = createAsyncThunk(
   "chat/getAllUserChatByTransactionId",
   async (
-    { navigate, Data, treasuryPersonID },
+    { navigate, Data, treasuryPersonID, ChatData },
     { rejectWithValue, dispatch }
   ) => {
     try {
@@ -31,12 +32,13 @@ export const getAllChatByTransactionId = createAsyncThunk(
       const { responseCode } = response.data;
 
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(
           getAllChatByTransactionId({
             navigate,
             Data,
             treasuryPersonID,
+            ChatData,
           })
         );
       } else if (responseCode === 200) {
@@ -55,6 +57,7 @@ export const getAllChatByTransactionId = createAsyncThunk(
           dispatch(setChatModal(true));
           dispatch(setChatModalTransactionId(Data.TranscationID));
           dispatch(setTreasuryPersonID(treasuryPersonID));
+          dispatch(setChatRecordInfoData(ChatData));
           return {
             response: response.data.responseResult,
             message: "",
@@ -69,7 +72,7 @@ export const getAllChatByTransactionId = createAsyncThunk(
           dispatch(setChatModal(true));
           dispatch(setChatModalTransactionId(Data.TranscationID));
           dispatch(setTreasuryPersonID(treasuryPersonID));
-
+          dispatch(setChatRecordInfoData(ChatData));
           return rejectWithValue("No Found");
         } else if (
           responseMessage
@@ -121,7 +124,7 @@ export const saveChatApi = createAsyncThunk(
       const { responseCode } = response.data;
 
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(
           saveChatApi({
             navigate,
@@ -242,7 +245,7 @@ export const uploadDocumentApi = createAsyncThunk(
       const { responseCode } = response.data;
 
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(uploadDocumentApi({ Data, navigate }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -335,7 +338,7 @@ export const DownloadFileApi = createAsyncThunk(
       // const { responseCode } = response.data;
 
       // if (responseCode === 417) {
-      //   await dispatch(refreshTokenAction({ navigate }));
+      //   await dispatch(refreshTokenAction({ navigate }));return
       //   dispatch(DownloadFileApi({ navigate, Data, fileName, ext }));
       // } else if (responseCode === 200) {
       //   console.log(response, "response in DownloadFileApi");

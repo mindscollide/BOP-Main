@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { throttle } from "lodash";
 import { setTreasuryFowardsTenorsChanges } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { useDispatch } from "react-redux";
+import { Col, Row } from "react-bootstrap";
 
 const BankForwards = () => {
   const dispatch = useDispatch();
@@ -37,7 +38,11 @@ const BankForwards = () => {
   );
 
   useEffect(() => {
-    if (getAllTenorsRecords !== null && GetAllInstrumentForTreasury !== null) {
+    if (
+      getAllTenorsRecords !== null &&
+      GetAllInstrumentForTreasury &&
+      GetAllInstrumentForTreasury !== null
+    ) {
       try {
         const { forwardRates = [] } =
           GetBankForwardForTreasury !== null && GetBankForwardForTreasury;
@@ -157,7 +162,7 @@ const BankForwards = () => {
             })
           );
         },
-        50,
+        2,
         { leading: true, trailing: true }
       ),
     [] // sirf ek baar banega
@@ -187,19 +192,23 @@ const BankForwards = () => {
 
   return (
     <>
-      <div className='flex-fill mt-3 fs-4 fw-bold color-black mb-1 ff-roboto'>
-        Bank Forwards
-      </div>
+      <Row className='my-3'>
+        <Col sm={12} md={12} lg={12}>
+          <div className='flex-fill fs-4 fw-bold color-black mb-1 ff-roboto'>
+            Bank Forwards
+          </div>
 
-      <GlobalTable
-        columns={columnsData}
-        dataSource={dataSource}
-        prefixCls={"Treasury_Forwards"}
-        bordered
-        pagination={false}
-        rowClassName={"striped-design"}
-        rowHoverBg={"#000"}
-      />
+          <GlobalTable
+            columns={columnsData}
+            dataSource={dataSource}
+            prefixCls={"Treasury_Forwards"}
+            bordered
+            pagination={false}
+            rowClassName={"striped-design"}
+            rowHoverBg={"#000"}
+          />
+        </Col>
+      </Row>
     </>
   );
 };

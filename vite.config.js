@@ -4,17 +4,20 @@ import path from "path";
 
 export default defineConfig({
   plugins: [react()],
-  server: {
-    historyApiFallback: true,
-    host: true,
-    port: 5173,
-  },
+  // server: {
+  //   historyApiFallback: true,
+  //   host: true,
+  //   port: 5173,
+  // },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
   },
   build: {
-    assetsInclude: ['**/*.ttf'],
-  }
+    assetsInclude: ["**/*.ttf"],
+  },
+  optimizeDeps: {
+    include: ["react-error-boundary"], // 👈 Force pre-bundle
+  },
 });

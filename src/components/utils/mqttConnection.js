@@ -122,7 +122,7 @@ export const useMqttClient = ({
           setIsConnected(false);
           setTimeout(() => connectToMqtt({ subscribeID, userID }), 6000);
         },
-        keepAliveInterval: 300,
+        keepAliveInterval: 120,
         reconnect: true,
         userName: import.meta.env.VITE_MQTT_USERNAME,
         password: import.meta.env.VITE_MQTT_PASSWORD,

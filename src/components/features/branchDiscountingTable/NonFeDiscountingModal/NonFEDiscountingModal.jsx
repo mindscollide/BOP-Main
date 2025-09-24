@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "./NonFEDiscoutingModal.css";
-import Select from "react-select";
 import Modal from "@/components/common/globalModal/Modal";
 import { Col, Row } from "react-bootstrap";
 import InputFIeld from "@/components/common/inputField/InputField";
@@ -12,7 +11,7 @@ import {
   SaveNonFEDiscountingTransactionAPI,
   calculateNonFeSwapAndDiscountingRateApi,
 } from "../../blotter/BlotterActions";
-import { formatDate } from "@/common/utils";
+import { formatDate, isWeekend } from "@/common/utils";
 import { useSelector } from "react-redux";
 import { NumericFormat } from "react-number-format";
 import { setCalculateNonFeSwapAndDiscountingRate } from "@/store/BlotterSlicer/BlotterSlicer";
@@ -48,12 +47,15 @@ const NonFEDiscountingModal = ({
   const GetAllActiveCorproates = useSelector(
     (state) => state.authReducer.GetAllActiveCorproates
   );
-  const [natureOfBusinessOptions, setNatureOfBusinessOptions] = useState(null);
+
+  const SaveNonFEDiscountingTransactionAPILoading = useSelector(
+    (state) => state.BlotterSlicer.SaveNonFEDiscountingTransactionAPILoading
+  );
   const [selectedNature, setSelectedNature] = useState(null);
   const [selectedCurrency, setSelectedCurrency] = useState(null);
   const [currencyOptions, setCurrencyOptions] = useState([]);
 
-  const [tenoreDate, setTenorDate] = useState(formatDate(new Date()));
+  const [tenoreDate, setTenorDate] = useState(new Date());
   const [tenorValue, setTenorValue] = useState("");
   const [amount, setAmount] = useState("");
   const [accNo, setAcc] = useState("");
@@ -72,7 +74,10 @@ const NonFEDiscountingModal = ({
   const [errors, setErrors] = useState({
     tenorValue: false,
     accNo: false,
+    amount: false,
   });
+
+  const [isError, setIsError] = useState(false);
 
   const handleChangeTenor = (event) => {
     const { value } = event.target;
@@ -88,9 +93,9 @@ const NonFEDiscountingModal = ({
         if (value !== "") {
           const newDate = new Date();
           newDate.setDate(newDate.getDate() + numericValue); // Use numericValue here
-          setTenorDate(formatDate(newDate));
+          setTenorDate(newDate);
         } else {
-          setTenorDate(formatDate(new Date())); // Optional: clear tag text if input is empty
+          setTenorDate(new Date()); // Optional: clear tag text if input is empty
         }
       }
     }
@@ -121,12 +126,24 @@ const NonFEDiscountingModal = ({
         setAcc(value);
       }
     }
+    // if (errors.Quantity) {
+    //   setErrors((prev) => ({
+    //     ...prev,
+    //     Quantity: false,
+    //   }));
+    // }
   };
   // Form validation function
   const validateForm = () => {
+    let convertIntoNumber = amount.replace(/,/g, "");
+
     const newErrors = {
       tenorValue: !tenorValue || isNaN(tenorValue) || parseInt(tenorValue) <= 0,
-      accNo: !accNo,
+      // accNo: !accNo,
+      Quantity:
+        !convertIntoNumber ||
+        isNaN(convertIntoNumber) ||
+        parseInt(convertIntoNumber) <= 0,
     };
 
     setErrors(newErrors);
@@ -140,17 +157,17 @@ const NonFEDiscountingModal = ({
     }
     console.log(
       getAllInstrumentsForCounterPartiesData,
-      "getAllInstrumentsForCounterPartiesData"
+      "getAllInstrumentsForCounterPartiesData..."
     );
     try {
-      const { discountingApplicableInstruments } =
+      const { nonFEDiscountingApplicableInstruments } =
         getAllInstrumentsForCounterPartiesData;
       console.log(
-        discountingApplicableInstruments,
+        nonFEDiscountingApplicableInstruments,
         "getAllInstrumentsForCounterPartiesData"
       );
       // Process instruments to create dropdown options
-      const validInstruments = discountingApplicableInstruments
+      const validInstruments = nonFEDiscountingApplicableInstruments
         .map((instrument) => {
           // Only include instruments valid for both buy and sell
           if (instrument.isBuy) {
@@ -284,7 +301,7 @@ const NonFEDiscountingModal = ({
         : counterPartyDetails?.corporateID,
       InstrumentID: selectedCurrency.value,
       Quantity: Number(amountValue),
-      AccountNumber: accNo,
+      AccountNumber: accNo ? accNo : "",
       NatureOfTransactionID: selectedNature?.id,
       TenorDays: Number(tenorValue),
       Kibor: calculatedData.kiborValue,
@@ -339,7 +356,7 @@ const NonFEDiscountingModal = ({
                       {counterPartyDetails?.branchName}
                     </span>
                     <p className="NonFeDiscountingHeader_BranchCode">
-                      {counterPartyDetails?.branchCode}
+                      Branch Code: {counterPartyDetails?.branchCode}
                     </p>
                   </>
                 ) : isCorporate ? (
@@ -359,7 +376,7 @@ const NonFEDiscountingModal = ({
                   <Row className="mb-2">
                     <Col lg={12} md={12} sm={12}>
                       <div className="d-flex flex-column flex-wrap">
-                        <span className="SubHeadings">Client name</span>
+                        <span className="SubHeadings">Client name*</span>
                         <SelectDropdown
                           classNamePrefix="RfqSpot"
                           options={getAllCorporates}
@@ -378,7 +395,7 @@ const NonFEDiscountingModal = ({
                 <Row>
                   <Col lg={12} md={12} sm={12}>
                     <div className="d-flex flex-column flex-wrap">
-                      <span className="SubHeadings">Currency</span>
+                      <span className="SubHeadings">Currency*</span>
                       <SelectDropdown
                         classNamePrefix="RfqSpot"
                         options={currencyOptions}
@@ -401,17 +418,18 @@ const NonFEDiscountingModal = ({
                   </Col>
                   <Col lg={6} md={6} sm={6}>
                     <div className="d-flex flex-column flex-wrap">
-                      <span className="SubHeadings">A/c No*</span>
+                      <span className="SubHeadings">A/c No</span>
                       <InputFIeld
                         applyClass={"CalculatorTextfield"}
                         value={accNo}
                         onChange={(e) => handleChangeState("accNo", e)}
+                        maxLength={25}
                       />
-                      {errors.accNo && (
+                      {/* {errors.accNo && (
                         <span className="text-danger small">
                           Account number is required
                         </span>
-                      )}
+                      )} */}
                     </div>
                   </Col>
                 </Row>
@@ -419,7 +437,7 @@ const NonFEDiscountingModal = ({
                   <Col lg={12} md={12} sm={12}>
                     <div className="d-flex align-items-end ">
                       <div className="w-100">
-                        <p className="SubHeadings m-0">Tenor</p>
+                        <p className="SubHeadings m-0">Tenor*</p>
                         <InputFIeld
                           onChange={handleChangeTenor}
                           value={tenorValue}
@@ -428,12 +446,12 @@ const NonFEDiscountingModal = ({
                         />
                       </div>
                       <span className="dateSpanNonFeDiscoutingmodal">
-                        {tenoreDate}
+                        {formatDate(tenoreDate)}
                       </span>
                     </div>
                     {errors.tenorValue && (
                       <span className="text-danger small">
-                        Valid tenor is required
+                        Please enter valid tenor(1-1000)
                       </span>
                     )}
                   </Col>
@@ -441,9 +459,11 @@ const NonFEDiscountingModal = ({
                 <Row className="mt-2">
                   <Col lg={6} md={6} sm={6}>
                     <div className="d-flex flex-column flex-wrap">
-                      <span className="SubHeadings">Amount</span>
+                      <span className="SubHeadings">Amount*</span>
                       <NumericFormat
                         customInput={InputFIeld}
+                        decimalScale={0}
+                        allowNegative={false}
                         value={amount}
                         applyClass={"CalculatorTextfield"}
                         name={"amount"}
@@ -451,6 +471,11 @@ const NonFEDiscountingModal = ({
                         maxLength={10}
                         onChange={(e) => handleChangeState("amount", e)}
                       />
+                      {errors.Quantity && (
+                        <span className="text-danger small">
+                          Please enter a valid amount
+                        </span>
+                      )}
                     </div>
                   </Col>
                 </Row>
@@ -493,7 +518,7 @@ const NonFEDiscountingModal = ({
                           <span className="SubHeadings">Swap</span>
                           <InputFIeld
                             applyClass={"CalculatorTextfield"}
-                            value={Number(calculatedData.swapValue).toFixed(4)}
+                            value={Number(calculatedData.swapValue).toFixed(2)}
                             disabled={true}
                           />
                         </div>
@@ -535,6 +560,8 @@ const NonFEDiscountingModal = ({
                   value={"Confirm"}
                   applyClass={"ConfirmButtonBookaForward"}
                   onClick={handleConfirm}
+                  disabled={tenorValue !== "" && isWeekend(tenoreDate)}
+                  loading={SaveNonFEDiscountingTransactionAPILoading}
                 />
               </Col>
             </Row>

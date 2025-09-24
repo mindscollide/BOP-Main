@@ -50,32 +50,36 @@ const FeDiscountingTable = () => {
   const getFeDiscountingData = useSelector(
     (state) => state.RealtimeActionsSlice.FeDiscountingPublished
   );
+  const FeDiscountingButtonLoading = useSelector(
+    (state) => state.dealerReducer.publishFeDiscountingLoading
+  );
+
+  console.log(FeDiscountingButtonLoading, "FeDiscountingButtonLoading");
 
   const getAllTenorsData = useSelector(
     (state) => state.dealerReducer.getAllTenors
   );
-
+  console.log(
+    getDashboardForwards,
+    getAllTenorsData,
+    GetAllInstrumentForTreasury,
+    GetAllInstrumentForTreasury,
+    "getDashboardForwardsgetDashboardForwards"
+  );
   useEffect(() => {
     if (
-      getDashboardForwards !== null &&
       getAllTenorsData !== null &&
-      GetAllInstrumentForTreasury !== null
+      GetAllInstrumentForTreasury !== null &&
+      GetAllInstrumentForTreasury
     ) {
       try {
-        console.log(
-          {
-            getDashboardForwards,
-            getAllTenorsData,
-            GetAllInstrumentForTreasury,
-          },
-          "hellohello"
-        );
         const { feDiscountingRates = [] } =
           getDashboardForwards !== null &&
           getDashboardForwards !== undefined &&
           getDashboardForwards;
         const DiscountingInstruments =
-          GetAllInstrumentForTreasury.discountingInstruments;
+          GetAllInstrumentForTreasury?.discountingInstruments;
+
         const getAllInstrument = { instruments: DiscountingInstruments };
         const { rowData, columnsData } = buildDiscountingTable(
           5,
@@ -109,20 +113,24 @@ const FeDiscountingTable = () => {
     ) {
       try {
         const { rates } = getFeDiscountingData;
+
+        console.log(
+          { rates, getAllTenorsData, GetAllInstrumentForTreasury, InputCell },
+          "buildDiscountingTable"
+        );
+        const DiscountingInstruments =
+          GetAllInstrumentForTreasury?.discountingInstruments;
+
+        const getAllInstrument = { instruments: DiscountingInstruments };
         const { rowData, columnsData } = buildDiscountingTable(
           5,
           rates,
           getAllTenorsData,
-          GetAllInstrumentForTreasury,
+          getAllInstrument,
           InputCell,
           onInputChange
         );
-        console.log(
-          rowData,
-          columnsData,
-          rates,
-          "getFeDiscountingDatagetFeDiscountingData"
-        );
+
         if (rowData.length > 0) {
           setRowData(rowData);
           setColumnsData(columnsData);
@@ -168,34 +176,36 @@ const FeDiscountingTable = () => {
     let Data = { CurrentRates: payloadData };
 
     console.log(payloadData, "payloadDatapayloadDatapayloadData");
-    const checkDoNotempty = payloadData.every(
-      (item) => item.Rate !== "" && Number(item.Rate) !== 0
-    );
+    // const checkDoNotempty = payloadData.every(
+    //   (item) => item.Rate !== "" && Number(item.Rate) !== 0
+    // );
 
-    if (!checkDoNotempty) {
-      showMessage("Rate fields cannot be 0 or empty for any currency");
-      return;
-    }
+    // if (!checkDoNotempty) {
+    //   showMessage("Rate fields cannot be 0 or empty for any currency");
+    //   return;
+    // }
     dispatch(PublishFEDiscountingTableApi({ navigate, Data }));
   };
   return (
     <>
-      <div className='datetime fw-bold text-end mb-2 ff-roboto'>
-        {date !== "" &&
-          moment(formatDateUTCToGMT(date)).format("DD MMM YYYY, hh:mm:ss")}
+      <div className="datetime fw-bold text-end mb-2 ff-roboto">
+        {date
+          ? moment(formatDateUTCToGMT(date)).format("DD MMM YYYY, hh:mm:ss")
+          : ""}
         {/* 05 Aug 2025, 11:20:58 */}
       </div>
       <GlobalTable
-        prefixCls='DealerAndTreasuryDiscountTable'
+        prefixCls="DealerAndTreasuryDiscountTable"
         columns={columnsData}
         dataSource={rowData}
         pagination={false}
       />
 
-      <span className='d-flex justify-content-center mt-4'>
+      <span className="d-flex justify-content-center mt-4">
         <CustomButton
-          applyClass='publishForwardsBtn'
+          applyClass="publishForwardsBtn"
           value={"Publish FE Discounting"}
+          loading={FeDiscountingButtonLoading}
           disabled={marketStatus === false ? true : false}
           onClick={handlePublishDiscount}
         />

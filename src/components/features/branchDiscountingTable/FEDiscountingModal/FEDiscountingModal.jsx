@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import "./FEDiscountingModal.css";
-import Select from "react-select";
 import Modal from "@/components/common/globalModal/Modal";
 import { Col, Row } from "react-bootstrap";
 import InputFIeld from "@/components/common/inputField/InputField";
 import CustomButton from "@/components/common/globalButton/button";
 import { useSelector } from "react-redux";
-import { formatDate } from "@/common/utils";
+import { formatDate, isWeekend } from "@/common/utils";
 import SelectDropdown from "@/components/common/selectDropdown/SelectDropdown";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -54,6 +53,10 @@ const FEDiscountingModal = ({
     (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
   );
 
+  const SaveFEDiscountingTransactionAPILoading = useSelector(
+    (state) => state.BlotterSlicer.SaveFEDiscountingTransactionAPILoading
+  );
+
   // State for dropdown options
   const [currencyOptions, setCurrencyOptions] = useState([]);
   console.log(currencyOptions, "currencyOptionscurrencyOptions");
@@ -62,7 +65,7 @@ const FEDiscountingModal = ({
   // State for form fields
   const [selectedNature, setSelectedNature] = useState(null);
   const [selectedCurrency, setSelectedCurrency] = useState(null);
-  const [tenoreDate, setTenorDate] = useState(formatDate(new Date()));
+  const [tenoreDate, setTenorDate] = useState(new Date());
   const [tenorValue, setTenorValue] = useState("");
 
   // Main form state
@@ -260,14 +263,19 @@ const FEDiscountingModal = ({
 
         // Clear tenor date if input is empty
         if (value === "") {
-          setTenorDate(formatDate(new Date()));
+          setTenorDate(new Date());
           return;
         }
 
         // Calculate new date based on tenor days
         const newDate = new Date();
         newDate.setDate(newDate.getDate() + numericValue);
-        setTenorDate(formatDate(newDate));
+        setTenorDate(newDate);
+        setErrors((prev) => ({
+          ...prev,
+          TenorDays: false,
+          Ready: false,
+        }));
       }
     }
   };
@@ -318,10 +326,11 @@ const FEDiscountingModal = ({
 
   // Form validation function
   const validateForm = () => {
+    let convertIntoNumber = formData.Quantity.replace(/,/g, "");
     const newErrors = {
       // corproateObj: !formData.corproateObj,
       InstrumentID: !formData.InstrumentID || !formData.InstrumentID.value,
-      AccountNumber: !formData.AccountNumber,
+      // AccountNumber: !formData.AccountNumber,
 
       TenorDays:
         !formData.TenorDays ||
@@ -330,6 +339,10 @@ const FEDiscountingModal = ({
       DiscountingFactor:
         !formData.DiscountingFactor || isNaN(formData.DiscountingFactor),
       Ready: !formData.Ready || isNaN(formData.Ready),
+      Quantity:
+        !convertIntoNumber ||
+        isNaN(convertIntoNumber) ||
+        parseInt(convertIntoNumber) <= 0,
     };
 
     setErrors(newErrors);
@@ -359,7 +372,7 @@ const FEDiscountingModal = ({
         : Number(counterPartyDetails?.corporateID),
       InstrumentID: formData.InstrumentID.value,
       Quantity: parseFloat(convertIntoNumber),
-      AccountNumber: formData.AccountNumber,
+      AccountNumber: formData.AccountNumber ? formData.AccountNumber : "",
       NatureOfTransactionID: formData.NatureOfTransactionID,
       TenorDays: parseInt(formData.TenorDays),
       // DiscountingFactor: parseFloat(formData.DiscountingFactor),
@@ -418,7 +431,7 @@ const FEDiscountingModal = ({
                       {counterPartyDetails?.branchName}
                     </span>
                     <p className="FeDiscountingHeader_BranchCode">
-                      {counterPartyDetails?.branchCode}
+                      Branch Code: {counterPartyDetails?.branchCode}
                     </p>
                   </>
                 ) : isCorporate ? (
@@ -464,7 +477,7 @@ const FEDiscountingModal = ({
                 <Row>
                   <Col lg={12} md={12} sm={12}>
                     <div className="d-flex flex-column flex-wrap">
-                      <span className="SubHeadings">Currency</span>
+                      <span className="SubHeadings">Currency*</span>
                       <SelectDropdown
                         classNamePrefix="RfqSpot"
                         options={currencyOptions}
@@ -492,19 +505,20 @@ const FEDiscountingModal = ({
                   </Col>
                   <Col lg={6} md={6} sm={6}>
                     <div className="d-flex flex-column flex-wrap">
-                      <span className="SubHeadings">A/c No*</span>
+                      <span className="SubHeadings">A/c No</span>
                       <InputFIeld
                         value={formData.AccountNumber}
                         onChange={(e) =>
                           handleInputChange("AccountNumber", e.target.value)
                         }
+                        maxLength={25}
                         applyClass={"CalculatorTextfield"}
                       />
-                      {errors.AccountNumber && (
+                      {/* {errors.AccountNumber && (
                         <span className="text-danger small">
                           Please enter a valid account number
                         </span>
-                      )}
+                      )} */}
                     </div>
                   </Col>
                 </Row>
@@ -513,10 +527,12 @@ const FEDiscountingModal = ({
                 <Row className="my-2">
                   <Col lg={12} md={12} sm={12}>
                     <div className="d-flex flex-column flex-wrap">
-                      <span className="SubHeadings">Amount</span>
+                      <span className="SubHeadings">Amount*</span>
                       <NumericFormat
                         customInput={InputFIeld}
+                        decimalScale={0}
                         value={formData.Quantity}
+                        allowNegative={false}
                         onChange={(e) =>
                           handleInputChange("Quantity", e.target.value)
                         }
@@ -545,11 +561,6 @@ const FEDiscountingModal = ({
                         applyClass={"CalculatorTextfield"}
                         onBlur={onBlurTenorDays}
                       />
-                      {errors.TenorDays && (
-                        <span className="text-danger small">
-                          Please enter valid tenor days (1-1000)
-                        </span>
-                      )}
                     </div>
                   </Col>
                   <Col
@@ -559,9 +570,14 @@ const FEDiscountingModal = ({
                     className="d-flex align-items-end justify-content-start ps-0"
                   >
                     <span className="feDiscuntingBookAForward_tenorDateSpan">
-                      {tenoreDate}
+                      {formatDate(tenoreDate)}
                     </span>
                   </Col>
+                  {errors.TenorDays && (
+                    <span className="text-danger small">
+                      Please enter valid tenor(1-1000)
+                    </span>
+                  )}
                 </Row>
 
                 {/* Ready and Swap Fields */}
@@ -595,7 +611,7 @@ const FEDiscountingModal = ({
                           </span>
                           <InputFIeld
                             value={Number(formData.DiscountingFactor).toFixed(
-                              4
+                              2
                             )}
                             // onChange={(e) => handleInputChange('Swap', e.target.value)}
                             disabled={true}
@@ -652,6 +668,8 @@ const FEDiscountingModal = ({
                   value={"Confirm"}
                   applyClass={"ConfirmButtonBookaForward"}
                   onClick={handleClickConfirmFERFQ}
+                  disabled={tenorValue !== "" && isWeekend(tenoreDate)}
+                  loading={SaveFEDiscountingTransactionAPILoading}
                 />
               </Col>
             </Row>

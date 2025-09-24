@@ -53,17 +53,20 @@ const NonFeDiscountingTable = () => {
   const getAllTenorsData = useSelector(
     (state) => state.dealerReducer.getAllTenors
   );
+  const publishNonFeDiscountingLoading = useSelector(
+    (state) => state.dealerReducer.publishNonFeDiscountingLoading
+  );
 
   useEffect(() => {
-    if (
-      getDashboardForwards !== null &&
-      getAllTenorsData !== null &&
-      GetAllInstrumentForTreasury !== null
-    ) {
+    if (getAllTenorsData !== null && GetAllInstrumentForTreasury !== null) {
       try {
-        const { nonFEDiscountingRates } = getDashboardForwards;
+        const { nonFEDiscountingRates = [] } =
+          getDashboardForwards !== null &&
+          getDashboardForwards !== undefined &&
+          getDashboardForwards;
+
         const DiscountingInstruments =
-          GetAllInstrumentForTreasury.nonFEDiscountingInstruments;
+          GetAllInstrumentForTreasury?.nonFEDiscountingInstruments;
         const getAllInstrument = { instruments: DiscountingInstruments };
         const { rowData, columnsData } = buildDiscountingTable(
           5,
@@ -79,18 +82,19 @@ const NonFeDiscountingTable = () => {
           setTableData(rowData);
           setColumnsData(columnsData);
         }
-      } catch (error) {}
+      } catch (error) {
+        console.log(error);
+      }
     }
   }, [getDashboardForwards, getAllTenorsData, GetAllInstrumentForTreasury]);
 
   useEffect(() => {
-    if (
-      getAllTenorsData !== null &&
-      GetAllInstrumentForTreasury !== null &&
-      NonFeDiscountingPublishedData !== null
-    ) {
+    if (getAllTenorsData !== null && GetAllInstrumentForTreasury !== null) {
       try {
-        const { rates } = NonFeDiscountingPublishedData;
+        const { rates } =
+          NonFeDiscountingPublishedData !== null &&
+          NonFeDiscountingPublishedData !== undefined &&
+          NonFeDiscountingPublishedData;
         const DiscountingInstruments =
           GetAllInstrumentForTreasury.nonFEDiscountingInstruments;
         const getAllInstrument = { instruments: DiscountingInstruments };
@@ -102,12 +106,7 @@ const NonFeDiscountingTable = () => {
           InputCell,
           onInputChange
         );
-        console.log(
-          rowData,
-          columnsData,
-          rates,
-          "getFeDiscountingDatagetFeDiscountingData"
-        );
+
         if (rowData.length > 0) {
           setTableData(rowData);
           setColumnsData(columnsData);
@@ -156,14 +155,16 @@ const NonFeDiscountingTable = () => {
   const handlePublishDiscount = () => {
     const payloadData = buildCurrentRatesPayload(tableData);
 
-    const checkDoNotempty = payloadData.every(
-      (item) => item.Rate !== "" && Number(item.Rate) !== 0
-    );
+    console.log("payloadDatapayloadDatapayloadDataNonfe", payloadData);
 
-    if (!checkDoNotempty) {
-      showMessage("Rate fields cannot be 0 or empty for any currency");
-      return;
-    }
+    // const checkDoNotempty = payloadData.every(
+    //   (item) => item.Rate !== "" && Number(item.Rate) !== 0
+    // );
+
+    // if (!checkDoNotempty) {
+    //   showMessage("Rate fields cannot be 0 or empty for any currency");
+    //   return;
+    // }
     let Data = { CurrentRates: payloadData };
 
     dispatch(PublishNonFEDiscountingTableApi({ navigate, Data }));
@@ -171,8 +172,9 @@ const NonFeDiscountingTable = () => {
   return (
     <>
       <div className="datetime fw-bold text-end mb-2 ff-roboto">
-        {date !== "" &&
-          moment(formatDateUTCToGMT(date)).format("DD MMM YYYY, hh:mm:ss")}
+        {date
+          ? moment(formatDateUTCToGMT(date)).format("DD MMM YYYY, hh:mm:ss")
+          : ""}
       </div>
       <GlobalTable
         prefixCls="DealerAndTreasuryDiscountTable"
@@ -187,6 +189,7 @@ const NonFeDiscountingTable = () => {
           value={"Publish Non FE Discounting"}
           onClick={handlePublishDiscount}
           disabled={marketStatus === false ? true : false}
+          loading={publishNonFeDiscountingLoading}
         />
       </span>
     </>

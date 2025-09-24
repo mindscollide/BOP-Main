@@ -1,4 +1,4 @@
-import React, { startTransition, useEffect } from "react";
+import React, { startTransition, useEffect, useState } from "react";
 import { Row, Col } from "react-bootstrap";
 import "./branchWatchlistCard.css";
 import BidAmountBox from "../../common/bidAmountBox/BidAmountBox";
@@ -10,6 +10,7 @@ import {
   setISellAndBuyModal,
   setRfqModalOpen,
 } from "@/store/modalSlice/modalSlicer";
+import { useSelector } from "react-redux";
 
 const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
 const isCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
@@ -26,27 +27,21 @@ const BranchRateCardsOfWatchList = ({
   secondaryInstrumentID,
   instrumentName,
   secondaryInstrumentName,
+  viewInstumentName,
+  viewSecondaryInstrumentName,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [rfqButtonState, setRFqButtonState] = useState(true);
+
+  const isTradeRights = useSelector(
+    (state) => state.RealtimeActionsSlice.tradeRightsStatusUpdated
+  );
+  const marketStatus = useSelector(
+    (state) => state.WatchListReducer.getMarketStatus
+  );
 
   const handleOpenModal = (type) => {
-    console.log(
-      {
-        currencyLabel,
-        buyHeading,
-        sellHeading,
-        buyValue,
-        sellValue,
-        isSellDisabled,
-        isBuyDisabled,
-        instrumentID,
-        secondaryInstrumentID,
-        instrumentName,
-        secondaryInstrumentName,
-      },
-      "handleOpenModalhandleOpenModal "
-    );
     let Data = {
       type: type, // 'buy' or 'sell'
       currencyLabel: currencyLabel,
@@ -63,25 +58,36 @@ const BranchRateCardsOfWatchList = ({
     dispatch(setRfqModalOpen(true));
   };
 
-  // const
+  useEffect(() => {
+    if (isTradeRights !== null) {
+      setRFqButtonState(JSON.parse(isTradeRights));
+      console.log(isTradeRights, "isTradeRightsisTradeRights");
+    }
+  }, [isTradeRights]);
 
   return (
     <>
-      {currencyLabel && buyValue && sellValue ? (
+      {currencyLabel ? (
         <>
-          <span className='DroppableBox'>
+          <span
+            className={
+              !marketStatus || !rfqButtonState
+                ? "DroppableBox_disbaled"
+                : "DroppableBox"
+            }
+          >
             <Row>
               <Col lg={12} md={12} sm={12}>
-                <span className='DroppableBoxCurrencyLabel'>
-                  {currencyLabel.slice(0, 3)}
+                <span className="DroppableBoxCurrencyLabel">
+                  {viewInstumentName}
                 </span>
-                <span className='color-white fs-5 fw-normal'>
+                <span className="color-white fs-5 fw-normal">
                   {" "}
-                  {currencyLabel.slice(3, 6)}
+                  {viewSecondaryInstrumentName}
                 </span>
               </Col>
             </Row>
-            <Row className='mt-4'>
+            <Row className="mt-4">
               {isBranch ? (
                 <>
                   <Col lg={6} md={6} sm={6}>
@@ -94,7 +100,9 @@ const BranchRateCardsOfWatchList = ({
                           ? "SellandBuyCardBracnh"
                           : "SellandBuyCardBracnh_disbaled"
                       }
-                      onClick={() => handleOpenModal("buy")}
+                      onClick={() => {
+                        buyValue > 0 && handleOpenModal("buy");
+                      }}
                     />
                   </Col>
                   <Col lg={6} md={6} sm={6}>
@@ -107,7 +115,9 @@ const BranchRateCardsOfWatchList = ({
                           ? "SellandBuyCardBracnh"
                           : "SellandBuyCardBracnh_disbaled"
                       }
-                      onClick={() => handleOpenModal("sell")}
+                      onClick={() => {
+                        sellValue > 0 && handleOpenModal("sell");
+                      }}
                     />
                   </Col>
                 </>
@@ -123,7 +133,9 @@ const BranchRateCardsOfWatchList = ({
                           ? "SellandBuyCardBracnh"
                           : "SellandBuyCardBracnh_disbaled"
                       }
-                      onClick={() => handleOpenModal("sell")}
+                      onClick={() => {
+                        buyValue > 0 && handleOpenModal("sell");
+                      }}
                     />
                   </Col>
                   <Col lg={6} md={6} sm={6}>
@@ -136,7 +148,9 @@ const BranchRateCardsOfWatchList = ({
                           ? "SellandBuyCardBracnh"
                           : "SellandBuyCardBracnh_disbaled"
                       }
-                      onClick={() => handleOpenModal("buy")}
+                      onClick={() => {
+                        sellValue > 0 && handleOpenModal("buy");
+                      }}
                     />
                   </Col>
                 </>

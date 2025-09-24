@@ -8,9 +8,13 @@ import CustomButton from "@/components/common/globalButton/button";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { setViewDealModal } from "@/store/modalSlice/modalSlicer";
-import { RFQTransactionQuotation } from "@/components/features/blotter/BlotterActions";
+import {
+  RejectTransactionAPI,
+  RFQTransactionQuotation,
+} from "@/components/features/blotter/BlotterActions";
 import { useNavigate } from "react-router-dom";
 import { NumericFormat } from "react-number-format";
+import CancelReasonModal from "@/components/features/blotter/cancelReasonModal/cancelReasonModal";
 
 const SpotQuoteModal = ({ dealData }) => {
   console.log(dealData, "dealDatadealData");
@@ -18,11 +22,27 @@ const SpotQuoteModal = ({ dealData }) => {
   const navigate = useNavigate();
   const [bid, setBid] = useState("");
   const [offer, setOffer] = useState("");
+  const [cancelReasonModal, setCancelReasonModal] = useState(false);
+  const [cancelReasonComment, setCancelReasonComment] = useState("");
+  const [selectedTransactionID, setSelectedTransactionID] = useState(null);
+
   const spotQuoteModalState = useSelector(
     (state) => state.modalReducer.spotQuoteModal
   );
   const spotQuoteModalData = useSelector(
     (state) => state.BlotterSlicer.spotQuoteModalData
+  );
+
+  const RFQTransactionQuotationLoading = useSelector(
+    (state) => state.BlotterSlicer.RFQTransactionQuotationLoading
+  );
+
+  const AcceptTransactionAPILoading = useSelector(
+    (state) => state.BlotterSlicer.AcceptTransactionAPILoading
+  );
+
+  const RejectTransactionAPILoading = useSelector(
+    (state) => state.BlotterSlicer.RejectTransactionAPILoading
   );
 
   console.log(spotQuoteModalData, "spotQuoteModalDataspotQuoteModalData");
@@ -51,25 +71,50 @@ const SpotQuoteModal = ({ dealData }) => {
   const handleSubmit = () => {
     // scenario is if side is "buy" then bid should be disabled and offer should be enabled
     // RFQTransactionQuotation naturetype 1
-    // RFQForwardTransactionQuotation naturetype 2
+
     // RFQFEDiscountingTransactionQuotation naturetype 3
     // RFQNonFEDiscountingTransactionQuotation naturetype 4
+    //  for Branch Transaction if branch buy then set bid rate
     let getRate =
-      spotQuoteModalData.side.toLowerCase() === "sell"
+      spotQuoteModalData?.side.toLowerCase() === "buy"
         ? bid.replace(/,/g, "")
         : offer.replace(/,/g, "");
+
     let Data = {
       PK_TransactionID: spotQuoteModalData?.pK_TransactionID,
       Rate: Number(getRate),
     };
     dispatch(RFQTransactionQuotation({ navigate, Data }));
   };
+  const handleReject = (transactionID) => {
+    // Store the transaction ID and open the modal
+    setSelectedTransactionID(transactionID);
+    setCancelReasonModal(true);
+  };
+  const handleRejectWithReason = () => {
+    if (cancelReasonComment.trim() === "") {
+      // empty msg
+      return;
+    }
 
+    // Use the stored transaction ID and user's comment
+    const Data = {
+      PK_TransactionID: selectedTransactionID,
+      Comment: cancelReasonComment,
+    };
+    let val = 1;
+    //Reject API Call
+    dispatch(RejectTransactionAPI({ navigate, Data, val }));
 
+    // Reset Modal State
+    setCancelReasonModal(false);
+    setCancelReasonComment("");
+  };
   return (
     <GlobalModal
       show={spotQuoteModalState}
       size={"md"}
+      centered={true}
       bodyClassName={styles["DealViewModal__body"]}
       modalBody={
         <>
@@ -78,7 +123,8 @@ const SpotQuoteModal = ({ dealData }) => {
               sm={3}
               md={3}
               lg={3}
-              className={styles["DealViewModal_oneSide"]}>
+              className={styles["DealViewModal_oneSide"]}
+            >
               <Row>
                 <Col sm={12} md={12} lg={12}>
                   <label className={styles["DealViewModal__label"]}>Side</label>
@@ -102,7 +148,7 @@ const SpotQuoteModal = ({ dealData }) => {
                 </Col>
                 <Col sm={12} md={12} lg={12}>
                   <label className={styles["DealViewModal__label"]}>
-                    Amount
+                    TXN Amount
                   </label>
                   <p className={styles["DealViewModal__value"]}>
                     {spotQuoteModalData?.quantity}
@@ -114,7 +160,7 @@ const SpotQuoteModal = ({ dealData }) => {
                 </Col>
                 <Col sm={12} md={12} lg={12}>
                   <label className={styles["DealViewModal__label"]}>
-                    Amount
+                    Total Amount
                   </label>
                   <p className={styles["DealViewModal__value"]}>
                     {spotQuoteModalData?.amount}
@@ -142,23 +188,28 @@ const SpotQuoteModal = ({ dealData }) => {
               sm={9}
               md={9}
               lg={9}
-              className={styles["DealViewModal_SecondSide"]}>
+              className={styles["DealViewModal_SecondSide"]}
+            >
               <Row>
                 <Col sm={10} md={10} lg={10}>
-                  <p className={styles["PartyNamesNew"]}>
-                    {spotQuoteModalData?.branchName}
-                    <span className={styles["PartyNamesSubHeading"]}>
-                      {" ("}
-                      {spotQuoteModalData?.branchCode}
-                      {")"}
-                    </span>
-                  </p>
+                  {spotQuoteModalData?.branchName !== "" && (
+                    <p className={styles["PartyNamesNew"]}>
+                      {spotQuoteModalData?.branchName}
+                      <span className={styles["PartyNamesSubHeading"]}>
+                        {" ("}
+                        {spotQuoteModalData?.branchCode}
+                        {")"}
+                      </span>
+                    </p>
+                  )}
                 </Col>
+
                 <Col
                   sm={2}
                   md={2}
                   lg={2}
-                  className='d-flex justify-content-center'>
+                  className="d-flex justify-content-center justify-content-end"
+                >
                   <IconElement
                     onClick={closeModal}
                     iconClass={"icon-close fs-4 cursor-pointer"}
@@ -176,10 +227,11 @@ const SpotQuoteModal = ({ dealData }) => {
                   sm={2}
                   md={2}
                   lg={2}
-                  className='d-flex justify-content-center'></Col>
+                  className="d-flex justify-content-center"
+                ></Col>
               </Row>
-              <Row className='mt-5'>
-                <Col sm={6} md={6} lg={6} className='mt-4'>
+              <Row className="mt-5">
+                <Col sm={6} md={6} lg={6} className="mt-4">
                   <div className={styles["DealViewModal_Input"]}>
                     <label className={styles["DealViewModal_label"]}>Bid</label>
                     <NumericFormat
@@ -187,17 +239,22 @@ const SpotQuoteModal = ({ dealData }) => {
                       onChange={(e) => handleChangeRate(e, "bid")}
                       value={bid}
                       disabled={
-                        spotQuoteModalData?.side.toLowerCase() === "sell"
+                        spotQuoteModalData?.side.toLowerCase() === "buy"
                           ? false
                           : true
                       }
+                      // disabled={
+                      //   spotQuoteModalData?.side.toLowerCase() === "sell"
+                      //     ? false
+                      //     : true
+                      // }
                       applyClass={"DealBoxBitInput"}
-                      thousandSeparator=','
+                      thousandSeparator=","
                       maxLength={10}
                     />
                   </div>
                 </Col>
-                <Col sm={6} md={6} lg={6} className='mt-4'>
+                <Col sm={6} md={6} lg={6} className="mt-4">
                   <div className={styles["DealViewModal_Input"]}>
                     <label className={styles["DealViewModal_label"]}>
                       Offer
@@ -207,12 +264,17 @@ const SpotQuoteModal = ({ dealData }) => {
                       onChange={(e) => handleChangeRate(e, "offer")}
                       value={offer}
                       disabled={
-                        spotQuoteModalData?.side.toLowerCase() === "buy"
+                        spotQuoteModalData?.side.toLowerCase() === "sell"
                           ? false
                           : true
                       }
+                      // disabled={
+                      //   spotQuoteModalData?.side.toLowerCase() === "buy"
+                      //     ? false
+                      //     : true
+                      // }
                       applyClass={"DealBoxOfferInput"}
-                      thousandSeparator=','
+                      thousandSeparator=","
                       maxLength={10}
                     />
                   </div>
@@ -223,7 +285,8 @@ const SpotQuoteModal = ({ dealData }) => {
                   sm={12}
                   md={12}
                   lg={12}
-                  className='d-flex justify-content-center gap-3 mt-5'>
+                  className="d-flex justify-content-center gap-3 mt-5"
+                >
                   {spotQuoteModalData?.isRFQ ? (
                     <CustomButton
                       icon={<IconElement iconClass={"icon-send  fs-5"} />}
@@ -232,6 +295,7 @@ const SpotQuoteModal = ({ dealData }) => {
                       applyClass={"SubmitBtnDealBox"}
                       className={"px-4"}
                       onClick={handleSubmit}
+                      loading={RFQTransactionQuotationLoading}
                     />
                   ) : (
                     <>
@@ -243,6 +307,7 @@ const SpotQuoteModal = ({ dealData }) => {
                         applyClass={"AcceptBtnDealBox"}
                         className={"px-4"}
                         onClick={handleSubmit}
+                        loading={AcceptTransactionAPILoading}
                       />
                       <CustomButton
                         value={"Reject"}
@@ -250,13 +315,28 @@ const SpotQuoteModal = ({ dealData }) => {
                         iconPosition={"left"}
                         applyClass={"RejectBtnDealBox"}
                         className={"px-4"}
-                      />{" "}
+                        onClick={() =>
+                          handleReject(spotQuoteModalData.pK_TransactionID)
+                        }
+                        loading={RejectTransactionAPILoading}
+                      />
                     </>
                   )}
                 </Col>
               </Row>
             </Col>
           </Row>
+          <CancelReasonModal
+            cancelReasonModal={cancelReasonModal}
+            setCancelReasonModal={setCancelReasonModal}
+            handleClickReasonSubmit={handleRejectWithReason}
+            handleCloseReasonModal={() => {
+              setCancelReasonModal(false);
+              setCancelReasonComment("");
+            }}
+            cancelReasonComment={cancelReasonComment}
+            setCancelReasonComment={setCancelReasonComment}
+          />
         </>
       }
     />

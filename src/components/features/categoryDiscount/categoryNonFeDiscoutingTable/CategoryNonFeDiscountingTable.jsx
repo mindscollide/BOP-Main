@@ -1,17 +1,28 @@
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import GlobalTable from "@/components/common/table/GlobalTable";
 import { buildDiscountingTable } from "@/components/utils/generateColumnsData";
+import { UpdateGetCategoryWiseDiscountingRates } from "@/store/categoryReducer/categoryReducer";
+import { clearCategoryDiscountingClearRates } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { throttle } from "lodash";
 import React, { useEffect, useMemo, useState } from "react";
 import { Col, Row } from "react-bootstrap";
+import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 
 const CategoryNonFeDiscountingTable = () => {
+  const dispatch = useDispatch();
   const [dataSource, setDataSource] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
 
   const GetCategoryWiseDiscountingRates = useSelector(
     (state) => state.categoryReducer.GetCategoryWiseDiscountingRates
+  );
+  console.log(
+    GetCategoryWiseDiscountingRates,
+    "GetCategoryWiseDiscountingRatesGetCategoryWiseDiscountingRates"
+  );
+  const ClearRatesData = useSelector(
+    (state) => state.RealtimeActionsSlice.CategoryDiscountingClearRates
   );
 
   const getAllTenorsRecords = useSelector(
@@ -110,16 +121,63 @@ const CategoryNonFeDiscountingTable = () => {
     }
   }, [marketStatus]);
 
+// ✅ For clear FE Discounting Rates
+useEffect(() => {
+  if (!ClearRatesData?.areRatesClear) return;
+
+  try {
+    if (GetCategoryWiseDiscountingRates?.nonFEDiscountingRates?.length) {
+      // 🔹 Reset Redux rates to "0"
+      const clearedDiscountingRates =
+        GetCategoryWiseDiscountingRates.nonFEDiscountingRates.map((item) => ({
+          ...item,
+          rate: "0",
+        }));
+
+      const updatedData = {
+        ...GetCategoryWiseDiscountingRates,
+        nonFEDiscountingRates: clearedDiscountingRates,
+      };
+
+      dispatch(UpdateGetCategoryWiseDiscountingRates(updatedData));
+
+      console.log(
+        clearedDiscountingRates,
+        "✅ Cleared FE Discounting Rates in Redux"
+      );
+    } else {
+      // 🔹 Fallback: Clear only local dataSource
+      setDataSource((prevData) =>
+        prevData.map((row) => {
+          const updatedRow = { ...row };
+          for (const key in updatedRow) {
+            if (key.startsWith("rate_")) {
+              updatedRow[key] = "0";
+            }
+          }
+          return updatedRow;
+        })
+      );
+      console.log("✅ Cleared FE Discounting Rates in local dataSource");
+    }
+
+    // 🔹 Always reset clear flag
+    dispatch(clearCategoryDiscountingClearRates());
+  } catch (error) {
+    console.error("❌ Error while clearing FE Discounting Rates:", error);
+  }
+}, [ClearRatesData, GetCategoryWiseDiscountingRates, dispatch]);
+
   return (
     <Row>
-      <Col lg={12} md={12} sm={12} className="heading mb-2">
+      <Col lg={12} md={12} sm={12} className='heading mb-2'>
         Non-FE Discounting
       </Col>
       <Col lg={12} md={12} sm={12}>
         <GlobalTable
           columns={columnsData}
           dataSource={dataSource}
-          prefixCls="Dealer_Discounting"
+          prefixCls='Dealer_Discounting'
           pagination={false}
         />
       </Col>

@@ -38,6 +38,21 @@ const MailModal = ({ openMailModal, setOpenMailModal }) => {
     dispatch(GetUsersEmailApi({ navigate }));
   }, []);
 
+  const EmailBlotterTransactionDetailsForBranchAPILoading = useSelector(
+    (state) =>
+      state.ReportReducer.EmailBlotterTransactionDetailsForBranchAPILoading
+  );
+
+  const EmailBlotterTransactionDetailsForTreasuryAPILoading = useSelector(
+    (state) =>
+      state.ReportReducer.EmailBlotterTransactionDetailsForTreasuryAPILoading
+  );
+
+  const EmailBlotterTransactionDetailsForCorporateAPILoading = useSelector(
+    (state) =>
+      state.ReportReducer.EmailBlotterTransactionDetailsForCorporateAPILoading
+  );
+
   useEffect(() => {
     if (GetUsersEmail?.usersEmailList?.length > 0) {
       try {
@@ -302,6 +317,11 @@ const MailModal = ({ openMailModal, setOpenMailModal }) => {
                   value="Send"
                   disabled={sendEmails.length === 0}
                   onClick={handleSendEmail}
+                  loading={
+                    EmailBlotterTransactionDetailsForBranchAPILoading ||
+                    EmailBlotterTransactionDetailsForTreasuryAPILoading ||
+                    EmailBlotterTransactionDetailsForCorporateAPILoading
+                  }
                 />
               </Col>
             </Row>

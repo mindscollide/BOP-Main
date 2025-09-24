@@ -15,6 +15,7 @@ const CustomButton = ({
   applyClass,
   className,
   disabled,
+  loading = false,
 }) => {
   return (
     <>
@@ -23,13 +24,14 @@ const CustomButton = ({
         icon={icon}
         shape={shape}
         disabled={disabled}
-        rootClassName={rootClassName}
+        rootClassName={"rootClassName"}
         className={`${styles[applyClass]} ${className}`}
         classNames={classNames}
         prefixCls={prefixCls}
         size={size}
         onClick={onClick}
         iconPosition={iconPosition}
+        loading={loading}
       >
         {value}
       </Button>

@@ -78,6 +78,11 @@ export const loginInApi = createAsyncThunk(
               localStorage.setItem("ldapAccount", ldapAccount);
               localStorage.setItem("contactNumber", contactNumber);
               localStorage.setItem("userStatusID", userStatusID);
+              {
+                branch !== null &&
+                  branch !== undefined &&
+                  localStorage.setItem("isTradeRights", branch.isTrade);
+              }
 
               roleBasedNavigation(navigate, userRoleID);
 
@@ -193,6 +198,10 @@ export const corporateUserLoginInApi = createAsyncThunk(
                 "isNonFEEnabled",
                 JSON.parse(response.data.responseResult.user.isNonFEEnabled)
               );
+              localStorage.setItem(
+                "isTradeRights",
+                response.data.responseResult.user.corporate.isTrade
+              );
 
               roleBasedNavigation(
                 navigate,
@@ -249,6 +258,10 @@ export const corporateUserLoginInApi = createAsyncThunk(
               localStorage.setItem(
                 "isNonFEEnabled",
                 JSON.parse(response.data.responseResult.user.isNonFEEnabled)
+              );
+              localStorage.setItem(
+                "isTradeRights",
+                response.data.responseResult.user.corporate.isTrade
               );
 
               navigate("/2fa");

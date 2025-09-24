@@ -5,15 +5,22 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { throttle } from "lodash";
+import { useDispatch } from "react-redux";
+import { clearCategoryDiscountingClearRates } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
+import { UpdateGetCategoryWiseDiscountingRates } from "@/store/categoryReducer/categoryReducer";
 
 const CategoryFeDiscountingTable = () => {
+  const dispatch = useDispatch();
   const [dataSource, setDataSource] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
 
   const GetCategoryWiseDiscountingRates = useSelector(
     (state) => state.categoryReducer.GetCategoryWiseDiscountingRates
   );
-
+  console.log(
+    GetCategoryWiseDiscountingRates,
+    "GetCategoryWiseDiscountingRates"
+  );
   const getAllTenorsRecords = useSelector(
     (state) => state.dealerReducer.getAllTenors
   );
@@ -28,12 +35,14 @@ const CategoryFeDiscountingTable = () => {
   const marketStatus = useSelector(
     (state) => state.WatchListReducer.getMarketStatus
   );
-  
+
+  const ClearRatesData = useSelector(
+    (state) => state.RealtimeActionsSlice.CategoryDiscountingClearRates
+  );
+
   console.log("dataSourcedataSource: ", dataSource);
 
-  console.log("marketStatusmarketStatus2434: ", marketStatus);
-
-  console.log("CategoryFeDiscounting: ", CategoryFeDiscounting);
+  console.log("CategoryFeDiscounting MQTT: ", CategoryFeDiscounting);
 
   console.log(
     "GetCategoryWiseDiscountingRates: ",
@@ -75,7 +84,7 @@ const CategoryFeDiscountingTable = () => {
     () =>
       throttle((discountingUpdate) => {
         const { instrumentFEDiscountingData } = discountingUpdate;
-
+        console.log(instrumentFEDiscountingData, "instrumentFEDiscountingData");
         setDataSource((prevData) =>
           prevData.map((row) => {
             let updatedRow = { ...row };
@@ -123,16 +132,63 @@ const CategoryFeDiscountingTable = () => {
     }
   }, [marketStatus]);
 
+  // ✅ For clear FE Discounting Rates
+  useEffect(() => {
+    if (!ClearRatesData?.areRatesClear) return;
+
+    try {
+      if (GetCategoryWiseDiscountingRates?.feDiscountingRates?.length) {
+        // 🔹 Reset Redux rates to "0"
+        const clearedDiscountingRates =
+          GetCategoryWiseDiscountingRates.feDiscountingRates.map((item) => ({
+            ...item,
+            rate: "0",
+          }));
+
+        const updatedData = {
+          ...GetCategoryWiseDiscountingRates,
+          feDiscountingRates: clearedDiscountingRates,
+        };
+
+        dispatch(UpdateGetCategoryWiseDiscountingRates(updatedData));
+
+        console.log(
+          clearedDiscountingRates,
+          "✅ Cleared FE Discounting Rates in Redux"
+        );
+      } else {
+        // 🔹 Fallback: Clear only local dataSource
+        setDataSource((prevData) =>
+          prevData.map((row) => {
+            const updatedRow = { ...row };
+            for (const key in updatedRow) {
+              if (key.startsWith("rate_")) {
+                updatedRow[key] = "0";
+              }
+            }
+            return updatedRow;
+          })
+        );
+        console.log("✅ Cleared FE Discounting Rates in local dataSource");
+      }
+
+      // 🔹 Always reset clear flag
+      dispatch(clearCategoryDiscountingClearRates());
+    } catch (error) {
+      console.error("❌ Error while clearing FE Discounting Rates:", error);
+    }
+  }, [ClearRatesData, GetCategoryWiseDiscountingRates, dispatch]);
+
   return (
     <Row>
-      <Col lg={12} md={12} sm={12} className="heading mb-2">
+      <Col lg={12} md={12} sm={12} className='heading mb-2'>
         FE Discounting
       </Col>
       <Col lg={12} md={12} sm={12}>
         <GlobalTable
           columns={columnsData}
           dataSource={dataSource}
-          prefixCls="Dealer_Discounting"
+          prefixCls='Dealer_Discounting'
           pagination={false}
         />
       </Col>

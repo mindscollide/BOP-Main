@@ -14,7 +14,7 @@ export const LogoutApi = createAsyncThunk(
       console.log(responseCode, response, "responseCoderesponseCode");
     
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(LogoutApi({ navigate }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -46,7 +46,7 @@ export const LogoutApi = createAsyncThunk(
         return rejectWithValue("Something went wrong");
       }
     } catch (error) {
-      return rejectWithValue(error);
+      return rejectWithValue("Something went wrong");
     }
   }
 );

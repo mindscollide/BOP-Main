@@ -5,6 +5,7 @@ import React, {
   useEffect,
   useMemo,
   useRef,
+  useState,
 } from "react";
 import Header from "@/components/layout/header/header";
 import GlobalNavbar from "@/components/layout/nav/Navbar";
@@ -60,6 +61,7 @@ import {
   setIncomingChat,
   setMarketTimingsUpdated,
   setTenorsCreated,
+  setTradeRightsStatusUpdated,
   setTreasuryFeDiscounting,
   setTreasuryForwardRates,
   setTreasuryFowardsTenorsChanges,
@@ -91,9 +93,11 @@ const Dashboard = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const audioRef = useRef(null);
   const prevTopicRef = useRef(null);
   const prevPathRef = useRef(null);
   const chatModal = useSelector((state) => state.modalReducer.chatModal);
+
   const categoryValue = useSelector(
     (state) => state.dealerReducer.categoryValue
   );
@@ -101,6 +105,7 @@ const Dashboard = () => {
     (state) =>
       state.RealtimeActionsSlice.BlotterTransactionAddedForTreasuryDealBox
   );
+
   const chatModalTransactionId = useSelector(
     (state) => state.modalReducer.chatModalTransactionId
   );
@@ -110,6 +115,11 @@ const Dashboard = () => {
   const transactionInfoModal = useSelector(
     (state) => state.modalReducer.transactionInfoModal
   );
+
+  const marketStatus = useSelector(
+    (state) => state.WatchListReducer.getMarketStatus
+  );
+
   const IsBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
   const IsCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
   const isTreasury = import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
@@ -125,11 +135,12 @@ const Dashboard = () => {
     : null;
   const userID = localStorage.getItem("userID");
 
+  // Update setting response when settingState changes
+
   // Memoized MQTT message handler
   const handleMqttMessage = useCallback((data) => {
     const type = data?.payload?.message;
     const payload = data?.payload;
-
     switch (type) {
       // ✅ Chat (real-time but low frequency)
       case "INCOMING_CHAT":
@@ -139,8 +150,15 @@ const Dashboard = () => {
             creationDateTime: formatDateToUTC(new Date()),
           };
           dispatch(setIncomingChat(chatObj));
+
+          if (audioRef.current) {
+            audioRef.current.currentTime = 0;
+            audioRef.current
+              .play()
+              .catch((err) => console.log("Ringtone play blocked:", err));
+          }
         } catch (error) {
-          console.log(error);
+          console.log("Error handling INCOMING_CHAT:", error);
         }
         break;
 
@@ -152,6 +170,7 @@ const Dashboard = () => {
         dispatch(setMarketTimingsUpdated(payload));
         break;
       case "MARKET_STATUS_UPDATED":
+        console.log("MARKET_STATUS_UPDATED", payload);
         dispatch(marketStatusUpdated(payload.marketStatus.isMarketOn));
         dispatch(setMarketStatus(payload.marketStatus.isMarketOn));
         break;
@@ -181,6 +200,8 @@ const Dashboard = () => {
             newIsForwardtenorList:
               payload.tenorWiseForwardRates.newIsForwardtenorList,
             removedtenorList: payload.tenorWiseForwardRates.removedtenorList,
+            updateTenorsDays:
+              payload.tenorWiseForwardRates.updatedTenorDaysList,
           };
 
           dispatch(setCategoryFowardsTenorsChanges(tenorsData));
@@ -192,6 +213,35 @@ const Dashboard = () => {
       case "BRANCH_STATUS_INACTIVE":
       case "CORPORATE_STATUS_INACTIVE":
         dispatch(LogoutApi({ navigate }));
+        break;
+
+      case "BRANCH_TRADE_STATUS_UPDATED":
+        if (IsBranch) {
+          if (payload.isTrade === true) {
+            dispatch(setTradeRightsStatusUpdated(true));
+            localStorage.setItem("isTradeRights", true);
+          } else {
+            dispatch(setTradeRightsStatusUpdated(false));
+
+            localStorage.setItem("isTradeRights", false);
+          }
+        }
+
+        break;
+
+      case "CORPORATE_TRADE_STATUS_UPDATED":
+        if (IsCorporate) {
+          if (payload.isTrade === true) {
+            dispatch(setTradeRightsStatusUpdated(true));
+
+            localStorage.setItem("isTradeRights", true);
+          } else {
+            dispatch(setTradeRightsStatusUpdated(false));
+
+            localStorage.setItem("isTradeRights", false);
+          }
+        }
+
         break;
 
       // ✅ Blotter Transaction Events (heavy updates → use startTransition)
@@ -252,6 +302,24 @@ const Dashboard = () => {
         startTransition(() => {
           dispatch(BlotterTranscationCancelled(payload));
           dispatch(BlotterTranscationCancelledForTreasury(payload));
+
+          //if treasury and dealer true then
+          if (isTreasury || isDealer) {
+            const startDate = new Date();
+            startDate.setHours(0, 0, 0, 0);
+
+            const endDate = new Date();
+            endDate.setHours(23, 58, 59, 99);
+
+            const Data = {
+              StartDate: formatDateToUTC(startDate, 1),
+              EndDate: formatDateToUTC(endDate, 1),
+            };
+            dispatch(GetMisDataByRangeAPI({ navigate, Data }));
+            if (isTreasury) {
+              dispatch(GetNOPDataAPI({ navigate }));
+            }
+          }
         });
         break;
 
@@ -375,7 +443,20 @@ const Dashboard = () => {
       case "CATEGORY_DELETED":
         dispatch(categoryisDeleted(payload));
         break;
+      case "LOGIN":
+        console.log("LOGIN event received", payload);
+        // Handle login event if necessary
+        let token = localStorage.getItem("token");
+        let userId = localStorage.getItem("userID");
 
+        if (
+          token !== payload.loginDetials.token &&
+          Number(userId) === Number(payload.loginDetials.userID)
+        ) {
+          // localStorage.clear();
+          dispatch(LogoutApi({ navigate }));
+        }
+        break;
       default:
         console.warn("No specific handler for this message type", payload);
         break;
@@ -400,7 +481,7 @@ const Dashboard = () => {
   } = useMqttClient(mqttConfig);
 
   useEffect(() => {
-    if (IsBranch || IsCorporate) {
+    if (isTreasury || isDealer) {
       if (!categoryValue) return;
 
       const newTopic = `BOP_TREASURY_CATEGORY_RATES_${categoryValue.value}`;
@@ -427,18 +508,19 @@ const Dashboard = () => {
     if (!isConnected) return;
 
     const isTreasuryPath = location.pathname.includes("treasury");
+
     if (isTreasury || isDealer) {
-      // Subscribe if entering treasury path
-      if (isTreasuryPath) {
+      if (marketStatus && isTreasuryPath) {
+        // Subscribe only when status is true AND path is treasury
         subscribeToTopics(["BOP_REAL_TIME_FEED_TREASURY"]);
         console.log("Subscribed to BOP_REAL_TIME_FEED_TREASURY");
       } else {
-        unsubscribeFromTopics([`BOP_REAL_TIME_FEED_TREASURY`]);
+        // Unsubscribe when status is false OR path is not treasury
+        unsubscribeFromTopics(["BOP_REAL_TIME_FEED_TREASURY"]);
+        console.log("Unsubscribed from BOP_REAL_TIME_FEED_TREASURY");
       }
     }
-
-    // No cleanup here - we'll handle unsubscription in the next effect
-  }, [location.pathname, isConnected]);
+  }, [location.pathname, isConnected, marketStatus]);
 
   // Handle unsubscription only when leaving treasury path
   useEffect(() => {
@@ -459,9 +541,10 @@ const Dashboard = () => {
   }, [location.pathname]);
 
   useEffect(() => {
+    let getTradeRights = JSON.parse(localStorage.getItem("isTradeRights"));
+    dispatch(setTradeRightsStatusUpdated(getTradeRights));
     connectToMqtt({ subscribeID, userID });
     dispatch(getMarketStatusApi({ navigate }));
-
     if (isTreasury === "true") {
       setTimeout(() => {
         dispatch(setDealModalRequest(true));
@@ -478,12 +561,12 @@ const Dashboard = () => {
     }
   }, []);
   return (
-    <Layout className='roboto-13'>
+    <Layout className="roboto-13">
       {!location.pathname.includes("calculator") && <Header />}
 
       <GlobalNavbar />
       <Content>
-        <main className='px-3'>
+        <main className="px-3">
           <Outlet />
           {/* <AnimatePresence>
             {blotterTransactionAdded && isTreasury && <DealBox />}

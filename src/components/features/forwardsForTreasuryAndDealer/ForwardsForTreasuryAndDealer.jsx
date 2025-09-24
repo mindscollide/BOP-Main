@@ -86,7 +86,18 @@ const ForwardsForTreasuryAndDealer = () => {
   const forwardsForTreasuryBranch = useSelector(
     (state) => state.dealerReducer.forwardsForTreasuryBranch
   );
+  const treasuryFowardsTenorsChanges = useSelector(
+    (state) => state.RealtimeActionsSlice.treasuryFowardsTenorsChanges
+  );
 
+  const createTenorLoading = useSelector(
+    (state) => state.dealerReducer.createTenorLoading
+  );
+  console.log(
+    treasuryFowardsTenorsChanges,
+    "treasuryFowardsTenorsChangestreasuryFowardsTenorsChanges"
+  );
+  // dispatch(setForwardsForTreasuryBranch(newData));
   const getAllTenorsData = useSelector(
     (state) => state.dealerReducer.getAllTenors
   );
@@ -131,7 +142,16 @@ const ForwardsForTreasuryAndDealer = () => {
     const { name, value } = event.target;
 
     // Restrict input length
-    if (name === "tenorName" && value.length > 10) return;
+    if (name === "tenorName") {
+      // Allow only letters, numbers, and spaces
+      const cleanValue = value.replace(/[^a-zA-Z0-9 ]/g, "");
+
+      // Restrict max length (example: 20 chars)
+      if (cleanValue.length > 20) return;
+
+      setCreateTenor({ ...createTenor, [name]: cleanValue.trimStart() });
+      return;
+    }
     if (name === "noOfDays") {
       // Reject non-digits (no points, no special chars, no minus/plus)
       const cleanValue = value.replace(/\D/g, "");
@@ -417,6 +437,7 @@ const ForwardsForTreasuryAndDealer = () => {
                       value={"Create Tenor"}
                       applyClass={"createTenorModalFooterBtn"}
                       onClick={handleCreateTenor}
+                      loading={createTenorLoading}
                       disabled={
                         Number(createTenor.noOfDays) !== 0 &&
                         createTenor.noOfDays !== "" &&

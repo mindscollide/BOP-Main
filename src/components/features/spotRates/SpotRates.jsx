@@ -53,10 +53,15 @@ const SpotRates = () => {
   const marketStatus = useSelector(
     (state) => state.WatchListReducer.getMarketStatus
   );
-  console.log(marketStatus, "marketStatusmarketStatusmarketStatus");
 
   const publishedSpotRates = useSelector(
     (state) => state.modalReducer.publishedSpotRates
+  );
+  const publishNewRatesLoading = useSelector(
+    (state) => state.dealerReducer.publishNewRatesLoading
+  );
+  const clearRatesLoading = useSelector(
+    (state) => state.dealerReducer.clearRatesLoading
   );
 
   const [currentRates, setCurrentRates] = useState({
@@ -71,9 +76,9 @@ const SpotRates = () => {
     dateTime: "",
   });
   const [refreshInterval, setRefreshInterval] = useState(1);
-
+  console.log(getLastPublishRates, "getLastPublishRatesgetLastPublishRates");
   useEffect(() => {
-    if (getLastPublishRates !== null) {
+    if (getLastPublishRates && getLastPublishRates !== null) {
       try {
         const {
           lastAsk,
@@ -136,10 +141,10 @@ const SpotRates = () => {
       }
     }
   }, [currentUpdatedRates]);
-  console.log(getLastPublishRates, "getLastPublishRatesgetLastPublishRates");
+  // console.log(getLastPublishRates, "getLastPublishRatesgetLastPublishRates");
 
   useEffect(() => {
-    if (marketStatus !== null) {
+    if (marketStatus && marketStatus !== null) {
       try {
         setIsMarketOn(marketStatus);
         if (getLastPublishRates !== null) {
@@ -417,18 +422,19 @@ const SpotRates = () => {
                     applyClass="clearRates"
                     disabled={isMarketOn === true ? false : true}
                     onClick={handleClearRates}
+                    loading={clearRatesLoading}
                   />
                 </div>
               </div>
             </div>
             <div className="box-content-wrapper h-auto p-2">
               <div className="row m-0">
-                <div className="col-12 mb-2">
+                <div className="col-12 mb-2 px-0">
                   <div className="d-flex justify-content-end">
                     <div className="col-6">
                       <div className="d-flex align-items-center justify-content-end refresh-interval-wrapper">
                         <span className="updloadrates-hd fs-6 me-1 ff-roboto">
-                          Refresh Interval
+                          Refresh Interval (min)
                         </span>
                         <InputFIeld
                           min={1}
@@ -445,6 +451,7 @@ const SpotRates = () => {
                           applyClass="publishBtn"
                           disabled={isMarketOn === true ? false : true}
                           onClick={handlePublishRates}
+                          loading={publishNewRatesLoading}
                         />
                       </div>
                     </div>

@@ -23,7 +23,7 @@ export const GetNonFEDiscountingTableApi = createAsyncThunk(
       if (responseCode === 417) {
         console.log(response, "result");
 
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(GetNonFEDiscountingTableApi({ navigate }));
       } else if (responseCode === 200) {
         console.log(response, "result");
@@ -97,7 +97,7 @@ export const PublishNonFEDiscountingTableApi = createAsyncThunk(
       if (responseCode === 417) {
         console.log(response, "result");
 
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(PublishNonFEDiscountingTableApi({ Data, navigate }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;

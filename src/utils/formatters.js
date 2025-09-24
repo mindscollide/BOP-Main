@@ -115,16 +115,12 @@ export const convertDateTimeIntoGMT = (date) => {
     date.slice(10, 12) +
     ":" +
     date.slice(12, 14);
-  console.log(
-    moment(date, "YYYY-m-DD HH:MM:ss").toLocaleString(),
-    "dateStringdateStringdateString"
-  );
+
   return new Date(dateString);
 };
 
 export const ConvertDateTimrStringIntoGTM = (date, pattern) => {
   let ConvertIntoISO = moment(date, pattern).toISOString();
-  console.log(ConvertIntoISO, "ConvertIntoISOConvertIntoISO");
   return new Date(ConvertIntoISO);
 };
 
@@ -211,7 +207,6 @@ export const convertDateTimeIntoLocal = (utcDateString) => {
   // Convert to local time string
   const localDateString = utcDate.toString(); // Uses system/browser local time
 
-  console.log("Local Time:", localDateString);
 
   return utcDate;
 };
@@ -245,7 +240,6 @@ export const formatPkAmount = (rawValue, options = {}) => {
 
   // Validate the number
   if (isNaN(numericValue)) {
-    console.warn(`Invalid number value: ${rawValue}`);
     return emptySymbol;
   }
 
@@ -278,4 +272,35 @@ export const formatNumberWithCommas = (value) => {
 
 export const removeCommas = (value) => {
   return value?.toString().replace(/,/g, "") || "";
+};
+
+// Calculate FE Discounting Rates
+export const calculateFeRatesReadyRate = (
+  readyRate,
+  usdInterestRate,
+  noOfDays
+) => {
+  if (!readyRate || !usdInterestRate || !noOfDays) {
+    return null;
+  }
+  let interestRate = usdInterestRate / 100;
+  const denominator = 1 + (interestRate * noOfDays) / 360;
+  return readyRate / denominator;
+};
+
+export const calculateNonFeDiscountingRate = (
+  forwardRate,
+  kibor,
+  swap,
+  noOfDays
+) => {
+
+  if (!forwardRate || !swap || !kibor || !noOfDays) {
+    return null;
+  }
+  let adjustedForwardRate = forwardRate + swap;
+  let interestRate = kibor / 100;
+
+  const denominator = 1 + (interestRate * noOfDays) / 365;
+  return adjustedForwardRate / denominator;
 };

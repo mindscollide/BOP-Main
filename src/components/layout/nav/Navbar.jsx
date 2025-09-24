@@ -37,6 +37,8 @@ import { useMqttClient } from "@/components/utils/mqttConnection";
 
 const GlobalNavbar = () => {
   const { unsubscribeFromTopics, subscribeToTopics } = useMqttClient({});
+  const [rfqButtonState, setRFqButtonState] = useState(null);
+  console.log(rfqButtonState, "isTradeRightsisTradeRights");
   const getAllCategoriesData = useSelector(
     (state) => state.authReducer.getAllCategories
   );
@@ -64,7 +66,10 @@ const GlobalNavbar = () => {
   const categoryValue = useSelector(
     (state) => state.dealerReducer.categoryValue
   );
-  console.log(categoryValue, "categoryValuecategoryValue");
+
+  const isTradeRights = useSelector(
+    (state) => state.RealtimeActionsSlice.tradeRightsStatusUpdated
+  );
   const isCategoryAdded = useSelector(
     (state) => state.RealtimeActionsSlice.categoryisAdded
   );
@@ -105,6 +110,7 @@ const GlobalNavbar = () => {
     window.open("/BOP/calculator", "_blank");
   };
   console.log(allCategories, "allCategoriesallCategories");
+
   const [viewCurrentDeals, setViewCurrentDeals] = useState(false);
   // Conditionally import CustomButton based on the environment variables
   const shouldIncludeBranch =
@@ -121,6 +127,8 @@ const GlobalNavbar = () => {
   const getBlotterOutstandingData = useSelector(
     (state) => state.BlotterSlicer.getBlotterOutstandingData
   );
+
+  console.log(isTradeRights, "isTradeRights");
 
   const handleChangeCategory = (event) => {
     console.log(event);
@@ -147,11 +155,16 @@ const GlobalNavbar = () => {
       // setOpenRfqModalForwardCorporateComponent(true);
     } else if (activeTab === "Discounting") {
       console.log("Handle Discounting logic");
-
-      setOpenRfqModalDiscountingCorporateComponent(true);
+      dispatch(setDiscountingRFQModal(true));
+      // setOpenRfqModalDiscountingCorporateComponent(true);
     }
   };
-
+  useEffect(() => {
+    if (isTradeRights !== null) {
+      setRFqButtonState(JSON.parse(isTradeRights));
+      console.log(isTradeRights, "isTradeRightsisTradeRights");
+    }
+  }, [isTradeRights]);
   useEffect(() => {
     if (getAllCategoriesData !== null) {
       try {
@@ -300,20 +313,23 @@ const GlobalNavbar = () => {
 
   return (
     <>
-      <div className='site-header pt-1'>
-        <div className='container-fluid page-gutter'>
-          <div className='header-inner d-flex align-items-center'>
+      <div className="site-header pt-1">
+        <div className="container-fluid page-gutter">
+          <div className="header-inner d-flex align-items-center">
             <SiteLogoComponent />
-            <div className='ms-auto'>
-              <div className='d-flex align-items-center gap-2'>
+            <div className="ms-auto">
+              <div className="d-flex align-items-center gap-2">
                 {location.pathname !== "/calculator" ? (
                   <>
                     {(shouldIncludeCorporate || shouldIncludeBranch) && (
                       <Suspense fallback={<>Loading RFQ...</>}>
                         <CustomButton
-                          applyClass='rfqBtn'
-                          value='RFQ'
-                          size='small'
+                          applyClass={
+                            rfqButtonState ? "rfqBtn" : "rfqBtn_disabled"
+                          }
+                          disabled={rfqButtonState ? false : true}
+                          value="RFQ"
+                          size="small"
                           icon={<IconElement iconClass={"icon-list fs-6"} />}
                           onClick={onClickRFQ}
                         />
@@ -322,18 +338,15 @@ const GlobalNavbar = () => {
                     {location.pathname.includes("treasury") &&
                     (shouldIncludeDealer || shouldIncludeTreasury) ? (
                       <CustomButton
-                        applyClass='calcBtn'
-                        value='Calculators'
-                        size='large'
+                        applyClass="calcBtn"
+                        value="Calculators"
+                        size="large"
                         onClick={handleCalculatorClick}
                       />
                     ) : null}
                     {shouldIncludeTreasury &&
                     location.pathname.includes("treasury") ? (
-                      <Voltmeter
-                      // activeValue={selectedValue}
-                      // onSelect={(value) => setSelectedValue(value)}
-                      />
+                      <Voltmeter />
                     ) : null}
                     {location.pathname.includes("category") && (
                       <SelectDropdown
@@ -353,7 +366,6 @@ const GlobalNavbar = () => {
         </div>
       </div>
 
-   
       <SpotQuoteModal />
       <DiscountingRFQQuoteModal />
       <ForwardRFQQuoteModal />

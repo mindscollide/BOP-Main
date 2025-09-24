@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { formatDate } from "@/common/utils";
 import { calculateNonFeSwapAndDiscountingRateApi } from "../blotter/BlotterActions";
+import { formatPkAmount } from "@/utils/formatters";
 
 const CalculatorNonFxDiscounting = () => {
   const dispatch = useDispatch();
@@ -86,6 +87,11 @@ const CalculatorNonFxDiscounting = () => {
         setCalculatedSwap(CalculatedNonFxDiscounting.swap);
         setCalculatedKibor(CalculatedNonFxDiscounting.kibor);
         setReady(CalculatedNonFxDiscounting.readyRate);
+      } else {
+        setNonFERate(0);
+        setCalculatedSwap(0);
+        setCalculatedKibor(0);
+        setReady(0);
       }
     } catch (error) {
       console.log(error);
@@ -132,7 +138,7 @@ const CalculatorNonFxDiscounting = () => {
       <div className="card-box h-auto">
         <div className="box-header bg-primary-orange px-2 color-white">
           <div className="d-flex align-items-center">
-            <div className="fs-6 fw-bold">Non FX Discounting</div>
+            <div className="fs-6 fw-bold">Non FE Discounting</div>
             <div className="clc-btn-wrapper ms-auto">
               <CustomButton
                 value="Calculate Rate"
@@ -183,7 +189,7 @@ const CalculatorNonFxDiscounting = () => {
                 <span className="d-flex flex-column">
                   <label>Swap</label>
                   <InputFIeld
-                    value={calculatedSwap}
+                    value={formatPkAmount(calculatedSwap, { decimals: 2 })}
                     disabled={true}
                     applyClass="CalculatorTextfield-withTagInputfield"
                   />

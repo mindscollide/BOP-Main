@@ -11,15 +11,28 @@ import {
   getAllTreasuryInstrumentsApi,
   getMarketStatusApi,
 } from "../../components/features/SpotBranch/WatchlistAction";
+
 const WatchListSlice = createSlice({
   name: "WatchList",
   initialState: {
     responseMessage: "",
-    Loader: false,
     error: null,
+
+    // 🎯 loader flags for each API
+    GetMisDataByRangeLoading: false,
+    GetDashboardDataLoading: false,
+    SaveUserDashboardLoading: false,
+    GetAllTreasuryInstrumentsLoading: false,
+    GetForwardRatesForCounterPartyLoading: false,
+    GetDiscountingRatesForCounterPartyLoading: false,
+    GetBankSpotForTreasuryLoading: false,
+    GetBankForwardForTreasuryLoading: false,
+    GetDiscountingRatesForTreasuryLoading: false,
+    GetMarketStatusLoading: false,
+
+    // data states
     getAllInstrumentForCounterParties: null,
     GetMisDataByRange: null,
-    GetMisDataByRangeSpinner: false,
     SaveUserDashboardData: null,
     allInstrumentForTreasury: null,
     GetAllFowardsAndDiscountsRatesData: null,
@@ -27,7 +40,6 @@ const WatchListSlice = createSlice({
     GetDiscountingRatesForCounterParty: null,
     GetAllInstrumentForTreasury: null,
     GetBankSpotForTreasury: null,
-    GetBankSpotForTreasurySpinner: false,
     GetBankForwardForTreasury: null,
     GetDiscountingRatesForTreasury: null,
     getMarketStatus: null,
@@ -41,204 +53,160 @@ const WatchListSlice = createSlice({
       state.getMarketStatus = action.payload;
     },
     setWatchlistTableDataCopy(state, { payload }) {
-      state.watchlistTableDataCopy = payload; // Updates the state with the payload value for watchlistTableData.
+      state.watchlistTableDataCopy = payload;
     },
   },
   extraReducers: (builder) => {
     builder
-      // Pending state (while the API call is in Pending State GetMisDataByRange)
+      // ------------------ GetMisDataByRange ------------------
       .addCase(GetMisDataByRangeAPI.pending, (state) => {
-        state.Loader = true;
+        state.GetMisDataByRangeLoading = true;
         state.error = null;
-        state.GetMisDataByRangeSpinner = true;
       })
-      // Fulfilled state (while the API call is being made GetMisDataByRange)
       .addCase(GetMisDataByRangeAPI.fulfilled, (state, { payload }) => {
-        state.Loader = false;
+        state.GetMisDataByRangeLoading = false;
         state.GetMisDataByRange = payload?.response;
-        state.error = null;
-        state.GetMisDataByRangeSpinner = false;
-
         state.responseMessage = payload?.message;
       })
-      // Rejected state (while the API call is fail GetMisDataByRange)
-      .addCase(GetMisDataByRangeAPI.rejected, (state, action) => {
-        state.Loader = false;
-        state.GetMisDataByRangeSpinner = false;
-
-        state.error = action.payload;
+      .addCase(GetMisDataByRangeAPI.rejected, (state, { payload }) => {
+        state.GetMisDataByRangeLoading = false;
         state.GetMisDataByRange = null;
+        state.error = payload;
       })
-      // Pending state (while the API call is in Pending State GetDashboardData)
+
+      // ------------------ GetDashboardData ------------------
       .addCase(GetDashboardDataAPI.pending, (state) => {
-        state.Loader = true;
-        state.error = null;
+        state.GetDashboardDataLoading = true;
       })
-      // Fulfilled state (while the API call is being made GetDashboardData)
       .addCase(GetDashboardDataAPI.fulfilled, (state, { payload }) => {
-        state.Loader = false;
+        state.GetDashboardDataLoading = false;
         state.getAllInstrumentForCounterParties = payload?.response;
-        state.error = null;
         state.responseMessage = payload?.message;
       })
-      // Rejected state (while the API call is fail GetDashboardData)
-      .addCase(GetDashboardDataAPI.rejected, (state, action) => {
-        state.Loader = false;
-        state.error = action.payload;
+      .addCase(GetDashboardDataAPI.rejected, (state, { payload }) => {
+        state.GetDashboardDataLoading = false;
         state.getAllInstrumentForCounterParties = null;
+        state.error = payload;
       })
 
-      // Pending state (while the API call is in Pending State SaveUserDashboard)
+      // ------------------ SaveUserDashboard ------------------
       .addCase(SaveUserDashboardAPI.pending, (state) => {
-        state.Loader = true;
-        state.error = null;
+        state.SaveUserDashboardLoading = true;
       })
-      // Fulfilled state (while the API call is being made SaveUserDashboard)
       .addCase(SaveUserDashboardAPI.fulfilled, (state, { payload }) => {
-        state.Loader = false;
+        state.SaveUserDashboardLoading = false;
         state.SaveUserDashboardData = payload?.response;
-        state.error = null;
         state.responseMessage = payload?.message;
       })
-      // Rejected state (while the API call is fail SaveUserDashboard)
-      .addCase(SaveUserDashboardAPI.rejected, (state, action) => {
-        console.log(action, "actionaction");
-        state.Loader = false;
-        state.error = action.payload;
+      .addCase(SaveUserDashboardAPI.rejected, (state, { payload }) => {
+        state.SaveUserDashboardLoading = false;
         state.SaveUserDashboardData = null;
+        state.error = payload;
       })
 
+      // ------------------ GetAllTreasuryInstruments ------------------
       .addCase(getAllTreasuryInstrumentsApi.pending, (state) => {
-        state.Loader = true;
+        state.GetAllTreasuryInstrumentsLoading = true;
       })
       .addCase(getAllTreasuryInstrumentsApi.fulfilled, (state, { payload }) => {
-        // console.log(payload.response, "getAllInstrumentsForCounterPartiesData");
-        state.Loader = false;
+        state.GetAllTreasuryInstrumentsLoading = false;
         state.GetAllInstrumentForTreasury = payload?.response;
-        state.error = null;
         state.responseMessage = payload?.message;
       })
-      // Rejected state (while the API call is fail GetDashboardData)
-      .addCase(getAllTreasuryInstrumentsApi.rejected, (state, action) => {
-        // console.log(action, "actionaction");
-        state.Loader = false;
-        state.error = action.payload;
+      .addCase(getAllTreasuryInstrumentsApi.rejected, (state, { payload }) => {
+        state.GetAllTreasuryInstrumentsLoading = false;
         state.GetAllInstrumentForTreasury = null;
+        state.error = payload;
       })
 
-      //***************** */
-      // Pending state (while the API call is in Pending State GetDashboardData)
+      // ------------------ GetForwardRatesForCounterParty ------------------
       .addCase(GetForwardRatesForCounterPartyApi.pending, (state) => {
-        state.Loader = true;
-        state.error = null;
+        state.GetForwardRatesForCounterPartyLoading = true;
       })
-      // Fulfilled state (while the API call is being made GetDashboardData)
-      .addCase(
-        GetForwardRatesForCounterPartyApi.fulfilled,
-        (state, { payload }) => {
-          // console.log(payload.response, "getAllInstrumentsForCounterPartiesData");
-          state.Loader = false;
-          state.GetForwardRatesForCounterParty = payload?.response;
-          state.error = null;
-          state.responseMessage = payload?.message;
-        }
-      )
-      // Rejected state (while the API call is fail GetDashboardData)
-      .addCase(GetForwardRatesForCounterPartyApi.rejected, (state, action) => {
-        // console.log(action, "actionaction");
-        state.Loader = false;
-        state.error = action.payload;
+      .addCase(GetForwardRatesForCounterPartyApi.fulfilled, (state, { payload }) => {
+        state.GetForwardRatesForCounterPartyLoading = false;
+        state.GetForwardRatesForCounterParty = payload?.response;
+        state.responseMessage = payload?.message;
+      })
+      .addCase(GetForwardRatesForCounterPartyApi.rejected, (state, { payload }) => {
+        state.GetForwardRatesForCounterPartyLoading = false;
         state.GetForwardRatesForCounterParty = null;
+        state.error = payload;
       })
 
-      //***************** */
-      // Pending state (while the API call is in Pending State GetDashboardData)
+      // ------------------ GetDiscountingRatesForCounterParty ------------------
       .addCase(GetDiscountingRatesForCounterPartyApi.pending, (state) => {
-        state.Loader = true;
-        state.error = null;
+        state.GetDiscountingRatesForCounterPartyLoading = true;
       })
-      // Fulfilled state (while the API call is being made GetDashboardData)
-      .addCase(
-        GetDiscountingRatesForCounterPartyApi.fulfilled,
-        (state, { payload }) => {
-          // console.log(payload.response, "getAllInstrumentsForCounterPartiesData");
-          state.Loader = false;
-          state.GetDiscountingRatesForCounterParty = payload?.response;
-          state.error = null;
-          state.responseMessage = payload?.message;
-        }
-      )
-      // Rejected state (while the API call is fail GetDashboardData)
-      .addCase(
-        GetDiscountingRatesForCounterPartyApi.rejected,
-        (state, action) => {
-          // console.log(action, "actionaction");
-          state.Loader = false;
-          state.error = action.payload;
-          state.GetDiscountingRatesForCounterParty = null;
-        }
-      )
+      .addCase(GetDiscountingRatesForCounterPartyApi.fulfilled, (state, { payload }) => {
+        state.GetDiscountingRatesForCounterPartyLoading = false;
+        state.GetDiscountingRatesForCounterParty = payload?.response;
+        state.responseMessage = payload?.message;
+      })
+      .addCase(GetDiscountingRatesForCounterPartyApi.rejected, (state, { payload }) => {
+        state.GetDiscountingRatesForCounterPartyLoading = false;
+        state.GetDiscountingRatesForCounterParty = null;
+        state.error = payload;
+      })
+
+      // ------------------ GetBankSpotForTreasury ------------------
       .addCase(GetBankSpotForTreasuryApi.pending, (state) => {
-        state.Loader = true;
-        state.GetBankSpotForTreasurySpinner = true;
+        state.GetBankSpotForTreasuryLoading = true;
       })
       .addCase(GetBankSpotForTreasuryApi.fulfilled, (state, { payload }) => {
-        state.Loader = false;
+        state.GetBankSpotForTreasuryLoading = false;
         state.GetBankSpotForTreasury = payload?.response;
-        state.GetBankSpotForTreasurySpinner = false;
         state.responseMessage = payload?.message;
       })
       .addCase(GetBankSpotForTreasuryApi.rejected, (state, { payload }) => {
-        state.Loader = false;
+        state.GetBankSpotForTreasuryLoading = false;
         state.GetBankSpotForTreasury = null;
-        state.GetBankSpotForTreasurySpinner = false;
-
-        state.responseMessage = payload;
+        state.error = payload;
       })
+
+      // ------------------ GetBankForwardForTreasury ------------------
       .addCase(GetBankForwardForTreasuryApi.pending, (state) => {
-        state.Loader = true;
+        state.GetBankForwardForTreasuryLoading = true;
       })
       .addCase(GetBankForwardForTreasuryApi.fulfilled, (state, { payload }) => {
-        state.Loader = false;
+        state.GetBankForwardForTreasuryLoading = false;
         state.GetBankForwardForTreasury = payload?.response;
         state.responseMessage = payload?.message;
       })
       .addCase(GetBankForwardForTreasuryApi.rejected, (state, { payload }) => {
-        state.Loader = false;
+        state.GetBankForwardForTreasuryLoading = false;
         state.GetBankForwardForTreasury = null;
-        state.responseMessage = payload;
+        state.error = payload;
       })
+
+      // ------------------ GetDiscountingRatesForTreasury ------------------
       .addCase(GetDiscountingRatesForTreasuryApi.pending, (state) => {
-        state.Loader = true;
+        state.GetDiscountingRatesForTreasuryLoading = true;
       })
-      .addCase(
-        GetDiscountingRatesForTreasuryApi.fulfilled,
-        (state, { payload }) => {
-          state.Loader = false;
-          state.GetDiscountingRatesForTreasury = payload?.response;
-          state.responseMessage = payload?.message;
-        }
-      )
-      .addCase(
-        GetDiscountingRatesForTreasuryApi.rejected,
-        (state, { payload }) => {
-          state.Loader = false;
-          state.GetDiscountingRatesForTreasury = null;
-          state.responseMessage = payload;
-        }
-      )
+      .addCase(GetDiscountingRatesForTreasuryApi.fulfilled, (state, { payload }) => {
+        state.GetDiscountingRatesForTreasuryLoading = false;
+        state.GetDiscountingRatesForTreasury = payload?.response;
+        state.responseMessage = payload?.message;
+      })
+      .addCase(GetDiscountingRatesForTreasuryApi.rejected, (state, { payload }) => {
+        state.GetDiscountingRatesForTreasuryLoading = false;
+        state.GetDiscountingRatesForTreasury = null;
+        state.error = payload;
+      })
+
+      // ------------------ GetMarketStatus ------------------
       .addCase(getMarketStatusApi.pending, (state) => {
-        state.Loader = true;
+        state.GetMarketStatusLoading = true;
       })
       .addCase(getMarketStatusApi.fulfilled, (state, { payload }) => {
-        state.Loader = false;
+        state.GetMarketStatusLoading = false;
         state.getMarketStatus = payload?.response;
         state.responseMessage = payload?.message;
       })
       .addCase(getMarketStatusApi.rejected, (state, { payload }) => {
-        state.Loader = false;
+        state.GetMarketStatusLoading = false;
         state.getMarketStatus = null;
-        state.responseMessage = payload;
+        state.error = payload;
       });
   },
 });

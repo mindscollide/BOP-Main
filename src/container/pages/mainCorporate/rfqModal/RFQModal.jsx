@@ -89,6 +89,13 @@ const RFQModal = () => {
   // Get pre-filled buy/sell data from Redux store (if any)
   const iBuySellData = useSelector((state) => state.modalReducer.IBuySellData);
 
+  console.log(iBuySellData, "iBuySellData");
+  const SaveSpotTransactionLoading = useSelector(
+    (state) => state.BlotterSlicer.SaveSpotTransactionAPILoading
+  );
+  const SaveSpotTransactionRFQLoading = useSelector(
+    (state) => state.BlotterSlicer.SaveSpotTransactionRFQLoading
+  );
   /**
    * Environment Configuration
    */
@@ -363,27 +370,43 @@ const RFQModal = () => {
       // Process instruments to create dropdown options
       const validInstruments = spotApplicableInstruments
         .map((instrument) => {
+          if (instrument.isBuy === true || instrument.isSell == true) {
+            return {
+              ...instrument,
+              // Combine primary and secondary instrument names for display
+              label: `${instrument.instrumentName}${
+                instrument.secondaryInstrumentName || ""
+              }`,
+              value: instrument.instrumentID,
+              secondaryInstrumentID: instrument.secondaryInstrumentID,
+              secondaryInstrumentName: instrument.secondaryInstrumentName,
+            };
+          }
+          return null;
           // Only include instruments valid for both buy and sell
-
-          return {
-            ...instrument,
-            // Combine primary and secondary instrument names for display
-            label: `${instrument.instrumentName}${
-              instrument.secondaryInstrumentName || ""
-            }`,
-            value: instrument.instrumentID,
-            secondaryInstrumentID: instrument.secondaryInstrumentID,
-            secondaryInstrumentName: instrument.secondaryInstrumentName,
-          };
         })
         .filter(Boolean); // Remove null entries
 
       // Update state only if valid instruments were found
       if (validInstruments.length > 0) {
+        const firstInstrument = validInstruments[0];
+
         if (iBuySellData === null) {
-          setSelectedCurrency(validInstruments[0]);
+          setSelectedCurrency(firstInstrument);
+          let defaultType = { value: 0, label: "" };
+          if (firstInstrument.isBuy && firstInstrument.isSell) {
+            defaultType = isCorporate
+              ? { value: 2, label: "Sell" }
+              : { value: 1, label: "Buy" };
+          } else if (firstInstrument.isBuy) {
+            defaultType = { value: 1, label: "Buy" };
+          } else if (firstInstrument.isSell) {
+            defaultType = { value: 2, label: "Sell" };
+          }
+
+          setTypeOptionSelected(defaultType);
+          setCurrencyOptions(validInstruments);
         }
-        setCurrencyOptions(validInstruments);
       } else {
         // Handle empty state
         console.warn(
@@ -420,8 +443,22 @@ const RFQModal = () => {
    * Handles currency selection change
    * @param {Object} selectedOption - The selected option
    */
-  const handleCurrencyChange = (selectedOption) => {
-    setSelectedCurrency(selectedOption);
+  const handleCurrencyChange = (selectCurrency) => {
+    setSelectedCurrency(selectCurrency);
+    if (selectCurrency?.isBuy && selectCurrency?.isSell) {
+      const defaultType = isCorporate
+        ? { value: 2, label: "Sell" }
+        : { value: 1, label: "Buy" };
+      setTypeOptionSelected(defaultType);
+    } else if (selectCurrency?.isBuy && !selectCurrency?.isSell) {
+      const defaultType = { value: 1, label: "Buy" };
+      setTypeOptionSelected(defaultType);
+    } else if (!selectCurrency?.isBuy && selectCurrency?.isSell) {
+      const defaultType = { value: 2, label: "Sell" };
+      setTypeOptionSelected(defaultType);
+    } else {
+      setTypeOptionSelected({ value: 0, label: "" });
+    }
   };
 
   /**
@@ -486,48 +523,50 @@ const RFQModal = () => {
    * 3. Updates all related state (selectedNature, natureOfBusinessOptions, typeOptionSelected)
    * 4. Sets first valid option as default selection
    */
-  const handleChangeType = (selectType) => {
-    // Validate input data exists
-    if (!natureOfBusinessList?.natureOfTransactions) {
-      console.error("Nature of business data not available");
-      return;
-    }
+  // const handleChangeType = (selectType) => {
+  //   // Validate input data exists
+  //   if (!natureOfBusinessList?.natureOfTransactions) {
+  //     console.error("Nature of business data not available");
+  //     return;
+  //   }
 
-    // Filter and transform options based on transaction type
-    const filteredOptions = natureOfBusinessList.natureOfTransactions
-      .filter((business) => {
-        const isSpotTransaction = business.isForSpot === true;
+  //   // Filter and transform options based on transaction type
+  //   const filteredOptions = natureOfBusinessList.natureOfTransactions
+  //     .filter((business) => {
+  //       const isSpotTransaction = business.isForSpot === true;
 
-        // Check transaction type compatibility
-        if (selectType.value === 1) {
-          if (isCorporate) {
-            return isSpotTransaction && business.isForSell === true;
-          }
-          return isSpotTransaction && business.isForBuy === true;
-        }
-        if (isCorporate) {
-          return isSpotTransaction && business.isForBuy === true;
-        }
-        return isSpotTransaction && business.isForSell === true;
-      })
-      .map((business) => ({
-        ...business,
-        label: business.name,
-        value: business.id,
-      }));
-    if (iBuySellData === null) {
-      // Update state with new options and selections
+  //       // Check transaction type compatibility
+  //       if (selectType.value === 1) {
+  //         if (isCorporate) {
+  //           return isSpotTransaction && business.isForSell === true;
+  //         }
+  //         return isSpotTransaction && business.isForBuy === true;
+  //       }
+  //       if (isCorporate) {
+  //         return isSpotTransaction && business.isForBuy === true;
+  //       }
+  //       return isSpotTransaction && business.isForSell === true;
+  //     })
+  //     .map((business) => ({
+  //       ...business,
+  //       label: business.name,
+  //       value: business.id,
+  //     }));
+  //   if (iBuySellData === null) {
+  //     // Update state with new options and selections
 
-      setNatureOfBusinessOptions(filteredOptions);
+  //     setNatureOfBusinessOptions(filteredOptions);
 
-      // Set first option as default if available, otherwise null
-      setSelectedNature(filteredOptions[0] || null);
-    }
+  //     // Set first option as default if available, otherwise null
+  //     setSelectedNature(filteredOptions[0] || null);
+  //   }
 
-    // Update selected transaction type
-    setTypeOptionSelected(selectType);
+  //   // Update selected transaction type
+  //   setTypeOptionSelected(selectType);
+  // };
+  const handleChangeType = (selectedValue) => {
+    setTypeOptionSelected(selectedValue);
   };
-
   /**
    * Handles corporate selection change (for branch users)
    * @param {Object} selectedOption - The selected corporate
@@ -557,10 +596,12 @@ const RFQModal = () => {
           showMessage("Amount should be greater than 1 ");
           return;
         }
+
         const IsBuySide =
           iBuySellData === null
             ? typeOptionSelected.value === 1
-            : iBuySellData.type === "buy";
+            : iBuySellData?.type === "buy";
+
         // Prepare transaction data
         let amountValue = amountData.replace(/,/g, "");
         let Data = {
@@ -569,19 +610,39 @@ const RFQModal = () => {
             : counterPartyDetails.corporateID,
           InstrumentID: selectedCurrency?.value, // TODO: Should this be selectedCurrency.value?
           SecondaryInstrumentID: selectedCurrency?.secondaryInstrumentID,
-          IsBuyType: typeOptionSelected.value === 1 ? true : false,
-          IsBuySide: IsBuySide,
+          IsBuyType: IsBuySide,
+          IsBuySide: typeOptionSelected.value === 1 ? true : false,
+          // IsBuySide:
+          //   iBuySellData !== null && iBuySellData?.type === "buy" && isBranch
+          //     ? false
+          //     : iBuySellData !== null &&
+          //       iBuySellData?.type === "sell" &&
+          //       isBranch
+          //     ? true
+          //     : iBuySellData !== null &&
+          //       iBuySellData?.type === "buy" &&
+          //       isCorporate
+          //     ? true
+          //     : iBuySellData !== null &&
+          //       iBuySellData?.type === "sell" &&
+          //       isCorporate
+          //     ? false
+          //     : typeOptionSelected.value === 1
+          //     ? true
+          //     : false,
           Quantity: Number(amountValue),
           AccountNumber: acNumberData,
           NatureOfTransactionID: selectedNature.value,
           LCNumber: lcNumberData,
         };
 
-        // Dispatch appropriate action based on context
+        // // Dispatch appropriate action based on context
         if (iBuySellData !== null) {
+          console.log("Payload of SaveSpotTransaction", Data);
           dispatch(SaveSpotTransactionAPI({ navigate, Data, setErrorMessage }));
         } else {
-          dispatch(SaveSpotTransactionRFQ({ navigate, Data }));
+          console.log("Payload of SaveSpotTransactionRFQ", Data);
+          dispatch(SaveSpotTransactionRFQ({ navigate, Data, setErrorMessage }));
         }
       }
     } catch (error) {
@@ -601,24 +662,24 @@ const RFQModal = () => {
         centered={true}
         size={rfqModal ? "lg" : null}
         footerClassName={"d-block border-0"}
-        headerClassName='RFQ-header-className'
+        headerClassName="RFQ-header-className"
         modalHeader={
           rfqModal && (
             <>
               <Row>
-                <Col lg={12} md={12} sm={12} className=''>
+                <Col lg={12} md={12} sm={12} className="">
                   {isBranch ? (
                     <>
-                      <p className='heading-RfqModal'>
-                        {counterPartyDetails.branchName}
+                      <p className="heading-RfqModal">
+                        {counterPartyDetails?.branchName}
                       </p>
-                      <p className='heading-branchCode'>
-                        Branch Code: {counterPartyDetails.branchCode}
+                      <p className="heading-branchCode">
+                        Branch Code: {counterPartyDetails?.branchCode}
                       </p>
                     </>
                   ) : (
                     isCorporate && (
-                      <p className='heading-RfqModal'>
+                      <p className="heading-RfqModal">
                         {counterPartyDetails.corporateName}
                       </p>
                     )
@@ -632,18 +693,18 @@ const RFQModal = () => {
           rfqModal ? (
             <>
               {/* Corporate Selection (for branch users) */}
-              <Row className='m-0 '>
+              <Row className="m-0 ">
                 {isBranch && (
                   <>
                     <Col lg={2} md={2} sm={2}>
-                      <label className='LabelRFQTransactionModal'>
+                      <label className="LabelRFQTransactionModal">
                         Customer Name*
                       </label>
                     </Col>
-                    <Col lg={4} md={4} sm={4} className='mb-3'>
+                    <Col lg={4} md={4} sm={4} className="mb-3">
                       <SelectDropdown
-                        classNamePrefix='RfqSpot'
-                        placeholder=''
+                        classNamePrefix="RfqSpot"
+                        placeholder=""
                         options={getAllCorporates}
                         onChange={handleChangeCorporate}
                         isSearchable={true}
@@ -651,18 +712,18 @@ const RFQModal = () => {
                       />
                     </Col>
                     <Col lg={2} md={2} sm={2}></Col>
-                    <Col lg={4} md={4} sm={4} className='mb-2'></Col>
+                    <Col lg={4} md={4} sm={4} className="mb-2"></Col>
                   </>
                 )}
 
                 {/* Currency Selection */}
                 <Col lg={2} md={2} sm={2}>
-                  <label className='LabelRFQTransactionModal'>Currency*</label>
+                  <label className="LabelRFQTransactionModal">Currency*</label>
                 </Col>
-                <Col lg={4} md={4} sm={4} className='mb-2'>
+                <Col lg={4} md={4} sm={4} className="mb-2">
                   <SelectDropdown
-                    classNamePrefix='RfqSpot'
-                    placeholder=''
+                    classNamePrefix="RfqSpot"
+                    placeholder=""
                     options={currencyOptions}
                     // options={currencyOptions.filter((option) => {
                     //   // For Buy transactions (value === 1), check if option supports buying
@@ -684,62 +745,73 @@ const RFQModal = () => {
 
                 {/* Transaction Type Selection */}
                 <Col lg={2} md={2} sm={2}>
-                  <label className='LabelRFQTransactionModal'>Type*</label>
+                  <label className="LabelRFQTransactionModal">Type*</label>
                 </Col>
-                <Col lg={4} md={4} sm={4} className='mb-2'>
+                <Col lg={4} md={4} sm={4} className="mb-2">
                   <SelectDropdown
-                    placeholder='Select Type'
-                    classNamePrefix='RfqSpot'
-                    value={
-                      typeOptionSelected.value === 0 ? null : typeOptionSelected
-                    }
+                    placeholder="Select Type"
+                    classNamePrefix="RfqSpot"
+                    value={typeOptionSelected}
                     onChange={handleChangeType}
-                    options={typeOptions}
+                    // options={typeOptions}
+                    options={typeOptions.filter((option) => {
+                      if (selectedCurrency?.isBuy && selectedCurrency?.isSell) {
+                        return option.value === 1 || option.value === 2;
+                      }
+                      if (selectedCurrency?.isBuy) {
+                        return option.value === 1;
+                      }
+                      if (selectedCurrency?.isSell) {
+                        return option.value === 2;
+                      }
+                      return true;
+                    })}
                     // isDisabled={iBuySellData !== null ? true : false}
                   />
                 </Col>
               </Row>
 
               {/* Amount and Account Number Inputs */}
-              <Row className='m-0 mt-2'>
+              <Row className="m-0 mt-2">
                 <Col lg={2} md={2} sm={2}>
-                  <label className='LabelRFQTransactionModal'>Amount*</label>
+                  <label className="LabelRFQTransactionModal">Amount*</label>
                 </Col>
-                <Col lg={4} md={4} sm={4} className='mb-2'>
+                <Col lg={4} md={4} sm={4} className="mb-2">
                   <NumericFormat
                     customInput={InputFIeld}
-                    thousandSeparator=','
+                    thousandSeparator=","
                     allowNegative={false}
                     onChange={handleChangeAmount}
                     maxLength={10}
                     value={amountData}
-                    name='Amount'
+                    name="Amount"
                     applyClass={"CalculatorTextfield"}
                   />
                 </Col>
                 <Col lg={2} md={2} sm={2}>
-                  <label className='LabelRFQTransactionModal'>A/c No</label>
+                  <label className="LabelRFQTransactionModal">A/c No</label>
                 </Col>
-                <Col lg={4} md={4} sm={4} className='mb-2'>
+                <Col lg={4} md={4} sm={4} className="mb-2">
                   <InputFIeld
                     onChange={handleChangeAcNumber}
                     value={acNumberData}
-                    name='AcNumber'
-                    applyClass='CalculatorTextfield'
+                    name="AcNumber"
+                    applyClass="CalculatorTextfield"
+                    maxLength={25}
                   />
                 </Col>
               </Row>
 
               {/* Nature of Business and LC Number Inputs */}
-              <Row className='m-0 mt-2'>
+              <Row className="m-0 mt-2">
                 <Col lg={2} md={2} sm={2}>
-                  <label className='LabelRFQTransactionModal'>Nature*</label>
+                  <label className="LabelRFQTransactionModal">Nature*</label>
                 </Col>
 
-                <Col lg={4} md={4} sm={4} className='mb-2'>
+                <Col lg={4} md={4} sm={4} className="mb-2">
                   <SelectDropdown
-                    placeholder=''
-                    classNamePrefix='RfqSpot'
+                    placeholder=""
+                    classNamePrefix="RfqSpot"
                     options={natureOfBusinessOptions}
                     onChange={handleNatureChange}
                     value={selectedNature}
@@ -747,16 +819,17 @@ const RFQModal = () => {
                 </Col>
 
                 <Col lg={2} md={2} sm={2}>
-                  <label className='LabelRFQTransactionModal'>
+                  <label className="LabelRFQTransactionModal">
                     Reference No (LC/Contract/Doc)
                   </label>
                 </Col>
-                <Col lg={4} md={4} sm={4} className='mb-2'>
+                <Col lg={4} md={4} sm={4} className="mb-2">
                   <InputFIeld
                     onChange={handleChangeLcNumber}
                     value={lcNumberData}
-                    name='LcNumber'
-                    applyClass='CalculatorTextfield'
+                    name="LcNumber"
+                    applyClass="CalculatorTextfield"
+                    maxLength={35}
                   />
                 </Col>
               </Row>
@@ -777,8 +850,9 @@ const RFQModal = () => {
                     lg={12}
                     className={
                       "d-flex justify-content-center align-items-center"
-                    }>
-                    <span className='confirmationModalText'>
+                    }
+                  >
+                    <span className="confirmationModalText">
                       Do you want cancel the process?
                     </span>
                   </Col>
@@ -794,7 +868,8 @@ const RFQModal = () => {
                 lg={6}
                 md={6}
                 sm={6}
-                className={"d-flex justify-content-start rfqLimit_error-style"}>
+                className={"d-flex justify-content-start rfqLimit_error-style"}
+              >
                 {errorMessage.status === true && errorMessage.message !== ""
                   ? errorMessage.message
                   : ""}
@@ -803,11 +878,20 @@ const RFQModal = () => {
                 lg={6}
                 md={6}
                 sm={6}
-                className={"d-flex justify-content-end"}>
+                className={"d-flex justify-content-end"}
+              >
                 <CustomButton
-                  value='Submit'
-                  className={"btn btn-primary ms-auto"}
+                  value="Submit"
+                  className={
+                    "btn btn-primary ms-auto d-flex gap-2 align-items-center justify-content-center"
+                  }
                   onClick={handleConfirmButton}
+                  loading={
+                    iBuySellData !== null
+                      ? SaveSpotTransactionLoading
+                      : SaveSpotTransactionRFQLoading
+                  }
+                  SaveSpotTransactionRFQLoading
                 />
               </Col>
             </Row>
@@ -818,15 +902,16 @@ const RFQModal = () => {
                   lg={12}
                   md={12}
                   sm={12}
-                  className={"d-flex justify-content-center gap-2"}>
+                  className={"d-flex justify-content-center gap-2"}
+                >
                   <CustomButton
-                    value='Yes'
+                    value="Yes"
                     icon={<i className={"icon-check"}></i>}
                     className={"confirmationYesButton"}
                     onClick={handleConfimationModalYes}
                   />
                   <CustomButton
-                    value='No'
+                    value="No"
                     icon={<i className={"icon-close"}></i>}
                     className={"confirmationNoButton"}
                     onClick={() => {

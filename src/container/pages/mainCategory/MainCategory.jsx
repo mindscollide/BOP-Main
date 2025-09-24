@@ -33,7 +33,7 @@ const MainCategory = () => {
       dispatch(getAllTreasuryInstrumentsApi({ navigate }));
       dispatch(getAllTenorsAction({ navigate }));
     });
-  }, [dispatch, navigate]);
+  }, []);
 
   const handleTabChange = (tabTitle) => {
     startTransition(() => {

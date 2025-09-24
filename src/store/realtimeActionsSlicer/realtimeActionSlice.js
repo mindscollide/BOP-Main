@@ -59,12 +59,28 @@ const RealtimeActionsSlice = createSlice({
     CounterPartyFeDiscounting: null,
     CategoryNonFeDiscouting: null,
     ClearRatesData: null,
+    CategorySpotClearRates: null,
+    CategoryForwardClearRates: null,
+    CategoryDiscountingClearRates: null,
 
     categoryFowardsTenorsChanges: null,
     counterPartyFowardsTenorsChanges: null,
     treasuryFowardsTenorsChanges: null,
+    tradeRightsStatusUpdated: null,
   },
   reducers: {
+    setTradeRightsStatusUpdated: (state, { payload }) => {
+      state.tradeRightsStatusUpdated = payload;
+    },
+    clearCategoryForwardClearRates: (state) => {
+      state.CategoryForwardClearRates = null;
+    },
+    clearCategorySpotClearRates: (state) => {
+      state.CategorySpotClearRates = null;
+    },
+    clearCategoryDiscountingClearRates: (state) => {
+      state.CategoryDiscountingClearRates = null;
+    },
     setCategoryFowardsTenorsChanges: (state, { payload }) => {
       state.categoryFowardsTenorsChanges = payload;
     },
@@ -77,6 +93,9 @@ const RealtimeActionsSlice = createSlice({
     setClearRates: (state, { payload }) => {
       console.log(payload, "checker");
       state.ClearRatesData = payload;
+      state.CategorySpotClearRates = payload;
+      state.CategoryForwardClearRates = payload;
+      state.CategoryDiscountingClearRates = payload;
     },
     setCategoryNonFeDiscounting: (state, { payload }) => {
       state.CategoryNonFeDiscouting = payload;
@@ -224,6 +243,7 @@ const RealtimeActionsSlice = createSlice({
 });
 
 export const {
+  setTradeRightsStatusUpdated,
   setCategoryFowardsTenorsChanges,
   setTreasuryFowardsTenorsChanges,
   setCounterPartyFowardsTenorsChanges,
@@ -273,7 +293,10 @@ export const {
   setCounterPartyForwardRates,
   setCounterPartyFeDiscounting,
   setCategoryNonFeDiscounting,
-  clearIncomingChat
+  clearIncomingChat,
+  clearCategoryDiscountingClearRates,
+  clearCategoryForwardClearRates,
+  clearCategorySpotClearRates,
 } = RealtimeActionsSlice.actions;
 
 export default RealtimeActionsSlice.reducer;

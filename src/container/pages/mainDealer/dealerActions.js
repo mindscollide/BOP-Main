@@ -35,7 +35,7 @@ export const clearRatesAction = createAsyncThunk(
       const { responseCode } = response.data;
 
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(clearRatesAction({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -109,7 +109,7 @@ export const getLastPublishRatesAction = createAsyncThunk(
       const { responseCode } = response.data;
 
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(getLastPublishRatesAction({ navigate }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -182,7 +182,7 @@ export const PublishNewRatesAction = createAsyncThunk(
       console.log(responseCode, "responseCoderesponseCode");
 
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(PublishNewRatesAction({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -263,7 +263,7 @@ export const marketOnOffAction = createAsyncThunk(
       const { responseCode } = response.data;
 
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(marketOnOffAction({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -406,7 +406,7 @@ export const createTenorAction = createAsyncThunk(
       const { responseCode } = response.data;
 
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(
           createTenorAction({
             navigate,
@@ -498,7 +498,7 @@ export const getTenorWiseForwardsAction = createAsyncThunk(
       const { responseCode } = response.data;
 
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(getTenorWiseForwardsAction({ navigate }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -571,7 +571,7 @@ export const PublishTenorWiseForwardsAction = createAsyncThunk(
       const { responseCode } = response.data;
 
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(PublishTenorWiseForwardsAction({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -651,7 +651,7 @@ export const getDiscountingRatesAction = createAsyncThunk(
       const { responseCode } = response.data;
 
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(getDiscountingRatesAction({ navigate }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -663,51 +663,7 @@ export const getDiscountingRatesAction = createAsyncThunk(
                 "UploadRate_UploadRateServiceManager_GetDiscountingRates_01".toLowerCase()
               )
           ) {
-            let response = {
-              previousRates: [
-                {
-                  instumentID: 21,
-                  instrumentName: "USD",
-                  rate: 2.75,
-                  dateTime: "20240822081901",
-                },
-                {
-                  instumentID: 22,
-                  instrumentName: "EUR",
-                  rate: 3.5,
-                  dateTime: "20240822081901",
-                },
-                {
-                  instumentID: 23,
-                  instrumentName: "GBP",
-                  rate: 1.9,
-                  dateTime: "20240822081901",
-                },
-              ],
-              currentRates: [
-                {
-                  instumentID: 21,
-                  instrumentName: "USD",
-                  rate: 2.75,
-                  dateTime: "20240822081918",
-                },
-                {
-                  instumentID: 22,
-                  instrumentName: "EUR",
-                  rate: 3.5,
-                  dateTime: "20240822081918",
-                },
-                {
-                  instumentID: 23,
-                  instrumentName: "GBP",
-                  rate: 1.9,
-                  dateTime: "20240822081918",
-                },
-              ],
-              responseMessage:
-                "UploadRate_UploadRateServiceManager_GetDiscountingRates_01",
-              isExecuted: true,
-            };
+          
             return {
               response: response.data?.responseResult,
               message: "Forwards Rates are Published",
@@ -765,7 +721,7 @@ export const publishDiscountingRatesAction = createAsyncThunk(
       const { responseCode } = response.data;
 
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(publishDiscountingRatesAction({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -844,7 +800,7 @@ export const getDealerDashboardApi = createAsyncThunk(
       const { responseCode } = response.data;
 
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(getDealerDashboardApi({ navigate }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -925,7 +881,7 @@ export const GetVoltMeterStatusApi = createAsyncThunk(
       const { responseCode } = response.data;
 
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(GetVoltMeterStatusApi({ navigate }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -937,6 +893,7 @@ export const GetVoltMeterStatusApi = createAsyncThunk(
                 "UploadRate_UploadRateServiceManager_GetVoltMeterStatus_01".toLowerCase()
               )
           ) {
+            console.log(response, "GetVoltMeterStatusApiGetVoltMeterStatusApi")
             return {
               response: response.data.responseResult,
               message: "",
@@ -996,7 +953,7 @@ export const UpdateVoltMeterStatusApi = createAsyncThunk(
       const { responseCode } = response.data;
 
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
+        await dispatch(refreshTokenAction({ navigate }));return
         dispatch(UpdateVoltMeterStatusApi({ navigate, Data }));
       } else if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;

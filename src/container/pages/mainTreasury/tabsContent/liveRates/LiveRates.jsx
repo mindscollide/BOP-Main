@@ -13,12 +13,12 @@ const LiveRates = () => {
   return (
     <>
       <Row className='m-0'>
-        <Col md={6} className='p-0 bg-white position-relative'>
+        <Col md={6} sm={12} lg={6} className='p-0 bg-white position-relative'>
           <Suspense fallback={<SectionLoader />}>
             <BankSpot />
           </Suspense>
         </Col>
-        <Col md={6} className='px-1'>
+        <Col md={6} sm={12} lg={6} className='px-1'>
           <Suspense fallback={<SectionLoader />}>
             <MISComponent />
           </Suspense>

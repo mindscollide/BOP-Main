@@ -46,6 +46,7 @@
   color: #f26522 !important;
   font-size: 1.25rem !important;
   font-family: "Roboto", sans-serif !important;
+  word-break: break-all;
 }
 .FeDiscountingHeader_BranchCode {
   font-weight: 700 !important;

@@ -4,7 +4,8 @@
   padding-top: 10px !important;
   border-top-left-radius: 20px !important;
   border-bottom-left-radius: 20px !important;
-  min-height: 70vh !important;
+  max-height: 100vh !important;
+  /* min-height: 100vh !important; */
   /* max-height: 70vh !important; */
 }
 
@@ -62,20 +63,23 @@
 }
 
 .DealViewModal__body {
-  margin: 0;
+  margin: 0 !important;
   padding: 0 !important;
-  min-height: 70vh !important;
-  max-height: 70vh !important;
+  /* min-height: 100vh !important; */
+  max-height: 100vh !important;
   overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 .company-name-hd {
   color: var(--color-primary);
   font-size: 1.25rem;
+  word-wrap: break-word;
 }
 .company-name {
   font-size: 1.25rem;
   margin-right: 10px;
+  word-wrap: break-word;
 }
 .CalculateValue {
   display: block;

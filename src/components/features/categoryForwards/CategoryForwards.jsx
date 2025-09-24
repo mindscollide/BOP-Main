@@ -4,8 +4,12 @@ import { useSelector } from "react-redux";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import { buildForwardsTable } from "@/components/utils/generateColumnsData";
 import { throttle } from "lodash";
-import { setCategoryFowardsTenorsChanges } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
+import {
+  clearCategoryForwardClearRates,
+  setCategoryFowardsTenorsChanges,
+} from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { useDispatch } from "react-redux";
+import { UpdateGetCategoryWiseForwardRates } from "@/store/categoryReducer/categoryReducer";
 
 const CategoryForwards = () => {
   const dispatch = useDispatch();
@@ -33,8 +37,9 @@ const CategoryForwards = () => {
   );
 
   const ClearRatesData = useSelector(
-    (state) => state.RealtimeActionsSlice.ClearRatesData
+    (state) => state.RealtimeActionsSlice.CategoryForwardClearRates
   );
+  console.log(ClearRatesData, "ClearRatesDataClearRatesData");
   const categoryFowardsTenorsChanges = useSelector(
     (state) => state.RealtimeActionsSlice.categoryFowardsTenorsChanges
   );
@@ -48,7 +53,7 @@ const CategoryForwards = () => {
     "dataSourcedataSourcedataSource"
   );
 
-  console.log(CategoryForwardRates, "CategoryForwardRates");
+  console.log(GetCategoryWiseForwardRatesData, "CategoryForwardRates");
 
   console.log(
     {
@@ -87,7 +92,11 @@ const CategoryForwards = () => {
         console.log(error, "Error while building discounting table");
       }
     }
-  }, [allInstrumentForTreasuryData, getAllTenorsRecords]);
+  }, [
+    allInstrumentForTreasuryData,
+    getAllTenorsRecords,
+    GetCategoryWiseForwardRatesData,
+  ]);
 
   useEffect(() => {
     if (
@@ -104,26 +113,13 @@ const CategoryForwards = () => {
         const removedSet = new Set(
           removedtenorList.map((item) => item.tenorID)
         );
-        // const newSet = new Set(
-        //   newIsForwardtenorList.map((item) => item.tenorID)
-        // );
 
         // Update each tenor's isForwardingApplicable field
         const updatedTenors = allTenors.map((tenor) => ({
           ...tenor,
           isForwardingApplicable: removedSet.has(tenor.tenorID) ? false : true, // leave unchanged if in neither
         }));
-        console.log(
-          {
-            removedSet,
-            // newSet,
-            removedtenorList,
-            newIsForwardtenorList,
-            updatedTenors,
-            allTenors,
-          },
-          "allTenorsallTenorsallTenors"
-        );
+
         let getAllTenorsData = { tenors: updatedTenors };
         let getAllInstrument = {
           instruments: allInstrumentForTreasuryData.forwardInstruments,
@@ -133,7 +129,6 @@ const CategoryForwards = () => {
           GetCategoryWiseForwardRatesData !== null &&
           GetCategoryWiseForwardRatesData;
         const { rowData, columnsData } = buildForwardsTable(
-          3,
           forwardRates,
           getAllTenorsData,
           getAllInstrument,
@@ -207,9 +202,29 @@ const CategoryForwards = () => {
     }
   }, [marketStatus]);
 
-  // For clear Rates
+  // For clear Forward Rates
   useEffect(() => {
-    if (ClearRatesData?.areRatesClear) {
+    if (!ClearRatesData?.areRatesClear) return;
+
+    if (GetCategoryWiseForwardRatesData?.forwardRates) {
+      // ✅ Clear bid/ask values
+      const clearedForwardRates =
+        GetCategoryWiseForwardRatesData.forwardRates.map((item) => ({
+          ...item,
+          bid: 0,
+          ask: 0,
+        }));
+
+      const newGetCategoryWiseForwardRatesData = {
+        ...GetCategoryWiseForwardRatesData,
+        forwardRates: clearedForwardRates,
+      };
+
+      dispatch(
+        UpdateGetCategoryWiseForwardRates(newGetCategoryWiseForwardRatesData)
+      );
+    } else {
+      // ✅ Fallback: clear current local dataSource if Redux data missing
       setDataSource((prevData) =>
         prevData.map((row) => {
           const updatedRow = { ...row };
@@ -222,7 +237,15 @@ const CategoryForwards = () => {
         })
       );
     }
-  }, [ClearRatesData]);
+
+    // ✅ Reset ClearRatesData flag in Redux
+    dispatch(clearCategoryForwardClearRates());
+  }, [ClearRatesData, GetCategoryWiseForwardRatesData, dispatch]);
+
+  console.log(
+    { dataSource, GetCategoryWiseForwardRatesData },
+    "dataSourcedataSourcedataSource for Clear Rates"
+  );
 
   // useEffect(() => {
   //   try {
@@ -252,10 +275,10 @@ const CategoryForwards = () => {
 
   return (
     <>
-      <span className="heading mb-2"> Forward</span>
+      <span className='heading mb-2'> Forward</span>
       <GlobalTable
         columns={columnsData}
-        prefixCls="Dealer_Forwards"
+        prefixCls='Dealer_Forwards'
         dataSource={dataSource}
         pagination={false}
       />

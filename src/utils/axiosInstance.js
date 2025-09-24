@@ -1,12 +1,85 @@
 // src/utils/apiCaller.js
 import { setCustomHeaders } from "@/common/utils";
 import axios from "axios";
+import { ensureTokenRefreshed } from "./refreshHandler";
 
-/**
- * Higher-order function for making POST API calls
- * @param {string} url - The endpoint URL
- * @returns {function} - A function that takes bodyData and makes a POST request
- */
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL, // adjust to your backend
+});
+
+// 🔑 Request interceptor → attach token
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+    config.headers = {
+      ...config.headers,
+      ...(setCustomHeaders(false) || {}),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    };
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+api.interceptors.response.use(
+  async (response) => {
+    console.log(response, "response from interceptor");
+
+    let responseData = response.data;
+
+    // If response is ArrayBuffer or Blob, try decoding
+    if (responseData instanceof ArrayBuffer) {
+      try {
+        const decodedString = new TextDecoder().decode(
+          new Uint8Array(responseData)
+        );
+        responseData = JSON.parse(decodedString);
+      } catch (err) {
+        console.warn("Failed to decode ArrayBuffer response:", err);
+      }
+    }
+
+    // 🔎 Check token expiration
+    if (responseData?.responseCode === 417) {
+      const originalRequest = response.config;
+
+      if (!originalRequest._retry) {
+        originalRequest._retry = true;
+
+        try {
+          const newToken = await ensureTokenRefreshed();
+
+          // Update token header
+          originalRequest.headers.Authorization = `Bearer ${newToken}`;
+
+          // Retry the request
+          return api(originalRequest);
+        } catch (err) {
+          console.error("Refresh failed → redirecting to login", err);
+          localStorage.clear();
+          window.location.href = "/";
+          return Promise.reject(err);
+        }
+      }
+    }
+
+    if (responseData?.responseCode === 401) {
+      localStorage.clear();
+      window.location.href = "/";
+      return Promise.reject("Unauthorized");
+    }
+
+    return response; // ✅ normal response
+  },
+  (error) => {
+    // ⛔ HTTP errors (401, 403, 500, etc.)
+    if (error.response?.status === 401) {
+      localStorage.clear();
+      window.location.href = "/";
+    }
+    return Promise.reject(error);
+  }
+);
+
 const createPostAPI =
   (url, requestMethod) => async (bodyData, isDoc, fileName, ext) => {
     try {
@@ -15,33 +88,25 @@ const createPostAPI =
       const form = new FormData();
       form.append("RequestMethod", requestMethod);
 
-      // ✅ Always append RequestData as JSON string if it's an object
       if (bodyData && typeof bodyData === "object") {
         form.append("RequestData", JSON.stringify(bodyData));
       }
 
-      // ✅ Only add a file if bodyData contains an actual File
       if (isDoc && bodyData?.file instanceof File) {
         form.append("File", bodyData.file);
       }
 
-      const axiosConfig = {
-        method: "post",
+      const config = {
+        method: "POST",
         url,
         data: form,
         headers,
+        ...(isDoc ? { responseType: "arraybuffer" } : {}),
       };
 
-      // ✅ Add responseType for Excel or file downloads
-      if (isDoc) {
-        axiosConfig.responseType = "arraybuffer";
-      }
+      const response = await api(config);
 
-      const response = await axios(axiosConfig);
-      if (response.data.responseCode === 401) {
-        window.location.href = "/";
-        return;
-      }
+      console.log(response, "responseresponse");
       return response;
     } catch (error) {
       console.error(`Error calling ${url}:`, error);

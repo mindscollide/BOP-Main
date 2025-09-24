@@ -6,6 +6,7 @@ import {
 } from "@/store/dealerReducer/dealerSlicer";
 import {
   setCategoryFowardsTenorsChanges,
+  setTreasuryFowardsTenorsChanges,
   tenorWiseFowardsRatesPublishedActions,
 } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import React, { lazy, Suspense, useEffect, useState } from "react";
@@ -17,6 +18,7 @@ import { useNotification } from "@/context/NotificationProvider";
 import { NumericFormat } from "react-number-format";
 import moment from "moment";
 import { formatDateUTCToGMT } from "@/components/utils/timeFunction";
+import { debounce } from "lodash";
 
 // Define condition to include components
 const shouldIncludeComponents =
@@ -64,13 +66,20 @@ const TenoreWiseCurrentAndLastRates = ({
   const navigate = useNavigate();
   const [date, setDate] = useState("");
   const { showMessage } = useNotification();
-
+  const PublishForwardsButtonLoading = useSelector(
+    (state) => state.dealerReducer.publishTenorWiseForwardsLoading
+  );
+  console.log(PublishForwardsButtonLoading, "PublishForwardsButtonLoading");
   const marketStatus = useSelector(
     (state) => state.RealtimeActionsSlice.marketStatus
   );
 
   const getAllTenorsData = useSelector(
     (state) => state.dealerReducer.getAllTenors
+  );
+
+  const treasuryFowardsTenorsChanges = useSelector(
+    (state) => state.RealtimeActionsSlice.treasuryFowardsTenorsChanges
   );
   const forwardsForTreasuryBranch = useSelector(
     (state) => state.dealerReducer.forwardsForTreasuryBranch
@@ -127,10 +136,10 @@ const TenoreWiseCurrentAndLastRates = ({
             tenorID: tenor.tenorID,
             tenorName: tenor.tenorName,
             tenorDays: tenor.tenorDays,
-            currentBid: current?.bid ?? "0",
-            currentAsk: current?.ask ?? "0",
-            lastBid: last?.bid ?? "0",
-            lastAsk: last?.ask ?? "0",
+            currentBid: current?.bid ?? "",
+            currentAsk: current?.ask ?? "",
+            lastBid: last?.bid ?? "",
+            lastAsk: last?.ask ?? "",
             dateTime: current?.dateTime ?? "",
           };
         });
@@ -142,10 +151,15 @@ const TenoreWiseCurrentAndLastRates = ({
       }
     }
   }, [getDashboardForwards, getAllTenorsData]);
+  console.log(treasuryFowardsTenorsChanges, "treasuryFowardsTenorsChanges");
 
   useEffect(() => {
-    if (!getTenorWiseForwardsRates || !getAllTenorsData) return;
-
+    if (
+      !getTenorWiseForwardsRates ||
+      !getAllTenorsData ||
+      !treasuryFowardsTenorsChanges
+    )
+      return;
     try {
       const {
         currentTenorWiseForwardRates,
@@ -154,13 +168,15 @@ const TenoreWiseCurrentAndLastRates = ({
         // newIsForwardtenorList,
       } = getTenorWiseForwardsRates.tenorWiseForwardRates || {};
       const { tenors } = getAllTenorsData || {};
+      const { updateTenorsDays = [] } = treasuryFowardsTenorsChanges;
 
       console.log(getTenorWiseForwardsRates, "viewing the data");
       // Early return if required data is missing
       if (
         !currentTenorWiseForwardRates ||
         !lastTenorWiseForwardRates ||
-        !tenors
+        !tenors ||
+        !updateTenorsDays
       ) {
         return;
       }
@@ -171,20 +187,18 @@ const TenoreWiseCurrentAndLastRates = ({
           !tenorList?.some((data) => data.tenorID === tenorData.tenorID)
       );
 
-      // Process the remaining data
       const processedData = filteredRates
         .map((item) => {
-          const matchingTenor = tenors.find(
+          const matchingTenor = updateTenorsDays.find(
             (tenor) => tenor.tenorID === item.tenorID
           );
           const matchingLastRate = lastTenorWiseForwardRates.find(
             (lastRate) => lastRate.tenorID === item.tenorID
           );
-
           return {
             tenorID: item.tenorID,
             tenorName: item.tenorName,
-            tenorDays: matchingTenor?.tenorDays || item.tenorDays || 0,
+            tenorDays: matchingTenor?.noOfDays || item.noOfDays || 0,
             currentBid: item.bid,
             currentAsk: item.ask,
             lastBid: matchingLastRate?.bid || "",
@@ -192,15 +206,28 @@ const TenoreWiseCurrentAndLastRates = ({
             dateTime: item.dateTime,
           };
         })
+        // ✅ remove duplicates by tenorID
+        .reduce((acc, curr) => {
+          if (!acc.some((item) => item.tenorID === curr.tenorID)) {
+            acc.push(curr);
+          }
+          return acc;
+        }, [])
         .sort((a, b) => (a.tenorDays || 0) - (b.tenorDays || 0));
+
       setDate(processedData[0]?.dateTime);
       dispatch(setForwardsForTreasuryBranch(processedData));
       dispatch(tenorWiseFowardsRatesPublishedActions(null));
+      dispatch(setTreasuryFowardsTenorsChanges(null));
     } catch (error) {
       console.error("Error processing forward rates:", error);
       // Consider adding error handling/notification here
     }
-  }, [getTenorWiseForwardsRates, getAllTenorsData]);
+  }, [
+    getTenorWiseForwardsRates,
+    getAllTenorsData,
+    treasuryFowardsTenorsChanges,
+  ]);
 
   const handleDeleteTenorRecord = (record) => {
     setTenorRemoveRecord(record);
@@ -238,29 +265,26 @@ const TenoreWiseCurrentAndLastRates = ({
       forwardsForTreasuryBranch,
       "forwardsForTreasuryBranchforwardsForTreasuryBranch"
     );
-    let checkDoNotempty = forwardsForTreasuryBranch.every(
-      (item) =>
-        item.currentAsk !== "" &&
-        Number(item.currentAsk) !== 0 &&
-        item.currentBid !== "" &&
-        Number(item.currentBid) !== 0
-    );
-
+    // let checkDoNotempty = forwardsForTreasuryBranch.every(
+    //   (item) =>
+    //     item.currentAsk !== "" &&
+    //     Number(item.currentAsk) !== 0 &&
+    //     item.currentBid !== "" &&
+    //     Number(item.currentBid) !== 0
+    // );
+    //
     let checkAskValue = forwardsForTreasuryBranch.find(
-      (item) =>
-        Number(item.currentAsk) !== 0 &&
-        Number(item.currentBid) !== 0 &&
-        Number(item.currentAsk) < Number(item.currentBid)
+      (item) => Number(item.currentAsk) < Number(item.currentBid)
     );
 
-    if (!checkDoNotempty) {
-      const handleClick = () => {
-        showMessage("Bid and Ask fields cannot be 0 or empty");
-      };
+    // if (!checkDoNotempty) {
+    //   const handleClick = () => {
+    //     showMessage("Bid and Ask fields cannot be 0 or empty");
+    //   };
 
-      handleClick();
-      return;
-    }
+    // handleClick();
+    // return;
+    // }
 
     if (checkAskValue !== undefined) {
       const handleClick = () => {
@@ -296,8 +320,8 @@ const TenoreWiseCurrentAndLastRates = ({
     let Data = {
       CurrentTenorWiseForwardRates: forwardsForTreasuryBranch.map((item) => ({
         TenorID: item.tenorID,
-        Bid: Number(item.currentBid),
-        Ask: Number(item.currentAsk),
+        Bid: String(item.currentBid),
+        Ask: String(item.currentAsk),
         DateTime: "",
         NoOfDays: item.tenorDays,
       })),
@@ -477,7 +501,6 @@ const TenoreWiseCurrentAndLastRates = ({
                 moment(formatDateUTCToGMT(date)).format(
                   "DD MMM YYYY, hh:mm:ss"
                 )}
-              {/* 05 Aug 2025, 11:20:58 */}
             </div>
             <GlobalTable
               columns={columns}
@@ -490,6 +513,7 @@ const TenoreWiseCurrentAndLastRates = ({
                 <CustomButton
                   applyClass='publishForwardsBtn'
                   value={"Publish Forwards"}
+                  loading={PublishForwardsButtonLoading}
                   onClick={handlePublishForwards}
                   disabled={
                     marketStatus === false

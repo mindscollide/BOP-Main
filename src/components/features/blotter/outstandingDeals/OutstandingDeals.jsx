@@ -39,16 +39,6 @@ import {
 } from "@/store/modalSlice/modalSlicer";
 import { RFQTImer } from "@/components/utils/Timer";
 import { convertDateTimeIntoLocal, formatPkAmount } from "@/utils/formatters";
-import {
-  BlotterTransactionAccepted,
-  BlotterTransactionAdded,
-  BlotterTransactionAssigned,
-  BlotterTransactionCancellationRequest,
-  BlotterTransactionRFQExpired,
-  BlotterTransactionRFQQuoted,
-  BlotterTransactionRejected,
-  BlotterTranscationCancelled,
-} from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { getAllChatByTransactionId } from "@/components/features/chatBox/ChatActions";
 import CancelReasonModal from "../cancelReasonModal/cancelReasonModal";
 import {
@@ -58,11 +48,12 @@ import {
 } from "@/store/BlotterSlicer/BlotterSlicer";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import { useNotification } from "@/context/NotificationProvider";
+import { Empty } from "antd";
+import { set } from "lodash";
 
 // Custom styles for the component
 const useStyles = makeStyles((theme) => ({
   tableContainer: {
-    maxHeight: 400,
     overflow: "auto",
     "& .MuiTableHead-root": {
       position: "sticky",
@@ -118,6 +109,10 @@ const OutstandingDeals = ({
   treasuryOutStandingDeal,
   hasBottomReachedOutstanding,
 }) => {
+  console.log(
+    hasBottomReachedOutstanding,
+    "hasBottomReachedOutstandinghasBottomReachedOutstanding"
+  );
   const classes = useStyles();
   const { showMessage } = useNotification();
   const dispatch = useDispatch();
@@ -132,18 +127,6 @@ const OutstandingDeals = ({
     "09-09-2024/bd2e",
     "09-09-2024/d1f2",
   ];
-  const CustomerName_OPTIONS = ["Gul Ahmed"];
-  const TYPE_OPTIONS = ["Buy", "Sell"];
-  const Nature_OPTIONS = ["1", "6"];
-  const CCY1_OPTIONS = ["USD"];
-  const Amount_OPTIONS = ["098,098", "234,234"];
-  const Rate_OPTIONS = ["288.00", "289.00"];
-  const CCY2_OPTIONS = ["PKR"];
-  const Amount2_OPTIONS = ["NaN"];
-  const Time_OPTIONS = ["16:33 pm", "16:47 pm", "16:48 pm", "16:50 pm"];
-  const LCno_OPTIONS = ["098098", "234234"];
-  const Accno_OPTIONS = ["234234234234234234234234"];
-  const Status_OPTIONS = ["Pending"];
 
   // State for filters
   const [open, setOpen] = useState(false);
@@ -189,6 +172,44 @@ const OutstandingDeals = ({
   const handleCheckboxChange = (checkedValues) =>
     setSelectedItemsTXNID(checkedValues);
 
+  const GetSpotTransactionDetailsApiLoading = useSelector(
+    (state) => state.BlotterSlicer.GetSpotTransactionDetailsApiLoading
+  );
+  const GetForwardTransactionDetailsApiLoading = useSelector(
+    (state) => state.BlotterSlicer.GetForwardTransactionDetailsApiLoading
+  );
+  const GetNonFEDiscountingTransactionDetailsApiLoading = useSelector(
+    (state) =>
+      state.BlotterSlicer.GetNonFEDiscountingTransactionDetailsApiLoading
+  );
+  const GetFEDiscountingTransactionDetailsApiLoading = useSelector(
+    (state) => state.BlotterSlicer.GetFEDiscountingTransactionDetailsApiLoading
+  );
+
+  const getAllChatByTransactionIdLoading = useSelector(
+    (state) => state.chatSlicer.getAllChatByTransactionIdLoading
+  );
+
+  const AssignTransactionAPILoading = useSelector(
+    (state) => state.BlotterSlicer.AssignTransactionAPILoading
+  );
+
+  const AcceptTransactionAPILoading = useSelector(
+    (state) => state.BlotterSlicer.AcceptTransactionAPILoading
+  );
+
+  const AcceptTransactionCancellationRequestLoading = useSelector(
+    (state) => state.BlotterSlicer.AcceptTransactionCancellationRequestLoading
+  );
+
+  const RejectTransactionAPILoading = useSelector(
+    (state) => state.BlotterSlicer.RejectTransactionAPILoading
+  );
+
+  const RejectTransactionCancellationRequestLoading = useSelector(
+    (state) => state.BlotterSlicer.RejectTransactionCancellationRequestLoading
+  );
+
   // Load more data function for infinite scrolling
   const loadMore = useCallback(async () => {
     // Prevent loading if already at bottom or no more records
@@ -201,21 +222,19 @@ const OutstandingDeals = ({
     setHasBottomReachedOutstanding(true); // Set loading state
 
     // Prepare data for API call
-    let Data = { sRow: treasuryOutStandingDealsRow, Length: 10 };
+    let Data = { sRow: treasuryOutStandingDeal.length, Length: 10 };
     dispatch(GetBlotterOutstandingDealsDataAPI({ navigate, Data }));
   }, [
     hasBottomReachedOutstanding,
     setHasBottomReachedOutstanding,
     treasuryOutStandingDealRecords,
     treasuryOutStandingDeal.length,
-    treasuryOutStandingDealsRow,
   ]);
 
   // Intersection Observer callback for infinite scrolling
   const lastRowRef = useCallback(
     (node) => {
-      if (hasBottomReachedOutstanding || !outstandingTableContainerRef.current)
-        return;
+      if (!node) return;
 
       // Disconnect previous observer
       if (observer.current) observer.current.disconnect();
@@ -223,38 +242,30 @@ const OutstandingDeals = ({
       // Create new observer to detect when last row is visible
       observer.current = new IntersectionObserver(
         (entries) => {
-          if (entries[0].isIntersecting && !hasBottomReachedOutstanding) {
+          if (entries[0].isIntersecting) {
             loadMore(); // Load more data when last row is visible
           }
         },
         {
           root: outstandingTableContainerRef.current, // Use table container as root
-          threshold: 0.5, // Fully visible threshold
+          threshold: 0.1, // Lower threshold to trigger earlier
+          rootMargin: "20px",
         }
       );
 
       if (node) observer.current.observe(node); // Observe the last row
     },
-    [hasBottomReachedOutstanding, loadMore]
+    [loadMore]
   );
-
-  // Cleanup observer on unmount
-  useEffect(() => {
-    return () => {
-      if (observer.current) {
-        observer.current.disconnect();
-      }
-    };
-  }, []);
-  // Other filter handlers would follow the same pattern...
 
   const handleShowCommentModal = (text) => {
     setShowCommentModal(true);
     setComment(text);
   };
-
+  const [assignTranId, setAssignTranId] = useState(null);
   const handleClickAssignTransaction = (record) => {
     let Data = { PK_TransactionID: Number(record.pK_TransactionID) };
+    setAssignTranId(record.pK_TransactionID);
     dispatch(AssignTransactionAPI({ navigate, Data }));
   };
 
@@ -270,8 +281,9 @@ const OutstandingDeals = ({
       dispatch(setDiscountingQuoteModalData(record));
     }
   };
-
+  const [acceptTranId, setAcceptTranId] = useState(null);
   const acceptTransaction = (record) => {
+    setAcceptTranId(record.pK_TransactionID);
     dispatch(
       AcceptTransactionAPI({
         navigate,
@@ -280,26 +292,48 @@ const OutstandingDeals = ({
     );
   };
 
+  const [rejectTranId, setRejectTranId] = useState(null);
   const rejectTransaction = (record) => {
+    setRejectTranId(record.pK_TransactionID);
     setCancelReasonModal(true);
     setCancelType("Rejected");
     setCancelTransactionID(record.pK_TransactionID);
   };
 
+  const [acceptTranCancelReqId, setAcceptTranCancelReqId] = useState(null);
   const handleAcceptTransactionCancellation = (transactionID) => {
     let Data = { PK_TransactionID: transactionID };
+    setAcceptTranCancelReqId(transactionID);
     dispatch(AcceptTransactionCancellationRequest({ navigate, Data }));
   };
 
+  const [rejectTranCancelRqtId, setRejectTranCancelRqtId] = useState(null);
+
   const handleRejectTransactionCancellation = (transactionID) => {
+    setRejectTranCancelRqtId(transactionID);
     setCancelReasonModal(true);
     setCancelType("Cancellation");
     setCancelTransactionID(transactionID);
   };
 
-  const handleClickChat = (txnID, treasuryPersonID) => {
+  const [chatUserId, setChatUserId] = useState(null);
+  const handleClickChat = (
+    txnID,
+    treasuryPersonID,
+    natureType,
+    natureTypeId,
+    clientName
+  ) => {
     let Data = { TranscationID: txnID };
-    dispatch(getAllChatByTransactionId({ navigate, Data, treasuryPersonID }));
+    setChatUserId(txnID);
+    let ChatData = {
+      natureType,
+      natureTypeId,
+      clientName,
+    };
+    dispatch(
+      getAllChatByTransactionId({ navigate, Data, treasuryPersonID, ChatData })
+    );
   };
 
   const handleClickReasonSubmit = useCallback(() => {
@@ -339,9 +373,10 @@ const OutstandingDeals = ({
     setCancelTransactionID(0);
     setCancelReasonComment("");
   }, []);
-
+  const [infoTransID, setInfoTransID] = useState(null);
   const handleClickInfo = (record) => {
     let Data = { PK_TransactionID: record.pK_TransactionID };
+    setInfoTransID(record.pK_TransactionID);
     if (record.natureType === 1) {
       dispatch(GetSpotTransactionDetailsApi({ navigate, Data }));
     } else if (record.natureType === 2) {
@@ -394,7 +429,7 @@ const OutstandingDeals = ({
       width: 60,
       align: "center",
       render: (record) => (
-        <IndexCell value={formatPkAmount(record.bid, { decimals: 5 })} />
+        <IndexCell value={formatPkAmount(record.bid, { decimals: 4 })} />
       ),
     },
     {
@@ -403,7 +438,7 @@ const OutstandingDeals = ({
       width: 60,
       align: "center",
       render: (record) => (
-        <IndexCell value={formatPkAmount(record.offer, { decimals: 5 })} />
+        <IndexCell value={formatPkAmount(record.offer, { decimals: 4 })} />
       ),
     },
     {
@@ -419,6 +454,14 @@ const OutstandingDeals = ({
       width: 150,
       align: "center",
       render: (record) => <IndexCell value={formatPkAmount(record.quantity)} />,
+    },
+    {
+      id: "tenorDays",
+      label: "Tenor Days",
+      width: 100,
+      align: "center",
+      render: (record) =>
+        record.rfqDealDetails !== null && record.rfqDealDetails?.tenorDays,
     },
     {
       id: "ccY2",
@@ -453,12 +496,18 @@ const OutstandingDeals = ({
           (isRFQ || isAssignedUser) && record.rfqTimerDetails?.endTime
             ? convertDateTimeIntoLocal(record.rfqTimerDetails.endTime)
             : null;
-
+        const serverTime =
+          (isRFQ || isAssignedUser) && record.rfqTimerDetails?.serverTime
+            ? convertDateTimeIntoLocal(
+                record.rfqTimerDetails?.serverTime.replace(/[-:\s]/g, "")
+              )
+            : null;
         return (
           <span>
             {formatDateTimeToUTCTime(record.tradeDateTime)}{" "}
             {(isRFQ || isAssignedUser) && rfqTimer && (
               <RFQTImer
+                severTime={serverTime}
                 endTime={rfqTimer}
                 dispatch={dispatch}
                 apiFunction={ExpireRFQTransaction}
@@ -484,7 +533,8 @@ const OutstandingDeals = ({
               : record.statusID === 2
               ? classes.statusPending
               : classes.statusRejected
-          }>
+          }
+        >
           {record.status}
         </span>
       ),
@@ -497,24 +547,37 @@ const OutstandingDeals = ({
         <div className={classes.actionButtons}>
           {record.statusID === 2 ? (
             <CustomButton
-              icon={<i className='icon-user-check'></i>}
+              loading={
+                assignTranId === record.pK_TransactionID &&
+                AssignTransactionAPILoading
+              }
+              icon={<i className="icon-user-check"></i>}
               size={"small"}
-              className='btn btn-primary btn-sm d-flex justify-content-center align-items-center'
+              className="btn btn-primary btn-sm d-flex justify-content-center align-items-center"
               onClick={() => handleClickAssignTransaction(record)}
             />
           ) : record.statusID === 6 ? (
             <>
               <CustomButton
-                icon={<i className='icon-check'></i>}
-                className='btn btn-sm btn-danger d-flex justify-content-center align-items-center'
+                loading={
+                  acceptTranCancelReqId === record.pK_TransactionID &&
+                  AcceptTransactionCancellationRequestLoading
+                }
+                icon={<i className="icon-check"></i>}
+                className="btn btn-sm btn-danger d-flex justify-content-center align-items-center"
                 size={"small"}
                 onClick={() =>
                   handleAcceptTransactionCancellation(record.pK_TransactionID)
                 }
               />
               <CustomButton
-                icon={<i className='icon-close'></i>}
-                className='btn btn-sm btn-success d-flex justify-content-center align-items-center'
+                loading={
+                  rejectTranCancelRqtId === record.pK_TransactionID &&
+                  (RejectTransactionAPILoading ||
+                    RejectTransactionCancellationRequestLoading)
+                }
+                icon={<i className="icon-close"></i>}
+                className="btn btn-sm btn-success d-flex justify-content-center align-items-center"
                 size={"small"}
                 onClick={() =>
                   handleRejectTransactionCancellation(record.pK_TransactionID)
@@ -527,32 +590,40 @@ const OutstandingDeals = ({
               <>
                 {record.isRFQ === true ? (
                   <CustomButton
-                    icon={<i className='icon-open'></i>}
+                    icon={<i className="icon-open"></i>}
                     size={"small"}
-                    className='btn btn-sm btn-primary d-flex justify-content-center align-items-center'
+                    className="btn btn-sm btn-primary d-flex justify-content-center align-items-center"
                     onClick={() => openViewDeal(record, record.natureType)}
                   />
                 ) : record.natureType === 2 ||
                   record.natureType === 3 ||
                   record.natureType === 4 ? (
                   <CustomButton
-                    icon={<i className='icon-open'></i>}
+                    icon={<i className="icon-open"></i>}
                     size={"small"}
-                    className='btn btn-sm btn-primary d-flex justify-content-center align-items-center'
+                    className="btn btn-sm btn-primary d-flex justify-content-center align-items-center"
                     onClick={() => openViewDeal(record, record.natureType)}
                   />
                 ) : (
                   <>
                     <CustomButton
-                      icon={<i className='icon-check'></i>}
+                      loading={
+                        acceptTranId === record.pK_TransactionID &&
+                        AcceptTransactionAPILoading
+                      }
+                      icon={<i className="icon-check"></i>}
                       size={"small"}
-                      className='btn btn-sm btn-success blotterCheckerButton d-flex justify-content-center align-items-center'
+                      className="btn btn-sm btn-success blotterCheckerButton d-flex justify-content-center align-items-center"
                       onClick={() => acceptTransaction(record)}
                     />
                     <CustomButton
-                      icon={<i className='icon-close'></i>}
+                      // loading={
+                      //   rejectTranId === record.pK_TransactionID &&
+                      //   RejectTransactionAPILoading
+                      // }
+                      icon={<i className="icon-close"></i>}
                       size={"small"}
-                      className='btn btn-sm btn-danger blotterCheckerButton d-flex justify-content-center align-items-center'
+                      className="btn btn-sm btn-danger blotterCheckerButton d-flex justify-content-center align-items-center"
                       onClick={() => rejectTransaction(record)}
                     />
                   </>
@@ -561,8 +632,8 @@ const OutstandingDeals = ({
             ) : record.statusID === 2 ? (
               <CustomButton
                 size={"small"}
-                icon={<i className='icon-user-check blotterCheckerButton'></i>}
-                className='btn btn-primary d-flex justify-content-center align-items-center'
+                icon={<i className="icon-user-check blotterCheckerButton"></i>}
+                className="btn btn-primary d-flex justify-content-center align-items-center"
                 onClick={() => handleClickAssignTransaction(record)}
               />
             ) : null
@@ -575,14 +646,14 @@ const OutstandingDeals = ({
       label: "",
       width: 120,
       render: (record) => (
-        <div className='d-flex justify-content-center align-items-center'>
+        <div className="d-flex justify-content-center align-items-center">
           {record.statusID === 6 && (
             <CustomButton
               icon={
-                <i className='icon-view-comment d-flex justify-content-center align-items-center blotterTableIconSize'></i>
+                <i className="icon-view-comment d-flex justify-content-center align-items-center blotterTableIconSize"></i>
               }
               size={"small"}
-              className='btn btn-primary'
+              className="btn btn-primary"
               onClick={() => handleShowCommentModal(record.comment)}
             />
           )}
@@ -590,33 +661,51 @@ const OutstandingDeals = ({
             Number(record.treasuryPersonID) ===
               Number(localStorage.getItem("userID")) && (
               <CustomButton
-                icon={<i className='icon-chat2'></i>}
+                loading={
+                  record.pK_TransactionID === chatUserId &&
+                  getAllChatByTransactionIdLoading
+                }
+                icon={<i className="icon-chat2"></i>}
                 size={"small"}
-                className='btn btn-danger chat-btn-trigger d-flex justify-content-center align-items-center'
+                className="btn btn-danger chat-btn-trigger d-flex justify-content-center align-items-center"
                 onClick={() =>
-                  handleClickChat(record.pK_TransactionID, record.fK_UserID)
+                  handleClickChat(
+                    record.pK_TransactionID,
+                    record.fK_UserID,
+                    record.natureType,
+                    record.natureTypeId,
+                    record.corporateName
+                  )
                 }
               />
             )}
           <CustomButton
+            loading={
+              infoTransID === record.pK_TransactionID &&
+              (GetSpotTransactionDetailsApiLoading ||
+                GetForwardTransactionDetailsApiLoading ||
+                GetNonFEDiscountingTransactionDetailsApiLoading ||
+                GetFEDiscountingTransactionDetailsApiLoading)
+            }
             onClick={() => handleClickInfo(record)}
             size={"small"}
             icon={
               <svg
-                id='info_Layer_1'
-                x='0px'
-                y='0px'
-                width='12px'
-                height='12px'
-                fill='#ffffff'
-                viewBox='0 0 55 55'>
+                id="info_Layer_1"
+                x="0px"
+                y="0px"
+                width="12px"
+                height="12px"
+                fill="#ffffff"
+                viewBox="0 0 55 55"
+              >
                 <g>
-                  <path d='M41.407,45.858c0.067,0.838,0.156,1.672,0.183,2.508   c0.005,0.152-0.205,0.376-0.37,0.461c-1.347,0.687-2.679,1.416-4.069,2.005c-3.305,1.396-6.715,2.5-10.277,3.009   c-1.447,0.206-2.936,0.154-4.403,0.153c-0.477-0.001-0.968-0.178-1.424-0.345c-1.313-0.481-1.98-1.443-1.948-2.85   c0.015-0.583,0.103-1.179,0.253-1.744c1.863-7.013,3.752-14.02,5.61-21.037c0.199-0.751,0.327-1.543,0.341-2.318   c0.021-1.142-0.615-1.925-1.667-2.331c-1.605-0.618-3.258-0.468-4.89-0.161c-1.764,0.332-3.468,0.873-5.149,1.884   c-0.074-0.978-0.157-1.863-0.187-2.75c-0.005-0.127,0.234-0.307,0.396-0.388c1.334-0.67,2.648-1.389,4.021-1.968   c3.327-1.403,6.755-2.512,10.337-3.021c1.465-0.208,2.994-0.294,4.457-0.125c2.782,0.323,3.808,2.02,3.073,4.73   c-0.94,3.474-1.914,6.941-2.838,10.419c-1.049,3.953-2.087,7.912-3.077,11.879c-0.524,2.107,0.385,3.449,2.526,3.839   c2.048,0.376,4.038-0.017,5.981-0.634C39.313,46.75,40.296,46.295,41.407,45.858z'></path>
-                  <circle cx='27.5' cy='7.608' r='6.609'></circle>
+                  <path d="M41.407,45.858c0.067,0.838,0.156,1.672,0.183,2.508   c0.005,0.152-0.205,0.376-0.37,0.461c-1.347,0.687-2.679,1.416-4.069,2.005c-3.305,1.396-6.715,2.5-10.277,3.009   c-1.447,0.206-2.936,0.154-4.403,0.153c-0.477-0.001-0.968-0.178-1.424-0.345c-1.313-0.481-1.98-1.443-1.948-2.85   c0.015-0.583,0.103-1.179,0.253-1.744c1.863-7.013,3.752-14.02,5.61-21.037c0.199-0.751,0.327-1.543,0.341-2.318   c0.021-1.142-0.615-1.925-1.667-2.331c-1.605-0.618-3.258-0.468-4.89-0.161c-1.764,0.332-3.468,0.873-5.149,1.884   c-0.074-0.978-0.157-1.863-0.187-2.75c-0.005-0.127,0.234-0.307,0.396-0.388c1.334-0.67,2.648-1.389,4.021-1.968   c3.327-1.403,6.755-2.512,10.337-3.021c1.465-0.208,2.994-0.294,4.457-0.125c2.782,0.323,3.808,2.02,3.073,4.73   c-0.94,3.474-1.914,6.941-2.838,10.419c-1.049,3.953-2.087,7.912-3.077,11.879c-0.524,2.107,0.385,3.449,2.526,3.839   c2.048,0.376,4.038-0.017,5.981-0.634C39.313,46.75,40.296,46.295,41.407,45.858z"></path>
+                  <circle cx="27.5" cy="7.608" r="6.609"></circle>
                 </g>
               </svg>
             }
-            className='btn btn-sm btn-primary info-btn-trigger ms-1 d-flex justify-content-center align-items-center'
+            className="btn btn-sm btn-primary info-btn-trigger ms-1 d-flex justify-content-center align-items-center"
           />
         </div>
       ),
@@ -627,16 +716,18 @@ const OutstandingDeals = ({
     <>
       <TableContainer
         ref={outstandingTableContainerRef}
-        sx={{ maxHeight: 400, overflow: "auto" }}
-        className={classes.tableContainer}>
-        <Table stickyHeader size='small'>
+        sx={{ maxHeight: 300, overflow: "auto" }}
+        className={classes.tableContainer}
+      >
+        <Table stickyHeader size="small">
           <TableHead>
             <TableRow>
               {columns.map((column) => (
                 <TableCell
                   key={column.id}
                   style={{ width: column.width, whiteSpace: "nowrap" }}
-                  align={column.align || "left"}>
+                  align={column.align || "left"}
+                >
                   {column.label}
                 </TableCell>
               ))}
@@ -649,8 +740,8 @@ const OutstandingDeals = ({
               return (
                 <TableRow
                   key={`${row.pK_TransactionID}-${index}`}
-  
-                  ref={isLast ? lastRowRef : null}>
+                  ref={isLast ? lastRowRef : null}
+                >
                   {columns.map((column) => (
                     <TableCell
                       key={column.id}
@@ -660,7 +751,8 @@ const OutstandingDeals = ({
                         whiteSpace: "nowrap",
                         fontSize: "13px",
                         fontWeight: "500",
-                      }}>
+                      }}
+                    >
                       {column.render ? column.render(row) : row[column.id]}
                     </TableCell>
                   ))}
@@ -669,6 +761,27 @@ const OutstandingDeals = ({
             })}
           </TableBody>
         </Table>
+        {Array.isArray(treasuryOutStandingDeal) &&
+          treasuryOutStandingDeal.length === 0 && (
+            <>
+              <Empty
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  flexDirection: "column",
+                  maxWidth: "100%",
+                  textAlign: "center",
+                }}
+                image={Empty.PRESENTED_IMAGE_SIMPLE}
+              ></Empty>
+            </>
+          )}
+        {hasBottomReachedOutstanding && (
+          <Box display="flex" justifyContent="center" p={2}>
+            <CircularProgress size={24} />
+          </Box>
+        )}
       </TableContainer>
 
       {cancelReasonModal && (
