@@ -437,7 +437,7 @@ const NonFEDiscountingModal = ({
                   <Col lg={12} md={12} sm={12}>
                     <div className="d-flex align-items-end ">
                       <div className="w-100">
-                        <p className="SubHeadings m-0">Fixed Days*</p>
+                        <p className="SubHeadings m-0">Tenor*</p>
                         <InputFIeld
                           onChange={handleChangeTenor}
                           value={tenorValue}
@@ -451,7 +451,7 @@ const NonFEDiscountingModal = ({
                     </div>
                     {errors.tenorValue && (
                       <span className="text-danger small">
-                        Please enter valid fixed days(1-1000)
+                        Please enter valid tenor(1-1000)
                       </span>
                     )}
                   </Col>
