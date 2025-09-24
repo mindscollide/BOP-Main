@@ -648,7 +648,7 @@ const CorporateBookaForwardModal = ({
                 <Row className="mt-2  g-0">
                   <Col lg={7} md={7} sm={7}>
                     <div className="d-flex flex-column flex-wrap">
-                      <span className="SubHeadings">Tenor*</span>
+                      <span className="SubHeadings">Fixed Days*</span>
                       <NumericFormat
                         customInput={InputFIeld}
                         applyClass={"CalculatorTextfield"}
@@ -681,7 +681,7 @@ const CorporateBookaForwardModal = ({
                 <Row className="mt-2  g-0">
                   <Col lg={7} md={7} sm={7}>
                     <div className="d-flex flex-column flex-wrap">
-                      <span className="SubHeadings">Options*</span>
+                      <span className="SubHeadings">Option Days*</span>
                       <NumericFormat
                         customInput={InputFIeld}
                         applyClass={"CalculatorTextfield"}

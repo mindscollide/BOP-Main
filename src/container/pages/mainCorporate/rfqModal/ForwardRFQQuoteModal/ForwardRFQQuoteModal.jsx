@@ -262,7 +262,7 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                   </Col>
                   <Col sm={12} md={12} lg={12}>
                     <label className={styles["DealViewModal__label"]}>
-                      Tenor
+                      Fixed Days
                     </label>
                     <p className={styles["DealViewModal__value"]}>
                       {forwardQuoteData?.rfqDealDetails !== null
@@ -499,6 +499,7 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                   className="form-control"
                   name={"cancelReasonInput"}
                   value={cancelReasonComment}
+                  maxLength={1500}
                   onChange={(event) =>
                     setCancelReasonComment(event.target.value.trim())
                   }

@@ -112,7 +112,6 @@ const InfoTransaction = () => {
               <p className={styles["txn_id"]}>{InfoRecord?.txnid}</p>
             </Col>
           </Row>
-
           {(InfoRecord?.natureType === 3 ||
             InfoRecord?.natureType === 4 ||
             InfoRecord?.natureType === 2) && (
@@ -128,7 +127,6 @@ const InfoTransaction = () => {
               </Col>
             </Row>
           )}
-
           {(InfoRecord?.natureType === 3 ||
             InfoRecord?.natureType === 4 ||
             InfoRecord?.natureType === 2) && (
@@ -144,7 +142,6 @@ const InfoTransaction = () => {
               </Col>
             </Row>
           )}
-
           {(InfoRecord?.natureType === 3 ||
             InfoRecord?.natureType === 4 ||
             InfoRecord?.natureType === 2 ||
@@ -191,7 +188,6 @@ const InfoTransaction = () => {
               </Col>
             </Row>
           )}
-
           {(InfoRecord?.natureType === 3 ||
             InfoRecord?.natureType === 4 ||
             InfoRecord?.natureType === 2 ||
@@ -208,7 +204,6 @@ const InfoTransaction = () => {
               </Col>
             </Row>
           )}
-
           {(InfoRecord?.natureType === 3 ||
             InfoRecord?.natureType === 4 ||
             InfoRecord?.natureType === 2 ||
@@ -233,7 +228,9 @@ const InfoTransaction = () => {
             <Row>
               <span className={styles["span_underline"]} />
               <Col sm={6} md={6} lg={6}>
-                <p className={styles["transactionInfolabel"]}>{`TXN Amount (${InfoRecord?.ccY1})`}</p>
+                <p
+                  className={styles["transactionInfolabel"]}
+                >{`TXN Amount (${InfoRecord?.ccY1})`}</p>
               </Col>
               <Col sm={6} md={6} lg={6}>
                 <p className={styles["transactionInfolabel"]}>
@@ -242,7 +239,6 @@ const InfoTransaction = () => {
               </Col>
             </Row>
           )}
-
           {InfoRecord?.natureType === 1 && (
             <Row>
               <span className={styles["span_underline"]} />
@@ -256,7 +252,6 @@ const InfoTransaction = () => {
               </Col>
             </Row>
           )}
-
           {(InfoRecord?.natureType === 3 ||
             InfoRecord?.natureType === 4 ||
             InfoRecord?.natureType === 2 ||
@@ -264,7 +259,9 @@ const InfoTransaction = () => {
             <Row>
               <span className={styles["span_underline"]} />
               <Col sm={6} md={6} lg={6}>
-                <p className={styles["transactionInfolabel"]}>{`Total Amount (${InfoRecord?.ccY2})`}</p>
+                <p
+                  className={styles["transactionInfolabel"]}
+                >{`Total Amount (${InfoRecord?.ccY2})`}</p>
               </Col>
               <Col sm={6} md={6} lg={6}>
                 <p className={styles["transactionInfolabel"]}>
@@ -273,7 +270,6 @@ const InfoTransaction = () => {
               </Col>
             </Row>
           )}
-
           {InfoRecord?.natureType === 1 && (
             <Row>
               <span className={styles["span_underline"]} />
@@ -289,9 +285,20 @@ const InfoTransaction = () => {
               </Col>
             </Row>
           )}
-          {(InfoRecord?.natureType === 3 ||
-            InfoRecord?.natureType === 4 ||
-            InfoRecord?.natureType === 2) && (
+          {InfoRecord?.natureType === 2 && (
+            <Row>
+              <span className={styles["span_underline"]} />
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>Fixed Days</p>
+              </Col>
+              <Col sm={6} md={6} lg={6}>
+                <p className={styles["transactionInfolabel"]}>
+                  {InfoRecord?.tenorDays}
+                </p>
+              </Col>
+            </Row>
+          )}
+          {(InfoRecord?.natureType === 3 || InfoRecord?.natureType === 4) && (
             <Row>
               <span className={styles["span_underline"]} />
               <Col sm={6} md={6} lg={6}>
@@ -304,7 +311,6 @@ const InfoTransaction = () => {
               </Col>
             </Row>
           )}
-
           {(InfoRecord?.natureType === 3 ||
             InfoRecord?.natureType === 4 ||
             InfoRecord?.natureType === 2) && (
@@ -337,7 +343,6 @@ const InfoTransaction = () => {
               </Col>
             </Row>
           )}
-
           {(InfoRecord?.natureType === 3 ||
             InfoRecord?.natureType === 4 ||
             InfoRecord?.natureType === 2) && (
@@ -359,7 +364,6 @@ const InfoTransaction = () => {
               </Col>
             </Row>
           )}
-
           {(InfoRecord?.natureType === 3 ||
             InfoRecord?.natureType === 4 ||
             InfoRecord?.natureType === 2) && (
@@ -375,7 +379,6 @@ const InfoTransaction = () => {
               </Col>
             </Row>
           )}
-
           {InfoRecord?.natureType === 3 && (
             <Row>
               <span className={styles["span_underline"]} />
@@ -387,7 +390,6 @@ const InfoTransaction = () => {
               </Col>
             </Row>
           )}
-
           {InfoRecord?.natureType === 4 && (
             <Row>
               <span className={styles["span_underline"]} />
@@ -402,7 +404,6 @@ const InfoTransaction = () => {
               </Col>
             </Row>
           )}
-
           {(InfoRecord?.natureType === 2 || InfoRecord?.natureType === 4) && (
             <Row>
               <span className={styles["span_underline"]} />
@@ -441,7 +442,6 @@ const InfoTransaction = () => {
               </Col>
             </Row>
           )}
-
           {(InfoRecord?.natureType === 1 ||
             InfoRecord?.natureType === 2 ||
             InfoRecord?.natureType === 3 ||
@@ -477,7 +477,6 @@ const InfoTransaction = () => {
               </Col>
             </Row>
           )}
-
           {(InfoRecord?.natureType === 3 ||
             InfoRecord?.natureType === 4 ||
             InfoRecord?.natureType === 2 ||
@@ -498,7 +497,6 @@ const InfoTransaction = () => {
               </Col>
             </Row>
           )}
-
           {(InfoRecord?.natureType === 1 ||
             InfoRecord?.natureType === 2 ||
             InfoRecord?.natureType === 3 ||
@@ -559,7 +557,6 @@ const InfoTransaction = () => {
               </Col>
             </Row>
           )}
-
           {(InfoRecord?.natureType === 3 ||
             InfoRecord?.natureType === 4 ||
             InfoRecord?.natureType === 2 ||

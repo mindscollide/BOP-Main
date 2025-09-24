@@ -575,7 +575,7 @@ const FEDiscountingModal = ({
                   </Col>
                   {errors.TenorDays && (
                     <span className="text-danger small">
-                      Please enter valid tenor days (1-1000)
+                      Please enter valid tenor(1-1000)
                     </span>
                   )}
                 </Row>
