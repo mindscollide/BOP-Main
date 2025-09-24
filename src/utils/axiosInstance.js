@@ -22,10 +22,24 @@ api.interceptors.request.use(
 );
 api.interceptors.response.use(
   async (response) => {
-
     console.log(response, "response from interceptor");
-    // 🔎 Check for token expired inside success case
-    if (response.data?.responseCode === 417) {
+
+    let responseData = response.data;
+
+    // If response is ArrayBuffer or Blob, try decoding
+    if (responseData instanceof ArrayBuffer) {
+      try {
+        const decodedString = new TextDecoder().decode(
+          new Uint8Array(responseData)
+        );
+        responseData = JSON.parse(decodedString);
+      } catch (err) {
+        console.warn("Failed to decode ArrayBuffer response:", err);
+      }
+    }
+
+    // 🔎 Check token expiration
+    if (responseData?.responseCode === 417) {
       const originalRequest = response.config;
 
       if (!originalRequest._retry) {
@@ -47,20 +61,21 @@ api.interceptors.response.use(
         }
       }
     }
-    if (response.data?.responseCode === 401) {
-      try {
-        localStorage.clear();
-        window.location.href = "/";
-        return;
-      } catch (error) {
-        return Promise.reject("error");
-      }
+
+    if (responseData?.responseCode === 401) {
+      localStorage.clear();
+      window.location.href = "/";
+      return Promise.reject("Unauthorized");
     }
 
-    return response; // Normal response
+    return response; // ✅ normal response
   },
   (error) => {
-    // Network errors, HTTP 4xx/5xx still handled here
+    // ⛔ HTTP errors (401, 403, 500, etc.)
+    if (error.response?.status === 401) {
+      localStorage.clear();
+      window.location.href = "/";
+    }
     return Promise.reject(error);
   }
 );
