@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { LogoutApi } from "@/container/loginScreens/authActions/logoutAction";
 import { getUserSettingDataAPI } from "@/components/features/settingsModal/settingActions";
+import { setSettingModal } from "@/store/modalSlice/modalSlicer";
 
 const ProfileDropdown = () => {
   const dispatch = useDispatch();
@@ -14,7 +15,7 @@ const ProfileDropdown = () => {
     dispatch(LogoutApi({ navigate }));
   };
   const handleOpenSettingModal = () => {
-    dispatch(getUserSettingDataAPI({ navigate }));
+    dispatch(setSettingModal(true));
   };
   return (
     <Dropdown>

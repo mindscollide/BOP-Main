@@ -23,8 +23,7 @@ const selectWorldCurrencies = (state) =>
   state.WatchListReducer.GetBankSpotForTreasury?.worldCurrencies || [];
 const selectTreasuryBankSpotSpinner = (state) =>
   state.WatchListReducer.GetBankSpotForTreasurySpinner;
-const selectMarketStatus = (state) =>
-  state.WatchListReducer.getMarketStatus;
+const selectMarketStatus = (state) => state.WatchListReducer.getMarketStatus;
 
 const BankSpot = memo(() => {
   // Redux state with optimized selectors
@@ -260,9 +259,7 @@ const BankSpot = memo(() => {
         render: (text, record) => (
           <span className="d-flex justify-content-center align-items-center">
             <BidAmountBox
-              applyClass={
-                marketStatus === true ? "BidCardBox" : "BidCardBox_Disable"
-              }
+              applyClass={"BidCardBox"}
               bankSpot={true}
               BidAmountValue={record?.worldCrossBid}
             />
@@ -278,9 +275,7 @@ const BankSpot = memo(() => {
         render: (text, record) => (
           <span className="d-flex justify-content-center align-items-center">
             <BidAmountBox
-              applyClass={
-                marketStatus === true ? "OfferCardBox" : "OfferCardBox_Disable"
-              }
+              applyClass={"OfferCardBox"}
               bankSpot={true}
               BidAmountValue={record?.worldCrossOffer}
             />
@@ -303,9 +298,7 @@ const BankSpot = memo(() => {
         render: (text, record) => (
           <span className="d-flex justify-content-center align-items-center">
             <BidAmountBox
-              applyClass={
-                marketStatus === true ? "BidCardBox" : "BidCardBox_Disable"
-              }
+              applyClass={"BidCardBox"}
               bankSpot={true}
               BidAmountValue={record?.worldCurBid}
             />
@@ -321,9 +314,7 @@ const BankSpot = memo(() => {
         render: (text, record) => (
           <span className="d-flex justify-content-center align-items-center">
             <BidAmountBox
-              applyClass={
-                marketStatus === true ? "OfferCardBox" : "OfferCardBox_Disable"
-              }
+              applyClass={"OfferCardBox"}
               bankSpot={true}
               BidAmountValue={record?.worldCurOffer}
             />

@@ -300,7 +300,7 @@ const ForwardsForTreasuryAndDealer = () => {
       <Row className="mt-4 mb-2">
         <Col sm={12} md={6} lg={6}>
           <h6 className="fs-4 fw-bold color-primary">
-            Forwards For Treasury & Branch
+            Forwards For Treasury Sales & Branch
           </h6>
         </Col>
         <Col sm={12} md={6} lg={6} className="flex-fill text-end">

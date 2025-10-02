@@ -1,6 +1,6 @@
 import React from "react";
-import { Nav, Navbar } from "react-bootstrap";
-import { Link, useLocation } from "react-router-dom";
+import { Dropdown, Nav, Navbar, NavItem } from "react-bootstrap";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import styles from "./header.module.css";
 
 const Header = () => {
@@ -44,7 +44,7 @@ const Header = () => {
                     : `${styles["nav-link"]}`
                 }
               >
-                FX Trading (Interbank)
+                FX Trading
               </Nav.Link>
             </Nav.Item>
             <Nav.Item className={styles["nav-item"]}>
@@ -61,6 +61,43 @@ const Header = () => {
                 Category
               </Nav.Link>
             </Nav.Item>
+
+            {import.meta.env.VITE_APP_INCLUDE_TREASURY === "true" && (
+              <>
+                {/* <Nav.Item className={styles["nav-item"]}>
+                  <Nav.Link
+                    as={Link}
+                    to={"reports/dailyTrade"}
+                    className={
+                      location.pathname.toLowerCase() ===
+                      "/BOP/category".toLowerCase()
+                        ? `${styles["nav-link_active"]} `
+                        : `${styles["nav-link"]}`
+                    }
+                  >
+                    Reports
+                  </Nav.Link>
+                </Nav.Item> */}
+                {/* <Dropdown>
+                  <Dropdown.Toggle
+                    as="div"
+                    className={
+                      location.pathname.toLowerCase().includes("/bop/reports")
+                        ? `${styles["nav-link_active_dropdown"]} `
+                        : `${styles["nav-link_dropdown"]}`
+                    }
+                  >
+                    Reports
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    <Dropdown.Item as={Link} to={"reports/dailyTrade"}>
+                      ali raza mamdani fb area yunus zanizbarwala
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown> */}
+              </>
+            )}
+
             <Nav.Item className={styles["nav-item"]}>
               <Nav.Link
                 as={Link}
@@ -72,7 +109,7 @@ const Header = () => {
                     : `${styles["nav-link"]}`
                 }
               >
-                Treasury Sales (Dealer)
+                Treasury Sales
               </Nav.Link>
             </Nav.Item>
           </>

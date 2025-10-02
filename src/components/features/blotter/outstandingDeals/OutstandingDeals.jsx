@@ -455,6 +455,8 @@ const OutstandingDeals = ({
       align: "center",
       render: (record) => <IndexCell value={formatPkAmount(record.quantity)} />,
     },
+
+    //tenor days
     {
       id: "tenorDays",
       label: "Tenor Days",
@@ -463,6 +465,16 @@ const OutstandingDeals = ({
       render: (record) =>
         record.rfqDealDetails !== null && record.rfqDealDetails?.tenorDays,
     },
+
+    // total tenor (fixed(tenor) + option)
+    // {
+    //   id: "totalTenor",
+    //   label: "Total Tenor",
+    //   width: 100,
+    //   align: "center",
+    //   render: (record) =>
+    //     record.rfqDealDetails !== null && record.rfqDealDetails?.tenorDays,
+    // },
     {
       id: "ccY2",
       label: "CCY2",

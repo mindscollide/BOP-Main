@@ -59,7 +59,8 @@ export const DownloadFileAPI = createAsyncThunk(
       console.error("Download error:", error);
 
       if (error.response?.status === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
+        await dispatch(refreshTokenAction({ navigate }));
+        return;
         return dispatch(
           DownloadFileAPI({ requestMethod, fileName, fileType, navigate })
         );
@@ -91,7 +92,8 @@ export const DownloadExcelReportBlotterTrasactionBranchAPI = createAsyncThunk(
         const parsedData = JSON.parse(decodedString);
 
         if (parsedData.responseCode === 417) {
-          await dispatch(refreshTokenAction({ navigate }));return
+          await dispatch(refreshTokenAction({ navigate }));
+          return;
           await dispatch(
             DownloadExcelReportBlotterTrasactionBranchAPI({ navigate, Data })
           );
@@ -154,7 +156,8 @@ export const DownloadExcelReportBlotterTrasactionCorporateAPI =
           const parsedData = JSON.parse(decodedString);
 
           if (parsedData.responseCode === 417) {
-            await dispatch(refreshTokenAction({ navigate }));return
+            await dispatch(refreshTokenAction({ navigate }));
+            return;
             await dispatch(
               DownloadExcelReportBlotterTrasactionCorporateAPI({
                 navigate,
@@ -221,7 +224,8 @@ export const DownloadExcelReportBlotterTrasactionTreasuryAPI = createAsyncThunk(
         const parsedData = JSON.parse(decodedString);
 
         if (parsedData.responseCode === 417) {
-          await dispatch(refreshTokenAction({ navigate }));return
+          await dispatch(refreshTokenAction({ navigate }));
+          return;
           await dispatch(
             DownloadExcelReportBlotterTrasactionTreasuryAPI({ navigate, Data })
           );
@@ -283,7 +287,8 @@ export const DownloadPDFReportBlotterTrasactionBranchAPI = createAsyncThunk(
         const parsedData = JSON.parse(decodedString);
 
         if (parsedData.responseCode === 417) {
-          await dispatch(refreshTokenAction({ navigate }));return
+          await dispatch(refreshTokenAction({ navigate }));
+          return;
           await dispatch(
             DownloadPDFReportBlotterTrasactionBranchAPI({ navigate, Data })
           );
@@ -344,7 +349,8 @@ export const DownloadPDFReportBlotterTrasactionCorporateAPI = createAsyncThunk(
         const parsedData = JSON.parse(decodedString);
 
         if (parsedData.responseCode === 417) {
-          await dispatch(refreshTokenAction({ navigate }));return
+          await dispatch(refreshTokenAction({ navigate }));
+          return;
           await dispatch(
             DownloadPDFReportBlotterTrasactionCorporateAPI({ navigate, Data })
           );
@@ -409,7 +415,8 @@ export const DownloadPDFReportBlotterTrasactionTreasuryAPI = createAsyncThunk(
             parsedData.responseCode,
             "parsedDataparsedDataparsedData"
           );
-          await dispatch(refreshTokenAction({ navigate }));return
+          await dispatch(refreshTokenAction({ navigate }));
+          return;
           await dispatch(
             DownloadPDFReportBlotterTrasactionTreasuryAPI({ navigate, Data })
           );
@@ -469,7 +476,8 @@ export const DownloadExcelReportNOPCalculationsAPI = createAsyncThunk(
         const parsedData = JSON.parse(decodedString);
 
         if (parsedData.responseCode === 417) {
-          await dispatch(refreshTokenAction({ navigate }));return
+          await dispatch(refreshTokenAction({ navigate }));
+          return;
           await dispatch(
             DownloadExcelReportNOPCalculationsAPI({ navigate, Data })
           );
@@ -527,7 +535,8 @@ export const EmailBlotterTransactionDetailsForBranchAPI = createAsyncThunk(
       console.log(response, "EmailBlotterTransactionDetailsForBranchResponse");
       const { data, status } = response;
       if (data?.responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
+        await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(
           EmailBlotterTransactionDetailsForBranchAPI({
             Data,
@@ -615,7 +624,8 @@ export const EmailBlotterTransactionDetailsForCorporateAPI = createAsyncThunk(
       console.log(response, "EmailBlotterTransactionDetailsForCorporate");
       const { data, status } = response;
       if (data?.responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
+        await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(
           EmailBlotterTransactionDetailsForCorporateAPI({
             Data,
@@ -706,7 +716,8 @@ export const EmailBlotterTransactionDetailsForTreasuryAPI = createAsyncThunk(
       );
       const { data, status } = response;
       if (data?.responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
+        await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(
           EmailBlotterTransactionDetailsForTreasuryAPI({
             Data,

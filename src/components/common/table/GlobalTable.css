@@ -402,14 +402,14 @@ tr.Treasury_Forwards-row.Treasury_Forwards-row-level-0.striped-design:first-chil
 }
 .ForwardsForTreasuryAndBranchTable-thead tr:nth-child(1) th {
   background-color: transparent !important;
-  text-align: center;
+  text-align: center !important;
   color: #f26522;
   font-weight: 700;
   font-size: 14px;
 }
 .ForwardsForTreasuryAndBranchTable-thead tr:nth-child(1) th:nth-child(1) {
   background-color: transparent !important;
-  text-align: center;
+  text-align: center !important;
   color: #f26522;
   font-weight: 700;
   font-size: 14px;
@@ -417,7 +417,7 @@ tr.Treasury_Forwards-row.Treasury_Forwards-row-level-0.striped-design:first-chil
 }
 .ForwardsForTreasuryAndBranchTable-thead tr:nth-child(2) th {
   background-color: #575351 !important;
-  text-align: center;
+  text-align: center !important;
   color: #fff;
   font-weight: 700;
   font-size: 14px;

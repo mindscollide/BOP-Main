@@ -689,6 +689,7 @@ const TXNSummary = () => {
         align: "center",
         render: (record) => formatPkAmount(record.rate),
       },
+
       {
         id: "tenorDays",
         label: "Tenor Days",
@@ -704,6 +705,22 @@ const TXNSummary = () => {
           return Number(record.tenorDays) !== 0 ? record.tenorDays : ""; // Placeholder for tenor days
         },
       },
+
+      // {
+      //   id: "totalTenor",
+      //   label: "Total Tenor",
+      //   width: 120,
+      //   align: "center",
+      //   render: (record) => {
+      //     if (
+      //       record?.rfqDealDetails !== null &&
+      //       record?.rfqDealDetails !== undefined
+      //     ) {
+      //       return record?.rfqDealDetails?.tenorDays;
+      //     }
+      //     return Number(record.tenorDays) !== 0 ? record.tenorDays : ""; // Placeholder for tenor days
+      //   },
+      // },
       {
         id: "ccY2",
         label: "CCY2",
@@ -817,20 +834,22 @@ const TXNSummary = () => {
                   }
                 />
               </>
-            ) : record.statusID === 1 ? (
-              <CustomButton
-                loading={
-                  acceptRejTranId === record.pK_TransactionID &&
-                  RequestCancellationLoading
-                }
-                icon={<i className="icon-close"></i>}
-                size={"small"}
-                className="btn btn-sm btn-danger me-1 blotterCheckerButton d-flex justify-content-center align-items-center "
-                onClick={() =>
-                  handleCheckerAccept(record.pK_TransactionID, "Cancelled")
-                }
-              />
-            ) : record.statusID === 2 || record.statusID === 5 ? (
+            ) : // : record.statusID === 1 ? (
+            //   <CustomButton
+            //     loading={
+            //       acceptRejTranId === record.pK_TransactionID &&
+            //       RequestCancellationLoading
+            //     }
+            //     icon={<i className="icon-close"></i>}
+            //     size={"small"}
+            //     className="btn btn-sm btn-danger me-1 blotterCheckerButton d-flex justify-content-center align-items-center "
+            //     onClick={() =>
+            //       handleCheckerAccept(record.pK_TransactionID, "Cancelled")
+            //     }
+            //   />
+            // )
+
+            record.statusID === 2 || record.statusID === 5 ? (
               <CustomButton
                 loading={
                   acceptRejTranId === record.pK_TransactionID &&

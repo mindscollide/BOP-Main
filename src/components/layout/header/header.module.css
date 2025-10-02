@@ -31,3 +31,40 @@
   cursor: pointer;
   font-size: 13px !important;
 }
+
+.nav-link_active_dropdown {
+  background-color: #f26522 !important;
+  padding: 8px 15px !important;
+  color: #fff !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  font-size: 13px !important;
+  border: none !important;
+  border-radius: 0% !important;
+}
+
+.nav-link_dropdown {
+  padding: 8px 15px !important;
+  color: #fff !important;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  font-size: 13px !important;
+  border: none !important;
+  background-color: none !important;
+}
+
+.nav-link_dropdown:is(:hover, :focus) {
+  background-color: #f26522 !important;
+  padding: 8px 15px !important;
+  color: #fff !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  font-size: 13px !important;
+  border: none !important;
+  border-radius: 0% !important;
+}
+.nav-link_dropdown::after,
+.nav-link_active_dropdown::after {
+  display: none !important;
+}
