@@ -48,11 +48,13 @@ const SpotRates = () => {
     (state) => state.RealtimeActionsSlice.currentRatesPublished
   );
 
-  console.log("currentUpdatedRatescurrentUpdatedRates");
 
   const marketStatus = useSelector(
     (state) => state.WatchListReducer.getMarketStatus
   );
+
+  console.log("marketStatus",marketStatus);
+
 
   const publishedSpotRates = useSelector(
     (state) => state.modalReducer.publishedSpotRates
@@ -76,7 +78,6 @@ const SpotRates = () => {
     dateTime: "",
   });
   const [refreshInterval, setRefreshInterval] = useState(1);
-  console.log(getLastPublishRates, "getLastPublishRatesgetLastPublishRates");
   useEffect(() => {
     if (getLastPublishRates && getLastPublishRates !== null) {
       try {
@@ -144,7 +145,7 @@ const SpotRates = () => {
   // console.log(getLastPublishRates, "getLastPublishRatesgetLastPublishRates");
 
   useEffect(() => {
-    if (marketStatus && marketStatus !== null) {
+    if (marketStatus !== null) {
       try {
         setIsMarketOn(marketStatus);
         if (getLastPublishRates !== null) {
