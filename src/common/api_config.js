@@ -368,6 +368,17 @@ export const DownloadPDFReportBlotterTrasactionTreasury = {
   RequestMethod:
     "ServiceManager.DownloadBlotterTransactionDetailsForTreasuryPDFReport",
 };
+
+export const DownloadDailyTransactionsExcelReport = {
+  RequestMethod:
+    "ServiceManager.DownloadDailyTransactionsForSystemAdminExcelReport",
+};
+
+export const DownloadDailyTransactionsPDFReport = {
+  RequestMethod:
+    "ServiceManager.DownloadDailyTransactionsForSystemAdminPDFReport",
+};
+
 export const GetDiscountingRatesForTreasury = {
   RequestMethod: "ServiceManager.GetDiscountingRatesForTreasury",
 };

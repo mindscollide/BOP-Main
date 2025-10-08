@@ -1,6 +1,7 @@
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import InputFIeld from "@/components/common/inputField/InputField";
 import {
+  convertDateTimeIntoLocal,
   formatDateAndTimeFromString,
   formatDateToUTC,
 } from "@/utils/formatters";
@@ -24,40 +25,41 @@ import { useTableScrollBottom } from "@/utils/useTableScrollBottom";
 import SelectDropdown from "@/components/common/selectDropdown/SelectDropdown";
 import { setResetSearchConfirmationModal } from "@/store/modalSlice/modalSlicer";
 import moment from "moment";
+import {
+  DownloadDailyTransactionsExcelReportAPI,
+  DownloadDailyTransactionsPDFReportAPI,
+} from "@/store/ReportSlicer/ReportActions";
 
 const DailyTrade = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // const BlotterTransactionAccepted = useSelector(
-  //   (state) => state.RealtimeActionReducer.BlotterTransactionAccepted
-  // );
+  const BlotterTransactionAccepted = useSelector(
+    (state) => state.RealtimeActionsSlice.BlotterTransactionAccepted
+  );
 
-  // const BlotterTransactionCancelled = useSelector(
-  //   (state) => state.RealtimeActionReducer.BlotterTransactionCancelled
-  // );
+  const BlotterTransactionCancelled = useSelector(
+    (state) => state.RealtimeActionsSlice.BlotterTranscationCancelled
+  );
 
-  // const GetAllNatureOfTransactions = useSelector(
-  //   (state) => state.auth.GetAllNatureOfTransactionsApi
-  // );
   // state for save and cancel button
   const showActivationModal = useSelector(
     (state) => state.modalReducer.resetSearchConfirmationModal
   );
 
-  console.log(showActivationModal, "showActivationModalshowActivationModal");
+  // console.log(showActivationModal, "showActivationModalshowActivationModal");
 
   const GetAllNatureOfTransactions = useSelector(
     (state) => state.authReducer.GetAllNatureOfTransactions
   );
 
-  console.log(GetAllNatureOfTransactions, "All Nature of trANSACTIONS");
+  // console.log(GetAllNatureOfTransactions, "All Nature of trANSACTIONS");
 
   const GetAllTrades = useSelector(
     (state) => state.DailyTradeSlicer.GetAllTrades
   );
 
-  console.log(GetAllTrades, "testGetAllTradesGetAllTrades");
+  // console.log(GetAllTrades, "testGetAllTradesGetAllTrades");
 
   const [selectPageSize, setSelectPageSize] = useState({
     value: 50,
@@ -282,7 +284,7 @@ const DailyTrade = () => {
       render: (transactionDateTime) => {
         // Format the date and time
         return transactionDateTime !== "-"
-          ? moment(formatDateAndTimeFromString(transactionDateTime)).format(
+          ? moment(convertDateTimeIntoLocal(transactionDateTime)).format(
               "DD-MM-YYYY"
             )
           : "-";
@@ -298,7 +300,7 @@ const DailyTrade = () => {
       render: (transactionDateTime) => {
         // Format the date and time
         return transactionDateTime !== "-"
-          ? moment(formatDateAndTimeFromString(transactionDateTime)).format(
+          ? moment(convertDateTimeIntoLocal(transactionDateTime)).format(
               "h:mm a"
             )
           : "-";
@@ -615,9 +617,9 @@ const DailyTrade = () => {
 
   const handleExport = (format) => {
     if (format === "excel") {
-      // exportToExcel();
+      exportToExcel();
     } else if (format === "pdf") {
-      // exportToPDF();
+      exportToPDF();
     }
   };
 
@@ -639,7 +641,7 @@ const DailyTrade = () => {
       Amount: Number(tradeCount.Amount.value),
     };
 
-    // dispatch(downloadDailyTransactionSystemAdminReportApi(navigate, Data));
+    dispatch(DownloadDailyTransactionsExcelReportAPI({ navigate, Data }));
   };
 
   const exportToPDF = () => {
@@ -661,7 +663,7 @@ const DailyTrade = () => {
       Amount: Number(tradeCount.Amount.value),
     };
 
-    // dispatch(downloadPDFDailyTransactionSystemAdminApi(navigate, Data));
+    dispatch(DownloadDailyTransactionsPDFReportAPI({ navigate, Data }));
   };
 
   //handle select categoryID
@@ -842,18 +844,18 @@ const DailyTrade = () => {
     }
   }, [GetAllTrades]);
 
-  // useEffect(() => {
-  //   if (BlotterTransactionAccepted !== null) {
-  //     console.log("BlotterTransactionAccepted: ", BlotterTransactionAccepted);
-  //     const { transaction } = BlotterTransactionAccepted;
-  //     let record = {
-  //       ...transaction,
-  //       txnID: transaction.txnid,
-  //       transactionDateTime: transaction.settlementDateTime,
-  //     };
-  //     setTableData((prev) => [record, ...prev]);
-  //   }
-  // }, [BlotterTransactionAccepted]);
+  useEffect(() => {
+    if (BlotterTransactionAccepted !== null) {
+      console.log("BlotterTransactionAccepted: ", BlotterTransactionAccepted);
+      const { transaction } = BlotterTransactionAccepted;
+      let record = {
+        ...transaction,
+        txnID: transaction.txnid,
+        transactionDateTime: transaction.settlementDateTime,
+      };
+      setTableData((prev) => [record, ...prev]);
+    }
+  }, [BlotterTransactionAccepted]);
 
   // useEffect(() => {
   //   if (BlotterTransactionCancelled !== null) {
@@ -862,24 +864,23 @@ const DailyTrade = () => {
   //       let findRecord = tableData.find(
   //         (tableRow, index) => tableRow.txnID === transaction.txnID
   //       );
-
   //     } catch (error) {}
   //   }
   // }, [BlotterTransactionCancelled]);
 
-  // useEffect(() => {
-  //   if (BlotterTransactionCancelled !== null) {
-  //     try {
-  //       const { transaction } = BlotterTransactionCancelled;
+  useEffect(() => {
+    if (BlotterTransactionCancelled !== null) {
+      try {
+        const { transaction } = BlotterTransactionCancelled;
 
-  //       setTableData((prev) =>
-  //         prev.filter((row) => row.txnID !== transaction.txnid)
-  //       );
-  //     } catch (error) {
-  //       console.error("Error while removing cancelled transaction:", error);
-  //     }
-  //   }
-  // }, [BlotterTransactionCancelled]);
+        setTableData((prev) =>
+          prev.filter((row) => row.txnID !== transaction.txnid)
+        );
+      } catch (error) {
+        console.error("Error while removing cancelled transaction:", error);
+      }
+    }
+  }, [BlotterTransactionCancelled]);
 
   return (
     <section className={styles["SectionContainer"]}>
@@ -1032,7 +1033,7 @@ const DailyTrade = () => {
                   <div className={styles["export-options"]}>
                     <CustomButton
                       icon={<img src={excelImage} alt="Excel Icon" />}
-                      // onClick={() => handleExport("excel")}
+                      onClick={() => handleExport("excel")}
                       className={styles["export-button"]}
                     />
                     <CustomButton
