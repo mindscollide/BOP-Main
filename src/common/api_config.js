@@ -434,3 +434,10 @@ export const EmailBlotterTransactionDetailsForBranch = {
 export const EmailBlotterTransactionDetailsForCorporate = {
   RequestMethod: "ServiceMethod.EmailBlotterTransactionDetailsForCorporate",
 };
+
+export const GetAllTrades = {
+  RequestMethod: "ServiceManager.GetAllTrades",
+};
+
+//Confimration modal
+export const CONFIRMATION_MODAL = "CONFIRMATION_MODAL";

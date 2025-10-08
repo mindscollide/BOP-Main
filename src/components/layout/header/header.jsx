@@ -64,21 +64,7 @@ const Header = () => {
 
             {import.meta.env.VITE_APP_INCLUDE_TREASURY === "true" && (
               <>
-                {/* <Nav.Item className={styles["nav-item"]}>
-                  <Nav.Link
-                    as={Link}
-                    to={"reports/dailyTrade"}
-                    className={
-                      location.pathname.toLowerCase() ===
-                      "/BOP/category".toLowerCase()
-                        ? `${styles["nav-link_active"]} `
-                        : `${styles["nav-link"]}`
-                    }
-                  >
-                    Reports
-                  </Nav.Link>
-                </Nav.Item> */}
-                {/* <Dropdown>
+                <Dropdown>
                   <Dropdown.Toggle
                     as="div"
                     className={
@@ -91,10 +77,10 @@ const Header = () => {
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
                     <Dropdown.Item as={Link} to={"reports/dailyTrade"}>
-                      ali raza mamdani fb area yunus zanizbarwala
+                      Daily Trades
                     </Dropdown.Item>
                   </Dropdown.Menu>
-                </Dropdown> */}
+                </Dropdown>
               </>
             )}
 

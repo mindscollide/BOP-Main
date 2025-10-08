@@ -1,6 +1,7 @@
 import {
   GetAllNatureOfTransactionsRM,
   SaveTransactionRFQ,
+  ViewAllNatureOfBussiness,
 } from "@/common/api_config";
 import { authApi } from "@/common/apiend_points";
 import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
@@ -12,16 +13,17 @@ export const ViewAllNatureOfBussinessAPI = createAsyncThunk(
   "Auth/ViewAllNatureOfBussiness", // A unique action type string
   async ({ Data, navigate }, { dispatch, rejectWithValue }) => {
     try {
-      let ViewAllNatureOfBussiness = createPostAPI(
+      let ViewAllNatureOfBussinessData = createPostAPI(
         authApi,
         ViewAllNatureOfBussiness.RequestMethod
       );
 
-      const response = await ViewAllNatureOfBussiness(Data);
+      const response = await ViewAllNatureOfBussinessData(Data);
       const { responseCode } = response.data;
-    
+
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
+        await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(ViewAllNatureOfBussinessAPI({ Data, navigate }));
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -81,9 +83,10 @@ export const GetAllNatureOfTransactionsApi = createAsyncThunk(
       );
 
       const response = await getNatureOfTransactions();
- 
+
       if (response.data.responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
+        await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(GetAllNatureOfTransactionsApi({ navigate }));
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -139,9 +142,10 @@ export const SaveTransactionRFQAPI = createAsyncThunk(
     try {
       const response = await SaveTransactionRFQ(Data);
       const { responseCode } = response.data;
-    
+
       if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
+        await dispatch(refreshTokenAction({ navigate }));
+        return;
       } else if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {

@@ -1,12 +1,15 @@
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import InputFIeld from "@/components/common/inputField/InputField";
-import { formatDateToUTC } from "@/utils/formatters";
-import React, { useCallback, useState } from "react";
+import {
+  formatDateAndTimeFromString,
+  formatDateToUTC,
+} from "@/utils/formatters";
+import React, { useCallback, useEffect, useState } from "react";
 import { Button, Col, Row } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import Select from "react-select";
 import styles from "./DailyTrade.module.css";
 import DatePicker from "react-multi-date-picker";
 import { Popover } from "antd";
@@ -15,6 +18,12 @@ import pdfImage from "@/assets/icons/pdf.png";
 
 import GlobalTable from "@/components/common/table/GlobalTable";
 import CustomButton from "@/components/common/globalButton/button";
+import { GetAllNatureOfTransactionsApi } from "../../mainCorporate/rfqModal/RFQActions";
+import { GetAllTradesAPI } from "./DailyTradeActions";
+import { useTableScrollBottom } from "@/utils/useTableScrollBottom";
+import SelectDropdown from "@/components/common/selectDropdown/SelectDropdown";
+import { setResetSearchConfirmationModal } from "@/store/modalSlice/modalSlicer";
+import moment from "moment";
 
 const DailyTrade = () => {
   const dispatch = useDispatch();
@@ -29,12 +38,78 @@ const DailyTrade = () => {
   // );
 
   // const GetAllNatureOfTransactions = useSelector(
-  //   (state) => state.auth.GetAllNatureOfTransactions
+  //   (state) => state.auth.GetAllNatureOfTransactionsApi
   // );
-  // const GetAllTrades = useSelector(
-  //   (state) => state.BOPSystemAdminReducer.GetAllTrades
-  // );
+  // state for save and cancel button
+  const showActivationModal = useSelector(
+    (state) => state.modalReducer.resetSearchConfirmationModal
+  );
 
+  console.log(showActivationModal, "showActivationModalshowActivationModal");
+
+  const GetAllNatureOfTransactions = useSelector(
+    (state) => state.authReducer.GetAllNatureOfTransactions
+  );
+
+  console.log(GetAllNatureOfTransactions, "All Nature of trANSACTIONS");
+
+  const GetAllTrades = useSelector(
+    (state) => state.DailyTradeSlicer.GetAllTrades
+  );
+
+  console.log(GetAllTrades, "testGetAllTradesGetAllTrades");
+
+  const [selectPageSize, setSelectPageSize] = useState({
+    value: 50,
+    label: "50",
+  });
+  const tradeCountSchema = {
+    TxnID: {
+      value: "",
+      errorMessage: "",
+      errorStatus: false,
+    },
+    clientName: {
+      value: "",
+      errorMessage: "",
+      errorStatus: false,
+    },
+    side: {
+      value: 0,
+      errorMessage: "",
+      errorStatus: false,
+    },
+    Amount: {
+      value: 0,
+      errorMessage: "",
+      errorStatus: false,
+    },
+    LC: {
+      value: "",
+      errorMessage: "",
+      errorStatus: false,
+    },
+    AccountNumber: {
+      value: "",
+      errorMessage: "",
+      errorStatus: false,
+    },
+    dateFrom: {
+      value: "",
+      errorMessage: "",
+      errorStatus: false,
+    },
+    dateTo: {
+      value: "",
+      errorMessage: "",
+      errorStatus: false,
+    },
+    natureOfClient: {
+      value: 0,
+      errorMessage: "",
+      errorStatus: false,
+    },
+  };
   //Trade Count States
   const [tradeCount, setTradeCount] = useState({
     TxnID: {
@@ -84,10 +159,6 @@ const DailyTrade = () => {
     },
   });
 
-  //state for save and cancel button
-  // const showActivationModal = useSelector(
-  //   (state) => state.BOPSystemAdminModal.confirmationModal
-  // );
   const [tableData, setTableData] = useState([]);
   const [modalState, setModalState] = useState(0);
   //Sate For Side
@@ -101,6 +172,11 @@ const DailyTrade = () => {
   const [recordsLength, setRecordLength] = useState(0);
   // const [hasReachedBottom, setHasReachedBottom] = useState(false);
   const [dropdownvalue, setDropdownvalue] = useState(50);
+
+  const transactionSide = [
+    { value: 1, label: "Buy" },
+    { value: 2, label: "Sell" },
+  ];
 
   //Checking snakbar state
   const [open, setOpen] = useState(false);
@@ -116,84 +192,6 @@ const DailyTrade = () => {
   const toggleExportOptions = () => {
     setShowExportOptions(!showExportOptions);
   };
-  // Fetch categories on component mount
-  // useEffect(() => {
-  //   // dispatch(GetAllNatureOfTransactionsAPI(navigate));
-  //   const FromDate = new Date(tradeCount.dateFrom.value);
-  //   FromDate.setHours(0, 0, 0);
-  //   const ToDate = new Date(tradeCount.dateTo.value);
-  //   ToDate.setHours(23, 59, 59);
-  //   let data = {
-  //     TxnID: "",
-  //     CorporateName: "",
-  //     AccountNumber: "",
-  //     FromDate: formatDateToUTC(FromDate),
-  //     ToDate: formatDateToUTC(ToDate),
-  //     LCNumber: "",
-  //     Side: 0,
-  //     NatureOfTransactionID: 0,
-  //     Amount: 0.0,
-  //     sRow: 0,
-  //     Length: dropdownvalue,
-  //   };
-
-  //   dispatch(GetAllTradesAPI(navigate, data));
-  // }, []);
-
-  // const { hasReachedBottom, setHasReachedBottom } = useTableScrollBottom(() => {
-  //   console.log("🚀 Table reached bottom");
-  //   // Load more data here if needed
-  //   if (recordsLength !== tableData.length) {
-  //     // setHasReachedBottom(true);
-  //     const FromDate = new Date(tradeCount.dateFrom.value);
-  //     FromDate.setHours(0, 0, 0);
-  //     const ToDate = new Date(tradeCount.dateTo.value);
-  //     ToDate.setHours(23, 59, 59);
-  //     let Data = {
-  //       TxnID: tradeCount.TxnID.value,
-  //       CorporateName: tradeCount.clientName.value,
-  //       AccountNumber: tradeCount.AccountNumber.value,
-  //       FromDate: formatDateToUTC(FromDate),
-  //       ToDate: formatDateToUTC(ToDate),
-  //       LCNumber: tradeCount.LC.value,
-  //       Side: side.value,
-  //       NatureOfTransactionID: tradeCount.natureOfClient.value,
-  //       Amount: Number(tradeCount.Amount.value),
-  //       sRow: sRow,
-  //       Length: dropdownvalue,
-  //     };
-  //     dispatch(GetAllTradesAPI(navigate, Data));
-  //   }
-  // });
-  // const handlePageSizeChange = (newSize) => {
-  //   setDropdownvalue(newSize);
-  //   setSRow(0);
-  //   setHasReachedBottom(false);
-  //   setTableData([]);
-  //   setRecordLength(0);
-  //   try {
-  //     const FromDate = new Date(tradeCount.dateFrom.value);
-  //     FromDate.setHours(0, 0, 0);
-  //     const ToDate = new Date(tradeCount.dateTo.value);
-  //     ToDate.setHours(23, 59, 59);
-  //     let Data = {
-  //       TxnID: tradeCount.TxnID.value,
-  //       CorporateName: tradeCount.clientName.value,
-  //       AccountNumber: tradeCount.AccountNumber.value,
-  //       FromDate: formatDateToUTC(FromDate),
-  //       ToDate: formatDateToUTC(ToDate),
-  //       LCNumber: tradeCount.LC.value,
-  //       Side: side.value,
-  //       NatureOfTransactionID: tradeCount.natureOfClient.value,
-  //       Amount: Number(tradeCount.Amount.value),
-  //       sRow: 0,
-  //       Length: newSize,
-  //     };
-  //     dispatch(GetAllTradesAPI(navigate, Data));
-  //   } catch (error) {
-  //     console.log("Error:, ", error);
-  //   }
-  // };
 
   //Custome hook for Scrolling (1)
   // column for LoginHistory
@@ -281,14 +279,14 @@ const DailyTrade = () => {
       width: "100px",
       align: "center",
       ellipsis: true,
-      // render: (transactionDateTime) => {
-      //   // Format the date and time
-      //   return transactionDateTime !== "-"
-      //     ? moment(formatDateAndTimeFromString(transactionDateTime)).format(
-      //         "DD-MM-YYYY"
-      //       )
-      //     : "-";
-      // },
+      render: (transactionDateTime) => {
+        // Format the date and time
+        return transactionDateTime !== "-"
+          ? moment(formatDateAndTimeFromString(transactionDateTime)).format(
+              "DD-MM-YYYY"
+            )
+          : "-";
+      },
     },
     {
       title: <label className="bottom-table-header">Time</label>,
@@ -297,14 +295,14 @@ const DailyTrade = () => {
       width: "75px",
       align: "center",
       ellipsis: true,
-      // render: (transactionDateTime) => {
-      //   // Format the date and time
-      //   return transactionDateTime !== "-"
-      //     ? moment(formatDateAndTimeFromString(transactionDateTime)).format(
-      //         "h:mm a"
-      //       )
-      //     : "-";
-      // },
+      render: (transactionDateTime) => {
+        // Format the date and time
+        return transactionDateTime !== "-"
+          ? moment(formatDateAndTimeFromString(transactionDateTime)).format(
+              "h:mm a"
+            )
+          : "-";
+      },
     },
     {
       title: <label className="bottom-table-header">LC#</label>,
@@ -446,9 +444,68 @@ const DailyTrade = () => {
   };
 
   // const handleClickCommentModal = (text) => {
-  //   dispatch(TradeCountCommentModalSystemAdmin(true));
+  //   // dispatch(TradeCountCommentModalSystemAdmin(true));
   //   console.log("the comment is", text);
   // };
+
+  const { hasReachedBottom, setHasReachedBottom } = useTableScrollBottom(() => {
+    console.log("🚀 Table reached bottom");
+    // Load more data here if needed
+    if (recordsLength !== tableData.length) {
+      // setHasReachedBottom(true);
+      const FromDate = new Date(tradeCount.dateFrom.value);
+      FromDate.setHours(0, 0, 0);
+      const ToDate = new Date(tradeCount.dateTo.value);
+      ToDate.setHours(23, 59, 59);
+      let Data = {
+        TxnID: tradeCount.TxnID.value,
+        CorporateName: tradeCount.clientName.value,
+        AccountNumber: tradeCount.AccountNumber.value,
+        FromDate: formatDateToUTC(FromDate),
+        ToDate: formatDateToUTC(ToDate),
+        LCNumber: tradeCount.LC.value,
+        Side: side.value,
+        NatureOfTransactionID: tradeCount.natureOfClient.value,
+        Amount: Number(tradeCount.Amount.value),
+        sRow: sRow,
+        Length: dropdownvalue,
+      };
+      // dispatch(GetAllTradesAPI(navigate, Data));
+      dispatch(GetAllTradesAPI({ Data, navigate }));
+    }
+  });
+
+  const handlePageSizeChange = (newSize) => {
+    console.log(newSize, "newSizenewSize");
+    setSelectPageSize(newSize);
+    setDropdownvalue(newSize.value);
+    setSRow(0);
+    setHasReachedBottom(false);
+    setTableData([]);
+    setRecordLength(0);
+    try {
+      const FromDate = new Date(tradeCount.dateFrom.value);
+      FromDate.setHours(0, 0, 0);
+      const ToDate = new Date(tradeCount.dateTo.value);
+      ToDate.setHours(23, 59, 59);
+      let Data = {
+        TxnID: tradeCount.TxnID.value,
+        CorporateName: tradeCount.clientName.value,
+        AccountNumber: tradeCount.AccountNumber.value,
+        FromDate: formatDateToUTC(FromDate),
+        ToDate: formatDateToUTC(ToDate),
+        LCNumber: tradeCount.LC.value,
+        Side: side.value,
+        NatureOfTransactionID: tradeCount.natureOfClient.value,
+        Amount: Number(tradeCount.Amount.value),
+        sRow: 0,
+        Length: newSize.value,
+      };
+      dispatch(GetAllTradesAPI({ Data, navigate }));
+    } catch (error) {
+      console.log("Error:, ", error);
+    }
+  };
 
   const handleSearchEventButton = () => {
     setSRow(0);
@@ -460,7 +517,7 @@ const DailyTrade = () => {
     FromDate.setHours(0, 0, 0);
     const ToDate = new Date(tradeCount.dateTo.value);
     ToDate.setHours(23, 59, 59);
-    let searchData = {
+    let Data = {
       TxnID: tradeCount.TxnID.value,
       CorporateName: tradeCount.clientName.value,
       AccountNumber: tradeCount.AccountNumber.value,
@@ -473,24 +530,33 @@ const DailyTrade = () => {
       sRow: 0,
       Length: dropdownvalue,
     };
-    console.log("searchData is", searchData);
-    // dispatch(GetAllTradesAPI(navigate, searchData));
+    console.log("searchData is", Data);
+    // dispatch(GetAllTradesAPI({ searchData, navigate }));
+    dispatch(GetAllTradesAPI({ Data, navigate }));
   };
 
   //Table columns for customer List
   const handleNoButton = useCallback(() => {
     if (modalState === 1) {
       // dispatch(ConfirmationModalSystemAdmin(false));
-      // setModalState(0);
+      dispatch(setResetSearchConfirmationModal(false));
+
+      setModalState(0);
     } else if (modalState === 2) {
+      dispatch(setResetSearchConfirmationModal(false));
+
       // dispatch(ConfirmationModalSystemAdmin(false));
-      // setModalState(0);
+      setModalState(0);
     }
   }, [modalState]);
 
   // show error message When user hit activate btn
   const handleResetEventButton = () => {
-    // dispatch(ConfirmationModalSystemAdmin(true));
+    // dispatch(ResetConfirmationModal(true));
+
+    // dispatch(setTreasuryPersonID(treasuryPersonID));
+    dispatch(setResetSearchConfirmationModal(true));
+
     setModalState(2);
   };
 
@@ -525,7 +591,7 @@ const DailyTrade = () => {
       setSide(0);
       setNatureID("");
     }
-    let data = {
+    let Data = {
       TxnID: "",
       CorporateName: "",
       AccountNumber: "",
@@ -539,7 +605,8 @@ const DailyTrade = () => {
       Length: dropdownvalue,
     };
 
-    // dispatch(GetAllTradesAPI(navigate, data));
+    dispatch(GetAllTradesAPI({ Data, navigate }));
+    dispatch(setResetSearchConfirmationModal(false));
   };
 
   const handleOpenChange = (newOpen) => {
@@ -572,7 +639,7 @@ const DailyTrade = () => {
       Amount: Number(tradeCount.Amount.value),
     };
 
-    dispatch(downloadDailyTransactionSystemAdminReportApi(navigate, Data));
+    // dispatch(downloadDailyTransactionSystemAdminReportApi(navigate, Data));
   };
 
   const exportToPDF = () => {
@@ -594,7 +661,7 @@ const DailyTrade = () => {
       Amount: Number(tradeCount.Amount.value),
     };
 
-    dispatch(downloadPDFDailyTransactionSystemAdminApi(navigate, Data));
+    // dispatch(downloadPDFDailyTransactionSystemAdminApi(navigate, Data));
   };
 
   //handle select categoryID
@@ -625,50 +692,155 @@ const DailyTrade = () => {
     }));
   };
 
-  // useEffect(() => {
-  //   if (GetAllNatureOfTransactions !== null) {
-  //     try {
-  //       let newNatureOfTransactions =
-  //         GetAllNatureOfTransactions.natureOfTransactions.map(
-  //           (natureOTransaction) => {
-  //             return {
-  //               ...natureOTransaction,
-  //               value: natureOTransaction.id,
-  //               label: natureOTransaction.name,
-  //             };
-  //           }
-  //         );
-  //       setNatureOptions(newNatureOfTransactions);
-  //     } catch (error) {}
-  //   }
-  // }, [GetAllNatureOfTransactions]);
+  const handleChangePageSize = (val) => {
+    setSelectPageSize(val);
+  };
 
-  //handelled scrolling here (4)
+  // // Fetch categories on component mount
   // useEffect(() => {
-  //   if (GetAllTrades !== null) {
-  //     try {
-  //       const { transactions, totalCount } = GetAllTrades;
-  //       if (hasReachedBottom) {
-  //         setHasReachedBottom(false);
-  //         setRecordLength(totalCount);
-  //         setTableData([...tableData, ...transactions]);
-  //         setSRow(tableData.length + transactions.length);
-  //       } else {
-  //         setHasReachedBottom(false);
-  //         setTableData(transactions);
-  //         setRecordLength(totalCount);
-  //         setSRow(transactions.length);
-  //       }
-  //     } catch (error) {}
-  //   } else if (GetAllTrades === null) {
-  //     if (!hasReachedBottom) {
-  //       setHasReachedBottom(false);
-  //       setTableData([]);
-  //       setRecordLength(0);
-  //       setSRow(0);
-  //     }
+  //   // dispatch(GetAllNatureOfTransactionsAPI(navigate));
+  //   const FromDate = new Date(tradeCount.dateFrom.value);
+  //   FromDate.setHours(0, 0, 0);
+  //   const ToDate = new Date(tradeCount.dateTo.value);
+  //   ToDate.setHours(23, 59, 59);
+  //   let data = {
+  //     TxnID: "",
+  //     CorporateName: "",
+  //     AccountNumber: "",
+  //     FromDate: formatDateToUTC(FromDate),
+  //     ToDate: formatDateToUTC(ToDate),
+  //     LCNumber: "",
+  //     Side: 0,
+  //     NatureOfTransactionID: 0,
+  //     Amount: 0.0,
+  //     sRow: 0,
+  //     Length: dropdownvalue,
+  //   };
+
+  //   dispatch(GetAllTradesAPI({ navigate, data }));
+  // }, []);
+
+  // const { hasReachedBottom, setHasReachedBottom } = useTableScrollBottom(() => {
+  //   console.log("🚀 Table reached bottom");
+  //   // Load more data here if needed
+  //   if (recordsLength !== tableData.length) {
+  //     // setHasReachedBottom(true);
+  //     const FromDate = new Date(tradeCount.dateFrom.value);
+  //     FromDate.setHours(0, 0, 0);
+  //     const ToDate = new Date(tradeCount.dateTo.value);
+  //     ToDate.setHours(23, 59, 59);
+  //     let Data = {
+  //       TxnID: tradeCount.TxnID.value,
+  //       CorporateName: tradeCount.clientName.value,
+  //       AccountNumber: tradeCount.AccountNumber.value,
+  //       FromDate: formatDateToUTC(FromDate),
+  //       ToDate: formatDateToUTC(ToDate),
+  //       LCNumber: tradeCount.LC.value,
+  //       Side: side.value,
+  //       NatureOfTransactionID: tradeCount.natureOfClient.value,
+  //       Amount: Number(tradeCount.Amount.value),
+  //       sRow: sRow,
+  //       Length: dropdownvalue,
+  //     };
+  //     dispatch(GetAllTradesAPI(navigate, Data));
   //   }
-  // }, [GetAllTrades]);
+  // });
+
+  // const handlePageSizeChange = (newSize) => {
+  //   setDropdownvalue(newSize);
+  //   setSRow(0);
+  //   setHasReachedBottom(false);
+  //   setTableData([]);
+  //   setRecordLength(0);
+  //   try {
+  //     const FromDate = new Date(tradeCount.dateFrom.value);
+  //     FromDate.setHours(0, 0, 0);
+  //     const ToDate = new Date(tradeCount.dateTo.value);
+  //     ToDate.setHours(23, 59, 59);
+  //     let Data = {
+  //       TxnID: tradeCount.TxnID.value,
+  //       CorporateName: tradeCount.clientName.value,
+  //       AccountNumber: tradeCount.AccountNumber.value,
+  //       FromDate: formatDateToUTC(FromDate),
+  //       ToDate: formatDateToUTC(ToDate),
+  //       LCNumber: tradeCount.LC.value,
+  //       Side: side.value,
+  //       NatureOfTransactionID: tradeCount.natureOfClient.value,
+  //       Amount: Number(tradeCount.Amount.value),
+  //       sRow: 0,
+  //       Length: newSize,
+  //     };
+  //     dispatch(GetAllTradesAPI(navigate, Data));
+  //   } catch (error) {
+  //     console.log("Error:, ", error);
+  //   }
+  // };
+
+  useEffect(() => {
+    const FromDate = new Date(tradeCount.dateFrom.value);
+    FromDate.setHours(0, 0, 0);
+    const ToDate = new Date(tradeCount.dateTo.value);
+    let Data = {
+      TxnID: "",
+      CorporateName: "",
+      AccountNumber: "",
+      FromDate: formatDateToUTC(FromDate),
+      ToDate: formatDateToUTC(ToDate),
+      LCNumber: "",
+      Side: 0,
+      NatureOfTransactionID: 0,
+      Amount: 0.0,
+      sRow: 0,
+      Length: dropdownvalue,
+    };
+    dispatch(GetAllNatureOfTransactionsApi({ navigate }));
+    dispatch(GetAllTradesAPI({ Data, navigate }));
+  }, []);
+
+  useEffect(() => {
+    if (GetAllNatureOfTransactions !== null) {
+      try {
+        let newNatureOfTransactions =
+          GetAllNatureOfTransactions.natureOfTransactions.map(
+            (natureOTransaction) => {
+              return {
+                ...natureOTransaction,
+                value: natureOTransaction.id,
+                label: natureOTransaction.name,
+              };
+            }
+          );
+        setNatureOptions(newNatureOfTransactions);
+      } catch (error) {}
+    }
+  }, [GetAllNatureOfTransactions]);
+
+  // handelled scrolling here (4)
+  useEffect(() => {
+    if (GetAllTrades !== null) {
+      try {
+        const { transactions, totalCount } = GetAllTrades;
+        if (hasReachedBottom) {
+          setHasReachedBottom(false);
+          setRecordLength(totalCount);
+          setTableData([...tableData, ...transactions]);
+          setSRow(tableData.length + transactions.length);
+        } else {
+          setHasReachedBottom(false);
+          setTableData(transactions);
+          setRecordLength(totalCount);
+          setSRow(transactions.length);
+        }
+      } catch (error) {}
+    } else if (GetAllTrades === null) {
+      if (!hasReachedBottom) {
+        setHasReachedBottom(false);
+        setTableData([]);
+        setRecordLength(0);
+        setSRow(0);
+      }
+    }
+  }, [GetAllTrades]);
 
   // useEffect(() => {
   //   if (BlotterTransactionAccepted !== null) {
@@ -708,18 +880,15 @@ const DailyTrade = () => {
   //     }
   //   }
   // }, [BlotterTransactionCancelled]);
-  const transactionSide = [
-    { value: 1, label: "Buy" },
-    { value: 2, label: "Sell" },
-  ];
+
   return (
     <section className={styles["SectionContainer"]}>
-      <Row className="mt-4">
+      <Row className="mt-1">
         <Col lg={12} md={12} sm={12}>
           <span className={styles["tradeCount-label"]}>Trade Count</span>
         </Col>
       </Row>
-      <Row className="mt-2">
+      <Row>
         <Col lg={12} md={12} sm={12}>
           {/* <CustomPaper className={styles["customer-List-paper"]}> */}
           <Row className="mt-2 g-2">
@@ -730,7 +899,7 @@ const DailyTrade = () => {
                 labelClass="d-none"
                 value={tradeCount.TxnID.value}
                 onChange={tradeCountValidateHandler}
-                className="tradeCount-textField-fontsize form-control"
+                className={"form-control reports-input-field"}
                 maxLength={20}
               />
             </Col>
@@ -741,25 +910,26 @@ const DailyTrade = () => {
                 labelClass="d-none"
                 value={tradeCount.clientName.value}
                 onChange={tradeCountValidateHandler}
-                className="tradeCount-textField-fontsize form-control"
+                className={"form-control reports-input-field"}
               />
             </Col>
             <Col lg={2} md={2} sm={12}>
-              <Select
+              <SelectDropdown
                 name="side"
+                classNamePrefix="selectTransactionNatureList"
                 placeholder="Select Side"
                 options={transactionSide}
                 value={side.value !== 0 ? side : null}
                 isSearchable
                 onChange={handleSelectSide}
-              ></Select>
+              ></SelectDropdown>
             </Col>
 
             <Col lg={2} md={2} sm={12}>
-              <Select
+              <SelectDropdown
                 placeholder="Select Nature"
                 // classNamePrefix={"TradeCountSelect"}
-                classNamePrefix="selectCateogyCorporateList"
+                classNamePrefix="selectTransactionNatureList"
                 options={natureOptions}
                 value={natureID.value !== 0 ? natureID : null}
                 isSearchable
@@ -776,7 +946,7 @@ const DailyTrade = () => {
                   tradeCount.Amount.value === 0 ? "" : tradeCount.Amount.value
                 }
                 labelClass="d-none"
-                className="tradeCount-textField-fontsize form-control"
+                className="form-control reports-input-field"
               />
             </Col>
             <Col lg={2} md={2} sm={12}>
@@ -786,7 +956,7 @@ const DailyTrade = () => {
                 value={tradeCount.LC.value}
                 onChange={tradeCountValidateHandler}
                 labelClass="d-none"
-                className="tradeCount-textField-fontsize form-control"
+                className="form-control reports-input-field"
               />
             </Col>
           </Row>
@@ -799,7 +969,7 @@ const DailyTrade = () => {
                 value={tradeCount.AccountNumber.value}
                 onChange={tradeCountValidateHandler}
                 labelClass="d-none"
-                className="tradeCount-textField-fontsize form-control"
+                className="form-control reports-input-field"
               />
             </Col>
             <Col
@@ -890,35 +1060,117 @@ const DailyTrade = () => {
             </Col>
           </Row>
 
-          <Row className="mt-1">
+          {/* <Row className="mt-1">
             <Col lg={12} md={12} sm={12}>
-              {/* <ExportShowComponent
+              <ExportShowComponent
                 value={dropdownvalue}
-                // onChange={handlePageSizeChange}
-              /> */}
+                onChange={handlePageSizeChange}
+              />
+            </Col>
+          </Row> */}
+
+          <Row className="mt-3">
+            <Col
+              lg={12}
+              md={12}
+              sm={12}
+              className="d-flex gap-2 align-items-center"
+            >
+              <span className={styles["spanshowClass"]}>Show</span>
+              <SelectDropdown
+                // placeholder=""
+                value={selectPageSize}
+                style={{ width: 70, margin: "0 10px" }}
+                // onChange={(val) => setSelectPageSize(val)}
+                // onChange={handleChangePageSize()}
+                onChange={handlePageSizeChange}
+                options={[
+                  { label: "50", value: 50 },
+                  { label: "100", value: 100 },
+                ]}
+                classNamePrefix={"selectTransactionNatureList"}
+              >
+                {/* <Option value={50}>50</Option>
+            <Option value={100}>100</Option> */}
+              </SelectDropdown>
+              <span className={styles["spanshowClass"]}>entries</span>
             </Col>
           </Row>
 
           <Row className="mt-1">
             <Col lg={12} md={12} sm={12}>
               <GlobalTable
-                column={tradeColumns}
+                columns={tradeColumns}
                 pagination={false}
-                rows={tableData}
-                scroll={{ x: "scroll", y: 230 }}
-                className={"BankUserList-table"}
+                // rows={tableData}
+                dataSource={tableData}
+                scroll={{ x: "max-content", y: "35vh" }}
+                className={"DailyTrade-table"}
               />
             </Col>
           </Row>
         </Col>
       </Row>
-      {/* {TradeCountCommentModalGobalState && <CommentModal />} */}
-      {/* {showActivationModal === true && (
-        <ActivateConfirmationModal
-          handleYesButton={handleResetYes}
-          handleNoButton={handleNoButton}
-        />
-      )} */}
+
+      {showActivationModal && (
+        <Modal
+          // show={show}
+          show={showActivationModal ? true : false}
+          onHide={handleNoButton}
+          size="md"
+          centered
+          className="UniversalBOPModalStyles"
+        >
+          {/* Hide Header (since you used d-none before) */}
+          <Modal.Header className="d-none" />
+
+          <Modal.Body>
+            <Row>
+              <Col lg={12} md={12} sm={12}>
+                <span className={styles["AddBranchLabel"]}>Confirmation</span>
+              </Col>
+            </Row>
+            <Row className="mt-3">
+              <Col
+                lg={12}
+                md={12}
+                sm={12}
+                className="d-flex justify-content-center align-items-center"
+              >
+                <span className={styles["labels-add-bank"]}>
+                  Are you sure you want to do this action?
+                </span>
+              </Col>
+            </Row>
+          </Modal.Body>
+
+          <Modal.Footer className="UniversalBOPModalStylesfooter">
+            <Row className="mb-3 w-100">
+              <Col
+                lg={12}
+                md={12}
+                sm={12}
+                className="d-flex justify-content-center gap-2"
+              >
+                <CustomButton
+                  onClick={handleResetYes}
+                  icon={<i className="icon-check"></i>}
+                  value="Yes"
+                  className={styles["AddBranchClass"]}
+                  iconClass={styles["IconClass"]}
+                />
+                <CustomButton
+                  icon={<i className="icon-close"></i>}
+                  value="No"
+                  className={styles["CancelButton"]}
+                  iconClass={styles["IconClass"]}
+                  onClick={handleNoButton}
+                />
+              </Col>
+            </Row>
+          </Modal.Footer>
+        </Modal>
+      )}
     </section>
   );
 };
