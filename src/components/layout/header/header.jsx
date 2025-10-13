@@ -77,7 +77,7 @@ const Header = () => {
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
                     <Dropdown.Item as={Link} to={"reports/dailyTrade"}>
-                      Daily Trades
+                      Daily Trade
                     </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>

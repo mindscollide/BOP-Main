@@ -29,6 +29,7 @@ import {
   DownloadDailyTransactionsExcelReportAPI,
   DownloadDailyTransactionsPDFReportAPI,
 } from "@/store/ReportSlicer/ReportActions";
+import { NumericFormat } from "react-number-format";
 
 const DailyTrade = () => {
   const dispatch = useDispatch();
@@ -242,7 +243,7 @@ const DailyTrade = () => {
       ellipsis: true,
     },
     {
-      title: <label className="bottom-table-header">Amount</label>,
+      title: <label className="bottom-table-header">TXN Amount</label>,
       dataIndex: "quantity",
       key: "quantity",
       width: "100px",
@@ -267,7 +268,7 @@ const DailyTrade = () => {
     },
 
     {
-      title: <label className="bottom-table-header">Amount</label>,
+      title: <label className="bottom-table-header">Total Amount</label>,
       dataIndex: "amount",
       key: "amount",
       width: "100px",
@@ -402,7 +403,7 @@ const DailyTrade = () => {
         updateField("clientName", /[^a-zA-Z ]/g, value);
         break;
       case "Amount":
-        updateField("Amount", /[^\d]/g, value);
+        updateField("Amount", /[^\d.]/g, value);
         break;
       case "AccountNumber":
         updateField("AccountNumber", /[^a-zA-Z0-9]/g, value);
@@ -846,14 +847,24 @@ const DailyTrade = () => {
 
   useEffect(() => {
     if (BlotterTransactionAccepted !== null) {
-      console.log("BlotterTransactionAccepted: ", BlotterTransactionAccepted);
+      console.log("BlotterTransactionAccepted: ", {
+        BlotterTransactionAccepted,
+        tableData,
+      });
       const { transaction } = BlotterTransactionAccepted;
-      let record = {
-        ...transaction,
-        txnID: transaction.txnid,
-        transactionDateTime: transaction.settlementDateTime,
-      };
-      setTableData((prev) => [record, ...prev]);
+      let matchedId = tableData.find(
+        (record) => record.pK_TransactionID === transaction.pK_TransactionID
+      );
+      console.log(matchedId, "matchedIdmatchedId");
+
+      if (matchedId === undefined) {
+        let record = {
+          ...transaction,
+          txnID: transaction.txnid,
+          transactionDateTime: transaction.settlementDateTime,
+        };
+        setTableData((prev) => [record, ...prev]);
+      }
     }
   }, [BlotterTransactionAccepted]);
 
@@ -886,7 +897,7 @@ const DailyTrade = () => {
     <section className={styles["SectionContainer"]}>
       <Row className="mt-1">
         <Col lg={12} md={12} sm={12}>
-          <span className={styles["tradeCount-label"]}>Trade Count</span>
+          <span className={styles["tradeCount-label"]}>Daily Trade</span>
         </Col>
       </Row>
       <Row>
@@ -907,6 +918,7 @@ const DailyTrade = () => {
             <Col lg={2} md={2} sm={12}>
               <InputFIeld
                 placeholder="Client Name"
+                maxLength={20}
                 name="ClientName"
                 labelClass="d-none"
                 value={tradeCount.clientName.value}
@@ -939,9 +951,10 @@ const DailyTrade = () => {
             </Col>
 
             <Col lg={2} md={2} sm={12}>
-              <InputFIeld
+              <NumericFormat
                 placeholder="Amount"
                 name="Amount"
+                maxLength={20}
                 onChange={tradeCountValidateHandler}
                 value={
                   tradeCount.Amount.value === 0 ? "" : tradeCount.Amount.value
@@ -950,10 +963,12 @@ const DailyTrade = () => {
                 className="form-control reports-input-field"
               />
             </Col>
+
             <Col lg={2} md={2} sm={12}>
               <InputFIeld
                 placeholder="LC #"
                 name="LC"
+                maxLength={20}
                 value={tradeCount.LC.value}
                 onChange={tradeCountValidateHandler}
                 labelClass="d-none"
@@ -967,6 +982,7 @@ const DailyTrade = () => {
               <InputFIeld
                 placeholder="Account Number"
                 name="AccountNumber"
+                maxLength={20}
                 value={tradeCount.AccountNumber.value}
                 onChange={tradeCountValidateHandler}
                 labelClass="d-none"
