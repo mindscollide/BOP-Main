@@ -180,128 +180,7 @@ const DailyTrade = () => {
     { value: 1, label: "Buy" },
     { value: 2, label: "Sell" },
   ];
-  // Date range options
-  const [dateRangeOptions] = useState([
-    { value: 1, label: "Today" },
-    { value: 2, label: "1 Month" },
-    { value: 3, label: "3 Months" },
-    { value: 4, label: "6 Months" },
-    { value: 5, label: "1 Year" },
-    { value: 6, label: "Custom Date" },
-  ]);
-  const [selectedDateRange, setSelectedDateRange] = useState(null);
-  const [showCustomDatePicker, setShowCustomDatePicker] = useState(false);
-  // Function to handle date range selection
-  // const handleDateRangeChange = (selectedOption) => {
-  //   setSelectedDateRange(selectedOption);
 
-  //   if (selectedOption.value === "custom") {
-  //     setShowCustomDatePicker(true);
-  //     return;
-  //   }
-
-  //   setShowCustomDatePicker(false);
-
-  //   const today = new Date();
-  //   const fromDate = new Date();
-
-  //   switch (selectedOption.value) {
-  //     case "1month":
-  //       fromDate.setMonth(today.getMonth() - 1);
-  //       break;
-
-  //     case "3months":
-  //       fromDate.setMonth(today.getMonth() - 3);
-  //       break;
-  //     case "6months":
-  //       fromDate.setMonth(today.getMonth() - 6);
-  //       break;
-  //     case "1year":
-  //       fromDate.setMonth(today.getMonth() - 12);
-  //       break;
-  //     default:
-  //       fromDate.setMonth(today.getMonth() - 1);
-  //   }
-
-  //   // Update the tradeCount state with new dates
-  //   setTradeCount((prev) => ({
-  //     ...prev,
-  //     dateFrom: {
-  //       ...prev.dateFrom,
-  //       value: fromDate,
-  //     },
-  //     dateTo: {
-  //       ...prev.dateTo,
-  //       value: today,
-  //     },
-  //   }));
-  // };
-  // Function to handle date range selection
-  const handleDateRangeChange = (selectedOption) => {
-    setSelectedDateRange(selectedOption);
-
-    if (selectedOption.value === "custom") {
-      setShowCustomDatePicker(true);
-      return;
-    }
-
-    setShowCustomDatePicker(false);
-
-    const today = new Date();
-    const fromDate = new Date();
-
-    switch (selectedOption.value) {
-      case 1:
-        // Set both from and to dates as today
-        fromDate.setDate(today.getDate());
-        break;
-      case 2:
-        fromDate.setMonth(today.getMonth() - 1);
-        break;
-      case 3:
-        fromDate.setMonth(today.getMonth() - 3);
-        break;
-      case 4:
-        fromDate.setMonth(today.getMonth() - 6);
-        break;
-      case 5:
-        fromDate.setMonth(today.getMonth() - 12);
-        break;
-      default:
-        fromDate.setMonth(today.getMonth() - 1);
-    }
-
-    // Format dates for display
-    const fromDateStr = moment(fromDate).format("DD-MM-YYYY");
-    const toDateStr = moment(today).format("DD-MM-YYYY");
-    // const displayLabel = `${selectedOption.label} (${fromDateStr} to ${toDateStr})`;
-
-    let displayLabel;
-    if (selectedOption.value === 1) {
-      displayLabel = `Today`;
-    } else {
-      displayLabel = `${fromDateStr} to ${toDateStr}`;
-    }
-
-    // Update the tradeCount state with new dates
-    setTradeCount((prev) => ({
-      ...prev,
-      dateFrom: {
-        ...prev.dateFrom,
-        value: fromDate,
-      },
-      dateTo: {
-        ...prev.dateTo,
-        value: today,
-      },
-    }));
-
-    // Update selected option with date range in label
-    setSelectedDateRange({
-      ...selectedOption,
-      label: displayLabel,
-    });
-  };
   //Checking snakbar state
   const [open, setOpen] = useState(false);
 
@@ -400,7 +279,7 @@ const DailyTrade = () => {
       title: <label className="bottom-table-header">Total Amount</label>,
       dataIndex: "amount",
       key: "amount",
-      width: "110px",
+      width: "100px",
       align: "center",
       ellipsis: true,
     },
@@ -507,7 +386,7 @@ const DailyTrade = () => {
       title: <label className="bottom-table-header">Acccepted By</label>,
       dataIndex: "acceptedBy",
       key: "acceptedBy",
-      width: "120px",
+      width: "100px",
       align: "center",
       ellipsis: true,
     },
@@ -594,39 +473,6 @@ const DailyTrade = () => {
   };
 
   //Handle Date Change method
-  // const handleDateChange = (fieldName, value) => {
-  //   console.log({ fieldName: fieldName, value: Date(value) });
-  //   setTradeCount((prev) => ({
-  //     ...prev,
-  //     [fieldName]: {
-  //       ...prev[fieldName],
-  //       value,
-  //       errorMessage: "",
-  //       errorStatus: false,
-  //     },
-  //   }));
-
-  //   // Example validation: Start Date should be before End Date
-  //   if (
-  //     fieldName === "dateFrom" &&
-  //     tradeCount.dateTo.value &&
-  //     new Date(value) > new Date(tradeCount.dateTo.value)
-  //   ) {
-  //     setTradeCount((prev) => ({
-  //       ...prev,
-  //       dateFrom: {
-  //         ...prev.dateFrom,
-  //         errorMessage: "Start date cannot be after end date.",
-  //         errorStatus: true,
-  //       },
-  //     }));
-  //   }
-
-  //   if (fieldName === "dateFrom" || fieldName === "dateTo") {
-  //     setSelectedDateRange({ value: "custom", label: "Custom Date" });
-  //   }
-  // };
-  //Handle Date Change method (for custom date selection)
   const handleDateChange = (fieldName, value) => {
     console.log({ fieldName: fieldName, value: Date(value) });
     setTradeCount((prev) => ({
@@ -654,21 +500,8 @@ const DailyTrade = () => {
         },
       }));
     }
-
-    // If custom dates are selected, update the dropdown to show "Custom Date" with dates
-    if (fieldName === "dateFrom" || fieldName === "dateTo") {
-      const fromDateStr = moment(tradeCount.dateFrom.value).format(
-        "DD-MM-YYYY"
-      );
-      const toDateStr = moment(tradeCount.dateTo.value).format("DD-MM-YYYY");
-      const displayLabel = `Custom Date (${fromDateStr} to ${toDateStr})`;
-
-      setSelectedDateRange({
-        value: "custom",
-        label: displayLabel,
-      });
-    }
   };
+
   // const handleClickCommentModal = (text) => {
   //   // dispatch(TradeCountCommentModalSystemAdmin(true));
   //   console.log("the comment is", text);
@@ -787,15 +620,6 @@ const DailyTrade = () => {
   };
 
   const handleResetYes = () => {
-    // Set today as default
-    const today = new Date();
-    const todayStr = moment(today).format("DD-MM-YYYY");
-    const displayLabel = `Today (${todayStr})`;
-
-    setSelectedDateRange({
-      value: "today",
-      label: displayLabel,
-    });
     setHasReachedBottom(false);
     setRecordLength(0);
     setSRow(0);
@@ -1012,11 +836,6 @@ const DailyTrade = () => {
   // };
 
   useEffect(() => {
-    // Set today as default
-    setSelectedDateRange({
-      value: 1,
-      label: "Today",
-    });
     const FromDate = new Date(tradeCount.dateFrom.value);
     FromDate.setHours(0, 0, 0);
     const ToDate = new Date(tradeCount.dateTo.value);
@@ -1226,7 +1045,7 @@ const DailyTrade = () => {
                 className="form-control reports-input-field"
               />
             </Col>
-            {/* <Col
+            <Col
               lg={4}
               md={4}
               sm={12}
@@ -1256,57 +1075,10 @@ const DailyTrade = () => {
                 maxDate={null}
                 editable={false}
               />
-            </Col> */}
-            {/* Date Range Selector */}
-            <Col lg={2} md={2} sm={12}>
-              <SelectDropdown
-                placeholder="Select Date Range"
-                classNamePrefix="selectTransactionNatureList"
-                options={dateRangeOptions}
-                value={selectedDateRange}
-                isSearchable={false}
-                onChange={handleDateRangeChange}
-              />
             </Col>
-
-            {/* Custom Date Pickers - Conditionally Rendered */}
-            {showCustomDatePicker && (
-              <Col
-                lg={4}
-                md={4}
-                sm={12}
-                className="d-flex align-items-center pe-4"
-              >
-                <DatePicker
-                  name="dateFrom"
-                  value={tradeCount.dateFrom.value}
-                  placeholder="Start date"
-                  showOtherDays="true"
-                  inputClass={styles["Tradecount-Datepicker-left"]}
-                  onChange={(date) => handleDateChange("dateFrom", date)}
-                  maxDate={tradeCount.dateTo.value}
-                  minDate={null}
-                  editable={false}
-                />
-                <label className={styles["Tradecount-date-to"]}>to</label>
-
-                <DatePicker
-                  name="dateTo"
-                  value={tradeCount.dateTo.value}
-                  placeholder="End Date"
-                  showOtherDays="true"
-                  inputClass={styles["Tradecount-Datepicker-right"]}
-                  onChange={(date) => handleDateChange("dateTo", date)}
-                  minDate={tradeCount.dateFrom.value}
-                  maxDate={null}
-                  editable={false}
-                />
-              </Col>
-            )}
-            {!showCustomDatePicker && <Col lg={4} md={4} sm={12}></Col>}
             <Col
-              lg={4}
-              md={4}
+              lg={6}
+              md={6}
               sm={12}
               className="d-flex justify-content-center gap-1"
             >
