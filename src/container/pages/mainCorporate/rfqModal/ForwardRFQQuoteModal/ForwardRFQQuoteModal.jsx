@@ -34,6 +34,7 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
   const [readyValue, setReadyValue] = useState("");
   const [swapValue, setSwapValue] = useState("");
   const [readyRateValue, setReadyRateValue] = useState("");
+  const [tenorDays, setTenorDays] = useState("");
 
   // console.log(readyRateValue, "readyRateValuereadyRateValue");
   const [cancelReasonComment, setCancelReasonComment] = useState("");
@@ -103,9 +104,10 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
   useEffect(() => {
     if (GetForwardTransactionDetails !== null) {
       try {
-        const { rate, ready, swap } =
+        const { rate, ready, swap, tenorDays } =
           GetForwardTransactionDetails.transactionDetailsModel;
         setReadyValue(ready);
+        setTenorDays(tenorDays);
 
         setSwapValue(swap.toFixed(4));
         setReadyRateValue(rate);
@@ -280,8 +282,9 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                       Fixed Days
                     </label>
                     <p className={styles["DealViewModal__value"]}>
-                      {forwardQuoteData?.rfqDealDetails !== null
-                        ? forwardQuoteData?.rfqDealDetails.tenorDays
+                      {forwardQuoteData?.rfqDealDetails !== null &&
+                      tenorDays !== ""
+                        ? tenorDays
                         : "N/A"}
                     </p>
                   </Col>

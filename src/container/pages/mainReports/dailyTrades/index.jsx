@@ -48,19 +48,13 @@ const DailyTrade = () => {
     (state) => state.modalReducer.resetSearchConfirmationModal
   );
 
-  // console.log(showActivationModal, "showActivationModalshowActivationModal");
-
   const GetAllNatureOfTransactions = useSelector(
     (state) => state.authReducer.GetAllNatureOfTransactions
   );
 
-  // console.log(GetAllNatureOfTransactions, "All Nature of trANSACTIONS");
-
   const GetAllTrades = useSelector(
     (state) => state.DailyTradeSlicer.GetAllTrades
   );
-
-  // console.log(GetAllTrades, "testGetAllTradesGetAllTrades");
 
   const [selectPageSize, setSelectPageSize] = useState({
     value: 50,
@@ -189,58 +183,17 @@ const DailyTrade = () => {
     { value: 5, label: "1 Year" },
     { value: 6, label: "Custom Date" },
   ]);
-  const [selectedDateRange, setSelectedDateRange] = useState(null);
+  const [selectedDateRange, setSelectedDateRange] = useState({
+    value: 1,
+    label: "Today",
+  });
   const [showCustomDatePicker, setShowCustomDatePicker] = useState(false);
-  // Function to handle date range selection
-  // const handleDateRangeChange = (selectedOption) => {
-  //   setSelectedDateRange(selectedOption);
 
-  //   if (selectedOption.value === "custom") {
-  //     setShowCustomDatePicker(true);
-  //     return;
-  //   }
-
-  //   setShowCustomDatePicker(false);
-
-  //   const today = new Date();
-  //   const fromDate = new Date();
-
-  //   switch (selectedOption.value) {
-  //     case "1month":
-  //       fromDate.setMonth(today.getMonth() - 1);
-  //       break;
-
-  //     case "3months":
-  //       fromDate.setMonth(today.getMonth() - 3);
-  //       break;
-  //     case "6months":
-  //       fromDate.setMonth(today.getMonth() - 6);
-  //       break;
-  //     case "1year":
-  //       fromDate.setMonth(today.getMonth() - 12);
-  //       break;
-  //     default:
-  //       fromDate.setMonth(today.getMonth() - 1);
-  //   }
-
-  //   // Update the tradeCount state with new dates
-  //   setTradeCount((prev) => ({
-  //     ...prev,
-  //     dateFrom: {
-  //       ...prev.dateFrom,
-  //       value: fromDate,
-  //     },
-  //     dateTo: {
-  //       ...prev.dateTo,
-  //       value: today,
-  //     },
-  //   }));
-  // };
   // Function to handle date range selection
   const handleDateRangeChange = (selectedOption) => {
     setSelectedDateRange(selectedOption);
 
-    if (selectedOption.value === "custom") {
+    if (selectedOption.value === 6) {
       setShowCustomDatePicker(true);
       return;
     }
@@ -527,8 +480,8 @@ const DailyTrade = () => {
     },
     {
       title: <label className="bottom-table-header">Cancelled By</label>,
-      // dataIndex: "statusID",
-      // key: "statusID",
+      dataIndex: "cancelledBy",
+      key: "cancelledBy",
       width: "100px",
       align: "center",
       className: "color-green",
@@ -536,12 +489,28 @@ const DailyTrade = () => {
     },
     {
       title: <label className="bottom-table-header">Cancelled Time</label>,
-      // dataIndex: "statusID",
-      // key: "statusID",
+      dataIndex: "cancelledTime",
+      key: "cancelledTime",
       width: "120px",
       align: "center",
       className: "color-green",
-      ellipsis: true,
+      render: (cancelledTime) => {
+        console.log(cancelledTime, "cancelledTimecancelledTime");
+
+        // Check properly for null/undefined/invalid values
+        if (
+          cancelledTime &&
+          cancelledTime !== "-" &&
+          cancelledTime !== null &&
+          cancelledTime !== undefined
+        ) {
+          return moment(convertDateTimeIntoLocal(cancelledTime)).format(
+            "h:mm a"
+          );
+        } else {
+          return;
+        }
+      },
     },
   ];
 
@@ -661,11 +630,11 @@ const DailyTrade = () => {
         "DD-MM-YYYY"
       );
       const toDateStr = moment(tradeCount.dateTo.value).format("DD-MM-YYYY");
-      const displayLabel = `Custom Date (${fromDateStr} to ${toDateStr})`;
+      // const displayLabel = `${fromDateStr} to ${toDateStr}`;
 
       setSelectedDateRange({
-        value: "custom",
-        label: displayLabel,
+        value: 6,
+        label: "Custom Date",
       });
     }
   };
@@ -788,14 +757,11 @@ const DailyTrade = () => {
 
   const handleResetYes = () => {
     // Set today as default
-    const today = new Date();
-    const todayStr = moment(today).format("DD-MM-YYYY");
-    const displayLabel = `Today (${todayStr})`;
-
     setSelectedDateRange({
-      value: "today",
-      label: displayLabel,
+      value: 1,
+      label: "Today",
     });
+    setShowCustomDatePicker(false);
     setHasReachedBottom(false);
     setRecordLength(0);
     setSRow(0);
@@ -1260,6 +1226,14 @@ const DailyTrade = () => {
             {/* Date Range Selector */}
             <Col lg={2} md={2} sm={12}>
               <SelectDropdown
+                styles={{
+                  placeholder: (base) => ({
+                    ...base,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }),
+                }}
                 placeholder="Select Date Range"
                 classNamePrefix="selectTransactionNatureList"
                 options={dateRangeOptions}
