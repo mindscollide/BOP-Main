@@ -15,7 +15,7 @@ const ForgotPassword = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const state = useSelector((state) => state.authReducer);
-  console.log(state, "statestatestate");
+  // console.log(state, "statestatestate");
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState({ status: false, message: "" });
 
@@ -40,19 +40,19 @@ const ForgotPassword = () => {
     if (name === "email") {
       if (value !== "") {
         setEmail(value);
+        const isValidEmail = emailValidation(value);
         if (isValidEmail) {
           setEmailError({ status: false, message: "" });
         }
       } else {
         setEmail("");
-        setEmailError({ status: false, message: "" });
+        setEmailError({ status: true, message: "Enter a valid email address" });
       }
-    } else {
     }
   };
 
   const handleKeyDown = (e, fieldName) => {
-    console.log(e, fieldName, "testestets");
+    // console.log(e, fieldName, "testestets");
     if (e.key === "Enter") {
       e.preventDefault();
       if (fieldName === "email") {

@@ -15,6 +15,8 @@ import RealtimeActionsSlice from "./realtimeActionsSlicer/realtimeActionSlice";
 import { errorInterceptor } from "./middleware/errorInterceptor";
 import modalSlicer from "./modalSlice/modalSlicer";
 import BlotterSlicer from "@/store/BlotterSlicer/BlotterSlicer";
+import DailyTradeSlicer from "../container/pages/mainReports/dailyTrades/DailyTradeSlicer";
+// import DailyTradeSlicer from "@/container/pages/mainReports/dailyTrades/DailyTradeSlicer/DailyTradeSlicer";
 const store = configureStore({
   reducer: {
     bankSpotReducer: bankSpotSlicer,
@@ -31,6 +33,7 @@ const store = configureStore({
     RealtimeActionsSlice: RealtimeActionsSlice,
     modalReducer: modalSlicer,
     BlotterSlicer: BlotterSlicer,
+    DailyTradeSlicer: DailyTradeSlicer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 });

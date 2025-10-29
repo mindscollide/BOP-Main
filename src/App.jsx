@@ -22,7 +22,10 @@ import Loader from "./components/common/loader/Loader";
 import { ResponseMessage } from "./components/utils/ResponseMessageToast";
 import ForgotPasswordEmailSentTo from "./container/loginScreens/forgetPassword/ForgotPasswordEmailSentTo";
 import { ErrorBoundary } from "react-error-boundary";
-import { ErrorFallback, logErrors } from "./components/common/errorBoundary/ErrorBoundary";
+import {
+  ErrorFallback,
+  logErrors,
+} from "./components/common/errorBoundary/ErrorBoundary";
 
 function App() {
   const [routes, setRoutes] = useState([]);
@@ -80,18 +83,18 @@ function App() {
       element: <Dashboard />,
       children: [],
     };
-  
+
     const withErrorBoundary = (component) => (
       <ErrorBoundary FallbackComponent={ErrorFallback} onError={logErrors}>
         {component}
       </ErrorBoundary>
     );
-  
+
     dashboardRoute.children.push({
       path: "calculator",
       element: withErrorBoundary(<PrivateRoute element={<MainCalculator />} />),
     });
-  
+
     if (import.meta.env.VITE_APP_INCLUDE_BRANCH === "true") {
       const Branch = (await import("./container/pages/mainBranch/MainBranch"))
         .default;
@@ -102,7 +105,7 @@ function App() {
         ),
       });
     }
-  
+
     if (import.meta.env.VITE_APP_INCLUDE_DEALER === "true") {
       const Dealer = (await import("./container/pages/mainDealer/MainDealer"))
         .default;
@@ -112,7 +115,7 @@ function App() {
       const Category = (
         await import("./container/pages/mainCategory/MainCategory")
       ).default;
-  
+
       dashboardRoute.children.push({
         path: "dealer",
         element: withErrorBoundary(
@@ -132,7 +135,7 @@ function App() {
         ),
       });
     }
-  
+
     if (import.meta.env.VITE_APP_INCLUDE_TREASURY === "true") {
       const Treasury = (
         await import("./container/pages/mainTreasury/MainTreasury")
@@ -142,7 +145,17 @@ function App() {
       const Category = (
         await import("./container/pages/mainCategory/MainCategory")
       ).default;
-  
+
+      const DailyTrades = (
+        await import("./container/pages/mainReports/dailyTrades/index")
+      ).default;
+
+      dashboardRoute.children.push({
+        path: "reports/dailyTrade",
+        element: withErrorBoundary(
+          <PrivateRoute element={DailyTrades && <DailyTrades />} />
+        ),
+      });
       dashboardRoute.children.push({
         path: "dealer",
         element: withErrorBoundary(
@@ -162,7 +175,7 @@ function App() {
         ),
       });
     }
-  
+
     if (import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true") {
       const Corporate = (
         await import("./container/pages/mainCorporate/MainCorporate")
@@ -174,25 +187,33 @@ function App() {
         ),
       });
     }
-  
+
     const tempRoutes = [
       dashboardRoute,
       { path: "/", element: withErrorBoundary(<BopLogin />) },
-      { path: "/changePassword", element: withErrorBoundary(<ChangePassword />) },
-      { path: "/forgotpassword", element: withErrorBoundary(<ForgotPassword />) },
+      {
+        path: "/changePassword",
+        element: withErrorBoundary(<ChangePassword />),
+      },
+      {
+        path: "/forgotpassword",
+        element: withErrorBoundary(<ForgotPassword />),
+      },
       {
         path: "/emailsent",
         element: withErrorBoundary(<ForgotPasswordEmailSentTo />),
       },
-      { path: "/createPassword", element: withErrorBoundary(<CreatePassword />) },
+      {
+        path: "/createPassword",
+        element: withErrorBoundary(<CreatePassword />),
+      },
       { path: "/2fa", element: withErrorBoundary(<TwoFaVerification />) },
       { path: "/resetPassword", element: withErrorBoundary(<ResetPassword />) },
       { path: "*", element: <Navigate to={"/"} /> },
     ];
-  
+
     setRoutes(tempRoutes);
   };
-  
 
   useEffect(() => {
     loadRoutes();

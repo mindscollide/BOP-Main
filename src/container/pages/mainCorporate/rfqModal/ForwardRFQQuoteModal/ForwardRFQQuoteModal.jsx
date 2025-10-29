@@ -34,6 +34,9 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
   const [readyValue, setReadyValue] = useState("");
   const [swapValue, setSwapValue] = useState("");
   const [readyRateValue, setReadyRateValue] = useState("");
+  const [tenorDays, setTenorDays] = useState("");
+
+  // console.log(readyRateValue, "readyRateValuereadyRateValue");
   const [cancelReasonComment, setCancelReasonComment] = useState("");
 
   const [quoteDataModal, setQuoteDataModal] = useState(true);
@@ -101,9 +104,10 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
   useEffect(() => {
     if (GetForwardTransactionDetails !== null) {
       try {
-        const { rate, ready, swap } =
+        const { rate, ready, swap, tenorDays } =
           GetForwardTransactionDetails.transactionDetailsModel;
         setReadyValue(ready);
+        setTenorDays(tenorDays);
 
         setSwapValue(swap.toFixed(4));
         setReadyRateValue(rate);
@@ -179,12 +183,25 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
     setQuoteDataModal(true);
     // dispatch(setForwardQuoteModal(false));
   };
+  const parseNumber = (val) => {
+    if (!val) return 0;
+    return Number(val.toString().replace(/,/g, ""));
+  };
+
   const calculateNewReadyValue = (instrumentName) => {
-    const numReady = parseFloat(readyValue) || 0;
-    const numSwap = parseFloat(swapValue) || 0;
+    const numReady = parseNumber(readyValue);
+    const numSwap = parseNumber(swapValue);
+
+    console.log(
+      { numSwap, numReady, readyValue, swapValue },
+      "numReadynumReady"
+    );
     const adjustedSwap =
-      instrumentName?.toUpperCase() === "USD" ? numSwap / 100.0 : numSwap;
-    return (numReady + adjustedSwap).toFixed(2); // return formatted string for view
+      // instrumentName?.toUpperCase() === "USD" ? numSwap / 100.0 : numSwap;
+      forwardQuoteData?.ccY1?.toUpperCase() === "USD"
+        ? numSwap / 100.0
+        : numSwap;
+    return (numReady + adjustedSwap).toFixed(4); // return formatted string for view
   };
 
   const handeClickHide = () => {
@@ -265,8 +282,9 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                       Fixed Days
                     </label>
                     <p className={styles["DealViewModal__value"]}>
-                      {forwardQuoteData?.rfqDealDetails !== null
-                        ? forwardQuoteData?.rfqDealDetails.tenorDays
+                      {forwardQuoteData?.rfqDealDetails !== null &&
+                      tenorDays !== ""
+                        ? tenorDays
                         : "N/A"}
                     </p>
                   </Col>
@@ -384,7 +402,8 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                         thousandSeparator=","
                         disabled={!forwardQuoteData?.isRFQ}
                         applyClass={"DiscountingQuoteInput"}
-                        maxLength={10}
+                        maxLength={5}
+                        allowNegative={false}
                         onChange={(e) => handleChangeRate(e, "readyValue")}
                       />
                     </Col>
@@ -399,11 +418,12 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                       </label>
                       <NumericFormat
                         customInput={InputFIeld}
-                        value={formatPkAmount(swapValue)}
+                        value={formatPkAmount(swapValue, { decimals: 0 })}
                         disabled={!forwardQuoteData?.isRFQ}
                         thousandSeparator=","
                         applyClass={"DiscountingQuoteInput"}
-                        maxLength={10}
+                        maxLength={8}
+                        allowNegative={false}
                         onChange={(e) => handleChangeRate(e, "swapValue")}
                       />
                       {/* <InputFIeld
@@ -423,7 +443,8 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                       </label>
                       <span className={styles["CalculateValue"]}>
                         {forwardQuoteData?.isRFQ
-                          ? calculateNewReadyValue("USD", readyRateValue)
+                          ? // ? calculateNewReadyValue("USD", readyRateValue)
+                            calculateNewReadyValue()
                           : readyRateValue}
                       </span>
                     </Col>

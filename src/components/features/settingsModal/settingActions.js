@@ -29,7 +29,8 @@ export const getUserSettingDataAPI = createAsyncThunk(
       if (responseCode === 417) {
         console.log(result, "result");
 
-        await dispatch(refreshTokenAction({ navigate }));return
+        await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(getUserSettingDataAPI({ navigate }));
       } else if (responseCode === 200) {
         console.log(result, "result");
@@ -48,7 +49,7 @@ export const getUserSettingDataAPI = createAsyncThunk(
               "Setting_SettingServiceManager_GetUserSettings_01".toLowerCase()
             )
         ) {
-          dispatch(setSettingModal(true));
+          // dispatch(setSettingModal(true));
           return { response: userSettingsList, message: "" };
         } else if (
           responseMessage
@@ -96,7 +97,8 @@ export const updateUserSettingDataAPI = createAsyncThunk(
       if (responseCode === 417) {
         console.log(response, "result");
 
-        await dispatch(refreshTokenAction({ navigate }));return
+        await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(getUserSettingDataAPI({ navigate }));
       } else if (responseCode === 200) {
         console.log(response, "result");
@@ -114,6 +116,7 @@ export const updateUserSettingDataAPI = createAsyncThunk(
               "Setting_SettingServiceManager_UpdateUserSettings_01".toLowerCase()
             )
         ) {
+          dispatch(getUserSettingDataAPI({ navigate }));
           dispatch(setSettingModal(false));
 
           return {
@@ -166,7 +169,8 @@ export const getMarkingTimingApi = createAsyncThunk(
       if (responseCode === 417) {
         console.log(response, "result");
 
-        await dispatch(refreshTokenAction({ navigate }));return
+        await dispatch(refreshTokenAction({ navigate }));
+        return;
         dispatch(getMarkingTimingApi({ navigate }));
       } else if (responseCode === 200) {
         console.log(response, "result");

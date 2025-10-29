@@ -39,7 +39,7 @@ const ChatBox = () => {
 
   const [receiverId, setReceiverId] = useState(0);
 
-  console.log(IncomingChat, "IncomingChatIncomingChat");
+  console.log(receiverId, "IncomingChatIncomingChat");
   const [message, setMessage] = useState("");
   const [file, setFile] = useState(null);
   const dispatch = useDispatch();
@@ -80,10 +80,7 @@ const ChatBox = () => {
           });
 
           // same for receiverId
-          const newReceiverId = getAllChat[0]?.senderID || 0;
-          setReceiverId((prev) =>
-            prev !== newReceiverId ? newReceiverId : prev
-          );
+          setReceiverId(getAllChat[0]?.senderID);
         }
       } catch (error) {
         console.error(error);

@@ -771,6 +771,14 @@ export const AcceptTransactionAPI = createAsyncThunk(
               )
           ) {
             return rejectWithValue("Invalid Transaction Status");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "Blotter_BlotterServiceManager_AcceptTransaction_07".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("daily limit exceeded");
           } else {
             return rejectWithValue("Something went wrong");
           }
