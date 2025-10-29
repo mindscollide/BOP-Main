@@ -4,6 +4,7 @@ import {
   convertDateTimeIntoLocal,
   formatDateAndTimeFromString,
   formatDateToUTC,
+  formatPkAmount,
 } from "@/utils/formatters";
 import React, { useCallback, useEffect, useState } from "react";
 import { Button, Col, Row } from "react-bootstrap";
@@ -54,6 +55,10 @@ const DailyTrade = () => {
 
   const GetAllTrades = useSelector(
     (state) => state.DailyTradeSlicer.GetAllTrades
+  );
+
+  const GetAllTradesLoader = useSelector(
+    (state) => state.DailyTradeSlicer.Loader
   );
 
   const [selectPageSize, setSelectPageSize] = useState({
@@ -293,7 +298,7 @@ const DailyTrade = () => {
       title: <label className="bottom-table-header">Client</label>,
       dataIndex: "corporateName",
       key: "corporateName",
-      width: "200px",
+      width: "150px",
       align: "center",
       ellipsis: true,
     },
@@ -309,7 +314,7 @@ const DailyTrade = () => {
       title: <label className="bottom-table-header">Nature</label>,
       dataIndex: "nature",
       key: "nature",
-      width: "200px",
+      width: "180px",
       align: "center",
       ellipsis: true,
       render: (val, record) => {
@@ -328,17 +333,19 @@ const DailyTrade = () => {
       title: <label className="bottom-table-header">TXN Amount</label>,
       dataIndex: "quantity",
       key: "quantity",
-      width: "100px",
+      width: "120px",
       align: "center",
       ellipsis: true,
+      render: (quantity) => formatPkAmount(quantity, { decimals: 2 }),
     },
     {
       title: <label className="bottom-table-header">Rate</label>,
       dataIndex: "rate",
       key: "rate",
-      width: "100px",
+      width: "120px",
       align: "center",
       ellipsis: true,
+      render: (rate) => formatPkAmount(rate, { decimals: 2 }),
     },
     {
       title: <label className="bottom-table-header">CCY2</label>,
@@ -348,14 +355,14 @@ const DailyTrade = () => {
       align: "center",
       ellipsis: true,
     },
-
     {
       title: <label className="bottom-table-header">Total Amount</label>,
       dataIndex: "amount",
       key: "amount",
-      width: "110px",
+      width: "150px",
       align: "center",
       ellipsis: true,
+      render: (amount) => formatPkAmount(amount, { decimals: 2 }),
     },
     {
       title: <label className="bottom-table-header">Date</label>,
@@ -438,15 +445,27 @@ const DailyTrade = () => {
     // },
     {
       title: <label className="bottom-table-header">Status</label>,
-      dataIndex: "statusID",
-      key: "statusID",
+      dataIndex: "status",
+      key: "status",
       width: "100px",
       align: "center",
-      className: "color-green",
       ellipsis: true,
-      render: (statusID) => {
-        return "Accepted";
-      },
+      render: (text) => (
+        <span
+          style={{
+            color:
+              text === "Accepted"
+                ? "green"
+                : text === "Cancelled"
+                ? "#f26522"
+                : text === "Expired" || text === "Rejected"
+                ? "#f21616"
+                : "",
+          }}
+        >
+          {text}
+        </span>
+      ),
     },
     {
       title: <label className="bottom-table-header">Initiated By</label>,
@@ -460,7 +479,7 @@ const DailyTrade = () => {
       title: <label className="bottom-table-header">Acccepted By</label>,
       dataIndex: "acceptedBy",
       key: "acceptedBy",
-      width: "120px",
+      width: "150px",
       align: "center",
       ellipsis: true,
     },
@@ -474,7 +493,9 @@ const DailyTrade = () => {
       render: (txnAcceptedTime) => {
         // Format the date and time
         return txnAcceptedTime !== "-"
-          ? moment(convertDateTimeIntoLocal(txnAcceptedTime)).format("h:mm a")
+          ? moment(convertDateTimeIntoLocal(txnAcceptedTime)).format(
+              "h:mm:ss A"
+            )
           : "-";
       },
     },
@@ -484,7 +505,6 @@ const DailyTrade = () => {
       key: "cancelledBy",
       width: "100px",
       align: "center",
-      className: "color-green",
       ellipsis: true,
     },
     {
@@ -493,7 +513,6 @@ const DailyTrade = () => {
       key: "cancelledTime",
       width: "120px",
       align: "center",
-      className: "color-green",
       render: (cancelledTime) => {
         console.log(cancelledTime, "cancelledTimecancelledTime");
 
@@ -505,7 +524,7 @@ const DailyTrade = () => {
           cancelledTime !== undefined
         ) {
           return moment(convertDateTimeIntoLocal(cancelledTime)).format(
-            "h:mm a"
+            "h:mm:ss A"
           );
         } else {
           return;
@@ -1381,6 +1400,7 @@ const DailyTrade = () => {
                 dataSource={tableData}
                 scroll={{ x: "max-content", y: "35vh" }}
                 className={"DailyTrade-table"}
+                loading={GetAllTradesLoader}
               />
             </Col>
           </Row>

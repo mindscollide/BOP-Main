@@ -275,10 +275,10 @@ const CategoryForwards = () => {
 
   return (
     <>
-      <span className='heading mb-2'> Forward</span>
+      <span className="heading mb-2">Forward</span>
       <GlobalTable
         columns={columnsData}
-        prefixCls='Dealer_Forwards'
+        prefixCls="Dealer_Forwards"
         dataSource={dataSource}
         pagination={false}
       />
