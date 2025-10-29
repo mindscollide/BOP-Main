@@ -5,18 +5,18 @@ let isRefreshing = false;
 let refreshPromise = null;
 
 export const ensureTokenRefreshed = async () => {
-  if (!isRefreshing) {
-    isRefreshing = true;
-    refreshPromise = await refreshTokenFn()
-      .then((res) => {
-        const { token, refreshToken } = res;
-        localStorage.setItem("token", token);
-        localStorage.setItem("refreshToken", refreshToken);
-        return token;
-      })
-      .finally(() => {
-        isRefreshing = false;
-      });
-  }
+  if (isRefreshing) return refreshPromise;
+
+  isRefreshing = true;
+  refreshPromise = (async () => {
+    try {
+      const newToken = await refreshTokenFn();
+      return newToken;
+    } finally {
+      isRefreshing = false;
+      refreshPromise = null;
+    }
+  })();
+
   return refreshPromise;
 };

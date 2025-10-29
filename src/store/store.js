@@ -12,7 +12,6 @@ import CalculatorSlice from "../container/pages/mainCalculator/CalculatorSlicer"
 import SettingSlicer from "./settingSlicer/SettingSlicer";
 import chatSlicer from "./chatSlicer/chatSlicer";
 import RealtimeActionsSlice from "./realtimeActionsSlicer/realtimeActionSlice";
-import { errorInterceptor } from "./middleware/errorInterceptor";
 import modalSlicer from "./modalSlice/modalSlicer";
 import BlotterSlicer from "@/store/BlotterSlicer/BlotterSlicer";
 import DailyTradeSlicer from "../container/pages/mainReports/dailyTrades/DailyTradeSlicer";
