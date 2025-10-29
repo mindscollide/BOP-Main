@@ -5,7 +5,6 @@ import {
   saveChatRM,
 } from "@/common/api_config";
 import { chatApi } from "@/common/apiend_points";
-import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
 import {
   setChatModal,
   setChatModalTransactionId,
@@ -31,17 +30,7 @@ export const getAllChatByTransactionId = createAsyncThunk(
       const response = await getUserChat(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
-        dispatch(
-          getAllChatByTransactionId({
-            navigate,
-            Data,
-            treasuryPersonID,
-            ChatData,
-          })
-        );
-      } else if (responseCode === 200) {
+    if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (!isExecuted) {
           return rejectWithValue("Something went wrong");
@@ -123,20 +112,7 @@ export const saveChatApi = createAsyncThunk(
       const response = await getUserChat(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
-        dispatch(
-          saveChatApi({
-            navigate,
-            Data,
-            setTransactionChat,
-            setMessage,
-            setFile,
-            newRecords,
-            file,
-          })
-        );
-      } else if (responseCode === 200) {
+   if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (!isExecuted) {
           return rejectWithValue("Something went wrong");
@@ -243,11 +219,7 @@ export const uploadDocumentApi = createAsyncThunk(
       );
       const response = await uploadDocument(file, true);
       const { responseCode } = response.data;
-
-      if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
-        dispatch(uploadDocumentApi({ Data, navigate }));
-      } else if (responseCode === 200) {
+ if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (!isExecuted) {
           return rejectWithValue("Something went wrong");
@@ -335,22 +307,7 @@ export const DownloadFileApi = createAsyncThunk(
       } else {
         return rejectWithValue("Something went wrong");
       }
-      // const { responseCode } = response.data;
 
-      // if (responseCode === 417) {
-      //   await dispatch(refreshTokenAction({ navigate }));return
-      //   dispatch(DownloadFileApi({ navigate, Data, fileName, ext }));
-      // } else if (responseCode === 200) {
-      //   console.log(response, "response in DownloadFileApi");
-      //   return {
-      //     response: response.data.responseResult,
-      //     message: "File Downloaded Successfully",
-      //   };
-      // } else if (responseCode === 400) {
-      //   return rejectWithValue("File Not Found");
-      // } else {
-      //   return rejectWithValue("Something went wrong");
-      // }
     } catch (error) {
       console.log(error);
     }

@@ -168,12 +168,8 @@ export const getAllTreasuryInstrumentsApi = createAsyncThunk(
       );
 
       const response = await getAllInstruments();
-      const { responseCode } = response.data;
 
-      if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
-        dispatch(getAllTreasuryInstrumentsApi({ navigate }));
-      } else if (response.data.responseCode === 200) {
+      if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (

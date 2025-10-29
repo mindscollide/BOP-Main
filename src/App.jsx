@@ -50,7 +50,7 @@ function App() {
 
         currentVersion.current = data.version;
       } catch (err) {
-        console.error("Error checking version.json:", err);
+        console.log("Error checking version.json:", err);
       }
     };
 

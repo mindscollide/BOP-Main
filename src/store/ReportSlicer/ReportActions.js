@@ -58,12 +58,7 @@ export const DownloadFileAPI = createAsyncThunk(
     } catch (error) {
       console.error("Download error:", error);
 
-      if (error.response?.status === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
-        return dispatch(
-          DownloadFileAPI({ requestMethod, fileName, fileType, navigate })
-        );
-      }
+ 
 
       return rejectWithValue("File download failed");
     }
