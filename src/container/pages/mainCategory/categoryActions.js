@@ -1,5 +1,4 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
 import {
   GetAllCounterPartyDataRM,
   GetCategoryWiseDiscountingRates,
@@ -20,11 +19,8 @@ export const getAllCategoryTableData = createAsyncThunk(
 
       const response = await getAllCategoryTable(Data);
       const { responseCode } = response.data;
-    
-      if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
-        dispatch(getAllCategoryTableData({ navigate, Data }));
-      } else if (responseCode === 200) {
+
+      if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (
@@ -91,12 +87,8 @@ export const GetCategoryWiseSpotRatesApi = createAsyncThunk(
       const response = await GetCategoryWiseSpotRatesData(Data);
 
       const { responseCode } = response.data;
-    
 
-      if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
-        dispatch(GetCategoryWiseSpotRatesApi({ navigate, Data }));
-      } else if (responseCode === 200) {
+      if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (
@@ -168,12 +160,8 @@ export const GetCategoryWiseForwardRatesApi = createAsyncThunk(
       const response = await GetCategoryWiseForwardRatesData(Data);
 
       const { responseCode } = response.data;
-    
 
-      if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
-        dispatch(GetCategoryWiseForwardRatesApi({ navigate, Data }));
-      } else if (responseCode === 200) {
+      if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (
@@ -245,12 +233,8 @@ export const GetCategoryWiseDiscountingRatesApi = createAsyncThunk(
       const response = await GetCategoryWiseDiscountingRatesData(Data);
 
       const { responseCode } = response.data;
-    
 
-      if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
-        dispatch(GetCategoryWiseDiscountingRatesApi({ navigate, Data }));
-      } else if (responseCode === 200) {
+      if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (

@@ -15,7 +15,6 @@ import {
 } from "@/common/api_config";
 import { reportApi } from "@/common/apiend_points";
 import { setCustomHeaders } from "@/common/utils";
-import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
 import createPostAPI from "@/utils/axiosInstance";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
@@ -85,15 +84,6 @@ export const DownloadExcelReportBlotterTrasactionBranchAPI = createAsyncThunk(
         );
         const parsedData = JSON.parse(decodedString);
 
-        if (parsedData.responseCode === 417) {
-          await dispatch(refreshTokenAction({ navigate }));
-          return;
-          await dispatch(
-            DownloadExcelReportBlotterTrasactionBranchAPI({ navigate, Data })
-          );
-          return;
-        }
-
         return rejectWithValue(parsedData.message || "Something went wrong");
       }
 
@@ -148,18 +138,6 @@ export const DownloadExcelReportBlotterTrasactionCorporateAPI =
             new Uint8Array(response.data)
           );
           const parsedData = JSON.parse(decodedString);
-
-          if (parsedData.responseCode === 417) {
-            await dispatch(refreshTokenAction({ navigate }));
-            return;
-            await dispatch(
-              DownloadExcelReportBlotterTrasactionCorporateAPI({
-                navigate,
-                Data,
-              })
-            );
-            return;
-          }
 
           return rejectWithValue(parsedData.message || "Something went wrong");
         }
@@ -217,15 +195,6 @@ export const DownloadExcelReportBlotterTrasactionTreasuryAPI = createAsyncThunk(
         );
         const parsedData = JSON.parse(decodedString);
 
-        if (parsedData.responseCode === 417) {
-          await dispatch(refreshTokenAction({ navigate }));
-          return;
-          await dispatch(
-            DownloadExcelReportBlotterTrasactionTreasuryAPI({ navigate, Data })
-          );
-          return;
-        }
-
         return rejectWithValue(parsedData.message || "Something went wrong");
       }
 
@@ -280,15 +249,6 @@ export const DownloadPDFReportBlotterTrasactionBranchAPI = createAsyncThunk(
         );
         const parsedData = JSON.parse(decodedString);
 
-        if (parsedData.responseCode === 417) {
-          await dispatch(refreshTokenAction({ navigate }));
-          return;
-          await dispatch(
-            DownloadPDFReportBlotterTrasactionBranchAPI({ navigate, Data })
-          );
-          return;
-        }
-
         return rejectWithValue(parsedData.message || "Something went wrong");
       }
 
@@ -341,15 +301,6 @@ export const DownloadPDFReportBlotterTrasactionCorporateAPI = createAsyncThunk(
           new Uint8Array(response.data)
         );
         const parsedData = JSON.parse(decodedString);
-
-        if (parsedData.responseCode === 417) {
-          await dispatch(refreshTokenAction({ navigate }));
-          return;
-          await dispatch(
-            DownloadPDFReportBlotterTrasactionCorporateAPI({ navigate, Data })
-          );
-          return;
-        }
 
         return rejectWithValue(parsedData.message || "Something went wrong");
       }
@@ -404,18 +355,6 @@ export const DownloadPDFReportBlotterTrasactionTreasuryAPI = createAsyncThunk(
         );
         const parsedData = JSON.parse(decodedString);
         console.log(parsedData, "parsedDataparsedDataparsedData");
-        if (parsedData.responseCode === 417) {
-          console.log(
-            parsedData.responseCode,
-            "parsedDataparsedDataparsedData"
-          );
-          await dispatch(refreshTokenAction({ navigate }));
-          return;
-          await dispatch(
-            DownloadPDFReportBlotterTrasactionTreasuryAPI({ navigate, Data })
-          );
-          return;
-        }
 
         return rejectWithValue(parsedData.message || "Something went wrong");
       }
@@ -469,15 +408,6 @@ export const DownloadExcelReportNOPCalculationsAPI = createAsyncThunk(
         );
         const parsedData = JSON.parse(decodedString);
 
-        if (parsedData.responseCode === 417) {
-          await dispatch(refreshTokenAction({ navigate }));
-          return;
-          await dispatch(
-            DownloadExcelReportNOPCalculationsAPI({ navigate, Data })
-          );
-          return;
-        }
-
         return rejectWithValue(parsedData.message || "Something went wrong");
       }
 
@@ -528,17 +458,7 @@ export const EmailBlotterTransactionDetailsForBranchAPI = createAsyncThunk(
       const response = await EmailBlotterTransactionDetailsForBranchData(Data);
       console.log(response, "EmailBlotterTransactionDetailsForBranchResponse");
       const { data, status } = response;
-      if (data?.responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
-        return;
-        dispatch(
-          EmailBlotterTransactionDetailsForBranchAPI({
-            Data,
-            navigate,
-            setOpenMailModal,
-          })
-        );
-      }
+
       if (status === 200) {
         const { isExecuted, responseMessage } = data;
         if (isExecuted) {
@@ -617,17 +537,7 @@ export const EmailBlotterTransactionDetailsForCorporateAPI = createAsyncThunk(
       );
       console.log(response, "EmailBlotterTransactionDetailsForCorporate");
       const { data, status } = response;
-      if (data?.responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
-        return;
-        dispatch(
-          EmailBlotterTransactionDetailsForCorporateAPI({
-            Data,
-            navigate,
-            setOpenMailModal,
-          })
-        );
-      }
+
       if (status === 200) {
         const { isExecuted, responseMessage } = data;
         if (isExecuted) {
@@ -709,17 +619,7 @@ export const EmailBlotterTransactionDetailsForTreasuryAPI = createAsyncThunk(
         "EmailBlotterTransactionDetailsForTreasuryResponse"
       );
       const { data, status } = response;
-      if (data?.responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));
-        return;
-        dispatch(
-          EmailBlotterTransactionDetailsForTreasuryAPI({
-            Data,
-            navigate,
-            setOpenMailModal,
-          })
-        );
-      }
+
       if (status === 200) {
         const { isExecuted, responseMessage } = data;
         if (isExecuted) {
@@ -803,15 +703,6 @@ export const DownloadDailyTransactionsExcelReportAPI = createAsyncThunk(
         );
         const parsedData = JSON.parse(decodedString);
 
-        if (parsedData.responseCode === 417) {
-          await dispatch(refreshTokenAction({ navigate }));
-          return;
-          await dispatch(
-            DownloadDailyTransactionsExcelReportAPI({ navigate, Data })
-          );
-          return;
-        }
-
         return rejectWithValue(parsedData.message || "Something went wrong");
       }
 
@@ -865,15 +756,6 @@ export const DownloadDailyTransactionsPDFReportAPI = createAsyncThunk(
           new Uint8Array(response.data)
         );
         const parsedData = JSON.parse(decodedString);
-
-        if (parsedData.responseCode === 417) {
-          await dispatch(refreshTokenAction({ navigate }));
-          return;
-          await dispatch(
-            DownloadDailyTransactionsPDFReportAPI({ navigate, Data })
-          );
-          return;
-        }
 
         return rejectWithValue(parsedData.message || "Something went wrong");
       }
