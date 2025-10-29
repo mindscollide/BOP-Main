@@ -4,10 +4,10 @@ import { refreshTokenFn } from "@/container/loginScreens/authActions/refreshToke
 let isRefreshing = false;
 let refreshPromise = null;
 
-export const ensureTokenRefreshed = () => {
+export const ensureTokenRefreshed = async () => {
   if (!isRefreshing) {
     isRefreshing = true;
-    refreshPromise = refreshTokenFn()
+    refreshPromise = await refreshTokenFn()
       .then((res) => {
         const { token, refreshToken } = res;
         localStorage.setItem("token", token);
