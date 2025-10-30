@@ -19,9 +19,7 @@ const setCustomHeaders = (isDoc, ext) => {
   };
 
   try {
-    const headers = {
-      ...(token && { _token: token }),
-    };
+    const headers = {};
 
     if (isDoc && ext && extensionToContentType[ext]) {
       headers["Content-Type"] = extensionToContentType[ext];

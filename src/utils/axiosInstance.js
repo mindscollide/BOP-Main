@@ -1,45 +1,38 @@
-// src/utils/apiCaller.js
-import { setCustomHeaders } from "@/common/utils";
 import axios from "axios";
 import { ensureTokenRefreshed } from "./refreshHandler";
+import { setCustomHeaders } from "@/common/utils";
 
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL, // adjust to your backend
+export const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
 });
 
-// 🔑 Request interceptor → attach token
+// 🔑 Always attach token from localStorage
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
     config.headers = {
       ...config.headers,
-      ...(setCustomHeaders(false) || {}),
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      _token: token || "",
     };
     return config;
   },
   (error) => Promise.reject(error)
 );
+
+// 🧠 Response interceptor handles refresh + retry
 api.interceptors.response.use(
   async (response) => {
-    console.log(response, "response from interceptor");
+    let data = response.data;
 
-    let responseData = response.data;
-
-    // If response is ArrayBuffer or Blob, try decoding
-    if (responseData instanceof ArrayBuffer) {
+    // Handle ArrayBuffer case (optional)
+    if (data instanceof ArrayBuffer) {
       try {
-        const decodedString = new TextDecoder().decode(
-          new Uint8Array(responseData)
-        );
-        responseData = JSON.parse(decodedString);
-      } catch (err) {
-        console.warn("Failed to decode ArrayBuffer response:", err);
-      }
+        data = JSON.parse(new TextDecoder().decode(new Uint8Array(data)));
+      } catch {}
     }
 
-    // 🔎 Check token expiration
-    if (responseData?.responseCode === 417) {
+    // 🔄 Token expired → refresh flow
+    if (data?.responseCode === 417) {
       const originalRequest = response.config;
 
       if (!originalRequest._retry) {
@@ -48,13 +41,16 @@ api.interceptors.response.use(
         try {
           const newToken = await ensureTokenRefreshed();
 
-          // Update token header
-          originalRequest.headers.Authorization = `Bearer ${newToken}`;
+          // ✅ Wait until token truly exists in localStorage
+          const verifiedToken = localStorage.getItem("token");
 
-          // Retry the request
+          // ✅ Update both the retry request + Axios instance headers
+          api.defaults.headers.common["_token"] = verifiedToken;
+          originalRequest.headers._token = verifiedToken;
+
+          // 🔁 Retry with the latest token
           return api(originalRequest);
         } catch (err) {
-          console.error("Refresh failed → redirecting to login", err);
           localStorage.clear();
           window.location.href = "/";
           return Promise.reject(err);
@@ -62,16 +58,16 @@ api.interceptors.response.use(
       }
     }
 
-    if (responseData?.responseCode === 401) {
+    // 🚫 Unauthorized
+    if (data?.responseCode === 401) {
       localStorage.clear();
       window.location.href = "/";
       return Promise.reject("Unauthorized");
     }
 
-    return response; // ✅ normal response
+    return response;
   },
   (error) => {
-    // ⛔ HTTP errors (401, 403, 500, etc.)
     if (error.response?.status === 401) {
       localStorage.clear();
       window.location.href = "/";
@@ -80,38 +76,29 @@ api.interceptors.response.use(
   }
 );
 
+// 🧾 POST wrapper for your APIs
 const createPostAPI =
   (url, requestMethod) => async (bodyData, isDoc, fileName, ext) => {
-    try {
-      const headers = setCustomHeaders(isDoc, fileName, ext);
+    const headers = setCustomHeaders(isDoc, fileName, ext);
+    const form = new FormData();
+    form.append("RequestMethod", requestMethod);
 
-      const form = new FormData();
-      form.append("RequestMethod", requestMethod);
-
-      if (bodyData && typeof bodyData === "object") {
-        form.append("RequestData", JSON.stringify(bodyData));
-      }
-
-      if (isDoc && bodyData?.file instanceof File) {
-        form.append("File", bodyData.file);
-      }
-
-      const config = {
-        method: "POST",
-        url,
-        data: form,
-        headers,
-        ...(isDoc ? { responseType: "arraybuffer" } : {}),
-      };
-
-      const response = await api(config);
-
-      console.log(response, "responseresponse");
-      return response;
-    } catch (error) {
-      console.error(`Error calling ${url}:`, error);
-      throw error.response?.data || error;
+    if (bodyData && typeof bodyData === "object") {
+      form.append("RequestData", JSON.stringify(bodyData));
     }
-  };
 
+    if (isDoc && bodyData?.file instanceof File) {
+      form.append("File", bodyData.file);
+    }
+
+    const config = {
+      method: "POST",
+      url,
+      data: form,
+      headers,
+      ...(isDoc ? { responseType: "arraybuffer" } : {}),
+    };
+
+    return api(config);
+  };
 export default createPostAPI;

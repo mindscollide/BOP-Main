@@ -7,7 +7,6 @@ import {
 } from "../../container/loginScreens/Login/logInAction";
 import { resetAndForgotPassword } from "../../container/loginScreens/forgetPassword/forgotPassword_Actions";
 import { setCustomHeaders } from "@/common/utils";
-import { refreshTokenAction } from "../../container/loginScreens/authActions/refreshToken";
 import {
   getAllActiveCorporatesApi,
   getAllCategoriesAction,
@@ -109,19 +108,7 @@ const authSlice = createSlice({
         state.responseMessage = payload;
         state.resetPasswordResponse = null;
       })
-      .addCase(refreshTokenAction.pending, (state) => {
-        state.Loader = true;
-      })
-      .addCase(refreshTokenAction.fulfilled, (state, { payload }) => {
-        state.Loader = false;
-        state.refreshTokenResponse = payload?.response;
-        state.responseMessage = "";
-      })
-      .addCase(refreshTokenAction.rejected, (state, { payload }) => {
-        state.Loader = false;
-        state.refreshTokenResponse = null;
-        state.responseMessage = payload;
-      })
+ 
       .addCase(getAllCategoriesAction.pending, (state) => {
         state.Loader = true;
       })

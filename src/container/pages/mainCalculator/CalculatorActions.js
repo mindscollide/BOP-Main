@@ -5,7 +5,6 @@ import {
   getAllCalculatorData,
 } from "@/common/api_config";
 import { calculatorApi } from "@/common/apiend_points";
-import { setCustomHeaders } from "@/common/utils";
 import createPostAPI from "@/utils/axiosInstance";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
@@ -20,7 +19,6 @@ export const GetAllCalculatorData = createAsyncThunk(
       );
 
       const response = await GetAllCalculator();
-      const { responseCode } = response.data;
       if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
