@@ -735,8 +735,53 @@ const TXNSummary = () => {
         align: "center",
         render: (record) => formatPkAmount(record.amount),
       },
+      // {
+      //   id: "tradeDateTime",
+      //   label: "Time",
+      //   width: 80,
+      //   align: "center",
+      //   render: (record) => {
+      //     // RFQ timer logic for expiring transactions
+      //     let Data = { PK_TransactionID: record.pK_TransactionID };
+      //     let isRFQ = record.isRFQ
+      //       ? record.statusID === 4 &&
+      //         record.rfqTimerDetails !== null &&
+      //         record.rfqTimerDetails?.isEnded === false
+      //         ? true
+      //         : false
+      //       : false;
+      //     let rfqTimer =
+      //       isRFQ && record.rfqTimerDetails.endTime
+      //         ? convertDateTimeIntoLocal(record.rfqTimerDetails.endTime)
+      //         : null;
+      //     const serverTime =
+      //       isRFQ && record.rfqTimerDetails?.serverTime
+      //         ? convertDateTimeIntoLocal(
+      //             record.rfqTimerDetails?.serverTime.replace(/[-:\s]/g, "")
+      //           )
+      //         : null;
+      //     if (record.tradeDateTime) {
+      //       return (
+      //         <span>
+      //           {formatDateTimeToUTCTime(record.tradeDateTime)}{" "}
+      //           {isRFQ && (
+      //             <RFQTImer
+      //               severTime={serverTime}
+      //               endTime={rfqTimer}
+      //               dispatch={dispatch}
+      //               apiFunction={ExpireRFQTransaction}
+      //               navigate={navigate}
+      //               Data={Data}
+      //             />
+      //           )}
+      //         </span>
+      //       );
+      //     }
+      //     return null;
+      //   },
+      // },
       {
-        id: "tradeDateTime",
+        id: "modifiedDatetime",
         label: "Time",
         width: 80,
         align: "center",
@@ -760,10 +805,10 @@ const TXNSummary = () => {
                   record.rfqTimerDetails?.serverTime.replace(/[-:\s]/g, "")
                 )
               : null;
-          if (record.tradeDateTime) {
+          if (record.modifiedDatetime) {
             return (
               <span>
-                {formatDateTimeToUTCTime(record.tradeDateTime)}{" "}
+                {formatDateTimeToUTCTime(record.modifiedDatetime)}{" "}
                 {isRFQ && (
                   <RFQTImer
                     severTime={serverTime}

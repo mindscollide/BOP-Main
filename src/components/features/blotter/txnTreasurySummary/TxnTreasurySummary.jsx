@@ -363,14 +363,24 @@ const TXNTreasurySummary = ({
         align: "center",
         render: (record) => <IndexCell value={formatPkAmount(record.amount)} />,
       },
+      // {
+      //   id: "tradeDateTime",
+      //   label: "Time",
+      //   width: 80,
+      //   align: "center",
+      //   render: (record) =>
+      //     record.tradeDateTime !== ""
+      //       ? formatDateTimeToUTCTime(record.tradeDateTime)
+      //       : "",
+      // },
       {
-        id: "tradeDateTime",
+        id: "modifiedDatetime",
         label: "Time",
         width: 80,
         align: "center",
         render: (record) =>
-          record.tradeDateTime !== ""
-            ? formatDateTimeToUTCTime(record.tradeDateTime)
+          record.modifiedDatetime !== ""
+            ? formatDateTimeToUTCTime(record.modifiedDatetime)
             : "",
       },
       {
