@@ -66,6 +66,7 @@ const FeDiscountingTable = () => {
     GetAllInstrumentForTreasury,
     "getDashboardForwardsgetDashboardForwards"
   );
+
   useEffect(() => {
     if (
       getAllTenorsData !== null &&

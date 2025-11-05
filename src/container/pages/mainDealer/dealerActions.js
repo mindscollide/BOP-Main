@@ -14,7 +14,6 @@ import {
   GetVoltMeterStatus,
   UpdateVoltMeterStatus,
 } from "@/common/api_config";
-import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
 import createPostAPI from "@/utils/axiosInstance";
 import {
   setCreateTenorModal,
@@ -26,18 +25,12 @@ export const clearRatesAction = createAsyncThunk(
   "uploadRate/clearRate", // A unique action type string
   async ({ navigate, Data }, { rejectWithValue, dispatch }) => {
     try {
-      let clearRates = createPostAPI(
-        watchListApi,
-        clearRatesRM.RequestMethod
-      );
+      let clearRates = createPostAPI(watchListApi, clearRatesRM.RequestMethod);
 
       const response = await clearRates(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
-        dispatch(clearRatesAction({ navigate, Data }));
-      } else if (responseCode === 200) {
+      if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (
@@ -108,10 +101,7 @@ export const getLastPublishRatesAction = createAsyncThunk(
 
       const { responseCode } = response.data;
 
-      if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
-        dispatch(getLastPublishRatesAction({ navigate }));
-      } else if (responseCode === 200) {
+      if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (
@@ -181,10 +171,7 @@ export const PublishNewRatesAction = createAsyncThunk(
       const { responseCode } = response.data;
       console.log(responseCode, "responseCoderesponseCode");
 
-      if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
-        dispatch(PublishNewRatesAction({ navigate, Data }));
-      } else if (responseCode === 200) {
+      if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (
@@ -262,10 +249,7 @@ export const marketOnOffAction = createAsyncThunk(
       const response = await marketOnOff(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
-        dispatch(marketOnOffAction({ navigate, Data }));
-      } else if (responseCode === 200) {
+      if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (
@@ -333,10 +317,7 @@ export const getAllTenorsAction = createAsyncThunk(
 
       const { responseCode } = response.data;
 
-      if (responseCode === 417) {
-        dispatch(refreshTokenAction({ navigate }));
-        dispatch(getAllTenorsAction({ navigate }));
-      } else if (responseCode === 200) {
+      if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (
@@ -405,16 +386,7 @@ export const createTenorAction = createAsyncThunk(
 
       const { responseCode } = response.data;
 
-      if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
-        dispatch(
-          createTenorAction({
-            navigate,
-            Data,
-            setCreateTenor,
-          })
-        );
-      } else if (responseCode === 200) {
+      if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (
@@ -497,10 +469,7 @@ export const getTenorWiseForwardsAction = createAsyncThunk(
       const response = await getTenorWiseForwards();
       const { responseCode } = response.data;
 
-      if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
-        dispatch(getTenorWiseForwardsAction({ navigate }));
-      } else if (responseCode === 200) {
+      if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (
@@ -570,10 +539,7 @@ export const PublishTenorWiseForwardsAction = createAsyncThunk(
 
       const { responseCode } = response.data;
 
-      if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
-        dispatch(PublishTenorWiseForwardsAction({ navigate, Data }));
-      } else if (responseCode === 200) {
+      if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (
@@ -650,10 +616,7 @@ export const getDiscountingRatesAction = createAsyncThunk(
       const response = await getDiscountingRates();
       const { responseCode } = response.data;
 
-      if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
-        dispatch(getDiscountingRatesAction({ navigate }));
-      } else if (responseCode === 200) {
+      if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (
@@ -663,7 +626,6 @@ export const getDiscountingRatesAction = createAsyncThunk(
                 "UploadRate_UploadRateServiceManager_GetDiscountingRates_01".toLowerCase()
               )
           ) {
-          
             return {
               response: response.data?.responseResult,
               message: "Forwards Rates are Published",
@@ -720,10 +682,7 @@ export const publishDiscountingRatesAction = createAsyncThunk(
       const response = await publishDiscountingRates(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
-        dispatch(publishDiscountingRatesAction({ navigate, Data }));
-      } else if (responseCode === 200) {
+      if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (
@@ -799,10 +758,7 @@ export const getDealerDashboardApi = createAsyncThunk(
       const response = await DealerDashboardApi();
       const { responseCode } = response.data;
 
-      if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
-        dispatch(getDealerDashboardApi({ navigate }));
-      } else if (responseCode === 200) {
+      if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (
@@ -880,10 +836,7 @@ export const GetVoltMeterStatusApi = createAsyncThunk(
       const response = await GetVoltMeterStatusData();
       const { responseCode } = response.data;
 
-      if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
-        dispatch(GetVoltMeterStatusApi({ navigate }));
-      } else if (responseCode === 200) {
+      if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (
@@ -893,7 +846,7 @@ export const GetVoltMeterStatusApi = createAsyncThunk(
                 "UploadRate_UploadRateServiceManager_GetVoltMeterStatus_01".toLowerCase()
               )
           ) {
-            console.log(response, "GetVoltMeterStatusApiGetVoltMeterStatusApi")
+            console.log(response, "GetVoltMeterStatusApiGetVoltMeterStatusApi");
             return {
               response: response.data.responseResult,
               message: "",
@@ -952,10 +905,7 @@ export const UpdateVoltMeterStatusApi = createAsyncThunk(
       const response = await UpdateVoltMeterStatusData(Data);
       const { responseCode } = response.data;
 
-      if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
-        dispatch(UpdateVoltMeterStatusApi({ navigate, Data }));
-      } else if (responseCode === 200) {
+      if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (

@@ -10,10 +10,11 @@ import {
   EmailBlotterTransactionDetailsForBranch,
   EmailBlotterTransactionDetailsForCorporate,
   NOPCalcuationReports,
+  DownloadDailyTransactionsExcelReport,
+  DownloadDailyTransactionsPDFReport,
 } from "@/common/api_config";
 import { reportApi } from "@/common/apiend_points";
 import { setCustomHeaders } from "@/common/utils";
-import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
 import createPostAPI from "@/utils/axiosInstance";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
@@ -58,13 +59,6 @@ export const DownloadFileAPI = createAsyncThunk(
     } catch (error) {
       console.error("Download error:", error);
 
-      if (error.response?.status === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
-        return dispatch(
-          DownloadFileAPI({ requestMethod, fileName, fileType, navigate })
-        );
-      }
-
       return rejectWithValue("File download failed");
     }
   }
@@ -89,14 +83,6 @@ export const DownloadExcelReportBlotterTrasactionBranchAPI = createAsyncThunk(
           new Uint8Array(response.data)
         );
         const parsedData = JSON.parse(decodedString);
-
-        if (parsedData.responseCode === 417) {
-          await dispatch(refreshTokenAction({ navigate }));return
-          await dispatch(
-            DownloadExcelReportBlotterTrasactionBranchAPI({ navigate, Data })
-          );
-          return;
-        }
 
         return rejectWithValue(parsedData.message || "Something went wrong");
       }
@@ -152,17 +138,6 @@ export const DownloadExcelReportBlotterTrasactionCorporateAPI =
             new Uint8Array(response.data)
           );
           const parsedData = JSON.parse(decodedString);
-
-          if (parsedData.responseCode === 417) {
-            await dispatch(refreshTokenAction({ navigate }));return
-            await dispatch(
-              DownloadExcelReportBlotterTrasactionCorporateAPI({
-                navigate,
-                Data,
-              })
-            );
-            return;
-          }
 
           return rejectWithValue(parsedData.message || "Something went wrong");
         }
@@ -220,14 +195,6 @@ export const DownloadExcelReportBlotterTrasactionTreasuryAPI = createAsyncThunk(
         );
         const parsedData = JSON.parse(decodedString);
 
-        if (parsedData.responseCode === 417) {
-          await dispatch(refreshTokenAction({ navigate }));return
-          await dispatch(
-            DownloadExcelReportBlotterTrasactionTreasuryAPI({ navigate, Data })
-          );
-          return;
-        }
-
         return rejectWithValue(parsedData.message || "Something went wrong");
       }
 
@@ -282,14 +249,6 @@ export const DownloadPDFReportBlotterTrasactionBranchAPI = createAsyncThunk(
         );
         const parsedData = JSON.parse(decodedString);
 
-        if (parsedData.responseCode === 417) {
-          await dispatch(refreshTokenAction({ navigate }));return
-          await dispatch(
-            DownloadPDFReportBlotterTrasactionBranchAPI({ navigate, Data })
-          );
-          return;
-        }
-
         return rejectWithValue(parsedData.message || "Something went wrong");
       }
 
@@ -342,14 +301,6 @@ export const DownloadPDFReportBlotterTrasactionCorporateAPI = createAsyncThunk(
           new Uint8Array(response.data)
         );
         const parsedData = JSON.parse(decodedString);
-
-        if (parsedData.responseCode === 417) {
-          await dispatch(refreshTokenAction({ navigate }));return
-          await dispatch(
-            DownloadPDFReportBlotterTrasactionCorporateAPI({ navigate, Data })
-          );
-          return;
-        }
 
         return rejectWithValue(parsedData.message || "Something went wrong");
       }
@@ -404,17 +355,6 @@ export const DownloadPDFReportBlotterTrasactionTreasuryAPI = createAsyncThunk(
         );
         const parsedData = JSON.parse(decodedString);
         console.log(parsedData, "parsedDataparsedDataparsedData");
-        if (parsedData.responseCode === 417) {
-          console.log(
-            parsedData.responseCode,
-            "parsedDataparsedDataparsedData"
-          );
-          await dispatch(refreshTokenAction({ navigate }));return
-          await dispatch(
-            DownloadPDFReportBlotterTrasactionTreasuryAPI({ navigate, Data })
-          );
-          return;
-        }
 
         return rejectWithValue(parsedData.message || "Something went wrong");
       }
@@ -468,14 +408,6 @@ export const DownloadExcelReportNOPCalculationsAPI = createAsyncThunk(
         );
         const parsedData = JSON.parse(decodedString);
 
-        if (parsedData.responseCode === 417) {
-          await dispatch(refreshTokenAction({ navigate }));return
-          await dispatch(
-            DownloadExcelReportNOPCalculationsAPI({ navigate, Data })
-          );
-          return;
-        }
-
         return rejectWithValue(parsedData.message || "Something went wrong");
       }
 
@@ -526,16 +458,7 @@ export const EmailBlotterTransactionDetailsForBranchAPI = createAsyncThunk(
       const response = await EmailBlotterTransactionDetailsForBranchData(Data);
       console.log(response, "EmailBlotterTransactionDetailsForBranchResponse");
       const { data, status } = response;
-      if (data?.responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
-        dispatch(
-          EmailBlotterTransactionDetailsForBranchAPI({
-            Data,
-            navigate,
-            setOpenMailModal,
-          })
-        );
-      }
+
       if (status === 200) {
         const { isExecuted, responseMessage } = data;
         if (isExecuted) {
@@ -614,16 +537,7 @@ export const EmailBlotterTransactionDetailsForCorporateAPI = createAsyncThunk(
       );
       console.log(response, "EmailBlotterTransactionDetailsForCorporate");
       const { data, status } = response;
-      if (data?.responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
-        dispatch(
-          EmailBlotterTransactionDetailsForCorporateAPI({
-            Data,
-            navigate,
-            setOpenMailModal,
-          })
-        );
-      }
+
       if (status === 200) {
         const { isExecuted, responseMessage } = data;
         if (isExecuted) {
@@ -705,16 +619,7 @@ export const EmailBlotterTransactionDetailsForTreasuryAPI = createAsyncThunk(
         "EmailBlotterTransactionDetailsForTreasuryResponse"
       );
       const { data, status } = response;
-      if (data?.responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
-        dispatch(
-          EmailBlotterTransactionDetailsForTreasuryAPI({
-            Data,
-            navigate,
-            setOpenMailModal,
-          })
-        );
-      }
+
       if (status === 200) {
         const { isExecuted, responseMessage } = data;
         if (isExecuted) {
@@ -771,6 +676,117 @@ export const EmailBlotterTransactionDetailsForTreasuryAPI = createAsyncThunk(
       // Reject with error message
       console.log("", error);
       return rejectWithValue("Something went wrong");
+    }
+  }
+);
+
+//Excel Report Download Daily Transaction
+export const DownloadDailyTransactionsExcelReportAPI = createAsyncThunk(
+  "Report/DownloadDailyTransactionsExcelReport",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      const DownloadDailyTransactionsExcelReportData = createPostAPI(
+        reportApi,
+        DownloadDailyTransactionsExcelReport.RequestMethod
+      );
+
+      const response = await DownloadDailyTransactionsExcelReportData(
+        Data,
+        true
+      );
+      const contentType = response.headers?.["content-type"];
+
+      // 🟡 If backend sent JSON in arraybuffer, decode and check for token issues
+      if (contentType && contentType.includes("application/json")) {
+        const decodedString = new TextDecoder().decode(
+          new Uint8Array(response.data)
+        );
+        const parsedData = JSON.parse(decodedString);
+
+        return rejectWithValue(parsedData.message || "Something went wrong");
+      }
+
+      // 🟢 If it's a valid Excel file
+      if (response?.status === 200) {
+        const blob = new Blob([response.data], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "Daily Transaction.xlsx");
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        return { message: "Excel downloaded successfully" };
+      } else {
+        return rejectWithValue("Something went wrong while downloading Excel");
+      }
+    } catch (error) {
+      console.log("Excel Download Error:", error);
+
+      if (error?.responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
+      }
+
+      return rejectWithValue("Something went wrong while downloading Excel");
+    }
+  }
+);
+
+//Excel Report Download Daily Transaction
+export const DownloadDailyTransactionsPDFReportAPI = createAsyncThunk(
+  "Report/DownloadDailyTransactionsExcelReport",
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      const DownloadDailyTransactionsPDFReportData = createPostAPI(
+        reportApi,
+        DownloadDailyTransactionsPDFReport.RequestMethod
+      );
+
+      const response = await DownloadDailyTransactionsPDFReportData(Data, true);
+      const contentType = response.headers?.["content-type"];
+
+      // 🟡 If backend sent JSON in arraybuffer, decode and check for token issues
+      if (contentType && contentType.includes("application/json")) {
+        const decodedString = new TextDecoder().decode(
+          new Uint8Array(response.data)
+        );
+        const parsedData = JSON.parse(decodedString);
+
+        return rejectWithValue(parsedData.message || "Something went wrong");
+      }
+
+      // 🟢 If it's a valid Excel file
+      if (response?.status === 200) {
+        const blob = new Blob([response.data], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        });
+
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "Daily Transaction.pdf");
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        return { message: "PDF downloaded successfully" };
+      } else {
+        return rejectWithValue("Something went wrong while downloading Excel");
+      }
+    } catch (error) {
+      console.log("PDF Download Error:", error);
+
+      if (error?.responseCode === 401) {
+        navigate("/");
+        return rejectWithValue("Unauthorized access, please login again");
+      }
+
+      return rejectWithValue("Something went wrong while downloading Excel");
     }
   }
 );

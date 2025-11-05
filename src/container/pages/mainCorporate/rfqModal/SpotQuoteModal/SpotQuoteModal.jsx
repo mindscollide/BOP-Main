@@ -268,6 +268,7 @@ const SpotQuoteModal = ({ dealData }) => {
                           ? false
                           : true
                       }
+                      allowNegative={false}
                       // disabled={
                       //   spotQuoteModalData?.side.toLowerCase() === "buy"
                       //     ? false

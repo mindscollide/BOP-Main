@@ -5,7 +5,6 @@ import {
   getAllCalculatorData,
 } from "@/common/api_config";
 import { calculatorApi } from "@/common/apiend_points";
-import { setCustomHeaders } from "@/common/utils";
 import createPostAPI from "@/utils/axiosInstance";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
@@ -20,12 +19,7 @@ export const GetAllCalculatorData = createAsyncThunk(
       );
 
       const response = await GetAllCalculator();
-      const { responseCode } = response.data;
-    
-      if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
-        dispatch(GetAllCalculatorData({ navigate }));
-      } else if (response.data.responseCode === 200) {
+      if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (
@@ -77,11 +71,8 @@ export const CalculateFxDiscountingAPI = createAsyncThunk(
 
       const response = await CalculateFxDiscounting(Data);
       const { responseCode } = response.data;
-    
-      if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
-        dispatch(CalculateFxDiscountingAPI({ Data, navigate }));
-      } else if (response.data.responseCode === 200) {
+
+      if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (
@@ -133,11 +124,7 @@ export const CalculateNonFxDiscountingAPI = createAsyncThunk(
 
       const response = await CalculateNonFxDiscounting(Data);
       const { responseCode } = response.data;
-    
-      if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
-        dispatch(CalculateNonFxDiscountingAPI({ Data, navigate }));
-      } else if (response.data.responseCode === 200) {
+      if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (
@@ -189,11 +176,8 @@ export const CalculateForwardsAPI = createAsyncThunk(
 
       const response = await CalculateForwards(Data);
       const { responseCode } = response.data;
-    
-      if (responseCode === 417) {
-        await dispatch(refreshTokenAction({ navigate }));return
-        dispatch(CalculateForwardsAPI({ Data, navigate }));
-      } else if (response.data.responseCode === 200) {
+
+      if (response.data.responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (isExecuted) {
           if (

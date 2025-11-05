@@ -177,3 +177,40 @@
   background-color: var(--color-blue) !important;
   color: white !important;
 }
+
+/* page size style */
+
+/* Start Page Size Options Dropdown  */
+.PageSizeDropDown__indicator-separator {
+  display: none !important;
+}
+.PageSizeDropDown__placeholder {
+  color: #000 !important;
+}
+.PageSizeDropDown__option {
+  background-color: #d6d9e2 !important;
+  color: #002650 !important;
+  outline: none !important;
+}
+
+.PageSizeDropDown__option--is-focused {
+  background-color: #096fed !important;
+  color: #fff !important;
+  outline: none !important;
+}
+.PageSizeDropDown__control {
+  border-radius: 1px !important;
+  border: none !important;
+  color: #002650 !important;
+  outline: none !important;
+  min-width: 20px !important;
+  box-shadow: none !important;
+}
+.PageSizeDropDown__control--is-focused {
+  outline: none !important;
+  border-color: transparent !important;
+}
+
+.PageSizeDropDown__menu {
+  background-color: #d6d9e2 !important;
+}

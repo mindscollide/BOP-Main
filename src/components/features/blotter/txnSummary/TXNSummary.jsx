@@ -689,6 +689,7 @@ const TXNSummary = () => {
         align: "center",
         render: (record) => formatPkAmount(record.rate),
       },
+
       {
         id: "tenorDays",
         label: "Tenor Days",
@@ -704,6 +705,22 @@ const TXNSummary = () => {
           return Number(record.tenorDays) !== 0 ? record.tenorDays : ""; // Placeholder for tenor days
         },
       },
+
+      // {
+      //   id: "totalTenor",
+      //   label: "Total Tenor",
+      //   width: 120,
+      //   align: "center",
+      //   render: (record) => {
+      //     if (
+      //       record?.rfqDealDetails !== null &&
+      //       record?.rfqDealDetails !== undefined
+      //     ) {
+      //       return record?.rfqDealDetails?.tenorDays;
+      //     }
+      //     return Number(record.tenorDays) !== 0 ? record.tenorDays : ""; // Placeholder for tenor days
+      //   },
+      // },
       {
         id: "ccY2",
         label: "CCY2",
@@ -718,8 +735,53 @@ const TXNSummary = () => {
         align: "center",
         render: (record) => formatPkAmount(record.amount),
       },
+      // {
+      //   id: "tradeDateTime",
+      //   label: "Time",
+      //   width: 80,
+      //   align: "center",
+      //   render: (record) => {
+      //     // RFQ timer logic for expiring transactions
+      //     let Data = { PK_TransactionID: record.pK_TransactionID };
+      //     let isRFQ = record.isRFQ
+      //       ? record.statusID === 4 &&
+      //         record.rfqTimerDetails !== null &&
+      //         record.rfqTimerDetails?.isEnded === false
+      //         ? true
+      //         : false
+      //       : false;
+      //     let rfqTimer =
+      //       isRFQ && record.rfqTimerDetails.endTime
+      //         ? convertDateTimeIntoLocal(record.rfqTimerDetails.endTime)
+      //         : null;
+      //     const serverTime =
+      //       isRFQ && record.rfqTimerDetails?.serverTime
+      //         ? convertDateTimeIntoLocal(
+      //             record.rfqTimerDetails?.serverTime.replace(/[-:\s]/g, "")
+      //           )
+      //         : null;
+      //     if (record.tradeDateTime) {
+      //       return (
+      //         <span>
+      //           {formatDateTimeToUTCTime(record.tradeDateTime)}{" "}
+      //           {isRFQ && (
+      //             <RFQTImer
+      //               severTime={serverTime}
+      //               endTime={rfqTimer}
+      //               dispatch={dispatch}
+      //               apiFunction={ExpireRFQTransaction}
+      //               navigate={navigate}
+      //               Data={Data}
+      //             />
+      //           )}
+      //         </span>
+      //       );
+      //     }
+      //     return null;
+      //   },
+      // },
       {
-        id: "tradeDateTime",
+        id: "modifiedDatetime",
         label: "Time",
         width: 80,
         align: "center",
@@ -743,10 +805,10 @@ const TXNSummary = () => {
                   record.rfqTimerDetails?.serverTime.replace(/[-:\s]/g, "")
                 )
               : null;
-          if (record.tradeDateTime) {
+          if (record.modifiedDatetime) {
             return (
               <span>
-                {formatDateTimeToUTCTime(record.tradeDateTime)}{" "}
+                {formatDateTimeToUTCTime(record.modifiedDatetime)}{" "}
                 {isRFQ && (
                   <RFQTImer
                     severTime={serverTime}
@@ -817,20 +879,22 @@ const TXNSummary = () => {
                   }
                 />
               </>
-            ) : record.statusID === 1 ? (
-              <CustomButton
-                loading={
-                  acceptRejTranId === record.pK_TransactionID &&
-                  RequestCancellationLoading
-                }
-                icon={<i className="icon-close"></i>}
-                size={"small"}
-                className="btn btn-sm btn-danger me-1 blotterCheckerButton d-flex justify-content-center align-items-center "
-                onClick={() =>
-                  handleCheckerAccept(record.pK_TransactionID, "Cancelled")
-                }
-              />
-            ) : record.statusID === 2 || record.statusID === 5 ? (
+            ) : // : record.statusID === 1 ? (
+            //   <CustomButton
+            //     loading={
+            //       acceptRejTranId === record.pK_TransactionID &&
+            //       RequestCancellationLoading
+            //     }
+            //     icon={<i className="icon-close"></i>}
+            //     size={"small"}
+            //     className="btn btn-sm btn-danger me-1 blotterCheckerButton d-flex justify-content-center align-items-center "
+            //     onClick={() =>
+            //       handleCheckerAccept(record.pK_TransactionID, "Cancelled")
+            //     }
+            //   />
+            // )
+
+            record.statusID === 2 || record.statusID === 5 ? (
               <CustomButton
                 loading={
                   acceptRejTranId === record.pK_TransactionID &&

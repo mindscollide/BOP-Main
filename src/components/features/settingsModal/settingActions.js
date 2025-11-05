@@ -7,7 +7,6 @@ import { settingApi } from "@/common/apiend_points";
 // const { createAsyncThunk } = require("@reduxjs/toolkit");
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import createPostAPI from "@/utils/axiosInstance";
-import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
 import { setSettingModal } from "@/store/modalSlice/modalSlicer";
 
 export const getUserSettingDataAPI = createAsyncThunk(
@@ -26,12 +25,7 @@ export const getUserSettingDataAPI = createAsyncThunk(
       const { responseCode } = result.data;
       console.log(responseCode, "result");
 
-      if (responseCode === 417) {
-        console.log(result, "result");
-
-        await dispatch(refreshTokenAction({ navigate }));return
-        dispatch(getUserSettingDataAPI({ navigate }));
-      } else if (responseCode === 200) {
+      if (responseCode === 200) {
         console.log(result, "result");
 
         const { isExecuted, responseMessage, userSettingsList } =
@@ -48,7 +42,7 @@ export const getUserSettingDataAPI = createAsyncThunk(
               "Setting_SettingServiceManager_GetUserSettings_01".toLowerCase()
             )
         ) {
-          dispatch(setSettingModal(true));
+          // dispatch(setSettingModal(true));
           return { response: userSettingsList, message: "" };
         } else if (
           responseMessage
@@ -93,12 +87,7 @@ export const updateUserSettingDataAPI = createAsyncThunk(
       const { responseCode } = response.data;
       console.log(responseCode, "result");
 
-      if (responseCode === 417) {
-        console.log(response, "result");
-
-        await dispatch(refreshTokenAction({ navigate }));return
-        dispatch(getUserSettingDataAPI({ navigate }));
-      } else if (responseCode === 200) {
+      if (responseCode === 200) {
         console.log(response, "result");
 
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -114,6 +103,7 @@ export const updateUserSettingDataAPI = createAsyncThunk(
               "Setting_SettingServiceManager_UpdateUserSettings_01".toLowerCase()
             )
         ) {
+          dispatch(getUserSettingDataAPI({ navigate }));
           dispatch(setSettingModal(false));
 
           return {
@@ -163,12 +153,7 @@ export const getMarkingTimingApi = createAsyncThunk(
       const { responseCode } = response.data;
       console.log(responseCode, "result");
 
-      if (responseCode === 417) {
-        console.log(response, "result");
-
-        await dispatch(refreshTokenAction({ navigate }));return
-        dispatch(getMarkingTimingApi({ navigate }));
-      } else if (responseCode === 200) {
+      if (responseCode === 200) {
         console.log(response, "result");
 
         const {

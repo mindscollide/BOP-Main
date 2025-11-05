@@ -4,19 +4,19 @@ import { refreshTokenFn } from "@/container/loginScreens/authActions/refreshToke
 let isRefreshing = false;
 let refreshPromise = null;
 
-export const ensureTokenRefreshed = () => {
-  if (!isRefreshing) {
-    isRefreshing = true;
-    refreshPromise = refreshTokenFn()
-      .then((res) => {
-        const { token, refreshToken } = res;
-        localStorage.setItem("token", token);
-        localStorage.setItem("refreshToken", refreshToken);
-        return token;
-      })
-      .finally(() => {
-        isRefreshing = false;
-      });
-  }
+export const ensureTokenRefreshed = async () => {
+  if (isRefreshing) return refreshPromise;
+
+  isRefreshing = true;
+  refreshPromise = (async () => {
+    try {
+      const newToken = await refreshTokenFn();
+      return newToken;
+    } finally {
+      isRefreshing = false;
+      refreshPromise = null;
+    }
+  })();
+
   return refreshPromise;
 };

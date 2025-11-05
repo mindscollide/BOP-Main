@@ -83,7 +83,11 @@ export const useMqttClient = ({
   const connectToMqtt = useCallback(
     ({ subscribeID, userID }) => {
       if (!subscribeID || clientRef.current?.isConnected()) {
-        console.warn("Already connected or missing subscribeID", subscribeID, clientRef.current.isConnected());
+        console.warn(
+          "Already connected or missing subscribeID",
+          subscribeID,
+          clientRef.current.isConnected()
+        );
         return;
       }
 
@@ -127,7 +131,11 @@ export const useMqttClient = ({
         userName: import.meta.env.VITE_MQTT_USERNAME,
         password: import.meta.env.VITE_MQTT_PASSWORD,
         cleanSession: true,
-        useSSL: import.meta.env.VITE_MQTT_PORT === "8883" ? true : false,
+        useSSL:
+          import.meta.env.VITE_MQTT_PORT === "8883" &&
+          import.meta.env.VITE_MQTT_HOST === "boptrade.tresmark.com"
+            ? true
+            : false,
       });
     },
     [onMessageArrived, onConnectionLost, randomString, subscribeToTopics]
@@ -141,6 +149,6 @@ export const useMqttClient = ({
     unsubscribeFromTopics,
     onMessageArrived,
     onConnectionLost,
-    setSubscribedTopics
+    setSubscribedTopics,
   };
 };

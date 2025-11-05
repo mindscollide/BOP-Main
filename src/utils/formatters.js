@@ -207,7 +207,6 @@ export const convertDateTimeIntoLocal = (utcDateString) => {
   // Convert to local time string
   const localDateString = utcDate.toString(); // Uses system/browser local time
 
-
   return utcDate;
 };
 
@@ -294,7 +293,6 @@ export const calculateNonFeDiscountingRate = (
   swap,
   noOfDays
 ) => {
-
   if (!forwardRate || !swap || !kibor || !noOfDays) {
     return null;
   }
@@ -303,4 +301,20 @@ export const calculateNonFeDiscountingRate = (
 
   const denominator = 1 + (interestRate * noOfDays) / 365;
   return adjustedForwardRate / denominator;
+};
+
+export const formatDateAndTimeFromString = (date) => {
+  let dateString =
+    date.slice(0, 4) +
+    "-" +
+    date.slice(4, 6) +
+    "-" +
+    date.slice(6, 8) +
+    " " +
+    date.slice(8, 10) +
+    ":" +
+    date.slice(10, 12) +
+    ":" +
+    date.slice(12, 14);
+  return new Date(dateString);
 };

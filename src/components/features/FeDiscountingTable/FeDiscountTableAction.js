@@ -3,7 +3,6 @@ import {
   PublishFeDiscountingRM,
 } from "@/common/api_config";
 import { watchListApi } from "@/common/apiend_points";
-import { refreshTokenAction } from "@/container/loginScreens/authActions/refreshToken";
 import createPostAPI from "@/utils/axiosInstance";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
@@ -20,12 +19,7 @@ export const GetFEDiscountingTableApi = createAsyncThunk(
       const { responseCode } = response.data;
       console.log(responseCode, "result");
 
-      if (responseCode === 417) {
-        console.log(response, "result");
-
-        await dispatch(refreshTokenAction({ navigate }));return
-        dispatch(GetFEDiscountingTableApi({ navigate }));
-      } else if (responseCode === 200) {
+      if (responseCode === 200) {
         console.log(response, "result");
 
         const { isExecuted, responseMessage } = response.data.responseResult;
@@ -94,12 +88,7 @@ export const PublishFEDiscountingTableApi = createAsyncThunk(
       console.log(response, "result");
       const { responseCode } = response.data;
 
-      if (responseCode === 417) {
-        console.log(response, "result");
-
-        await dispatch(refreshTokenAction({ navigate }));return
-        dispatch(PublishFEDiscountingTableApi({ Data, navigate }));
-      } else if (responseCode === 200) {
+      if (responseCode === 200) {
         const { isExecuted, responseMessage } = response.data.responseResult;
         if (!isExecuted) {
           return rejectWithValue("Something went wrong");

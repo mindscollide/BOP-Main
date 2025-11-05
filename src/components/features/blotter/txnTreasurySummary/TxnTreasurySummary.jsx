@@ -314,6 +314,8 @@ const TXNTreasurySummary = ({
         align: "center",
         render: (record) => formatPkAmount(record.rate, { decimals: 4 }),
       },
+
+      //tenor days
       {
         id: "tenorDays",
         label: "Tenor Days",
@@ -329,6 +331,24 @@ const TXNTreasurySummary = ({
           return Number(record.tenorDays) !== 0 ? record.tenorDays : ""; // Placeholder for tenor days
         },
       },
+
+      //total tenor
+      // {
+      //   id: "totalTenor",
+      //   label: "Total Tenor",
+      //   width: 120,
+      //   align: "center",
+      //   render: (record) => {
+      //     if (
+      //       record?.rfqDealDetails !== null &&
+      //       record?.rfqDealDetails !== undefined
+      //     ) {
+      //       return record?.rfqDealDetails?.tenorDays;
+      //     }
+      //     return Number(record.tenorDays) !== 0 ? record.tenorDays : ""; // Placeholder for tenor days
+      //   },
+      // },
+
       {
         id: "ccY2",
         label: "CCY2",
@@ -343,14 +363,24 @@ const TXNTreasurySummary = ({
         align: "center",
         render: (record) => <IndexCell value={formatPkAmount(record.amount)} />,
       },
+      // {
+      //   id: "tradeDateTime",
+      //   label: "Time",
+      //   width: 80,
+      //   align: "center",
+      //   render: (record) =>
+      //     record.tradeDateTime !== ""
+      //       ? formatDateTimeToUTCTime(record.tradeDateTime)
+      //       : "",
+      // },
       {
-        id: "tradeDateTime",
+        id: "modifiedDatetime",
         label: "Time",
         width: 80,
         align: "center",
         render: (record) =>
-          record.tradeDateTime !== ""
-            ? formatDateTimeToUTCTime(record.tradeDateTime)
+          record.modifiedDatetime !== ""
+            ? formatDateTimeToUTCTime(record.modifiedDatetime)
             : "",
       },
       {
