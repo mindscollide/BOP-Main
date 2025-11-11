@@ -883,7 +883,8 @@ const DailyTrade = () => {
           setHasReachedBottom(false);
           setRecordLength(totalCount);
           setTableData([...tableData, ...transactions]);
-          setSRow(tableData.length + transactions.length);
+          // setSRow(tableData.length + transactions.length);
+          setSRow((prev) => prev + transactions.length);
         } else {
           setHasReachedBottom(false);
           setTableData(transactions);

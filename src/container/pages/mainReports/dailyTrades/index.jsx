@@ -194,6 +194,32 @@ const DailyTrade = () => {
   });
   const [showCustomDatePicker, setShowCustomDatePicker] = useState(false);
 
+  useEffect(() => {
+    // Set today as default
+    setSelectedDateRange({
+      value: 1,
+      label: "Today",
+    });
+    const FromDate = new Date(tradeCount.dateFrom.value);
+    FromDate.setHours(0, 0, 0);
+    const ToDate = new Date(tradeCount.dateTo.value);
+    let Data = {
+      TxnID: "",
+      CorporateName: "",
+      AccountNumber: "",
+      FromDate: formatDateToUTC(FromDate),
+      ToDate: formatDateToUTC(ToDate),
+      LCNumber: "",
+      Side: 0,
+      NatureOfTransactionID: 0,
+      Amount: 0.0,
+      sRow: 0,
+      Length: dropdownvalue,
+    };
+    dispatch(GetAllNatureOfTransactionsApi({ navigate }));
+    dispatch(GetAllTradesAPI({ Data, navigate }));
+  }, []);
+
   // Function to handle date range selection
   const handleDateRangeChange = (selectedOption) => {
     setSelectedDateRange(selectedOption);
@@ -995,32 +1021,6 @@ const DailyTrade = () => {
   //     console.log("Error:, ", error);
   //   }
   // };
-
-  useEffect(() => {
-    // Set today as default
-    setSelectedDateRange({
-      value: 1,
-      label: "Today",
-    });
-    const FromDate = new Date(tradeCount.dateFrom.value);
-    FromDate.setHours(0, 0, 0);
-    const ToDate = new Date(tradeCount.dateTo.value);
-    let Data = {
-      TxnID: "",
-      CorporateName: "",
-      AccountNumber: "",
-      FromDate: formatDateToUTC(FromDate),
-      ToDate: formatDateToUTC(ToDate),
-      LCNumber: "",
-      Side: 0,
-      NatureOfTransactionID: 0,
-      Amount: 0.0,
-      sRow: 0,
-      Length: dropdownvalue,
-    };
-    dispatch(GetAllNatureOfTransactionsApi({ navigate }));
-    dispatch(GetAllTradesAPI({ Data, navigate }));
-  }, []);
 
   useEffect(() => {
     if (GetAllNatureOfTransactions !== null) {

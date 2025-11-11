@@ -1026,10 +1026,6 @@ th.Dealer_Forwards-cell {
   border-top: 1px solid #f0f0f0;
 }
 
-th.Dealer_Forwards-cell::before {
-  background-color: transparent !important;
-}
-
 td.Dealer_Forwards-cell {
   /* border-inline-end: 1px solid #f0f0f0 !important; */
   text-align: center !important;
