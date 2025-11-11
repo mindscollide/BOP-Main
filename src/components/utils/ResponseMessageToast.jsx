@@ -12,69 +12,48 @@ export const ResponseMessage = () => {
   const dispatch = useDispatch();
 
   const sources = [
-    {
-      msg: useSelector((s) => s.dealerReducer.responseMessage),
-      clear: clearDealerResponseMessage,
-    },
-    {
-      msg: useSelector((s) => s.authReducer.responseMessage),
-      clear: clearAuthResponseMessage,
-    },
-    {
-      msg: useSelector((s) => s.WatchListReducer.responseMessage),
-      clear: clearWatchListResponseMessage,
-    },
-    { msg: useSelector((s) => s.RFQReducer.responseMessage), clear: null },
-    {
-      msg: useSelector((s) => s.categoryReducer.responseMessage),
-      clear: clearCatgeoryResponseMessage,
-    },
-    {
-      msg: useSelector((s) => s.ReportReducer.responseMessage),
-      clear: clearReportResponseMessage,
-    },
-    {
-      msg: useSelector((s) => s.CalculatorReducer.responseMessage),
-      clear: null,
-    },
-    {
-      msg: useSelector((s) => s.settingSlicer.responseMessage),
-      clear: clearSettingResponseMessage,
-    },
-    {
-      msg: useSelector((s) => s.BlotterSlicer.responseMessage),
-      clear: clearBlotterResponseMessage,
-    },
-    { msg: useSelector((s) => s.chatSlicer.responseMessage), clear: null },
+    { key: "dealer", msg: useSelector((s) => s.dealerReducer.responseMessage), clear: clearDealerResponseMessage },
+    { key: "auth", msg: useSelector((s) => s.authReducer.responseMessage), clear: clearAuthResponseMessage },
+    { key: "watchlist", msg: useSelector((s) => s.WatchListReducer.responseMessage), clear: clearWatchListResponseMessage },
+    { key: "rfq", msg: useSelector((s) => s.RFQReducer.responseMessage), clear: null },
+    { key: "category", msg: useSelector((s) => s.categoryReducer.responseMessage), clear: clearCatgeoryResponseMessage },
+    { key: "report", msg: useSelector((s) => s.ReportReducer.responseMessage), clear: clearReportResponseMessage },
+    { key: "calculator", msg: useSelector((s) => s.CalculatorReducer.responseMessage), clear: null },
+    { key: "setting", msg: useSelector((s) => s.settingSlicer.responseMessage), clear: clearSettingResponseMessage },
+    { key: "blotter", msg: useSelector((s) => s.BlotterSlicer.responseMessage), clear: clearBlotterResponseMessage },
+    { key: "chat", msg: useSelector((s) => s.chatSlicer.responseMessage), clear: null },
   ];
 
   const [messages, setMessages] = useState([]);
 
   useEffect(
     () => {
-      sources.forEach(({ msg, clear }) => {
+      sources.forEach(({ key, msg, clear }) => {
         if (msg && msg !== "") {
           const newItem = {
-            id: `${Date.now()}-${Math.random()}`,
+            id: `${key}-${Date.now()}-${Math.random()}`,
             message: msg,
+            source: key,
           };
 
           setMessages((prev) => {
-            // Avoid adding duplicates
-            const exists = prev.some((m) => m.message === msg);
+            const exists = prev.some(
+              (m) => m.source === key && m.message === msg
+            );
             if (exists) return prev;
             return [...prev, newItem];
           });
 
-          // clear after display
+          // After 2 seconds, clear slice + remove from local list
           setTimeout(() => {
             if (clear) dispatch(clear());
-          }, 2000);
+            setMessages((prev) => prev.filter((m) => m.source !== key));
+          }, 3000);
         }
       });
     },
     sources.map((s) => s.msg)
-  ); // triggers when any msg changes
+  ); // re-run when any slice msg changes
 
   return <NotificationSnackbar messages={messages} />;
 };
