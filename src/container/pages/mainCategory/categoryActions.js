@@ -257,7 +257,7 @@ export const GetCategoryWiseDiscountingRatesApi = createAsyncThunk(
                 "WatchList_WatchListServiceManager_GetCategoryWiseDiscountingRates_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("");
+            return rejectWithValue("Discounting Rates Not Published");
           } else if (
             responseMessage
               .toLowerCase()
@@ -265,7 +265,7 @@ export const GetCategoryWiseDiscountingRatesApi = createAsyncThunk(
                 "WatchList_WatchListServiceManager_GetCategoryWiseDiscountingRates_03".toLowerCase()
               )
           ) {
-            return rejectWithValue("");
+            return rejectWithValue("Discounting Rates Not Published");
           } else if (
             responseMessage
               .toLowerCase()
