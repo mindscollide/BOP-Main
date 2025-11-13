@@ -418,7 +418,7 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                       </label>
                       <NumericFormat
                         customInput={InputFIeld}
-                        value={formatPkAmount(swapValue, { decimals: 0 })}
+                        value={formatPkAmount(swapValue, { decimals: 2 })}
                         disabled={!forwardQuoteData?.isRFQ}
                         thousandSeparator=","
                         applyClass={"DiscountingQuoteInput"}

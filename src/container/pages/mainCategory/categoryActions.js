@@ -261,7 +261,9 @@ export const GetCategoryWiseDiscountingRatesApi = createAsyncThunk(
                 "WatchList_WatchListServiceManager_GetCategoryWiseDiscountingRates_02".toLowerCase()
               )
           ) {
-            return rejectWithValue("Discounting Rates Not Published");
+            return rejectWithValue(
+              import.meta.env.VITE_MQTT_PORT === "8883" ? "" : "No Record Found"
+            );
           } else if (
             responseMessage
               .toLowerCase()
