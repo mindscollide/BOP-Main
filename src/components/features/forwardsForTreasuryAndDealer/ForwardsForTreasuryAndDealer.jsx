@@ -16,6 +16,7 @@ import { setCreateTenorModal } from "@/store/modalSlice/modalSlicer";
 import { setTenorsCreated } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import NotificationSnackBar from "@/components/common/NotificationSnackbar";
 import SectionLoader from "@/components/common/sectionLoader/SectionLoader";
+import TresmarkCrosses from "../tresmarkCrosses/TresmarkCrosses";
 const shouldIncludeComponents =
   import.meta.env.VITE_APP_INCLUDE_DEALER === "true" ||
   import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
@@ -359,6 +360,26 @@ const ForwardsForTreasuryAndDealer = () => {
             </Suspense>
           </Col>
         )}
+
+        {shouldIncludeComponents && (
+          <>
+            <Col sm={12} md={6} lg={6} className="mt-3">
+              <h6 className="fs-4 fw-bold color-primary">
+                Tresmark Crosses Premium
+              </h6>
+            </Col>
+
+            <Col sm={12} md={12} lg={12} className="mt-3">
+              <Suspense fallback={<div>Loading table...</div>}>
+                <TresmarkCrosses
+                  newTenorRecord={newTenorRecord}
+                  setNewTenorRecord={setNewTenorRecord}
+                />
+              </Suspense>
+            </Col>
+          </>
+        )}
+
         {DealeAndTreasuryFeDiscountingTable && (
           <Col sm={12} md={12} lg={12} className="mt-3 position-relative">
             <Suspense fallback={<SectionLoader />}>

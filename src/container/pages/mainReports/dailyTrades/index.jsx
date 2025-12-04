@@ -1382,7 +1382,7 @@ const DailyTrade = () => {
                   { label: "50", value: 50 },
                   { label: "100", value: 100 },
                 ]}
-                classNamePrefix={"selectTransactionNatureList"}
+                classNamePrefix={"pageSizeDropdown"}
               >
                 {/* <Option value={50}>50</Option>
             <Option value={100}>100</Option> */}

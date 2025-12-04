@@ -449,6 +449,9 @@ const Dashboard = () => {
         case "CATEGORY_UPDATED":
           dispatch(categoryisUpdated(payload));
           break;
+        case "TRESMARK_CROSSES_PREMIUMS_RATES":
+          // console.log(payload, "TRESMARK_CROSSES_PREMIUMS_RATES");
+          break;
         case "CATEGORY_DELETED":
           dispatch(categoryisDeleted(payload));
           break;

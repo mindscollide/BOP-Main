@@ -11,7 +11,7 @@ import {
 import { useDispatch } from "react-redux";
 import { UpdateGetCategoryWiseForwardRates } from "@/store/categoryReducer/categoryReducer";
 
-const CategoryForwards = () => {
+const TresmarkCrosses = () => {
   const dispatch = useDispatch();
   const [dataSource, setDataSource] = useState([]);
 
@@ -275,25 +275,14 @@ const CategoryForwards = () => {
 
   return (
     <>
-      <span className="heading mb-2">Forward</span>
       <GlobalTable
         columns={columnsData}
         prefixCls="Dealer_Forwards"
         dataSource={dataSource}
         pagination={false}
       />
-
-      <div className="mt-4">
-        <span className="heading mb-2">Tresmark Crosses Premiums</span>
-        <GlobalTable
-          columns={columnsData}
-          prefixCls="Dealer_Forwards"
-          dataSource={dataSource}
-          pagination={false}
-        />
-      </div>
     </>
   );
 };
 
-export default CategoryForwards;
+export default TresmarkCrosses;

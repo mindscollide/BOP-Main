@@ -1,4 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, {
+  useState,
+  useEffect,
+  lazy,
+  startTransition,
+  Suspense,
+} from "react";
 import { useSelector, useDispatch } from "react-redux";
 import GlobalTable from "../../../../../../components/common/table/GlobalTable";
 import IconElement from "../../../../../../components/common/IconElement/IconElement";
@@ -16,6 +22,8 @@ import pdfImage from "@/assets/icons/pdf.png";
 const MIS = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [isCompanyListModal, setIsCompanyListModal] = useState(false);
+  const CompaniesListModal = lazy(() => import("../mis/companiesListModal"));
   const shouldIncludeComponents =
     import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
   const GetMisDataByRangeData = useSelector(
@@ -128,19 +136,82 @@ const MIS = () => {
       title: "Company",
       dataIndex: "corporateName",
       key: "corporateName",
+      className: "corporateName",
+
+      // render: (text, record, index) => {
+      //   const isExpanded = expandedRowKeys.includes(record.key);
+      //   return (
+      //     <span
+      //       className={`${
+      //         isExpanded ? "expanded" : ""
+      //       } roboto-13 mis-volumwise-value bg-none color-black`}
+      //     >
+      //       {record?.corporateName}
+      //     </span>
+      //   );
+      // },
       render: (text, record, index) => {
-        const isExpanded = expandedRowKeys.includes(record.key);
+        console.log(index, "topCustomertopCustomer index");
+
+        const isExpanded = expandedRowKeys.includes(index);
         return (
-          <span
-            className={`${
-              isExpanded ? "expanded" : ""
-            } roboto-13 mis-volumwise-value bg-none color-black`}
-          >
-            {record?.corporateName}
-          </span>
+          <>
+            <span
+              className={`${
+                isExpanded ? "expanded" : ""
+              } roboto-13 mis-volumwise-value bg-none color-black`}
+            >
+              {record?.corporateName}
+              {shouldIncludeComponents && (
+                <span className="view-detail cursor-pointer">
+                  {index === 0 ? (
+                    <IconElement
+                      onClick={() => handleOpenMISModal(index)}
+                      iconClass={`icon-open color-gray mx-1`}
+                    ></IconElement>
+                  ) : (
+                    ""
+                  )}
+                </span>
+              )}
+            </span>
+
+            {isExpanded && expandedRowKeys.includes(index) ? (
+              <div className="d-grid">
+                <span
+                  className={`${
+                    index === 1 ? "mis-profitwise-value" : "mis-volumwise-value"
+                  } bg-none py-0 roboto-13`}
+                >
+                  {index === 1 ? (
+                    <span className="color-hd border-0">{"Import 2"}</span>
+                  ) : (
+                    <span className="color-hd border-0">{"Import 1"}</span>
+                  )}
+                </span>
+
+                <span
+                  className={`${
+                    index === 1 ? "mis-profitwise-value" : "mis-volumwise-value"
+                  } bg-none py-0 roboto-13`}
+                >
+                  {index === 1 ? (
+                    <span className="color-hd border-0 roboto-13">
+                      {"Export 2"}
+                    </span>
+                  ) : (
+                    <span className="color-hd border-0 roboto-13">
+                      {"Export 1"}
+                    </span>
+                  )}
+                </span>
+              </div>
+            ) : null}
+          </>
         );
       },
     },
+
     {
       title: "Value",
       dataIndex: "value",
@@ -242,6 +313,12 @@ const MIS = () => {
         // Otherwise, expand along with existing ones
         return [...prevKeys, index];
       }
+    });
+  };
+
+  const handleOpenMISModal = () => {
+    startTransition(() => {
+      setIsCompanyListModal(true);
     });
   };
 
@@ -417,6 +494,15 @@ const MIS = () => {
           {GetMisDataByRangeSpinner && <SectionLoader />}
         </div>
       </div>
+
+      {isCompanyListModal && (
+        <Suspense fallback={"...Loading"}>
+          <CompaniesListModal
+            isCompanyListModal={isCompanyListModal}
+            setIsCompanyListModal={setIsCompanyListModal}
+          />
+        </Suspense>
+      )}
     </>
   );
 };
