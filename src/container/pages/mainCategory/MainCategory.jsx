@@ -45,7 +45,7 @@ const MainCategory = () => {
     {
       title: "Spot",
       content: (
-        <span className='position-relative'>
+        <span className="position-relative">
           <Suspense fallback={<SectionLoader />}>
             {activeTab === "Spot" && <SpotDealerAndTreasury />}
           </Suspense>
@@ -55,9 +55,13 @@ const MainCategory = () => {
     {
       title: "Forwards",
       content: (
-        <span className='position-relative'>
+        <span className="position-relative">
           <Suspense fallback={<SectionLoader />}>
-            {activeTab === "Forwards" && <CategoryForwards />}
+            {activeTab === "Forwards" && (
+              <>
+                <CategoryForwards />
+              </>
+            )}
           </Suspense>
         </span>
       ),
@@ -65,7 +69,7 @@ const MainCategory = () => {
     {
       title: "Discounting",
       content: (
-        <span className='position-relative'>
+        <span className="position-relative">
           <Suspense fallback={<SectionLoader />}>
             {activeTab === "Discounting" && <CategoryDiscounting />}
           </Suspense>
@@ -79,8 +83,8 @@ const MainCategory = () => {
       tabs={tabsData}
       activeKey={activeTab}
       onTabChange={handleTabChange}
-      defaultActiveKey='Spot' // Changed from "0" to match your tab titles
-      tabClass='mb-4'
+      defaultActiveKey="Spot" // Changed from "0" to match your tab titles
+      tabClass="mb-4"
     />
   );
 };

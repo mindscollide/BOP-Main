@@ -25,6 +25,7 @@ const GlobalTable = ({
   rowKey,
   onRow, // Add this line to accept the onRow prop
   loading,
+  ref,
 }) => {
   return (
     <Table
@@ -53,6 +54,7 @@ const GlobalTable = ({
       sticky={sticky}
       rowKey={rowKey}
       loading={loading}
+      ref={ref}
     />
   );
 };

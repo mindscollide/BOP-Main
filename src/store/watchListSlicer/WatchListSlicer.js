@@ -10,6 +10,7 @@ import {
   SaveUserDashboardAPI,
   getAllTreasuryInstrumentsApi,
   getMarketStatusApi,
+  GetCorporateDailyVolumeAPI,
 } from "../../components/features/SpotBranch/WatchlistAction";
 
 const WatchListSlice = createSlice({
@@ -29,6 +30,7 @@ const WatchListSlice = createSlice({
     GetBankForwardForTreasuryLoading: false,
     GetDiscountingRatesForTreasuryLoading: false,
     GetMarketStatusLoading: false,
+    GetCorporateDailyVolumeLoading: false,
 
     // data states
     getAllInstrumentForCounterParties: null,
@@ -44,6 +46,7 @@ const WatchListSlice = createSlice({
     GetDiscountingRatesForTreasury: null,
     getMarketStatus: null,
     watchlistTableDataCopy: null,
+    GetCorporateDailyVolume: null,
   },
   reducers: {
     clearWatchListResponseMessage: (state) => {
@@ -54,6 +57,10 @@ const WatchListSlice = createSlice({
     },
     setWatchlistTableDataCopy(state, { payload }) {
       state.watchlistTableDataCopy = payload;
+    },
+    clearCorporateDailyVolume: (state) => {
+      state.GetCorporateDailyVolume = null;
+      state.GetCorporateDailyVolumeLoading = false;
     },
   },
   extraReducers: (builder) => {
@@ -123,31 +130,43 @@ const WatchListSlice = createSlice({
       .addCase(GetForwardRatesForCounterPartyApi.pending, (state) => {
         state.GetForwardRatesForCounterPartyLoading = true;
       })
-      .addCase(GetForwardRatesForCounterPartyApi.fulfilled, (state, { payload }) => {
-        state.GetForwardRatesForCounterPartyLoading = false;
-        state.GetForwardRatesForCounterParty = payload?.response;
-        state.responseMessage = payload?.message;
-      })
-      .addCase(GetForwardRatesForCounterPartyApi.rejected, (state, { payload }) => {
-        state.GetForwardRatesForCounterPartyLoading = false;
-        state.GetForwardRatesForCounterParty = null;
-        state.error = payload;
-      })
+      .addCase(
+        GetForwardRatesForCounterPartyApi.fulfilled,
+        (state, { payload }) => {
+          state.GetForwardRatesForCounterPartyLoading = false;
+          state.GetForwardRatesForCounterParty = payload?.response;
+          state.responseMessage = payload?.message;
+        }
+      )
+      .addCase(
+        GetForwardRatesForCounterPartyApi.rejected,
+        (state, { payload }) => {
+          state.GetForwardRatesForCounterPartyLoading = false;
+          state.GetForwardRatesForCounterParty = null;
+          state.error = payload;
+        }
+      )
 
       // ------------------ GetDiscountingRatesForCounterParty ------------------
       .addCase(GetDiscountingRatesForCounterPartyApi.pending, (state) => {
         state.GetDiscountingRatesForCounterPartyLoading = true;
       })
-      .addCase(GetDiscountingRatesForCounterPartyApi.fulfilled, (state, { payload }) => {
-        state.GetDiscountingRatesForCounterPartyLoading = false;
-        state.GetDiscountingRatesForCounterParty = payload?.response;
-        state.responseMessage = payload?.message;
-      })
-      .addCase(GetDiscountingRatesForCounterPartyApi.rejected, (state, { payload }) => {
-        state.GetDiscountingRatesForCounterPartyLoading = false;
-        state.GetDiscountingRatesForCounterParty = null;
-        state.error = payload;
-      })
+      .addCase(
+        GetDiscountingRatesForCounterPartyApi.fulfilled,
+        (state, { payload }) => {
+          state.GetDiscountingRatesForCounterPartyLoading = false;
+          state.GetDiscountingRatesForCounterParty = payload?.response;
+          state.responseMessage = payload?.message;
+        }
+      )
+      .addCase(
+        GetDiscountingRatesForCounterPartyApi.rejected,
+        (state, { payload }) => {
+          state.GetDiscountingRatesForCounterPartyLoading = false;
+          state.GetDiscountingRatesForCounterParty = null;
+          state.error = payload;
+        }
+      )
 
       // ------------------ GetBankSpotForTreasury ------------------
       .addCase(GetBankSpotForTreasuryApi.pending, (state) => {
@@ -183,16 +202,22 @@ const WatchListSlice = createSlice({
       .addCase(GetDiscountingRatesForTreasuryApi.pending, (state) => {
         state.GetDiscountingRatesForTreasuryLoading = true;
       })
-      .addCase(GetDiscountingRatesForTreasuryApi.fulfilled, (state, { payload }) => {
-        state.GetDiscountingRatesForTreasuryLoading = false;
-        state.GetDiscountingRatesForTreasury = payload?.response;
-        state.responseMessage = payload?.message;
-      })
-      .addCase(GetDiscountingRatesForTreasuryApi.rejected, (state, { payload }) => {
-        state.GetDiscountingRatesForTreasuryLoading = false;
-        state.GetDiscountingRatesForTreasury = null;
-        state.error = payload;
-      })
+      .addCase(
+        GetDiscountingRatesForTreasuryApi.fulfilled,
+        (state, { payload }) => {
+          state.GetDiscountingRatesForTreasuryLoading = false;
+          state.GetDiscountingRatesForTreasury = payload?.response;
+          state.responseMessage = payload?.message;
+        }
+      )
+      .addCase(
+        GetDiscountingRatesForTreasuryApi.rejected,
+        (state, { payload }) => {
+          state.GetDiscountingRatesForTreasuryLoading = false;
+          state.GetDiscountingRatesForTreasury = null;
+          state.error = payload;
+        }
+      )
 
       // ------------------ GetMarketStatus ------------------
       .addCase(getMarketStatusApi.pending, (state) => {
@@ -207,6 +232,21 @@ const WatchListSlice = createSlice({
         state.GetMarketStatusLoading = false;
         state.getMarketStatus = null;
         state.error = payload;
+      })
+
+      //----------------GetCorporateDailyVolume------------------
+      .addCase(GetCorporateDailyVolumeAPI.pending, (state) => {
+        state.GetCorporateDailyVolumeLoading = true;
+      })
+      .addCase(GetCorporateDailyVolumeAPI.fulfilled, (state, { payload }) => {
+        state.GetCorporateDailyVolumeLoading = false;
+        state.GetCorporateDailyVolume = payload?.response;
+        state.responseMessage = payload?.message;
+      })
+      .addCase(GetCorporateDailyVolumeAPI.rejected, (state, { payload }) => {
+        state.GetCorporateDailyVolumeLoading = false;
+        state.GetCorporateDailyVolume = null;
+        state.error = payload;
       });
   },
 });
@@ -215,5 +255,6 @@ export const {
   clearWatchListResponseMessage,
   setMarketStatus,
   setWatchlistTableDataCopy,
+  clearCorporateDailyVolume,
 } = WatchListSlice.actions;
 export default WatchListSlice.reducer;

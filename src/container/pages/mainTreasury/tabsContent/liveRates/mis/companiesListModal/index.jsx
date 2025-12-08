@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Modal from "@/components/common/globalModal/Modal";
 import "./companiesListModal.css";
 import { Col, Row } from "react-bootstrap";
@@ -6,42 +6,59 @@ import SelectDropdown from "@/components/common/selectDropdown/SelectDropdown";
 import { useTableScrollBottom } from "@/utils/useTableScrollBottom";
 import GlobalTable from "@/components/common/table/GlobalTable";
 import { formatPkAmount } from "@/utils/formatters";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { GetCorporateDailyVolumeAPI } from "@/components/features/SpotBranch/WatchlistAction";
+import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
+import { clearCorporateDailyVolume } from "@/store/watchListSlicer/WatchListSlicer";
 
 const CompaniesListModal = ({ isCompanyListModal, setIsCompanyListModal }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [sRow, setSRow] = useState(0);
   const [recordsLength, setRecordLength] = useState(0);
   const [dropdownvalue, setDropdownvalue] = useState(10);
+  const [tableData, setTableData] = useState([]);
+
+  const GetCorporateDailyVolume = useSelector(
+    (state) => state.WatchListReducer.GetCorporateDailyVolume
+  );
+
+  const loading = useSelector(
+    (state) => state.WatchListReducer.GetCorporateDailyVolumeLoading
+  );
 
   const [selectPageSize, setSelectPageSize] = useState({
     value: 10,
     label: "10",
   });
 
+  const [sortOrder, setSortOrder] = useState("desc");
+
+  useEffect(() => {
+    const Data = {
+      sRow: 0,
+      Length: dropdownvalue,
+    };
+    dispatch(GetCorporateDailyVolumeAPI({ Data }));
+
+    return () => {
+      dispatch(clearCorporateDailyVolume());
+    };
+  }, []);
+
   const { hasReachedBottom, setHasReachedBottom } = useTableScrollBottom(() => {
     console.log("🚀 Table reached bottom");
     // Load more data here if needed
-    // if (recordsLength !== tableData.length) {
-    //   // setHasReachedBottom(true);
-    //   const FromDate = new Date(tradeCount.dateFrom.value);
-    //   FromDate.setHours(0, 0, 0);
-    //   const ToDate = new Date(tradeCount.dateTo.value);
-    //   ToDate.setHours(23, 59, 59);
-    //   let Data = {
-    //     TxnID: tradeCount.TxnID.value,
-    //     CorporateName: tradeCount.clientName.value,
-    //     AccountNumber: tradeCount.AccountNumber.value,
-    //     FromDate: formatDateToUTC(FromDate),
-    //     ToDate: formatDateToUTC(ToDate),
-    //     LCNumber: tradeCount.LC.value,
-    //     Side: side.value,
-    //     NatureOfTransactionID: tradeCount.natureOfClient.value,
-    //     Amount: Number(tradeCount.Amount.value),
-    //     sRow: sRow,
-    //     Length: dropdownvalue,
-    //   };
-    //   // dispatch(GetAllTradesAPI(navigate, Data));
-    //   dispatch(GetAllTradesAPI({ Data, navigate }));
-    // }
+    // setHasReachedBottom(true);
+    if (recordsLength !== tableData.length) {
+      const Data = {
+        Length: dropdownvalue,
+        sRow: sRow,
+      };
+      dispatch(GetCorporateDailyVolumeAPI({ Data }));
+    }
   });
 
   const handlePageSizeChange = (newSize) => {
@@ -50,36 +67,34 @@ const CompaniesListModal = ({ isCompanyListModal, setIsCompanyListModal }) => {
     setDropdownvalue(newSize.value);
     setSRow(0);
     setHasReachedBottom(false);
-    // setTableData([]);
+    setTableData([]);
     setRecordLength(0);
-    // try {
-    //   const FromDate = new Date(tradeCount.dateFrom.value);
-    //   FromDate.setHours(0, 0, 0);
-    //   const ToDate = new Date(tradeCount.dateTo.value);
-    //   ToDate.setHours(23, 59, 59);
-    //   let Data = {
-    //     TxnID: tradeCount.TxnID.value,
-    //     CorporateName: tradeCount.clientName.value,
-    //     AccountNumber: tradeCount.AccountNumber.value,
-    //     FromDate: formatDateToUTC(FromDate),
-    //     ToDate: formatDateToUTC(ToDate),
-    //     LCNumber: tradeCount.LC.value,
-    //     Side: side.value,
-    //     NatureOfTransactionID: tradeCount.natureOfClient.value,
-    //     Amount: Number(tradeCount.Amount.value),
-    //     sRow: 0,
-    //     Length: newSize.value,
-    //   };
-    //   dispatch(GetAllTradesAPI({ Data, navigate }));
-    // } catch (error) {
-    //   console.log("Error:, ", error);
-    // }
+    try {
+      const Data = {
+        Length: newSize.value,
+        sRow: 0,
+      };
+      dispatch(GetCorporateDailyVolumeAPI({ Data }));
+    } catch (error) {
+      console.log(error);
+    }
   };
   const companyListColumns = [
     {
-      title: "Company Name",
-      dataIndex: "companyName",
-      key: "companyName",
+      title: (
+        <>
+          <div className="d-flex justify-content-start gap-2">
+            <span>Company Name</span>
+            {sortOrder === "desc" ? (
+              <ArrowUpOutlined onClick={() => setSortOrder("asc")} />
+            ) : (
+              <ArrowDownOutlined onClick={() => setSortOrder("desc")} />
+            )}
+          </div>
+        </>
+      ),
+      dataIndex: "corporateName",
+      key: "corporateName",
       width: "350px",
       align: "left",
       ellipsis: true,
@@ -87,35 +102,100 @@ const CompaniesListModal = ({ isCompanyListModal, setIsCompanyListModal }) => {
 
     {
       title: "Volume",
-      dataIndex: "amount",
-      key: "amount",
+      dataIndex: "totalVolume",
+      key: "totalVolume",
       width: "100px",
       align: "start",
       ellipsis: true,
       render: (amount) => formatPkAmount(amount, { decimals: 2 }),
     },
   ];
-  //TEMP
-  const TableData = [
-    { companyName: "Unilever Pakistan", amount: 500000 },
-    { companyName: "Pakistan Petroleum", amount: 500000 },
-    { companyName: "Nestle Pakistan", amount: 500000 },
-    { companyName: "Lucky Cement", amount: 500000 },
-    { companyName: "Gul Ahmed", amount: 500000 },
-    { companyName: "Engro Corporation", amount: 500000 },
-    { companyName: "Attock Cement", amount: 500000 },
-    { companyName: "Arif Habib Limited", amount: 500000 },
-    { companyName: "Abbott Laboratories (Pakistan) Limited", amount: 500000 },
-    { companyName: "Unilever Pakistan", amount: 500000 },
-    { companyName: "Pakistan Petroleum", amount: 500000 },
-    { companyName: "Nestle Pakistan", amount: 500000 },
-    { companyName: "Lucky Cement", amount: 500000 },
-    { companyName: "Gul Ahmed", amount: 500000 },
-    { companyName: "Engro Corporation", amount: 500000 },
-    { companyName: "Attock Cement", amount: 500000 },
-    { companyName: "Arif Habib Limited", amount: 500000 },
-    { companyName: "Abbott Laboratories (Pakistan) Limited", amount: 500000 },
-  ];
+
+  // useEffect(() => {
+  //   if (GetCorporateDailyVolume && GetCorporateDailyVolume !== null) {
+  //     try {
+  //       const { corporateDailyVolumes } = GetCorporateDailyVolume;
+  //       const updatedData = corporateDailyVolumes.map((volume) => ({
+  //         companyName: volume.corporateName,
+  //         amount: volume.totalVolume,
+  //       }));
+
+  //       console.log(updatedData, "updatedDataupdatedData");
+  //       setTableData(updatedData);
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   }
+  // }, [GetCorporateDailyVolume]);
+
+  // handelled scrolling here (4)
+
+  const tableWrapperRef = useRef(null);
+
+  useEffect(() => {
+    if (GetCorporateDailyVolume !== null) {
+      try {
+        const { corporateDailyVolumes, totalCount } = GetCorporateDailyVolume;
+        console.log({ tableData, hasReachedBottom }, "hasReachedBottom");
+
+        if (hasReachedBottom) {
+          console.log("in hasReachedBottom");
+          setHasReachedBottom(false);
+          setRecordLength(totalCount);
+          setTableData([...tableData, ...corporateDailyVolumes]);
+          setSRow(tableData.length + corporateDailyVolumes.length);
+        } else {
+          console.log("else");
+
+          if (tableWrapperRef.current) {
+            const tableBody =
+              tableWrapperRef.current.querySelector(".ant-table-body");
+
+            if (tableBody) {
+              tableBody.scrollTop = 0;
+            }
+          }
+
+          setHasReachedBottom(false);
+          setTableData(corporateDailyVolumes);
+
+          setRecordLength(totalCount);
+          setSRow(corporateDailyVolumes.length);
+        }
+      } catch (error) {
+        console.log(error, "Error");
+      }
+    } else if (GetCorporateDailyVolume === null) {
+      if (!hasReachedBottom) {
+        console.log("in !hasReachedBottom");
+
+        setHasReachedBottom(false);
+        setTableData([]);
+        setRecordLength(0);
+        setSRow(0);
+      }
+    }
+  }, [GetCorporateDailyVolume]);
+
+  console.log(tableData, "tableData");
+  // 'asc' | 'desc'
+  const sortedTableData = useMemo(() => {
+    if (!Array.isArray(tableData) || tableData.length === 0) return [];
+
+    return [...tableData].sort((a, b) => {
+      const volA = Number(a?.totalVolume || 0);
+      const volB = Number(b?.totalVolume || 0);
+
+      // Sort by volume (dynamic order)
+      if (volA !== volB) {
+        return sortOrder === "asc" ? volA - volB : volB - volA;
+      }
+
+      // If volume equal, sort by name (always ASC)
+      return (a?.corporateName || "").localeCompare(b?.corporateName || "");
+    });
+  }, [tableData, sortOrder]);
+
   return (
     <>
       <Modal
@@ -168,11 +248,11 @@ const CompaniesListModal = ({ isCompanyListModal, setIsCompanyListModal }) => {
                 <GlobalTable
                   columns={companyListColumns}
                   pagination={false}
-                  // rows={tableData}
-                  dataSource={TableData}
-                  scroll={{ x: "max-content", y: "50vh" }}
+                  dataSource={sortedTableData}
+                  scroll={{ y: "40vh" }}
                   className={"CompanyList-table"}
-                  // loading={GetAllTradesLoader}
+                  loading={loading}
+                  ref={tableWrapperRef}
                 />
               </Col>
             </Row>

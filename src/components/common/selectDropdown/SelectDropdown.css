@@ -183,7 +183,7 @@
   width: 100% !important;
 }
 
-.pageSizeDropdown__menu.css-1nmdiq5-menu {
+.pageSizeDropdown__menu {
   z-index: 999999 !important;
   /* max-height: 30vh; */
   /*height: auto;
@@ -237,4 +237,7 @@
 
 .companyListPageSizeDropdown__control {
   min-height: 30px !important;
+}
+.selectTransactionNatureList__menu-portal {
+  z-index: 999999 !important;
 }

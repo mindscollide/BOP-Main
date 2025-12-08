@@ -188,7 +188,6 @@ const GlobalNavbar = () => {
             CategoryID: obj.value,
           };
           setAllCategories(newCategoryMap);
-          console.log(Data, "DataData");
 
           dispatch(GetCategoryWiseSpotRatesApi({ navigate, Data }));
           dispatch(GetCategoryWiseForwardRatesApi({ navigate, Data }));

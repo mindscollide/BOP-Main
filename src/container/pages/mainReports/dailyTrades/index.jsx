@@ -65,6 +65,7 @@ const DailyTrade = () => {
     value: 50,
     label: "50",
   });
+
   const tradeCountSchema = {
     TxnID: {
       value: "",
@@ -1157,13 +1158,13 @@ const DailyTrade = () => {
                 value={side.value !== 0 ? side : null}
                 isSearchable
                 onChange={handleSelectSide}
+                menuPosition=""
               ></SelectDropdown>
             </Col>
 
             <Col lg={2} md={2} sm={12}>
               <SelectDropdown
                 placeholder="Select Nature"
-                // classNamePrefix={"TradeCountSelect"}
                 classNamePrefix="selectTransactionNatureList"
                 options={natureOptions}
                 value={natureID.value !== 0 ? natureID : null}

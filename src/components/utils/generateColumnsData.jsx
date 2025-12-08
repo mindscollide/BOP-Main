@@ -179,7 +179,6 @@ export const buildForwardsTable = (
   if (!Data || !getAllTenorsData || !getAllInstrument) {
     return { rowData: [], columnsData: [] };
   }
-  console.log({ Data, value, getAllTenorsData, getAllInstrument }, "DataData");
   try {
     const { tenors } = getAllTenorsData;
     const { instruments } = getAllInstrument;
@@ -341,4 +340,114 @@ export const buildCurrentRatesPayload = (rowData) => {
   });
 
   return currentRates;
+};
+
+export const buildTresmarkCrossPremiumTable = (
+  value,
+  Data,
+  getAllTenorsData,
+  getAllInstrument
+) => {
+  if (!Data || !getAllTenorsData || !getAllInstrument) {
+    return { rowData: [], columnsData: [] };
+  }
+  try {
+    const { tenors } = getAllTenorsData;
+    const { instruments } = getAllInstrument;
+
+    const applicableInstruments =
+      value === 3
+        ? // value 3 for when  treasury forwards application is used
+          instruments
+        : instruments;
+
+    const applicableTenors =
+      value === 3
+        ? tenors?.filter((tenor) => tenor.isForwardStandard) || []
+        : tenors;
+
+    // Step 1: Create rateMap with bid/ask
+    const rateMap = {};
+    Data.forEach((entry) => {
+      const key = `${entry.instrumentID}-${entry.tenorID}`;
+      rateMap[key] = {
+        bid: entry.bidPremium ?? 0,
+        ask: entry.bidPremium ?? 0,
+      };
+    });
+
+    // Step 2: Create rows
+    const rowData = applicableTenors.map((tenor) => {
+      const row = {
+        tenorID: tenor.tenorID,
+        tenorName: tenor.tenorName,
+        tenorDays: tenor.tenorDays,
+      };
+
+      applicableInstruments.forEach((instrument) => {
+        const key = `${instrument.instrumentID}-${tenor.tenorID}`;
+        const rates = rateMap[key] || { bid: 0, ask: 0 };
+
+        row[`bid_${instrument.instrumentName}`] = rates.bid;
+        row[`ask_${instrument.instrumentName}`] = rates.ask;
+        row[`InstrumentID_${instrument.instrumentName}`] =
+          instrument.instrumentID;
+        row[`InstrumentName_${instrument.instrumentName}`] =
+          instrument.instrumentName;
+      });
+
+      return row;
+    });
+
+    // Step 3: Create columns
+    let columnsData = [];
+
+    if (value === 3) {
+      // Forwards layout
+      columnsData = [
+        {
+          title: "",
+          key: "tenorName",
+          width: 60,
+          children: [
+            {
+              title: "Tenor",
+              dataIndex: `tenorName`,
+              key: "tenorName",
+              width: 120,
+
+              align: "center",
+            },
+          ],
+        },
+        ...applicableInstruments.map((inst) => ({
+          title: inst.instrumentName,
+          key: `group_${inst.instrumentName}`,
+          align: "center",
+          width: 180,
+          children: [
+            {
+              title: "Bid",
+              dataIndex: `bid_${inst.instrumentName}`,
+              key: `bid_${inst.instrumentName}`,
+              width: 60,
+              align: "center",
+            },
+            {
+              title: "Ask",
+              dataIndex: `ask_${inst.instrumentName}`,
+              key: `ask_${inst.instrumentName}`,
+              width: 60,
+              align: "center",
+            },
+          ],
+        })),
+      ];
+    }
+
+    return { rowData, columnsData };
+  } catch (error) {
+    console.error("Error while building forwards table:", error);
+    return { rowData: [], columnsData: [] };
+  }
 };

@@ -67,6 +67,7 @@ import {
   setTreasuryFowardsTenorsChanges,
   setTreasuryNonFeDiscounting,
   setTreasurySpotRatesFeed,
+  setTresmarkCrossPremiumRates,
   tenorWiseFowardsRatesPublishedActions,
 } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { formatDateToUTC } from "@/utils/formatters";
@@ -439,7 +440,6 @@ const Dashboard = () => {
             EndDate: formatDateToUTC(endDate, 1),
           };
           dispatch(GetMisDataByRangeAPI({ navigate, Data }));
-
           break;
 
         // ✅ Categories
@@ -449,9 +449,7 @@ const Dashboard = () => {
         case "CATEGORY_UPDATED":
           dispatch(categoryisUpdated(payload));
           break;
-        case "TRESMARK_CROSSES_PREMIUMS_RATES":
-          // console.log(payload, "TRESMARK_CROSSES_PREMIUMS_RATES");
-          break;
+
         case "CATEGORY_DELETED":
           dispatch(categoryisDeleted(payload));
           break;
@@ -469,6 +467,12 @@ const Dashboard = () => {
             dispatch(LogoutApi({ navigate }));
           }
           break;
+
+        //TRESMARKCROSSESPEMIUMSRATES
+        case "TRESMARK_CROSSES_PREMIUMS_RATES":
+          dispatch(setTresmarkCrossPremiumRates(payload));
+          break;
+
         default:
           console.warn("No specific handler for this message type", payload);
           break;
@@ -525,7 +529,7 @@ const Dashboard = () => {
 
     //make isTreasuryCommented
     if (isTreasury || isDealer) {
-      if (marketStatus && isTreasuryPath) {
+      if (marketStatus) {
         // Subscribe only when status is true AND path is treasury
         subscribeToTopics(["BOP_REAL_TIME_FEED_TREASURY"]);
         console.log("Subscribed to BOP_REAL_TIME_FEED_TREASURY");

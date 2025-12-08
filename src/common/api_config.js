@@ -450,5 +450,12 @@ export const GetAllTrades = {
   RequestMethod: "ServiceManager.GetAllTrades",
 };
 
+export const GetTresmarkCrossesPremiums = {
+  RequestMethod: "ServiceManager.GetTresmarkCrossesPremiums",
+};
+
+export const GetCorporateDailyVolume = {
+  RequestMethod: "ServiceManager.GetCorporateDailyVolume",
+};
 //Confimration modal
 export const CONFIRMATION_MODAL = "CONFIRMATION_MODAL";

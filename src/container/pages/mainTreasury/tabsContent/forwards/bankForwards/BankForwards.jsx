@@ -192,9 +192,9 @@ const BankForwards = () => {
 
   return (
     <>
-      <Row className='my-3'>
+      <Row className="my-3">
         <Col sm={12} md={12} lg={12}>
-          <div className='flex-fill fs-4 fw-bold color-black mb-1 ff-roboto'>
+          <div className="flex-fill fs-4 fw-bold color-black mb-1 ff-roboto">
             Bank Forwards
           </div>
 

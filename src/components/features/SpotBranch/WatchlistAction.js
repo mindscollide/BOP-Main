@@ -2,6 +2,7 @@ import {
   GetAllInstrumentForTreasuryRM,
   GetBankForwardForTreasury,
   GetBankSpotForTreasury,
+  GetCorporateDailyVolume,
   GetDashboardData,
   GetDiscountingRatesForCounterParty,
   GetDiscountingRatesForTreasury,
@@ -677,6 +678,67 @@ export const getMarketStatusApi = createAsyncThunk(
         return rejectWithValue("Something went wrong");
       }
     } catch (error) {
+      console.log("", error);
+      return rejectWithValue("Something went wrong");
+    }
+  }
+);
+
+// Define the GetCorporateDailyVolume async thunk
+export const GetCorporateDailyVolumeAPI = createAsyncThunk(
+  "watchlist/GetCorporateDailyVolume", // A unique action type string
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      let GetCorporateDailyVolumeData = createPostAPI(
+        watchListApi,
+        GetCorporateDailyVolume.RequestMethod
+      );
+
+      const response = await GetCorporateDailyVolumeData(Data);
+      const { responseCode } = response.data;
+      if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetCorporateDailyVolume_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message: "",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetCorporateDailyVolume_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("No Record Found");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetCorporateDailyVolume_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          console.log("", response.data);
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      // Reject with error message
       console.log("", error);
       return rejectWithValue("Something went wrong");
     }

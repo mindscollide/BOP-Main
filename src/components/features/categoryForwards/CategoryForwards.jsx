@@ -19,6 +19,10 @@ const CategoryForwards = () => {
   const GetCategoryWiseForwardRatesData = useSelector(
     (state) => state.categoryReducer.GetCategoryWiseForwardRates
   );
+  console.log(
+    GetCategoryWiseForwardRatesData,
+    "GetCategoryWiseForwardRatesDataGetCategoryWiseForwardRatesData"
+  );
 
   const allInstrumentForTreasuryData = useSelector(
     (state) => state.WatchListReducer.GetAllInstrumentForTreasury
@@ -39,35 +43,14 @@ const CategoryForwards = () => {
   const ClearRatesData = useSelector(
     (state) => state.RealtimeActionsSlice.CategoryForwardClearRates
   );
-  console.log(ClearRatesData, "ClearRatesDataClearRatesData");
   const categoryFowardsTenorsChanges = useSelector(
     (state) => state.RealtimeActionsSlice.categoryFowardsTenorsChanges
-  );
-
-  console.log(
-    categoryFowardsTenorsChanges,
-    "categoryFowardsTenorsChangescategoryFowardsTenorsChanges"
-  );
-  console.log(
-    { dataSource, categoryFowardsTenorsChanges },
-    "dataSourcedataSourcedataSource"
-  );
-
-  console.log(GetCategoryWiseForwardRatesData, "CategoryForwardRates");
-
-  console.log(
-    {
-      GetCategoryWiseForwardRates: GetCategoryWiseForwardRatesData,
-      allInstrumentForTreasuryData: allInstrumentForTreasuryData,
-      getAllTenorsRecords: getAllTenorsRecords,
-    },
-    "Data For Category Forwards"
   );
 
   // Define the columns structure for the Ant Design Table
   // Define the data source for the Ant Design Table
   useEffect(() => {
-    if (getAllTenorsRecords && allInstrumentForTreasuryData !== null) {
+    if (getAllTenorsRecords !== null && allInstrumentForTreasuryData !== null) {
       try {
         let getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
         let getAllInstrument = {
@@ -282,7 +265,7 @@ const CategoryForwards = () => {
         dataSource={dataSource}
         pagination={false}
       />
-
+      {/* 
       <div className="mt-4">
         <span className="heading mb-2">Tresmark Crosses Premiums</span>
         <GlobalTable
@@ -291,7 +274,7 @@ const CategoryForwards = () => {
           dataSource={dataSource}
           pagination={false}
         />
-      </div>
+      </div> */}
     </>
   );
 };
