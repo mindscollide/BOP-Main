@@ -371,8 +371,8 @@ export const buildTresmarkCrossPremiumTable = (
     Data.forEach((entry) => {
       const key = `${entry.instrumentID}-${entry.tenorID}`;
       rateMap[key] = {
-        bid: entry.bidPremium ?? 0,
-        ask: entry.bidPremium ?? 0,
+        bid: entry.bidPremium ?? "-",
+        ask: entry.bidPremium ?? "-",
       };
     });
 

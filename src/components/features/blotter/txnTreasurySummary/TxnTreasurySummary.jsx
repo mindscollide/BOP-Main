@@ -379,7 +379,8 @@ const TXNTreasurySummary = ({
         width: 80,
         align: "center",
         render: (record) =>
-          record.modifiedDatetime !== ""
+          // record.modifiedDatetime !== ""
+          record.modifiedDatetime
             ? formatDateTimeToUTCTime(record.modifiedDatetime)
             : "",
       },

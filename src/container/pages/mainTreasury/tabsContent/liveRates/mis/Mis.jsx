@@ -107,16 +107,16 @@ const MIS = () => {
               } mis-volumwise-value bg-none color-black tp-customer-hd roboto-13`}
             >
               {index === 0 ? "Volumewise" : "Profit-wise (PKR)"}
-              {shouldIncludeComponents && (
-                <span className="view-detail cursor-pointer">
-                  <IconElement
-                    onClick={() => handleExpandClick(index)}
-                    iconClass={`icon-add-circle-fill fs-6 mx-1 ${
-                      index === 1 ? "color-green" : "color-blue"
-                    }`}
-                  ></IconElement>
-                </span>
-              )}
+              {/* {shouldIncludeComponents && ( */}
+              <span className="view-detail cursor-pointer">
+                <IconElement
+                  onClick={() => handleExpandClick(index)}
+                  iconClass={`icon-add-circle-fill fs-6 mx-1 ${
+                    index === 1 ? "color-green" : "color-blue"
+                  }`}
+                ></IconElement>
+              </span>
+              {/* )} */}
             </span>
             {isExpanded && expandedRowKeys.includes(index) ? (
               <div className="d-grid">
@@ -136,7 +136,7 @@ const MIS = () => {
       title: "Company",
       dataIndex: "corporateName",
       key: "corporateName",
-      className: "corporateName",
+      className: "corporateName mis-companyName",
 
       // render: (text, record, index) => {
       //   const isExpanded = expandedRowKeys.includes(record.key);
@@ -151,7 +151,7 @@ const MIS = () => {
       //   );
       // },
       render: (text, record, index) => {
-        console.log(index, "topCustomertopCustomer index");
+        console.log(record, index, "topCustomertopCustomer index");
 
         const isExpanded = expandedRowKeys.includes(index);
         return (
@@ -162,18 +162,18 @@ const MIS = () => {
               } roboto-13 mis-volumwise-value bg-none color-black`}
             >
               {record?.corporateName}
-              {shouldIncludeComponents && (
-                <span className="view-detail cursor-pointer">
-                  {index === 0 ? (
-                    <IconElement
-                      onClick={() => handleOpenMISModal(index)}
-                      iconClass={`icon-open color-gray mx-1`}
-                    ></IconElement>
-                  ) : (
-                    ""
-                  )}
-                </span>
-              )}
+              {/* {shouldIncludeComponents && ( */}
+              <span className="view-detail cursor-pointer">
+                {index === 0 ? (
+                  <IconElement
+                    onClick={() => handleOpenMISModal(index)}
+                    iconClass={`icon-open color-gray mx-1`}
+                  ></IconElement>
+                ) : (
+                  ""
+                )}
+              </span>
+              {/* )} */}
             </span>
 
             {isExpanded && expandedRowKeys.includes(index) ? (
@@ -184,9 +184,13 @@ const MIS = () => {
                   } bg-none py-0 roboto-13`}
                 >
                   {index === 1 ? (
-                    <span className="color-hd border-0">{"Import 2"}</span>
+                    <span className="color-hd border-0">
+                      {record.importWiseCorporateName}
+                    </span>
                   ) : (
-                    <span className="color-hd border-0">{"Import 1"}</span>
+                    <span className="color-hd border-0">
+                      {record.importWiseCorporateName}
+                    </span>
                   )}
                 </span>
 
@@ -196,12 +200,12 @@ const MIS = () => {
                   } bg-none py-0 roboto-13`}
                 >
                   {index === 1 ? (
-                    <span className="color-hd border-0 roboto-13">
-                      {"Export 2"}
+                    <span className="color-hd border-0 roboto-13 ">
+                      {record.exportWiseCorporateName}
                     </span>
                   ) : (
                     <span className="color-hd border-0 roboto-13">
-                      {"Export 1"}
+                      {record.exportWiseCorporateName}
                     </span>
                   )}
                 </span>
@@ -354,6 +358,19 @@ const MIS = () => {
       StartDate: new Date(),
       EndDate: new Date(),
     });
+    // Format dates for initial API call
+    const startDate = new Date();
+    startDate.setHours(0, 0, 0, 0);
+
+    const endDate = new Date();
+    endDate.setHours(23, 58, 59, 99);
+
+    const Data = {
+      StartDate: formatDateToUTC(startDate, 1),
+      EndDate: formatDateToUTC(endDate, 1),
+    };
+
+    dispatch(GetMisDataByRangeAPI({ navigate, Data }));
   };
   const onClickOpenExport = () => {};
 

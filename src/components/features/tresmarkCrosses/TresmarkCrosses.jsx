@@ -185,12 +185,15 @@ const TresmarkCrosses = () => {
         Tresmark Crosses Premium
       </h6>
 
-      <div className="mt-4">
+      <div className="mt-3">
         <GlobalTable
           columns={columnsData}
-          prefixCls="Dealer_Forwards"
+          prefixCls={"Treasury_Forwards"}
           dataSource={dataSource}
           pagination={false}
+          rowClassName={"striped-design"}
+          bordered
+          rowHoverBg={"#000"}
         />
       </div>
     </>

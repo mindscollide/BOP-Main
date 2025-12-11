@@ -41,3 +41,10 @@
 .export-options button {
   box-shadow: none !important;
 }
+.mis-companyName {
+  max-width: 150px;
+  min-width: 150px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
