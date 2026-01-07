@@ -1,4 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import Modal from "@/components/common/globalModal/Modal";
 import "./companiesListModal.css";
 import { Col, Row } from "react-bootstrap";
@@ -12,15 +18,20 @@ import { useSelector } from "react-redux";
 import { GetCorporateDailyVolumeAPI } from "@/components/features/SpotBranch/WatchlistAction";
 import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
 import { clearCorporateDailyVolume } from "@/store/watchListSlicer/WatchListSlicer";
+import InputFIeld from "@/components/common/inputField/InputField";
+import { debounce } from "lodash";
+import IconElement from "@/components/common/IconElement/IconElement";
 
 const CompaniesListModal = ({ isCompanyListModal, setIsCompanyListModal }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [sRow, setSRow] = useState(0);
+  const tableWrapperRef = useRef(null);
+  const [crossButton, setCrossButton] = useState(false);
   const [recordsLength, setRecordLength] = useState(0);
   const [dropdownvalue, setDropdownvalue] = useState(10);
   const [tableData, setTableData] = useState([]);
-
+  const [searchName, setSearchName] = useState("");
   const GetCorporateDailyVolume = useSelector(
     (state) => state.WatchListReducer.GetCorporateDailyVolume
   );
@@ -40,6 +51,7 @@ const CompaniesListModal = ({ isCompanyListModal, setIsCompanyListModal }) => {
     const Data = {
       sRow: 0,
       Length: dropdownvalue,
+      searchName: searchName,
     };
     dispatch(GetCorporateDailyVolumeAPI({ Data }));
 
@@ -56,6 +68,7 @@ const CompaniesListModal = ({ isCompanyListModal, setIsCompanyListModal }) => {
       const Data = {
         Length: dropdownvalue,
         sRow: sRow,
+        searchName: searchName,
       };
       dispatch(GetCorporateDailyVolumeAPI({ Data }));
     }
@@ -73,6 +86,7 @@ const CompaniesListModal = ({ isCompanyListModal, setIsCompanyListModal }) => {
       const Data = {
         Length: newSize.value,
         sRow: 0,
+        searchName: searchName,
       };
       dispatch(GetCorporateDailyVolumeAPI({ Data }));
     } catch (error) {
@@ -111,26 +125,29 @@ const CompaniesListModal = ({ isCompanyListModal, setIsCompanyListModal }) => {
     },
   ];
 
-  // useEffect(() => {
-  //   if (GetCorporateDailyVolume && GetCorporateDailyVolume !== null) {
-  //     try {
-  //       const { corporateDailyVolumes } = GetCorporateDailyVolume;
-  //       const updatedData = corporateDailyVolumes.map((volume) => ({
-  //         companyName: volume.corporateName,
-  //         amount: volume.totalVolume,
-  //       }));
+  const debouncedSearch = useCallback(
+    debounce((value) => {
+      setSRow(0);
+      setTableData([]);
+      setRecordLength(0);
+      setHasReachedBottom(false);
 
-  //       console.log(updatedData, "updatedDataupdatedData");
-  //       setTableData(updatedData);
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   }
-  // }, [GetCorporateDailyVolume]);
+      const Data = {
+        sRow: 0,
+        Length: dropdownvalue,
+        searchName: value,
+      };
 
-  // handelled scrolling here (4)
+      dispatch(GetCorporateDailyVolumeAPI({ Data }));
+    }, 500), // ⏱ 500ms delay
+    [dispatch, dropdownvalue]
+  );
 
-  const tableWrapperRef = useRef(null);
+  useEffect(() => {
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [debouncedSearch]);
 
   useEffect(() => {
     if (GetCorporateDailyVolume !== null) {
@@ -196,6 +213,18 @@ const CompaniesListModal = ({ isCompanyListModal, setIsCompanyListModal }) => {
     });
   }, [tableData, sortOrder]);
 
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchName(value);
+    debouncedSearch(value);
+  };
+  const handleClickClear = () => {
+    if (searchName.trim() !== "") {
+      setSearchName("");
+      debouncedSearch("");
+    }
+  };
+
   return (
     <>
       <Modal
@@ -223,12 +252,7 @@ const CompaniesListModal = ({ isCompanyListModal, setIsCompanyListModal }) => {
         modalBody={
           <>
             <Row>
-              <Col
-                lg={12}
-                md={12}
-                sm={12}
-                className="d-flex align-items-center"
-              >
+              <Col lg={4} md={4} sm={12} className="d-flex align-items-center">
                 <SelectDropdown
                   value={selectPageSize}
                   onChange={handlePageSizeChange}
@@ -240,6 +264,28 @@ const CompaniesListModal = ({ isCompanyListModal, setIsCompanyListModal }) => {
                   ]}
                   classNamePrefix={"companyListPageSizeDropdown"}
                 ></SelectDropdown>
+              </Col>
+              <Col
+                lg={8}
+                md={8}
+                sm={12}
+                className=" d-flex align-items-center justify-content-end"
+              >
+                <span className="position-relative">
+                  <InputFIeld
+                    type="text"
+                    placeholder="Search"
+                    value={searchName}
+                    onChange={handleSearchChange}
+                    applyClass="companyListSearchInput"
+                  />
+                  <span className="position-absolute top-50 me-1 end-0 translate-middle-y">
+                    <IconElement
+                      onClick={handleClickClear}
+                      iconClass={"icon-close"}
+                    ></IconElement>
+                  </span>
+                </span>
               </Col>
             </Row>
 

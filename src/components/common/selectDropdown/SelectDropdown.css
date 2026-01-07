@@ -241,3 +241,12 @@
 .selectTransactionNatureList__menu-portal {
   z-index: 999999 !important;
 }
+.selectTransactionNatureList__control {
+  border: 1px solid #e1e1e1 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+.selectTransactionNatureList__placeholder {
+  font-weight: 600;
+  color: #5a5a5a !important;
+}

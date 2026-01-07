@@ -23,6 +23,8 @@ const MIS = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isCompanyListModal, setIsCompanyListModal] = useState(false);
+
+  console.log(isCompanyListModal, "isCompanyListModalisCompanyListModal");
   const CompaniesListModal = lazy(() => import("../mis/companiesListModal"));
   const shouldIncludeComponents =
     import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
@@ -166,7 +168,7 @@ const MIS = () => {
               <span className="view-detail cursor-pointer">
                 {index === 0 ? (
                   <IconElement
-                    onClick={() => handleOpenMISModal(index)}
+                    onClick={handleOpenMISModal}
                     iconClass={`icon-open color-gray mx-1`}
                   ></IconElement>
                 ) : (
@@ -321,9 +323,8 @@ const MIS = () => {
   };
 
   const handleOpenMISModal = () => {
-    startTransition(() => {
-      setIsCompanyListModal(true);
-    });
+    console.log("Opening MIS Modal");
+    setIsCompanyListModal(true);
   };
 
   const handleChangeDate = (date, key) => {
@@ -372,7 +373,6 @@ const MIS = () => {
 
     dispatch(GetMisDataByRangeAPI({ navigate, Data }));
   };
-  const onClickOpenExport = () => {};
 
   return (
     <>
@@ -513,7 +513,7 @@ const MIS = () => {
       </div>
 
       {isCompanyListModal && (
-        <Suspense fallback={"...Loading"}>
+        <Suspense fallback={null}>
           <CompaniesListModal
             isCompanyListModal={isCompanyListModal}
             setIsCompanyListModal={setIsCompanyListModal}

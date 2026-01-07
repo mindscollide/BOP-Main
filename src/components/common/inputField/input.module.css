@@ -405,3 +405,16 @@
   background: var(--color-light) !important;
   color: var(--color-blue) !important;
 }
+.companyListSearchInput {
+  display: block;
+  max-width: 150px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #002650;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  -moz-appearance: none;
+  appearance: none;
+  outline: none !important;
+}
