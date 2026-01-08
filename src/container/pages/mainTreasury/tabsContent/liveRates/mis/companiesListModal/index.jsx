@@ -63,7 +63,7 @@ const CompaniesListModal = ({ isCompanyListModal, setIsCompanyListModal }) => {
   const { hasReachedBottom, setHasReachedBottom } = useTableScrollBottom(() => {
     console.log("🚀 Table reached bottom");
     // Load more data here if needed
-    // setHasReachedBottom(true);
+    setHasReachedBottom(true);
     if (recordsLength !== tableData.length) {
       const Data = {
         Length: dropdownvalue,
@@ -72,7 +72,7 @@ const CompaniesListModal = ({ isCompanyListModal, setIsCompanyListModal }) => {
       };
       dispatch(GetCorporateDailyVolumeAPI({ Data }));
     }
-  });
+  }, 10);
 
   const handlePageSizeChange = (newSize) => {
     console.log(newSize, "newSizenewSize");
