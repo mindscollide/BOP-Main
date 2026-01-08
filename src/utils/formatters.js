@@ -220,11 +220,19 @@ export const convertDateTimeIntoLocal = (utcDateString) => {
  * @returns {string} Formatted amount string
  */
 export const formatPkAmount = (rawValue, options = {}) => {
-  const { decimals = 2, allowNegative = true, emptySymbol = "" } = options;
+  const {
+    decimals = 2,
+    allowNegative = true,
+    emptySymbol = "",
+    dashSymbol = "-",
+  } = options;
 
   // Handle empty/null/undefined cases
   if (rawValue === null || rawValue === undefined || rawValue === "") {
     return emptySymbol;
+  }
+  if (rawValue === "-") {
+    return dashSymbol;
   }
 
   // Convert to number
