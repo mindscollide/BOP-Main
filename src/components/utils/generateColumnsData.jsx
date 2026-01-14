@@ -4,7 +4,8 @@ export const buildDiscountingTable = (
   getAllTenorsData,
   getAllInstrument,
   InputFIeld,
-  onInputChange
+  onInputChange,
+  bidOfferStatus
 ) => {
   if (!Data || !getAllTenorsData || !getAllInstrument) {
     return { rowData: [], columnsData: [] };
@@ -126,7 +127,10 @@ export const buildDiscountingTable = (
               width: 80,
 
               render: (text, record) => (
-                <InputFIeld value={text} record={record} />
+                <InputFIeld
+                  value={bidOfferStatus && !bidOfferStatus.isBid ? 0 : text}
+                  record={record}
+                />
               ),
             },
           ],
@@ -174,7 +178,8 @@ export const buildForwardsTable = (
   getAllTenorsData,
   getAllInstrument,
   InputFIeld,
-  onInputChange
+  onInputChange,
+  bidOfferStatus
 ) => {
   if (!Data || !getAllTenorsData || !getAllInstrument) {
     return { rowData: [], columnsData: [] };
@@ -291,7 +296,10 @@ export const buildForwardsTable = (
 
               align: "center",
               render: (text, record) => (
-                <InputFIeld value={text} record={record} />
+                <InputFIeld
+                  value={bidOfferStatus && !bidOfferStatus.isBid ? 0 : text}
+                  record={record}
+                />
               ),
             },
             {
@@ -302,7 +310,10 @@ export const buildForwardsTable = (
 
               align: "center",
               render: (text, record) => (
-                <InputFIeld value={text} record={record} />
+                <InputFIeld
+                  value={bidOfferStatus && !bidOfferStatus.isOffer ? 0 : text}
+                  record={record}
+                />
               ),
             },
           ],

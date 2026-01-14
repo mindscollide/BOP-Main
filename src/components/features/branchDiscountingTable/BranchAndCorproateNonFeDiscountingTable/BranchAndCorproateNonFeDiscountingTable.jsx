@@ -10,6 +10,10 @@ import { throttle } from "lodash";
 
 const BranchAndCorporateNonFeDiscountingTable = () => {
   const [rfqButtonState, setRFqButtonState] = useState(null);
+  const [bidOfferStatus, setBidOfferStatus] = useState({
+    isBid: true,
+    isOffer: true,
+  });
 
   const isTradeRights = useSelector(
     (state) => state.RealtimeActionsSlice.tradeRightsStatusUpdated
@@ -35,6 +39,10 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
     (state) => state.RealtimeActionsSlice.ClearRatesData
   );
 
+  const BidOfferStatusData = useSelector(
+    (state) => state.WatchListReducer.getBidOfferStatus
+  );
+
   //local states
   const [dataSource, setDataSource] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
@@ -49,6 +57,17 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
       console.log(isTradeRights, "isTradeRightsisTradeRights");
     }
   }, [isTradeRights]);
+
+  useEffect(() => {
+    if (!BidOfferStatusData) return;
+
+    const { isBidOn, isOfferOn } = BidOfferStatusData;
+
+    setBidOfferStatus({
+      isBid: isBidOn,
+      isOffer: isOfferOn,
+    });
+  }, [BidOfferStatusData]);
 
   useEffect(() => {
     if (
@@ -70,7 +89,9 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
           nonFEDiscountingRates,
           getAllTenorsData,
           getAllInstrument,
-          IndexCell
+          IndexCell,
+          null,
+          bidOfferStatus
         );
 
         if (rowData.length > 0) {

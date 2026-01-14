@@ -15,6 +15,10 @@ const BranchForwardsTable = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const [bidOfferStatus, setBidOfferStatus] = useState({
+    isBid: true,
+    isOffer: true,
+  });
   const [dataSource, setDataSource] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
   const [rfqButtonState, setRFqButtonState] = useState(null);
@@ -25,6 +29,9 @@ const BranchForwardsTable = () => {
   //Global State for Watchlist Card Data
   const getAllInstrumentsForCounterPartiesData = useSelector(
     (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
+  );
+  const BidOfferStatusData = useSelector(
+    (state) => state.WatchListReducer.getBidOfferStatus
   );
 
   const CounterPartyForwardRates = useSelector(
@@ -74,6 +81,38 @@ const BranchForwardsTable = () => {
   }, [isTradeRights]);
 
   useEffect(() => {
+    if (!BidOfferStatusData) return;
+
+    const { isBidOn, isOfferOn } = BidOfferStatusData;
+
+    setDataSource((prevData) =>
+      prevData.map((row) => {
+        const updatedRow = { ...row };
+
+        Object.keys(updatedRow).forEach((key) => {
+          // 🔴 Bid OFF → zero bid values
+          if (!isBidOn && key.startsWith("bid_")) {
+            updatedRow[key] = 0;
+          }
+
+          // 🔴 Offer OFF → zero ask values
+          if (!isOfferOn && key.startsWith("ask_")) {
+            updatedRow[key] = 0;
+          }
+        });
+
+        return updatedRow;
+      })
+    );
+
+    // Sync UI toggle state
+    setBidOfferStatus({
+      isBid: isBidOn,
+      isOffer: isOfferOn,
+    });
+  }, [BidOfferStatusData]);
+
+  useEffect(() => {
     if (
       getAllInstrumentsForCounterPartiesData !== null &&
       getAllTenorsRecords !== null
@@ -101,7 +140,9 @@ const BranchForwardsTable = () => {
           forwardRates,
           getAllTenorsData,
           getAllInstrument,
-          IndexCell
+          IndexCell,
+          null,
+          bidOfferStatus
         );
         // console.log(rowData, columnsData, "columnsDatacolumnsData");
         if (rowData.length > 0) {
@@ -116,6 +157,7 @@ const BranchForwardsTable = () => {
     getAllInstrumentsForCounterPartiesData,
     getAllTenorsRecords,
     GetForwardRatesForCounterPartyData,
+    bidOfferStatus,
   ]);
 
   const throttledForwardUpdate = useMemo(

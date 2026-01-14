@@ -82,10 +82,14 @@ import { AnimatePresence } from "framer-motion";
 import { GetAllNatureOfTransactionsApi } from "../pages/mainCorporate/rfqModal/RFQActions";
 import InfoTransaction from "@/components/features/blotter/infoTransaction/InfoTransaction";
 import {
+  GetBidOfferStatusApi,
   getMarketStatusApi,
   GetMisDataByRangeAPI,
 } from "@/components/features/SpotBranch/WatchlistAction";
-import { setMarketStatus } from "@/store/watchListSlicer/WatchListSlicer";
+import {
+  setBidOfferStatus,
+  setMarketStatus,
+} from "@/store/watchListSlicer/WatchListSlicer";
 import { setUpdateVolMeterRealtime } from "@/store/dealerReducer/dealerSlicer";
 import { GetNOPDataAPI } from "@/components/features/blotter/BlotterActions";
 import { getUserSettingDataAPI } from "@/components/features/settingsModal/settingActions";
@@ -473,6 +477,11 @@ const Dashboard = () => {
           dispatch(setTresmarkCrossPremiumRates(payload));
           break;
 
+        case "BID_OFFER_STATUS_UPDATED":
+          console.log(payload, "BID_OFFER_STATUS_UPDATED");
+          dispatch(setBidOfferStatus(payload));
+          break;
+
         default:
           console.warn("No specific handler for this message type", payload);
           break;
@@ -568,6 +577,8 @@ const Dashboard = () => {
     dispatch(setTradeRightsStatusUpdated(getTradeRights));
     connectToMqtt({ subscribeID, userID });
     dispatch(getMarketStatusApi({ navigate }));
+    dispatch(GetBidOfferStatusApi({}));
+
     if (isTreasury === "true") {
       setTimeout(() => {
         dispatch(setDealModalRequest(true));

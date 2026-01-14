@@ -1,0 +1,58 @@
+.BidOfferButton_Active {
+  width: 50px;
+  height: 35px;
+  background: linear-gradient(to bottom, #feac78 0%, #e97225 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#feac78', endColorstr='#e97225',GradientType=0 );
+  border-color: #feac78;
+  color: #ffffff;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.BidOfferButton__Inactive {
+  width: 50px;
+  height: 35px;
+  background: linear-gradient(
+    180deg,
+    rgba(254, 101, 101, 1) 0%,
+    rgba(227, 10, 10, 1) 100%
+  );
+  color: #ffffff;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.BidOfferButton__Off {
+  width: 50px;
+  height: 35px;
+  background: linear-gradient(
+    180deg,
+    rgba(254, 101, 101, 1) 0%,
+    rgba(227, 10, 10, 1) 100%
+  );
+  color: #ffffff;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.BidOfferButton_Disabled {
+  width: 50px;
+  height: 35px;
+  background: var(--color-light-gray);
+  color: #ffffff;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: default;
+  pointer-events: none !important;
+}

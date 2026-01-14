@@ -459,3 +459,11 @@ export const GetCorporateDailyVolume = {
 };
 //Confimration modal
 export const CONFIRMATION_MODAL = "CONFIRMATION_MODAL";
+
+export const UpdateBid_OfferStatusRM = {
+  RequestMethod: "ServiceManager.UpdateBid_OfferStatus",
+};
+
+export const GetBid_OfferStatusRM = {
+  RequestMethod: "ServiceManager.GetBid_OfferStatus",
+};

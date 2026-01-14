@@ -11,6 +11,8 @@ import {
   getAllTreasuryInstrumentsApi,
   getMarketStatusApi,
   GetCorporateDailyVolumeAPI,
+  UpdateBidOfferStatusAPI,
+  GetBidOfferStatusApi,
 } from "../../components/features/SpotBranch/WatchlistAction";
 
 const WatchListSlice = createSlice({
@@ -31,6 +33,8 @@ const WatchListSlice = createSlice({
     GetDiscountingRatesForTreasuryLoading: false,
     GetMarketStatusLoading: false,
     GetCorporateDailyVolumeLoading: false,
+    UpdateBidOfferStatusLoading: false,
+    GetBidOfferStatusLoading: false,
 
     // data states
     getAllInstrumentForCounterParties: null,
@@ -47,8 +51,13 @@ const WatchListSlice = createSlice({
     getMarketStatus: null,
     watchlistTableDataCopy: null,
     GetCorporateDailyVolume: null,
+    getBidOfferStatus: null,
+    UpdateBidOfferStatus: null,
   },
   reducers: {
+    clearBidOfferStatus: (state) => {
+      state.getBidOfferStatus = null;
+    },
     clearWatchListResponseMessage: (state) => {
       state.responseMessage = "";
     },
@@ -61,6 +70,9 @@ const WatchListSlice = createSlice({
     clearCorporateDailyVolume: (state) => {
       state.GetCorporateDailyVolume = null;
       state.GetCorporateDailyVolumeLoading = false;
+    },
+    setBidOfferStatus: (state, { payload }) => {
+      state.getBidOfferStatus = payload.bid_OfferStatus;
     },
   },
   extraReducers: (builder) => {
@@ -247,6 +259,33 @@ const WatchListSlice = createSlice({
         state.GetCorporateDailyVolumeLoading = false;
         state.GetCorporateDailyVolume = null;
         state.error = payload;
+      })
+      .addCase(UpdateBidOfferStatusAPI.pending, (state) => {
+        state.UpdateBidOfferStatusLoading = true;
+      })
+      .addCase(UpdateBidOfferStatusAPI.fulfilled, (state, { payload }) => {
+        state.UpdateBidOfferStatusLoading = false;
+        state.UpdateBidOfferStatus = payload?.response;
+        state.responseMessage = payload?.message;
+      })
+      .addCase(UpdateBidOfferStatusAPI.rejected, (state, { payload }) => {
+        state.UpdateBidOfferStatusLoading = false;
+        state.UpdateBidOfferStatus = null;
+        state.error = payload;
+        state.responseMessage = payload?.message;
+      })
+      .addCase(GetBidOfferStatusApi.pending, (state) => {
+        state.GetBidOfferStatusLoading = true;
+      })
+      .addCase(GetBidOfferStatusApi.fulfilled, (state, { payload }) => {
+        state.GetBidOfferStatusLoading = false;
+        state.getBidOfferStatus = payload?.response;
+        state.responseMessage = payload?.message;
+      })
+      .addCase(GetBidOfferStatusApi.rejected, (state, { payload }) => {
+        state.GetBidOfferStatusLoading = false;
+        state.getBidOfferStatus = null;
+        state.error = payload;
       });
   },
 });
@@ -256,5 +295,7 @@ export const {
   setMarketStatus,
   setWatchlistTableDataCopy,
   clearCorporateDailyVolume,
+  setBidOfferStatus,
+  clearBidOfferStatus,
 } = WatchListSlice.actions;
 export default WatchListSlice.reducer;

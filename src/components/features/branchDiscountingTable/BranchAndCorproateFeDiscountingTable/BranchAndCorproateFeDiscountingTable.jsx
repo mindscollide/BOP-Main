@@ -13,6 +13,10 @@ const BranchAndCorporateFeDiscountingTable = () => {
   const [dataSource, setDataSource] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
   const [feDiscountingModalCall, setFeDiscountingModalCall] = useState(false);
+  const [bidOfferStatus, setBidOfferStatus] = useState({
+    isBid: true,
+    isOffer: true,
+  });
   const [rfqButtonState, setRFqButtonState] = useState(null);
 
   const isTradeRights = useSelector(
@@ -26,6 +30,9 @@ const BranchAndCorporateFeDiscountingTable = () => {
   );
   const GetDiscountingRatesForCounterParty = useSelector(
     (state) => state.WatchListReducer.GetDiscountingRatesForCounterParty
+  );
+  const BidOfferStatusData = useSelector(
+    (state) => state.WatchListReducer.getBidOfferStatus
   );
 
   const getAllTenorsRecords = useSelector(
@@ -48,6 +55,17 @@ const BranchAndCorporateFeDiscountingTable = () => {
   }, [isTradeRights]);
 
   useEffect(() => {
+    if (!BidOfferStatusData) return;
+
+    const { isBidOn, isOfferOn } = BidOfferStatusData;
+
+    setBidOfferStatus({
+      isBid: isBidOn,
+      isOffer: isOfferOn,
+    });
+  }, [BidOfferStatusData]);
+
+  useEffect(() => {
     if (
       getAllTenorsRecords !== null &&
       getAllInstrumentsForCounterPartiesData != null
@@ -67,7 +85,9 @@ const BranchAndCorporateFeDiscountingTable = () => {
           feDiscountingRates,
           getAllTenorsData,
           getAllInstrument,
-          IndexCell
+          IndexCell,
+          null,
+          bidOfferStatus
         );
 
         if (rowData.length > 0) {
@@ -80,6 +100,7 @@ const BranchAndCorporateFeDiscountingTable = () => {
     getAllTenorsRecords,
     getAllInstrumentsForCounterPartiesData,
     GetDiscountingRatesForCounterParty,
+    bidOfferStatus,
   ]);
 
   const throttledUpdate = useMemo(

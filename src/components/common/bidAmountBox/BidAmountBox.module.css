@@ -208,7 +208,25 @@
   border: 1px solid #ffffff;
   transition: background-color 0.3s ease, color 0.3s ease; /* Transition on background and color */
 }
-
+.SellandBuyCardBranch_Stuck_disbaled {
+  background: var(--color-light-gray);
+  pointer-events: none;
+  max-width: 100% !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  cursor: default !important;
+  flex-direction: column;
+  padding: 0.5rem;
+  user-select: none !important;
+  border: 1px solid #fff;
+  transition: background-color 0.3s ease, color 0.3s ease; /* Transition on background and color */
+}
+.SellandBuyCardBranch_Stuck_disbaled p {
+  font-size: 1rem;
+  transition: color 0.3s ease; /* Apply transition to color */
+}
 .SellandBuyCardBracnh_disbaled p {
   font-size: 1rem;
   transition: color 0.3s ease; /* Apply transition to color */
