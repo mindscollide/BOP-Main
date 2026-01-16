@@ -15,6 +15,7 @@ import BidOfferStatus from "../bidOfferStatus/bidOfferStatus";
 const Voltmeter = () => {
   // Initialize Redux dispatch hook
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
 
   // Get current voltmeter status from Redux store
   const GetVoltMeterStatus = useSelector(
@@ -49,7 +50,7 @@ const Voltmeter = () => {
     const Data = {
       VoltMeterID: value, // Send the selected voltmeter ID
     };
-
+    setLoading(true);
     // Dispatch API action to update voltmeter status on server
     dispatch(UpdateVoltMeterStatusApi({ Data }));
   };
@@ -72,6 +73,7 @@ const Voltmeter = () => {
         } else {
           setActiveValue(0);
         }
+        setLoading(false);
         // Reset realtime update flag in Redux store
         dispatch(setUpdateVolMeterRealtime(null));
       } catch (error) {
@@ -97,6 +99,7 @@ const Voltmeter = () => {
         } else {
           setActiveValue(0);
         }
+        setLoading(false);
       } catch (error) {
         console.log(error);
       }
@@ -104,10 +107,10 @@ const Voltmeter = () => {
   }, [GetVoltMeterStatus]);
 
   return (
-    <div className="vol-meter-container">
-      <div className="d-flex align-items-center vol-meter-inner-wrapper">
+    <div className='vol-meter-container'>
+      <div className='d-flex align-items-center vol-meter-inner-wrapper'>
         {/* Voltmeter title/heading */}
-        <div className="heading-vol-meter fs-6 fw-semibold ff-poppins">
+        <div className='heading-vol-meter fs-6 fw-semibold ff-poppins'>
           Vol Meter
         </div>
 
@@ -119,7 +122,7 @@ const Voltmeter = () => {
               activeValue === button.value ? "active-vol" : ""
             } ${button.value === 0 ? "vol-meter-off" : ""}`} // Special class for 'off' button
             onClick={() => handleButtonClick(button.value)}
-          >
+            disabled={loading}>
             {button.label}
           </button>
         ))}
