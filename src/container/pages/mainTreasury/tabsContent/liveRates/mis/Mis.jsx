@@ -164,7 +164,6 @@ const MIS = () => {
               } roboto-13 mis-volumwise-value bg-none color-black`}
             >
               {record?.corporateName}
-              {/* {shouldIncludeComponents && ( */}
               <span className="view-detail cursor-pointer">
                 {index === 0 ? (
                   <IconElement
@@ -175,7 +174,6 @@ const MIS = () => {
                   ""
                 )}
               </span>
-              {/* )} */}
             </span>
 
             {isExpanded && expandedRowKeys.includes(index) ? (
@@ -199,7 +197,7 @@ const MIS = () => {
                 <span
                   className={`${
                     index === 1 ? "mis-profitwise-value" : "mis-volumwise-value"
-                  } bg-none py-0 roboto-13`}
+                  } bg-none py-0 roboto-13 mis-companyName`}
                 >
                   {index === 1 ? (
                     <span className="color-hd border-0 roboto-13 ">
@@ -235,17 +233,17 @@ const MIS = () => {
               } roboto-13`}
             >
               {index === 1 ? (
-                record?.value === 0 ? (
-                  <span className="color-black">
+                record?.value === "-" ? (
+                  <span className="color-black d-flex justify-content-center align-items-center">
                     {formatPkAmount(record?.value)}
                   </span>
-                ) : record?.value > 0 ? (
+                ) : parseFloat(record?.value) > 0 ? (
                   <span className="color-green">
                     {formatPkAmount(record?.value)}
                   </span>
                 ) : (
                   <span className="color-red">
-                    ({formatPkAmount(Math.abs(record?.value))})
+                    ({formatPkAmount(Math.abs(parseFloat(record?.value)))})
                   </span>
                 )
               ) : (
@@ -261,17 +259,17 @@ const MIS = () => {
                   } bg-none py-0 roboto-13`}
                 >
                   {index === 1 ? (
-                    record?.import === 0 ? (
+                    record?.import === "-" ? (
                       <span className="color-black">
                         {formatPkAmount(record?.import)}
                       </span>
-                    ) : record?.import > 0 ? (
+                    ) : parseFloat(record?.import) > 0 ? (
                       <span className="color-green">
                         {formatPkAmount(record?.import)}
                       </span>
                     ) : (
                       <span className="color-red">
-                        ({formatPkAmount(Math.abs(record?.import))})
+                        ({formatPkAmount(Math.abs(parseFloat(record?.import)))})
                       </span>
                     )
                   ) : (
@@ -285,17 +283,17 @@ const MIS = () => {
                   } bg-none py-0 roboto-13`}
                 >
                   {index === 1 ? (
-                    record?.export === 0 ? (
+                    record?.export === "-" ? (
                       <span className="color-black">
                         {formatPkAmount(record?.export)}
                       </span>
-                    ) : record?.export > 0 ? (
+                    ) : parseFloat(record?.export) > 0 ? (
                       <span className="color-green">
                         {formatPkAmount(record?.export)}
                       </span>
                     ) : (
                       <span className="color-red">
-                        ({formatPkAmount(Math.abs(record?.export))})
+                        ({formatPkAmount(Math.abs(parseFloat(record?.export)))})
                       </span>
                     )
                   ) : (
@@ -444,11 +442,11 @@ const MIS = () => {
                 </div>
                 <div className="expanded-column third-column">
                   <span className="mis-totalprofit-value">
-                    {totalProfit === 0 ? (
+                    {totalProfit === "-" ? (
                       <span className="color-black">
                         {formatPkAmount(totalProfit)}
                       </span>
-                    ) : totalProfit > 0 ? (
+                    ) : parseFloat(totalProfit) > 0 ? (
                       <span className="color-green">
                         {formatPkAmount(totalProfit)}
                       </span>
