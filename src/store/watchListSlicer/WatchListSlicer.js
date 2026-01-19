@@ -13,6 +13,7 @@ import {
   GetCorporateDailyVolumeAPI,
   UpdateBidOfferStatusAPI,
   GetBidOfferStatusApi,
+  getAllHolidaysForTransactionApi,
 } from "../../components/features/SpotBranch/WatchlistAction";
 
 const WatchListSlice = createSlice({
@@ -53,6 +54,7 @@ const WatchListSlice = createSlice({
     GetCorporateDailyVolume: null,
     getBidOfferStatus: null,
     UpdateBidOfferStatus: null,
+    getAllHolidays: null,
   },
   reducers: {
     clearBidOfferStatus: (state) => {
@@ -73,6 +75,29 @@ const WatchListSlice = createSlice({
     },
     setBidOfferStatus: (state, { payload }) => {
       state.getBidOfferStatus = payload.bid_OfferStatus;
+    },
+    updateHolidays: (state, { payload }) => {
+      state.getAllHolidays = payload;
+    },
+    setHolidayAdded: (state, { payload }) => {
+      state.getAllHolidays.push(payload.holidays); // immer-safe
+    },
+
+    setHolidayUpdated: (state, { payload }) => {
+      if (Array.isArray(state.getAllHolidays)) {
+        state.getAllHolidays = state.getAllHolidays.map((holiday) =>
+          holiday.pK_HolidayId === payload.holidays.pK_HolidayId ? payload.holidays
+        : holiday
+        );
+      }
+    },
+
+    setHolidayDeleted: (state, { payload }) => {
+      if (Array.isArray(state.getAllHolidays)) {
+        state.getAllHolidays = state.getAllHolidays.filter(
+          (holiday) => holiday.pK_HolidayId !== payload.holidayId
+        );
+      }
     },
   },
   extraReducers: (builder) => {
@@ -286,7 +311,22 @@ const WatchListSlice = createSlice({
         state.GetBidOfferStatusLoading = false;
         state.getBidOfferStatus = null;
         state.error = payload;
-      });
+      })
+      .addCase(getAllHolidaysForTransactionApi.pending, (state) => {})
+      .addCase(
+        getAllHolidaysForTransactionApi.fulfilled,
+        (state, { payload }) => {
+          state.getAllHolidays = payload?.response;
+          state.responseMessage = payload?.message;
+        }
+      )
+      .addCase(
+        getAllHolidaysForTransactionApi.rejected,
+        (state, { payload }) => {
+          state.getAllHolidays = null;
+          state.error = payload;
+        }
+      );
   },
 });
 
@@ -297,5 +337,9 @@ export const {
   clearCorporateDailyVolume,
   setBidOfferStatus,
   clearBidOfferStatus,
+  updateHolidays,
+  setHolidayAdded,
+  setHolidayUpdated,
+  setHolidayDeleted,
 } = WatchListSlice.actions;
 export default WatchListSlice.reducer;

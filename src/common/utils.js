@@ -196,3 +196,65 @@ export const isWeekend = (date) => {
   const day = date.getDay(); // 0 = Sunday, 6 = Saturday
   return day === 0 || day === 6;
 };
+
+export const isHolidayForInstrument = (
+  selectedDate,
+  selectedInstrumentId,
+  holidays = []
+) => {
+  if (!selectedDate || !selectedInstrumentId || holidays.length === 0)
+    return false;
+
+  console.log(
+    "Checking holidays for date:",
+    selectedDate,
+    selectedInstrumentId,
+    holidays
+  );
+
+  const selected = new Date(selectedDate).toDateString();
+
+  return holidays.some((holiday) => {
+    const holidayDate = new Date(holiday.holidayDate).toDateString();
+    console.log(
+      "isHolidayForInstrumentisHolidayForInstrument",
+      holidayDate,
+      selected,
+      holiday,
+      selectedInstrumentId
+    );
+    return (
+      holidayDate === selected &&
+      holiday.currencyIds.includes(selectedInstrumentId)
+    );
+  });
+};
+
+// Utility function (from previous step)
+export const isHolidayTwoDatesForInstrument = (
+  selectedDatesObj,
+  selectedInstrumentId,
+  holidays = []
+) => {
+  console.log(
+    "isHolidayTwoDatesForInstrument called with:",
+    selectedDatesObj,
+    selectedInstrumentId,
+    holidays
+  );
+  if (!selectedDatesObj || !selectedInstrumentId || holidays.length === 0)
+    return false;
+
+  const datesArray = Object.values(selectedDatesObj).filter(Boolean);
+  const normalizedSelectedDates = datesArray.map((date) =>
+    new Date(date).toDateString()
+  );
+
+  return holidays.some((holiday) => {
+    const holidayDate = new Date(holiday.holidayDate).toDateString();
+    return (
+      normalizedSelectedDates.includes(holidayDate) &&
+      holiday.currencyIds.includes(selectedInstrumentId)
+    );
+  });
+};

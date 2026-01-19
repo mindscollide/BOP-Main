@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "./NonFEDiscoutingModal.css";
 import Modal from "@/components/common/globalModal/Modal";
 import { Col, Row } from "react-bootstrap";
@@ -11,7 +11,7 @@ import {
   SaveNonFEDiscountingTransactionAPI,
   calculateNonFeSwapAndDiscountingRateApi,
 } from "../../blotter/BlotterActions";
-import { formatDate, isWeekend } from "@/common/utils";
+import { formatDate, isHolidayForInstrument, isWeekend } from "@/common/utils";
 import { useSelector } from "react-redux";
 import { NumericFormat } from "react-number-format";
 import { setCalculateNonFeSwapAndDiscountingRate } from "@/store/BlotterSlicer/BlotterSlicer";
@@ -34,6 +34,10 @@ const NonFEDiscountingModal = ({
     message: "",
     status: false,
   });
+
+  const getAllHolidays = useSelector(
+    (state) => state.WatchListReducer.getAllHolidays
+  );
   const natureOfBusinessList = useSelector(
     (state) => state.authReducer.GetAllNatureOfTransactions
   );
@@ -319,7 +323,6 @@ const NonFEDiscountingModal = ({
   };
 
   const handleCurrencyChange = (selectedOption) => {
-    console.log(selectedOption, "selectedOptionselectedOption");
     setSelectedCurrency(selectedOption);
     if (selectedOption.value !== 0 && Number(tenorValue) !== 0) {
       let Data = {
@@ -330,6 +333,16 @@ const NonFEDiscountingModal = ({
       dispatch(calculateNonFeSwapAndDiscountingRateApi({ Data, navigate }));
     }
   };
+
+  const isHoliday = useMemo(
+    () =>
+      isHolidayForInstrument(
+        tenoreDate,
+        selectedCurrency?.value,
+        getAllHolidays
+      ),
+    [getAllHolidays, selectedCurrency, tenoreDate]
+  );
 
   return (
     <div>
@@ -345,22 +358,22 @@ const NonFEDiscountingModal = ({
         footerClassName={"BookaforwardCorporateFooterClassname"}
         headerClassName={"BookaforwardCorporateHeaderClassname"}
         bodyClassName={"BookaforwardCorporateBodyClassname"}
-        className=""
+        className=''
         modalHeader={
           <>
             <Row>
               <Col lg={12} md={12} sm={12}>
                 {isBranch ? (
                   <>
-                    <span className="NonFeDiscountingHeader_BranchName">
+                    <span className='NonFeDiscountingHeader_BranchName'>
                       {counterPartyDetails?.branchName}
                     </span>
-                    <p className="NonFeDiscountingHeader_BranchCode">
+                    <p className='NonFeDiscountingHeader_BranchCode'>
                       Branch Code: {counterPartyDetails?.branchCode}
                     </p>
                   </>
                 ) : isCorporate ? (
-                  <span className="NonFeDiscountingHeader_BranchName">
+                  <span className='NonFeDiscountingHeader_BranchName'>
                     {counterPartyDetails?.corporateName}
                   </span>
                 ) : null}
@@ -373,14 +386,14 @@ const NonFEDiscountingModal = ({
             <Row>
               <Col lg={12} md={12} sm={12}>
                 {isBranch && (
-                  <Row className="mb-2">
+                  <Row className='mb-2'>
                     <Col lg={12} md={12} sm={12}>
-                      <div className="d-flex flex-column flex-wrap">
-                        <span className="SubHeadings">Client name*</span>
+                      <div className='d-flex flex-column flex-wrap'>
+                        <span className='SubHeadings'>Client name*</span>
                         <SelectDropdown
-                          classNamePrefix="RfqSpot"
+                          classNamePrefix='RfqSpot'
                           options={getAllCorporates}
-                          placeholder="Please Select Corporate"
+                          placeholder='Please Select Corporate'
                           isSearchable={true}
                           value={
                             corporateValue?.value !== 0 ? corporateValue : null
@@ -394,22 +407,22 @@ const NonFEDiscountingModal = ({
 
                 <Row>
                   <Col lg={12} md={12} sm={12}>
-                    <div className="d-flex flex-column flex-wrap">
-                      <span className="SubHeadings">Currency*</span>
+                    <div className='d-flex flex-column flex-wrap'>
+                      <span className='SubHeadings'>Currency*</span>
                       <SelectDropdown
-                        classNamePrefix="RfqSpot"
+                        classNamePrefix='RfqSpot'
                         options={currencyOptions}
-                        placeholder=""
+                        placeholder=''
                         value={selectedCurrency}
                         onChange={handleCurrencyChange}
                       />
                     </div>
                   </Col>
                 </Row>
-                <Row className="mt-2">
+                <Row className='mt-2'>
                   <Col lg={6} md={6} sm={6}>
-                    <div className="d-flex flex-column flex-wrap">
-                      <span className="SubHeadings">Nature</span>
+                    <div className='d-flex flex-column flex-wrap'>
+                      <span className='SubHeadings'>Nature</span>
                       <InputFIeld
                         applyClass={"CalculatorTextfield"}
                         value={selectedNature?.name}
@@ -417,8 +430,8 @@ const NonFEDiscountingModal = ({
                     </div>
                   </Col>
                   <Col lg={6} md={6} sm={6}>
-                    <div className="d-flex flex-column flex-wrap">
-                      <span className="SubHeadings">A/c No</span>
+                    <div className='d-flex flex-column flex-wrap'>
+                      <span className='SubHeadings'>A/c No</span>
                       <InputFIeld
                         applyClass={"CalculatorTextfield"}
                         value={accNo}
@@ -433,33 +446,33 @@ const NonFEDiscountingModal = ({
                     </div>
                   </Col>
                 </Row>
-                <Row className="mt-2">
+                <Row className='mt-2'>
                   <Col lg={12} md={12} sm={12}>
-                    <div className="d-flex align-items-end ">
-                      <div className="w-100">
-                        <p className="SubHeadings m-0">Tenor*</p>
+                    <div className='d-flex align-items-end '>
+                      <div className='w-100'>
+                        <p className='SubHeadings m-0'>Tenor*</p>
                         <InputFIeld
                           onChange={handleChangeTenor}
                           value={tenorValue}
                           onBlur={handleUpdateRate}
-                          applyClass="CalculatorTextfield"
+                          applyClass='CalculatorTextfield'
                         />
                       </div>
-                      <span className="dateSpanNonFeDiscoutingmodal">
+                      <span className='dateSpanNonFeDiscoutingmodal'>
                         {formatDate(tenoreDate)}
                       </span>
                     </div>
                     {errors.tenorValue && (
-                      <span className="text-danger small">
+                      <span className='text-danger small'>
                         Please enter valid tenor(1-1000)
                       </span>
                     )}
                   </Col>
                 </Row>
-                <Row className="mt-2">
+                <Row className='mt-2'>
                   <Col lg={6} md={6} sm={6}>
-                    <div className="d-flex flex-column flex-wrap">
-                      <span className="SubHeadings">Amount*</span>
+                    <div className='d-flex flex-column flex-wrap'>
+                      <span className='SubHeadings'>Amount*</span>
                       <NumericFormat
                         customInput={InputFIeld}
                         decimalScale={0}
@@ -467,12 +480,12 @@ const NonFEDiscountingModal = ({
                         value={amount}
                         applyClass={"CalculatorTextfield"}
                         name={"amount"}
-                        thousandSeparator=","
+                        thousandSeparator=','
                         maxLength={10}
                         onChange={(e) => handleChangeState("amount", e)}
                       />
                       {errors.Quantity && (
-                        <span className="text-danger small">
+                        <span className='text-danger small'>
                           Please enter a valid amount
                         </span>
                       )}
@@ -480,11 +493,11 @@ const NonFEDiscountingModal = ({
                   </Col>
                 </Row>
 
-                <Row className="mt-2">
+                <Row className='mt-2'>
                   <Col lg={6} md={6} sm={6}>
                     <Col lg={12} md={12} sm={12}>
-                      <div className="d-flex flex-column flex-wrap">
-                        <span className="SubHeadings">Ready</span>
+                      <div className='d-flex flex-column flex-wrap'>
+                        <span className='SubHeadings'>Ready</span>
                         <InputFIeld
                           applyClass={"CalculatorTextfield"}
                           disabled={true}
@@ -492,10 +505,10 @@ const NonFEDiscountingModal = ({
                         />
                       </div>
                     </Col>
-                    <Row className="mt-2 ">
-                      <Col lg={10} md={10} sm={10} className="pe-0">
-                        <div className="d-flex flex-column flex-wrap">
-                          <span className="SubHeadings">KIBOR</span>
+                    <Row className='mt-2 '>
+                      <Col lg={10} md={10} sm={10} className='pe-0'>
+                        <div className='d-flex flex-column flex-wrap'>
+                          <span className='SubHeadings'>KIBOR</span>
                           <InputFIeld
                             applyClass={"CalculatorTextfield"}
                             value={Number(calculatedData.kiborValue).toFixed(4)}
@@ -507,15 +520,14 @@ const NonFEDiscountingModal = ({
                         lg={2}
                         md={2}
                         sm={2}
-                        className="d-flex align-items-end justify-content-start ps-0"
-                      >
-                        <span className="SofrPercentSignBoxNonFE">%</span>
+                        className='d-flex align-items-end justify-content-start ps-0'>
+                        <span className='SofrPercentSignBoxNonFE'>%</span>
                       </Col>
                     </Row>
-                    <Row className="mt-2 position-relative">
+                    <Row className='mt-2 position-relative'>
                       <Col lg={12} md={12} sm={12}>
-                        <div className="d-flex flex-column flex-wrap">
-                          <span className="SubHeadings">Swap</span>
+                        <div className='d-flex flex-column flex-wrap'>
+                          <span className='SubHeadings'>Swap</span>
                           <InputFIeld
                             applyClass={"CalculatorTextfield"}
                             value={Number(calculatedData.swapValue).toFixed(2)}
@@ -525,8 +537,8 @@ const NonFEDiscountingModal = ({
                       </Col>
                     </Row>
                   </Col>
-                  <Col lg={5} md={5} sm={5} className="mt-4">
-                    <span className="BlueBackGroundboxNon_FEDiscountingModal">
+                  <Col lg={5} md={5} sm={5} className='mt-4'>
+                    <span className='BlueBackGroundboxNon_FEDiscountingModal'>
                       {calculatedData.nonFeRate !== ""
                         ? Number(calculatedData.nonFeRate).toFixed(2)
                         : 0}
@@ -544,8 +556,7 @@ const NonFEDiscountingModal = ({
                 lg={6}
                 md={6}
                 sm={12}
-                className="d-flex justify-content-start align-items-center rfqLimit_error-style"
-              >
+                className='d-flex justify-content-start align-items-center rfqLimit_error-style'>
                 {errorMessage.status === true && errorMessage.message !== ""
                   ? errorMessage.message
                   : ""}
@@ -554,13 +565,16 @@ const NonFEDiscountingModal = ({
                 lg={6}
                 md={6}
                 sm={12}
-                className="d-flex align-items-center justify-content-end"
-              >
+                className='d-flex align-items-center justify-content-end'>
                 <CustomButton
                   value={"Confirm"}
                   applyClass={"ConfirmButtonBookaForward"}
                   onClick={handleConfirm}
-                  disabled={tenorValue !== "" && isWeekend(tenoreDate)}
+                  disabled={
+                    isHoliday
+                      ? true
+                      : tenorValue !== "" && isWeekend(tenoreDate)
+                  }
                   loading={SaveNonFEDiscountingTransactionAPILoading}
                 />
               </Col>

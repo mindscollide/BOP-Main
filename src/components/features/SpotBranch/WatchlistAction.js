@@ -1,4 +1,5 @@
 import {
+  GetAllHolidaysForTransactionRM,
   GetAllInstrumentForTreasuryRM,
   GetBankForwardForTreasury,
   GetBankSpotForTreasury,
@@ -858,6 +859,61 @@ export const GetBidOfferStatusApi = createAsyncThunk(
           return rejectWithValue("Something went wrong");
         }
       } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      // Reject with error message
+      console.log("", error);
+      return rejectWithValue("Something went wrong");
+    }
+  }
+);
+
+export const getAllHolidaysForTransactionApi = createAsyncThunk(
+  "watchlist/getAllHolidaysForTransaction", // A unique action type string
+  async ({ navigate }, { dispatch, rejectWithValue }) => {
+    try {
+      let getAllHolidaysForTransaction = createPostAPI(
+        watchListApi,
+        GetAllHolidaysForTransactionRM.RequestMethod
+      );
+
+      const response = await getAllHolidaysForTransaction();
+
+      if (response.data.responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetAllHolidaysForTransaction_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult.holidays,
+              message: "",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetAllHolidaysForTransaction_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue(
+              import.meta.env.VITE_MQTT_PORT === "8883" ? "" : "No Record Found"
+            );
+          } else {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          console.log("", response.data);
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        console.log("", response.data);
         return rejectWithValue("Something went wrong");
       }
     } catch (error) {

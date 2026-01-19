@@ -467,3 +467,6 @@ export const UpdateBid_OfferStatusRM = {
 export const GetBid_OfferStatusRM = {
   RequestMethod: "ServiceManager.GetBid_OfferStatus",
 };
+export const GetAllHolidaysForTransactionRM= {
+  RequestMethod: "ServiceManager.GetAllHolidaysForTransaction",
+}

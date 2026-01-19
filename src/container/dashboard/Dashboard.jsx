@@ -88,6 +88,9 @@ import {
 } from "@/components/features/SpotBranch/WatchlistAction";
 import {
   setBidOfferStatus,
+  setHolidayAdded,
+  setHolidayDeleted,
+  setHolidayUpdated,
   setMarketStatus,
 } from "@/store/watchListSlicer/WatchListSlicer";
 import { setUpdateVolMeterRealtime } from "@/store/dealerReducer/dealerSlicer";
@@ -481,6 +484,15 @@ const Dashboard = () => {
           console.log(payload, "BID_OFFER_STATUS_UPDATED");
           dispatch(setBidOfferStatus(payload));
           break;
+        case "HOLIDAY_CREATED":
+          dispatch(setHolidayAdded(data.payload));
+          break;
+        case "HOLIDAY_UPDATED":
+          dispatch(setHolidayUpdated(data.payload));
+          break;
+        case "HOLIDAY_DELETED":
+          dispatch(setHolidayDeleted(data.payload));
+          break;
 
         default:
           console.warn("No specific handler for this message type", payload);
@@ -615,12 +627,12 @@ const Dashboard = () => {
     }
   }, [settingData]);
   return (
-    <Layout className="roboto-13">
+    <Layout className='roboto-13'>
       {!location.pathname.includes("calculator") && <Header />}
 
       <GlobalNavbar />
       <Content>
-        <main className="px-3">
+        <main className='px-3'>
           <Outlet />
           {/* <AnimatePresence>
             {blotterTransactionAdded && isTreasury && <DealBox />}
