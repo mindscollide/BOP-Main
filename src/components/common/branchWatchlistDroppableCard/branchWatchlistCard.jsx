@@ -9,6 +9,7 @@ import {
   setRfqModalOpen,
 } from "@/store/modalSlice/modalSlicer";
 import { clearBidOfferStatus } from "@/store/watchListSlicer/WatchListSlicer";
+import { useBidOffer } from "@/context/BidOfferContext";
 
 const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
 
@@ -29,33 +30,21 @@ const BranchRateCardsOfWatchList = ({
 
   // Local RFQ button state from Redux trade rights
   const [rfqButtonState, setRFqButtonState] = useState(true);
-
-  // Bid/Offer status from Redux (controls whether Buy/Sell are enabled)
-  const [bidOfferStatus, setBidOfferStatus] = useState({
-    isBid: true,
-    isOffer: true,
-  });
+  const { isBid, isOffer } = useBidOffer();
 
   const isTradeRights = useSelector(
-    (state) => state.RealtimeActionsSlice.tradeRightsStatusUpdated
-  );
-
-  const BidOfferStatusData = useSelector(
-    (state) => state.WatchListReducer.getBidOfferStatus
+    (state) => state.RealtimeActionsSlice.tradeRightsStatusUpdated,
   );
 
   const marketStatus = useSelector(
-    (state) => state.WatchListReducer.getMarketStatus
+    (state) => state.WatchListReducer.getMarketStatus,
   );
 
   /**
    * Derived disable states based on bidOfferStatus
    */
-  const isBuyDisabled =
-    !bidOfferStatus.isBid || !rfqButtonState || !marketStatus;
-  const isSellDisabled =
-    !bidOfferStatus.isOffer || !rfqButtonState || !marketStatus;
-  console.log(bidOfferStatus, isSellDisabled, "isSellDisabled");
+  const isBuyDisabled = !isBid || !rfqButtonState || !marketStatus;
+  const isSellDisabled = !isOffer || !rfqButtonState || !marketStatus;
   /**
    * Open modal with buy/sell data
    */
@@ -84,22 +73,6 @@ const BranchRateCardsOfWatchList = ({
       setRFqButtonState(JSON.parse(isTradeRights));
     }
   }, [isTradeRights]);
-
-  /**
-   * Sync bid/offer status from backend
-   */
-  useEffect(() => {
-    if (!BidOfferStatusData) return;
-
-    const { isBidOn, isOfferOn } = BidOfferStatusData;
-
-    console.log(isBidOn, isOfferOn, BidOfferStatusData, "BidOfferStatusData");
-
-    setBidOfferStatus({
-      isBid: isBidOn,
-      isOffer: isOfferOn,
-    });
-  }, [BidOfferStatusData]);
 
   return (
     <>
@@ -130,13 +103,13 @@ const BranchRateCardsOfWatchList = ({
                   <BidAmountBox
                     spot={true}
                     BidBoxHeading={buyHeading}
-                    BidAmountValue={!bidOfferStatus.isBid ? 0 : buyValue}
+                    BidAmountValue={!isBid ? 0 : buyValue}
                     applyClass={
-                      !bidOfferStatus.isBid && isBuyDisabled
+                      !isBid && isBuyDisabled
                         ? "SellandBuyCardBranch_Stuck_disbaled"
                         : isBuyDisabled
-                        ? "SellandBuyCardBracnh_disbaled"
-                        : "SellandBuyCardBracnh"
+                          ? "SellandBuyCardBracnh_disbaled"
+                          : "SellandBuyCardBracnh"
                     }
                     onClick={() =>
                       !isBuyDisabled && buyValue > 0 && handleOpenModal("buy")
@@ -147,13 +120,13 @@ const BranchRateCardsOfWatchList = ({
                   <BidAmountBox
                     spot={true}
                     BidBoxHeading={sellHeading}
-                    BidAmountValue={!bidOfferStatus.isOffer ? 0 : sellValue}
+                    BidAmountValue={!isOffer ? 0 : sellValue}
                     applyClass={
-                      !bidOfferStatus.isOffer && isSellDisabled
+                      !isOffer && isSellDisabled
                         ? "SellandBuyCardBranch_Stuck_disbaled"
                         : isSellDisabled
-                        ? "SellandBuyCardBracnh_disbaled"
-                        : "SellandBuyCardBracnh"
+                          ? "SellandBuyCardBracnh_disbaled"
+                          : "SellandBuyCardBracnh"
                     }
                     onClick={() =>
                       !isSellDisabled &&
@@ -169,13 +142,13 @@ const BranchRateCardsOfWatchList = ({
                   <BidAmountBox
                     spot={true}
                     BidBoxHeading={sellHeading}
-                    BidAmountValue={!bidOfferStatus.isOffer ? 0 : buyValue}
+                    BidAmountValue={!isOffer ? 0 : buyValue}
                     applyClass={
-                      !bidOfferStatus.isOffer && isSellDisabled
+                      !isOffer && isSellDisabled
                         ? "SellandBuyCardBranch_Stuck_disbaled"
                         : isSellDisabled
-                        ? "SellandBuyCardBracnh_disbaled"
-                        : "SellandBuyCardBracnh"
+                          ? "SellandBuyCardBracnh_disbaled"
+                          : "SellandBuyCardBracnh"
                     }
                     onClick={() =>
                       !isSellDisabled && buyValue > 0 && handleOpenModal("sell")
@@ -186,13 +159,13 @@ const BranchRateCardsOfWatchList = ({
                   <BidAmountBox
                     spot={true}
                     BidBoxHeading={buyHeading}
-                    BidAmountValue={!bidOfferStatus.isBid ? 0 : sellValue}
+                    BidAmountValue={!isBid ? 0 : sellValue}
                     applyClass={
-                      !bidOfferStatus.isBid && isBuyDisabled
+                      !isBid && isBuyDisabled
                         ? "SellandBuyCardBranch_Stuck_disbaled"
                         : isBuyDisabled
-                        ? "SellandBuyCardBracnh_disbaled"
-                        : "SellandBuyCardBracnh"
+                          ? "SellandBuyCardBracnh_disbaled"
+                          : "SellandBuyCardBracnh"
                     }
                     onClick={() =>
                       !isBuyDisabled && sellValue > 0 && handleOpenModal("buy")

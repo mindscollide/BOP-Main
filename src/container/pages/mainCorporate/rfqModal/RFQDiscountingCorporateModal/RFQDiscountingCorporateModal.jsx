@@ -17,41 +17,45 @@ import {
 } from "@/components/features/blotter/BlotterActions";
 import { NumericFormat } from "react-number-format";
 import { setDiscountingRFQModal } from "@/store/modalSlice/modalSlicer";
+import { useBidOffer } from "@/context/BidOfferContext";
 const RFQDiscountingCorporateModal = () => {
+  const { isBid } = useBidOffer();
+
   //Local States
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const getAllHolidays = useSelector(
-    (state) => state.WatchListReducer.getAllHolidays
+    (state) => state.WatchListReducer.getAllHolidays,
   );
   const natureOfBusinessList = useSelector(
-    (state) => state.authReducer.GetAllNatureOfTransactions
+    (state) => state.authReducer.GetAllNatureOfTransactions,
   );
   const CalculateFESwapAndDiscountingRate = useSelector(
-    (state) => state.BlotterSlicer.CalculateFESwapAndDiscountingRate
+    (state) => state.BlotterSlicer.CalculateFESwapAndDiscountingRate,
   );
   const calculateNonFeSwapAndDiscountingRate = useSelector(
-    (state) => state.BlotterSlicer.calculateNonFeSwapAndDiscountingRate
+    (state) => state.BlotterSlicer.calculateNonFeSwapAndDiscountingRate,
   );
   const GetAllActiveCorproates = useSelector(
-    (state) => state.authReducer.GetAllActiveCorproates
+    (state) => state.authReducer.GetAllActiveCorproates,
   );
 
   const rfqDiscountingModal = useSelector(
-    (state) => state.modalReducer.DiscountingRFQModal
+    (state) => state.modalReducer.DiscountingRFQModal,
   );
   // Get all instruments for counterparties from Redux store
   const getAllInstrumentsForCounterPartiesData = useSelector(
-    (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
+    (state) =>
+      state.WatchListReducer?.getAllInstrumentForCounterParties ?? null,
   );
 
   const SaveNonFEDiscountingTransactionRFQLoading = useSelector(
-    (state) => state.BlotterSlicer.SaveNonFEDiscountingTransactionRFQLoading
+    (state) => state.BlotterSlicer.SaveNonFEDiscountingTransactionRFQLoading,
   );
 
   const SaveFEDiscountingTransactionRFQLoading = useSelector(
-    (state) => state.BlotterSlicer.SaveFEDiscountingTransactionRFQLoading
+    (state) => state.BlotterSlicer.SaveFEDiscountingTransactionRFQLoading,
   );
   const [amountData, setAmountData] = useState("");
   const [Tenor, setTenor] = useState("");
@@ -77,8 +81,8 @@ const RFQDiscountingCorporateModal = () => {
     localStorage.getItem("branch") !== null && isBranch
       ? JSON.parse(localStorage.getItem("branch"))
       : localStorage.getItem("corporate") !== null && !isBranch
-      ? JSON.parse(localStorage.getItem("corporate"))
-      : null;
+        ? JSON.parse(localStorage.getItem("corporate"))
+        : null;
 
   const [selectedCurrency, setSelectedCurrency] = useState(null);
 
@@ -101,7 +105,7 @@ const RFQDiscountingCorporateModal = () => {
         const formattedOptions = natureOfBusinessList.natureOfTransactions
           .filter(
             (business, index) =>
-              business.isForFE === true || business.isForNonFE === true
+              business.isForFE === true || business.isForNonFE === true,
           )
           .map((businessDetails, index) => {
             return {
@@ -175,8 +179,8 @@ const RFQDiscountingCorporateModal = () => {
           typeOptionSelected.value === 13
             ? discountingApplicableInstruments
             : typeOptionSelected.value === 14
-            ? nonFEDiscountingApplicableInstruments
-            : discountingApplicableInstruments;
+              ? nonFEDiscountingApplicableInstruments
+              : discountingApplicableInstruments;
 
         // Filter and map instruments to create dropdown options
         const spotApplicableInstrumentList = currenciesArr
@@ -229,7 +233,7 @@ const RFQDiscountingCorporateModal = () => {
           typeof discountingFactor !== "number"
         ) {
           throw new Error(
-            "Invalid data format received from CalculateFESwapAndDiscountingRate"
+            "Invalid data format received from CalculateFESwapAndDiscountingRate",
           );
         }
 
@@ -241,7 +245,7 @@ const RFQDiscountingCorporateModal = () => {
       } catch (error) {
         console.error(
           "Error while calculating FE Swap and Discounting Rate:",
-          error.message
+          error.message,
         );
         // Optionally set some error state or show user notification
         // setErrorState(error.message);
@@ -366,7 +370,7 @@ const RFQDiscountingCorporateModal = () => {
             Data,
             navigate,
             setErrorMessage,
-          })
+          }),
         );
       } else {
         setIsError(true);
@@ -387,7 +391,7 @@ const RFQDiscountingCorporateModal = () => {
           DiscountingFactor: Number(calculatedData.DiscountingFactor),
         };
         dispatch(
-          SaveFEDiscountingTransactionRFQ({ Data, navigate, setErrorMessage })
+          SaveFEDiscountingTransactionRFQ({ Data, navigate, setErrorMessage }),
         );
       } else {
         setIsError(true);
@@ -399,10 +403,10 @@ const RFQDiscountingCorporateModal = () => {
     () =>
       isHolidayForInstrument(
         tenoreDate,
-        formData.InstrumentID.value,
-        getAllHolidays
+        selectedCurrency?.value,
+        getAllHolidays,
       ),
-    [getAllHolidays, formData.InstrumentID.value, tenoreDate]
+    [getAllHolidays, selectedCurrency?.value, tenoreDate],
   );
 
   return (
@@ -411,25 +415,25 @@ const RFQDiscountingCorporateModal = () => {
         show={rfqDiscountingModal}
         onHide={() => dispatch(setDiscountingRFQModal(false))}
         closeButton
-        headerClassName='RFQModalHeaderForwardTabCorporate'
-        footerClassName='RFQModalFooterForwardTabCorporate'
-        bodyClassName='RFQModalBodyForwardTabCorporate'
-        className=''
+        headerClassName="RFQModalHeaderForwardTabCorporate"
+        footerClassName="RFQModalFooterForwardTabCorporate"
+        bodyClassName="RFQModalBodyForwardTabCorporate"
+        className=""
         modalHeader={
           <>
             <Row>
               <Col lg={12} md={12} sm={12}>
                 {isBranch ? (
                   <>
-                    <p className='heading-RfqModal'>
+                    <p className="heading-RfqModal">
                       {titleDetails.branchName}
                     </p>
-                    <p className='heading-branchCode'>
+                    <p className="heading-branchCode">
                       Branch Code: {titleDetails.branchCode}
                     </p>
                   </>
                 ) : (
-                  <p className='heading-RfqModal'>
+                  <p className="heading-RfqModal">
                     {titleDetails.corporateName}
                   </p>
                 )}
@@ -441,16 +445,16 @@ const RFQDiscountingCorporateModal = () => {
           <>
             <div>
               {import.meta.env.VITE_APP_INCLUDE_BRANCH === "true" && (
-                <Row className='mb-2'>
+                <Row className="mb-2">
                   <Col lg={12} md={12} sm={12}>
-                    <div className='d-flex flex-column flex-wrap'>
-                      <label className='LabelRFQTransactionModal'>
+                    <div className="d-flex flex-column flex-wrap">
+                      <label className="LabelRFQTransactionModal">
                         Customer name*
                       </label>
                       <SelectDropdown
-                        classNamePrefix='RfqSpot'
+                        classNamePrefix="RfqSpot"
                         options={getAllCorporates}
-                        placeholder=''
+                        placeholder=""
                         value={corporateValue}
                         onChange={handleChangeCorporate}
                         isSearchable={true}
@@ -462,13 +466,13 @@ const RFQDiscountingCorporateModal = () => {
 
               <Row>
                 <Col lg={12} md={12} sm={12}>
-                  <div className='d-flex flex-column flex-wrap'>
-                    <label className='LabelRFQTransactionModal'>
+                  <div className="d-flex flex-column flex-wrap">
+                    <label className="LabelRFQTransactionModal">
                       Currency*
                     </label>
                     <SelectDropdown
-                      classNamePrefix='RfqSpot'
-                      placeholder=''
+                      classNamePrefix="RfqSpot"
+                      placeholder=""
                       options={currencyOptions}
                       onChange={(selectCurrency) =>
                         setSelectedCurrency(selectCurrency)
@@ -479,12 +483,12 @@ const RFQDiscountingCorporateModal = () => {
                 </Col>
               </Row>
 
-              <Row className='mt-2'>
+              <Row className="mt-2">
                 <Col lg={6} md={6} sm={6}>
-                  <div className='d-flex flex-column flex-wrap'>
-                    <label className='LabelRFQTransactionModal'>Nature*</label>
+                  <div className="d-flex flex-column flex-wrap">
+                    <label className="LabelRFQTransactionModal">Nature*</label>
                     <SelectDropdown
-                      classNamePrefix='RfqSpot'
+                      classNamePrefix="RfqSpot"
                       options={natureOfBusinessOptions}
                       value={typeOptionSelected}
                       onChange={handleChangeNature}
@@ -492,28 +496,28 @@ const RFQDiscountingCorporateModal = () => {
                   </div>
                 </Col>
                 <Col lg={6} md={6} sm={6}>
-                  <div className='d-flex flex-column flex-wrap'>
-                    <label className='LabelRFQTransactionModal'>A/c No</label>
+                  <div className="d-flex flex-column flex-wrap">
+                    <label className="LabelRFQTransactionModal">A/c No</label>
                     <InputFIeld
                       onChange={handleChangeAccountNumber}
                       value={AccountNumber}
-                      name='AccountNumber'
-                      applyClass='CalculatorTextfield'
+                      name="AccountNumber"
+                      applyClass="CalculatorTextfield"
                       maxLength={25}
                     />
                   </div>
                 </Col>
               </Row>
 
-              <Row className='mt-2'>
+              <Row className="mt-2">
                 <Col lg={12} md={12} sm={12}>
-                  <div className='d-flex flex-column flex-wrap'>
-                    <label className='LabelRFQTransactionModal'>Amount*</label>
+                  <div className="d-flex flex-column flex-wrap">
+                    <label className="LabelRFQTransactionModal">Amount*</label>
                     <NumericFormat
                       customInput={InputFIeld}
                       value={amountData}
-                      name='Amount'
-                      applyClass='CalculatorTextfield'
+                      name="Amount"
+                      applyClass="CalculatorTextfield"
                       thousandSeparator={true}
                       maxLength={10}
                       onChange={handleChangeAmount}
@@ -522,22 +526,22 @@ const RFQDiscountingCorporateModal = () => {
                   </div>
                   {isError &&
                     (Number(amountData) <= 0 || amountData === "") && (
-                      <span className='text-danger small'>
+                      <span className="text-danger small">
                         Please enter a valid amount
                       </span>
                     )}
                 </Col>
               </Row>
 
-              <Row className='mt-2'>
-                <Col lg={7} md={7} sm={7} className='pe-0'>
-                  <div className='d-flex flex-column flex-wrap'>
-                    <label className='LabelRFQTransactionModal'>Tenor*</label>
+              <Row className="mt-2">
+                <Col lg={7} md={7} sm={7} className="pe-0">
+                  <div className="d-flex flex-column flex-wrap">
+                    <label className="LabelRFQTransactionModal">Tenor*</label>
                     <InputFIeld
                       onChange={handleChangeTenor}
                       value={Tenor}
-                      name='Tenor'
-                      applyClass='CalculatorTextfield'
+                      name="Tenor"
+                      applyClass="CalculatorTextfield"
                       onBlur={handleBlurTenor}
                     />
                   </div>
@@ -546,13 +550,14 @@ const RFQDiscountingCorporateModal = () => {
                   lg={5}
                   md={5}
                   sm={5}
-                  className='ps-0 d-flex align-items-end'>
-                  <span className='DateColumnTenorForwardTabRFQModal'>
+                  className="ps-0 d-flex align-items-end"
+                >
+                  <span className="DateColumnTenorForwardTabRFQModal">
                     {formatDate(tenoreDate)}
                   </span>
                 </Col>
                 {isError && (Number(Tenor) <= 0 || Tenor === "") && (
-                  <span className='text-danger small'>
+                  <span className="text-danger small">
                     Please enter valid tenor days (1-1000)
                   </span>
                 )}
@@ -567,18 +572,23 @@ const RFQDiscountingCorporateModal = () => {
                 lg={6}
                 md={6}
                 sm={12}
-                className='d-flex justify-content-start align-items-center rfqLimit_error-style'>
+                className="d-flex justify-content-start align-items-center rfqLimit_error-style"
+              >
                 {errorMessage.status === true && errorMessage.message !== ""
                   ? errorMessage.message
                   : ""}
               </Col>
-              <Col lg={6} md={6} sm={12} className='d-flex justify-content-end'>
+              <Col lg={6} md={6} sm={12} className="d-flex justify-content-end">
                 <CustomButton
-                  value='Confirm'
-                  applyClass='ConfirmButtonBookaForward'
+                  value="Confirm"
+                  applyClass="ConfirmButtonBookaForward"
                   onClick={handleClickConfirm}
                   disabled={
-                    isHoliday ? true : Tenor !== "" && isWeekend(tenoreDate)
+                    !isBid
+                      ? true
+                      : isHoliday
+                        ? true
+                        : Tenor !== "" && isWeekend(tenoreDate)
                   }
                   loading={
                     typeOptionSelected.value === 14

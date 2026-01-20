@@ -10,15 +10,15 @@ import CorporateBookaForwardModal from "./CorporateBookaForwardModal/CorporateBo
 import { buildForwardsTable } from "@/components/utils/generateColumnsData";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import { throttle } from "lodash";
+import { useBidOffer } from "@/context/BidOfferContext";
 
 const BranchForwardsTable = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { bidOfferStatus } = useBidOffer();
 
-  const [bidOfferStatus, setBidOfferStatus] = useState({
-    isBid: true,
-    isOffer: true,
-  });
+  console.log(bidOfferStatus, "bidOfferStatusbidOfferStatus");
+
   const [dataSource, setDataSource] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
   const [rfqButtonState, setRFqButtonState] = useState(null);
@@ -28,33 +28,31 @@ const BranchForwardsTable = () => {
 
   //Global State for Watchlist Card Data
   const getAllInstrumentsForCounterPartiesData = useSelector(
-    (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
-  );
-  const BidOfferStatusData = useSelector(
-    (state) => state.WatchListReducer.getBidOfferStatus
+    (state) =>
+      state.WatchListReducer?.getAllInstrumentForCounterParties ?? null,
   );
 
   const CounterPartyForwardRates = useSelector(
-    (state) => state.RealtimeActionsSlice.CounterPartyForwardRates
+    (state) => state.RealtimeActionsSlice.CounterPartyForwardRates,
   );
 
   const getAllTenorsRecords = useSelector(
-    (state) => state.dealerReducer.getAllTenors
+    (state) => state.dealerReducer.getAllTenors,
   );
 
   const GetForwardRatesForCounterPartyData = useSelector(
-    (state) => state.WatchListReducer.GetForwardRatesForCounterParty
+    (state) => state.WatchListReducer.GetForwardRatesForCounterParty,
   );
 
   const marketStatus = useSelector(
-    (state) => state.WatchListReducer.getMarketStatus
+    (state) => state.WatchListReducer.getMarketStatus,
   );
 
   const ClearRatesData = useSelector(
-    (state) => state.RealtimeActionsSlice.ClearRatesData
+    (state) => state.RealtimeActionsSlice.ClearRatesData,
   );
   const isTradeRights = useSelector(
-    (state) => state.RealtimeActionsSlice.tradeRightsStatusUpdated
+    (state) => state.RealtimeActionsSlice.tradeRightsStatusUpdated,
   );
 
   // const isTradeRights =
@@ -81,38 +79,6 @@ const BranchForwardsTable = () => {
   }, [isTradeRights]);
 
   useEffect(() => {
-    if (!BidOfferStatusData) return;
-
-    const { isBidOn, isOfferOn } = BidOfferStatusData;
-
-    setDataSource((prevData) =>
-      prevData.map((row) => {
-        const updatedRow = { ...row };
-
-        Object.keys(updatedRow).forEach((key) => {
-          // 🔴 Bid OFF → zero bid values
-          if (!isBidOn && key.startsWith("bid_")) {
-            updatedRow[key] = 0;
-          }
-
-          // 🔴 Offer OFF → zero ask values
-          if (!isOfferOn && key.startsWith("ask_")) {
-            updatedRow[key] = 0;
-          }
-        });
-
-        return updatedRow;
-      })
-    );
-
-    // Sync UI toggle state
-    setBidOfferStatus({
-      isBid: isBidOn,
-      isOffer: isOfferOn,
-    });
-  }, [BidOfferStatusData]);
-
-  useEffect(() => {
     if (
       getAllInstrumentsForCounterPartiesData !== null &&
       getAllTenorsRecords !== null
@@ -123,7 +89,7 @@ const BranchForwardsTable = () => {
           getAllInstrumentsForCounterPartiesData;
         console.log(
           forwardApplicableInstruments,
-          "forwardApplicableInstrumentsforwardApplicableInstruments"
+          "forwardApplicableInstrumentsforwardApplicableInstruments",
         );
 
         //********************************************** */
@@ -142,7 +108,7 @@ const BranchForwardsTable = () => {
           getAllInstrument,
           IndexCell,
           null,
-          bidOfferStatus
+          bidOfferStatus,
         );
         // console.log(rowData, columnsData, "columnsDatacolumnsData");
         if (rowData.length > 0) {
@@ -184,10 +150,10 @@ const BranchForwardsTable = () => {
             });
 
             return updatedRow;
-          })
+          }),
         );
       }, 20),
-    []
+    [],
   );
 
   useEffect(() => {
@@ -207,7 +173,7 @@ const BranchForwardsTable = () => {
             }
           });
           return updatedRow;
-        })
+        }),
       );
     }
   }, [marketStatus]);
@@ -225,7 +191,7 @@ const BranchForwardsTable = () => {
             }
           });
           return updatedRow;
-        })
+        }),
       );
     }
   }, [ClearRatesData]);
