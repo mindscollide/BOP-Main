@@ -8,146 +8,52 @@ import { clearCatgeoryResponseMessage } from "@/store/categoryReducer/categoryRe
 import { clearReportResponseMessage } from "@/store/ReportSlicer/ReportSlicer";
 import { clearSettingResponseMessage } from "@/store/settingSlicer/SettingSlicer";
 import { clearWatchListResponseMessage } from "@/store/watchListSlicer/WatchListSlicer";
-
 export const ResponseMessage = () => {
   const dispatch = useDispatch();
 
-  const UploadRateResponseMessage = useSelector(
-    (state) => state.dealerReducer.responseMessage
-  );
-  const authResponseMessage = useSelector(
-    (state) => state.authReducer.responseMessage
-  );
-  const WatchListResponseMessage = useSelector(
-    (state) => state.WatchListReducer.responseMessage
-  );
-  const RFQResponseMessage = useSelector(
-    (state) => state.RFQReducer.responseMessage
-  );
-  const dealerResponseMessage = useSelector(
-    (state) => state.dealerReducer.responseMessage
-  );
-  const catgeoryResponseMessage = useSelector(
-    (state) => state.categoryReducer.responseMessage
-  );
-  const ReportResponseMessage = useSelector(
-    (state) => state.ReportReducer.responseMessage
-  );
-  const CalculatorResponseMessage = useSelector(
-    (state) => state.CalculatorReducer.responseMessage
-  );
-  const settingResponseMessage = useSelector(
-    (state) => state.settingSlicer.responseMessage
-  );
-  const BlotterResponseMessage = useSelector(
-    (state) => state.BlotterSlicer.responseMessage
-  );
-  const chatResponseMessage = useSelector(
-    (state) => state.chatSlicer.responseMessage
-  );
+  const sources = [
+    { key: "dealer", msg: useSelector((s) => s.dealerReducer.responseMessage), clear: clearDealerResponseMessage },
+    { key: "auth", msg: useSelector((s) => s.authReducer.responseMessage), clear: clearAuthResponseMessage },
+    { key: "watchlist", msg: useSelector((s) => s.WatchListReducer.responseMessage), clear: clearWatchListResponseMessage },
+    { key: "rfq", msg: useSelector((s) => s.RFQReducer.responseMessage), clear: null },
+    { key: "category", msg: useSelector((s) => s.categoryReducer.responseMessage), clear: clearCatgeoryResponseMessage },
+    { key: "report", msg: useSelector((s) => s.ReportReducer.responseMessage), clear: clearReportResponseMessage },
+    { key: "calculator", msg: useSelector((s) => s.CalculatorReducer.responseMessage), clear: null },
+    { key: "setting", msg: useSelector((s) => s.settingSlicer.responseMessage), clear: clearSettingResponseMessage },
+    { key: "blotter", msg: useSelector((s) => s.BlotterSlicer.responseMessage), clear: clearBlotterResponseMessage },
+    { key: "chat", msg: useSelector((s) => s.chatSlicer.responseMessage), clear: null },
+  ];
 
-  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState([]);
 
-  // Debug logs
-  console.group("🔔 Response Messages State");
-  console.log("✅ UploadRateResponseMessage:", UploadRateResponseMessage);
-  console.log("✅ authResponseMessage:", authResponseMessage);
-  console.log("✅ WatchListResponseMessage:", WatchListResponseMessage);
-  console.log("✅ RFQResponseMessage:", RFQResponseMessage);
-  console.log("✅ dealerResponseMessage:", dealerResponseMessage);
-  console.log("✅ catgeoryResponseMessage:", catgeoryResponseMessage);
-  console.log("✅ ReportResponseMessage:", ReportResponseMessage);
-  console.log("✅ CalculatorResponseMessage:", CalculatorResponseMessage);
-  console.log("✅ settingResponseMessage:", settingResponseMessage);
-  console.log("✅ BlotterResponseMessage:", BlotterResponseMessage);
-  console.log("✅ chatResponseMessage:", chatResponseMessage);
-  console.groupEnd();
+  useEffect(
+    () => {
+      sources.forEach(({ key, msg, clear }) => {
+        if (msg && msg !== "") {
+          const newItem = {
+            id: `${key}-${Date.now()}-${Math.random()}`,
+            message: msg,
+            source: key,
+          };
 
-  const showMessage = (msg, clearAction) => {
-    setMessage(msg);
-    setTimeout(() => {
-      setMessage("");
-      if (clearAction) dispatch(clearAction());
-    }, 3000);
-  };
+          setMessages((prev) => {
+            const exists = prev.some(
+              (m) => m.source === key && m.message === msg
+            );
+            if (exists) return prev;
+            return [...prev, newItem];
+          });
 
-  useEffect(() => {
-    if (
-      WatchListResponseMessage !== "" &&
-      WatchListResponseMessage !== undefined
-    ) {
-      showMessage(WatchListResponseMessage, clearWatchListResponseMessage);
-    }
-  }, [WatchListResponseMessage]);
+          // After 2 seconds, clear slice + remove from local list
+          setTimeout(() => {
+            if (clear) dispatch(clear());
+            setMessages((prev) => prev.filter((m) => m.source !== key));
+          }, 3000);
+        }
+      });
+    },
+    sources.map((s) => s.msg)
+  ); // re-run when any slice msg changes
 
-  useEffect(() => {
-    if (RFQResponseMessage !== "" && RFQResponseMessage !== undefined) {
-      showMessage(RFQResponseMessage);
-    }
-  }, [RFQResponseMessage]);
-
-  useEffect(() => {
-    if (dealerResponseMessage !== "" && dealerResponseMessage !== undefined) {
-      showMessage(dealerResponseMessage, clearDealerResponseMessage);
-    }
-  }, [dealerResponseMessage]);
-
-  useEffect(() => {
-    if (
-      catgeoryResponseMessage !== "" &&
-      catgeoryResponseMessage !== undefined
-    ) {
-      showMessage(catgeoryResponseMessage, clearCatgeoryResponseMessage);
-    }
-  }, [catgeoryResponseMessage]);
-
-  useEffect(() => {
-    if (ReportResponseMessage !== "" && ReportResponseMessage !== undefined) {
-      showMessage(ReportResponseMessage, clearReportResponseMessage);
-    }
-  }, [ReportResponseMessage]);
-
-  useEffect(() => {
-    if (
-      CalculatorResponseMessage !== "" &&
-      CalculatorResponseMessage !== undefined
-    ) {
-      showMessage(CalculatorResponseMessage);
-    }
-  }, [CalculatorResponseMessage]);
-
-  useEffect(() => {
-    if (settingResponseMessage !== "" && settingResponseMessage !== undefined) {
-      showMessage(settingResponseMessage, clearSettingResponseMessage);
-    }
-  }, [settingResponseMessage]);
-
-  useEffect(() => {
-    if (BlotterResponseMessage !== "" && BlotterResponseMessage !== undefined) {
-      showMessage(BlotterResponseMessage, clearBlotterResponseMessage);
-    }
-  }, [BlotterResponseMessage]);
-
-  useEffect(() => {
-    if (chatResponseMessage !== "" && chatResponseMessage !== undefined) {
-      showMessage(chatResponseMessage);
-    }
-  }, [chatResponseMessage]);
-
-  useEffect(() => {
-    if (authResponseMessage !== "" && authResponseMessage !== undefined) {
-      showMessage(authResponseMessage, clearAuthResponseMessage);
-    }
-  }, [authResponseMessage]);
-
-  useEffect(() => {
-    if (
-      UploadRateResponseMessage !== "" &&
-      UploadRateResponseMessage !== undefined
-    ) {
-      showMessage(UploadRateResponseMessage, clearDealerResponseMessage);
-    }
-  }, [UploadRateResponseMessage]);
-
-  return <NotificationSnackbar message={message} />;
+  return <NotificationSnackbar messages={messages} />;
 };

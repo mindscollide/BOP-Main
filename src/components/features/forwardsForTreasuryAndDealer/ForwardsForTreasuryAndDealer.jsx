@@ -54,6 +54,9 @@ const DealeAndTreasuryNonFeDiscountingTable = shouldIncludeComponents
     )
   : null;
 
+const TresmarkCrosses = shouldIncludeComponents
+  ? lazy(() => import("@/components/features/tresmarkCrosses/TresmarkCrosses"))
+  : null;
 /**
  * ForwardsForTreasuryAndDealer component.
  *
@@ -359,6 +362,17 @@ const ForwardsForTreasuryAndDealer = () => {
             </Suspense>
           </Col>
         )}
+
+        {shouldIncludeComponents && (
+          <>
+            <Col sm={12} md={12} lg={12} className="mt-3">
+              <Suspense fallback={<div>Loading table...</div>}>
+                <TresmarkCrosses />
+              </Suspense>
+            </Col>
+          </>
+        )}
+
         {DealeAndTreasuryFeDiscountingTable && (
           <Col sm={12} md={12} lg={12} className="mt-3 position-relative">
             <Suspense fallback={<SectionLoader />}>

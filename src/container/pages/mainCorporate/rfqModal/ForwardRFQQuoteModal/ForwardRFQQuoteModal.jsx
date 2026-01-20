@@ -46,25 +46,25 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
 
   console.log(forwardQuoteData, "forwardQuoteData");
   const forwardQuoteModal = useSelector(
-    (state) => state.modalReducer.forwardQuoteModal
+    (state) => state.modalReducer.forwardQuoteModal,
   );
   const forwardQuoteModalData = useSelector(
-    (state) => state.BlotterSlicer.forwardQuoteModalData
+    (state) => state.BlotterSlicer.forwardQuoteModalData,
   );
   const GetForwardTransactionDetails = useSelector(
-    (state) => state.BlotterSlicer.GetForwardTransactionDetails
+    (state) => state.BlotterSlicer.GetForwardTransactionDetails,
   );
 
   const RFQForwardTransactionQuotationLoading = useSelector(
-    (state) => state.BlotterSlicer.RFQForwardTransactionQuotationLoading
+    (state) => state.BlotterSlicer.RFQForwardTransactionQuotationLoading,
   );
 
   const AcceptTransactionAPILoading = useSelector(
-    (state) => state.BlotterSlicer.AcceptTransactionAPILoading
+    (state) => state.BlotterSlicer.AcceptTransactionAPILoading,
   );
 
   const RejectTransactionAPILoading = useSelector(
-    (state) => state.BlotterSlicer.RejectTransactionAPILoading
+    (state) => state.BlotterSlicer.RejectTransactionAPILoading,
   );
   console.log(GetForwardTransactionDetails, "testGetForwardTransactionDetails");
 
@@ -83,7 +83,7 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
         setForwardQuoteData(forwardQuoteModalData);
         console.log(
           forwardQuoteModalData,
-          "forwardQuoteModalDataforwardQuoteModalData"
+          "forwardQuoteModalDataforwardQuoteModalData",
         );
         let Data = {
           PK_TransactionID: forwardQuoteModalData.pK_TransactionID,
@@ -194,7 +194,7 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
 
     console.log(
       { numSwap, numReady, readyValue, swapValue },
-      "numReadynumReady"
+      "numReadynumReady",
     );
     const adjustedSwap =
       // instrumentName?.toUpperCase() === "USD" ? numSwap / 100.0 : numSwap;
@@ -298,8 +298,8 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                           {" "}
                           {moment(
                             formatDateUTCToGMT(
-                              forwardQuoteData?.rfqDealDetails.tenorDate
-                            )
+                              forwardQuoteData?.rfqDealDetails.tenorDate,
+                            ),
                           ).format("ddd, MMM DD, YYYY")}
                         </>
                       ) : (
@@ -327,8 +327,8 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                           {" "}
                           {moment(
                             formatDateUTCToGMT(
-                              forwardQuoteData?.rfqDealDetails.optionsDate
-                            )
+                              forwardQuoteData?.rfqDealDetails.optionsDate,
+                            ),
                           ).format("ddd, MMM DD, YYYY")}
                         </>
                       ) : (
@@ -418,7 +418,7 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                       </label>
                       <NumericFormat
                         customInput={InputFIeld}
-                        value={formatPkAmount(swapValue, { decimals: 0 })}
+                        value={formatPkAmount(swapValue, { decimals: 2 })}
                         disabled={!forwardQuoteData?.isRFQ}
                         thousandSeparator=","
                         applyClass={"DiscountingQuoteInput"}

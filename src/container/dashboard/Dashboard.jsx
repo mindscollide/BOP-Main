@@ -67,6 +67,7 @@ import {
   setTreasuryFowardsTenorsChanges,
   setTreasuryNonFeDiscounting,
   setTreasurySpotRatesFeed,
+  setTresmarkCrossPremiumRates,
   tenorWiseFowardsRatesPublishedActions,
 } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { formatDateToUTC } from "@/utils/formatters";
@@ -81,10 +82,17 @@ import { AnimatePresence } from "framer-motion";
 import { GetAllNatureOfTransactionsApi } from "../pages/mainCorporate/rfqModal/RFQActions";
 import InfoTransaction from "@/components/features/blotter/infoTransaction/InfoTransaction";
 import {
+  GetBidOfferStatusApi,
   getMarketStatusApi,
   GetMisDataByRangeAPI,
 } from "@/components/features/SpotBranch/WatchlistAction";
-import { setMarketStatus } from "@/store/watchListSlicer/WatchListSlicer";
+import {
+  setBidOfferStatus,
+  setHolidayAdded,
+  setHolidayDeleted,
+  setHolidayUpdated,
+  setMarketStatus,
+} from "@/store/watchListSlicer/WatchListSlicer";
 import { setUpdateVolMeterRealtime } from "@/store/dealerReducer/dealerSlicer";
 import { GetNOPDataAPI } from "@/components/features/blotter/BlotterActions";
 import { getUserSettingDataAPI } from "@/components/features/settingsModal/settingActions";
@@ -439,7 +447,6 @@ const Dashboard = () => {
             EndDate: formatDateToUTC(endDate, 1),
           };
           dispatch(GetMisDataByRangeAPI({ navigate, Data }));
-
           break;
 
         // ✅ Categories
@@ -449,6 +456,7 @@ const Dashboard = () => {
         case "CATEGORY_UPDATED":
           dispatch(categoryisUpdated(payload));
           break;
+
         case "CATEGORY_DELETED":
           dispatch(categoryisDeleted(payload));
           break;
@@ -466,6 +474,26 @@ const Dashboard = () => {
             dispatch(LogoutApi({ navigate }));
           }
           break;
+
+        //TRESMARKCROSSESPEMIUMSRATES
+        case "TRESMARK_CROSSES_PREMIUMS_RATES":
+          dispatch(setTresmarkCrossPremiumRates(payload));
+          break;
+
+        case "BID_OFFER_STATUS_UPDATED":
+          console.log(payload, "BID_OFFER_STATUS_UPDATED");
+          dispatch(setBidOfferStatus(payload));
+          break;
+        case "HOLIDAY_CREATED":
+          dispatch(setHolidayAdded(data.payload));
+          break;
+        case "HOLIDAY_UPDATED":
+          dispatch(setHolidayUpdated(data.payload));
+          break;
+        case "HOLIDAY_DELETED":
+          dispatch(setHolidayDeleted(data.payload));
+          break;
+
         default:
           console.warn("No specific handler for this message type", payload);
           break;
@@ -522,7 +550,7 @@ const Dashboard = () => {
 
     //make isTreasuryCommented
     if (isTreasury || isDealer) {
-      if (marketStatus && isTreasuryPath) {
+      if (marketStatus) {
         // Subscribe only when status is true AND path is treasury
         subscribeToTopics(["BOP_REAL_TIME_FEED_TREASURY"]);
         console.log("Subscribed to BOP_REAL_TIME_FEED_TREASURY");
@@ -561,6 +589,8 @@ const Dashboard = () => {
     dispatch(setTradeRightsStatusUpdated(getTradeRights));
     connectToMqtt({ subscribeID, userID });
     dispatch(getMarketStatusApi({ navigate }));
+    dispatch(GetBidOfferStatusApi({}));
+
     if (isTreasury === "true") {
       setTimeout(() => {
         dispatch(setDealModalRequest(true));
@@ -597,12 +627,12 @@ const Dashboard = () => {
     }
   }, [settingData]);
   return (
-    <Layout className="roboto-13">
+    <Layout className='roboto-13'>
       {!location.pathname.includes("calculator") && <Header />}
 
       <GlobalNavbar />
       <Content>
-        <main className="px-3">
+        <main className='px-3'>
           <Outlet />
           {/* <AnimatePresence>
             {blotterTransactionAdded && isTreasury && <DealBox />}

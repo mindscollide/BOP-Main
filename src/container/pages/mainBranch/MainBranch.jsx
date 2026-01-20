@@ -10,6 +10,7 @@ import {
   GetDashboardDataAPI,
   GetDiscountingRatesForCounterPartyApi,
   GetForwardRatesForCounterPartyApi,
+  getAllHolidaysForTransactionApi,
 } from "@/components/features/SpotBranch/WatchlistAction";
 import {
   BlotterDataAPI,
@@ -50,6 +51,7 @@ const MainBranch = () => {
   //WatchList table Data Api Call
   useEffect(() => {
     try {
+      dispatch(getAllHolidaysForTransactionApi({}))
       dispatch(GetSpotRatesForCounterPartyAPI(navigate));
       let Data = { sRow: 0, Length: 10 };
       dispatch(setBlotterLoader(true)); // Set the blotter loader to true

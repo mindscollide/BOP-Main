@@ -179,38 +179,74 @@
 }
 
 /* page size style */
-
-/* Start Page Size Options Dropdown  */
-.PageSizeDropDown__indicator-separator {
-  display: none !important;
-}
-.PageSizeDropDown__placeholder {
-  color: #000 !important;
-}
-.PageSizeDropDown__option {
-  background-color: #d6d9e2 !important;
-  color: #002650 !important;
-  outline: none !important;
+.pageSizeDropdown {
+  width: 100% !important;
 }
 
-.PageSizeDropDown__option--is-focused {
-  background-color: #096fed !important;
-  color: #fff !important;
-  outline: none !important;
+.pageSizeDropdown__menu {
+  z-index: 999999 !important;
+  /* max-height: 30vh; */
+  /*height: auto;
+  overflow: visible; */
 }
-.PageSizeDropDown__control {
-  border-radius: 1px !important;
-  border: none !important;
-  color: #002650 !important;
+.pageSizeDropdown__menu-portal {
+  z-index: 999999 !important;
+}
+.pageSizeDropdown__placeholder {
+  font-family: "Roboto", sans-serif !important;
+}
+.pageSizeDropdown__menu {
+  max-height: 30vh !important; /* Your desired height */
+}
+
+.pageSizeDropdown__menu-list {
+  max-height: 30vh !important; /* Slightly less than container height */
+}
+
+/* page size style */
+.companyListPageSizeDropdown {
+  width: 100% !important;
+}
+
+.companyListPageSizeDropdown__menu.css-1nmdiq5-menu {
+  z-index: 999999 !important;
+}
+.companyListPageSizeDropdown__menu-portal {
+  z-index: 999999 !important;
+}
+.companyListPageSizeDropdown__placeholder {
+  font-family: "Roboto", sans-serif !important;
+}
+.companyListPageSizeDropdown__menu {
+  max-height: 30vh !important; /* Your desired height */
+}
+
+.companyListPageSizeDropdown__menu-list {
+  max-height: 30vh !important; /* Slightly less than container height */
+}
+
+.companyListPageSizeDropdown__control css-13cymwt-control {
+  min-height: 30px;
+}
+/* .companyListPageSizeDropdown__indicator {
+  padding: 0px !important;
+} */
+.companyListPageSizeDropdown__dropdown-indicator {
+  padding: 0px !important;
+}
+
+.companyListPageSizeDropdown__control {
+  min-height: 30px !important;
+}
+.selectTransactionNatureList__menu-portal {
+  z-index: 999999 !important;
+}
+.selectTransactionNatureList__control {
+  border: 1px solid #e1e1e1 !important;
   outline: none !important;
-  min-width: 20px !important;
   box-shadow: none !important;
 }
-.PageSizeDropDown__control--is-focused {
-  outline: none !important;
-  border-color: transparent !important;
-}
-
-.PageSizeDropDown__menu {
-  background-color: #d6d9e2 !important;
+.selectTransactionNatureList__placeholder {
+  font-weight: 600;
+  color: #5a5a5a !important;
 }

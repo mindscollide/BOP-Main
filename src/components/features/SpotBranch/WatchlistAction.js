@@ -1,13 +1,17 @@
 import {
+  GetAllHolidaysForTransactionRM,
   GetAllInstrumentForTreasuryRM,
   GetBankForwardForTreasury,
   GetBankSpotForTreasury,
+  GetBid_OfferStatusRM,
+  GetCorporateDailyVolume,
   GetDashboardData,
   GetDiscountingRatesForCounterParty,
   GetDiscountingRatesForTreasury,
   GetForwardRatesForCounterParty,
   GetMisDataByRange,
   SaveUserDashboardRM,
+  UpdateBid_OfferStatusRM,
   getMarketStatusRM,
 } from "@/common/api_config";
 import { watchListApi } from "@/common/apiend_points";
@@ -677,6 +681,243 @@ export const getMarketStatusApi = createAsyncThunk(
         return rejectWithValue("Something went wrong");
       }
     } catch (error) {
+      console.log("", error);
+      return rejectWithValue("Something went wrong");
+    }
+  }
+);
+
+// Define the GetCorporateDailyVolume async thunk
+export const GetCorporateDailyVolumeAPI = createAsyncThunk(
+  "watchlist/GetCorporateDailyVolume", // A unique action type string
+  async ({ navigate, Data }, { dispatch, rejectWithValue }) => {
+    try {
+      let GetCorporateDailyVolumeData = createPostAPI(
+        watchListApi,
+        GetCorporateDailyVolume.RequestMethod
+      );
+
+      const response = await GetCorporateDailyVolumeData(Data);
+      const { responseCode } = response.data;
+      if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetCorporateDailyVolume_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message: "",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetCorporateDailyVolume_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("No Record Found");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetCorporateDailyVolume_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          console.log("", response.data);
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      // Reject with error message
+      console.log("", error);
+      return rejectWithValue("Something went wrong");
+    }
+  }
+);
+
+export const UpdateBidOfferStatusAPI = createAsyncThunk(
+  "watchlist/UpdateBidOfferStatus", // A unique action type string
+  async ({ Data }, { dispatch, rejectWithValue }) => {
+    try {
+      let getBidOfferStatusData = createPostAPI(
+        watchListApi,
+        UpdateBid_OfferStatusRM.RequestMethod
+      );
+
+      const response = await getBidOfferStatusData(Data);
+      const { responseCode } = response.data;
+      if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_WatchListServiceManager_UpdateBid_OfferStatus_01".toLowerCase()
+              )
+          ) {
+            dispatch(GetBidOfferStatusApi({}));
+            return {
+              response: response.data.responseResult,
+              message: "",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_WatchListServiceManager_UpdateBid_OfferStatus_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("No Record Found");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_WatchListServiceManager_UpdateBid_OfferStatus_04".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "UploadRate_WatchListServiceManager_UpdateBid_OfferStatus_05".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          console.log("", response.data);
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      // Reject with error message
+      console.log("", error);
+      return rejectWithValue("Something went wrong");
+    }
+  }
+);
+
+export const GetBidOfferStatusApi = createAsyncThunk(
+  "watchlist/GetBidOfferStatus", // A unique action type string
+  async ({ Data }, { dispatch, rejectWithValue }) => {
+    try {
+      let getBidOfferStatusData = createPostAPI(
+        watchListApi,
+        GetBid_OfferStatusRM.RequestMethod
+      );
+
+      const response = await getBidOfferStatusData(Data);
+      const { responseCode } = response.data;
+      if (responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetBid_OfferStatus_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult,
+              message: "",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetBid_OfferStatus_03".toLowerCase()
+              )
+          ) {
+            return rejectWithValue("Something went wrong");
+          } else {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          console.log("", response.data);
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      // Reject with error message
+      console.log("", error);
+      return rejectWithValue("Something went wrong");
+    }
+  }
+);
+
+export const getAllHolidaysForTransactionApi = createAsyncThunk(
+  "watchlist/getAllHolidaysForTransaction", // A unique action type string
+  async ({ navigate }, { dispatch, rejectWithValue }) => {
+    try {
+      let getAllHolidaysForTransaction = createPostAPI(
+        watchListApi,
+        GetAllHolidaysForTransactionRM.RequestMethod
+      );
+
+      const response = await getAllHolidaysForTransaction();
+
+      if (response.data.responseCode === 200) {
+        const { isExecuted, responseMessage } = response.data.responseResult;
+        if (isExecuted) {
+          if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetAllHolidaysForTransaction_01".toLowerCase()
+              )
+          ) {
+            return {
+              response: response.data.responseResult.holidays,
+              message: "",
+            };
+          } else if (
+            responseMessage
+              .toLowerCase()
+              .includes(
+                "WatchList_WatchListServiceManager_GetAllHolidaysForTransaction_02".toLowerCase()
+              )
+          ) {
+            return rejectWithValue(
+              import.meta.env.VITE_MQTT_PORT === "8883" ? "" : "No Record Found"
+            );
+          } else {
+            console.log("", response.data);
+            return rejectWithValue("Something went wrong");
+          }
+        } else {
+          console.log("", response.data);
+          return rejectWithValue("Something went wrong");
+        }
+      } else {
+        console.log("", response.data);
+        return rejectWithValue("Something went wrong");
+      }
+    } catch (error) {
+      // Reject with error message
       console.log("", error);
       return rejectWithValue("Something went wrong");
     }

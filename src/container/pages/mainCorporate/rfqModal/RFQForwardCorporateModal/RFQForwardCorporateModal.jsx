@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "./RFQForwardCorporateModal.css";
 import Modal from "@/components/common/globalModal/Modal";
 import { Col, Row } from "react-bootstrap";
@@ -6,12 +6,18 @@ import SelectDropdown from "@/components/common/selectDropdown/SelectDropdown";
 import InputFIeld from "@/components/common/inputField/InputField";
 import CustomButton from "@/components/common/globalButton/button";
 import { useSelector } from "react-redux";
-import { calculateDates, formatDate, isWeekend } from "@/common/utils";
+import {
+  calculateDates,
+  formatDate,
+  isHolidayTwoDatesForInstrument,
+  isWeekend,
+} from "@/common/utils";
 import { useDispatch } from "react-redux";
 import { SaveForwardTransactionRFQApi } from "@/components/features/blotter/BlotterActions";
 import { useNavigate } from "react-router-dom";
 import { NumericFormat } from "react-number-format";
 import { setForwardRFQModal } from "@/store/modalSlice/modalSlicer";
+import { useBidOffer } from "@/context/BidOfferContext";
 
 /**
  * RFQForwardCorporateModal Component
@@ -43,27 +49,32 @@ const RFQForwardCorporateModal = ({
   // Hooks initialization
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { isBid, isOffer } = useBidOffer();
   const [isError, setIsError] = useState(false);
 
+  const getAllHolidays = useSelector(
+    (state) => state.WatchListReducer.getAllHolidays,
+  );
   // Redux Selectors for required data
   const natureOfBusinessList = useSelector(
-    (state) => state.authReducer.GetAllNatureOfTransactions
+    (state) => state.authReducer.GetAllNatureOfTransactions,
   );
 
   const GetAllActiveCorproates = useSelector(
-    (state) => state.authReducer.GetAllActiveCorproates
+    (state) => state.authReducer.GetAllActiveCorproates,
   );
 
   const getAllInstrumentsForCounterPartiesData = useSelector(
-    (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
+    (state) =>
+      state.WatchListReducer?.getAllInstrumentForCounterParties ?? null,
   );
 
   const rfqForwardModal = useSelector(
-    (state) => state.modalReducer.forwardRFQModal
+    (state) => state.modalReducer.forwardRFQModal,
   );
 
   const SaveForwardTransactionRFQApiLoading = useSelector(
-    (state) => state.BlotterSlicer.SaveForwardTransactionRFQApiLoading
+    (state) => state.BlotterSlicer.SaveForwardTransactionRFQApiLoading,
   );
 
   // Local State for Form Data
@@ -107,8 +118,8 @@ const RFQForwardCorporateModal = ({
     localStorage.getItem("branch") !== null && isBranch
       ? JSON.parse(localStorage.getItem("branch"))
       : localStorage.getItem("corporate") !== null && !isBranch
-      ? JSON.parse(localStorage.getItem("corporate"))
-      : null;
+        ? JSON.parse(localStorage.getItem("corporate"))
+        : null;
 
   /**
    * Initialize nature of business options
@@ -118,7 +129,7 @@ const RFQForwardCorporateModal = ({
     if (natureOfBusinessList !== null) {
       try {
         const formattedOptions = natureOfBusinessList.natureOfTransactions.find(
-          (business, index) => business.isForForward === true
+          (business, index) => business.isForForward === true,
         );
         setNatureOfBusinessOptions(formattedOptions);
       } catch (error) {
@@ -340,12 +351,25 @@ const RFQForwardCorporateModal = ({
         OptionDays: Number(options),
       };
       dispatch(
-        SaveForwardTransactionRFQApi({ navigate, Data, setErrorMessage })
+        SaveForwardTransactionRFQApi({ navigate, Data, setErrorMessage }),
       );
     } else {
       setIsError(true);
     }
   };
+
+  const isHoliday = useMemo(() => {
+    if (!getAllHolidays || !selectedCurrency) return false;
+
+    // Combine both date objects
+    const combinedDates = { tenoreDate, optionsDate };
+
+    return isHolidayTwoDatesForInstrument(
+      combinedDates,
+      selectedCurrency.value,
+      getAllHolidays,
+    );
+  }, [getAllHolidays, selectedCurrency, tenoreDate, optionsDate]);
 
   return (
     <div>
@@ -606,8 +630,14 @@ const RFQForwardCorporateModal = ({
                   applyClass="ConfirmButtonBookaForward"
                   onClick={handleConfirmButton}
                   disabled={
-                    (Tenor !== "" && isWeekend(tenoreDate)) ||
-                    (options !== "" && isWeekend(optionsDate))
+                    typeOptionSelected.value === 1 && !isBid
+                      ? true
+                      : typeOptionSelected.value === 2 && !isOffer
+                        ? true
+                        : isHoliday
+                          ? true
+                          : (Tenor !== "" && isWeekend(tenoreDate)) ||
+                            (options !== "" && isWeekend(optionsDate))
                   }
                   loading={SaveForwardTransactionRFQApiLoading}
                 />

@@ -7,32 +7,35 @@ import NonFEDiscountingModal from "../NonFeDiscountingModal/NonFEDiscountingModa
 import { buildDiscountingTable } from "@/components/utils/generateColumnsData";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import { throttle } from "lodash";
+import { useBidOffer } from "@/context/BidOfferContext";
 
 const BranchAndCorporateNonFeDiscountingTable = () => {
+  const { isBid } = useBidOffer();
   const [rfqButtonState, setRFqButtonState] = useState(null);
 
   const isTradeRights = useSelector(
-    (state) => state.RealtimeActionsSlice.tradeRightsStatusUpdated
+    (state) => state.RealtimeActionsSlice.tradeRightsStatusUpdated,
   );
   const getAllInstrumentsForCounterPartiesData = useSelector(
-    (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
+    (state) =>
+      state.WatchListReducer?.getAllInstrumentForCounterParties ?? null,
   );
 
   const GetDiscountingRatesForCounterParty = useSelector(
-    (state) => state.WatchListReducer.GetDiscountingRatesForCounterParty
+    (state) => state.WatchListReducer.GetDiscountingRatesForCounterParty,
   );
   const CounterPartyNonFeDiscounting = useSelector(
-    (state) => state.RealtimeActionsSlice.CounterPartyNonFeDiscounting
+    (state) => state.RealtimeActionsSlice.CounterPartyNonFeDiscounting,
   );
   const getAllTenorsRecords = useSelector(
-    (state) => state.dealerReducer.getAllTenors
+    (state) => state.dealerReducer.getAllTenors,
   );
   const marketStatus = useSelector(
-    (state) => state.WatchListReducer.getMarketStatus
+    (state) => state.WatchListReducer.getMarketStatus,
   );
 
   const ClearRatesData = useSelector(
-    (state) => state.RealtimeActionsSlice.ClearRatesData
+    (state) => state.RealtimeActionsSlice.ClearRatesData,
   );
 
   //local states
@@ -70,7 +73,9 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
           nonFEDiscountingRates,
           getAllTenorsData,
           getAllInstrument,
-          IndexCell
+          IndexCell,
+          null,
+          !isBid,
         );
 
         if (rowData.length > 0) {
@@ -83,6 +88,7 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
     getAllTenorsRecords,
     getAllInstrumentsForCounterPartiesData,
     GetDiscountingRatesForCounterParty,
+    isBid,
   ]);
 
   const throttledUpdate = useMemo(
@@ -102,7 +108,7 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
 
                 const match = nonFEDiscountingInstrumentData.find(
                   (d) =>
-                    d.instrumentID === instrumentID && d.tenorID === tenorID
+                    d.instrumentID === instrumentID && d.tenorID === tenorID,
                 );
 
                 if (match) {
@@ -112,10 +118,10 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
             });
 
             return updatedRow;
-          })
+          }),
         );
       }, 20),
-    []
+    [],
   );
 
   useEffect(() => {
@@ -135,7 +141,7 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
             }
           });
           return updatedRow;
-        })
+        }),
       );
     }
   }, [marketStatus]);
@@ -152,7 +158,7 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
             }
           });
           return updatedRow;
-        })
+        }),
       );
     }
   }, [ClearRatesData]);
@@ -195,10 +201,12 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
             applyClass={"FowwardBranchBookaForwardBtn"}
             onClick={handleNonFEDiscountingModal}
             disabled={
-              (marketStatus !== null && marketStatus === false) ||
-              !isTradeRights
+              !isBid
                 ? true
-                : false
+                : (marketStatus !== null && marketStatus === false) ||
+                    !isTradeRights
+                  ? true
+                  : false
             }
           />
         </Col>

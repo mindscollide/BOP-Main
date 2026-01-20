@@ -1,4 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, {
+  useState,
+  useEffect,
+  lazy,
+  startTransition,
+  Suspense,
+} from "react";
 import { useSelector, useDispatch } from "react-redux";
 import GlobalTable from "../../../../../../components/common/table/GlobalTable";
 import IconElement from "../../../../../../components/common/IconElement/IconElement";
@@ -16,6 +22,10 @@ import pdfImage from "@/assets/icons/pdf.png";
 const MIS = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [isCompanyListModal, setIsCompanyListModal] = useState(false);
+
+  console.log(isCompanyListModal, "isCompanyListModalisCompanyListModal");
+  const CompaniesListModal = lazy(() => import("../mis/companiesListModal"));
   const shouldIncludeComponents =
     import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
   const GetMisDataByRangeData = useSelector(
@@ -99,16 +109,16 @@ const MIS = () => {
               } mis-volumwise-value bg-none color-black tp-customer-hd roboto-13`}
             >
               {index === 0 ? "Volumewise" : "Profit-wise (PKR)"}
-              {shouldIncludeComponents && (
-                <span className="view-detail cursor-pointer">
-                  <IconElement
-                    onClick={() => handleExpandClick(index)}
-                    iconClass={`icon-add-circle-fill fs-6 mx-1 ${
-                      index === 1 ? "color-green" : "color-blue"
-                    }`}
-                  ></IconElement>
-                </span>
-              )}
+              {/* {shouldIncludeComponents && ( */}
+              <span className="view-detail cursor-pointer">
+                <IconElement
+                  onClick={() => handleExpandClick(index)}
+                  iconClass={`icon-add-circle-fill fs-6 mx-1 ${
+                    index === 1 ? "color-green" : "color-blue"
+                  }`}
+                ></IconElement>
+              </span>
+              {/* )} */}
             </span>
             {isExpanded && expandedRowKeys.includes(index) ? (
               <div className="d-grid">
@@ -128,19 +138,84 @@ const MIS = () => {
       title: "Company",
       dataIndex: "corporateName",
       key: "corporateName",
+      className: "corporateName mis-companyName",
+
+      // render: (text, record, index) => {
+      //   const isExpanded = expandedRowKeys.includes(record.key);
+      //   return (
+      //     <span
+      //       className={`${
+      //         isExpanded ? "expanded" : ""
+      //       } roboto-13 mis-volumwise-value bg-none color-black`}
+      //     >
+      //       {record?.corporateName}
+      //     </span>
+      //   );
+      // },
       render: (text, record, index) => {
-        const isExpanded = expandedRowKeys.includes(record.key);
+        console.log(record, index, "topCustomertopCustomer index");
+
+        const isExpanded = expandedRowKeys.includes(index);
         return (
-          <span
-            className={`${
-              isExpanded ? "expanded" : ""
-            } roboto-13 mis-volumwise-value bg-none color-black`}
-          >
-            {record?.corporateName}
-          </span>
+          <>
+            <span
+              className={`${
+                isExpanded ? "expanded" : ""
+              } roboto-13 mis-volumwise-value bg-none color-black`}
+            >
+              {record?.corporateName}
+              <span className="view-detail cursor-pointer">
+                {index === 0 ? (
+                  <IconElement
+                    onClick={handleOpenMISModal}
+                    iconClass={`icon-open color-gray mx-1`}
+                  ></IconElement>
+                ) : (
+                  ""
+                )}
+              </span>
+            </span>
+
+            {isExpanded && expandedRowKeys.includes(index) ? (
+              <div className="d-grid">
+                <span
+                  className={`${
+                    index === 1 ? "mis-profitwise-value" : "mis-volumwise-value"
+                  } bg-none py-0 roboto-13`}
+                >
+                  {index === 1 ? (
+                    <span className="color-hd border-0">
+                      {record.importWiseCorporateName}
+                    </span>
+                  ) : (
+                    <span className="color-hd border-0">
+                      {record.importWiseCorporateName}
+                    </span>
+                  )}
+                </span>
+
+                <span
+                  className={`${
+                    index === 1 ? "mis-profitwise-value" : "mis-volumwise-value"
+                  } bg-none py-0 roboto-13 mis-companyName`}
+                >
+                  {index === 1 ? (
+                    <span className="color-hd border-0 roboto-13 ">
+                      {record.exportWiseCorporateName}
+                    </span>
+                  ) : (
+                    <span className="color-hd border-0 roboto-13">
+                      {record.exportWiseCorporateName}
+                    </span>
+                  )}
+                </span>
+              </div>
+            ) : null}
+          </>
         );
       },
     },
+
     {
       title: "Value",
       dataIndex: "value",
@@ -158,17 +233,17 @@ const MIS = () => {
               } roboto-13`}
             >
               {index === 1 ? (
-                record?.value === 0 ? (
-                  <span className="color-black">
+                record?.value === "-" ? (
+                  <span className="color-black d-flex justify-content-center align-items-center">
                     {formatPkAmount(record?.value)}
                   </span>
-                ) : record?.value > 0 ? (
+                ) : parseFloat(record?.value) > 0 ? (
                   <span className="color-green">
                     {formatPkAmount(record?.value)}
                   </span>
                 ) : (
                   <span className="color-red">
-                    ({formatPkAmount(Math.abs(record?.value))})
+                    ({formatPkAmount(Math.abs(parseFloat(record?.value)))})
                   </span>
                 )
               ) : (
@@ -184,17 +259,17 @@ const MIS = () => {
                   } bg-none py-0 roboto-13`}
                 >
                   {index === 1 ? (
-                    record?.import === 0 ? (
+                    record?.import === "-" ? (
                       <span className="color-black">
                         {formatPkAmount(record?.import)}
                       </span>
-                    ) : record?.import > 0 ? (
+                    ) : parseFloat(record?.import) > 0 ? (
                       <span className="color-green">
                         {formatPkAmount(record?.import)}
                       </span>
                     ) : (
                       <span className="color-red">
-                        ({formatPkAmount(Math.abs(record?.import))})
+                        ({formatPkAmount(Math.abs(parseFloat(record?.import)))})
                       </span>
                     )
                   ) : (
@@ -208,17 +283,17 @@ const MIS = () => {
                   } bg-none py-0 roboto-13`}
                 >
                   {index === 1 ? (
-                    record?.export === 0 ? (
+                    record?.export === "-" ? (
                       <span className="color-black">
                         {formatPkAmount(record?.export)}
                       </span>
-                    ) : record?.export > 0 ? (
+                    ) : parseFloat(record?.export) > 0 ? (
                       <span className="color-green">
                         {formatPkAmount(record?.export)}
                       </span>
                     ) : (
                       <span className="color-red">
-                        ({formatPkAmount(Math.abs(record?.export))})
+                        ({formatPkAmount(Math.abs(parseFloat(record?.export)))})
                       </span>
                     )
                   ) : (
@@ -243,6 +318,11 @@ const MIS = () => {
         return [...prevKeys, index];
       }
     });
+  };
+
+  const handleOpenMISModal = () => {
+    console.log("Opening MIS Modal");
+    setIsCompanyListModal(true);
   };
 
   const handleChangeDate = (date, key) => {
@@ -277,8 +357,20 @@ const MIS = () => {
       StartDate: new Date(),
       EndDate: new Date(),
     });
+    // Format dates for initial API call
+    const startDate = new Date();
+    startDate.setHours(0, 0, 0, 0);
+
+    const endDate = new Date();
+    endDate.setHours(23, 58, 59, 99);
+
+    const Data = {
+      StartDate: formatDateToUTC(startDate, 1),
+      EndDate: formatDateToUTC(endDate, 1),
+    };
+
+    dispatch(GetMisDataByRangeAPI({ navigate, Data }));
   };
-  const onClickOpenExport = () => {};
 
   return (
     <>
@@ -350,11 +442,11 @@ const MIS = () => {
                 </div>
                 <div className="expanded-column third-column">
                   <span className="mis-totalprofit-value">
-                    {totalProfit === 0 ? (
+                    {totalProfit === "-" ? (
                       <span className="color-black">
                         {formatPkAmount(totalProfit)}
                       </span>
-                    ) : totalProfit > 0 ? (
+                    ) : parseFloat(totalProfit) > 0 ? (
                       <span className="color-green">
                         {formatPkAmount(totalProfit)}
                       </span>
@@ -417,6 +509,15 @@ const MIS = () => {
           {GetMisDataByRangeSpinner && <SectionLoader />}
         </div>
       </div>
+
+      {isCompanyListModal && (
+        <Suspense fallback={null}>
+          <CompaniesListModal
+            isCompanyListModal={isCompanyListModal}
+            setIsCompanyListModal={setIsCompanyListModal}
+          />
+        </Suspense>
+      )}
     </>
   );
 };

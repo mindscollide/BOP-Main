@@ -48,13 +48,13 @@ const SpotRates = () => {
     (state) => state.RealtimeActionsSlice.currentRatesPublished
   );
 
+  console.log({ currentUpdatedRates, getLastPublishRates }, "ratestoworkon");
 
   const marketStatus = useSelector(
     (state) => state.WatchListReducer.getMarketStatus
   );
 
-  console.log("marketStatus",marketStatus);
-
+  console.log("marketStatus", marketStatus);
 
   const publishedSpotRates = useSelector(
     (state) => state.modalReducer.publishedSpotRates
@@ -72,12 +72,19 @@ const SpotRates = () => {
     dateTime: "",
   });
 
+  const [copyCurrentRates, setCopyCurrentRates] = useState({
+    askValue: "",
+    bidValue: "",
+    dateTime: "",
+  });
+
   const [lastPublishRates, setLastPublishRates] = useState({
     askValue: "",
     bidValue: "",
     dateTime: "",
   });
   const [refreshInterval, setRefreshInterval] = useState(1);
+
   useEffect(() => {
     if (getLastPublishRates && getLastPublishRates !== null) {
       try {
@@ -99,6 +106,12 @@ const SpotRates = () => {
         });
         setCurrentRates({
           ...currentRates,
+          askValue: currentAsk,
+          bidValue: currentBid,
+          dateTime: currentValueDateTime,
+        });
+        setCopyCurrentRates({
+          ...copyCurrentRates,
           askValue: currentAsk,
           bidValue: currentBid,
           dateTime: currentValueDateTime,
@@ -135,6 +148,12 @@ const SpotRates = () => {
           bidValue: currentBid,
           dateTime: currentValueDateTime,
         });
+        setCopyCurrentRates({
+          ...copyCurrentRates,
+          askValue: currentAsk,
+          bidValue: currentBid,
+          dateTime: currentValueDateTime,
+        });
         setRefreshInterval(refreshInterval);
         // dispatch(currentRatePublishedAction(null));
       } catch (error) {
@@ -156,6 +175,11 @@ const SpotRates = () => {
           });
           setCurrentRates({
             ...currentRates,
+            askValue: getLastPublishRates?.currentAsk,
+            bidValue: getLastPublishRates?.currentBid,
+          });
+          setCopyCurrentRates({
+            ...copyCurrentRates,
             askValue: getLastPublishRates?.currentAsk,
             bidValue: getLastPublishRates?.currentBid,
           });
@@ -204,6 +228,8 @@ const SpotRates = () => {
   const handlePublishRates = () => {
     //Object destructuring
     const { bidValue, askValue, dateTime } = currentRates;
+    const { bidValue: copyBidVal, askValue: copyAskVal } = copyCurrentRates;
+
     const bid = Number(bidValue);
     const ask = Number(askValue);
     const lastBid = Number(lastPublishRates.bidValue);
@@ -250,9 +276,12 @@ const SpotRates = () => {
       formatDateUTCToGMT(lastPublishRates.dateTime)
     ).format("DD MMM YYYY");
 
+    // if copyBidVal and copyAskVal is 0 that means dealer or treasury update the first time rate in the morning
+    const isFirstLogin2 = Number(copyBidVal) === 0 || Number(copyAskVal) === 0;
+
     // Step 4: Determine if it's the first time login (no last published data)
-    const isFirstLogin = !lastBid || !lastAsk || lastBid === 0 || lastAsk === 0;
-    console.log(isFirstLogin, "Check Value again");
+    const isFirstLogin =
+      !copyBidVal || !copyAskVal || copyBidVal === 0 || copyAskVal === 0;
 
     // Helper to get allowed bid/ask range based on percentage
 
@@ -290,10 +319,13 @@ const SpotRates = () => {
       dispatch(PublishNewRatesAction({ Data, navigate }));
     };
 
-    // === CASE: NOT First Login (we have last published bid/ask) ===
-    if (!isFirstLogin) {
+    if (isFirstLogin2) {
+      console.log("Checking");
+
+      // we will compare the bid and ask rate from the last rate and the compare percentage will 2.5%
+
       // Step 5: Decide percentage range based on date match
-      const percent = currentDate === lastDate ? 0.0025 : 0.025; // 0.25% or 2.5%
+      const percent = 0.025; // 0.25% or 2.5%
 
       // Step 6: Calculate allowed range
       const { minBid, maxBid, minAsk, maxAsk } = getBidAskRange(
@@ -319,86 +351,44 @@ const SpotRates = () => {
       // Step 9: All conditions passed → Dispatch API publish
       dispatchPublishAction();
       return;
-    }
+    } else {
+      console.log("Checking");
+      // there will compare the values from the current and ask rate which is store in copyCurrentRates ask and bid from the 0.25%
 
-    // === CASE: First Login (check from API's last published rates) ===
-    const lastApiBid = Number(getLastPublishRates?.currentBid);
-    const lastApiAsk = Number(getLastPublishRates?.currentAsk);
+      // === CASE: First Login (check from API's last published rates) ===
+      const lastApiBid = Number(copyCurrentRates?.bidValue);
+      const lastApiAsk = Number(copyCurrentRates?.askValue);
 
-    if (isFirstLogin && lastApiBid && lastApiAsk) {
-      const percent = 0.0025; // Use 0.25% range on first login
+      if (lastApiBid && lastApiAsk) {
+        const percent = 0.0025; // Use 0.25% range on first login
 
-      const { minBid, maxBid, minAsk, maxAsk } = getBidAskRange(
-        lastApiBid,
-        lastApiAsk,
-        percent
-      );
-      const { isBidOutOfRange, isAskOutOfRange } = checkOutOfRange(
-        minBid,
-        maxBid,
-        minAsk,
-        maxAsk
-      );
+        const { minBid, maxBid, minAsk, maxAsk } = getBidAskRange(
+          lastApiBid,
+          lastApiAsk,
+          percent
+        );
+        const { isBidOutOfRange, isAskOutOfRange } = checkOutOfRange(
+          minBid,
+          maxBid,
+          minAsk,
+          maxAsk
+        );
 
-      // Step 10: If out of range → show modal
-      if (isBidOutOfRange || isAskOutOfRange) {
-        dispatch(setPublishedSpotRates(true));
+        // Step 10: If out of range → show modal
+        if (isBidOutOfRange || isAskOutOfRange) {
+          dispatch(setPublishedSpotRates(true));
+          return;
+        }
+
+        // Step 11: Allowed → Api to publish
+        dispatchPublishAction();
         return;
       }
-
-      // Step 11: Allowed → Api to publish
-      dispatchPublishAction();
-      return;
     }
 
     // === CASE: First login, but no historical rates available  Api to publish ===
     dispatchPublishAction();
   };
-
-  // const handlePublishRates = () => {
-  //   // First check for empty fields
-  //   if (
-  //     currentRates.bidValue === "" ||
-  //     currentRates.askValue === null ||
-  //     refreshInterval === 0 ||
-  //     refreshInterval === ""
-  //   ) {
-  //     alert("Fill all the fields");
-  //     return;
-  //   }
-
-  //   // Convert to numbers
-  //   const bidValue = Number(currentRates.bidValue);
-  //   const askValue = Number(currentRates.askValue);
-
-  //   // Check if ask is greater than bid
-  //   if (askValue <= bidValue) {
-  //     alert("Ask value must be greater than Bid value.");
-  //     return;
-  //   }
-
-  //   // Calculate 2.5% deviation threshold
-  //   const deviationThreshold = bidValue * 0.025; // 2.5% of bid value
-  //   const minAllowedAsk = bidValue + deviationThreshold;
-  //   const maxAllowedAsk = bidValue + 3 * deviationThreshold; // For ±2.5% range
-
-  //   // Check if ask is within ±2.5% of bid
-  //   if (askValue < minAllowedAsk || askValue > maxAllowedAsk) {
-  //     alert(`Ask value must be within ±2.5% of Bid value.
-  //            Current range should be between ${minAllowedAsk.toFixed(
-  //              2
-  //            )} and ${maxAllowedAsk.toFixed(2)}`);
-  //     return;
-  //   }
-
-  //   // If all checks pass, proceed with publishing
-  //   const Data = {
-  //     CurrentBid: bidValue,
-  //     CurrentAsk: askValue,
-  //     RefreshInterval: Number(refreshInterval),
-  //   };
-  //   dispatch(PublishNewRatesAction({ Data, navigate }));
-  // };
 
   return (
     <>

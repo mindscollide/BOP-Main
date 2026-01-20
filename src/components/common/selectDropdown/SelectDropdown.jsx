@@ -20,6 +20,7 @@ const SelectDropdown = ({
   menuPosition = "fixed",
   onChange,
   isMulti,
+  styles,
 }) => {
   return (
     <Select
@@ -41,6 +42,7 @@ const SelectDropdown = ({
       menuPosition={menuPosition}
       filterOption={filterOptions}
       isMulti={isMulti}
+      styles={styles}
     />
   );
 };

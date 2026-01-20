@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { UpdateVoltMeterStatusApi } from "@/container/pages/mainDealer/dealerActions";
 import { useDispatch } from "react-redux";
 import { setUpdateVolMeterRealtime } from "@/store/dealerReducer/dealerSlicer";
+import BidOfferStatus from "../bidOfferStatus/bidOfferStatus";
 
 /**
  * Voltmeter Component
@@ -14,6 +15,7 @@ import { setUpdateVolMeterRealtime } from "@/store/dealerReducer/dealerSlicer";
 const Voltmeter = () => {
   // Initialize Redux dispatch hook
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
 
   // Get current voltmeter status from Redux store
   const GetVoltMeterStatus = useSelector(
@@ -36,8 +38,6 @@ const Voltmeter = () => {
   // Local state to track the currently active voltmeter value
   const [activeValue, setActiveValue] = useState(null);
 
-  console.log(activeValue, "activeValueactiveValue");
-
   /**
    * Handles button clicks on voltmeter controls
    * @param {number} value - The selected voltmeter value (0-3)
@@ -50,7 +50,7 @@ const Voltmeter = () => {
     const Data = {
       VoltMeterID: value, // Send the selected voltmeter ID
     };
-
+    setLoading(true);
     // Dispatch API action to update voltmeter status on server
     dispatch(UpdateVoltMeterStatusApi({ Data }));
   };
@@ -61,7 +61,6 @@ const Voltmeter = () => {
    */
   useEffect(() => {
     if (GetVoltMeterStatusRealtime !== null) {
-      console.log(GetVoltMeterStatusRealtime, "GetVoltMeterStatusRealtime");
       try {
         // Find the currently active voltmeter in realtime data
         const active = GetVoltMeterStatusRealtime.statuses.find(
@@ -74,6 +73,7 @@ const Voltmeter = () => {
         } else {
           setActiveValue(0);
         }
+        setLoading(false);
         // Reset realtime update flag in Redux store
         dispatch(setUpdateVolMeterRealtime(null));
       } catch (error) {
@@ -86,7 +86,6 @@ const Voltmeter = () => {
    * Effect hook to handle initial voltmeter status
    * Runs when GetVoltMeterStatus changes (initial load)
    */
-  console.log(GetVoltMeterStatus, "GetVoltMeterStatusGetVoltMeterStatus")
   useEffect(() => {
     if (GetVoltMeterStatus !== null) {
       try {
@@ -100,6 +99,7 @@ const Voltmeter = () => {
         } else {
           setActiveValue(0);
         }
+        setLoading(false);
       } catch (error) {
         console.log(error);
       }
@@ -121,10 +121,12 @@ const Voltmeter = () => {
             className={`btn btn-default vol-meter ms-1 ${
               activeValue === button.value ? "active-vol" : ""
             } ${button.value === 0 ? "vol-meter-off" : ""}`} // Special class for 'off' button
-            onClick={() => handleButtonClick(button.value)}>
+            onClick={() => handleButtonClick(button.value)}
+            disabled={loading}>
             {button.label}
           </button>
         ))}
+        <BidOfferStatus voterMeterData={buttons} activeValue={activeValue} />
       </div>
     </div>
   );

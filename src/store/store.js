@@ -16,6 +16,7 @@ import modalSlicer from "./modalSlice/modalSlicer";
 import BlotterSlicer from "@/store/BlotterSlicer/BlotterSlicer";
 import DailyTradeSlicer from "../container/pages/mainReports/dailyTrades/DailyTradeSlicer";
 // import DailyTradeSlicer from "@/container/pages/mainReports/dailyTrades/DailyTradeSlicer/DailyTradeSlicer";
+import TresmarkCrossesReducer from "../components/features/tresmarkCrosses/TresmarkCrossesSlicer";
 const store = configureStore({
   reducer: {
     bankSpotReducer: bankSpotSlicer,
@@ -33,6 +34,7 @@ const store = configureStore({
     modalReducer: modalSlicer,
     BlotterSlicer: BlotterSlicer,
     DailyTradeSlicer: DailyTradeSlicer,
+    TresmarkCrossesSlicer: TresmarkCrossesReducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
 });

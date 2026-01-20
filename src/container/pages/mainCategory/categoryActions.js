@@ -185,22 +185,28 @@ export const GetCategoryWiseForwardRatesApi = createAsyncThunk(
             return rejectWithValue(
               import.meta.env.VITE_MQTT_PORT === "8883" ? "" : "No Record Found"
             );
-          } else if (
-            responseMessage
-              .toLowerCase()
-              .includes(
-                "WatchList_WatchListServiceManager_GetCategoryWiseForwardRates_03".toLowerCase()
-              )
-          ) {
-            return rejectWithValue("Role doesn’t matched.");
-          } else if (
+          }
+          //  else if (
+          //   responseMessage
+          //     .toLowerCase()
+          //     .includes(
+          //       "WatchList_WatchListServiceManager_GetCategoryWiseForwardRates_03".toLowerCase()
+          //     )
+          // ) {
+          //   return rejectWithValue("import.meta.env.VITE_MQTT_PORT === "8883" ? "" : "No Record Found");
+          // }
+          else if (
             responseMessage
               .toLowerCase()
               .includes(
                 "WatchList_WatchListServiceManager_GetCategoryWiseForwardRates_04".toLowerCase()
               )
           ) {
-            return rejectWithValue("Exception occured");
+            return rejectWithValue(
+              import.meta.env.VITE_MQTT_PORT === "8883"
+                ? ""
+                : "Fowards Rates Not Published"
+            );
           } else {
             console.log("", response.data);
             return rejectWithValue("Something went wrong");
@@ -265,7 +271,7 @@ export const GetCategoryWiseDiscountingRatesApi = createAsyncThunk(
                 "WatchList_WatchListServiceManager_GetCategoryWiseDiscountingRates_03".toLowerCase()
               )
           ) {
-            return rejectWithValue("Role doesn’t matched.");
+            return rejectWithValue("");
           } else if (
             responseMessage
               .toLowerCase()

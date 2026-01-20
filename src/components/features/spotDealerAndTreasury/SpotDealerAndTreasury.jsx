@@ -123,7 +123,6 @@ const SpotDealerAndTreasury = () => {
       let newData = { ...GetCategoryWiseSpotRatesDaata, instruments: Rates };
       dispatch(UpdatetCategoryWiseSpotRates(newData));
       dispatch(clearCategorySpotClearRates(null));
-
     }
   }, [ClearRatesData]);
 
@@ -134,13 +133,12 @@ const SpotDealerAndTreasury = () => {
           [...spotsData] // create a shallow copy to avoid mutating original array
             .sort((a, b) => a.instrumentID - b.instrumentID)
             .map((spotCardsData, index) => {
-              console.log(spotCardsData, "spotCardsDataspotCardsDataF");
               return (
-                <Col sm={6} md={3} className='px-1' key={index}>
+                <Col sm={6} md={3} className="px-1" key={index}>
                   <div className={styles["SpotBoxCard"]}>
                     <div>
                       {/* box header */}
-                      <div className='mb-3'>
+                      <div className="mb-3">
                         <span className={styles["SpotCurrentHeading"]}>
                           {spotCardsData.instrumentName}
                         </span>
@@ -149,7 +147,7 @@ const SpotDealerAndTreasury = () => {
                         </span>
                       </div>
                       {/* box content */}
-                      <div className='d-flex gap-2 mt-2'>
+                      <div className="d-flex gap-2 mt-2">
                         <Col>
                           <BidAmountBox
                             spot={true}

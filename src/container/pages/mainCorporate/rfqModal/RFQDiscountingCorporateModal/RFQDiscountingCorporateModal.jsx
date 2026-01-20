@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "./RFQDiscountingCorporateModal.css";
 import Modal from "@/components/common/globalModal/Modal";
 import { Col, Row } from "react-bootstrap";
@@ -6,7 +6,7 @@ import SelectDropdown from "@/components/common/selectDropdown/SelectDropdown";
 import InputFIeld from "@/components/common/inputField/InputField";
 import CustomButton from "@/components/common/globalButton/button";
 import { useSelector } from "react-redux";
-import { formatDate, isWeekend } from "@/common/utils";
+import { formatDate, isHolidayForInstrument, isWeekend } from "@/common/utils";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
@@ -17,37 +17,45 @@ import {
 } from "@/components/features/blotter/BlotterActions";
 import { NumericFormat } from "react-number-format";
 import { setDiscountingRFQModal } from "@/store/modalSlice/modalSlicer";
+import { useBidOffer } from "@/context/BidOfferContext";
 const RFQDiscountingCorporateModal = () => {
+  const { isBid } = useBidOffer();
+
   //Local States
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const getAllHolidays = useSelector(
+    (state) => state.WatchListReducer.getAllHolidays,
+  );
   const natureOfBusinessList = useSelector(
-    (state) => state.authReducer.GetAllNatureOfTransactions
+    (state) => state.authReducer.GetAllNatureOfTransactions,
   );
   const CalculateFESwapAndDiscountingRate = useSelector(
-    (state) => state.BlotterSlicer.CalculateFESwapAndDiscountingRate
+    (state) => state.BlotterSlicer.CalculateFESwapAndDiscountingRate,
   );
   const calculateNonFeSwapAndDiscountingRate = useSelector(
-    (state) => state.BlotterSlicer.calculateNonFeSwapAndDiscountingRate
+    (state) => state.BlotterSlicer.calculateNonFeSwapAndDiscountingRate,
   );
   const GetAllActiveCorproates = useSelector(
-    (state) => state.authReducer.GetAllActiveCorproates
+    (state) => state.authReducer.GetAllActiveCorproates,
   );
 
   const rfqDiscountingModal = useSelector(
-    (state) => state.modalReducer.DiscountingRFQModal
+    (state) => state.modalReducer.DiscountingRFQModal,
   );
   // Get all instruments for counterparties from Redux store
   const getAllInstrumentsForCounterPartiesData = useSelector(
-    (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
+    (state) =>
+      state.WatchListReducer?.getAllInstrumentForCounterParties ?? null,
   );
 
   const SaveNonFEDiscountingTransactionRFQLoading = useSelector(
-    (state) => state.BlotterSlicer.SaveNonFEDiscountingTransactionRFQLoading
+    (state) => state.BlotterSlicer.SaveNonFEDiscountingTransactionRFQLoading,
   );
 
   const SaveFEDiscountingTransactionRFQLoading = useSelector(
-    (state) => state.BlotterSlicer.SaveFEDiscountingTransactionRFQLoading
+    (state) => state.BlotterSlicer.SaveFEDiscountingTransactionRFQLoading,
   );
   const [amountData, setAmountData] = useState("");
   const [Tenor, setTenor] = useState("");
@@ -73,8 +81,8 @@ const RFQDiscountingCorporateModal = () => {
     localStorage.getItem("branch") !== null && isBranch
       ? JSON.parse(localStorage.getItem("branch"))
       : localStorage.getItem("corporate") !== null && !isBranch
-      ? JSON.parse(localStorage.getItem("corporate"))
-      : null;
+        ? JSON.parse(localStorage.getItem("corporate"))
+        : null;
 
   const [selectedCurrency, setSelectedCurrency] = useState(null);
 
@@ -97,7 +105,7 @@ const RFQDiscountingCorporateModal = () => {
         const formattedOptions = natureOfBusinessList.natureOfTransactions
           .filter(
             (business, index) =>
-              business.isForFE === true || business.isForNonFE === true
+              business.isForFE === true || business.isForNonFE === true,
           )
           .map((businessDetails, index) => {
             return {
@@ -171,8 +179,8 @@ const RFQDiscountingCorporateModal = () => {
           typeOptionSelected.value === 13
             ? discountingApplicableInstruments
             : typeOptionSelected.value === 14
-            ? nonFEDiscountingApplicableInstruments
-            : discountingApplicableInstruments;
+              ? nonFEDiscountingApplicableInstruments
+              : discountingApplicableInstruments;
 
         // Filter and map instruments to create dropdown options
         const spotApplicableInstrumentList = currenciesArr
@@ -225,7 +233,7 @@ const RFQDiscountingCorporateModal = () => {
           typeof discountingFactor !== "number"
         ) {
           throw new Error(
-            "Invalid data format received from CalculateFESwapAndDiscountingRate"
+            "Invalid data format received from CalculateFESwapAndDiscountingRate",
           );
         }
 
@@ -237,7 +245,7 @@ const RFQDiscountingCorporateModal = () => {
       } catch (error) {
         console.error(
           "Error while calculating FE Swap and Discounting Rate:",
-          error.message
+          error.message,
         );
         // Optionally set some error state or show user notification
         // setErrorState(error.message);
@@ -362,7 +370,7 @@ const RFQDiscountingCorporateModal = () => {
             Data,
             navigate,
             setErrorMessage,
-          })
+          }),
         );
       } else {
         setIsError(true);
@@ -383,13 +391,24 @@ const RFQDiscountingCorporateModal = () => {
           DiscountingFactor: Number(calculatedData.DiscountingFactor),
         };
         dispatch(
-          SaveFEDiscountingTransactionRFQ({ Data, navigate, setErrorMessage })
+          SaveFEDiscountingTransactionRFQ({ Data, navigate, setErrorMessage }),
         );
       } else {
         setIsError(true);
       }
     }
   };
+
+  const isHoliday = useMemo(
+    () =>
+      isHolidayForInstrument(
+        tenoreDate,
+        selectedCurrency?.value,
+        getAllHolidays,
+      ),
+    [getAllHolidays, selectedCurrency?.value, tenoreDate],
+  );
+
   return (
     <div>
       <Modal
@@ -564,7 +583,13 @@ const RFQDiscountingCorporateModal = () => {
                   value="Confirm"
                   applyClass="ConfirmButtonBookaForward"
                   onClick={handleClickConfirm}
-                  disabled={Tenor !== "" && isWeekend(tenoreDate)}
+                  disabled={
+                    !isBid
+                      ? true
+                      : isHoliday
+                        ? true
+                        : Tenor !== "" && isWeekend(tenoreDate)
+                  }
                   loading={
                     typeOptionSelected.value === 14
                       ? SaveNonFEDiscountingTransactionRFQLoading

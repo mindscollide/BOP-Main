@@ -7,37 +7,43 @@ import FEDiscountingModal from "../FEDiscountingModal/FEDiscountingModal";
 import { buildDiscountingTable } from "@/components/utils/generateColumnsData";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import { throttle } from "lodash";
+import { useBidOffer } from "@/context/BidOfferContext";
 
 const BranchAndCorporateFeDiscountingTable = () => {
   //local states
+  const { isBid, isOffer } = useBidOffer();
+
+  console.log(isBid, "isBidisBid");
   const [dataSource, setDataSource] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
   const [feDiscountingModalCall, setFeDiscountingModalCall] = useState(false);
+
   const [rfqButtonState, setRFqButtonState] = useState(null);
 
   const isTradeRights = useSelector(
-    (state) => state.RealtimeActionsSlice.tradeRightsStatusUpdated
+    (state) => state.RealtimeActionsSlice.tradeRightsStatusUpdated,
   );
   const getAllInstrumentsForCounterPartiesData = useSelector(
-    (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
+    (state) =>
+      state.WatchListReducer?.getAllInstrumentForCounterParties ?? null,
   );
   const CounterPartyFeDiscounting = useSelector(
-    (state) => state.RealtimeActionsSlice.CounterPartyFeDiscounting
+    (state) => state.RealtimeActionsSlice.CounterPartyFeDiscounting,
   );
   const GetDiscountingRatesForCounterParty = useSelector(
-    (state) => state.WatchListReducer.GetDiscountingRatesForCounterParty
+    (state) => state.WatchListReducer.GetDiscountingRatesForCounterParty,
   );
 
   const getAllTenorsRecords = useSelector(
-    (state) => state.dealerReducer.getAllTenors
+    (state) => state.dealerReducer.getAllTenors,
   );
 
   const marketStatus = useSelector(
-    (state) => state.WatchListReducer.getMarketStatus
+    (state) => state.WatchListReducer.getMarketStatus,
   );
 
   const ClearRatesData = useSelector(
-    (state) => state.RealtimeActionsSlice.ClearRatesData
+    (state) => state.RealtimeActionsSlice.ClearRatesData,
   );
 
   useEffect(() => {
@@ -67,7 +73,9 @@ const BranchAndCorporateFeDiscountingTable = () => {
           feDiscountingRates,
           getAllTenorsData,
           getAllInstrument,
-          IndexCell
+          IndexCell,
+          null,
+          !isBid,
         );
 
         if (rowData.length > 0) {
@@ -80,6 +88,7 @@ const BranchAndCorporateFeDiscountingTable = () => {
     getAllTenorsRecords,
     getAllInstrumentsForCounterPartiesData,
     GetDiscountingRatesForCounterParty,
+    isBid,
   ]);
 
   const throttledUpdate = useMemo(
@@ -99,7 +108,7 @@ const BranchAndCorporateFeDiscountingTable = () => {
 
                 const match = feDiscountingInstrumentData.find(
                   (d) =>
-                    d.instrumentID === instrumentID && d.tenorID === tenorID
+                    d.instrumentID === instrumentID && d.tenorID === tenorID,
                 );
 
                 if (match) {
@@ -109,10 +118,10 @@ const BranchAndCorporateFeDiscountingTable = () => {
             });
 
             return updatedRow;
-          })
+          }),
         );
       }, 20),
-    []
+    [],
   );
 
   useEffect(() => {
@@ -135,7 +144,7 @@ const BranchAndCorporateFeDiscountingTable = () => {
           });
 
           return updatedRow;
-        })
+        }),
       );
     }
   }, [marketStatus]);
@@ -156,7 +165,7 @@ const BranchAndCorporateFeDiscountingTable = () => {
           });
 
           return updatedRow;
-        })
+        }),
       );
     }
   }, [ClearRatesData]);
@@ -199,10 +208,12 @@ const BranchAndCorporateFeDiscountingTable = () => {
             applyClass={"FEDiscounting"}
             onClick={handleFEDiscountingModal}
             disabled={
-              (marketStatus !== null && marketStatus === false) ||
-              !isTradeRights
+              !isBid
                 ? true
-                : false
+                : (marketStatus !== null && marketStatus === false) ||
+                    !isTradeRights
+                  ? true
+                  : false
             }
           />
         </Col>

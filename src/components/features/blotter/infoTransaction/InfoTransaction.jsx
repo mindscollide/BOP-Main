@@ -18,6 +18,7 @@ import { formatPkAmount } from "@/utils/formatters";
 const InfoTransaction = () => {
   const dispatch = useDispatch();
   const [InfoRecord, setInfoRecord] = useState(null);
+  const isTreasury = import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
 
   const GetNonFEDiscountingTransactionDetails = useSelector(
     (state) => state.BlotterSlicer.GetNonFEDiscountingTransactionDetails
@@ -240,17 +241,38 @@ const InfoTransaction = () => {
             </Row>
           )}
           {InfoRecord?.natureType === 1 && (
-            <Row>
-              <span className={styles["span_underline"]} />
-              <Col sm={6} md={6} lg={6}>
-                <p className={styles["transactionInfolabel"]}>Rate</p>
-              </Col>
-              <Col sm={6} md={6} lg={6}>
-                <p className={styles["transactionInfolabel"]}>
-                  {formatPkAmount(InfoRecord?.rate, { decimals: 4 })}
-                </p>
-              </Col>
-            </Row>
+            <>
+              <Row>
+                <span className={styles["span_underline"]} />
+                <Col sm={6} md={6} lg={6}>
+                  <p className={styles["transactionInfolabel"]}>Rate</p>
+                </Col>
+                <Col sm={6} md={6} lg={6}>
+                  <p className={styles["transactionInfolabel"]}>
+                    {formatPkAmount(InfoRecord?.rate, { decimals: 4 })}
+                  </p>
+                </Col>
+              </Row>
+              {isTreasury && (
+                <>
+                  <Row>
+                    <span className={styles["span_underline"]} />
+                    <Col sm={6} md={6} lg={6}>
+                      <p className={styles["transactionInfolabel"]}>
+                        Squaring Rate
+                      </p>
+                    </Col>
+                    <Col sm={6} md={6} lg={6}>
+                      <p className={styles["transactionInfolabel"]}>
+                        {formatPkAmount(InfoRecord?.squaringRate, {
+                          decimals: 4,
+                        })}
+                      </p>
+                    </Col>
+                  </Row>
+                </>
+              )}
+            </>
           )}
           {(InfoRecord?.natureType === 3 ||
             InfoRecord?.natureType === 4 ||
@@ -367,17 +389,38 @@ const InfoTransaction = () => {
           {(InfoRecord?.natureType === 3 ||
             InfoRecord?.natureType === 4 ||
             InfoRecord?.natureType === 2) && (
-            <Row>
-              <span className={styles["span_underline"]} />
-              <Col sm={6} md={6} lg={6}>
-                <p className={styles["transactionInfolabel"]}>Ready</p>
-              </Col>
-              <Col sm={6} md={6} lg={6}>
-                <p className={styles["transactionInfolabel"]}>
-                  {formatPkAmount(InfoRecord?.ready, { decimals: 5 })}
-                </p>
-              </Col>
-            </Row>
+            <>
+              <Row>
+                <span className={styles["span_underline"]} />
+                <Col sm={6} md={6} lg={6}>
+                  <p className={styles["transactionInfolabel"]}>Ready</p>
+                </Col>
+                <Col sm={6} md={6} lg={6}>
+                  <p className={styles["transactionInfolabel"]}>
+                    {formatPkAmount(InfoRecord?.ready, { decimals: 5 })}
+                  </p>
+                </Col>
+              </Row>
+              {isTreasury && (
+                <>
+                  <Row>
+                    <span className={styles["span_underline"]} />
+                    <Col sm={6} md={6} lg={6}>
+                      <p className={styles["transactionInfolabel"]}>
+                        Squaring Rate
+                      </p>
+                    </Col>
+                    <Col sm={6} md={6} lg={6}>
+                      <p className={styles["transactionInfolabel"]}>
+                        {formatPkAmount(InfoRecord?.squaringRate, {
+                          decimals: 4,
+                        })}
+                      </p>
+                    </Col>
+                  </Row>
+                </>
+              )}
+            </>
           )}
           {InfoRecord?.natureType === 3 && (
             <Row>

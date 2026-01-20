@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "./CorporateBookaForwardModal.css";
 import Select from "react-select";
 import Modal from "@/components/common/globalModal/Modal";
@@ -6,7 +6,12 @@ import { Col, Row } from "react-bootstrap";
 import InputFIeld from "@/components/common/inputField/InputField";
 import CustomButton from "@/components/common/globalButton/button";
 import { useSelector } from "react-redux";
-import { calculateDates, formatDate, isWeekend } from "@/common/utils";
+import {
+  calculateDates,
+  formatDate,
+  isHolidayTwoDatesForInstrument,
+  isWeekend,
+} from "@/common/utils";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { clearCalculateTenorSwapAndForwardRateData } from "@/store/BlotterSlicer/BlotterSlicer";
@@ -17,6 +22,7 @@ import {
 import { NumericFormat } from "react-number-format";
 import { formatPkAmount } from "@/utils/formatters";
 import { useNotification } from "@/context/NotificationProvider";
+import { useBidOffer } from "@/context/BidOfferContext";
 
 /**
  * CorporateBookaForwardModal Component
@@ -48,6 +54,9 @@ const CorporateBookaForwardModal = ({
   // Hooks initialization
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { isBid, isOffer } = useBidOffer();
+
+  console.log(isBid, isOffer, "useBidOfferuseBidOfferuseBidOffer");
 
   const { showMessage } = useNotification();
 
@@ -66,32 +75,36 @@ const CorporateBookaForwardModal = ({
     isBranch && localStorage.getItem("branch") !== null
       ? JSON.parse(localStorage.getItem("branch"))
       : isCorporate && localStorage.getItem("corporate") !== null
-      ? JSON.parse(localStorage.getItem("corporate"))
-      : null;
+        ? JSON.parse(localStorage.getItem("corporate"))
+        : null;
 
+  const getAllHolidays = useSelector(
+    (state) => state.WatchListReducer.getAllHolidays,
+  );
   // Redux Selectors for required data
   const natureOfBusinessList = useSelector(
-    (state) => state.authReducer.GetAllNatureOfTransactions
+    (state) => state.authReducer.GetAllNatureOfTransactions,
   );
 
   const calculatedForwardsSwapandRate = useSelector(
-    (state) => state.BlotterSlicer.calculateTenorSwapAndForwardRateData
+    (state) => state.BlotterSlicer.calculateTenorSwapAndForwardRateData,
   );
 
   const currentRatesData = useSelector(
-    (state) => state.WatchListReducer.watchlistTableDataCopy
+    (state) => state.WatchListReducer.watchlistTableDataCopy,
   );
 
   const getAllInstrumentsForCounterPartiesData = useSelector(
-    (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
+    (state) =>
+      state.WatchListReducer?.getAllInstrumentForCounterParties ?? null,
   );
 
   const GetAllActiveCorproates = useSelector(
-    (state) => state.authReducer.GetAllActiveCorproates
+    (state) => state.authReducer.GetAllActiveCorproates,
   );
 
   const SaveForwardTransactionAPILoading = useSelector(
-    (state) => state.BlotterSlicer.SaveForwardTransactionAPILoading
+    (state) => state.BlotterSlicer.SaveForwardTransactionAPILoading,
   );
 
   // Local State for Form Data and UI
@@ -372,7 +385,7 @@ const CorporateBookaForwardModal = ({
 
     const { tenorDt, optionDt } = calculateDates(
       updatedState.TenorDays,
-      updatedState.Options
+      updatedState.Options,
     );
 
     setTenorDate(tenorDt);
@@ -481,13 +494,26 @@ const CorporateBookaForwardModal = ({
           Data,
           setBookaForwardModalCall,
           setErrorMessage,
-        })
+        }),
       );
     } else {
       setIsError(true);
       // showMessage("Please fill all the required fields");
     }
   };
+
+  const isHoliday = useMemo(() => {
+    if (!getAllHolidays || !selectedCurrency) return false;
+
+    // Combine both date objects
+    const combinedDates = { tenorDate, optionsDate };
+
+    return isHolidayTwoDatesForInstrument(
+      combinedDates,
+      selectedCurrency.value,
+      getAllHolidays,
+    );
+  }, [getAllHolidays, selectedCurrency, tenorDate, optionsDate]);
 
   return (
     <div>
@@ -767,9 +793,16 @@ const CorporateBookaForwardModal = ({
                   onClick={handleConfirm}
                   applyClass={"ConfirmButtonBookaForward"}
                   disabled={
-                    (forwardRFQState.TenorDays !== "" &&
-                      isWeekend(tenorDate)) ||
-                    (forwardRFQState.Options !== "" && isWeekend(optionsDate))
+                    typeOptionSelected.value === 1 && !isBid
+                      ? true
+                      : typeOptionSelected.value === 2 && !isOffer
+                        ? true
+                        : isHoliday
+                          ? true
+                          : (forwardRFQState.TenorDays !== "" &&
+                              isWeekend(tenorDate)) ||
+                            (forwardRFQState.Options !== "" &&
+                              isWeekend(optionsDate))
                   }
                   loading={SaveForwardTransactionAPILoading}
                 />

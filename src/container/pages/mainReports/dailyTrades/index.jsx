@@ -65,6 +65,7 @@ const DailyTrade = () => {
     value: 50,
     label: "50",
   });
+
   const tradeCountSchema = {
     TxnID: {
       value: "",
@@ -193,6 +194,32 @@ const DailyTrade = () => {
     label: "Today",
   });
   const [showCustomDatePicker, setShowCustomDatePicker] = useState(false);
+
+  useEffect(() => {
+    // Set today as default
+    setSelectedDateRange({
+      value: 1,
+      label: "Today",
+    });
+    const FromDate = new Date(tradeCount.dateFrom.value);
+    FromDate.setHours(0, 0, 0);
+    const ToDate = new Date(tradeCount.dateTo.value);
+    let Data = {
+      TxnID: "",
+      CorporateName: "",
+      AccountNumber: "",
+      FromDate: formatDateToUTC(FromDate),
+      ToDate: formatDateToUTC(ToDate),
+      LCNumber: "",
+      Side: 0,
+      NatureOfTransactionID: 0,
+      Amount: 0.0,
+      sRow: 0,
+      Length: dropdownvalue,
+    };
+    dispatch(GetAllNatureOfTransactionsApi({ navigate }));
+    dispatch(GetAllTradesAPI({ Data, navigate }));
+  }, []);
 
   // Function to handle date range selection
   const handleDateRangeChange = (selectedOption) => {
@@ -342,7 +369,16 @@ const DailyTrade = () => {
       title: <label className="bottom-table-header">Rate</label>,
       dataIndex: "rate",
       key: "rate",
-      width: "120px",
+      width: "80px",
+      align: "center",
+      ellipsis: true,
+      render: (rate) => formatPkAmount(rate, { decimals: 2 }),
+    },
+    {
+      title: <label className="bottom-table-header">Squaring Rate</label>,
+      dataIndex: "squaringRate",
+      key: "squaringRate",
+      width: "140px",
       align: "center",
       ellipsis: true,
       render: (rate) => formatPkAmount(rate, { decimals: 2 }),
@@ -351,7 +387,7 @@ const DailyTrade = () => {
       title: <label className="bottom-table-header">CCY2</label>,
       dataIndex: "ccY2",
       key: "ccY2",
-      width: "50px",
+      width: "80px",
       align: "center",
       ellipsis: true,
     },
@@ -997,32 +1033,6 @@ const DailyTrade = () => {
   // };
 
   useEffect(() => {
-    // Set today as default
-    setSelectedDateRange({
-      value: 1,
-      label: "Today",
-    });
-    const FromDate = new Date(tradeCount.dateFrom.value);
-    FromDate.setHours(0, 0, 0);
-    const ToDate = new Date(tradeCount.dateTo.value);
-    let Data = {
-      TxnID: "",
-      CorporateName: "",
-      AccountNumber: "",
-      FromDate: formatDateToUTC(FromDate),
-      ToDate: formatDateToUTC(ToDate),
-      LCNumber: "",
-      Side: 0,
-      NatureOfTransactionID: 0,
-      Amount: 0.0,
-      sRow: 0,
-      Length: dropdownvalue,
-    };
-    dispatch(GetAllNatureOfTransactionsApi({ navigate }));
-    dispatch(GetAllTradesAPI({ Data, navigate }));
-  }, []);
-
-  useEffect(() => {
     if (GetAllNatureOfTransactions !== null) {
       try {
         let newNatureOfTransactions =
@@ -1157,13 +1167,13 @@ const DailyTrade = () => {
                 value={side.value !== 0 ? side : null}
                 isSearchable
                 onChange={handleSelectSide}
+                menuPosition=""
               ></SelectDropdown>
             </Col>
 
             <Col lg={2} md={2} sm={12}>
               <SelectDropdown
                 placeholder="Select Nature"
-                // classNamePrefix={"TradeCountSelect"}
                 classNamePrefix="selectTransactionNatureList"
                 options={natureOptions}
                 value={natureID.value !== 0 ? natureID : null}
@@ -1251,6 +1261,7 @@ const DailyTrade = () => {
                     whiteSpace: "nowrap",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
+                    fontWeight: 600,
                   }),
                 }}
                 placeholder="Select Date Range"
@@ -1382,7 +1393,7 @@ const DailyTrade = () => {
                   { label: "50", value: 50 },
                   { label: "100", value: 100 },
                 ]}
-                classNamePrefix={"selectTransactionNatureList"}
+                classNamePrefix={"pageSizeDropdown"}
               >
                 {/* <Option value={50}>50</Option>
             <Option value={100}>100</Option> */}

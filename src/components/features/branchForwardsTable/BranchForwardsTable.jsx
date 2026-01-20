@@ -10,10 +10,14 @@ import CorporateBookaForwardModal from "./CorporateBookaForwardModal/CorporateBo
 import { buildForwardsTable } from "@/components/utils/generateColumnsData";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import { throttle } from "lodash";
+import { useBidOffer } from "@/context/BidOfferContext";
 
 const BranchForwardsTable = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { bidOfferStatus } = useBidOffer();
+
+  console.log(bidOfferStatus, "bidOfferStatusbidOfferStatus");
 
   const [dataSource, setDataSource] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
@@ -24,30 +28,31 @@ const BranchForwardsTable = () => {
 
   //Global State for Watchlist Card Data
   const getAllInstrumentsForCounterPartiesData = useSelector(
-    (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
+    (state) =>
+      state.WatchListReducer?.getAllInstrumentForCounterParties ?? null,
   );
 
   const CounterPartyForwardRates = useSelector(
-    (state) => state.RealtimeActionsSlice.CounterPartyForwardRates
+    (state) => state.RealtimeActionsSlice.CounterPartyForwardRates,
   );
 
   const getAllTenorsRecords = useSelector(
-    (state) => state.dealerReducer.getAllTenors
+    (state) => state.dealerReducer.getAllTenors,
   );
 
   const GetForwardRatesForCounterPartyData = useSelector(
-    (state) => state.WatchListReducer.GetForwardRatesForCounterParty
+    (state) => state.WatchListReducer.GetForwardRatesForCounterParty,
   );
 
   const marketStatus = useSelector(
-    (state) => state.WatchListReducer.getMarketStatus
+    (state) => state.WatchListReducer.getMarketStatus,
   );
 
   const ClearRatesData = useSelector(
-    (state) => state.RealtimeActionsSlice.ClearRatesData
+    (state) => state.RealtimeActionsSlice.ClearRatesData,
   );
   const isTradeRights = useSelector(
-    (state) => state.RealtimeActionsSlice.tradeRightsStatusUpdated
+    (state) => state.RealtimeActionsSlice.tradeRightsStatusUpdated,
   );
 
   // const isTradeRights =
@@ -84,7 +89,7 @@ const BranchForwardsTable = () => {
           getAllInstrumentsForCounterPartiesData;
         console.log(
           forwardApplicableInstruments,
-          "forwardApplicableInstrumentsforwardApplicableInstruments"
+          "forwardApplicableInstrumentsforwardApplicableInstruments",
         );
 
         //********************************************** */
@@ -101,7 +106,9 @@ const BranchForwardsTable = () => {
           forwardRates,
           getAllTenorsData,
           getAllInstrument,
-          IndexCell
+          IndexCell,
+          null,
+          bidOfferStatus,
         );
         // console.log(rowData, columnsData, "columnsDatacolumnsData");
         if (rowData.length > 0) {
@@ -116,6 +123,7 @@ const BranchForwardsTable = () => {
     getAllInstrumentsForCounterPartiesData,
     getAllTenorsRecords,
     GetForwardRatesForCounterPartyData,
+    bidOfferStatus,
   ]);
 
   const throttledForwardUpdate = useMemo(
@@ -142,10 +150,10 @@ const BranchForwardsTable = () => {
             });
 
             return updatedRow;
-          })
+          }),
         );
       }, 20),
-    []
+    [],
   );
 
   useEffect(() => {
@@ -165,7 +173,7 @@ const BranchForwardsTable = () => {
             }
           });
           return updatedRow;
-        })
+        }),
       );
     }
   }, [marketStatus]);
@@ -183,7 +191,7 @@ const BranchForwardsTable = () => {
             }
           });
           return updatedRow;
-        })
+        }),
       );
     }
   }, [ClearRatesData]);

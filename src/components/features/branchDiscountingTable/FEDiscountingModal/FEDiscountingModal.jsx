@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "./FEDiscountingModal.css";
 import Modal from "@/components/common/globalModal/Modal";
 import { Col, Row } from "react-bootstrap";
 import InputFIeld from "@/components/common/inputField/InputField";
 import CustomButton from "@/components/common/globalButton/button";
 import { useSelector } from "react-redux";
-import { formatDate, isWeekend } from "@/common/utils";
+import { formatDate, isHolidayForInstrument, isWeekend } from "@/common/utils";
 import SelectDropdown from "@/components/common/selectDropdown/SelectDropdown";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -23,13 +23,17 @@ const counterPartyDetails =
   isBranch && localStorage.getItem("branch") !== null
     ? JSON.parse(localStorage.getItem("branch"))
     : isCorporate && localStorage.getItem("corporate") !== null
-    ? JSON.parse(localStorage.getItem("corporate"))
-    : null;
+      ? JSON.parse(localStorage.getItem("corporate"))
+      : null;
 
 const FEDiscountingModal = ({
   feDiscountingModalCall,
   setFeDiscountingModalCall,
 }) => {
+  const getAllHolidays = useSelector(
+    (state) => state.WatchListReducer.getAllHolidays,
+  );
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState({
@@ -38,23 +42,24 @@ const FEDiscountingModal = ({
   });
   // Redux selectors
   const GetAllActiveCorproates = useSelector(
-    (state) => state.authReducer.GetAllActiveCorproates
+    (state) => state.authReducer.GetAllActiveCorproates,
   );
   const natureOfBusinessList = useSelector(
-    (state) => state.authReducer.GetAllNatureOfTransactions
+    (state) => state.authReducer.GetAllNatureOfTransactions,
   );
 
   const CalculateFESwapAndDiscountingRate = useSelector(
-    (state) => state.BlotterSlicer.CalculateFESwapAndDiscountingRate
+    (state) => state.BlotterSlicer.CalculateFESwapAndDiscountingRate,
   );
 
   // Get all instruments for counterparties from Redux store
   const getAllInstrumentsForCounterPartiesData = useSelector(
-    (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
+    (state) =>
+      state.WatchListReducer?.getAllInstrumentForCounterParties ?? null,
   );
 
   const SaveFEDiscountingTransactionAPILoading = useSelector(
-    (state) => state.BlotterSlicer.SaveFEDiscountingTransactionAPILoading
+    (state) => state.BlotterSlicer.SaveFEDiscountingTransactionAPILoading,
   );
 
   // State for dropdown options
@@ -124,14 +129,14 @@ const FEDiscountingModal = ({
     }
     console.log(
       getAllInstrumentsForCounterPartiesData,
-      "getAllInstrumentsForCounterPartiesData"
+      "getAllInstrumentsForCounterPartiesData",
     );
     try {
       const { discountingApplicableInstruments } =
         getAllInstrumentsForCounterPartiesData;
       console.log(
         discountingApplicableInstruments,
-        "getAllInstrumentsForCounterPartiesData"
+        "getAllInstrumentsForCounterPartiesData",
       );
       // Process instruments to create dropdown options
       const validInstruments = discountingApplicableInstruments
@@ -163,7 +168,7 @@ const FEDiscountingModal = ({
       } else {
         // Handle empty state
         console.warn(
-          "No instruments available for both buy and sell operations"
+          "No instruments available for both buy and sell operations",
         );
         setSelectedCurrency(null);
         setCurrencyOptions([]);
@@ -185,7 +190,7 @@ const FEDiscountingModal = ({
     if (natureOfBusinessList !== null) {
       try {
         const formattedOptions = natureOfBusinessList.natureOfTransactions.find(
-          (business) => business.isForFE === true
+          (business) => business.isForFE === true,
         );
 
         if (formattedOptions) {
@@ -239,7 +244,7 @@ const FEDiscountingModal = ({
       } catch (error) {
         console.log(
           error,
-          "Error while calculating FE Swap and Discounting Rate"
+          "Error while calculating FE Swap and Discounting Rate",
         );
       }
     }
@@ -386,7 +391,7 @@ const FEDiscountingModal = ({
         Data: payload,
         setFeDiscountingModalCall,
         setErrorMessage,
-      })
+      }),
     );
 
     // Close modal after submission
@@ -410,6 +415,15 @@ const FEDiscountingModal = ({
       feRate: "",
     });
   };
+  const isHoliday = useMemo(
+    () =>
+      isHolidayForInstrument(
+        tenoreDate,
+        formData.InstrumentID.value,
+        getAllHolidays,
+      ),
+    [getAllHolidays, formData.InstrumentID.value, tenoreDate],
+  );
 
   return (
     <div>
@@ -611,7 +625,7 @@ const FEDiscountingModal = ({
                           </span>
                           <InputFIeld
                             value={Number(formData.DiscountingFactor).toFixed(
-                              2
+                              2,
                             )}
                             // onChange={(e) => handleInputChange('Swap', e.target.value)}
                             disabled={true}
@@ -668,7 +682,11 @@ const FEDiscountingModal = ({
                   value={"Confirm"}
                   applyClass={"ConfirmButtonBookaForward"}
                   onClick={handleClickConfirmFERFQ}
-                  disabled={tenorValue !== "" && isWeekend(tenoreDate)}
+                  disabled={
+                    isHoliday
+                      ? true
+                      : tenorValue !== "" && isWeekend(tenoreDate)
+                  }
                   loading={SaveFEDiscountingTransactionAPILoading}
                 />
               </Col>

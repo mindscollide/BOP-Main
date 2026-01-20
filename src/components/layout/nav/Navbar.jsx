@@ -34,6 +34,7 @@ import SpotQuoteModal from "@/container/pages/mainCorporate/rfqModal/SpotQuoteMo
 import DiscountingRFQQuoteModal from "@/container/pages/mainCorporate/rfqModal/DiscountingRFQQuoteModal/DiscountingRFQQuoteModal";
 import ForwardRFQQuoteModal from "@/container/pages/mainCorporate/rfqModal/ForwardRFQQuoteModal/ForwardRFQQuoteModal";
 import { useMqttClient } from "@/components/utils/mqttConnection";
+import BidOfferStatus from "@/components/common/bidOfferStatus/bidOfferStatus";
 
 const GlobalNavbar = () => {
   const { unsubscribeFromTopics, subscribeToTopics } = useMqttClient({});
@@ -188,7 +189,6 @@ const GlobalNavbar = () => {
             CategoryID: obj.value,
           };
           setAllCategories(newCategoryMap);
-          console.log(Data, "DataData");
 
           dispatch(GetCategoryWiseSpotRatesApi({ navigate, Data }));
           dispatch(GetCategoryWiseForwardRatesApi({ navigate, Data }));
@@ -346,7 +346,9 @@ const GlobalNavbar = () => {
                     ) : null}
                     {shouldIncludeTreasury &&
                     location.pathname.includes("treasury") ? (
-                      <Voltmeter />
+                      <>
+                        <Voltmeter />
+                      </>
                     ) : null}
                     {location.pathname.includes("category") && (
                       <SelectDropdown

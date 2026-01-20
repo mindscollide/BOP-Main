@@ -62,11 +62,11 @@ const RealtimeActionsSlice = createSlice({
     CategorySpotClearRates: null,
     CategoryForwardClearRates: null,
     CategoryDiscountingClearRates: null,
-
     categoryFowardsTenorsChanges: null,
     counterPartyFowardsTenorsChanges: null,
     treasuryFowardsTenorsChanges: null,
     tradeRightsStatusUpdated: null,
+    tresmarkCrossPremiumRates: null,
   },
   reducers: {
     setTradeRightsStatusUpdated: (state, { payload }) => {
@@ -239,6 +239,9 @@ const RealtimeActionsSlice = createSlice({
     TransactionAssignedByTreasury(state, { payload }) {
       state.TransactionAssignedByTreasury = payload;
     },
+    setTresmarkCrossPremiumRates(state, { payload }) {
+      state.tresmarkCrossPremiumRates = payload;
+    },
   },
 });
 
@@ -297,6 +300,7 @@ export const {
   clearCategoryDiscountingClearRates,
   clearCategoryForwardClearRates,
   clearCategorySpotClearRates,
+  setTresmarkCrossPremiumRates,
 } = RealtimeActionsSlice.actions;
 
 export default RealtimeActionsSlice.reducer;
