@@ -74,6 +74,7 @@ const dealerReducer = createSlice({
     GetVoltMeterStatus: null,
     UpdateVoltMeterStatus: null,
     GetVoltMeterStatusRealtime: null,
+    setUpdateTenors: null,
   },
   reducers: {
     setUpdateVolMeterRealtime: (state, action) => {
@@ -102,6 +103,34 @@ const dealerReducer = createSlice({
           return item;
         }
       );
+    },
+    updateForwardTenors(state, { payload }) {
+      const { removedtenorList, newIsForwardtenorList } =
+        payload.updatedTenorList;
+
+      const removedIds = new Set(removedtenorList.map((r) => r.tenorID));
+
+      const forwardIds = new Set(newIsForwardtenorList.map((f) => f.tenorID));
+
+      state.getAllTenors.tenors = state.getAllTenors.tenors.map((tenor) => {
+        // Disable forwarding
+        if (removedIds.has(tenor.tenorID)) {
+          return {
+            ...tenor,
+            isForwardingApplicable: false,
+          };
+        }
+
+        // Enable forwarding
+        if (forwardIds.has(tenor.tenorID)) {
+          return {
+            ...tenor,
+            isForwardingApplicable: true,
+          };
+        }
+
+        return tenor;
+      });
     },
   },
   extraReducers: (builder) => {
@@ -215,16 +244,22 @@ const dealerReducer = createSlice({
       .addCase(PublishTenorWiseForwardsAction.pending, (state) => {
         state.publishTenorWiseForwardsLoading = true;
       })
-      .addCase(PublishTenorWiseForwardsAction.fulfilled, (state, { payload }) => {
-        state.publishTenorWiseForwardsLoading = false;
-        state.publishTenorwiseForwardRates = payload?.response;
-        state.responseMessage = payload?.message;
-      })
-      .addCase(PublishTenorWiseForwardsAction.rejected, (state, { payload }) => {
-        state.publishTenorWiseForwardsLoading = false;
-        state.publishTenorwiseForwardRates = null;
-        state.error = payload;
-      })
+      .addCase(
+        PublishTenorWiseForwardsAction.fulfilled,
+        (state, { payload }) => {
+          state.publishTenorWiseForwardsLoading = false;
+          state.publishTenorwiseForwardRates = payload?.response;
+          state.responseMessage = payload?.message;
+        }
+      )
+      .addCase(
+        PublishTenorWiseForwardsAction.rejected,
+        (state, { payload }) => {
+          state.publishTenorWiseForwardsLoading = false;
+          state.publishTenorwiseForwardRates = null;
+          state.error = payload;
+        }
+      )
 
       // ✅ Get Discounting Rates
       .addCase(getDiscountingRatesAction.pending, (state) => {
@@ -245,11 +280,14 @@ const dealerReducer = createSlice({
       .addCase(publishDiscountingRatesAction.pending, (state) => {
         state.publishDiscountingRatesLoading = true;
       })
-      .addCase(publishDiscountingRatesAction.fulfilled, (state, { payload }) => {
-        state.publishDiscountingRatesLoading = false;
-        state.publishDiscountRates = payload?.response;
-        state.responseMessage = payload?.message;
-      })
+      .addCase(
+        publishDiscountingRatesAction.fulfilled,
+        (state, { payload }) => {
+          state.publishDiscountingRatesLoading = false;
+          state.publishDiscountRates = payload?.response;
+          state.responseMessage = payload?.message;
+        }
+      )
       .addCase(publishDiscountingRatesAction.rejected, (state, { payload }) => {
         state.publishDiscountingRatesLoading = false;
         state.publishDiscountRates = null;
@@ -303,16 +341,22 @@ const dealerReducer = createSlice({
       .addCase(PublishNonFEDiscountingTableApi.pending, (state) => {
         state.publishNonFeDiscountingLoading = true;
       })
-      .addCase(PublishNonFEDiscountingTableApi.fulfilled, (state, { payload }) => {
-        state.publishNonFeDiscountingLoading = false;
-        state.publishNonFeDiscounting = payload?.response;
-        state.responseMessage = payload?.message;
-      })
-      .addCase(PublishNonFEDiscountingTableApi.rejected, (state, { payload }) => {
-        state.publishNonFeDiscountingLoading = false;
-        state.publishNonFeDiscounting = null;
-        state.error = payload;
-      })
+      .addCase(
+        PublishNonFEDiscountingTableApi.fulfilled,
+        (state, { payload }) => {
+          state.publishNonFeDiscountingLoading = false;
+          state.publishNonFeDiscounting = payload?.response;
+          state.responseMessage = payload?.message;
+        }
+      )
+      .addCase(
+        PublishNonFEDiscountingTableApi.rejected,
+        (state, { payload }) => {
+          state.publishNonFeDiscountingLoading = false;
+          state.publishNonFeDiscounting = null;
+          state.error = payload;
+        }
+      )
 
       // ✅ Dealer Dashboard
       .addCase(getDealerDashboardApi.pending, (state) => {
@@ -366,5 +410,6 @@ export const {
   setCategoryValue,
   updateForwardItem,
   setUpdateVolMeterRealtime,
+  updateForwardTenors,
 } = dealerReducer.actions;
 export default dealerReducer.reducer;

@@ -20,6 +20,8 @@ import { setBlotterLoader } from "@/store/BlotterSlicer/BlotterSlicer";
 import GlobalTabs from "@/components/common/tabs/Tabs";
 import SectionLoader from "@/components/common/sectionLoader/SectionLoader";
 import { useMqttClient } from "@/components/utils/mqttConnection";
+import { setActiveTab } from "../mainCorporate/rfqModal/RFQSlicer";
+import { useSelector } from "react-redux";
 
 // Lazy load the tab components
 const LiveRates = React.lazy(() => import("./tabsContent/liveRates/LiveRates"));
@@ -31,6 +33,7 @@ const Discounting = React.lazy(() =>
 const MainTreasury = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const activeTab = useSelector((state) => state.RFQReducer.activeTab);
 
   const {
     isConnected,
@@ -76,6 +79,11 @@ const MainTreasury = () => {
     });
   }, []);
 
+  const handleTabChange = (tabTitle) => {
+    localStorage.setItem("activeTreasuryTab", tabTitle);
+    dispatch(setActiveTab(tabTitle));
+  };
+
   const tabsData = [
     {
       title: "Live Rates",
@@ -109,7 +117,15 @@ const MainTreasury = () => {
     },
   ];
 
-  return <GlobalTabs tabClass='mb-4' tabs={tabsData} defaultActiveKey={"0"} />;
+  return (
+    <GlobalTabs
+      tabClass='mb-4'
+      activeKey={localStorage.getItem("activeTreasuryTab") || "Live Rates"}
+      onTabChange={handleTabChange}
+      tabs={tabsData}
+      defaultActiveKey={"0"}
+    />
+  );
 };
 
 export default MainTreasury;

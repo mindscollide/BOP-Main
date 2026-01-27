@@ -36,6 +36,7 @@ const MainCategory = () => {
   }, []);
 
   const handleTabChange = (tabTitle) => {
+    localStorage.setItem("MainCategoryActiveTab", tabTitle);
     startTransition(() => {
       dispatch(setActiveTab(tabTitle));
     });
@@ -81,7 +82,7 @@ const MainCategory = () => {
   return (
     <GlobalTabs
       tabs={tabsData}
-      activeKey={activeTab}
+      activeKey={localStorage.getItem("MainCategoryActiveTab") || "Spot"}
       onTabChange={handleTabChange}
       defaultActiveKey="Spot" // Changed from "0" to match your tab titles
       tabClass="mb-4"

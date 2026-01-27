@@ -17,9 +17,10 @@ const BranchForwardsTable = () => {
   const navigate = useNavigate();
   const { bidOfferStatus } = useBidOffer();
 
-  console.log(bidOfferStatus, "bidOfferStatusbidOfferStatus");
-
   const [dataSource, setDataSource] = useState([]);
+
+  console.log(dataSource, "bidOfferStatusbidOfferStatus");
+
   const [columnsData, setColumnsData] = useState([]);
   const [rfqButtonState, setRFqButtonState] = useState(null);
 
@@ -28,31 +29,30 @@ const BranchForwardsTable = () => {
 
   //Global State for Watchlist Card Data
   const getAllInstrumentsForCounterPartiesData = useSelector(
-    (state) =>
-      state.WatchListReducer?.getAllInstrumentForCounterParties ?? null,
+    (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
   );
 
   const CounterPartyForwardRates = useSelector(
-    (state) => state.RealtimeActionsSlice.CounterPartyForwardRates,
+    (state) => state.RealtimeActionsSlice.CounterPartyForwardRates
   );
 
   const getAllTenorsRecords = useSelector(
-    (state) => state.dealerReducer.getAllTenors,
+    (state) => state.dealerReducer.getAllTenors
   );
 
   const GetForwardRatesForCounterPartyData = useSelector(
-    (state) => state.WatchListReducer.GetForwardRatesForCounterParty,
+    (state) => state.WatchListReducer.GetForwardRatesForCounterParty
   );
 
   const marketStatus = useSelector(
-    (state) => state.WatchListReducer.getMarketStatus,
+    (state) => state.WatchListReducer.getMarketStatus
   );
 
   const ClearRatesData = useSelector(
-    (state) => state.RealtimeActionsSlice.ClearRatesData,
+    (state) => state.RealtimeActionsSlice.ClearRatesData
   );
   const isTradeRights = useSelector(
-    (state) => state.RealtimeActionsSlice.tradeRightsStatusUpdated,
+    (state) => state.RealtimeActionsSlice.tradeRightsStatusUpdated
   );
 
   // const isTradeRights =
@@ -89,7 +89,7 @@ const BranchForwardsTable = () => {
           getAllInstrumentsForCounterPartiesData;
         console.log(
           forwardApplicableInstruments,
-          "forwardApplicableInstrumentsforwardApplicableInstruments",
+          "forwardApplicableInstrumentsforwardApplicableInstruments"
         );
 
         //********************************************** */
@@ -108,7 +108,7 @@ const BranchForwardsTable = () => {
           getAllInstrument,
           IndexCell,
           null,
-          bidOfferStatus,
+          bidOfferStatus
         );
         // console.log(rowData, columnsData, "columnsDatacolumnsData");
         if (rowData.length > 0) {
@@ -150,10 +150,10 @@ const BranchForwardsTable = () => {
             });
 
             return updatedRow;
-          }),
+          })
         );
       }, 20),
-    [],
+    []
   );
 
   useEffect(() => {
@@ -173,7 +173,7 @@ const BranchForwardsTable = () => {
             }
           });
           return updatedRow;
-        }),
+        })
       );
     }
   }, [marketStatus]);
@@ -191,7 +191,7 @@ const BranchForwardsTable = () => {
             }
           });
           return updatedRow;
-        }),
+        })
       );
     }
   }, [ClearRatesData]);
@@ -210,6 +210,7 @@ const BranchForwardsTable = () => {
             prefixCls={"branch_forwardsTable"}
             pagination={false}
             bordered
+            rowKey={(record, index) => record.tenorID}
             scroll={{ x: "max-content" }}
             rowClassName={(record, index) =>
               index % 2 === 0
@@ -219,15 +220,14 @@ const BranchForwardsTable = () => {
           />
         </Col>
       </Row>
-      <Row className="my-2">
+      <Row className='my-2'>
         <Col
           lg={12}
           md={12}
           sm={12}
-          className="d-flex justify-content-center align-items-center"
-        >
+          className='d-flex justify-content-center align-items-center'>
           <CustomButton
-            value="Book a Forward"
+            value='Book a Forward'
             applyClass={"FowwardBranchBookaForwardBtn"}
             onClick={handleBookaForwardCorporate}
             disabled={

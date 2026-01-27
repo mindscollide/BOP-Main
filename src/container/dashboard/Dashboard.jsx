@@ -96,6 +96,7 @@ import {
 import { setUpdateVolMeterRealtime } from "@/store/dealerReducer/dealerSlicer";
 import { GetNOPDataAPI } from "@/components/features/blotter/BlotterActions";
 import { getUserSettingDataAPI } from "@/components/features/settingsModal/settingActions";
+import { updateForwardTenors } from "../../store/dealerReducer/dealerSlicer";
 const Dashboard = () => {
   const { Content } = Layout;
   const dispatch = useDispatch();
@@ -493,7 +494,10 @@ const Dashboard = () => {
         case "HOLIDAY_DELETED":
           dispatch(setHolidayDeleted(data.payload));
           break;
-
+        case "UPDATED_TENORS":
+          startTransition(() => {
+            dispatch(updateForwardTenors(payload));
+          });
         default:
           console.warn("No specific handler for this message type", payload);
           break;

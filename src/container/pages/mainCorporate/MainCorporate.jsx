@@ -59,6 +59,7 @@ const MainCorporate = () => {
 
   console.log(typeof isFeDiscountingEnabled, "CheckerCheckerChecrk");
   const handleTabChange = (tabTitle) => {
+    localStorage.setItem("MainCorporateActiveTab", tabTitle);
     dispatch(setActiveTab(tabTitle));
   };
   useEffect(() => {
@@ -133,7 +134,7 @@ const MainCorporate = () => {
   return (
     <GlobalTabs
       tabs={filterTabs}
-      activeKey={activeTab}
+      activeKey={localStorage.getItem("MainCorporateActiveTab") || "Spot"}
       onTabChange={handleTabChange}
       tabClass='mb-4'
     />

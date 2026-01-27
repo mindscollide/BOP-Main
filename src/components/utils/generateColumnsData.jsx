@@ -220,7 +220,9 @@ export const buildForwardsTable = (
 
       applicableInstruments.forEach((instrument) => {
         const key = `${instrument.instrumentID}-${tenor.tenorID}`;
-        const rates = rateMap[key] || { bid: 0, ask: 0 };
+
+        console.log(rateMap, key, "ratemapkey");
+        const rates = rateMap[key];
 
         row[`bid_${instrument.instrumentName}`] = rates.bid;
         row[`ask_${instrument.instrumentName}`] = rates.ask;

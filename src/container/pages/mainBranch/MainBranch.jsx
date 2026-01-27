@@ -67,6 +67,7 @@ const MainBranch = () => {
   }, []);
 
   const handleTabChange = (tabTitle) => {
+    localStorage.setItem("activeBranchTab", tabTitle)
     dispatch(setActiveTab(tabTitle));
   };
 
@@ -113,7 +114,7 @@ const MainBranch = () => {
       <GlobalTabs
         tabs={tabsData}
         onTabChange={handleTabChange}
-        activeKey={activeTab}
+        activeKey={localStorage.getItem("activeBranchTab") || "Spot"}
         defaultActiveKey={"0"}
         tabClass="mb-4 position-relative"
       />

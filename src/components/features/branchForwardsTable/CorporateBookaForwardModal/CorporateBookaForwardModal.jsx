@@ -234,9 +234,9 @@ const CorporateBookaForwardModal = ({
         const { forwardRate, swap, readyRate } = calculatedForwardsSwapandRate;
         setForwardRFQState({
           ...forwardRFQState,
-          Swap: formatPkAmount(swap, { decimals: 2 }),
+          Swap: formatPkAmount(swap, { decimals: 4 }),
           CalculateRate: forwardRate,
-          Ready: formatPkAmount(readyRate, { decimals: 2 }),
+          Ready: formatPkAmount(readyRate, { decimals: 4 }),
         });
         dispatch(clearCalculateTenorSwapAndForwardRateData(null));
       } catch (error) {
@@ -753,7 +753,7 @@ const CorporateBookaForwardModal = ({
                       <InputFIeld
                         applyClass={"CalculatorTextfield"}
                         value={formatPkAmount(forwardRFQState.Swap, {
-                          decimals: 2,
+                          decimals: 4,
                         })}
                         disabled={true}
                       />
