@@ -5,7 +5,7 @@ export const buildDiscountingTable = (
   getAllInstrument,
   InputFIeld,
   onInputChange,
-  isBid,
+  isBid
 ) => {
   if (!Data || !getAllTenorsData || !getAllInstrument) {
     return { rowData: [], columnsData: [] };
@@ -20,8 +20,8 @@ export const buildDiscountingTable = (
       value === 1
         ? instruments?.filter((inst) => inst.discountingApplicable) || []
         : value === 3 || value === 5
-          ? instruments
-          : instruments;
+        ? instruments
+        : instruments;
 
     const applicableTenors =
       value === 1 || value === 3 || value === 5
@@ -176,7 +176,7 @@ export const buildForwardsTable = (
   getAllInstrument,
   InputFIeld,
   onInputChange,
-  bidOfferStatus,
+  bidOfferStatus
 ) => {
   if (!Data || !getAllTenorsData || !getAllInstrument) {
     return { rowData: [], columnsData: [] };
@@ -189,16 +189,16 @@ export const buildForwardsTable = (
       value === 1
         ? instruments?.filter((inst) => inst.discountingApplicable) || []
         : value === 3
-          ? // value 3 for when  treasury forwards application is used
-            instruments
-          : instruments;
+        ? // value 3 for when  treasury forwards application is used
+          instruments
+        : instruments;
 
     const applicableTenors =
       value === 1
         ? tenors?.filter((tenor) => tenor.isForwardingApplicable) || []
         : value === 3
-          ? tenors?.filter((tenor) => tenor.isForwardingApplicable) || []
-          : tenors;
+        ? tenors?.filter((tenor) => tenor.isForwardingApplicable) || []
+        : tenors;
 
     // Step 1: Create rateMap with bid/ask
     const rateMap = {};
@@ -206,7 +206,7 @@ export const buildForwardsTable = (
       const key = `${entry.instrumentID}-${entry.tenorID}`;
       rateMap[key] = {
         bid: entry.bid ?? 0,
-        ask: value === 3 ? entry.offer : (entry.ask ?? 0),
+        ask: value === 3 ? entry.offer : entry.ask ?? 0,
       };
     });
 
@@ -224,8 +224,8 @@ export const buildForwardsTable = (
         console.log(rateMap, key, "ratemapkey");
         const rates = rateMap[key];
 
-        row[`bid_${instrument.instrumentName}`] = rates.bid;
-        row[`ask_${instrument.instrumentName}`] = rates.ask;
+        row[`bid_${instrument.instrumentName}`] = rates ? rates?.bid : 0;
+        row[`ask_${instrument.instrumentName}`] = rates ? rates.ask : 0;
         row[`InstrumentID_${instrument.instrumentName}`] =
           instrument.instrumentID;
         row[`InstrumentName_${instrument.instrumentName}`] =
@@ -356,7 +356,7 @@ export const buildTresmarkCrossPremiumTable = (
   value,
   Data,
   getAllTenorsData,
-  getAllInstrument,
+  getAllInstrument
 ) => {
   if (!Data || !getAllTenorsData || !getAllInstrument) {
     return { rowData: [], columnsData: [] };
