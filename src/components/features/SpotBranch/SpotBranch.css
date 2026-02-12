@@ -11,9 +11,8 @@
   background: #e9e2dc !important;
   border-radius: 4px !important;
   height: 100% !important;
-  /* max-width: 360px !important; */
-  min-height: 400px !important;
-  padding: 13px 8px !important;
+  min-height: 100% !important;
+  padding: 10px 8px 10px 8px !important;
 }
 
 .FxTradingLabel {

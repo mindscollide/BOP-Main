@@ -729,9 +729,6 @@ tr.Treasury_Discounting-row.Treasury_Discounting-row-level-0.striped-design:nth-
   font-family: "Roboto", sans-serif !important;
 }
 
-.WatchList_table-body {
-  margin-top: -14px;
-}
 
 .WatchList_table-tbody tr td:nth-child(1) {
   padding-left: 10px;

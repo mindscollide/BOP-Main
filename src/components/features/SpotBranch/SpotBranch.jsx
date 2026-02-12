@@ -531,7 +531,8 @@ const SpotBranch = () => {
               </Row>
             </span>
           </Col>
-          <Col lg={3} md={3} sm={12} className="WatchListOuterBox">
+          <Col lg={3} md={3} sm={12} >
+            <div className="WatchListOuterBox">
             <Row>
               <Col lg={6} md={6} sm={12}>
                 <span className="WatchlistLabel">Watchlist</span>
@@ -566,7 +567,7 @@ const SpotBranch = () => {
                             index,
                             "data-row-key": index,
                           })}
-                          scroll={{ y: 330, x: "auto" }}
+                          scroll={{ y:310, x: "auto" }}
                         />
                         {provided.placeholder}
                       </div>
@@ -579,11 +580,12 @@ const SpotBranch = () => {
                     prefixCls={"WatchList_table"}
                     pagination={false}
                     bordered={false}
-                    scroll={{ y: 330, x: "auto" }}
+                    scroll={{ y: 310, x: "auto" }}
                   />
                 )}
               </Col>
             </Row>
+            </div>
           </Col>
         </Row>
       </DragDropContext>
