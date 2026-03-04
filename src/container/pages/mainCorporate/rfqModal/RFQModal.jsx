@@ -89,7 +89,8 @@ const RFQModal = () => {
   // Get pre-filled buy/sell data from Redux store (if any)
   const iBuySellData = useSelector((state) => state.modalReducer.IBuySellData);
 
-  console.log(iBuySellData, "iBuySellData");
+  console.log({ iBuySellData, natureOfBusinessList }, "iBuySellData");
+
   const SaveSpotTransactionLoading = useSelector(
     (state) => state.BlotterSlicer.SaveSpotTransactionAPILoading
   );
@@ -125,7 +126,7 @@ const RFQModal = () => {
   });
   const [selectedCurrency, setSelectedCurrency] = useState(null);
 
-  console.log(selectedCurrency, "selectedCurrencyselectedCurrency");
+  console.log(selectedNature, "selectedCurrencyselectedCurrency");
   const [amountData, setAmountData] = useState("");
   const [acNumberData, setAcNumberData] = useState("");
   const [lcNumberData, setLcNumberData] = useState("");
@@ -140,11 +141,7 @@ const RFQModal = () => {
     value: 0,
     label: "",
   });
-  console.log(
-    typeOptionSelected,
-    natureOfBusinessOptions,
-    "typeOptionSelectedtypeOptionSelected"
-  );
+  console.log(typeOptionSelected, "typeOptionSelected");
   // Corporate selection (for branch users)
   const [corporateValue, setCorporateValue] = useState({
     value: 0,
@@ -200,41 +197,143 @@ const RFQModal = () => {
    * Runs when natureOfBusinessList changes
    */
   useEffect(() => {
-    if (natureOfBusinessList !== null) {
-      try {
-        const formattedOptions = natureOfBusinessList.natureOfTransactions.map(
-          (business) => ({
-            ...business,
-            label: business.name,
-            value: business.id,
-          })
-        );
-        setNatureOfBusinessOptions(formattedOptions);
-        setTypeOptionSelected({
-          value: typeOptions[0].value,
-          label: typeOptions[0].label,
-        });
-        let val = typeOptions[0].value;
-        if (iBuySellData === null && formattedOptions.length > 0) {
-          let getNatureVal = formattedOptions.filter((listData, index) => {
-            if (val === 1) {
-              return isCorproate
-                ? listData.isForSell === true && listData.isForSpot === true
-                : listData.isForBuy === true && listData.isForSpot === true;
-            }
-            if (val === 2) {
-              return isCorproate
-                ? listData.isForBuy === true && listData.isForSpot === true
-                : listData.isForSell === true && listData.isForSpot === true;
-            }
-            return listData;
+    // Stop if data is not available
+    if (!natureOfBusinessList?.natureOfTransactions) return;
+
+    try {
+      /**
+       * --------------------------------------------------
+       * STEP 1: Get only Spot transactions
+       * --------------------------------------------------
+       * We only allow Nature of Business where isForSpot = true
+       */
+      const spotTransactions = natureOfBusinessList.natureOfTransactions.filter(
+        (item) => item.isForSpot
+      );
+
+      if (spotTransactions.length === 0) return;
+
+      /**
+       * --------------------------------------------------
+       * CASE 1: User came from RFQ (iBuySellData exists)
+       * --------------------------------------------------
+       */
+      if (iBuySellData) {
+        try {
+          const isBuy = iBuySellData.type === "buy";
+          const typeValue = isBuy ? 1 : 2; // 1 = Buy, 2 = Sell
+
+          /**
+           * --------------------------------------------------
+           * STEP 2: Prepare dynamic Buy/Sell labels
+           * --------------------------------------------------
+           */
+          const baseCurrency = isBranch
+            ? iBuySellData.cardData.viewInstumentName
+            : iBuySellData.currencyLabel.slice(0, 3);
+
+          const quoteCurrency = isBranch
+            ? iBuySellData.cardData.viewSecondaryInstumentName
+            : iBuySellData.currencyLabel.slice(3, 6);
+
+          const newTypesData = isBuy
+            ? [
+                { label: `Buy ${baseCurrency}`, value: 1 },
+                { label: `Sell ${quoteCurrency}`, value: 2 },
+              ]
+            : [
+                { label: `Sell ${baseCurrency}`, value: 2 },
+                { label: `Buy ${quoteCurrency}`, value: 1 },
+              ];
+
+          setTypeOptions(newTypesData);
+
+          /**
+           * --------------------------------------------------
+           * STEP 3: Filter Nature of Business based on Buy/Sell
+           * --------------------------------------------------
+           */
+          const filteredOptions = spotTransactions
+            .filter((item) =>
+              typeValue === 1 ? item.isForBuy : item.isForSell
+            )
+            .map((item) => ({
+              ...item,
+              label: item.name,
+              value: item.id,
+            }));
+
+          setNatureOfBusinessOptions(filteredOptions);
+
+          // Safe selection (avoid crash if empty)
+          if (filteredOptions.length > 0) {
+            setSelectedNature(filteredOptions[0]);
+          } else {
+            setSelectedNature(null);
+          }
+
+          /**
+           * --------------------------------------------------
+           * STEP 4: Set Currency Dropdown
+           * --------------------------------------------------
+           */
+          setSelectedCurrency({
+            value: iBuySellData.instrumentID,
+            label: isBranch
+              ? `${iBuySellData.cardData.viewInstumentName}${
+                  iBuySellData.cardData.viewSecondaryInstumentName || ""
+                }`
+              : `${iBuySellData.instrumentName} ${
+                  iBuySellData.secondaryInstrumentName || ""
+                }`,
+            secondaryInstrumentID: iBuySellData.secondaryInstrumentID,
+            secondaryInstrumentName: iBuySellData.secondaryInstrumentName,
           });
-          setSelectedNature(getNatureVal[0]);
-          setNatureOfBusinessOptions(getNatureVal);
+
+          /**
+           * --------------------------------------------------
+           * STEP 5: Set Selected Type (Buy/Sell)
+           * --------------------------------------------------
+           */
+          const selectedType = newTypesData.find(
+            (opt) => opt.value === typeValue
+          );
+
+          setTypeOptionSelected(selectedType);
+        } catch (error) {
+          console.error("Error initializing with RFQ data:", error);
         }
-      } catch (error) {
-        console.error("Error initializing nature of business options:", error);
+      } else {
+        /**
+         * --------------------------------------------------
+         * CASE 2: Normal Flow (No RFQ data)
+         * --------------------------------------------------
+         */
+        // Default to first type option
+        const defaultTypeValue = typeOptions?.[0]?.value || 1;
+
+        setTypeOptionSelected(typeOptions?.[0] || null);
+
+        const filteredOptions = spotTransactions
+          .filter((item) =>
+            defaultTypeValue === 1 ? item.isForBuy : item.isForSell
+          )
+          .map((item) => ({
+            ...item,
+            label: item.name,
+            value: item.id,
+          }));
+
+        setNatureOfBusinessOptions(filteredOptions);
+
+        if (filteredOptions.length > 0) {
+          setSelectedNature(filteredOptions[0]);
+        } else {
+          setSelectedNature(null);
+        }
       }
+    } catch (error) {
+      console.error("Error initializing nature of business options:", error);
     }
   }, [natureOfBusinessList, iBuySellData]);
 
@@ -242,72 +341,80 @@ const RFQModal = () => {
    * Effect for initializing form with pre-filled buy/sell data
    * Runs when iBuySellData changes
    */
-  useEffect(() => {
-    if (iBuySellData !== null && natureOfBusinessList?.natureOfTransactions) {
-      try {
-        const isBuy = iBuySellData.type === "buy";
-        const typeValue = isBuy ? 1 : 2;
-        const baseCurrency = iBuySellData.currencyLabel.slice(0, 3);
-        const quoteCurrency = iBuySellData.currencyLabel.slice(3, 6);
+  // useEffect(() => {
+  //   if (iBuySellData !== null) {
+  //     try {
+  //       const isBuy = iBuySellData.type === "buy";
+  //       const typeValue = isBuy ? 1 : 2;
+  //       const baseCurrency = isBranch
+  //         ? iBuySellData.cardData.viewInstumentName
+  //         : iBuySellData.currencyLabel.slice(0, 3);
+  //       const quoteCurrency = isBranch
+  //         ? iBuySellData.cardData.viewSecondaryInstumentName
+  //         : iBuySellData.currencyLabel.slice(3, 6);
 
-        const newTypesData = isBuy
-          ? [
-              { label: `Buy ${baseCurrency}`, value: 1 },
-              { label: `Sell ${quoteCurrency}`, value: 2 },
-            ]
-          : [
-              { label: `Sell ${baseCurrency}`, value: 2 },
-              { label: `Buy ${quoteCurrency}`, value: 1 },
-            ];
+  //       const newTypesData = isBuy
+  //         ? [
+  //             { label: `Buy ${baseCurrency}`, value: 1 },
+  //             { label: `Sell ${quoteCurrency}`, value: 2 },
+  //           ]
+  //         : [
+  //             { label: `Sell ${baseCurrency}`, value: 2 },
+  //             { label: `Buy ${quoteCurrency}`, value: 1 },
+  //           ];
 
-        const getFilteredNatureOptions = (typeValue, isCorporate) => {
-          return natureOfBusinessList?.natureOfTransactions
-            .filter((business) => {
-              if (!business.isForSpot) return false;
+  //       const getFilteredNatureOptions = (typeValue, isCorporate) => {
+  //         return natureOfBusinessList?.natureOfTransactions
+  //           .filter((business) => {
+  //             if (business.isForSpot) return true;
 
-              if (typeValue === 1) {
-                return isCorporate ? business.isForSell : business.isForBuy;
-              } else {
-                return isCorporate ? business.isForBuy : business.isForSell;
-              }
-            })
-            .map((business) => ({
-              ...business,
-              label: business.name,
-              value: business.id,
-            }));
-        };
+  //             if (typeValue === 1) {
+  //               return isCorporate ? business.isForSell : business.isForBuy;
+  //             } else {
+  //               return isCorporate ? business.isForBuy : business.isForSell;
+  //             }
+  //           })
+  //           .map((business) => ({
+  //             ...business,
+  //             label: business.name,
+  //             value: business.id,
+  //           }));
+  //       };
 
-        // ✅ Call the function here (adjust `isCorporate` as per your app logic)
-        const filteredOptions = getFilteredNatureOptions(
-          typeValue,
-          isCorporate
-        );
-        console.log(filteredOptions, "filteredOptionsfilteredOptions");
-        setNatureOfBusinessOptions(filteredOptions);
-        setSelectedNature({
-          value: filteredOptions[0].value,
-          label: filteredOptions[0].label,
-        });
+  //       // ✅ Call the function here (adjust `isCorporate` as per your app logic)
+  //       const filteredOptions = getFilteredNatureOptions(
+  //         typeValue,
+  //         isCorporate
+  //       );
+  //       console.log(filteredOptions, "filteredOptionsfilteredOptions");
+  //       // setNatureOfBusinessOptions(filteredOptions);
+  //       setSelectedNature({
+  //         value: filteredOptions[0].value,
+  //         label: filteredOptions[0].label,
+  //       });
 
-        setSelectedCurrency({
-          value: iBuySellData.instrumentID,
-          label: `${iBuySellData.instrumentName}${
-            iBuySellData.secondaryInstrumentName || ""
-          }`,
-          secondaryInstrumentID: iBuySellData.secondaryInstrumentID,
-          secondaryInstrumentName: iBuySellData.secondaryInstrumentName,
-        });
+  //       setSelectedCurrency({
+  //         value: iBuySellData.instrumentID,
+  //         label: isBranch
+  //           ? `${iBuySellData.cardData.viewInstumentName}${
+  //               iBuySellData.cardData.viewSecondaryInstumentName || ""
+  //             }`
+  //           : `${iBuySellData.instrumentName} ${
+  //               iBuySellData.secondaryInstrumentName || ""
+  //             }`,
+  //         secondaryInstrumentID: iBuySellData.secondaryInstrumentID,
+  //         secondaryInstrumentName: iBuySellData.secondaryInstrumentName,
+  //       });
 
-        setTypeOptions(newTypesData);
+  //       setTypeOptions(newTypesData);
 
-        const selected = newTypesData.find((opt) => opt.value === typeValue);
-        setTypeOptionSelected(selected);
-      } catch (error) {
-        console.error("Error initializing with buy/sell data:", error);
-      }
-    }
-  }, [iBuySellData, natureOfBusinessList]);
+  //       const selected = newTypesData.find((opt) => opt.value === typeValue);
+  //       setTypeOptionSelected(selected);
+  //     } catch (error) {
+  //       console.error("Error initializing with buy/sell data:", error);
+  //     }
+  //   }
+  // }, [iBuySellData, natureOfBusinessList]);
 
   /**
    * Effect for initializing corporate options
@@ -374,9 +481,13 @@ const RFQModal = () => {
             return {
               ...instrument,
               // Combine primary and secondary instrument names for display
-              label: `${instrument.instrumentName}${
-                instrument.secondaryInstrumentName || ""
-              }`,
+              label: instrument.isWeakCurrency
+                ? `${instrument.secondaryInstrumentName}${
+                    instrument.instrumentName || ""
+                  }`
+                : `${instrument.instrumentName}${
+                    instrument.secondaryInstrumentName || ""
+                  }`,
               value: instrument.instrumentID,
               secondaryInstrumentID: instrument.secondaryInstrumentID,
               secondaryInstrumentName: instrument.secondaryInstrumentName,
@@ -386,7 +497,7 @@ const RFQModal = () => {
           // Only include instruments valid for both buy and sell
         })
         .filter(Boolean); // Remove null entries
-
+      console.log({ validInstruments }, "validInstrumentsvalidInstruments");
       // Update state only if valid instruments were found
       if (validInstruments.length > 0) {
         const firstInstrument = validInstruments[0];
@@ -406,6 +517,7 @@ const RFQModal = () => {
 
           setTypeOptionSelected(defaultType);
           setCurrencyOptions(validInstruments);
+        } else {
         }
       } else {
         // Handle empty state
@@ -566,6 +678,39 @@ const RFQModal = () => {
   // };
   const handleChangeType = (selectedValue) => {
     setTypeOptionSelected(selectedValue);
+
+    if (!natureOfBusinessList?.natureOfTransactions) return;
+
+    try {
+      const { natureOfTransactions } = natureOfBusinessList;
+
+      // Step 1: Filter Spot only
+      const filterJustForSpot = natureOfTransactions.filter(
+        (item) => item.isForSpot
+      );
+
+      // Step 2: Filter Buy or Sell
+      const filteredData = filterJustForSpot.filter((item) =>
+        selectedValue?.value === 1 ? item.isForBuy : item.isForSell
+      );
+
+      // Step 3: Map to Select Options
+      const mappedOptions = filteredData.map((item) => ({
+        label: item.name,
+        value: item.id,
+      }));
+
+      setNatureOfBusinessOptions(mappedOptions);
+
+      // Step 4: Auto select first option safely
+      if (mappedOptions.length > 0) {
+        setSelectedNature(mappedOptions[0]);
+      } else {
+        setSelectedNature(null);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
   /**
    * Handles corporate selection change (for branch users)
@@ -724,19 +869,19 @@ const RFQModal = () => {
                   <SelectDropdown
                     classNamePrefix="RfqSpot"
                     placeholder=""
-                    options={currencyOptions}
-                    // options={currencyOptions.filter((option) => {
-                    //   // For Buy transactions (value === 1), check if option supports buying
-                    //   if (typeOptionSelected.value === 1) {
-                    //     return option.isBuy === true;
-                    //   }
-                    //   // For Sell transactions (value === 2), check if option supports selling
-                    //   else if (typeOptionSelected.value === 2) {
-                    //     return option.isSell === true;
-                    //   }
-                    //   // If no transaction type selected (shouldn't normally happen), show all options
-                    //   return true;
-                    // })}
+                    // options={currencyOptions}
+                    options={currencyOptions.filter((option) => {
+                      // For Buy transactions (value === 1), check if option supports buying
+                      if (typeOptionSelected.value === 1) {
+                        return option.isBuy === true;
+                      }
+                      // For Sell transactions (value === 2), check if option supports selling
+                      else if (typeOptionSelected.value === 2) {
+                        return option.isSell === true;
+                      }
+                      // If no transaction type selected (shouldn't normally happen), show all options
+                      return true;
+                    })}
                     onChange={handleCurrencyChange}
                     value={selectedCurrency}
                     isDisabled={iBuySellData !== null ? true : false}

@@ -114,7 +114,6 @@ const SpotDealerAndTreasury = () => {
   }, [marketStatus]);
   // For clear Rates
 
-  console.log(ClearRatesData, "ClearRatesDataClearRatesData");
   useEffect(() => {
     if (ClearRatesData && ClearRatesData?.areRatesClear) {
       let Rates = GetCategoryWiseSpotRatesDaata?.instruments.map((item) =>

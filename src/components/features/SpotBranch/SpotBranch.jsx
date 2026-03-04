@@ -520,6 +520,7 @@ const SpotBranch = () => {
                               secondaryInstrumentName={
                                 data.secondaryInstrumentName
                               }
+                              cardData={data}
                             />
                             {provided.placeholder}
                           </div>
@@ -531,60 +532,68 @@ const SpotBranch = () => {
               </Row>
             </span>
           </Col>
-          <Col lg={3} md={3} sm={12} >
+          <Col lg={3} md={3} sm={12}>
             <div className="WatchListOuterBox">
-            <Row>
-              <Col lg={6} md={6} sm={12}>
-                <span className="WatchlistLabel">Watchlist</span>
-              </Col>
-              <Col lg={6} md={6} sm={12} className="d-flex justify-content-end">
-                {/* <span>21-11-2022 9:18 PM</span> */}
-                <span>
-                  {watchListDateTime !== null &&
-                    watchListDateTime !== false &&
-                    moment(watchListDateTime).format("DD-MM-YYYY h:mm A")}
-                </span>
-              </Col>
-            </Row>
-            <Row>
-              <Col lg={12} md={12} sm={12}>
-                {watchlistTableData.length > 0 ? (
-                  <Droppable droppableId="droppable" direction="vertical">
-                    {(provided) => (
-                      <div ref={provided.innerRef} {...provided.droppableProps}>
-                        <GlobalTable
-                          columns={columns}
-                          dataSource={watchlistTableData}
-                          prefixCls={"WatchList_table"}
-                          pagination={false}
-                          bordered={false}
-                          components={{
-                            body: {
-                              row: DraggableBodyRow, // Drag functionality only works with this component
-                            },
-                          }}
-                          onRow={(record, index) => ({
-                            index,
-                            "data-row-key": index,
-                          })}
-                          scroll={{ y:310, x: "auto" }}
-                        />
-                        {provided.placeholder}
-                      </div>
-                    )}
-                  </Droppable>
-                ) : (
-                  <GlobalTable
-                    columns={columns}
-                    dataSource={watchlistTableData}
-                    prefixCls={"WatchList_table"}
-                    pagination={false}
-                    bordered={false}
-                    scroll={{ y: 310, x: "auto" }}
-                  />
-                )}
-              </Col>
-            </Row>
+              <Row>
+                <Col lg={6} md={6} sm={12}>
+                  <span className="WatchlistLabel">Watchlist</span>
+                </Col>
+                <Col
+                  lg={6}
+                  md={6}
+                  sm={12}
+                  className="d-flex justify-content-end"
+                >
+                  {/* <span>21-11-2022 9:18 PM</span> */}
+                  <span>
+                    {watchListDateTime !== null &&
+                      watchListDateTime !== false &&
+                      moment(watchListDateTime).format("DD-MM-YYYY h:mm A")}
+                  </span>
+                </Col>
+              </Row>
+              <Row>
+                <Col lg={12} md={12} sm={12}>
+                  {watchlistTableData.length > 0 ? (
+                    <Droppable droppableId="droppable" direction="vertical">
+                      {(provided) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.droppableProps}
+                        >
+                          <GlobalTable
+                            columns={columns}
+                            dataSource={watchlistTableData}
+                            prefixCls={"WatchList_table"}
+                            pagination={false}
+                            bordered={false}
+                            components={{
+                              body: {
+                                row: DraggableBodyRow, // Drag functionality only works with this component
+                              },
+                            }}
+                            onRow={(record, index) => ({
+                              index,
+                              "data-row-key": index,
+                            })}
+                            scroll={{ y: 310, x: "auto" }}
+                          />
+                          {provided.placeholder}
+                        </div>
+                      )}
+                    </Droppable>
+                  ) : (
+                    <GlobalTable
+                      columns={columns}
+                      dataSource={watchlistTableData}
+                      prefixCls={"WatchList_table"}
+                      pagination={false}
+                      bordered={false}
+                      scroll={{ y: 310, x: "auto" }}
+                    />
+                  )}
+                </Col>
+              </Row>
             </div>
           </Col>
         </Row>

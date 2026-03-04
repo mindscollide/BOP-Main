@@ -25,6 +25,7 @@ const BranchRateCardsOfWatchList = ({
   secondaryInstrumentName,
   viewInstumentName,
   viewSecondaryInstrumentName,
+  cardData,
 }) => {
   const dispatch = useDispatch();
 
@@ -33,11 +34,11 @@ const BranchRateCardsOfWatchList = ({
   const { isBid, isOffer } = useBidOffer();
 
   const isTradeRights = useSelector(
-    (state) => state.RealtimeActionsSlice.tradeRightsStatusUpdated,
+    (state) => state.RealtimeActionsSlice.tradeRightsStatusUpdated
   );
 
   const marketStatus = useSelector(
-    (state) => state.WatchListReducer.getMarketStatus,
+    (state) => state.WatchListReducer.getMarketStatus
   );
 
   /**
@@ -60,6 +61,7 @@ const BranchRateCardsOfWatchList = ({
       secondaryInstrumentID,
       instrumentName,
       secondaryInstrumentName,
+      cardData,
     };
     dispatch(setIBuySellData(Data));
     dispatch(setRfqModalOpen(true));
@@ -108,8 +110,8 @@ const BranchRateCardsOfWatchList = ({
                       !isBid && isBuyDisabled
                         ? "SellandBuyCardBranch_Stuck_disbaled"
                         : isBuyDisabled
-                          ? "SellandBuyCardBracnh_disbaled"
-                          : "SellandBuyCardBracnh"
+                        ? "SellandBuyCardBracnh_disbaled"
+                        : "SellandBuyCardBracnh"
                     }
                     onClick={() =>
                       !isBuyDisabled && buyValue > 0 && handleOpenModal("buy")
@@ -125,8 +127,8 @@ const BranchRateCardsOfWatchList = ({
                       !isOffer && isSellDisabled
                         ? "SellandBuyCardBranch_Stuck_disbaled"
                         : isSellDisabled
-                          ? "SellandBuyCardBracnh_disbaled"
-                          : "SellandBuyCardBracnh"
+                        ? "SellandBuyCardBracnh_disbaled"
+                        : "SellandBuyCardBracnh"
                     }
                     onClick={() =>
                       !isSellDisabled &&
@@ -147,8 +149,8 @@ const BranchRateCardsOfWatchList = ({
                       !isOffer && isSellDisabled
                         ? "SellandBuyCardBranch_Stuck_disbaled"
                         : isSellDisabled
-                          ? "SellandBuyCardBracnh_disbaled"
-                          : "SellandBuyCardBracnh"
+                        ? "SellandBuyCardBracnh_disbaled"
+                        : "SellandBuyCardBracnh"
                     }
                     onClick={() =>
                       !isSellDisabled && buyValue > 0 && handleOpenModal("sell")
@@ -164,8 +166,8 @@ const BranchRateCardsOfWatchList = ({
                       !isBid && isBuyDisabled
                         ? "SellandBuyCardBranch_Stuck_disbaled"
                         : isBuyDisabled
-                          ? "SellandBuyCardBracnh_disbaled"
-                          : "SellandBuyCardBracnh"
+                        ? "SellandBuyCardBracnh_disbaled"
+                        : "SellandBuyCardBracnh"
                     }
                     onClick={() =>
                       !isBuyDisabled && sellValue > 0 && handleOpenModal("buy")
