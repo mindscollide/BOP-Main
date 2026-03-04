@@ -89,7 +89,7 @@ const RFQModal = () => {
   // Get pre-filled buy/sell data from Redux store (if any)
   const iBuySellData = useSelector((state) => state.modalReducer.IBuySellData);
 
-  console.log({ iBuySellData, natureOfBusinessList }, "iBuySellData");
+  console.log({ iBuySellData, natureOfBusinessList }, "iBuySellDataTest");
 
   const SaveSpotTransactionLoading = useSelector(
     (state) => state.BlotterSlicer.SaveSpotTransactionAPILoading
@@ -679,7 +679,8 @@ const RFQModal = () => {
   const handleChangeType = (selectedValue) => {
     setTypeOptionSelected(selectedValue);
 
-    if (!natureOfBusinessList?.natureOfTransactions) return;
+    if (!natureOfBusinessList?.natureOfTransactions || iBuySellData !== null)
+      return;
 
     try {
       const { natureOfTransactions } = natureOfBusinessList;
