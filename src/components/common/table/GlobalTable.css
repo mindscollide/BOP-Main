@@ -673,6 +673,9 @@ tr.Treasury_Discounting-row.Treasury_Discounting-row-level-0.striped-design:nth-
 /* Treasury Discounting Ends */
 
 /* Branch Spot Table WatchList Starts */
+.WatchList_table-measure-row {
+  visibility: collapse !important;
+}
 
 .WatchList_table-wrapper .WatchList_table {
   scrollbar-color: auto !important;
@@ -728,7 +731,6 @@ tr.Treasury_Discounting-row.Treasury_Discounting-row-level-0.striped-design:nth-
   font-weight: 500;
   font-family: "Roboto", sans-serif !important;
 }
-
 
 .WatchList_table-tbody tr td:nth-child(1) {
   padding-left: 10px;
