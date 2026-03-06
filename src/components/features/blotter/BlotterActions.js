@@ -2597,7 +2597,7 @@ export const calculateNonFeSwapAndDiscountingRateApi = createAsyncThunk(
               )
           ) {
             return rejectWithValue("No rates available");
-          } else return rejectWithValue;
+          } else return rejectWithValue("Something went wrong");
         } else {
           return rejectWithValue("Something went wrong");
         }
