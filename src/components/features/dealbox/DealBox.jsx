@@ -1,25 +1,14 @@
 import CustomButton from "@/components/common/globalButton/button";
 import React, { useEffect, useState } from "react";
 import styles from "./DealBox.module.css";
-
 import { Col, Row } from "react-bootstrap";
 import IconElement from "@/components/common/IconElement/IconElement";
 import { useDispatch } from "react-redux";
-import {
-  setDealModalRequest,
-  setDiscountingQuoteModal,
-  setForwardQuoteModal,
-  setViewDealModal,
-} from "@/store/modalSlice/modalSlicer";
+import { setDealModalRequest } from "@/store/modalSlice/modalSlicer";
 import { motion } from "framer-motion";
 import { setBlotterTransactionAddedForTreasuryDealBox } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { useSelector } from "react-redux";
-import {
-  setActiveTreasuryTab,
-  setDiscountingQuoteModalData,
-  setForwardQuoteModalData,
-  setSpotQuoteModalData,
-} from "@/store/BlotterSlicer/BlotterSlicer";
+import { setActiveTreasuryTab } from "@/store/BlotterSlicer/BlotterSlicer";
 import { useNavigate } from "react-router-dom";
 
 const DealBox = () => {
@@ -30,13 +19,6 @@ const DealBox = () => {
   );
   const blotterTransactionAdded = useSelector(
     (state) => state.RealtimeActionsSlice.BlotterTransactionAddedForTreasury
-  );
-
-  console.log(
-    blotterTransactionAdded,
-    transactionData,
-    activeTab,
-    "blotterTransactionAddedblotterTransactionAdded"
   );
 
   const dispatch = useDispatch();
@@ -74,26 +56,21 @@ const DealBox = () => {
 
     if (currentPath !== "/BOP/treasury") {
       navigate("/BOP/treasury");
-
       localStorage.setItem("activeTreasuryTab", "Live Rates");
       localStorage.setItem("activeTransactionTab", "Outstanding Deals");
-
-
-      dispatch(setActiveTreasuryTab("Outstanding Deals"));
-
       // Scroll to bottom
       window.scrollTo({
         top: document.body.scrollHeight,
         behavior: "smooth",
       });
-    } else if (
-      currentPath === "/BOP/treasury" &&
-      activeTreasuryTab !== "Live Rates"
-    ) {
+    } else if (currentPath === "/BOP/treasury" && activeTreasuryTab !== "Live Rates") {
+      navigate("/BOP/treasury");
       localStorage.setItem("activeTreasuryTab", "Live Rates");
       localStorage.setItem("activeTransactionTab", "Outstanding Deals");
-
-      dispatch(setActiveTreasuryTab("Outstanding Deals"));
+      console.log(
+        { activeTreasuryTab, activeTransactionTab, currentPath },
+        "openViewDealModalopenViewDealModal"
+      );
 
       // Scroll to bottom
       window.scrollTo({

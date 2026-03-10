@@ -63,13 +63,12 @@ const isTreasury = import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
 const BlotterHeader = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const activeTransactionTab = localStorage.getItem("activeTransactionTab");
   const GetNOPData = useSelector((state) => state.BlotterSlicer.GetNOPData);
   const [openNopModal, setOpenNopModal] = useState(false);
   const [openExportDiv, setOpenExportDiv] = useState(false);
   const [openMailModal, setOpenMailModal] = useState(false);
-  const activeTab = useSelector(
-    (state) => state.BlotterSlicer.activeTabBlotter
-  );
+
   const [hasBottomReachedTreasuryTXN, setHasBottomReachedTreasuryTXN] =
     useState(false);
   const [treasuryTXNSummary, setTreasuryTXNSummary] = useState([]);
@@ -459,7 +458,7 @@ const BlotterHeader = () => {
       content: (
         <section className="position-relative">
           <Suspense fallback={<SectionLoader />}>
-            {activeTab === "TXN Summary" && (
+            {activeTransactionTab === "TXN Summary" && (
               <TXNTreasurySummary
                 treasuryTXNSummaryTotalRecords={treasuryTXNSummaryTotalRecords}
                 treasuryTXNSummary={treasuryTXNSummary}
@@ -477,7 +476,7 @@ const BlotterHeader = () => {
       content: (
         <section className="position-relative">
           <Suspense fallback={<SectionLoader />}>
-            {activeTab === "Outstanding Deals" && (
+            {activeTransactionTab === "Outstanding Deals" && (
               <OutstandingDeals
                 treasuryOutStandingDeal={treasuryOutStandingDeal}
                 treasuryOutStandingDealsRow={treasuryOutStandingDealsRow}
@@ -494,9 +493,7 @@ const BlotterHeader = () => {
 
   const handleTabChange = (tabTitle) => {
     startTransition(() => {
-      dispatch(setActiveTreasuryTab(tabTitle));
       localStorage.setItem("activeTransactionTab", tabTitle);
-
       let Data3 = { sRow: 0, Length: 10 };
       if (tabTitle === "TXN Summary") {
         dispatch(BlotterDataAPI({ navigate, Data: Data3 }));
@@ -576,8 +573,7 @@ const BlotterHeader = () => {
               tabClass=" d-flex justify-content-start gap-2 mb-3 align-items-center position-relative"
               tabs={tabsData}
               onTabChange={handleTabChange}
-              activeKey={localStorage.getItem("activeTransactionTab") || "TXN Summary"}
-              defaultActiveKey={"0"}
+              activeKey={activeTransactionTab || "TXN Summary"}
               outStandingCounter={treasuryOutStandingDeal.length}
             />
             <div className="moreOptionsNOPExport">

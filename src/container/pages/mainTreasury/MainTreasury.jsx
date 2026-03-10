@@ -34,35 +34,15 @@ const MainTreasury = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const activeTab = useSelector((state) => state.RFQReducer.activeTab);
+  const tresuryTabsLocation = localStorage.getItem("activeTreasuryTab");
 
-  const {
-    isConnected,
-    connectToMqtt,
-    disconnect,
-    subscribeToTopics,
-    unsubscribeFromTopics,
-  } = useMqttClient({
-    onMessageArrivedCallback: (message) => {
-      // Handle incoming messages
-    },
-    onConnectionLostCallback: (error) => {
-      // Handle connection loss
-    },
-    shouldSubscribeToTreasury: true,
-  });
-
-  // useEffect(() => {
-  //   if (isConnected) {
-  //     console.log("first time connected to mqtt");
-  //     subscribeToTopics([`BOP_REAL_TIME_FEED_TREASURY`]);
-  //   }
-  //   return () => {
-  //     unsubscribeFromTopics([`BOP_REAL_TIME_FEED_TREASURY`]);
-  //   }
-  // }, [isConnected]);
   useEffect(() => {
     // Wrap data fetching in startTransition if it triggers component loading
     startTransition(() => {
+      if (tresuryTabsLocation === null) {
+        localStorage.setItem("activeTreasuryTab", "Live Rates");
+      }
+
       dispatch(GetBankSpotForTreasuryApi({ navigate }));
       if (import.meta.env.VITE_APP_INCLUDE_TREASURY === "true") {
         let Data = { sRow: 0, Length: 10 };
@@ -77,6 +57,10 @@ const MainTreasury = () => {
       dispatch(getAllTenorsAction({ navigate }));
       dispatch(GetDiscountingRatesForTreasuryApi({ navigate }));
     });
+    return () => {
+      localStorage.removeItem("activeTreasuryTab")
+      // Clean up if necessary when the component unmounts
+    };
   }, []);
 
   const handleTabChange = (tabTitle) => {
@@ -90,7 +74,7 @@ const MainTreasury = () => {
       content: (
         <div className='position-relative'>
           <Suspense fallback={<SectionLoader />}>
-            <LiveRates />
+          {  <LiveRates />}
           </Suspense>
         </div>
       ),
@@ -120,7 +104,7 @@ const MainTreasury = () => {
   return (
     <GlobalTabs
       tabClass='mb-4'
-      activeKey={localStorage.getItem("activeTreasuryTab") || "Live Rates"}
+      activeKey={tresuryTabsLocation || "Live Rates"}
       onTabChange={handleTabChange}
       tabs={tabsData}
       defaultActiveKey={"0"}
