@@ -25,6 +25,9 @@ import { useNavigate } from "react-router-dom";
 const DealBox = () => {
   const navigate = useNavigate();
   const [transactionData, setTransactionData] = useState(null);
+  const activeTab = useSelector(
+    (state) => state.BlotterSlicer.activeTabBlotter
+  );
   const blotterTransactionAdded = useSelector(
     (state) => state.RealtimeActionsSlice.BlotterTransactionAddedForTreasury
   );
@@ -32,29 +35,74 @@ const DealBox = () => {
   console.log(
     blotterTransactionAdded,
     transactionData,
+    activeTab,
     "blotterTransactionAddedblotterTransactionAdded"
   );
 
   const dispatch = useDispatch();
+  // const openViewDealModal = () => {
+  //   const currentPath = window.location.pathname;
+  //   const activeTreasuryTab = localStorage.getItem("activeTreasuryTab");
+  //   const activeTransactionTab = localStorage.getItem("activeTransactionTab");
+  //   if (
+  //     currentPath !== "/BOP/treasury" ||
+  //     (currentPath === "/BOP/treasury" &&
+  //       activeTransactionTab !== "Outstanding Deals" &&
+  //       activeTreasuryTab !== "Live Rates")
+  //   ) {
+  //     if (currentPath !== "/BOP/treasury") {
+  //       navigate("/BOP/treasury");
+  //     }
+
+  //     localStorage.setItem("activeTreasuryTab", "Live Rates");
+  //     localStorage.setItem("activeTransactionTab", "Outstanding Deals");
+
+  //     window.scrollTo({
+  //       top: document.body.scrollHeight,
+  //       behavior: "smooth",
+  //     });
+  //   }
+
+  //   dispatch(setDealModalRequest(false));
+  //   dispatch(setBlotterTransactionAddedForTreasuryDealBox(null));
+  // };
+
   const openViewDealModal = () => {
-    navigate("/BOP/treasury");
-    localStorage.setItem("activeTreasuryTab", "Live Rates");
-    dispatch(setActiveTreasuryTab("Outstanding Deals"));
+    const currentPath = window.location.pathname;
+    const activeTreasuryTab = localStorage.getItem("activeTreasuryTab");
+    const activeTransactionTab = localStorage.getItem("activeTransactionTab");
+
+    if (currentPath !== "/BOP/treasury") {
+      navigate("/BOP/treasury");
+
+      localStorage.setItem("activeTreasuryTab", "Live Rates");
+      localStorage.setItem("activeTransactionTab", "Outstanding Deals");
+
+
+      dispatch(setActiveTreasuryTab("Outstanding Deals"));
+
+      // Scroll to bottom
+      window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: "smooth",
+      });
+    } else if (
+      currentPath === "/BOP/treasury" &&
+      activeTreasuryTab !== "Live Rates"
+    ) {
+      localStorage.setItem("activeTreasuryTab", "Live Rates");
+      localStorage.setItem("activeTransactionTab", "Outstanding Deals");
+
+      dispatch(setActiveTreasuryTab("Outstanding Deals"));
+
+      // Scroll to bottom
+      window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: "smooth",
+      });
+    }
     dispatch(setDealModalRequest(false));
     dispatch(setBlotterTransactionAddedForTreasuryDealBox(null));
-    // if (transactionData.natureType === 1) {
-    //   dispatch(setViewDealModal(true));
-    //   dispatch(setSpotQuoteModalData(transactionData));
-    // } else if (transactionData.natureType === 2) {
-    //   dispatch(setForwardQuoteModal(true));
-    //   dispatch(setForwardQuoteModalData(transactionData));
-    // } else if (
-    //   transactionData.natureType === 3 ||
-    //   transactionData.natureType === 4
-    // ) {
-    //   dispatch(setDiscountingQuoteModal(true));
-    //   dispatch(setDiscountingQuoteModalData(transactionData));
-    // }
   };
 
   useEffect(() => {

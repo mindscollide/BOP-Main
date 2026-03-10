@@ -495,6 +495,8 @@ const BlotterHeader = () => {
   const handleTabChange = (tabTitle) => {
     startTransition(() => {
       dispatch(setActiveTreasuryTab(tabTitle));
+      localStorage.setItem("activeTransactionTab", tabTitle);
+
       let Data3 = { sRow: 0, Length: 10 };
       if (tabTitle === "TXN Summary") {
         dispatch(BlotterDataAPI({ navigate, Data: Data3 }));
@@ -574,7 +576,7 @@ const BlotterHeader = () => {
               tabClass=" d-flex justify-content-start gap-2 mb-3 align-items-center position-relative"
               tabs={tabsData}
               onTabChange={handleTabChange}
-              activeKey={activeTab}
+              activeKey={localStorage.getItem("activeTransactionTab") || "TXN Summary"}
               defaultActiveKey={"0"}
               outStandingCounter={treasuryOutStandingDeal.length}
             />
