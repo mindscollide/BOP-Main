@@ -73,7 +73,6 @@ import {
 import { formatDateToUTC } from "@/utils/formatters";
 import { LogoutApi } from "../loginScreens/authActions/logoutAction";
 import DealBox from "@/components/features/dealbox/DealBox";
-import DealViewModal from "../pages/mainCorporate/rfqModal/SpotQuoteModal/SpotQuoteModal";
 import {
   setChatModal,
   setDealModalRequest,
@@ -638,9 +637,9 @@ const Dashboard = () => {
       <Content>
         <main className='px-3'>
           <Outlet />
-          {/* <AnimatePresence>
+          <AnimatePresence>
             {blotterTransactionAdded && isTreasury && <DealBox />}
-          </AnimatePresence> */}
+          </AnimatePresence>
           {transactionInfoModal && <InfoTransaction />}
 
           {chatModal && <ChatBox />}

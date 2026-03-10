@@ -6,7 +6,6 @@ import { useSelector } from "react-redux";
 import { throttle } from "lodash";
 import {
   clearCategorySpotClearRates,
-  setClearRates,
 } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { useDispatch } from "react-redux";
 import { UpdatetCategoryWiseSpotRates } from "@/store/categoryReducer/categoryReducer";
@@ -14,7 +13,6 @@ import { UpdatetCategoryWiseSpotRates } from "@/store/categoryReducer/categoryRe
 const SpotDealerAndTreasury = () => {
   const dispatch = useDispatch();
   const [spotsData, setSpotsData] = useState([]);
-  console.log(spotsData, "spotsDataspotsData");
   const allInstrumentForTreasuryData = useSelector(
     (state) => state.WatchListReducer.GetAllInstrumentForTreasury
   );
@@ -32,12 +30,7 @@ const SpotDealerAndTreasury = () => {
   const marketStatus = useSelector(
     (state) => state.WatchListReducer.getMarketStatus
   );
-  console.log(marketStatus, "marketStatusratesrate");
 
-  console.log(
-    GetCategoryWiseSpotRatesDaata,
-    "GetCategoryWiseSpotRatesDaataGetCategoryWiseSpotRatesDaata"
-  );
   useEffect(() => {
     if (allInstrumentForTreasuryData) {
       try {

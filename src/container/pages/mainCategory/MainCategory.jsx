@@ -84,7 +84,6 @@ const MainCategory = () => {
       tabs={tabsData}
       activeKey={localStorage.getItem("MainCategoryActiveTab") || "Spot"}
       onTabChange={handleTabChange}
-      defaultActiveKey="Spot" // Changed from "0" to match your tab titles
       tabClass="mb-4"
     />
   );

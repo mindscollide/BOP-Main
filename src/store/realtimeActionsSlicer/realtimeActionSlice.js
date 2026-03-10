@@ -192,6 +192,7 @@ const RealtimeActionsSlice = createSlice({
     },
     BlotterTransactionAddedForTreasury(state, { payload }) {
       state.BlotterTransactionAddedForTreasury = payload;
+      state.BlotterTransactionAddedForTreasuryDealBox = payload;
     },
     setBlotterTransactionAddedForTreasuryDealBox(state, { payload }) {
       state.BlotterTransactionAddedForTreasuryDealBox = payload;
