@@ -53,31 +53,35 @@ const DealBox = () => {
     const currentPath = window.location.pathname;
     const activeTreasuryTab = localStorage.getItem("activeTreasuryTab");
     const activeTransactionTab = localStorage.getItem("activeTransactionTab");
-
-    if (currentPath !== "/BOP/treasury") {
+  
+    // Ensure correct tabs
+    if (activeTreasuryTab !== "Live Rates") {
+      console.log("Setting activeTreasuryTab to Live Rates");
       navigate("/BOP/treasury");
-      localStorage.setItem("activeTreasuryTab", "Live Rates");
-      localStorage.setItem("activeTransactionTab", "Outstanding Deals");
-      // Scroll to bottom
-      window.scrollTo({
-        top: document.body.scrollHeight,
-        behavior: "smooth",
-      });
-    } else if (currentPath === "/BOP/treasury" && activeTreasuryTab !== "Live Rates") {
-      navigate("/BOP/treasury");
-      localStorage.setItem("activeTreasuryTab", "Live Rates");
-      localStorage.setItem("activeTransactionTab", "Outstanding Deals");
-      console.log(
-        { activeTreasuryTab, activeTransactionTab, currentPath },
-        "openViewDealModalopenViewDealModal"
-      );
 
-      // Scroll to bottom
-      window.scrollTo({
-        top: document.body.scrollHeight,
-        behavior: "smooth",
-      });
+      localStorage.setItem("activeTreasuryTab", "Live Rates");
     }
+  
+    if (activeTransactionTab !== "Outstanding Deals") {
+      console.log("Setting activeTreasuryTab to Live Rates");
+      navigate("/BOP/treasury");
+
+      localStorage.setItem("activeTransactionTab", "Outstanding Deals");
+    }
+  
+    // Navigate only if not already on treasury page
+    if (currentPath !== "/BOP/treasury") {
+      console.log("Setting activeTreasuryTab to Live Rates");
+
+      navigate("/BOP/treasury");
+    }
+  
+    // Scroll to bottom
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      behavior: "smooth",
+    });
+  
     dispatch(setDealModalRequest(false));
     dispatch(setBlotterTransactionAddedForTreasuryDealBox(null));
   };

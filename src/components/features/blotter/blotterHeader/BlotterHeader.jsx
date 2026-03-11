@@ -63,7 +63,6 @@ const isTreasury = import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
 const BlotterHeader = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const activeTransactionTab = localStorage.getItem("activeTransactionTab");
   const GetNOPData = useSelector((state) => state.BlotterSlicer.GetNOPData);
   const [openNopModal, setOpenNopModal] = useState(false);
   const [openExportDiv, setOpenExportDiv] = useState(false);
@@ -145,6 +144,12 @@ const BlotterHeader = () => {
     (state) => state.RealtimeActionsSlice.BlotterTransactionRejected
   );
   const [exportButton, setExportButton] = useState(false);
+
+  useEffect(() => {
+    if(localStorage.getItem("activeTransactionTab") === null){
+      localStorage.setItem("activeTransactionTab", "TXN Summary");
+    }
+  }, [])
 
   // Fixed: Replaced useEffect with useLayoutEffect to prevent state updates during render
   useLayoutEffect(() => {
@@ -458,7 +463,7 @@ const BlotterHeader = () => {
       content: (
         <section className="position-relative">
           <Suspense fallback={<SectionLoader />}>
-            {activeTransactionTab === "TXN Summary" && (
+            {localStorage.getItem("activeTransactionTab") === "TXN Summary" && (
               <TXNTreasurySummary
                 treasuryTXNSummaryTotalRecords={treasuryTXNSummaryTotalRecords}
                 treasuryTXNSummary={treasuryTXNSummary}
@@ -476,7 +481,7 @@ const BlotterHeader = () => {
       content: (
         <section className="position-relative">
           <Suspense fallback={<SectionLoader />}>
-            {activeTransactionTab === "Outstanding Deals" && (
+            {localStorage.getItem("activeTransactionTab") === "Outstanding Deals" && (
               <OutstandingDeals
                 treasuryOutStandingDeal={treasuryOutStandingDeal}
                 treasuryOutStandingDealsRow={treasuryOutStandingDealsRow}
@@ -573,7 +578,7 @@ const BlotterHeader = () => {
               tabClass=" d-flex justify-content-start gap-2 mb-3 align-items-center position-relative"
               tabs={tabsData}
               onTabChange={handleTabChange}
-              activeKey={activeTransactionTab || "TXN Summary"}
+              activeKey={localStorage.getItem("activeTransactionTab")}
               outStandingCounter={treasuryOutStandingDeal.length}
             />
             <div className="moreOptionsNOPExport">
