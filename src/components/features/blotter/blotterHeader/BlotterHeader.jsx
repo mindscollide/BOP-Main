@@ -145,11 +145,16 @@ const BlotterHeader = () => {
   );
   const [exportButton, setExportButton] = useState(false);
 
+  const activeTransactionBlotterTab = useSelector(
+    (state) => state.BlotterSlicer.activeTabBlotter
+  );
+
   useEffect(() => {
-    if(localStorage.getItem("activeTransactionTab") === null){
-      localStorage.setItem("activeTransactionTab", "TXN Summary");
-    }
-  }, [])
+    const savedTab =
+      localStorage.getItem("activeTransactionTab") || "TXN Summary";
+  
+    dispatch(setActiveTreasuryTab(savedTab));
+  }, []);
 
   // Fixed: Replaced useEffect with useLayoutEffect to prevent state updates during render
   useLayoutEffect(() => {
@@ -499,26 +504,30 @@ const BlotterHeader = () => {
   const handleTabChange = (tabTitle) => {
     startTransition(() => {
       localStorage.setItem("activeTransactionTab", tabTitle);
+  
+      dispatch(setActiveTreasuryTab(tabTitle)); // <-- important
+  
       let Data3 = { sRow: 0, Length: 10 };
+  
       if (tabTitle === "TXN Summary") {
         dispatch(BlotterDataAPI({ navigate, Data: Data3 }));
       } else {
         dispatch(GetBlotterOutstandingDealsDataAPI({ navigate, Data: Data3 }));
       }
-
+  
       dispatch(GetNOPDataAPI({ navigate }));
+  
       const startDate = new Date();
-
       startDate.setHours(0, 0, 0, 0);
-
+  
       const endDate = new Date();
       endDate.setHours(23, 58, 59, 99);
-
+  
       const Data2 = {
         StartDate: formatDateToUTC(startDate, 1),
         EndDate: formatDateToUTC(endDate, 1),
       };
-
+  
       dispatch(GetMisDataByRangeAPI({ navigate, Data: Data2 }));
     });
   };
@@ -578,7 +587,7 @@ const BlotterHeader = () => {
               tabClass=" d-flex justify-content-start gap-2 mb-3 align-items-center position-relative"
               tabs={tabsData}
               onTabChange={handleTabChange}
-              activeKey={localStorage.getItem("activeTransactionTab")}
+              activeKey={activeTransactionBlotterTab}
               outStandingCounter={treasuryOutStandingDeal.length}
             />
             <div className="moreOptionsNOPExport">

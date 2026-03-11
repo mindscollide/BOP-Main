@@ -10,6 +10,7 @@ import { setBlotterTransactionAddedForTreasuryDealBox } from "@/store/realtimeAc
 import { useSelector } from "react-redux";
 import { setActiveTreasuryTab } from "@/store/BlotterSlicer/BlotterSlicer";
 import { useNavigate } from "react-router-dom";
+import { setActiveTab } from "@/container/pages/mainCorporate/rfqModal/RFQSlicer";
 
 const DealBox = () => {
   const navigate = useNavigate();
@@ -51,28 +52,21 @@ const DealBox = () => {
 
   const openViewDealModal = () => {
     const currentPath = window.location.pathname;
-    const activeTreasuryTab = localStorage.getItem("activeTreasuryTab");
-    const activeTransactionTab = localStorage.getItem("activeTransactionTab");
   
-    // Ensure correct tabs
-    if (activeTreasuryTab !== "Live Rates") {
-      console.log("Setting activeTreasuryTab to Live Rates");
-      navigate("/BOP/treasury");
-
+    // Ensure Treasury tab
+    if (localStorage.getItem("activeTreasuryTab") !== "Live Rates") {
       localStorage.setItem("activeTreasuryTab", "Live Rates");
+      dispatch(setActiveTab("Live Rates")); // update UI
     }
   
-    if (activeTransactionTab !== "Outstanding Deals") {
-      console.log("Setting activeTreasuryTab to Live Rates");
-      navigate("/BOP/treasury");
-
+    // Ensure Transaction tab
+    if (localStorage.getItem("activeTransactionTab") !== "Outstanding Deals") {
       localStorage.setItem("activeTransactionTab", "Outstanding Deals");
+      dispatch(setActiveTreasuryTab("Outstanding Deals")); // <-- important
     }
   
-    // Navigate only if not already on treasury page
+    // Navigate to treasury if needed
     if (currentPath !== "/BOP/treasury") {
-      console.log("Setting activeTreasuryTab to Live Rates");
-
       navigate("/BOP/treasury");
     }
   

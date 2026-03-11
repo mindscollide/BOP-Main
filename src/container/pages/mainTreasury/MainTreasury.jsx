@@ -1,5 +1,5 @@
 import React, { useEffect, startTransition, Suspense } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
   BlotterDataAPI,
@@ -19,9 +19,7 @@ import {
 import { setBlotterLoader } from "@/store/BlotterSlicer/BlotterSlicer";
 import GlobalTabs from "@/components/common/tabs/Tabs";
 import SectionLoader from "@/components/common/sectionLoader/SectionLoader";
-import { useMqttClient } from "@/components/utils/mqttConnection";
 import { setActiveTab } from "../mainCorporate/rfqModal/RFQSlicer";
-import { useSelector } from "react-redux";
 
 // Lazy load the tab components
 const LiveRates = React.lazy(() => import("./tabsContent/liveRates/LiveRates"));
@@ -34,80 +32,80 @@ const MainTreasury = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const activeTab = useSelector((state) => state.RFQReducer.activeTab);
-  const tresuryTabsLocation = localStorage.getItem("activeTreasuryTab");
 
   useEffect(() => {
-    // Wrap data fetching in startTransition if it triggers component loading
-    startTransition(() => {
-      if (tresuryTabsLocation === null) {
-        localStorage.setItem("activeTreasuryTab", "Live Rates");
-      }
+    const savedTab = localStorage.getItem("activeTreasuryTab") || "Live Rates";
+    dispatch(setActiveTab(savedTab));
 
+    startTransition(() => {
       dispatch(GetBankSpotForTreasuryApi({ navigate }));
+
       if (import.meta.env.VITE_APP_INCLUDE_TREASURY === "true") {
         let Data = { sRow: 0, Length: 10 };
+
         dispatch(GetBlotterOutstandingDealsDataAPI({ navigate, Data }));
         dispatch(setBlotterLoader(true));
         dispatch(BlotterDataAPI({ navigate, Data }));
         dispatch(GetNOPDataAPI({ navigate }));
         dispatch(GetVoltMeterStatusApi({ navigate }));
       }
+
       dispatch(getAllTreasuryInstrumentsApi({ navigate }));
       dispatch(GetBankForwardForTreasuryApi({ navigate }));
       dispatch(getAllTenorsAction({ navigate }));
       dispatch(GetDiscountingRatesForTreasuryApi({ navigate }));
     });
-    return () => {
-      localStorage.removeItem("activeTreasuryTab")
-      // Clean up if necessary when the component unmounts
-    };
   }, []);
 
   const handleTabChange = (tabTitle) => {
-    localStorage.setItem("activeTreasuryTab", tabTitle);
-    dispatch(setActiveTab(tabTitle));
+    console.log("Selected Tab:", tabTitle);
+
+    dispatch(setActiveTab(tabTitle)); // immediate UI update
+    localStorage.setItem("activeTreasuryTab", tabTitle); // persist after reload
   };
 
   const tabsData = [
     {
       title: "Live Rates",
-      content: (
-        <div className='position-relative'>
-          <Suspense fallback={<SectionLoader />}>
-          {  <LiveRates />}
-          </Suspense>
-        </div>
-      ),
+      content:
+        activeTab === "Live Rates" ? (
+          <div className="position-relative">
+            <Suspense fallback={<SectionLoader />}>
+              <LiveRates />
+            </Suspense>
+          </div>
+        ) : null,
     },
     {
       title: "Forwards",
-      content: (
-        <div className='position-relative'>
-          <Suspense fallback={<SectionLoader />}>
-            <Forwards />
-          </Suspense>
-        </div>
-      ),
+      content:
+        activeTab === "Forwards" ? (
+          <div className="position-relative">
+            <Suspense fallback={<SectionLoader />}>
+              <Forwards />
+            </Suspense>
+          </div>
+        ) : null,
     },
     {
       title: "Discounting",
-      content: (
-        <div className='position-relative'>
-          <Suspense fallback={<SectionLoader />}>
-            <Discounting />
-          </Suspense>
-        </div>
-      ),
+      content:
+        activeTab === "Discounting" ? (
+          <div className="position-relative">
+            <Suspense fallback={<SectionLoader />}>
+              <Discounting />
+            </Suspense>
+          </div>
+        ) : null,
     },
   ];
 
   return (
     <GlobalTabs
-      tabClass='mb-4'
-      activeKey={tresuryTabsLocation || "Live Rates"}
+      tabClass="mb-4"
+      activeKey={activeTab}
       onTabChange={handleTabChange}
       tabs={tabsData}
-      defaultActiveKey={"0"}
     />
   );
 };
