@@ -786,33 +786,31 @@ const TXNSummary = () => {
         width: 80,
         align: "center",
         render: (record) => {
-          // RFQ timer logic for expiring transactions
-          let Data = { PK_TransactionID: record.pK_TransactionID };
-          let isRFQ = record.isRFQ
-            ? record.statusID === 4 &&
-              record.rfqTimerDetails !== null &&
-              record.rfqTimerDetails?.isEnded === false
-              ? true
-              : false
-            : false;
-          let rfqTimer =
-            isRFQ && record.rfqTimerDetails.endTime
-              ? convertDateTimeIntoLocal(record.rfqTimerDetails.endTime)
-              : null;
-          const serverTime =
-            isRFQ && record.rfqTimerDetails?.serverTime
-              ? convertDateTimeIntoLocal(
-                  record.rfqTimerDetails?.serverTime.replace(/[-:\s]/g, "")
-                )
-              : null;
+          const Data = { PK_TransactionID: record.pK_TransactionID };
+
+          const isRFQ =
+            record.isRFQ &&
+            record.statusID === 4 &&
+            record.rfqTimerDetails !== null &&
+            record.rfqTimerDetails?.isEnded === false;
+
+          const showTimer =
+            isRFQ &&
+            record.rfqTimerDetails?.endTime &&
+            record.rfqTimerDetails?.serverTime;
+
           if (record.modifiedDatetime) {
             return (
               <span>
                 {formatDateTimeToUTCTime(record.modifiedDatetime)}{" "}
-                {isRFQ && (
+                {showTimer && (
                   <RFQTImer
-                    severTime={serverTime}
-                    endTime={rfqTimer}
+                    key={
+                      record.pK_TransactionID + record.rfqTimerDetails?.endTime
+                    }
+                    rfqId={record.pK_TransactionID}
+                    severTime={record.rfqTimerDetails.serverTime} // raw server time
+                    endTime={record.rfqTimerDetails.endTime} // raw end time
                     dispatch={dispatch}
                     apiFunction={ExpireRFQTransaction}
                     navigate={navigate}
@@ -822,6 +820,7 @@ const TXNSummary = () => {
               </span>
             );
           }
+
           return null;
         },
       },

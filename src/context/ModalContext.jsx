@@ -1,4 +1,5 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 const ModalContext = createContext();
 
@@ -19,7 +20,24 @@ export const GloballyModalProvider = ({ children }) => {
   });
   const [transactionInfoModal, setTransactionInfoModal] = useState(false);
   const [publishedSpotRates, setPublishedSpotRates] = useState(false);
+  const [allForwardApplicableTenors, setAllForwardApplicableTenors] = useState(null);
+
+  const getAllTenorsRecords = useSelector(
+    (state) => state.dealerReducer.getAllTenors
+  );
+
+  useEffect(() => {
+    if(getAllTenorsRecords !== null) {
+      try {
+        setAllForwardApplicableTenors(getAllTenorsRecords)
+      } catch (error) {
+        console.log(error, "error in setting tenors in context");
+        
+      }
+    }
+  },[getAllTenorsRecords])
   const value = {
+    allForwardApplicableTenors,
     createTenorModal,
     setCreateTenorModal,
     iSellAndBuyModal,

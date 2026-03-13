@@ -1,6 +1,7 @@
 import BlotterHeader from "./blotterHeader/BlotterHeader";
 
 const Blotter = () => {
+
   return (
     <>
       <div className="row m-0 mt-3">

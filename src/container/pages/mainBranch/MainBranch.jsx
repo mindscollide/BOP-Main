@@ -80,36 +80,36 @@ const MainBranch = () => {
   const tabsData = [
     {
       title: "Spot",
-      content: activeTab === "Spot" && SpotBranch ? (
+      content: activeTab === "Spot" && (
         <Suspense fallback={<SectionLoader />}>
           <SpotBranch />
-          <section className="bg-white mt-2 mb-4 p-2">
+          <section className='bg-white mt-2 mb-4 p-2'>
             <BlotterHeader />
           </section>
         </Suspense>
-      ) : null,
+      ),
     },
     {
       title: "Forwards",
-      content: activeTab === "Forwards" && ForwardsForBranch ? (
+      content: activeTab === "Forwards" && (
         <Suspense fallback={<SectionLoader />}>
           <ForwardsForBranch />
-          <section className="bg-white p-2">
+          <section className='bg-white p-2'>
             <BlotterHeader />
           </section>
         </Suspense>
-      ) : null,
+      ),
     },
     {
       title: "Discounting",
-      content: activeTab === "Discounting" && BranchDiscountingTable ? (
+      content: activeTab === "Discounting" && (
         <Suspense fallback={<SectionLoader />}>
           <BranchDiscountingTable />
-          <section className="bg-white p-2">
+          <section className='bg-white p-2'>
             <BlotterHeader />
           </section>
         </Suspense>
-      ) : null,
+      ),
     },
   ];
 
@@ -118,7 +118,7 @@ const MainBranch = () => {
       tabs={tabsData}
       onTabChange={handleTabChange}
       activeKey={activeTab}
-      tabClass="mb-4 position-relative"
+      tabClass='mb-4 position-relative'
     />
   );
 };

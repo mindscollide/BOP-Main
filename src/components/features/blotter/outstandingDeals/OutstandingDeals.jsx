@@ -494,33 +494,33 @@ const OutstandingDeals = ({
       label: "Time",
       width: 60,
       render: (record) => {
-        let Data = { PK_TransactionID: record.pK_TransactionID };
+        const Data = { PK_TransactionID: record.pK_TransactionID };
+
         const isRFQ =
           record.isRFQ &&
           record.statusID === 2 &&
           record.rfqTimerDetails !== null &&
           record.rfqTimerDetails?.isEnded === false;
+
         const isAssignedUser =
           record.statusID === 5 &&
           Number(localStorage.getItem("userID")) ===
             Number(record.treasuryPersonID);
-        const rfqTimer =
-          (isRFQ || isAssignedUser) && record.rfqTimerDetails?.endTime
-            ? convertDateTimeIntoLocal(record.rfqTimerDetails.endTime)
-            : null;
-        const serverTime =
-          (isRFQ || isAssignedUser) && record.rfqTimerDetails?.serverTime
-            ? convertDateTimeIntoLocal(
-                record.rfqTimerDetails?.serverTime.replace(/[-:\s]/g, "")
-              )
-            : null;
+
+        const showTimer =
+          (isRFQ || isAssignedUser) &&
+          record.rfqTimerDetails?.endTime &&
+          record.rfqTimerDetails?.serverTime;
+
         return (
           <span>
             {formatDateTimeToUTCTime(record.tradeDateTime)}{" "}
-            {(isRFQ || isAssignedUser) && rfqTimer && (
+            {showTimer && (
               <RFQTImer
-                severTime={serverTime}
-                endTime={rfqTimer}
+                key={record.pK_TransactionID + record.rfqTimerDetails?.endTime}
+                rfqId={record.pK_TransactionID}
+                severTime={record.rfqTimerDetails.serverTime} // raw value
+                endTime={record.rfqTimerDetails.endTime} // raw value
                 dispatch={dispatch}
                 apiFunction={ExpireRFQTransaction}
                 navigate={navigate}
