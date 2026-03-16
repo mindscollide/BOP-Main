@@ -1,187 +1,220 @@
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import GlobalTable from "@/components/common/table/GlobalTable";
 import { buildForwardsTable } from "@/components/utils/generateColumnsData";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { throttle } from "lodash";
 import { setTreasuryFowardsTenorsChanges } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { Col, Row } from "react-bootstrap";
 
+// ---------------- CONSTANTS ----------------
+const FORWARDS_TABLE_TYPE = 3;
+const EMPTY_RATE_VALUE = null;
+
+// ---------------- HELPERS ----------------
+
+/**
+ * Extracts all InstrumentID_ and InstrumentName_ keys from a reference row.
+ * These are identical across all tenor rows — so any existing row can serve
+ * as the source when building a brand-new tenor row.
+ */
+const extractInstrumentMeta = (referenceRow) => {
+  if (!referenceRow) return {};
+  return Object.fromEntries(
+    Object.entries(referenceRow).filter(
+      ([key]) =>
+        key.startsWith("InstrumentID_") || key.startsWith("InstrumentName_")
+    )
+  );
+};
+
+/**
+ * Builds empty bid/ask keys from a reference row.
+ * Used when a brand-new tenor has no previous rate data.
+ */
+const buildEmptyRateColumns = (referenceRow) => {
+  if (!referenceRow) return {};
+  return Object.fromEntries(
+    Object.entries(referenceRow)
+      .filter(([key]) => key.startsWith("bid_") || key.startsWith("ask_"))
+      .map(([key]) => [key, EMPTY_RATE_VALUE])
+  );
+};
+
+/**
+ * Builds a new tenor row by:
+ * 1. Using fresh tenor identity fields
+ * 2. Copying InstrumentID_ / InstrumentName_ from any existing row
+ * 3. Inheriting bid/ask from previousRow if it exists, else EMPTY_RATE_VALUE
+ */
+const buildNewTenorRow = (tenor, previousRow, referenceRow) => {
+  const instrumentMeta = extractInstrumentMeta(referenceRow);
+
+  const bidAskValues = Object.fromEntries(
+    Object.entries(referenceRow ?? {})
+      .filter(([key]) => key.startsWith("bid_") || key.startsWith("ask_"))
+      .map(([key]) => [
+        key,
+        previousRow?.[key] !== undefined &&
+        previousRow?.[key] !== EMPTY_RATE_VALUE
+          ? previousRow[key]
+          : EMPTY_RATE_VALUE,
+      ])
+  );
+
+  return {
+    tenorID: tenor.tenorID,
+    tenorName: tenor.tenorName,
+    tenorDays: tenor.tenorDays,
+    ...instrumentMeta,
+    ...bidAskValues,
+  };
+};
+
+// -----------------------------------------------
+
 const BankForwards = () => {
   const dispatch = useDispatch();
 
-  /**
-   * Table state used by UI
-   */
+  // ---------------- TABLE STATE ----------------
   const [dataSource, setDataSource] = useState([]);
-  const [columnsData, setColumnsData] = useState([]);
 
-  /**
-   * IMPORTANT:
-   * dataSourceRef stores the latest snapshot of the table.
-   *
-   * Why we use it?
-   * Because MQTT updates arrive very frequently and React
-   * state can be overridden when API or other effects rebuild the table.
-   *
-   * This ref ensures we always update the latest version of the data.
-   */
   const dataSourceRef = useRef([]);
 
-  /**
-   * Redux selectors
-   */
+  // columnsData is stable after init — ref avoids re-triggering effects
+  const columnsDataRef = useRef([]);
+  const [columnsDataState, setColumnsDataState] = useState([]);
+
+  // ---------------- TABLE INIT FLAG ----------------
+  const isTableInitialized = useRef(false);
+
+  // ---------------- REDUX SELECTORS ----------------
   const getAllTenorsRecords = useSelector(
     (state) => state.dealerReducer.getAllTenors
   );
-
   const GetBankForwardForTreasury = useSelector(
     (state) => state.WatchListReducer.GetBankForwardForTreasury
   );
-
   const GetAllInstrumentForTreasury = useSelector(
     (state) => state.WatchListReducer.GetAllInstrumentForTreasury
   );
-
   const TreasuryForwardRates = useSelector(
     (state) => state.RealtimeActionsSlice.TreasuryForwardRates
   );
-
   const marketStatus = useSelector(
     (state) => state.WatchListReducer.getMarketStatus
   );
-
   const treasuryFowardsTenorsChanges = useSelector(
     (state) => state.RealtimeActionsSlice.treasuryFowardsTenorsChanges
   );
 
-  /**
-   * BUILD TABLE FROM API DATA
-   *
-   * This runs when:
-   * - Tenors change
-   * - Instruments change
-   * - Initial forward rates arrive
-   */
-  useEffect(() => {
-    if (getAllTenorsRecords && GetAllInstrumentForTreasury) {
-      try {
-        const { forwardRates = [] } = GetBankForwardForTreasury || {};
-
-        const { forwardInstruments = [] } = GetAllInstrumentForTreasury;
-
-        const getAllTenorsData = {
-          tenors: getAllTenorsRecords.tenors,
-        };
-
-        const getAllInstrument = {
-          instruments: forwardInstruments,
-        };
-
-        const { rowData, columnsData } = buildForwardsTable(
-          3,
-          forwardRates,
-          getAllTenorsData,
-          getAllInstrument,
-          IndexCell
-        );
-
-        if (rowData?.length) {
-          /**
-           * Save snapshot inside ref
-           */
-          dataSourceRef.current = rowData;
-
-          /**
-           * Update UI
-           */
-          setDataSource(rowData);
-          setColumnsData(columnsData);
-        }
-      } catch (error) {
-        console.error("Error building forwards table:", error);
-      }
-    }
-  }, [
-    GetBankForwardForTreasury,
-    getAllTenorsRecords,
-    GetAllInstrumentForTreasury,
-  ]);
-
-  /**
-   * HANDLE TENOR CHANGES (MQTT EVENT)
-   *
-   * Sometimes server sends updated tenor applicability.
-   * We rebuild the table with new tenor rules.
-   */
+  // ---------------- INITIAL TABLE BUILD ----------------
+  // Runs once when instruments + tenors are ready.
+  // Sets isTableInitialized so the tenor-sync effect can take over.
   useEffect(() => {
     if (
-      treasuryFowardsTenorsChanges &&
-      getAllTenorsRecords &&
-      GetAllInstrumentForTreasury
-    ) {
-      try {
-        const { newIsForwardtenorList = [], removedtenorList = [] } =
-          treasuryFowardsTenorsChanges;
+      isTableInitialized.current ||
+      !getAllTenorsRecords ||
+      !GetAllInstrumentForTreasury
+    )
+      return;
 
-        const allTenors = [...(getAllTenorsRecords.tenors || [])];
+    try {
+      const { forwardRates = [] } = GetBankForwardForTreasury ?? {};
+      const { forwardInstruments = [] } = GetAllInstrumentForTreasury;
 
-        const { forwardInstruments = [] } = GetAllInstrumentForTreasury;
+      const { rowData, columnsData } = buildForwardsTable(
+        FORWARDS_TABLE_TYPE,
+        forwardRates,
+        { tenors: getAllTenorsRecords.tenors },
+        { instruments: forwardInstruments },
+        IndexCell
+      );
 
-        /**
-         * Convert removed tenors into a fast lookup set
-         */
-        const removedSet = new Set(
-          removedtenorList.map((item) => item.tenorID)
-        );
+      // Mark initialized regardless of rowData length so tenor-sync
+      // effect can manage rows independently from this point on.
+      columnsDataRef.current = columnsData;
+      setColumnsDataState(columnsData);
+      isTableInitialized.current = true;
 
-        /**
-         * Update tenor applicability
-         */
-        const updatedTenors = allTenors.map((tenor) => ({
-          ...tenor,
-          isForwardingApplicable: !removedSet.has(tenor.tenorID),
-        }));
-
-        const { forwardRates = [] } = GetBankForwardForTreasury || {};
-
-        const { rowData, columnsData } = buildForwardsTable(
-          3,
-          forwardRates,
-          { tenors: updatedTenors },
-          { instruments: forwardInstruments },
-          IndexCell
-        );
-
-        if (rowData?.length) {
-          dataSourceRef.current = rowData;
-
-          setDataSource(rowData);
-          setColumnsData(columnsData);
-        }
-
-        /**
-         * Clear redux flag after applying update
-         */
-        dispatch(setTreasuryFowardsTenorsChanges(null));
-      } catch (error) {
-        console.error("Tenor update error:", error);
+      if (rowData?.length) {
+        dataSourceRef.current = rowData;
+        setDataSource(rowData);
       }
+    } catch (error) {
+      console.error("Error building forwards table:", error);
     }
-  }, [
-    treasuryFowardsTenorsChanges,
-    getAllTenorsRecords,
-    GetAllInstrumentForTreasury,
-  ]);
+  }, [GetBankForwardForTreasury, getAllTenorsRecords, GetAllInstrumentForTreasury]);
 
-  /**
-   * MQTT RATE UPDATE HANDLER
-   *
-   * Updates bid / ask rates in realtime.
-   *
-   * Using throttle to prevent UI flooding
-   * when many updates arrive per second.
-   */
+  // ---------------- TENOR SYNC (MQTT EVENT) ----------------
+  // Incrementally adds / removes rows when tenor applicability changes.
+  // Does NOT rebuild the entire table — preserves live MQTT rates.
+  useEffect(() => {
+    if (
+      !isTableInitialized.current ||
+      !treasuryFowardsTenorsChanges ||
+      !getAllTenorsRecords
+    )
+      return;
+  
+    try {
+      const { newIsForwardtenorList = [], removedtenorList = [] } =
+        treasuryFowardsTenorsChanges;
+  
+      // Build lookup sets from the MQTT payload directly
+      const removedSet = new Set(removedtenorList.map((t) => t.tenorID));
+      const addedSet = new Set(newIsForwardtenorList.map((t) => t.tenorID));
+  
+      // No actual changes — bail early
+      if (!removedSet.size && !addedSet.size) {
+        dispatch(setTreasuryFowardsTenorsChanges(null));
+        return;
+      }
+  
+      const referenceRow = dataSourceRef.current[0] ?? null;
+  
+      // ── REMOVALS ──────────────────────────────────────────
+      let updatedRows = dataSourceRef.current.filter(
+        (row) => !removedSet.has(row.tenorID)
+      );
+  
+      const existingIDs = new Set(updatedRows.map((r) => r.tenorID));
+  
+      // ── ADDITIONS ─────────────────────────────────────────
+      // newIsForwardtenorList contains tenors now applicable
+      // cross-reference against allTenors to get full tenor metadata
+      newIsForwardtenorList.forEach((addedTenor) => {
+        if (existingIDs.has(addedTenor.tenorID)) return; // already present
+  
+        // Get full tenor details (tenorName, tenorDays etc.) from allTenors
+        const fullTenor =
+          getAllTenorsRecords.tenors.find(
+            (t) => t.tenorID === addedTenor.tenorID
+          ) ?? addedTenor; // fallback to payload if not found
+  
+        // Inherit rates if this tenor existed before removal
+        const previousRow =
+          dataSourceRef.current.find((r) => r.tenorID === addedTenor.tenorID) ??
+          null;
+  
+        const newRow = buildNewTenorRow(fullTenor, previousRow, referenceRow);
+        updatedRows.push(newRow);
+      });
+  
+      updatedRows.sort((a, b) => a.tenorDays - b.tenorDays);
+  
+      dataSourceRef.current = updatedRows;
+      setDataSource(updatedRows);
+  
+      dispatch(setTreasuryFowardsTenorsChanges(null));
+    } catch (error) {
+      console.error("Tenor sync error:", error);
+    }
+  }, [treasuryFowardsTenorsChanges, getAllTenorsRecords]);
+
+  // ---------------- THROTTLED MQTT RATE UPDATE ----------------
+  // Uses a ref-stored throttle so it's never recreated and always
+  // reads the latest dataSourceRef.current snapshot.
   const updateForwardRatesRef = useRef(
     throttle((treasuryForwardRates) => {
       const { forwardRates = [] } = treasuryForwardRates;
@@ -191,18 +224,21 @@ const BankForwards = () => {
         const updatedRow = { ...row };
 
         forwardRates.forEach((d) => {
-          Object.keys(row).forEach((key) => {
-            if (
-              key.startsWith("InstrumentID_") &&
-              row[key] === d.instrumentID &&
-              row.tenorID === d.tenorID
-            ) {
-              const currency = key.split("_")[1];
+          if (String(row.tenorID) !== String(d.tenorID)) return;
 
-              updatedRow[`bid_${currency}`] = d.bidWithSpread;
-              updatedRow[`ask_${currency}`] = d.askWithSpread;
-            }
-          });
+          const instrumentKey = Object.keys(row).find(
+            (key) =>
+              key.startsWith("InstrumentID_") &&
+              String(row[key]) === String(d.instrumentID)
+          );
+
+          if (!instrumentKey) return;
+
+          // "InstrumentID_USD" → "USD", "InstrumentID_CNY" → "CNY"
+          const currency = instrumentKey.replace("InstrumentID_", "");
+
+          updatedRow[`bid_${currency}`] = d.bidWithSpread;
+          updatedRow[`ask_${currency}`] = d.askWithSpread;
         });
 
         return updatedRow;
@@ -210,58 +246,58 @@ const BankForwards = () => {
 
       dataSourceRef.current = updated;
       setDataSource(updated);
-    }, 20)
+    }, 100) // 100ms — safe default for high-frequency MQTT feeds
   );
 
-  /**
-   * Listen to MQTT forward rate updates
-   */
+  // Fire throttled update on new rates
   useEffect(() => {
     if (TreasuryForwardRates) {
       updateForwardRatesRef.current(TreasuryForwardRates);
     }
   }, [TreasuryForwardRates]);
 
-  /**
-   * MARKET CLOSED HANDLER
-   *
-   * Reset all bid/ask values to zero
-   */
+  // Cancel throttle on unmount only
   useEffect(() => {
-    if (marketStatus === false) {
-      const updated = dataSourceRef.current.map((row) => {
-        const updatedRow = { ...row };
+    const throttledFn = updateForwardRatesRef.current;
+    return () => throttledFn.cancel();
+  }, []);
 
-        Object.keys(updatedRow).forEach((key) => {
-          if (key.startsWith("bid_") || key.startsWith("ask_")) {
-            updatedRow[key] = 0;
-          }
-        });
+  // ---------------- MARKET CLOSED / CLEAR RATES ----------------
+  // Uses strict === false to avoid firing on undefined (initial render)
+  useEffect(() => {
+    if (marketStatus !== false) return;
 
-        return updatedRow;
+    const cleared = dataSourceRef.current.map((row) => {
+      const updatedRow = { ...row };
+      Object.keys(updatedRow).forEach((key) => {
+        if (key.startsWith("bid_") || key.startsWith("ask_")) {
+          updatedRow[key] = EMPTY_RATE_VALUE; // consistent with new-row convention
+        }
       });
+      return updatedRow;
+    });
 
-      dataSourceRef.current = updated;
-      setDataSource(updated);
-    }
+    dataSourceRef.current = cleared;
+    setDataSource(cleared);
   }, [marketStatus]);
 
+  // ---------------- RENDER ----------------
   return (
     <>
-      <Row className='my-3'>
+      <Row className="my-3">
         <Col sm={12} md={12} lg={12}>
-          <div className='flex-fill fs-4 fw-bold color-black mb-1 ff-roboto'>
+          <div className="flex-fill fs-4 fw-bold color-black mb-1 ff-roboto">
             Bank Forwards
           </div>
 
           <GlobalTable
-            columns={columnsData}
+            columns={columnsDataState}
             dataSource={dataSource}
-            prefixCls={"Treasury_Forwards"}
+            prefixCls="Treasury_Forwards"
             bordered
             pagination={false}
-            rowClassName={"striped-design"}
-            rowHoverBg={"#000"}
+            rowClassName="striped-design"
+            rowHoverBg="#000"
           />
         </Col>
       </Row>

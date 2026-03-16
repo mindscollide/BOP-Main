@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import GlobalTable from "../../common/table/GlobalTable";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import CustomButton from "@/components/common/globalButton/button";
 import { Col, Row } from "react-bootstrap";
 import CorporateBookaForwardModal from "./CorporateBookaForwardModal/CorporateBookaForwardModal";
@@ -9,17 +8,27 @@ import { buildForwardsTable } from "@/components/utils/generateColumnsData";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import { throttle } from "lodash";
 import { useBidOffer } from "@/context/BidOfferContext";
+import { useModal } from "@/context/ModalContext";
+
+// ---------------- CONSTANTS ----------------
+const FORWARDS_TABLE_TYPE = 3;
+const EMPTY_RATE_VALUE = "-"; // single convention for "no rate"
 
 const BranchForwardsTable = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { bidOfferStatus } = useBidOffer();
+  const { allForwardApplicableTenors } = useModal();
 
   // ---------------- TABLE STATE ----------------
   const [dataSource, setDataSource] = useState([]);
-  const dataSourceRef = useRef([]); // snapshot for MQTT updates
-  const [columnsData, setColumnsData] = useState([]);
-  const [rfqButtonState, setRFqButtonState] = useState(null);
+  const dataSourceRef = useRef([]);
+
+  console.log(dataSource, "dataSource in branch forwards table");
+
+  // columnsData never changes after init — use a ref to avoid re-triggering effects
+  const columnsDataRef = useRef([]);
+  const [columnsDataState, setColumnsDataState] = useState([]);
+
+  const [rfqButtonState, setRfqButtonState] = useState(null);
 
   // ---------------- MODAL STATE ----------------
   const [bookaForwardModalCall, setBookaForwardModalCall] = useState(false);
@@ -37,9 +46,6 @@ const BranchForwardsTable = () => {
   const getAllTenorsRecords = useSelector(
     (state) => state.dealerReducer.getAllTenors
   );
-  const treasuryFowardsTenorsChanges = useSelector(
-    (state) => state.RealtimeActionsSlice.treasuryFowardsTenorsChanges
-  );
   const GetForwardRatesForCounterPartyData = useSelector(
     (state) => state.WatchListReducer.GetForwardRatesForCounterParty
   );
@@ -55,50 +61,140 @@ const BranchForwardsTable = () => {
 
   // ---------------- RFQ BUTTON STATE ----------------
   useEffect(() => {
-    if (isTradeRights !== null) setRFqButtonState(JSON.parse(isTradeRights));
+    if (isTradeRights !== null) setRfqButtonState(JSON.parse(isTradeRights));
   }, [isTradeRights]);
 
   // ---------------- INITIAL TABLE BUILD ----------------
+  // Runs once when instruments + tenors are ready.
+  // Does NOT include allForwardApplicableTenors — tenor sync is handled
+  // by its own dedicated effect below.
   useEffect(() => {
     if (
-      getAllInstrumentsForCounterPartiesData &&
-      getAllTenorsRecords &&
-      !isTableInitialized.current
-    ) {
-      console.log;
-      try {
-        const { forwardApplicableInstruments } =
-          getAllInstrumentsForCounterPartiesData;
-        const { forwardRates = [] } = GetForwardRatesForCounterPartyData ?? {};
-        const getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
-        const getAllInstrument = { instruments: forwardApplicableInstruments };
+      isTableInitialized.current ||
+      !getAllInstrumentsForCounterPartiesData ||
+      !getAllTenorsRecords
+    )
+      return;
 
-        const { rowData, columnsData } = buildForwardsTable(
-          3,
-          forwardRates,
-          getAllTenorsData,
-          getAllInstrument,
-          IndexCell,
-          null,
-          bidOfferStatus
-        );
+    try {
+      const { forwardApplicableInstruments } =
+        getAllInstrumentsForCounterPartiesData;
 
-        if (rowData.length > 0) {
-          setDataSource(rowData);
-          dataSourceRef.current = rowData; // snapshot
-          setColumnsData(columnsData);
-          isTableInitialized.current = true;
-        }
-      } catch (error) {
-        console.error("Error building forwards table:", error);
+      const { forwardRates = [] } = GetForwardRatesForCounterPartyData ?? {};
+
+      const getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
+      const getAllInstrument = { instruments: forwardApplicableInstruments };
+
+      const { rowData, columnsData } = buildForwardsTable(
+        FORWARDS_TABLE_TYPE,
+        forwardRates,
+        getAllTenorsData,
+        getAllInstrument,
+        IndexCell,
+        null,
+        bidOfferStatus
+      );
+
+      // Mark as initialized regardless of rowData length so that
+      // the tenor-sync effect can run and manage rows independently.
+      columnsDataRef.current = columnsData;
+      setColumnsDataState(columnsData);
+      isTableInitialized.current = true;
+
+      if (rowData.length) {
+        dataSourceRef.current = rowData;
+        setDataSource(rowData);
       }
+    } catch (error) {
+      console.error("Error building forwards table:", error);
     }
   }, [
     getAllInstrumentsForCounterPartiesData,
-    getAllTenorsRecords,
     GetForwardRatesForCounterPartyData,
     bidOfferStatus,
+    // NOTE: getAllTenorsRecords intentionally omitted — it is stable after
+    // initial load and re-running would reset the table unexpectedly.
   ]);
+
+  // ---------------- TENOR SYNC ----------------
+  // Adds / removes rows whenever the set of active tenors changes.
+  // Runs only after the table has been initialized.
+  useEffect(() => {
+    if (
+      !isTableInitialized.current ||
+      !allForwardApplicableTenors ||
+      !columnsDataRef.current.length
+    )
+      return;
+
+    const activeTenors = allForwardApplicableTenors.tenors.filter(
+      (t) => t.isForwardingApplicable
+    );
+
+    const activeIDs = new Set(activeTenors.map((t) => t.tenorID));
+
+    // ✅ filter first
+    const updatedRows = dataSourceRef.current.filter((row) =>
+      activeIDs.has(row.tenorID)
+    );
+
+    // ✅ build existingIDs from POST-filter rows, not pre-filter
+    const existingIDs = new Set(updatedRows.map((r) => r.tenorID));
+
+    const hasRemovals = dataSourceRef.current.length !== updatedRows.length;
+    const hasAdditions = activeTenors.some((t) => !existingIDs.has(t.tenorID));
+
+    if (!hasRemovals && !hasAdditions) return;
+
+    activeTenors.forEach((tenor) => {
+      if (existingIDs.has(tenor.tenorID)) return;
+
+      const previousRow = dataSourceRef.current.find(
+        (r) => r.tenorID === tenor.tenorID
+      );
+
+      // ✅ any existing row has the same InstrumentID_ and InstrumentName_ keys
+      const referenceRow = previousRow ?? dataSourceRef.current[0];
+
+      // Extract only InstrumentID_ and InstrumentName_ from reference row
+      const instrumentMeta = Object.fromEntries(
+        Object.entries(referenceRow ?? {}).filter(
+          ([key]) =>
+            key.startsWith("InstrumentID_") || key.startsWith("InstrumentName_")
+        )
+      );
+
+      const newRow = {
+        tenorID: tenor.tenorID,
+        tenorName: tenor.tenorName,
+        tenorDays: tenor.tenorDays,
+        ...instrumentMeta, // ✅ InstrumentID_USD: 21, InstrumentName_USD: "USD" ...
+
+        // bid/ask: inherit if re-added, else empty
+        ...Object.fromEntries(
+          Object.entries(referenceRow ?? {})
+            .filter(([key]) => key.startsWith("bid_") || key.startsWith("ask_"))
+            .map(([key]) => [
+              key,
+              previousRow?.[key] !== undefined &&
+              previousRow?.[key] !== EMPTY_RATE_VALUE
+                ? previousRow[key]
+                : EMPTY_RATE_VALUE,
+            ])
+        ),
+      };
+
+      updatedRows.push(newRow);
+    });
+
+    updatedRows.sort((a, b) => a.tenorDays - b.tenorDays);
+
+    dataSourceRef.current = updatedRows;
+    setDataSource(updatedRows);
+  }, [allForwardApplicableTenors]);
+  // NOTE: columnsDataRef.current is a ref — intentionally not in deps.
+  // columnsDataState is only here to keep the rendered columns in sync;
+  // the effect reads from the ref to avoid stale closure issues.
 
   // ---------------- THROTTLED MQTT RATE UPDATE ----------------
   const throttledForwardUpdate = useMemo(
@@ -110,41 +206,54 @@ const BranchForwardsTable = () => {
           const updatedRow = { ...row };
 
           forwardsInstrumentData.forEach((d) => {
-            Object.keys(row).forEach((key) => {
-              if (
+            if (String(row.tenorID) !== String(d.tenorID)) return;
+
+            // Find the matching InstrumentID_XXX key for this MQTT payload
+            // e.g. InstrumentID_USD = 21, d.instrumentID = 21 → currency = "USD"
+            const instrumentKey = Object.keys(row).find(
+              (key) =>
                 key.startsWith("InstrumentID_") &&
-                row[key] === d.instrumentID &&
-                row.tenorID === d.tenorID
-              ) {
-                const currency = key.split("_")[1];
-                updatedRow[`bid_${currency}`] = d.bidWithSpread;
-                updatedRow[`ask_${currency}`] = d.askWithSpread;
-              }
-            });
+                String(row[key]) === String(d.instrumentID)
+            );
+
+            if (!instrumentKey) return;
+
+            // "InstrumentID_USD" → "USD"
+            // "InstrumentID_CNY" → "CNY"  ✅ works for all your currencies
+            const currency = instrumentKey.replace("InstrumentID_", "");
+
+            updatedRow[`bid_${currency}`] = d.bidWithSpread;
+            updatedRow[`ask_${currency}`] = d.askWithSpread;
           });
 
           return updatedRow;
         });
 
-        dataSourceRef.current = updated; // update snapshot
-        setDataSource(updated); // update UI
-      }, 20),
+        dataSourceRef.current = updated;
+        setDataSource(updated);
+      }, 100),
     []
   );
-
+  // Fire throttled update on new rates
   useEffect(() => {
-    if (CounterPartyForwardRates)
+    if (CounterPartyForwardRates) {
       throttledForwardUpdate(CounterPartyForwardRates);
-    return () => throttledForwardUpdate.cancel();
+    }
   }, [CounterPartyForwardRates, throttledForwardUpdate]);
+
+  // Cancel throttle only on unmount — NOT on every re-run
+  useEffect(() => {
+    return () => throttledForwardUpdate.cancel();
+  }, [throttledForwardUpdate]);
 
   // ---------------- MARKET CLOSED / CLEAR RATES ----------------
   const resetRates = () => {
     const cleared = dataSourceRef.current.map((row) => {
       const updatedRow = { ...row };
       Object.keys(updatedRow).forEach((key) => {
-        if (key.startsWith("bid_") || key.startsWith("ask_"))
-          updatedRow[key] = 0;
+        if (key.startsWith("bid_") || key.startsWith("ask_")) {
+          updatedRow[key] = EMPTY_RATE_VALUE; // consistent with new-row convention
+        }
       });
       return updatedRow;
     });
@@ -165,14 +274,14 @@ const BranchForwardsTable = () => {
       <Row>
         <Col lg={12}>
           <GlobalTable
-            columns={columnsData}
+            columns={columnsDataState}
             dataSource={dataSource}
             prefixCls='branch_forwardsTable'
             pagination={false}
             bordered
             rowKey='tenorID'
             scroll={{ x: "max-content" }}
-            rowClassName={(record, index) =>
+            rowClassName={(_, index) =>
               index % 2 === 0
                 ? "branch_forwardsTable-odd"
                 : "branch_forwardsTable-even"

@@ -55,10 +55,12 @@ const MainTreasury = () => {
       dispatch(getAllTenorsAction({ navigate }));
       dispatch(GetDiscountingRatesForTreasuryApi({ navigate }));
     });
+    return () => {
+      localStorage.removeItem("activeTreasuryTab")
+    }
   }, []);
 
   const handleTabChange = (tabTitle) => {
-    console.log("Selected Tab:", tabTitle);
 
     dispatch(setActiveTab(tabTitle)); // immediate UI update
     localStorage.setItem("activeTreasuryTab", tabTitle); // persist after reload
@@ -67,42 +69,39 @@ const MainTreasury = () => {
   const tabsData = [
     {
       title: "Live Rates",
-      content:
-        activeTab === "Live Rates" ? (
-          <div className="position-relative">
-            <Suspense fallback={<SectionLoader />}>
-              <LiveRates />
-            </Suspense>
-          </div>
-        ) : null,
+      content: (
+        <div className='position-relative'>
+          <Suspense fallback={<SectionLoader />}>
+            <LiveRates />
+          </Suspense>
+        </div>
+      ),
     },
     {
       title: "Forwards",
-      content:
-        activeTab === "Forwards" ? (
-          <div className="position-relative">
-            <Suspense fallback={<SectionLoader />}>
-              <Forwards />
-            </Suspense>
-          </div>
-        ) : null,
+      content: (
+        <div className='position-relative'>
+          <Suspense fallback={<SectionLoader />}>
+            <Forwards />
+          </Suspense>
+        </div>
+      ),
     },
     {
       title: "Discounting",
-      content:
-        activeTab === "Discounting" ? (
-          <div className="position-relative">
-            <Suspense fallback={<SectionLoader />}>
-              <Discounting />
-            </Suspense>
-          </div>
-        ) : null,
+      content: (
+        <div className='position-relative'>
+          <Suspense fallback={<SectionLoader />}>
+            <Discounting />
+          </Suspense>
+        </div>
+      ),
     },
   ];
 
   return (
     <GlobalTabs
-      tabClass="mb-4"
+      tabClass='mb-4'
       activeKey={activeTab}
       onTabChange={handleTabChange}
       tabs={tabsData}

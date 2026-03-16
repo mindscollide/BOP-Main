@@ -206,7 +206,7 @@ export const buildForwardsTable = (
       const key = `${entry.instrumentID}-${entry.tenorID}`;
       rateMap[key] = {
         bid: entry.bid ?? 0,
-        ask: value === 3 ? entry.offer : entry.ask ?? 0,
+        ask: value === 3 ? entry.offer : entry.ask ?? "-",
       };
     });
 
@@ -221,11 +221,10 @@ export const buildForwardsTable = (
       applicableInstruments.forEach((instrument) => {
         const key = `${instrument.instrumentID}-${tenor.tenorID}`;
 
-        console.log(rateMap, key, "ratemapkey");
         const rates = rateMap[key];
 
-        row[`bid_${instrument.instrumentName}`] = rates ? rates?.bid : 0;
-        row[`ask_${instrument.instrumentName}`] = rates ? rates.ask : 0;
+        row[`bid_${instrument.instrumentName}`] = rates ? rates?.bid : "-";
+        row[`ask_${instrument.instrumentName}`] = rates ? rates.ask : "-";
         row[`InstrumentID_${instrument.instrumentName}`] =
           instrument.instrumentID;
         row[`InstrumentName_${instrument.instrumentName}`] =
