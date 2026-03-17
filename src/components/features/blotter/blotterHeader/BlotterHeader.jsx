@@ -150,7 +150,6 @@ const BlotterHeader = () => {
     (state) => state.BlotterSlicer.activeTabBlotter
   );
 
-  console.log({ activeTransactionBlotterTab }, "activeTransactionBlotterTab");
 
   useEffect(() => {
     const savedTab =
@@ -331,7 +330,6 @@ const BlotterHeader = () => {
               updatedData = [transaction, ...updatedData];
               setTreasuryOutStandingDealRecords((prev) => prev + 1);
               setTreasuryOutStandingDealsRow((prev) => prev + 1);
-              console.log(updatedData, "updatedDataupdatedDataupdatedData")
             }
 
             dispatch(BlotterTransactionAdded(null));

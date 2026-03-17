@@ -21,7 +21,6 @@ import {
 
 const MailModal = ({ openMailModal, setOpenMailModal }) => {
   const userRole = localStorage.getItem("roleId");
-  console.log(userRole, "useros");
   const dispatch = useDispatch();
   const { showMessage } = useNotification();
   const navigate = useNavigate();
@@ -33,7 +32,6 @@ const MailModal = ({ openMailModal, setOpenMailModal }) => {
   const [message, setMessage] = useState("");
 
   const GetUsersEmail = useSelector((state) => state.authReducer.GetUsersEmail);
-  console.log({ isPDF, isExcel }, "GetUsersEmailGetUsersEmail");
   useEffect(() => {
     dispatch(GetUsersEmailApi({ navigate }));
   }, []);
@@ -61,7 +59,6 @@ const MailModal = ({ openMailModal, setOpenMailModal }) => {
           value: user.email, // using the email as value
           label: user.email, // optional, if using in dropdowns
         }));
-        console.log(emailList, "email list is");
         setEmailOptions(emailList);
       } catch (error) {
         console.error(error);
@@ -73,9 +70,7 @@ const MailModal = ({ openMailModal, setOpenMailModal }) => {
     setOpenMailModal(false);
   };
 
-  console.log(emailOptions, "emailListemailList");
   const handleSelectUsers = (values) => {
-    console.log(values, "selectedUser");
     setSelectedEmails(values);
   };
 
@@ -85,7 +80,6 @@ const MailModal = ({ openMailModal, setOpenMailModal }) => {
   };
 
   const handleRemoveEmail = (value) => {
-    console.log({ value }, "removedEmail");
     setSendEmails((prev) =>
       prev.filter((data2, index) => data2.userID !== value)
     );
@@ -109,7 +103,6 @@ const MailModal = ({ openMailModal, setOpenMailModal }) => {
   };
 
   const handleSendEmail = () => {
-    console.log("handleSendEmail click", userRole, sendEmails);
     if (Number(userRole) === 9) {
       //send email to Branch
       try {
@@ -119,7 +112,6 @@ const MailModal = ({ openMailModal, setOpenMailModal }) => {
           IsExcelAttached: isExcel,
           MessageBody: message,
         };
-        // console.log(Data, "DataDataData");
         //send email to treasury
         dispatch(
           EmailBlotterTransactionDetailsForBranchAPI({
@@ -141,7 +133,6 @@ const MailModal = ({ openMailModal, setOpenMailModal }) => {
           IsExcelAttached: isExcel,
           MessageBody: message,
         };
-        // console.log(Data, "DataDataData");
 
         dispatch(
           EmailBlotterTransactionDetailsForTreasuryAPI({
@@ -163,7 +154,6 @@ const MailModal = ({ openMailModal, setOpenMailModal }) => {
           IsExcelAttached: isExcel,
           MessageBody: message,
         };
-        // console.log(Data, "DataDataData");
         //send email to treasury
         dispatch(
           EmailBlotterTransactionDetailsForCorporateAPI({

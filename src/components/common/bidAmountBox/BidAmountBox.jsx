@@ -14,8 +14,6 @@ const BidAmountBox = React.memo(({
   const integerPart = divideTheValue[0] ?? "0";
   const decimalPart = divideTheValue[1]?.substring(0, 5) || valueAfterDot;
 
-  // Debug (optional – comment out in production)
-  // console.log("Rendering BidAmountBox:", integerPart, decimalPart);
 
   return (
     <div className={`${styles[applyClass]} roboto-13`} onClick={onClick}>

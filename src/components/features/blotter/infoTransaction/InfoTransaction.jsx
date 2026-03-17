@@ -66,7 +66,6 @@ const InfoTransaction = () => {
     dispatch(clearGetForwardTransactionDetails());
   };
 
-  console.log("Data: ", { InfoRecord: InfoRecord });
   return (
     <GlobalModal
       centered={true}

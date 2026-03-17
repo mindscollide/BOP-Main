@@ -194,10 +194,8 @@ export const buildForwardsTable = (
         : instruments;
 
     const applicableTenors =
-      value === 1
-        ? tenors?.filter((tenor) => tenor.isForwardingApplicable) || []
-        : value === 3
-        ? tenors?.filter((tenor) => tenor.isForwardingApplicable) || []
+      value === 1 || value === 3
+        ?  tenors?.filter((tenor) => tenor.isForwardingApplicable) || []
         : tenors;
 
     // Step 1: Create rateMap with bid/ask

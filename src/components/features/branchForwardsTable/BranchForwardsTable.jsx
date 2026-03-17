@@ -116,6 +116,56 @@ const BranchForwardsTable = () => {
     // initial load and re-running would reset the table unexpectedly.
   ]);
 
+    // ---------------- THROTTLED MQTT RATE UPDATE ----------------
+    const throttledForwardUpdate = useMemo(
+      () =>
+        throttle((forwardRatesUpdate) => {
+          const { forwardsInstrumentData } = forwardRatesUpdate;
+  
+          const updated = dataSourceRef.current.map((row) => {
+            const updatedRow = { ...row };
+  
+            forwardsInstrumentData.forEach((d) => {
+              if (String(row.tenorID) !== String(d.tenorID)) return;
+  
+              // Find the matching InstrumentID_XXX key for this MQTT payload
+              // e.g. InstrumentID_USD = 21, d.instrumentID = 21 → currency = "USD"
+              const instrumentKey = Object.keys(row).find(
+                (key) =>
+                  key.startsWith("InstrumentID_") &&
+                  String(row[key]) === String(d.instrumentID)
+              );
+  
+              if (!instrumentKey) return;
+  
+              // "InstrumentID_USD" → "USD"
+              // "InstrumentID_CNY" → "CNY"  ✅ works for all your currencies
+              const currency = instrumentKey.replace("InstrumentID_", "");
+  
+              updatedRow[`bid_${currency}`] = d.bidWithSpread;
+              updatedRow[`ask_${currency}`] = d.askWithSpread;
+            });
+  
+            return updatedRow;
+          });
+  
+          dataSourceRef.current = updated;
+          setDataSource(updated);
+        }, 5),
+      []
+    );
+    // Fire throttled update on new rates
+    useEffect(() => {
+      if (CounterPartyForwardRates) {
+        throttledForwardUpdate(CounterPartyForwardRates);
+      }
+    }, [CounterPartyForwardRates, throttledForwardUpdate]);
+  
+    // Cancel throttle only on unmount — NOT on every re-run
+    useEffect(() => {
+      return () => throttledForwardUpdate.cancel();
+    }, [throttledForwardUpdate]);
+
   // ---------------- TENOR SYNC ----------------
   // Adds / removes rows whenever the set of active tenors changes.
   // Runs only after the table has been initialized.
@@ -196,55 +246,7 @@ const BranchForwardsTable = () => {
   // columnsDataState is only here to keep the rendered columns in sync;
   // the effect reads from the ref to avoid stale closure issues.
 
-  // ---------------- THROTTLED MQTT RATE UPDATE ----------------
-  const throttledForwardUpdate = useMemo(
-    () =>
-      throttle((forwardRatesUpdate) => {
-        const { forwardsInstrumentData } = forwardRatesUpdate;
 
-        const updated = dataSourceRef.current.map((row) => {
-          const updatedRow = { ...row };
-
-          forwardsInstrumentData.forEach((d) => {
-            if (String(row.tenorID) !== String(d.tenorID)) return;
-
-            // Find the matching InstrumentID_XXX key for this MQTT payload
-            // e.g. InstrumentID_USD = 21, d.instrumentID = 21 → currency = "USD"
-            const instrumentKey = Object.keys(row).find(
-              (key) =>
-                key.startsWith("InstrumentID_") &&
-                String(row[key]) === String(d.instrumentID)
-            );
-
-            if (!instrumentKey) return;
-
-            // "InstrumentID_USD" → "USD"
-            // "InstrumentID_CNY" → "CNY"  ✅ works for all your currencies
-            const currency = instrumentKey.replace("InstrumentID_", "");
-
-            updatedRow[`bid_${currency}`] = d.bidWithSpread;
-            updatedRow[`ask_${currency}`] = d.askWithSpread;
-          });
-
-          return updatedRow;
-        });
-
-        dataSourceRef.current = updated;
-        setDataSource(updated);
-      }, 100),
-    []
-  );
-  // Fire throttled update on new rates
-  useEffect(() => {
-    if (CounterPartyForwardRates) {
-      throttledForwardUpdate(CounterPartyForwardRates);
-    }
-  }, [CounterPartyForwardRates, throttledForwardUpdate]);
-
-  // Cancel throttle only on unmount — NOT on every re-run
-  useEffect(() => {
-    return () => throttledForwardUpdate.cancel();
-  }, [throttledForwardUpdate]);
 
   // ---------------- MARKET CLOSED / CLEAR RATES ----------------
   const resetRates = () => {
