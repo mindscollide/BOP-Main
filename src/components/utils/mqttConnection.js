@@ -10,145 +10,166 @@ export const useMqttClient = ({
   const [isConnected, setIsConnected] = useState(false);
   const [subscribedTopics, setSubscribedTopics] = useState([]);
   const clientRef = useRef(null);
-  const randomString = secureRandomString();
+
+  const randomString = useRef(secureRandomString()); // ✅ stable clientId
+
   const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
   const isCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
 
-  const subscribeToTopics = useCallback(
-    (topics = []) => {
-      if (!clientRef.current || !clientRef.current.isConnected()) return;
+  // ✅ Subscribe
+  const subscribeToTopics = useCallback((topics = []) => {
+    if (!clientRef.current || !clientRef.current.isConnected()) return;
 
-      topics.forEach((topic) => {
-        if (!subscribedTopics.includes(topic)) {
-          clientRef.current.subscribe(topic, {
-            qos: 0,
-            onSuccess: () => {
-              console.log(`Subscribed to topic: ${topic}`);
-              setSubscribedTopics((prev) =>
-                Array.from(new Set([...prev, topic]))
-              );
-            },
-            onFailure: (err) => {
-              console.error(`Failed to subscribe: ${topic}`, err?.errorMessage);
-            },
-          });
-        }
+    topics.forEach((topic) => {
+      clientRef.current.subscribe(topic, {
+        qos: 0,
+        onSuccess: () => {
+          console.log(`Subscribed: ${topic}`);
+          setSubscribedTopics((prev) =>
+            prev.includes(topic) ? prev : [...prev, topic]
+          );
+        },
+        onFailure: (err) => {
+          console.error(`Subscribe failed: ${topic}`, err?.errorMessage);
+        },
       });
-    },
-    [subscribedTopics]
-  );
+    });
+  }, []);
 
-  const unsubscribeFromTopics = useCallback(
-    (topics = []) => {
-      if (!clientRef.current || !isConnected) return;
+  // ✅ Unsubscribe
+  const unsubscribeFromTopics = useCallback((topics = []) => {
+    if (!clientRef.current || !clientRef.current.isConnected()) return;
 
-      topics.forEach((topic) => {
-        clientRef.current.unsubscribe(topic, {
-          onSuccess: () => {
-            console.log(`Unsubscribed from topic: ${topic}`);
-            setSubscribedTopics((prev) => prev.filter((t) => t !== topic));
-          },
-          onFailure: (err) => {
-            console.error(`Failed to unsubscribe: ${topic}`, err?.errorMessage);
-          },
-        });
+    topics.forEach((topic) => {
+      clientRef.current.unsubscribe(topic, {
+        onSuccess: () => {
+          console.log(`Unsubscribed: ${topic}`);
+          setSubscribedTopics((prev) => prev.filter((t) => t !== topic));
+        },
+        onFailure: (err) => {
+          console.error(`Unsubscribe failed: ${topic}`, err?.errorMessage);
+        },
       });
-    },
-    [isConnected]
-  );
+    });
+  }, []);
 
+  // ✅ Message handler (optimized)
   const onMessageArrived = useCallback(
     (message) => {
       try {
         const parsed = JSON.parse(message.payloadString);
-        // console.log("MQTT message arrived:", parsed);
-        if (onMessageArrivedCallback) onMessageArrivedCallback(parsed);
+        if (onMessageArrivedCallback) {
+          onMessageArrivedCallback(parsed);
+        }
       } catch (err) {
-        console.error("Failed to parse message:", err);
+        console.error("Message parse error:", err);
       }
     },
     [onMessageArrivedCallback]
   );
 
+  // ✅ Connection lost
   const onConnectionLost = useCallback(
     (resObj) => {
-      console.warn("MQTT connection lost:", resObj);
+      console.warn("MQTT connection lost:", resObj?.errorMessage);
       setIsConnected(false);
-      setSubscribedTopics([]);
-      if (onConnectionLostCallback) onConnectionLostCallback(resObj);
+
+      if (onConnectionLostCallback) {
+        onConnectionLostCallback(resObj);
+      }
     },
     [onConnectionLostCallback]
   );
 
+  // ✅ Main connect function
   const connectToMqtt = useCallback(
     ({ subscribeID, userID }) => {
-      if (!subscribeID || clientRef.current?.isConnected()) {
-        console.warn(
-          "Already connected or missing subscribeID",
-          subscribeID,
-          clientRef.current.isConnected()
-        );
+      if (!subscribeID) return;
+
+      // 🔥 prevent duplicate clients
+      if (clientRef.current?.isConnected()) {
+        console.warn("Already connected");
         return;
       }
 
-      const newClientID = `${randomString}`;
-      clientRef.current = new Paho.Client(
-        import.meta.env.VITE_MQTT_HOST,
-        Number(import.meta.env.VITE_MQTT_PORT),
-        newClientID
-      );
+      // 🔥 reuse existing client if exists
+      if (!clientRef.current) {
+        clientRef.current = new Paho.Client(
+          import.meta.env.VITE_MQTT_HOST,
+          Number(import.meta.env.VITE_MQTT_PORT),
+          randomString.current
+        );
 
-      clientRef.current.onConnectionLost = onConnectionLost;
-      clientRef.current.onMessageArrived = onMessageArrived;
+        clientRef.current.onConnectionLost = onConnectionLost;
+        clientRef.current.onMessageArrived = onMessageArrived;
+      }
 
+      // ✅ reconnect + subscribe
       clientRef.current.onConnected = () => {
-        console.log("MQTT connected successfully");
+        console.log("MQTT connected / reconnected");
         setIsConnected(true);
+
         let userData = isBranch
           ? JSON.parse(localStorage.getItem("branch"))
           : JSON.parse(localStorage.getItem("corporate"));
-        let subscribeIDNew = userData?.branchID || userData?.corporateID;
+
+        let subscribeIDNew =
+          userData?.branchID || userData?.corporateID;
 
         let newTopic = isBranch
           ? `BOP_BRANCH_${subscribeIDNew}`
           : `BOP_CORPORATE_${subscribeIDNew}`;
-        if (isCorporate || isBranch) {
-          subscribeToTopics([subscribeID, `BOP_${userID}`, newTopic]);
-        } else {
-          subscribeToTopics([subscribeID, `BOP_${userID}`]);
-        }
+
+        const topics =
+          isCorporate || isBranch
+            ? [subscribeID, `BOP_${userID}`, newTopic]
+            : [subscribeID, `BOP_${userID}`];
+
+        subscribeToTopics(topics);
       };
 
       clientRef.current.connect({
-        onSuccess: () => console.log("MQTT connecting..."),
-        onFailure: (err) => {
-          console.log("Connection failed:", err.errorMessage);
-          setIsConnected(false);
-          setTimeout(() => connectToMqtt({ subscribeID, userID }), 6000);
+        onSuccess: () => {
+          console.log("MQTT initial connect success");
         },
-        keepAliveInterval: 120,
-        reconnect: true,
+
+        onFailure: (err) => {
+          console.error("MQTT connect failed:", err?.errorMessage);
+          setIsConnected(false);
+        },
+
+        keepAliveInterval: 30, // 🔥 FIXED
+        reconnect: true,       // 🔥 auto reconnect
+        cleanSession: false,   // 🔥 session persistence
+        timeout: 10,           // 🔥 important for slow net
+
         userName: import.meta.env.VITE_MQTT_USERNAME,
         password: import.meta.env.VITE_MQTT_PASSWORD,
-        cleanSession: true,
+
         useSSL:
           import.meta.env.VITE_MQTT_PORT === "8883" &&
-          import.meta.env.VITE_MQTT_HOST === "boptrade.tresmark.com"
-            ? true
-            : false,
+          import.meta.env.VITE_MQTT_HOST === "boptrade.tresmark.com",
       });
     },
-    [onMessageArrived, onConnectionLost, randomString, subscribeToTopics]
+    [onMessageArrived, onConnectionLost, subscribeToTopics]
   );
+
+  // ✅ Optional disconnect (very useful)
+  const disconnectMqtt = useCallback(() => {
+    if (clientRef.current?.isConnected()) {
+      clientRef.current.disconnect();
+      setIsConnected(false);
+      setSubscribedTopics([]);
+      console.log("MQTT disconnected");
+    }
+  }, []);
 
   return {
     client: clientRef.current,
     isConnected,
     connectToMqtt,
+    disconnectMqtt, // ✅ added
     subscribeToTopics,
     unsubscribeFromTopics,
-    onMessageArrived,
-    onConnectionLost,
-    setSubscribedTopics,
   };
 };

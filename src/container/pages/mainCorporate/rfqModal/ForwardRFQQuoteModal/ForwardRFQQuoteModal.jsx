@@ -75,6 +75,8 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
     setReadyValue("");
     setSwapValue("");
     setReadyRateValue("");
+    setQuoteDataModal(true);
+
   };
 
   useEffect(() => {
@@ -104,6 +106,8 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
   useEffect(() => {
     if (GetForwardTransactionDetails !== null) {
       try {
+
+        console.log(GetForwardTransactionDetails, "GetForwardTransactionDetails")
         const { rate, ready, swap, tenorDays } =
           GetForwardTransactionDetails.transactionDetailsModel;
         setReadyValue(ready);
@@ -175,12 +179,15 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
       Comment: cancelReasonComment,
     };
     let val = 1;
+    const callFunc = () => {
+      setCancelReasonModal(false);
+      setCancelReasonComment("");
+      setQuoteDataModal(true)
+    }
     //Reject API Call
-    dispatch(RejectTransactionAPI({ navigate, Data, val }));
+    dispatch(RejectTransactionAPI({ navigate, Data, val,callFunc }));
     // Reset Modal State
-    setCancelReasonModal(false);
-    setCancelReasonComment("");
-    setQuoteDataModal(true);
+
     // dispatch(setForwardQuoteModal(false));
   };
   const parseNumber = (val) => {
@@ -212,7 +219,9 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
     }
   };
 
-  return (
+
+
+  return forwardQuoteModalData &&  (
     <GlobalModal
       show={forwardQuoteModal}
       size={"md"}
@@ -483,7 +492,7 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                           applyClass={"AcceptBtnDealBox"}
                           className={"px-4"}
                           onClick={handleAccept}
-                          loading={AcceptTransactionAPILoading}
+                          loading={AcceptTransactionAPILoading || RejectTransactionAPILoading}
                         />
                         <CustomButton
                           icon={<IconElement iconClass={"icon-send fs-5"} />}
@@ -492,7 +501,7 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                           applyClass={"RejectBtnDealBox"}
                           className={"px-4"}
                           onClick={handleReject}
-                          loading={RejectTransactionAPILoading}
+                          loading={RejectTransactionAPILoading || AcceptTransactionAPILoading}
                         />
                       </Col>
                     )}
