@@ -18,6 +18,7 @@ import {
 import { getAllTenorsAction } from "../mainDealer/dealerActions";
 import SectionLoader from "@/components/common/sectionLoader/SectionLoader";
 import { setBlotterLoader } from "@/store/BlotterSlicer/BlotterSlicer";
+import TransactionProvider from "@/context/BlotterTransactionContext";
 
 const shouldIncludeComponents =
   import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
@@ -84,7 +85,9 @@ const MainBranch = () => {
         <Suspense fallback={<SectionLoader />}>
           <SpotBranch />
           <section className='bg-white mt-2 mb-4 p-2'>
-            <BlotterHeader />
+            <TransactionProvider>
+              <BlotterHeader />
+            </TransactionProvider>
           </section>
         </Suspense>
       ),
@@ -95,7 +98,9 @@ const MainBranch = () => {
         <Suspense fallback={<SectionLoader />}>
           <ForwardsForBranch />
           <section className='bg-white p-2'>
-            <BlotterHeader />
+            <TransactionProvider>
+              <BlotterHeader />
+            </TransactionProvider>
           </section>
         </Suspense>
       ),
@@ -106,7 +111,9 @@ const MainBranch = () => {
         <Suspense fallback={<SectionLoader />}>
           <BranchDiscountingTable />
           <section className='bg-white p-2'>
-            <BlotterHeader />
+            <TransactionProvider>
+              <BlotterHeader />
+            </TransactionProvider>
           </section>
         </Suspense>
       ),
