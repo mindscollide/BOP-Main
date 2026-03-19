@@ -104,10 +104,12 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
           GetForwardTransactionDetails.transactionDetailsModel;
         setReadyValue(ready);
         setTenorDays(tenorDays);
-
         setSwapValue(swap.toFixed(4));
         setReadyRateValue(rate);
-      } catch (error) {}
+        dispatch(clearGetForwardTransactionDetails())
+      } catch (error) {
+        console.log(error)
+      }
     }
   }, [GetForwardTransactionDetails]);
 
