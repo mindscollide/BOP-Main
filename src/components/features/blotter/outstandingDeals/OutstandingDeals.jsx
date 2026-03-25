@@ -37,7 +37,7 @@ import {
   setForwardQuoteModal,
   setViewDealModal,
 } from "@/store/modalSlice/modalSlicer";
-import { RFQTImer } from "@/components/utils/Timer";
+import { RFQTimer } from "@/components/utils/Timer";
 import { convertDateTimeIntoLocal, formatPkAmount } from "@/utils/formatters";
 import { getAllChatByTransactionId } from "@/components/features/chatBox/ChatActions";
 import CancelReasonModal from "../cancelReasonModal/cancelReasonModal";
@@ -513,7 +513,7 @@ const OutstandingDeals = () => {
           <span>
             {formatDateTimeToUTCTime(record.tradeDateTime)}{" "}
             {showTimer && (
-              <RFQTImer
+              <RFQTimer
                 key={record.pK_TransactionID + record.rfqTimerDetails?.endTime}
                 rfqId={record.pK_TransactionID}
                 severTime={record.rfqTimerDetails.serverTime} // raw value

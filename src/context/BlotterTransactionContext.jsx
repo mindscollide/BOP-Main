@@ -24,35 +24,28 @@ const isTreasury = import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
 
 const TransactionProvider = ({ children }) => {
   const dispatch = useDispatch();
+
   // Outstanding Deals
-  const [hasBottomReachedOutstanding, setHasBottomReachedOutstanding] =
-    useState(false);
-  const [treasuryOutStandingDeal, setTreasuryOutStandingDeal] = useState([]);
-  const [treasuryOutStandingDealRecords, setTreasuryOutStandingDealRecords] =
-    useState(0);
-  const [treasuryOutStandingDealsRow, setTreasuryOutStandingDealsRow] =
-    useState(0);
+  const [hasBottomReachedOutstanding, setHasBottomReachedOutstanding] = useState(false);
+  const [treasuryOutStandingDeal, setTreasuryOutStandingDeal]         = useState([]);
+  const [treasuryOutStandingDealRecords, setTreasuryOutStandingDealRecords] = useState(0);
+  const [treasuryOutStandingDealsRow, setTreasuryOutStandingDealsRow] = useState(0);
 
   // Treasury TXN Summary
-  const [hasBottomReachedTreasuryTXN, setHasBottomReachedTreasuryTXN] =
-    useState(false);
-  const [treasuryTXNSummary, setTreasuryTXNSummary] = useState([]);
-  const [treasuryTXNSummaryTotalRecords, setTreasuryTXNSummaryTotalRecords] =
-    useState(0);
-  const [treasuryTXNSummarysRow, setTreasuryTXNSummarysRow] = useState(0);
+  const [hasBottomReachedTreasuryTXN, setHasBottomReachedTreasuryTXN] = useState(false);
+  const [treasuryTXNSummary, setTreasuryTXNSummary]                   = useState([]);
+  const [treasuryTXNSummaryTotalRecords, setTreasuryTXNSummaryTotalRecords] = useState(0);
+  const [treasuryTXNSummarysRow, setTreasuryTXNSummarysRow]           = useState(0);
 
-  // This is Treasury Actions which is based on actions performed on Blotter Transaction
+  // ─── Selectors ───────────────────────────────────────────────────────────────
   const blotterTransactionRFQExpiredForTreasury = useSelector(
-    (state) =>
-      state.RealtimeActionsSlice.BlotterTransactionRFQExpiredForTreasury
+    (state) => state.RealtimeActionsSlice.BlotterTransactionRFQExpiredForTreasury
   );
   const blotterTransactionAcceptedForTreasury = useSelector(
     (state) => state.RealtimeActionsSlice.BlotterTransactionAcceptedForTreasury
   );
   const blotterTransactionCancellationRequestDataForTreasury = useSelector(
-    (state) =>
-      state.RealtimeActionsSlice
-        .BlotterTransactionCancellationRequestDataForTreasury
+    (state) => state.RealtimeActionsSlice.BlotterTransactionCancellationRequestDataForTreasury
   );
   const blotterTranscationCancelledForTreasury = useSelector(
     (state) => state.RealtimeActionsSlice.BlotterTranscationCancelledForTreasury
@@ -60,21 +53,15 @@ const TransactionProvider = ({ children }) => {
   const blotterTransactionRejectedForTreasury = useSelector(
     (state) => state.RealtimeActionsSlice.BlotterTransactionRejectedForTreasury
   );
-  // Treasury and CounterParty Data
   const GlobalStateGetBlotterData = useSelector(
     (state) => state.BlotterSlicer.getBlotterApiData
   );
-
-  //Global State For Blotter OutStanding
   const getBlotterOutstandingData = useSelector(
     (state) => state.BlotterSlicer.getBlotterOutstandingData
   );
-  // This is mqtt states related to Treasury Outstanding Deals Tab
-
   const blotterTransactionRFQExpired = useSelector(
     (state) => state.RealtimeActionsSlice.BlotterTransactionRFQExpired
   );
-
   const blotterTransactionAssigned = useSelector(
     (state) => state.RealtimeActionsSlice.BlotterTransactionAssigned
   );
@@ -87,161 +74,144 @@ const TransactionProvider = ({ children }) => {
   const blotterTransactionAccepted = useSelector(
     (state) => state.RealtimeActionsSlice.BlotterTransactionAccepted
   );
-
   const blotterTranscationCancelled = useSelector(
     (state) => state.RealtimeActionsSlice.BlotterTranscationCancelled
   );
-
   const blotterTransactionCancellationRequest = useSelector(
-    (state) =>
-      state.RealtimeActionsSlice.BlotterTransactionCancellationRequestData
+    (state) => state.RealtimeActionsSlice.BlotterTransactionCancellationRequestData
   );
-
   const blotterTransactionRejected = useSelector(
     (state) => state.RealtimeActionsSlice.BlotterTransactionRejected
   );
 
-  // Fixed: Replaced useEffect with useLayoutEffect to prevent state updates during render
+  // ─── TXN Summary — initial load ──────────────────────────────────────────────
   useLayoutEffect(() => {
-    try {
-      if (GlobalStateGetBlotterData !== null) {
-        const { tnxSummary, totalCount } = GlobalStateGetBlotterData;
-        if (tnxSummary.length > 0) {
-          if (isTreasury) {
-            if (hasBottomReachedTreasuryTXN) {
-              setTreasuryTXNSummary((prev) => [...prev, ...tnxSummary]);
-              setTreasuryTXNSummaryTotalRecords(totalCount);
-              setTreasuryTXNSummarysRow((prev) => prev + tnxSummary.length);
-              setHasBottomReachedTreasuryTXN(false);
-            } else {
-              setTreasuryTXNSummary(tnxSummary);
-              setTreasuryTXNSummaryTotalRecords(totalCount);
-              setTreasuryTXNSummarysRow(tnxSummary.length);
-              setHasBottomReachedTreasuryTXN(false);
-            }
-            return;
-          }
-        }
-      } else if (GlobalStateGetBlotterData === null) {
-        if (!hasBottomReachedTreasuryTXN) {
-          setTreasuryTXNSummary([]);
-          setTreasuryTXNSummaryTotalRecords(0);
-          setTreasuryTXNSummarysRow(0);
-          setHasBottomReachedTreasuryTXN(false);
-        }
+    if (GlobalStateGetBlotterData === null) {
+      if (!hasBottomReachedTreasuryTXN) {
+        setTreasuryTXNSummary([]);
+        setTreasuryTXNSummaryTotalRecords(0);
+        setTreasuryTXNSummarysRow(0);
+        setHasBottomReachedTreasuryTXN(false);
       }
-    } catch (error) {
-      console.log(error);
+      return;
     }
+
+    const { tnxSummary, totalCount } = GlobalStateGetBlotterData;
+    if (!isTreasury || !tnxSummary?.length) return;
+
+    if (hasBottomReachedTreasuryTXN) {
+      // ✅ All setState calls at top level — never nested
+      setTreasuryTXNSummary((prev) => [...prev, ...tnxSummary]);
+      setTreasuryTXNSummaryTotalRecords(totalCount);
+      setTreasuryTXNSummarysRow((prev) => prev + tnxSummary.length);
+    } else {
+      setTreasuryTXNSummary(tnxSummary);
+      setTreasuryTXNSummaryTotalRecords(totalCount);
+      setTreasuryTXNSummarysRow(tnxSummary.length);
+    }
+    setHasBottomReachedTreasuryTXN(false);
   }, [GlobalStateGetBlotterData]);
 
-  // Fixed: Replaced useEffect with useLayoutEffect to prevent state updates during render
+  // ─── Outstanding Deals — initial load ────────────────────────────────────────
   useLayoutEffect(() => {
-    try {
-      if (getBlotterOutstandingData !== null) {
-        const { outstandingDeals, totalCount } = getBlotterOutstandingData;
-        if (outstandingDeals.length > 0) {
-          if (isTreasury) {
-            if (hasBottomReachedOutstanding) {
-              setHasBottomReachedOutstanding(false);
-              setTreasuryOutStandingDeal((prev) => [
-                ...prev,
-                ...outstandingDeals,
-              ]);
-              setTreasuryOutStandingDealRecords(totalCount);
-              setTreasuryOutStandingDealsRow(
-                (prev) => prev + outstandingDeals.length
-              );
-              return;
-            } else {
-              setHasBottomReachedOutstanding(false);
-              setTreasuryOutStandingDeal(outstandingDeals);
-              setTreasuryOutStandingDealRecords(totalCount);
-              setTreasuryOutStandingDealsRow(outstandingDeals.length);
-              return;
-            }
-          }
-        }
-      } else if (getBlotterOutstandingData === null) {
-        if (!hasBottomReachedOutstanding) {
-          setHasBottomReachedOutstanding(false);
-          setTreasuryOutStandingDeal([]);
-          setTreasuryOutStandingDealRecords(0);
-          setTreasuryOutStandingDealsRow(0);
-        }
+    if (getBlotterOutstandingData === null) {
+      if (!hasBottomReachedOutstanding) {
+        setTreasuryOutStandingDeal([]);
+        setTreasuryOutStandingDealRecords(0);
+        setTreasuryOutStandingDealsRow(0);
+        setHasBottomReachedOutstanding(false);
       }
-    } catch (error) {
-      console.log(error);
+      return;
     }
+
+    const { outstandingDeals, totalCount } = getBlotterOutstandingData;
+    if (!isTreasury || !outstandingDeals?.length) return;
+
+    if (hasBottomReachedOutstanding) {
+      // ✅ All setState calls at top level — never nested
+      setTreasuryOutStandingDeal((prev) => [...prev, ...outstandingDeals]);
+      setTreasuryOutStandingDealRecords(totalCount);
+      setTreasuryOutStandingDealsRow((prev) => prev + outstandingDeals.length);
+    } else {
+      setTreasuryOutStandingDeal(outstandingDeals);
+      setTreasuryOutStandingDealRecords(totalCount);
+      setTreasuryOutStandingDealsRow(outstandingDeals.length);
+    }
+    setHasBottomReachedOutstanding(false);
   }, [getBlotterOutstandingData]);
 
-  // This useEffect is for Treasury TXN Summary
-  // Fixed: Replaced useEffect with useLayoutEffect to prevent state updates during render
+  // ─── TXN Summary — MQTT updates ──────────────────────────────────────────────
   useLayoutEffect(() => {
-    const handleTransactionUpdate = (transaction) => {
-      if (!transaction) return;
-
-      setTreasuryTXNSummary((prevData) => {
-        const updatedData = [...(prevData || [])];
-        const existingIndex = updatedData.findIndex(
-          (item) => item.pK_TransactionID === transaction.pK_TransactionID
-        );
-
-        if (existingIndex !== -1) {
-          updatedData[existingIndex] = transaction;
-        } else {
-          updatedData.unshift(transaction);
-          setTreasuryTXNSummarysRow((prev) => prev + 1);
-          setTreasuryTXNSummaryTotalRecords((prev) => prev + 1);
-        }
-
-        return updatedData;
-      });
+    // ✅ Pure helper — returns new array only, no setState inside
+    const applyUpdate = (prevData, transaction) => {
+      const updated = [...(prevData || [])];
+      const idx = updated.findIndex(
+        (item) => item.pK_TransactionID === transaction.pK_TransactionID
+      );
+      if (idx !== -1) {
+        updated[idx] = transaction;
+        return { data: updated, countDelta: 0 }; // existing row updated
+      }
+      return { data: [transaction, ...updated], countDelta: 1 }; // new row prepended
     };
 
-    // Handle RFQ Expired
     if (blotterTransactionRFQExpiredForTreasury?.transaction) {
-      handleTransactionUpdate(
+      const { data, countDelta } = applyUpdate(
+        treasuryTXNSummary,
         blotterTransactionRFQExpiredForTreasury.transaction
       );
+      setTreasuryTXNSummary(data);
+      if (countDelta) {
+        setTreasuryTXNSummarysRow((prev) => prev + 1);
+        setTreasuryTXNSummaryTotalRecords((prev) => prev + 1);
+      }
     }
 
-    // Handle Transaction Accepted
     if (blotterTransactionAcceptedForTreasury?.transaction) {
-      handleTransactionUpdate(
+      const { data, countDelta } = applyUpdate(
+        treasuryTXNSummary,
         blotterTransactionAcceptedForTreasury.transaction
       );
+      setTreasuryTXNSummary(data);
+      if (countDelta) {
+        setTreasuryTXNSummarysRow((prev) => prev + 1);
+        setTreasuryTXNSummaryTotalRecords((prev) => prev + 1);
+      }
     }
 
-    // Handle Transaction Cancelled
     if (blotterTranscationCancelledForTreasury?.transaction) {
-      handleTransactionUpdate(
+      const { data, countDelta } = applyUpdate(
+        treasuryTXNSummary,
         blotterTranscationCancelledForTreasury.transaction
       );
+      setTreasuryTXNSummary(data);
+      if (countDelta) {
+        setTreasuryTXNSummarysRow((prev) => prev + 1);
+        setTreasuryTXNSummaryTotalRecords((prev) => prev + 1);
+      }
     }
 
-    // Handle Transaction Rejected
     if (blotterTransactionRejectedForTreasury?.transaction) {
-      handleTransactionUpdate(
+      const { data, countDelta } = applyUpdate(
+        treasuryTXNSummary,
         blotterTransactionRejectedForTreasury.transaction
       );
+      setTreasuryTXNSummary(data);
+      if (countDelta) {
+        setTreasuryTXNSummarysRow((prev) => prev + 1);
+        setTreasuryTXNSummaryTotalRecords((prev) => prev + 1);
+      }
     }
 
-    // Handle Transaction Cancellation Request
     if (blotterTransactionCancellationRequestDataForTreasury?.transaction) {
-      const { transaction } =
-        blotterTransactionCancellationRequestDataForTreasury;
-
-      setTreasuryTXNSummary((prevData) => {
-        const updatedData = (prevData || []).filter(
-          (item) => item.pK_TransactionID !== transaction.pK_TransactionID
-        );
-        setTreasuryTXNSummaryTotalRecords((prev) => prev - 1);
-        setTreasuryTXNSummarysRow((prev) => prev - 1);
-
-        return updatedData;
-      });
-
+      const { transaction } = blotterTransactionCancellationRequestDataForTreasury;
+      // ✅ Compute filtered array first, then call setState separately
+      const filtered = (treasuryTXNSummary || []).filter(
+        (item) => item.pK_TransactionID !== transaction.pK_TransactionID
+      );
+      setTreasuryTXNSummary(filtered);
+      setTreasuryTXNSummaryTotalRecords((prev) => prev - 1);
+      setTreasuryTXNSummarysRow((prev) => prev - 1);
       dispatch(BlotterTransactionCancellationRequestForTreasury(null));
     }
   }, [
@@ -252,146 +222,105 @@ const TransactionProvider = ({ children }) => {
     blotterTransactionRejectedForTreasury,
   ]);
 
-  // Fixed: Replaced useEffect with useLayoutEffect to prevent state updates during render
+  // ─── Outstanding Deals — MQTT updates ────────────────────────────────────────
   useLayoutEffect(() => {
-    const handleTransaction = (transaction, type) => {
-      if (!transaction) return;
-
-      setTreasuryOutStandingDeal((prevData) => {
-        let updatedData = [...(prevData || [])];
-
-        switch (type) {
-          case "added": {
-            const index = updatedData.findIndex(
-              (item) => item.pK_TransactionID === transaction.pK_TransactionID
-            );
-
-            if (index !== -1) {
-              updatedData[index] = transaction;
-            } else {
-              updatedData = [transaction, ...updatedData];
-              setTreasuryOutStandingDealRecords((prev) => prev + 1);
-              setTreasuryOutStandingDealsRow((prev) => prev + 1);
-            }
-
-            dispatch(BlotterTransactionAdded(null));
-            return updatedData;
-          }
-
-          case "quoted": {
-            updatedData = updatedData.map((item) =>
-              item.pK_TransactionID === transaction.pK_TransactionID
-                ? {
-                    ...item,
-                    bid: transaction.bid,
-                    offer: transaction.offer,
-                    amount: transaction.amount,
-                    statusID: transaction.statusID,
-                    rfqTimerDetails:
-                      transaction.rfqTimerDetails ?? item.rfqTimerDetails,
-                  }
-                : item
-            );
-
-            dispatch(BlotterTransactionRFQQuoted(null));
-            return updatedData;
-          }
-
-          case "expired":
-          case "accepted":
-          case "cancelled":
-          case "rejected": {
-            updatedData = updatedData.filter(
-              (item) => item.pK_TransactionID !== transaction.pK_TransactionID
-            );
-
-            const dispatchMap = {
-              expired: BlotterTransactionRFQExpired,
-              accepted: BlotterTransactionAccepted,
-              cancelled: BlotterTranscationCancelled,
-              rejected: BlotterTransactionRejected,
-            };
-            setTreasuryOutStandingDealRecords((prev) => prev - 1);
-            setTreasuryOutStandingDealsRow((prev) => prev - 1);
-
-            dispatch(dispatchMap[type](null));
-            return updatedData;
-          }
-
-          case "assigned": {
-            updatedData = updatedData.map((item) =>
-              item.pK_TransactionID === transaction.transactionID
-                ? {
-                    ...item,
-                    status:
-                      Number(localStorage.getItem("userID")) ===
-                      Number(transaction.treasuryPersonID)
-                        ? transaction.statusForAssignedUser
-                        : transaction.statusForOtherTreasury,
-                    statusID: transaction.statusID,
-                    treasuryPersonID: transaction.treasuryPersonID,
-                  }
-                : item
-            );
-            dispatch(BlotterTransactionAssigned(null));
-            return updatedData;
-          }
-
-          case "cancellationRequest": {
-            const exists = updatedData.find(
-              (item) => item.pK_TransactionID === transaction.pK_TransactionID
-            );
-
-            if (!exists) {
-              updatedData = [transaction, ...updatedData];
-              setTreasuryOutStandingDealRecords((prev) => prev + 1);
-              setTreasuryOutStandingDealsRow((prev) => prev + 1);
-            }
-
-            dispatch(BlotterTransactionCancellationRequest(null));
-            return updatedData;
-          }
-
-          default:
-            return updatedData;
-        }
-      });
-    };
-
     try {
       if (blotterTransactionAdded?.transaction) {
-        handleTransaction(blotterTransactionAdded.transaction, "added");
+        const transaction = blotterTransactionAdded.transaction;
+        const current = treasuryOutStandingDeal || [];
+        const idx = current.findIndex(
+          (item) => item.pK_TransactionID === transaction.pK_TransactionID
+        );
+
+        if (idx !== -1) {
+          // ✅ Update existing row — no count change
+          const updated = [...current];
+          updated[idx] = transaction;
+          setTreasuryOutStandingDeal(updated);
+        } else {
+          // ✅ Prepend new row — update counts separately at top level
+          setTreasuryOutStandingDeal([transaction, ...current]);
+          setTreasuryOutStandingDealRecords((prev) => prev + 1);
+          setTreasuryOutStandingDealsRow((prev) => prev + 1);
+        }
+        dispatch(BlotterTransactionAdded(null));
       }
 
       if (blotterTransactionRFQQuoted?.transaction) {
-        handleTransaction(blotterTransactionRFQQuoted.transaction, "quoted");
+        const transaction = blotterTransactionRFQQuoted.transaction;
+        setTreasuryOutStandingDeal((prev) =>
+          (prev || []).map((item) =>
+            item.pK_TransactionID === transaction.pK_TransactionID
+              ? {
+                  ...item,
+                  bid: transaction.bid,
+                  offer: transaction.offer,
+                  amount: transaction.amount,
+                  statusID: transaction.statusID,
+                  rfqTimerDetails: transaction.rfqTimerDetails ?? item.rfqTimerDetails,
+                }
+              : item
+          )
+        );
+        dispatch(BlotterTransactionRFQQuoted(null));
       }
 
-      if (blotterTransactionRFQExpired?.transaction) {
-        handleTransaction(blotterTransactionRFQExpired.transaction, "expired");
-      }
+      // ✅ Shared handler for remove-type events
+      const removeTypes = [
+        { data: blotterTransactionRFQExpired,    type: "expired",   action: BlotterTransactionRFQExpired },
+        { data: blotterTransactionAccepted,      type: "accepted",  action: BlotterTransactionAccepted },
+        { data: blotterTranscationCancelled,     type: "cancelled", action: BlotterTranscationCancelled },
+        { data: blotterTransactionRejected,      type: "rejected",  action: BlotterTransactionRejected },
+      ];
 
-      if (blotterTransactionAccepted?.transaction) {
-        handleTransaction(blotterTransactionAccepted.transaction, "accepted");
-      }
+      removeTypes.forEach(({ data, action }) => {
+        if (!data?.transaction) return;
+        const { pK_TransactionID } = data.transaction;
 
-      if (blotterTranscationCancelled?.transaction) {
-        handleTransaction(blotterTranscationCancelled.transaction, "cancelled");
-      }
-
-      if (blotterTransactionRejected?.transaction) {
-        handleTransaction(blotterTransactionRejected.transaction, "rejected");
-      }
+        // ✅ Compute filtered array first — no setState inside setState
+        const filtered = (treasuryOutStandingDeal || []).filter(
+          (item) => item.pK_TransactionID !== pK_TransactionID
+        );
+        setTreasuryOutStandingDeal(filtered);
+        setTreasuryOutStandingDealRecords((prev) => prev - 1);
+        setTreasuryOutStandingDealsRow((prev) => prev - 1);
+        dispatch(action(null));
+      });
 
       if (blotterTransactionAssigned) {
-        handleTransaction(blotterTransactionAssigned, "assigned");
+        const transaction = blotterTransactionAssigned;
+        setTreasuryOutStandingDeal((prev) =>
+          (prev || []).map((item) =>
+            item.pK_TransactionID === transaction.transactionID
+              ? {
+                  ...item,
+                  status:
+                    Number(localStorage.getItem("userID")) === Number(transaction.treasuryPersonID)
+                      ? transaction.statusForAssignedUser
+                      : transaction.statusForOtherTreasury,
+                  statusID: transaction.statusID,
+                  treasuryPersonID: transaction.treasuryPersonID,
+                }
+              : item
+          )
+        );
+        dispatch(BlotterTransactionAssigned(null));
       }
 
       if (blotterTransactionCancellationRequest?.transaction) {
-        handleTransaction(
-          blotterTransactionCancellationRequest.transaction,
-          "cancellationRequest"
+        const transaction = blotterTransactionCancellationRequest.transaction;
+        const current = treasuryOutStandingDeal || [];
+        const exists = current.some(
+          (item) => item.pK_TransactionID === transaction.pK_TransactionID
         );
+
+        if (!exists) {
+          // ✅ Compute new array first, setState separately at top level
+          setTreasuryOutStandingDeal([transaction, ...current]);
+          setTreasuryOutStandingDealRecords((prev) => prev + 1);
+          setTreasuryOutStandingDealsRow((prev) => prev + 1);
+        }
+        dispatch(BlotterTransactionCancellationRequest(null));
       }
     } catch (error) {
       console.error("Error in unified transaction handler:", error);
@@ -410,7 +339,6 @@ const TransactionProvider = ({ children }) => {
   return (
     <TransactionContext.Provider
       value={{
-        // Outstanding Deals
         hasBottomReachedOutstanding,
         setHasBottomReachedOutstanding,
         treasuryOutStandingDeal,
@@ -419,8 +347,6 @@ const TransactionProvider = ({ children }) => {
         setTreasuryOutStandingDealRecords,
         treasuryOutStandingDealsRow,
         setTreasuryOutStandingDealsRow,
-
-        // Treasury TXN Summary
         hasBottomReachedTreasuryTXN,
         setHasBottomReachedTreasuryTXN,
         treasuryTXNSummary,
@@ -436,5 +362,4 @@ const TransactionProvider = ({ children }) => {
 };
 
 export const useBlotterTransaction = () => useContext(TransactionContext);
-
 export default TransactionProvider;

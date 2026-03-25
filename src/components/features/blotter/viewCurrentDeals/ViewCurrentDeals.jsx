@@ -10,7 +10,7 @@ import {
 import { convertDateTimeIntoLocal } from "@/utils/formatters";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { RFQTImer } from "@/components/utils/Timer";
+import { RFQTimer } from "@/components/utils/Timer";
 import { ExpireRFQTransaction } from "../BlotterActions";
 import { formatDateTimeToUTCTime } from "@/components/utils/timeFunction";
 import { useMqttClient } from "@/components/utils/mqttConnection";
@@ -126,7 +126,7 @@ const ViewCurrentDeals = ({ outStandingData, setOutStandingData }) => {
                 </Col>
                 <Col sm={6} md={6} lg={6} className='fs-sm color-black fw-bold'>
                   {formatDateTimeToUTCTime(record.rfqTimerDetails.endTime)}{" "}
-                  <RFQTImer
+                  <RFQTimer
                     endTime={rfqTimer}
                     dispatch={dispatch}
                     apiFunction={ExpireRFQTransaction}

@@ -81,12 +81,12 @@ const MainBranch = () => {
   const tabsData = [
     {
       title: "Spot",
-      content: activeTab === "Spot" && (
+      content: (
         <Suspense fallback={<SectionLoader />}>
           <SpotBranch />
           <section className='bg-white mt-2 mb-4 p-2'>
             <TransactionProvider>
-              <BlotterHeader />
+              <TXNSummary />
             </TransactionProvider>
           </section>
         </Suspense>
@@ -94,12 +94,12 @@ const MainBranch = () => {
     },
     {
       title: "Forwards",
-      content: activeTab === "Forwards" && (
+      content: (
         <Suspense fallback={<SectionLoader />}>
           <ForwardsForBranch />
           <section className='bg-white p-2'>
             <TransactionProvider>
-              <BlotterHeader />
+              <TXNSummary />
             </TransactionProvider>
           </section>
         </Suspense>
@@ -107,12 +107,12 @@ const MainBranch = () => {
     },
     {
       title: "Discounting",
-      content: activeTab === "Discounting" && (
+      content: (
         <Suspense fallback={<SectionLoader />}>
           <BranchDiscountingTable />
           <section className='bg-white p-2'>
             <TransactionProvider>
-              <BlotterHeader />
+              <TXNSummary />
             </TransactionProvider>
           </section>
         </Suspense>

@@ -70,7 +70,7 @@ const BranchForwardsTable = () => {
   // by its own dedicated effect below.
   useEffect(() => {
     if (
-      isTableInitialized.current ||
+      isTableInitialized.current || // ✅ skip if already built
       !getAllInstrumentsForCounterPartiesData ||
       !getAllTenorsRecords
     )
@@ -81,7 +81,6 @@ const BranchForwardsTable = () => {
         getAllInstrumentsForCounterPartiesData;
 
       const { forwardRates = [] } = GetForwardRatesForCounterPartyData ?? {};
-
       const getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
       const getAllInstrument = { instruments: forwardApplicableInstruments };
 
@@ -95,8 +94,6 @@ const BranchForwardsTable = () => {
         bidOfferStatus
       );
 
-      // Mark as initialized regardless of rowData length so that
-      // the tenor-sync effect can run and manage rows independently.
       columnsDataRef.current = columnsData;
       setColumnsDataState(columnsData);
       isTableInitialized.current = true;
@@ -111,60 +108,59 @@ const BranchForwardsTable = () => {
   }, [
     getAllInstrumentsForCounterPartiesData,
     GetForwardRatesForCounterPartyData,
+    getAllTenorsRecords,
     bidOfferStatus,
-    // NOTE: getAllTenorsRecords intentionally omitted — it is stable after
-    // initial load and re-running would reset the table unexpectedly.
   ]);
 
-    // ---------------- THROTTLED MQTT RATE UPDATE ----------------
-    const throttledForwardUpdate = useMemo(
-      () =>
-        throttle((forwardRatesUpdate) => {
-          const { forwardsInstrumentData } = forwardRatesUpdate;
-  
-          const updated = dataSourceRef.current.map((row) => {
-            const updatedRow = { ...row };
-  
-            forwardsInstrumentData.forEach((d) => {
-              if (String(row.tenorID) !== String(d.tenorID)) return;
-  
-              // Find the matching InstrumentID_XXX key for this MQTT payload
-              // e.g. InstrumentID_USD = 21, d.instrumentID = 21 → currency = "USD"
-              const instrumentKey = Object.keys(row).find(
-                (key) =>
-                  key.startsWith("InstrumentID_") &&
-                  String(row[key]) === String(d.instrumentID)
-              );
-  
-              if (!instrumentKey) return;
-  
-              // "InstrumentID_USD" → "USD"
-              // "InstrumentID_CNY" → "CNY"  ✅ works for all your currencies
-              const currency = instrumentKey.replace("InstrumentID_", "");
-  
-              updatedRow[`bid_${currency}`] = d.bidWithSpread;
-              updatedRow[`ask_${currency}`] = d.askWithSpread;
-            });
-  
-            return updatedRow;
+  // ---------------- THROTTLED MQTT RATE UPDATE ----------------
+  const throttledForwardUpdate = useMemo(
+    () =>
+      throttle((forwardRatesUpdate) => {
+        const { forwardsInstrumentData } = forwardRatesUpdate;
+
+        const updated = dataSourceRef.current.map((row) => {
+          const updatedRow = { ...row };
+
+          forwardsInstrumentData.forEach((d) => {
+            if (String(row.tenorID) !== String(d.tenorID)) return;
+
+            // Find the matching InstrumentID_XXX key for this MQTT payload
+            // e.g. InstrumentID_USD = 21, d.instrumentID = 21 → currency = "USD"
+            const instrumentKey = Object.keys(row).find(
+              (key) =>
+                key.startsWith("InstrumentID_") &&
+                String(row[key]) === String(d.instrumentID)
+            );
+
+            if (!instrumentKey) return;
+
+            // "InstrumentID_USD" → "USD"
+            // "InstrumentID_CNY" → "CNY"  ✅ works for all your currencies
+            const currency = instrumentKey.replace("InstrumentID_", "");
+
+            updatedRow[`bid_${currency}`] = d.bidWithSpread;
+            updatedRow[`ask_${currency}`] = d.askWithSpread;
           });
-  
-          dataSourceRef.current = updated;
-          setDataSource(updated);
-        }, 5),
-      []
-    );
-    // Fire throttled update on new rates
-    useEffect(() => {
-      if (CounterPartyForwardRates) {
-        throttledForwardUpdate(CounterPartyForwardRates);
-      }
-    }, [CounterPartyForwardRates, throttledForwardUpdate]);
-  
-    // Cancel throttle only on unmount — NOT on every re-run
-    useEffect(() => {
-      return () => throttledForwardUpdate.cancel();
-    }, [throttledForwardUpdate]);
+
+          return updatedRow;
+        });
+
+        dataSourceRef.current = updated;
+        setDataSource(updated);
+      }, 100),
+    []
+  );
+  // Fire throttled update on new rates
+  useEffect(() => {
+    if (CounterPartyForwardRates) {
+      throttledForwardUpdate(CounterPartyForwardRates);
+    }
+  }, [CounterPartyForwardRates, throttledForwardUpdate]);
+
+  // Cancel throttle only on unmount — NOT on every re-run
+  useEffect(() => {
+    return () => throttledForwardUpdate.cancel();
+  }, [throttledForwardUpdate]);
 
   // ---------------- TENOR SYNC ----------------
   // Adds / removes rows whenever the set of active tenors changes.
@@ -245,8 +241,6 @@ const BranchForwardsTable = () => {
   // NOTE: columnsDataRef.current is a ref — intentionally not in deps.
   // columnsDataState is only here to keep the rendered columns in sync;
   // the effect reads from the ref to avoid stale closure issues.
-
-
 
   // ---------------- MARKET CLOSED / CLEAR RATES ----------------
   const resetRates = () => {

@@ -24,7 +24,7 @@ import {
   setIBuySellData,
   setRfqModalOpen,
 } from "@/store/modalSlice/modalSlicer";
-import ViewCurrentDeals from "@/components/features/blotter/viewCurrentDeals/ViewCurrentDeals";
+// import ViewCurrentDeals from "@/components/features/blotter/viewCurrentDeals/ViewCurrentDeals";
 import {
   GetCategoryWiseDiscountingRatesApi,
   GetCategoryWiseForwardRatesApi,

@@ -262,6 +262,8 @@ const Dashboard = () => {
 
         // ✅ Blotter Transaction Events (heavy updates → use startTransition)
         case "BLOTTER_TRANSACTION_ADDED":
+
+        console.log(payload, "BLOTTER_TRANSACTION_ADDED");
           startTransition(() => {
             dispatch(BlotterTransactionAdded(payload));
             dispatch(BlotterTransactionAddedForTreasury(payload));
