@@ -1,5 +1,6 @@
 import {
   BlotterTransactionAccepted,
+  BlotterTransactionAcceptedForTreasury,
   BlotterTransactionAdded,
   BlotterTransactionAssigned,
   BlotterTransactionCancellationRequest,
@@ -7,7 +8,10 @@ import {
   BlotterTransactionRFQExpired,
   BlotterTransactionRFQQuoted,
   BlotterTransactionRejected,
+  BlotterTransactionRejectedForTreasury,
   BlotterTranscationCancelled,
+  BlotterTranscationCancelledForTreasury,
+  setBlotterTransactionRFQExpiredForTreasury,
 } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import React, {
   createContext,
@@ -26,26 +30,34 @@ const TransactionProvider = ({ children }) => {
   const dispatch = useDispatch();
 
   // Outstanding Deals
-  const [hasBottomReachedOutstanding, setHasBottomReachedOutstanding] = useState(false);
-  const [treasuryOutStandingDeal, setTreasuryOutStandingDeal]         = useState([]);
-  const [treasuryOutStandingDealRecords, setTreasuryOutStandingDealRecords] = useState(0);
-  const [treasuryOutStandingDealsRow, setTreasuryOutStandingDealsRow] = useState(0);
+  const [hasBottomReachedOutstanding, setHasBottomReachedOutstanding] =
+    useState(false);
+  const [treasuryOutStandingDeal, setTreasuryOutStandingDeal] = useState([]);
+  const [treasuryOutStandingDealRecords, setTreasuryOutStandingDealRecords] =
+    useState(0);
+  const [treasuryOutStandingDealsRow, setTreasuryOutStandingDealsRow] =
+    useState(0);
 
   // Treasury TXN Summary
-  const [hasBottomReachedTreasuryTXN, setHasBottomReachedTreasuryTXN] = useState(false);
-  const [treasuryTXNSummary, setTreasuryTXNSummary]                   = useState([]);
-  const [treasuryTXNSummaryTotalRecords, setTreasuryTXNSummaryTotalRecords] = useState(0);
-  const [treasuryTXNSummarysRow, setTreasuryTXNSummarysRow]           = useState(0);
+  const [hasBottomReachedTreasuryTXN, setHasBottomReachedTreasuryTXN] =
+    useState(false);
+  const [treasuryTXNSummary, setTreasuryTXNSummary] = useState([]);
+  const [treasuryTXNSummaryTotalRecords, setTreasuryTXNSummaryTotalRecords] =
+    useState(0);
+  const [treasuryTXNSummarysRow, setTreasuryTXNSummarysRow] = useState(0);
 
   // ─── Selectors ───────────────────────────────────────────────────────────────
   const blotterTransactionRFQExpiredForTreasury = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTransactionRFQExpiredForTreasury
+    (state) =>
+      state.RealtimeActionsSlice.BlotterTransactionRFQExpiredForTreasury
   );
   const blotterTransactionAcceptedForTreasury = useSelector(
     (state) => state.RealtimeActionsSlice.BlotterTransactionAcceptedForTreasury
   );
   const blotterTransactionCancellationRequestDataForTreasury = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTransactionCancellationRequestDataForTreasury
+    (state) =>
+      state.RealtimeActionsSlice
+        .BlotterTransactionCancellationRequestDataForTreasury
   );
   const blotterTranscationCancelledForTreasury = useSelector(
     (state) => state.RealtimeActionsSlice.BlotterTranscationCancelledForTreasury
@@ -78,7 +90,8 @@ const TransactionProvider = ({ children }) => {
     (state) => state.RealtimeActionsSlice.BlotterTranscationCancelled
   );
   const blotterTransactionCancellationRequest = useSelector(
-    (state) => state.RealtimeActionsSlice.BlotterTransactionCancellationRequestData
+    (state) =>
+      state.RealtimeActionsSlice.BlotterTransactionCancellationRequestData
   );
   const blotterTransactionRejected = useSelector(
     (state) => state.RealtimeActionsSlice.BlotterTransactionRejected
@@ -148,6 +161,8 @@ const TransactionProvider = ({ children }) => {
       const idx = updated.findIndex(
         (item) => item.pK_TransactionID === transaction.pK_TransactionID
       );
+
+      console.log(updated, transaction, idx, "applyUpdateapplyUpdate");
       if (idx !== -1) {
         updated[idx] = transaction;
         return { data: updated, countDelta: 0 }; // existing row updated
@@ -156,11 +171,18 @@ const TransactionProvider = ({ children }) => {
     };
 
     if (blotterTransactionRFQExpiredForTreasury?.transaction) {
+      console.log(
+        blotterTransactionRFQExpiredForTreasury?.transaction,
+        "applyUpdateapplyUpdate"
+      );
+
       const { data, countDelta } = applyUpdate(
         treasuryTXNSummary,
         blotterTransactionRFQExpiredForTreasury.transaction
       );
       setTreasuryTXNSummary(data);
+      dispatch(setBlotterTransactionRFQExpiredForTreasury(null))
+
       if (countDelta) {
         setTreasuryTXNSummarysRow((prev) => prev + 1);
         setTreasuryTXNSummaryTotalRecords((prev) => prev + 1);
@@ -168,11 +190,18 @@ const TransactionProvider = ({ children }) => {
     }
 
     if (blotterTransactionAcceptedForTreasury?.transaction) {
+      console.log(
+        blotterTransactionAcceptedForTreasury?.transaction,
+        "applyUpdateapplyUpdate"
+      );
+
       const { data, countDelta } = applyUpdate(
         treasuryTXNSummary,
         blotterTransactionAcceptedForTreasury.transaction
       );
       setTreasuryTXNSummary(data);
+      dispatch(BlotterTransactionAcceptedForTreasury(null))
+
       if (countDelta) {
         setTreasuryTXNSummarysRow((prev) => prev + 1);
         setTreasuryTXNSummaryTotalRecords((prev) => prev + 1);
@@ -180,11 +209,18 @@ const TransactionProvider = ({ children }) => {
     }
 
     if (blotterTranscationCancelledForTreasury?.transaction) {
+      console.log(
+        blotterTranscationCancelledForTreasury?.transaction,
+        "applyUpdateapplyUpdate"
+      );
+
       const { data, countDelta } = applyUpdate(
         treasuryTXNSummary,
         blotterTranscationCancelledForTreasury.transaction
       );
       setTreasuryTXNSummary(data);
+      dispatch(BlotterTranscationCancelledForTreasury(null))
+
       if (countDelta) {
         setTreasuryTXNSummarysRow((prev) => prev + 1);
         setTreasuryTXNSummaryTotalRecords((prev) => prev + 1);
@@ -192,11 +228,18 @@ const TransactionProvider = ({ children }) => {
     }
 
     if (blotterTransactionRejectedForTreasury?.transaction) {
+      console.log(
+        blotterTransactionRejectedForTreasury?.transaction,
+        "applyUpdateapplyUpdate"
+      );
+
       const { data, countDelta } = applyUpdate(
         treasuryTXNSummary,
         blotterTransactionRejectedForTreasury.transaction
       );
       setTreasuryTXNSummary(data);
+      dispatch(BlotterTransactionRejectedForTreasury(null))
+
       if (countDelta) {
         setTreasuryTXNSummarysRow((prev) => prev + 1);
         setTreasuryTXNSummaryTotalRecords((prev) => prev + 1);
@@ -204,7 +247,13 @@ const TransactionProvider = ({ children }) => {
     }
 
     if (blotterTransactionCancellationRequestDataForTreasury?.transaction) {
-      const { transaction } = blotterTransactionCancellationRequestDataForTreasury;
+      console.log(
+        blotterTransactionCancellationRequestDataForTreasury?.transaction,
+        "applyUpdateapplyUpdate"
+      );
+
+      const { transaction } =
+        blotterTransactionCancellationRequestDataForTreasury;
       // ✅ Compute filtered array first, then call setState separately
       const filtered = (treasuryTXNSummary || []).filter(
         (item) => item.pK_TransactionID !== transaction.pK_TransactionID
@@ -257,7 +306,8 @@ const TransactionProvider = ({ children }) => {
                   offer: transaction.offer,
                   amount: transaction.amount,
                   statusID: transaction.statusID,
-                  rfqTimerDetails: transaction.rfqTimerDetails ?? item.rfqTimerDetails,
+                  rfqTimerDetails:
+                    transaction.rfqTimerDetails ?? item.rfqTimerDetails,
                 }
               : item
           )
@@ -267,10 +317,26 @@ const TransactionProvider = ({ children }) => {
 
       // ✅ Shared handler for remove-type events
       const removeTypes = [
-        { data: blotterTransactionRFQExpired,    type: "expired",   action: BlotterTransactionRFQExpired },
-        { data: blotterTransactionAccepted,      type: "accepted",  action: BlotterTransactionAccepted },
-        { data: blotterTranscationCancelled,     type: "cancelled", action: BlotterTranscationCancelled },
-        { data: blotterTransactionRejected,      type: "rejected",  action: BlotterTransactionRejected },
+        {
+          data: blotterTransactionRFQExpired,
+          type: "expired",
+          action: BlotterTransactionRFQExpired,
+        },
+        {
+          data: blotterTransactionAccepted,
+          type: "accepted",
+          action: BlotterTransactionAccepted,
+        },
+        {
+          data: blotterTranscationCancelled,
+          type: "cancelled",
+          action: BlotterTranscationCancelled,
+        },
+        {
+          data: blotterTransactionRejected,
+          type: "rejected",
+          action: BlotterTransactionRejected,
+        },
       ];
 
       removeTypes.forEach(({ data, action }) => {
@@ -295,7 +361,8 @@ const TransactionProvider = ({ children }) => {
               ? {
                   ...item,
                   status:
-                    Number(localStorage.getItem("userID")) === Number(transaction.treasuryPersonID)
+                    Number(localStorage.getItem("userID")) ===
+                    Number(transaction.treasuryPersonID)
                       ? transaction.statusForAssignedUser
                       : transaction.statusForOtherTreasury,
                   statusID: transaction.statusID,
