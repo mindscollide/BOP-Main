@@ -90,8 +90,6 @@ const TXNTreasurySummary = () => {
     hasBottomReachedTreasuryTXN,
   } = useBlotterTransaction(); // Access transaction context if needed
 
-  console.log(treasuryTXNSummary, "treasuryTXNSummarytreasuryTXNSummary"); // Debug log to check data structure
-
   const classes = useStyles();
   const { showMessage } = useNotification();
   const dispatch = useDispatch();

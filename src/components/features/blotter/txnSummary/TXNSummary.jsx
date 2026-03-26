@@ -65,6 +65,11 @@ import {
   DownloadPDFReportBlotterTrasactionTreasuryAPI,
 } from "@/store/ReportSlicer/ReportActions";
 import SectionLoader from "@/components/common/loader/SectionLoader";
+import MailModal from "../mailModal/MailModal";
+
+const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
+const isCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
+const isTreasury = import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
 
 const TXNSummary = () => {
   // Hook initializations
@@ -139,6 +144,9 @@ const TXNSummary = () => {
   const [cancelType, setCancelType] = useState("");
   const [cancelTransactionID, setCancelTransactionID] = useState(0);
   const [exportButton, setExportButton] = useState(false);
+
+  const [openMailModal, setOpenMailModal] = useState(false);
+
 
   // Hardcoded filter options (likely for dropdown filters)
   const TXN_ID_OPTIONS = [
@@ -1129,6 +1137,14 @@ const TXNSummary = () => {
           handleCloseReasonModal={handleCloseReasonModal}
         />
       )}
+         {openMailModal && (
+          <Suspense fallback={"..Loading"}>
+            <MailModal
+              openMailModal={openMailModal}
+              setOpenMailModal={setOpenMailModal}
+            />
+          </Suspense>
+        )}
     </>
   );
 };

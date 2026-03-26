@@ -144,7 +144,11 @@ const BankForwards = () => {
     } catch (error) {
       console.error("Error building forwards table:", error);
     }
-  }, [GetBankForwardForTreasury, getAllTenorsRecords, GetAllInstrumentForTreasury]);
+  }, [
+    GetBankForwardForTreasury,
+    getAllTenorsRecords,
+    GetAllInstrumentForTreasury,
+  ]);
 
   // ---------------- TENOR SYNC (MQTT EVENT) ----------------
   // Incrementally adds / removes rows when tenor applicability changes.
@@ -156,56 +160,56 @@ const BankForwards = () => {
       !getAllTenorsRecords
     )
       return;
-  
+
     try {
       const { newIsForwardtenorList = [], removedtenorList = [] } =
         treasuryFowardsTenorsChanges;
-  
+
       // Build lookup sets from the MQTT payload directly
       const removedSet = new Set(removedtenorList.map((t) => t.tenorID));
       const addedSet = new Set(newIsForwardtenorList.map((t) => t.tenorID));
-  
+
       // No actual changes — bail early
       if (!removedSet.size && !addedSet.size) {
         dispatch(setTreasuryFowardsTenorsChanges(null));
         return;
       }
-  
+
       const referenceRow = dataSourceRef.current[0] ?? null;
-  
+
       // ── REMOVALS ──────────────────────────────────────────
       let updatedRows = dataSourceRef.current.filter(
         (row) => !removedSet.has(row.tenorID)
       );
-  
+
       const existingIDs = new Set(updatedRows.map((r) => r.tenorID));
-  
+
       // ── ADDITIONS ─────────────────────────────────────────
       // newIsForwardtenorList contains tenors now applicable
       // cross-reference against allTenors to get full tenor metadata
       newIsForwardtenorList.forEach((addedTenor) => {
         if (existingIDs.has(addedTenor.tenorID)) return; // already present
-  
+
         // Get full tenor details (tenorName, tenorDays etc.) from allTenors
         const fullTenor =
           getAllTenorsRecords.tenors.find(
             (t) => t.tenorID === addedTenor.tenorID
           ) ?? addedTenor; // fallback to payload if not found
-  
+
         // Inherit rates if this tenor existed before removal
         const previousRow =
           dataSourceRef.current.find((r) => r.tenorID === addedTenor.tenorID) ??
           null;
-  
+
         const newRow = buildNewTenorRow(fullTenor, previousRow, referenceRow);
         updatedRows.push(newRow);
       });
-  
+
       updatedRows.sort((a, b) => a.tenorDays - b.tenorDays);
-  
+
       dataSourceRef.current = updatedRows;
       setDataSource(updatedRows);
-  
+
       dispatch(setTreasuryFowardsTenorsChanges(null));
     } catch (error) {
       console.error("Tenor sync error:", error);
@@ -236,6 +240,10 @@ const BankForwards = () => {
 
           // "InstrumentID_USD" → "USD", "InstrumentID_CNY" → "CNY"
           const currency = instrumentKey.replace("InstrumentID_", "");
+
+          if (currency === "USD" || currency === "CNY") {
+            console.log(currency, d, "Updating row for tenorID");
+          }
 
           updatedRow[`bid_${currency}`] = d.bidWithSpread;
           updatedRow[`ask_${currency}`] = d.askWithSpread;
@@ -284,20 +292,20 @@ const BankForwards = () => {
   // ---------------- RENDER ----------------
   return (
     <>
-      <Row className="my-3">
+      <Row className='my-3'>
         <Col sm={12} md={12} lg={12}>
-          <div className="flex-fill fs-4 fw-bold color-black mb-1 ff-roboto">
+          <div className='flex-fill fs-4 fw-bold color-black mb-1 ff-roboto'>
             Bank Forwards
           </div>
 
           <GlobalTable
             columns={columnsDataState}
             dataSource={dataSource}
-            prefixCls="Treasury_Forwards"
+            prefixCls='Treasury_Forwards'
             bordered
             pagination={false}
-            rowClassName="striped-design"
-            rowHoverBg="#000"
+            rowClassName='striped-design'
+            rowHoverBg='#000'
           />
         </Col>
       </Row>
