@@ -1020,11 +1020,11 @@ const TXNSummary = () => {
                   className={"bg-none"}
                   onClick={handleTransactionModal}
                 />
-                <CustomButton
+                {/* <CustomButton
                   icon={<img src={printImage} alt='PDF Icon' />}
                   className={"bg-none"}
                   onClick={() => setExportButton(false)}
-                />
+                /> */}
               </div>
             }
             trigger='click'
