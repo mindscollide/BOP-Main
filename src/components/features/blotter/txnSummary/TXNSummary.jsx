@@ -147,7 +147,6 @@ const TXNSummary = () => {
 
   const [openMailModal, setOpenMailModal] = useState(false);
 
-
   // Hardcoded filter options (likely for dropdown filters)
   const TXN_ID_OPTIONS = [
     "09-09-2024/0568",
@@ -715,7 +714,7 @@ const TXNSummary = () => {
         label: "Rate",
         width: 80,
         align: "center",
-        render: (record) => formatPkAmount(record.rate),
+        render: (record) => formatPkAmount(record?.rate, { decimals: 4 }),
       },
 
       {
@@ -730,7 +729,7 @@ const TXNSummary = () => {
           ) {
             return record?.rfqDealDetails?.tenorDays;
           }
-          return Number(record.tenorDays) !== 0 ? record.tenorDays : ""; // Placeholder for tenor days
+          return Number(record.tenorDays) !== 0 ? record?.tenorDays : ""; // Placeholder for tenor days
         },
       },
 
@@ -761,7 +760,7 @@ const TXNSummary = () => {
         label: "Total Amount",
         width: 120,
         align: "center",
-        render: (record) => formatPkAmount(record.amount),
+        render: (record) => formatPkAmount(record.amount, { decimals: 2 }),
       },
       // {
       //   id: "tradeDateTime",
@@ -1137,14 +1136,14 @@ const TXNSummary = () => {
           handleCloseReasonModal={handleCloseReasonModal}
         />
       )}
-         {openMailModal && (
-          <Suspense fallback={"..Loading"}>
-            <MailModal
-              openMailModal={openMailModal}
-              setOpenMailModal={setOpenMailModal}
-            />
-          </Suspense>
-        )}
+      {openMailModal && (
+        <Suspense fallback={"..Loading"}>
+          <MailModal
+            openMailModal={openMailModal}
+            setOpenMailModal={setOpenMailModal}
+          />
+        </Suspense>
+      )}
     </>
   );
 };

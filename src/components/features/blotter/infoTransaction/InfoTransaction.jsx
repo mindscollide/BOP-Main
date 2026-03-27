@@ -80,8 +80,7 @@ const InfoTransaction = () => {
               sm={10}
               md={10}
               lg={10}
-              className="d-flex align-items-center gap-1"
-            >
+              className='d-flex align-items-center gap-1'>
               <p className={styles["company-name-hd"]}>
                 {InfoRecord?.corporateName}
               </p>
@@ -93,8 +92,7 @@ const InfoTransaction = () => {
                     ? styles["dealstatus-pending"]
                     : styles["dealstatus-cancelled"]
                 }
-                }`}
-              >
+                }`}>
                 {InfoRecord?.status}
               </span>
             </Col>
@@ -102,12 +100,11 @@ const InfoTransaction = () => {
               sm={2}
               md={2}
               lg={2}
-              className={styles["infoTransaction_modal-crossIcon"]}
-            >
-              <i className="icon-close cursor-pointer" onClick={handleclose} />
+              className={styles["infoTransaction_modal-crossIcon"]}>
+              <i className='icon-close cursor-pointer' onClick={handleclose} />
             </Col>
           </Row>
-          <Row className="mt-2">
+          <Row className='mt-2'>
             <Col sm={12} md={12} lg={12}>
               <p className={styles["txn_id"]}>{InfoRecord?.txnid}</p>
             </Col>
@@ -152,8 +149,7 @@ const InfoTransaction = () => {
                 sm={6}
                 md={6}
                 lg={6}
-                style={{ display: "flex", alignItems: "center" }}
-              >
+                style={{ display: "flex", alignItems: "center" }}>
                 <p className={styles["transactionInfolabelInititedBy"]}>
                   Initiated By
                 </p>
@@ -229,8 +225,9 @@ const InfoTransaction = () => {
               <span className={styles["span_underline"]} />
               <Col sm={6} md={6} lg={6}>
                 <p
-                  className={styles["transactionInfolabel"]}
-                >{`TXN Amount (${InfoRecord?.ccY1})`}</p>
+                  className={
+                    styles["transactionInfolabel"]
+                  }>{`TXN Amount (${InfoRecord?.ccY1})`}</p>
               </Col>
               <Col sm={6} md={6} lg={6}>
                 <p className={styles["transactionInfolabel"]}>
@@ -281,8 +278,9 @@ const InfoTransaction = () => {
               <span className={styles["span_underline"]} />
               <Col sm={6} md={6} lg={6}>
                 <p
-                  className={styles["transactionInfolabel"]}
-                >{`Total Amount (${InfoRecord?.ccY2})`}</p>
+                  className={
+                    styles["transactionInfolabel"]
+                  }>{`Total Amount (${InfoRecord?.ccY2})`}</p>
               </Col>
               <Col sm={6} md={6} lg={6}>
                 <p className={styles["transactionInfolabel"]}>
@@ -428,7 +426,12 @@ const InfoTransaction = () => {
                 <p className={styles["transactionInfolabel"]}>SOFR</p>
               </Col>
               <Col sm={6} md={6} lg={6}>
-                <p className={styles["transactionInfolabel"]}>{"N/A"}</p>
+                <p className={styles["transactionInfolabel"]}>
+                  {" "}
+                  {formatPkAmount(InfoRecord?.discountingFactor, {
+                    decimals: 4,
+                  })}{" "}
+                </p>
               </Col>
             </Row>
           )}
@@ -494,8 +497,7 @@ const InfoTransaction = () => {
                 sm={6}
                 md={6}
                 lg={6}
-                style={{ display: "flex", alignItems: "center" }}
-              >
+                style={{ display: "flex", alignItems: "center" }}>
                 <p className={styles["transactionInfolabelInititedBy"]}>
                   Accepted By
                 </p>
@@ -549,8 +551,7 @@ const InfoTransaction = () => {
                 sm={6}
                 md={6}
                 lg={6}
-                style={{ display: "flex", alignItems: "center" }}
-              >
+                style={{ display: "flex", alignItems: "center" }}>
                 <p className={styles["transactionInfolabelInititedBy"]}>
                   Cancelled By
                 </p>
