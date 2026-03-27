@@ -241,10 +241,6 @@ const BankForwards = () => {
           // "InstrumentID_USD" → "USD", "InstrumentID_CNY" → "CNY"
           const currency = instrumentKey.replace("InstrumentID_", "");
 
-          if (currency === "USD" || currency === "CNY") {
-            console.log(currency, d, "Updating row for tenorID");
-          }
-
           updatedRow[`bid_${currency}`] = d.bidWithSpread;
           updatedRow[`ask_${currency}`] = d.askWithSpread;
         });
