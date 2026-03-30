@@ -4,6 +4,7 @@ import { UpdateVoltMeterStatusApi } from "@/container/pages/mainDealer/dealerAct
 import { useDispatch } from "react-redux";
 import { setUpdateVolMeterRealtime } from "@/store/dealerReducer/dealerSlicer";
 import BidOfferStatus from "../bidOfferStatus/bidOfferStatus";
+import { useBidOffer } from "@/context/BidOfferContext";
 
 /**
  * Voltmeter Component
@@ -16,6 +17,8 @@ const Voltmeter = () => {
   // Initialize Redux dispatch hook
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
+
+  const { defaultOn } = useBidOffer();
 
   // Get current voltmeter status from Redux store
   const GetVoltMeterStatus = useSelector(
@@ -53,6 +56,11 @@ const Voltmeter = () => {
     setLoading(true);
     // Dispatch API action to update voltmeter status on server
     dispatch(UpdateVoltMeterStatusApi({ Data }));
+
+    // when marketOff then Bid and Ask Should be true default
+    if (value === 0) {
+      defaultOn();
+    }
   };
 
   /**

@@ -182,6 +182,8 @@ const Dashboard = () => {
 
         // ✅ Market & Tenor
         case "TENOR_CREATED":
+
+        clg(payload, "TENOR_CREATED");
           dispatch(setTenorsCreated(payload));
           break;
         case "MARKET_TIME_UPDATED":
@@ -189,7 +191,6 @@ const Dashboard = () => {
           break;
         case "MARKET_STATUS_UPDATED":
           console.log("MARKET_STATUS_UPDATED", payload);
-          defaultOn();
           dispatch(marketStatusUpdated(payload.marketStatus.isMarketOn));
           dispatch(setMarketStatus(payload.marketStatus.isMarketOn));
           break;

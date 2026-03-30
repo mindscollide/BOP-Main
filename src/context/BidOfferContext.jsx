@@ -53,7 +53,7 @@ const BidOfferProvider = ({ children }) => {
       return next;
     });
   };
-  const defaultOn = (type) => {
+  const defaultOn = () => {
     setBidOfferStatus({
       isBid: true,
       isOffer: true,

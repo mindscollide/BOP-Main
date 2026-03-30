@@ -16,6 +16,7 @@ import { setCreateTenorModal } from "@/store/modalSlice/modalSlicer";
 import { setTenorsCreated } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import NotificationSnackBar from "@/components/common/NotificationSnackbar";
 import SectionLoader from "@/components/common/sectionLoader/SectionLoader";
+import { setGlobalSnackBarMessage } from "@/store/authSlicer/authSlicer";
 const shouldIncludeComponents =
   import.meta.env.VITE_APP_INCLUDE_DEALER === "true" ||
   import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
@@ -194,12 +195,19 @@ const ForwardsForTreasuryAndDealer = () => {
 
   const handleAddTenor = () => {
     try {
+      console.log(tenorValue, "selected tenor value");
       if (!tenorValue?.value || !tenorValue?.label) {
         // alert("Invalid tenor selection");
         dispatch(setGlobalSnackBarMessage("Invalid tenor selection"));
 
         return;
       }
+
+      // getTenorDays =
+      const getTenorDays = getAllTenorsList.find(
+        (data, index) => data.value === tenorValue.value
+      );
+      console.log(getTenorDays, "selected tenor value");
 
       const tenorForwardData = {
         tenorID: tenorValue.value,
@@ -244,6 +252,7 @@ const ForwardsForTreasuryAndDealer = () => {
         setTenorValue({
           value: tenorsList[0].value,
           label: tenorsList[0].label,
+          tenorDays: tenorsList[0].tenorDays,
         });
 
         setAllTenorsList(tenorsList);
@@ -265,6 +274,7 @@ const ForwardsForTreasuryAndDealer = () => {
             ...tenor,
             value: tenor.tenorID,
             label: tenor.tenorName,
+            tenorDays: tenor.noOfDays,
           };
           setAllTenorsList([...getAllTenorsList, newObj]);
           dispatch(setTenorsCreated(null));
