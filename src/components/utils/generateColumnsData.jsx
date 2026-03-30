@@ -36,28 +36,30 @@ export const buildDiscountingTable = (
     });
 
     // Step 3: Build the row data
-    const rowData = applicableTenors.map((tenor) => {
-      const row = {
-        TenorID: tenor.tenorID,
-        tenorName: tenor.tenorName,
-        tenorDays: tenor.tenorDays,
-        discountDays: tenor.discountingDays,
-      };
+    const rowData = applicableTenors
+      .sort((a, b) => a?.discountingDays - b?.discountingDays)
+      .map((tenor) => {
+        const row = {
+          TenorID: tenor.tenorID,
+          tenorName: tenor.tenorName,
+          tenorDays: tenor.tenorDays,
+          discountDays: tenor.discountingDays,
+        };
 
-      applicableInstruments.forEach((instrument) => {
-        const compositeKey = `${instrument.instrumentID}-${tenor.tenorID}`;
+        applicableInstruments.forEach((instrument) => {
+          const compositeKey = `${instrument.instrumentID}-${tenor.tenorID}`;
 
-        const rateValue = rateMap[compositeKey] ?? 0;
+          const rateValue = rateMap[compositeKey] ?? 0;
 
-        row[`rate_${instrument.instrumentName}`] = rateValue;
-        row[`InstrumentID_${instrument.instrumentName}`] =
-          instrument.instrumentID;
-        row[`InstrumentName_${instrument.instrumentName}`] =
-          instrument.instrumentName;
+          row[`rate_${instrument.instrumentName}`] = rateValue;
+          row[`InstrumentID_${instrument.instrumentName}`] =
+            instrument.instrumentID;
+          row[`InstrumentName_${instrument.instrumentName}`] =
+            instrument.instrumentName;
+        });
+
+        return row;
       });
-
-      return row;
-    });
     let columnsData = [];
     if (value === 1 || value === 5) {
       columnsData = [
@@ -195,7 +197,7 @@ export const buildForwardsTable = (
 
     const applicableTenors =
       value === 1 || value === 3
-        ?  tenors?.filter((tenor) => tenor.isForwardingApplicable) || []
+        ? tenors?.filter((tenor) => tenor.isForwardingApplicable) || []
         : tenors;
 
     // Step 1: Create rateMap with bid/ask
@@ -209,28 +211,30 @@ export const buildForwardsTable = (
     });
 
     // Step 2: Create rows
-    const rowData = applicableTenors.map((tenor) => {
-      const row = {
-        tenorID: tenor.tenorID,
-        tenorName: tenor.tenorName,
-        tenorDays: tenor.tenorDays,
-      };
+    const rowData = applicableTenors
+      .sort((a, b) => a.tenorDays - b.tenorDays)
+      .map((tenor) => {
+        const row = {
+          tenorID: tenor.tenorID,
+          tenorName: tenor.tenorName,
+          tenorDays: tenor.tenorDays,
+        };
 
-      applicableInstruments.forEach((instrument) => {
-        const key = `${instrument.instrumentID}-${tenor.tenorID}`;
+        applicableInstruments.forEach((instrument) => {
+          const key = `${instrument.instrumentID}-${tenor.tenorID}`;
 
-        const rates = rateMap[key];
+          const rates = rateMap[key];
 
-        row[`bid_${instrument.instrumentName}`] = rates ? rates?.bid : "-";
-        row[`ask_${instrument.instrumentName}`] = rates ? rates.ask : "-";
-        row[`InstrumentID_${instrument.instrumentName}`] =
-          instrument.instrumentID;
-        row[`InstrumentName_${instrument.instrumentName}`] =
-          instrument.instrumentName;
+          row[`bid_${instrument.instrumentName}`] = rates ? rates?.bid : "-";
+          row[`ask_${instrument.instrumentName}`] = rates ? rates.ask : "-";
+          row[`InstrumentID_${instrument.instrumentName}`] =
+            instrument.instrumentID;
+          row[`InstrumentName_${instrument.instrumentName}`] =
+            instrument.instrumentName;
+        });
+
+        return row;
       });
-
-      return row;
-    });
 
     // Step 3: Create columns
     let columnsData = [];
