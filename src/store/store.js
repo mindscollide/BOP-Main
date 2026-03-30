@@ -36,7 +36,11 @@ const store = configureStore({
     DailyTradeSlicer: DailyTradeSlicer,
     TresmarkCrossesSlicer: TresmarkCrossesReducer,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+      immutableCheck: false,
+    }),
 });
 
 export default store;

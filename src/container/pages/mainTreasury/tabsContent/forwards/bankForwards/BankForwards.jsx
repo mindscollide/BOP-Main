@@ -4,7 +4,7 @@ import { buildForwardsTable } from "@/components/utils/generateColumnsData";
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { throttle } from "lodash";
-import { setTreasuryFowardsTenorsChanges } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
+import { clearTreasuryForwardRates, setTreasuryFowardsTenorsChanges } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { Col, Row } from "react-bootstrap";
 
 // ---------------- CONSTANTS ----------------
@@ -47,20 +47,49 @@ const buildEmptyRateColumns = (referenceRow) => {
  * 2. Copying InstrumentID_ / InstrumentName_ from any existing row
  * 3. Inheriting bid/ask from previousRow if it exists, else EMPTY_RATE_VALUE
  */
-const buildNewTenorRow = (tenor, previousRow, referenceRow) => {
-  const instrumentMeta = extractInstrumentMeta(referenceRow);
+const buildNewTenorRow = (
+  tenor,
+  previousRow,
+  referenceRow,
+  instrumentList = []
+) => {
+  const sourceRow = referenceRow ?? previousRow ?? null;
 
-  const bidAskValues = Object.fromEntries(
-    Object.entries(referenceRow ?? {})
-      .filter(([key]) => key.startsWith("bid_") || key.startsWith("ask_"))
-      .map(([key]) => [
-        key,
-        previousRow?.[key] !== undefined &&
-        previousRow?.[key] !== EMPTY_RATE_VALUE
-          ? previousRow[key]
-          : EMPTY_RATE_VALUE,
-      ])
-  );
+  const instrumentMeta = sourceRow
+    ? extractInstrumentMeta(sourceRow)
+    : (() => {
+        // ✅ fallback: build instrumentMeta from master instrument list
+        const meta = {};
+        instrumentList.forEach((inst) => {
+          const code = inst.instrumentName;
+          meta[`InstrumentID_${code}`] = inst.instrumentID;
+          meta[`InstrumentName_${code}`] = inst.instrumentName;
+        });
+        return meta;
+      })();
+
+  const bidAskValues = sourceRow
+    ? Object.fromEntries(
+        Object.entries(sourceRow)
+          .filter(([key]) => key.startsWith("bid_") || key.startsWith("ask_"))
+          .map(([key]) => [
+            key,
+            previousRow?.[key] !== undefined &&
+            previousRow?.[key] !== EMPTY_RATE_VALUE
+              ? previousRow[key]
+              : EMPTY_RATE_VALUE,
+          ])
+      )
+    : (() => {
+        // ✅ fallback: build empty bid/ask keys from master instrument list
+        const bidAsk = {};
+        instrumentList.forEach((inst) => {
+          const code = inst.instrumentName;
+          bidAsk[`bid_${code}`] = EMPTY_RATE_VALUE;
+          bidAsk[`ask_${code}`] = EMPTY_RATE_VALUE;
+        });
+        return bidAsk;
+      })();
 
   return {
     tenorID: tenor.tenorID,
@@ -70,7 +99,6 @@ const buildNewTenorRow = (tenor, previousRow, referenceRow) => {
     ...bidAskValues,
   };
 };
-
 // -----------------------------------------------
 
 const BankForwards = () => {
@@ -81,9 +109,13 @@ const BankForwards = () => {
 
   const dataSourceRef = useRef([]);
 
+  // ✅ keep a ref in sync with Redux so the throttle always reads fresh data
+  const treasuryForwardRatesRef = useRef(null);
+
   // columnsData is stable after init — ref avoids re-triggering effects
   const columnsDataRef = useRef([]);
   const [columnsDataState, setColumnsDataState] = useState([]);
+  const instrumentListRef = useRef([]);
 
   // ---------------- TABLE INIT FLAG ----------------
   const isTableInitialized = useRef(false);
@@ -122,6 +154,7 @@ const BankForwards = () => {
     try {
       const { forwardRates = [] } = GetBankForwardForTreasury ?? {};
       const { forwardInstruments = [] } = GetAllInstrumentForTreasury;
+      instrumentListRef.current = forwardInstruments;
 
       const { rowData, columnsData } = buildForwardsTable(
         FORWARDS_TABLE_TYPE,
@@ -200,8 +233,13 @@ const BankForwards = () => {
         const previousRow =
           dataSourceRef.current.find((r) => r.tenorID === addedTenor.tenorID) ??
           null;
-
-        const newRow = buildNewTenorRow(fullTenor, previousRow, referenceRow);
+        // In BranchForwardsTable tenor sync effect
+        const newRow = buildNewTenorRow(
+          fullTenor,
+          previousRow,
+          referenceRow,
+          instrumentListRef.current // ✅ pass master list as fallback
+        );
         updatedRows.push(newRow);
       });
 
@@ -219,15 +257,55 @@ const BankForwards = () => {
   // ---------------- THROTTLED MQTT RATE UPDATE ----------------
   // Uses a ref-stored throttle so it's never recreated and always
   // reads the latest dataSourceRef.current snapshot.
+  // const updateForwardRatesRef = useRef(
+  //   throttle((treasuryForwardRates) => {
+  //     const { forwardRates = [] } = treasuryForwardRates;
+  //     if (!forwardRates.length) return;
+
+  //     const updated = dataSourceRef.current.map((row) => {
+  //       const updatedRow = { ...row };
+
+  //       forwardRates.forEach((d) => {
+  //         if (String(row.tenorID) !== String(d.tenorID)) return;
+
+  //         const instrumentKey = Object.keys(row).find(
+  //           (key) =>
+  //             key.startsWith("InstrumentID_") &&
+  //             String(row[key]) === String(d.instrumentID)
+  //         );
+
+  //         if (!instrumentKey) return;
+
+  //         // "InstrumentID_USD" → "USD", "InstrumentID_CNY" → "CNY"
+  //         const currency = instrumentKey.replace("InstrumentID_", "");
+
+  //         updatedRow[`bid_${currency}`] = d.bidWithSpread;
+  //         updatedRow[`ask_${currency}`] = d.askWithSpread;
+  //       });
+
+  //       return updatedRow;
+  //     });
+
+  //     dataSourceRef.current = updated;
+  //     setDataSource(updated);
+  //   }, 100) // 100ms — safe default for high-frequency MQTT feeds
+  // );
   const updateForwardRatesRef = useRef(
-    throttle((treasuryForwardRates) => {
-      const { forwardRates = [] } = treasuryForwardRates;
-      if (!forwardRates.length) return;
+    throttle(() => {
+      // ✅ read directly from ref — always latest snapshot
+      const pendingBatch = treasuryForwardRatesRef.current;
+      if (!pendingBatch?.length) return;
+
+      // ✅ flatten all payloads into one forwardRates array
+      const allForwardRates = pendingBatch.flatMap(
+        (payload) => payload.forwardRates ?? []
+      );
+      if (!allForwardRates.length) return;
 
       const updated = dataSourceRef.current.map((row) => {
         const updatedRow = { ...row };
 
-        forwardRates.forEach((d) => {
+        allForwardRates.forEach((d) => {
           if (String(row.tenorID) !== String(d.tenorID)) return;
 
           const instrumentKey = Object.keys(row).find(
@@ -235,12 +313,9 @@ const BankForwards = () => {
               key.startsWith("InstrumentID_") &&
               String(row[key]) === String(d.instrumentID)
           );
-
           if (!instrumentKey) return;
 
-          // "InstrumentID_USD" → "USD", "InstrumentID_CNY" → "CNY"
           const currency = instrumentKey.replace("InstrumentID_", "");
-
           updatedRow[`bid_${currency}`] = d.bidWithSpread;
           updatedRow[`ask_${currency}`] = d.askWithSpread;
         });
@@ -250,13 +325,17 @@ const BankForwards = () => {
 
       dataSourceRef.current = updated;
       setDataSource(updated);
-    }, 100) // 100ms — safe default for high-frequency MQTT feeds
+
+      // ✅ clear after processing
+      dispatch(clearTreasuryForwardRates());
+    }, 100)
   );
 
   // Fire throttled update on new rates
   useEffect(() => {
-    if (TreasuryForwardRates) {
-      updateForwardRatesRef.current(TreasuryForwardRates);
+    treasuryForwardRatesRef.current = TreasuryForwardRates;
+    if (TreasuryForwardRates?.length) {
+      updateForwardRatesRef.current();
     }
   }, [TreasuryForwardRates]);
 

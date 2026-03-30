@@ -2,7 +2,10 @@ import { useSelector, useDispatch } from "react-redux";
 import React, { useEffect, useState } from "react";
 import NotificationSnackbar from "../common/NotificationSnackbar";
 import { clearDealerResponseMessage } from "@/store/dealerReducer/dealerSlicer";
-import { clearAuthResponseMessage } from "@/store/authSlicer/authSlicer";
+import {
+  clearAuthResponseMessage,
+  setGlobalSnackBarMessage,
+} from "@/store/authSlicer/authSlicer";
 import { clearBlotterResponseMessage } from "@/store/BlotterSlicer/BlotterSlicer";
 import { clearCatgeoryResponseMessage } from "@/store/categoryReducer/categoryReducer";
 import { clearReportResponseMessage } from "@/store/ReportSlicer/ReportSlicer";
@@ -12,16 +15,61 @@ export const ResponseMessage = () => {
   const dispatch = useDispatch();
 
   const sources = [
-    { key: "dealer", msg: useSelector((s) => s.dealerReducer.responseMessage), clear: clearDealerResponseMessage },
-    { key: "auth", msg: useSelector((s) => s.authReducer.responseMessage), clear: clearAuthResponseMessage },
-    { key: "watchlist", msg: useSelector((s) => s.WatchListReducer.responseMessage), clear: clearWatchListResponseMessage },
-    { key: "rfq", msg: useSelector((s) => s.RFQReducer.responseMessage), clear: null },
-    { key: "category", msg: useSelector((s) => s.categoryReducer.responseMessage), clear: clearCatgeoryResponseMessage },
-    { key: "report", msg: useSelector((s) => s.ReportReducer.responseMessage), clear: clearReportResponseMessage },
-    { key: "calculator", msg: useSelector((s) => s.CalculatorReducer.responseMessage), clear: null },
-    { key: "setting", msg: useSelector((s) => s.settingSlicer.responseMessage), clear: clearSettingResponseMessage },
-    { key: "blotter", msg: useSelector((s) => s.BlotterSlicer.responseMessage), clear: clearBlotterResponseMessage },
-    { key: "chat", msg: useSelector((s) => s.chatSlicer.responseMessage), clear: null },
+    {
+      key: "dealer",
+      msg: useSelector((s) => s.dealerReducer.responseMessage),
+      clear: clearDealerResponseMessage,
+    },
+    {
+      key: "auth",
+      msg: useSelector((s) => s.authReducer.responseMessage),
+      clear: clearAuthResponseMessage,
+    },
+    {
+      key: "watchlist",
+      msg: useSelector((s) => s.WatchListReducer.responseMessage),
+      clear: clearWatchListResponseMessage,
+    },
+    {
+      key: "rfq",
+      msg: useSelector((s) => s.RFQReducer.responseMessage),
+      clear: null,
+    },
+    {
+      key: "category",
+      msg: useSelector((s) => s.categoryReducer.responseMessage),
+      clear: clearCatgeoryResponseMessage,
+    },
+    {
+      key: "report",
+      msg: useSelector((s) => s.ReportReducer.responseMessage),
+      clear: clearReportResponseMessage,
+    },
+    {
+      key: "calculator",
+      msg: useSelector((s) => s.CalculatorReducer.responseMessage),
+      clear: null,
+    },
+    {
+      key: "setting",
+      msg: useSelector((s) => s.settingSlicer.responseMessage),
+      clear: clearSettingResponseMessage,
+    },
+    {
+      key: "blotter",
+      msg: useSelector((s) => s.BlotterSlicer.responseMessage),
+      clear: clearBlotterResponseMessage,
+    },
+    {
+      key: "chat",
+      msg: useSelector((s) => s.chatSlicer.responseMessage),
+      clear: null,
+    },
+    {
+      key: "globalMessage",
+      msg: useSelector((s) => s.authReducer.globalSnackBarMessage),
+      clear: setGlobalSnackBarMessage,
+    },
   ];
 
   const [messages, setMessages] = useState([]);

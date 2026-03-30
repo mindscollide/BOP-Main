@@ -97,10 +97,11 @@ import { GetNOPDataAPI } from "@/components/features/blotter/BlotterActions";
 import { getUserSettingDataAPI } from "@/components/features/settingsModal/settingActions";
 import { updateForwardTenors } from "../../store/dealerReducer/dealerSlicer";
 import { useModal } from "@/context/ModalContext";
+import { useBidOffer } from "@/context/BidOfferContext";
 const Dashboard = () => {
   const { Content } = Layout;
   const dispatch = useDispatch();
-  const {setUpdaetTenorsMQTT} = useModal()
+  const { setUpdaetTenorsMQTT } = useModal();
   const navigate = useNavigate();
   const location = useLocation();
   const audioRef = useRef(null);
@@ -109,6 +110,7 @@ const Dashboard = () => {
   const prevPathRef = useRef(null);
   const chatModal = useSelector((state) => state.modalReducer.chatModal);
   const settingData = useSelector((state) => state.settingSlicer.settingData);
+  const handleMqttMessageRef = useRef(null);
 
   const [isSoundOn, setIsSoundOn] = useState(false);
   // console.log(isSoundOn, "settingModalsettingModal");
@@ -187,6 +189,7 @@ const Dashboard = () => {
           break;
         case "MARKET_STATUS_UPDATED":
           console.log("MARKET_STATUS_UPDATED", payload);
+          defaultOn();
           dispatch(marketStatusUpdated(payload.marketStatus.isMarketOn));
           dispatch(setMarketStatus(payload.marketStatus.isMarketOn));
           break;
@@ -211,7 +214,7 @@ const Dashboard = () => {
         case "TENOR_WISE_FORWARD_RATES_PUBLISHED":
           startTransition(() => {
             dispatch(tenorWiseFowardsRatesPublishedActions(payload));
-
+            console.log(payload, "TENOR_WISE_FORWARD_RATES_PUBLISHED");
             let tenorsData = {
               newIsForwardtenorList:
                 payload.tenorWiseForwardRates.newIsForwardtenorList,
@@ -262,8 +265,7 @@ const Dashboard = () => {
 
         // ✅ Blotter Transaction Events (heavy updates → use startTransition)
         case "BLOTTER_TRANSACTION_ADDED":
-
-        console.log(payload, "BLOTTER_TRANSACTION_ADDED");
+          console.log(payload, "BLOTTER_TRANSACTION_ADDED");
           startTransition(() => {
             dispatch(BlotterTransactionAdded(payload));
             dispatch(BlotterTransactionAddedForTreasury(payload));
@@ -376,6 +378,7 @@ const Dashboard = () => {
           });
           break;
         case "TREASURY_FEDISCOUNTING_RATES_FEED":
+
           startTransition(() => {
             dispatch(setTreasuryFeDiscounting(payload));
           });
@@ -499,8 +502,9 @@ const Dashboard = () => {
         case "UPDATED_TENORS":
           startTransition(() => {
             dispatch(updateForwardTenors(payload));
-            setUpdaetTenorsMQTT(payload)
+            setUpdaetTenorsMQTT(payload);
           });
+          break;
         default:
           console.warn("No specific handler for this message type", payload);
           break;

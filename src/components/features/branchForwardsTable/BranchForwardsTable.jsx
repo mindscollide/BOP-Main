@@ -21,8 +21,9 @@ const BranchForwardsTable = () => {
   // ---------------- TABLE STATE ----------------
   const [dataSource, setDataSource] = useState([]);
   const dataSourceRef = useRef([]);
+  const instrumentListRef = useRef([]);
 
-  console.log(dataSource, "dataSource in branch forwards table");
+  console.log(instrumentListRef, "dataSource in branch forwards table");
 
   // columnsData never changes after init — use a ref to avoid re-triggering effects
   const columnsDataRef = useRef([]);
@@ -83,6 +84,8 @@ const BranchForwardsTable = () => {
       const { forwardRates = [] } = GetForwardRatesForCounterPartyData ?? {};
       const getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
       const getAllInstrument = { instruments: forwardApplicableInstruments };
+
+      instrumentListRef.current = forwardApplicableInstruments;
 
       const { rowData, columnsData } = buildForwardsTable(
         FORWARDS_TABLE_TYPE,
@@ -172,71 +175,100 @@ const BranchForwardsTable = () => {
       !columnsDataRef.current.length
     )
       return;
-
-    const activeTenors = allForwardApplicableTenors.tenors.filter(
-      (t) => t.isForwardingApplicable
-    );
-
-    const activeIDs = new Set(activeTenors.map((t) => t.tenorID));
-
-    // ✅ filter first
-    const updatedRows = dataSourceRef.current.filter((row) =>
-      activeIDs.has(row.tenorID)
-    );
-
-    // ✅ build existingIDs from POST-filter rows, not pre-filter
-    const existingIDs = new Set(updatedRows.map((r) => r.tenorID));
-
-    const hasRemovals = dataSourceRef.current.length !== updatedRows.length;
-    const hasAdditions = activeTenors.some((t) => !existingIDs.has(t.tenorID));
-
-    if (!hasRemovals && !hasAdditions) return;
-
-    activeTenors.forEach((tenor) => {
-      if (existingIDs.has(tenor.tenorID)) return;
-
-      const previousRow = dataSourceRef.current.find(
-        (r) => r.tenorID === tenor.tenorID
+    try {
+      const activeTenors = allForwardApplicableTenors.tenors.filter(
+        (t) => t.isForwardingApplicable
       );
 
-      // ✅ any existing row has the same InstrumentID_ and InstrumentName_ keys
-      const referenceRow = previousRow ?? dataSourceRef.current[0];
+      const activeIDs = new Set(activeTenors.map((t) => t.tenorID));
 
-      // Extract only InstrumentID_ and InstrumentName_ from reference row
-      const instrumentMeta = Object.fromEntries(
-        Object.entries(referenceRow ?? {}).filter(
-          ([key]) =>
-            key.startsWith("InstrumentID_") || key.startsWith("InstrumentName_")
-        )
+      // ✅ filter first
+      const updatedRows = dataSourceRef.current.filter((row) =>
+        activeIDs.has(row.tenorID)
       );
 
-      const newRow = {
-        tenorID: tenor.tenorID,
-        tenorName: tenor.tenorName,
-        tenorDays: tenor.tenorDays,
-        ...instrumentMeta, // ✅ InstrumentID_USD: 21, InstrumentName_USD: "USD" ...
+      // ✅ build existingIDs from POST-filter rows, not pre-filter
+      const existingIDs = new Set(updatedRows.map((r) => r.tenorID));
 
-        // bid/ask: inherit if re-added, else empty
-        ...Object.fromEntries(
-          Object.entries(referenceRow ?? {})
-            .filter(([key]) => key.startsWith("bid_") || key.startsWith("ask_"))
-            .map(([key]) => [
-              key,
-              previousRow?.[key] !== undefined &&
-              previousRow?.[key] !== EMPTY_RATE_VALUE
-                ? previousRow[key]
-                : EMPTY_RATE_VALUE,
-            ])
-        ),
-      };
+      const hasRemovals = dataSourceRef.current.length !== updatedRows.length;
+      const hasAdditions = activeTenors.some(
+        (t) => !existingIDs.has(t.tenorID)
+      );
 
-      updatedRows.push(newRow);
-    });
+      if (!hasRemovals && !hasAdditions) return;
 
-    updatedRows.sort((a, b) => a.tenorDays - b.tenorDays);
+      activeTenors.forEach((tenor) => {
+        if (existingIDs.has(tenor.tenorID)) return;
 
-    dataSourceRef.current = updatedRows;
-    setDataSource(updatedRows);
+        const previousRow = dataSourceRef.current.find(
+          (r) => r.tenorID === tenor.tenorID
+        );
+
+        const referenceRow = previousRow ?? dataSourceRef.current[0] ?? null;
+
+        let instrumentMeta = {};
+
+        // ✅ 1. Try from existing row
+        if (referenceRow) {
+          instrumentMeta = Object.fromEntries(
+            Object.entries(referenceRow).filter(
+              ([key]) =>
+                key.startsWith("InstrumentID_") ||
+                key.startsWith("InstrumentName_")
+            )
+          );
+        }
+
+        // ✅ 2. Fallback from master instruments
+        // ✅ 2. Fallback from master instruments
+        // ✅ 2. Fallback from master instruments
+        if (
+          !Object.keys(instrumentMeta).length &&
+          instrumentListRef.current.length > 0
+        ) {
+          instrumentMeta = {};
+          instrumentListRef.current.forEach((inst) => {
+            const code = inst.instrumentName;
+            instrumentMeta[`InstrumentID_${code}`] = inst.instrumentID;
+            instrumentMeta[`InstrumentName_${code}`] = inst.instrumentName;
+            instrumentMeta[`bid_${code}`] = EMPTY_RATE_VALUE;
+            instrumentMeta[`ask_${code}`] = EMPTY_RATE_VALUE;
+          });
+        }
+        console.log(instrumentMeta, referenceRow, "instrumentMeta for new row");
+
+        const newRow = {
+          tenorID: tenor.tenorID,
+          tenorName: tenor.tenorName,
+          tenorDays: tenor.tenorDays,
+          ...instrumentMeta, // ✅ InstrumentID_USD: 21, InstrumentName_USD: "USD" ...
+
+          // bid/ask: inherit if re-added, else empty
+          ...Object.fromEntries(
+            Object.entries(referenceRow ?? {})
+              .filter(
+                ([key]) => key.startsWith("bid_") || key.startsWith("ask_")
+              )
+              .map(([key]) => [
+                key,
+                previousRow?.[key] !== undefined &&
+                previousRow?.[key] !== EMPTY_RATE_VALUE
+                  ? previousRow[key]
+                  : EMPTY_RATE_VALUE,
+              ])
+          ),
+        };
+
+        updatedRows.push(newRow);
+      });
+
+      updatedRows.sort((a, b) => a.tenorDays - b.tenorDays);
+
+      dataSourceRef.current = updatedRows;
+      setDataSource(updatedRows);
+    } catch (error) {
+      console.error("Error syncing tenors in forwards table:", error);
+    }
   }, [allForwardApplicableTenors]);
   // NOTE: columnsDataRef.current is a ref — intentionally not in deps.
   // columnsDataState is only here to keep the rendered columns in sync;

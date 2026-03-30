@@ -12,7 +12,7 @@ const BidOfferProvider = ({ children }) => {
   });
 
   const BidOfferStatusData = useSelector(
-    (state) => state.WatchListReducer.getBidOfferStatus,
+    (state) => state.WatchListReducer.getBidOfferStatus
   );
 
   useEffect(() => {
@@ -53,11 +53,16 @@ const BidOfferProvider = ({ children }) => {
       return next;
     });
   };
+  const defaultOn = (type) => {
+    setBidOfferStatus({
+      isBid: true,
+      isOffer: true,
+    });
+  };
 
   return (
     <BidOfferContext.Provider
-      value={{ ...bidOfferStatus, toggleStatus, bidOfferStatus }}
-    >
+      value={{ ...bidOfferStatus, toggleStatus, bidOfferStatus,defaultOn }}>
       {children}
     </BidOfferContext.Provider>
   );

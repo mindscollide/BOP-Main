@@ -103,12 +103,14 @@ const SpotQuoteModal = ({ dealData }) => {
       Comment: cancelReasonComment,
     };
     let val = 1;
+    const callFunc = () => {
+      // Reset Modal State
+      setCancelReasonModal(false);
+      setCancelReasonComment("");
+    };
     //Reject API Call
-    dispatch(RejectTransactionAPI({ navigate, Data, val }));
+    dispatch(RejectTransactionAPI({ navigate, Data, val, callFunc }));
 
-    // Reset Modal State
-    setCancelReasonModal(false);
-    setCancelReasonComment("");
   };
   return (
     <GlobalModal
@@ -123,8 +125,7 @@ const SpotQuoteModal = ({ dealData }) => {
               sm={3}
               md={3}
               lg={3}
-              className={styles["DealViewModal_oneSide"]}
-            >
+              className={styles["DealViewModal_oneSide"]}>
               <Row>
                 <Col sm={12} md={12} lg={12}>
                   <label className={styles["DealViewModal__label"]}>Side</label>
@@ -188,8 +189,7 @@ const SpotQuoteModal = ({ dealData }) => {
               sm={9}
               md={9}
               lg={9}
-              className={styles["DealViewModal_SecondSide"]}
-            >
+              className={styles["DealViewModal_SecondSide"]}>
               <Row>
                 <Col sm={10} md={10} lg={10}>
                   {spotQuoteModalData?.branchName !== "" && (
@@ -208,8 +208,7 @@ const SpotQuoteModal = ({ dealData }) => {
                   sm={2}
                   md={2}
                   lg={2}
-                  className="d-flex justify-content-center justify-content-end"
-                >
+                  className='d-flex justify-content-center justify-content-end'>
                   <IconElement
                     onClick={closeModal}
                     iconClass={"icon-close fs-4 cursor-pointer"}
@@ -227,11 +226,10 @@ const SpotQuoteModal = ({ dealData }) => {
                   sm={2}
                   md={2}
                   lg={2}
-                  className="d-flex justify-content-center"
-                ></Col>
+                  className='d-flex justify-content-center'></Col>
               </Row>
-              <Row className="mt-5">
-                <Col sm={6} md={6} lg={6} className="mt-4">
+              <Row className='mt-5'>
+                <Col sm={6} md={6} lg={6} className='mt-4'>
                   <div className={styles["DealViewModal_Input"]}>
                     <label className={styles["DealViewModal_label"]}>Bid</label>
                     <NumericFormat
@@ -249,12 +247,12 @@ const SpotQuoteModal = ({ dealData }) => {
                       //     : true
                       // }
                       applyClass={"DealBoxBitInput"}
-                      thousandSeparator=","
+                      thousandSeparator=','
                       maxLength={10}
                     />
                   </div>
                 </Col>
-                <Col sm={6} md={6} lg={6} className="mt-4">
+                <Col sm={6} md={6} lg={6} className='mt-4'>
                   <div className={styles["DealViewModal_Input"]}>
                     <label className={styles["DealViewModal_label"]}>
                       Offer
@@ -275,7 +273,7 @@ const SpotQuoteModal = ({ dealData }) => {
                       //     : true
                       // }
                       applyClass={"DealBoxOfferInput"}
-                      thousandSeparator=","
+                      thousandSeparator=','
                       maxLength={10}
                     />
                   </div>
@@ -286,8 +284,7 @@ const SpotQuoteModal = ({ dealData }) => {
                   sm={12}
                   md={12}
                   lg={12}
-                  className="d-flex justify-content-center gap-3 mt-5"
-                >
+                  className='d-flex justify-content-center gap-3 mt-5'>
                   {spotQuoteModalData?.isRFQ ? (
                     <CustomButton
                       icon={<IconElement iconClass={"icon-send  fs-5"} />}

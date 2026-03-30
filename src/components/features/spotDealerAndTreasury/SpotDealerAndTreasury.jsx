@@ -13,7 +13,6 @@ const SpotDealerAndTreasury = () => {
 
   // Ref to keep latest data for throttled updates
   const spotsDataRef = useRef([]);
-  console.log({ spotsData, spotsDataRef }, "spotsDataspotsDataspotsData");
 
   // Redux selectors
   const allInstrumentForTreasuryData = useSelector(
@@ -36,40 +35,44 @@ const SpotDealerAndTreasury = () => {
   // Function to build spot data
   // -------------------
   const buildSpotData = (baseData, ratesData) => {
-    if (!baseData || !ratesData) return [];
+    // if (!baseData || !ratesData) return [];
 
-    const instruments = ratesData?.instruments || [];
-    const spotInstruments = baseData?.spotInstruments || [];
-    const crossInstruments = baseData?.crossInstruments || [];
+    try {
+      const instruments = ratesData?.instruments || [];
+      const spotInstruments = baseData?.spotInstruments || [];
+      const crossInstruments = baseData?.crossInstruments || [];
 
-    const combinedInstruments = [...spotInstruments, ...crossInstruments];
+      const combinedInstruments = [...spotInstruments, ...crossInstruments];
 
-    const enrichedData = combinedInstruments.map((spotIns) => {
-      const matchedInstrument = instruments.find(
-        (insData) =>
-          spotIns.instrumentID === insData.instrumentID &&
-          spotIns.secondaryInstrumentID === insData.secondaryInstrumentID
-      );
+      const enrichedData = combinedInstruments.map((spotIns) => {
+        const matchedInstrument = instruments.find(
+          (insData) =>
+            spotIns.instrumentID === insData.instrumentID &&
+            spotIns.secondaryInstrumentID === insData.secondaryInstrumentID
+        );
 
-      return {
-        ...spotIns,
-        bid: matchedInstrument?.bid || 0,
-        offer: matchedInstrument?.offer || 0,
-        instrumentName: spotIns.instrumentName,
-        instrumentID: spotIns.instrumentID,
-        secondaryInstrumentID: spotIns.secondaryInstrumentID,
-        secondaryInstrumentName: spotIns.secondaryInstrumentName,
-      };
-    });
+        return {
+          ...spotIns,
+          bid: matchedInstrument?.bid || 0,
+          offer: matchedInstrument?.offer || 0,
+          instrumentName: spotIns.instrumentName,
+          instrumentID: spotIns.instrumentID,
+          secondaryInstrumentID: spotIns.secondaryInstrumentID,
+          secondaryInstrumentName: spotIns.secondaryInstrumentName,
+        };
+      });
 
-    return enrichedData;
+      return enrichedData;
+    } catch (error) {
+      console.log(error, "Error enriching spot data");
+    }
   };
 
   // -------------------
   // INITIAL DATA POPULATION
   // -------------------
   useEffect(() => {
-    if (!allInstrumentForTreasuryData || !GetCategoryWiseSpotRatesDaata) return;
+    if (!allInstrumentForTreasuryData || GetCategoryWiseSpotRatesDaata) return;
 
     const enrichedData = buildSpotData(
       allInstrumentForTreasuryData,

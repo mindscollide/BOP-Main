@@ -11,7 +11,7 @@ export const NotificationProvider = ({ children }) => {
     setTimeout(() => {
       setMessage("");
     }, 3000);
-  }, []);
+  }, [message]);
 
   return (
     <NotificationContext.Provider value={{ showMessage }}>
