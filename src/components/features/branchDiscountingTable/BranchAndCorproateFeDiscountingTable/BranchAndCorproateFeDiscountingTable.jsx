@@ -10,7 +10,6 @@ import { throttle } from "lodash";
 import { useBidOffer } from "@/context/BidOfferContext";
 
 const BranchAndCorporateFeDiscountingTable = () => {
-
   /**
    * Bid / Offer context
    */
@@ -46,8 +45,7 @@ const BranchAndCorporateFeDiscountingTable = () => {
   );
 
   const getAllInstrumentsForCounterPartiesData = useSelector(
-    (state) =>
-      state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
+    (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
   );
 
   const CounterPartyFeDiscounting = useSelector(
@@ -91,11 +89,9 @@ const BranchAndCorporateFeDiscountingTable = () => {
   useEffect(() => {
     if (
       getAllTenorsRecords !== null &&
-      getAllInstrumentsForCounterPartiesData !== null &&
-      !isTableInitialized.current
+      getAllInstrumentsForCounterPartiesData !== null
     ) {
       try {
-
         const { feDiscountingRates = [] } =
           GetDiscountingRatesForCounterParty ?? {};
 
@@ -125,7 +121,6 @@ const BranchAndCorporateFeDiscountingTable = () => {
            */
           isTableInitialized.current = true;
         }
-
       } catch (error) {
         console.error("Error building discounting table", error);
       }
@@ -148,7 +143,6 @@ const BranchAndCorporateFeDiscountingTable = () => {
   const throttledUpdate = useMemo(
     () =>
       throttle((discountingUpdate) => {
-
         const { feDiscountingInstrumentData } = discountingUpdate;
 
         setDataSource((prevData) =>
@@ -156,30 +150,25 @@ const BranchAndCorporateFeDiscountingTable = () => {
             const updatedRow = { ...row };
 
             Object.keys(row).forEach((key) => {
-
               if (key.startsWith("InstrumentID_")) {
-
                 const currency = key.split("_")[1];
                 const instrumentID = row[key];
                 const tenorID = row.TenorID;
 
                 const match = feDiscountingInstrumentData.find(
                   (d) =>
-                    d.instrumentID === instrumentID &&
-                    d.tenorID === tenorID
+                    d.instrumentID === instrumentID && d.tenorID === tenorID
                 );
 
                 if (match) {
                   updatedRow[`rate_${currency}`] = match.bidWithSpread;
                 }
               }
-
             });
 
             return updatedRow;
           })
         );
-
       }, 20),
     []
   );
@@ -210,24 +199,20 @@ const BranchAndCorporateFeDiscountingTable = () => {
    */
   useEffect(() => {
     if (marketStatus === false) {
-
       setDataSource((prevData) =>
         prevData.map((row) => {
           const updatedRow = { ...row };
 
           Object.keys(row).forEach((key) => {
-
             if (key.startsWith("InstrumentID_")) {
               const currency = key.split("_")[1];
               updatedRow[`rate_${currency}`] = 0;
             }
-
           });
 
           return updatedRow;
         })
       );
-
     }
   }, [marketStatus]);
 
@@ -238,24 +223,20 @@ const BranchAndCorporateFeDiscountingTable = () => {
    */
   useEffect(() => {
     if (ClearRatesData?.areRatesClear) {
-
       setDataSource((prevData) =>
         prevData.map((row) => {
           const updatedRow = { ...row };
 
           Object.keys(row).forEach((key) => {
-
             if (key.startsWith("InstrumentID_")) {
               const currency = key.split("_")[1];
               updatedRow[`rate_${currency}`] = 0;
             }
-
           });
 
           return updatedRow;
         })
       );
-
     }
   }, [ClearRatesData]);
 
@@ -269,7 +250,7 @@ const BranchAndCorporateFeDiscountingTable = () => {
   return (
     <>
       <Row>
-        <Col lg={12} md={12} sm={12} className="heading mb-2">
+        <Col lg={12} md={12} sm={12} className='heading mb-2'>
           FE Discounting
         </Col>
 
@@ -280,7 +261,7 @@ const BranchAndCorporateFeDiscountingTable = () => {
             prefixCls={"branch_forwardsTable"}
             pagination={false}
             bordered
-            rowKey="TenorID"
+            rowKey='TenorID'
             rowClassName={(record, index) =>
               index % 2 === 0
                 ? "branch_forwardsTable-odd"
@@ -290,22 +271,17 @@ const BranchAndCorporateFeDiscountingTable = () => {
         </Col>
       </Row>
 
-      <Row className="my-2">
+      <Row className='my-2'>
         <Col
           lg={12}
           md={12}
           sm={12}
-          className="d-flex justify-content-center align-items-center gap-2"
-        >
+          className='d-flex justify-content-center align-items-center gap-2'>
           <CustomButton
-            value="FE Discounting"
+            value='FE Discounting'
             applyClass={"FEDiscounting"}
             onClick={handleFEDiscountingModal}
-            disabled={
-              !isBid ||
-              marketStatus === false ||
-              !rfqButtonState
-            }
+            disabled={!isBid || marketStatus === false || !rfqButtonState}
           />
         </Col>
       </Row>

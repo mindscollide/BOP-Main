@@ -191,7 +191,6 @@ const RealtimeActionsSlice = createSlice({
       state.BlotterTransactionRFQExpiredForTreasuryDealBox = payload;
     },
     BlotterTransactionAdded(state, { payload }) {
-      console.log("CheckerCheckerChecker122121212", payload);
       state.BlotterTransactionAdded = payload;
     },
     BlotterTransactionAddedForTreasury(state, { payload }) {
