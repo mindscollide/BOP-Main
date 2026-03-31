@@ -8,8 +8,11 @@ import { buildDiscountingTable } from "@/components/utils/generateColumnsData";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import { throttle } from "lodash";
 import { useBidOffer } from "@/context/BidOfferContext";
+import { useModal } from "@/context/ModalContext";
 
 const BranchAndCorporateFeDiscountingTable = () => {
+
+  const {isMarketOn} =useModal()
 
   /**
    * Bid / Offer context
@@ -209,7 +212,7 @@ const BranchAndCorporateFeDiscountingTable = () => {
    * ------------------------------------------------
    */
   useEffect(() => {
-    if (marketStatus === false) {
+    if (isMarketOn === false) {
 
       setDataSource((prevData) =>
         prevData.map((row) => {
@@ -229,7 +232,7 @@ const BranchAndCorporateFeDiscountingTable = () => {
       );
 
     }
-  }, [marketStatus]);
+  }, [isMarketOn]);
 
   /**
    * ------------------------------------------------

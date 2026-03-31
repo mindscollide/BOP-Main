@@ -49,9 +49,12 @@ const RealtimeActionsSlice = createSlice({
     CounterPartySpotRates: null,
     CategorySpotRates: null,
     CategoryForwardRates: null,
-    TreasuryFeDiscounting: null,
-    TreasuryNonFeDiscounting: null,
-    TreasuryForwardRates: null,
+    // TreasuryFeDiscounting: null,
+    // TreasuryNonFeDiscounting: null,
+    // TreasuryForwardRates: null,
+    TreasuryFeDiscounting: [],
+    TreasuryNonFeDiscounting: [],
+    TreasuryForwardRates: [],
     FxTradingCards: null,
     CategoryFeDiscounting: null,
     CounterPartyNonFeDiscounting: null,
@@ -116,10 +119,20 @@ const RealtimeActionsSlice = createSlice({
       state.FxTradingCards = payload;
     },
     setTreasuryFeDiscounting: (state, { payload }) => {
-      state.TreasuryFeDiscounting = payload;
+      // state.TreasuryFeDiscounting = payload;
+
+      state.TreasuryFeDiscounting = [
+        ...(state.TreasuryFeDiscounting ?? []),
+        payload,
+      ];
     },
     setTreasuryNonFeDiscounting: (state, { payload }) => {
-      state.TreasuryNonFeDiscounting = payload;
+      // state.TreasuryNonFeDiscounting = payload;
+      // ✅ accumulate payloads, don't overwrite
+      state.TreasuryNonFeDiscounting = [
+        ...(state.TreasuryNonFeDiscounting ?? []),
+        payload,
+      ];
     },
     setTreasuryForwardRates: (state, { payload }) => {
       // ✅ accumulate payloads, don't overwrite
@@ -250,7 +263,13 @@ const RealtimeActionsSlice = createSlice({
 
     // ✅ add a clear action to reset after processing
     clearTreasuryForwardRates: (state) => {
-      state.TreasuryForwardRates = null;
+      state.TreasuryForwardRates = [];
+    },
+    clearTreasuryFeDiscountingRates: (state) => {
+      state.TreasuryFeDiscounting = [];
+    },
+    clearTreasuryNonFeDiscoutingRates: (state) => {
+      state.TreasuryNonFeDiscounting = [];
     },
   },
 });
@@ -311,7 +330,9 @@ export const {
   clearCategoryForwardClearRates,
   clearCategorySpotClearRates,
   setTresmarkCrossPremiumRates,
-  clearTreasuryForwardRates
+  clearTreasuryForwardRates,
+  clearTreasuryNonFeDiscoutingRates,
+  clearTreasuryFeDiscountingRates,
 } = RealtimeActionsSlice.actions;
 
 export default RealtimeActionsSlice.reducer;

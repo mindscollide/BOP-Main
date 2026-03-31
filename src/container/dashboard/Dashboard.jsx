@@ -101,7 +101,7 @@ import { useBidOffer } from "@/context/BidOfferContext";
 const Dashboard = () => {
   const { Content } = Layout;
   const dispatch = useDispatch();
-  const { setUpdaetTenorsMQTT } = useModal();
+  const { setUpdaetTenorsMQTT,setIsMarketOn } = useModal();
   const navigate = useNavigate();
   const location = useLocation();
   const audioRef = useRef(null);
@@ -182,8 +182,7 @@ const Dashboard = () => {
 
         // ✅ Market & Tenor
         case "TENOR_CREATED":
-
-        clg(payload, "TENOR_CREATED");
+          clg(payload, "TENOR_CREATED");
           dispatch(setTenorsCreated(payload));
           break;
         case "MARKET_TIME_UPDATED":
@@ -311,14 +310,36 @@ const Dashboard = () => {
           startTransition(() => {
             dispatch(BlotterTransactionAccepted(payload));
             dispatch(BlotterTransactionAcceptedForTreasury(payload));
+
+            if (isTreasury) {
+              if (
+                chatModal &&
+                chatModalTransactionId ===
+                  payload?.transaction?.pK_TransactionID
+              ) {
+                dispatch(setChatModal(false));
+              }
+            }
           });
+
           break;
 
         case "BLOTTER_TRANSACTION_CANCELLATION_REQUEST":
           startTransition(() => {
             dispatch(BlotterTransactionCancellationRequest(payload));
             dispatch(BlotterTransactionCancellationRequestForTreasury(payload));
+
+            if (isTreasury) {
+              if (
+                chatModal &&
+                chatModalTransactionId ===
+                  payload?.transaction?.pK_TransactionID
+              ) {
+                dispatch(setChatModal(false));
+              }
+            }
           });
+
           break;
 
         case "BLOTTER_TRANSACTION_CANCELLED":
@@ -343,6 +364,15 @@ const Dashboard = () => {
                 dispatch(GetNOPDataAPI({ navigate }));
               }
             }
+            if (isTreasury) {
+              if (
+                chatModal &&
+                chatModalTransactionId ===
+                  payload?.transaction?.pK_TransactionID
+              ) {
+                dispatch(setChatModal(false));
+              }
+            }
           });
           break;
 
@@ -350,7 +380,15 @@ const Dashboard = () => {
           startTransition(() => {
             dispatch(BlotterTransactionRejected(payload));
             dispatch(BlotterTransactionRejectedForTreasury(payload));
+
+            if (
+              chatModal &&
+              chatModalTransactionId === payload?.transaction?.pK_TransactionID
+            ) {
+              dispatch(setChatModal(false));
+            }
           });
+
           break;
 
         case "BLOTTER_TRANSACTION_ASSIGNED_TO_TREASURY":
@@ -379,7 +417,6 @@ const Dashboard = () => {
           });
           break;
         case "TREASURY_FEDISCOUNTING_RATES_FEED":
-
           startTransition(() => {
             dispatch(setTreasuryFeDiscounting(payload));
           });
@@ -638,6 +675,16 @@ const Dashboard = () => {
       }
     }
   }, [settingData]);
+
+  useEffect(() => {
+    if (marketStatus !== null) {
+      try {
+        setIsMarketOn(marketStatus);
+      } catch (error) {
+        console.log(error, "Error in market status useEffect");
+      }
+    }
+  }, [marketStatus]);
   return (
     <Layout className='roboto-13'>
       {!location.pathname.includes("calculator") && <Header />}

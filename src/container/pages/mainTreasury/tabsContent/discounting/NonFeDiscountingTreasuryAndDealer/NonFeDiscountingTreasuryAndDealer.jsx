@@ -1,14 +1,29 @@
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import GlobalTable from "@/components/common/table/GlobalTable";
 import { buildDiscountingTable } from "@/components/utils/generateColumnsData";
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { throttle } from "lodash";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { clearTreasuryFeDiscountingRates } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
+// import { clearTreasuryNonFeDiscounting } from "@/store/slices/RealtimeActionsSlice"; // ← adjust import path
 
 const NonFeDiscountingTreasuryAndDealer = () => {
+  const dispatch = useDispatch();
+
+  // ---------------- TABLE STATE ----------------
   const [dataSource, setDataSource] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
 
+  // ✅ Ref always holds the latest dataSource snapshot — safe inside throttle
+  const dataSourceRef = useRef([]);
+
+  // ✅ Accumulates incoming MQTT payloads between throttle flushes
+  const pendingRatesRef = useRef([]);
+
+  // ---------------- TABLE INIT FLAG ----------------
+  const isTableInitialized = useRef(false);
+
+  // ---------------- REDUX SELECTORS ----------------
   const GetDiscountingRatesForTreasury = useSelector(
     (state) => state.WatchListReducer.GetDiscountingRatesForTreasury
   );
@@ -18,79 +33,111 @@ const NonFeDiscountingTreasuryAndDealer = () => {
   const GetAllInstrumentForTreasury = useSelector(
     (state) => state.WatchListReducer.GetAllInstrumentForTreasury
   );
-
   const TreasuryNonFeDiscounting = useSelector(
     (state) => state.RealtimeActionsSlice.TreasuryNonFeDiscounting
   );
 
+  // ---------------- INITIAL TABLE BUILD ----------------
+  // Runs once when instruments + tenors are ready.
   useEffect(() => {
-    if (GetAllInstrumentForTreasury !== null && getAllTenorsRecords !== null) {
-      try {
-        const { nonFEDiscountingRates = [] } =
-          GetDiscountingRatesForTreasury !== null &&
-          GetDiscountingRatesForTreasury;
-        let getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
-        let getAllInstrument = {
-          instruments: GetAllInstrumentForTreasury.nonFEDiscountingInstruments,
-        };
-        const { columnsData, rowData } = buildDiscountingTable(
-          3,
-          nonFEDiscountingRates,
-          getAllTenorsData,
-          getAllInstrument,
-          IndexCell
-        );
+    if (
+      isTableInitialized.current ||
+      !getAllTenorsRecords ||
+      !GetAllInstrumentForTreasury
+    )
+      return;
 
-        if (rowData.length > 0) {
-          setDataSource(rowData);
-          setColumnsData(columnsData);
-        }
-      } catch (error) {}
+    try {
+      const { nonFEDiscountingRates = [] } =
+        GetDiscountingRatesForTreasury ?? {};
+
+      const getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
+      const getAllInstrument = {
+        instruments: GetAllInstrumentForTreasury.nonFEDiscountingInstruments,
+      };
+
+      const { columnsData: cols, rowData } = buildDiscountingTable(
+        3,
+        nonFEDiscountingRates,
+        getAllTenorsData,
+        getAllInstrument,
+        IndexCell
+      );
+
+      // ✅ Mark initialized regardless of rowData length so MQTT
+      //    effect can manage rows independently from this point on.
+      isTableInitialized.current = true;
+      setColumnsData(cols);
+
+      if (rowData?.length) {
+        dataSourceRef.current = rowData;
+        setDataSource(rowData);
+      }
+    } catch (error) {
+      console.error("Error building discounting table:", error);
     }
-  }, [
-    getAllTenorsRecords,
-    GetAllInstrumentForTreasury,
-    GetDiscountingRatesForTreasury,
-  ]);
+  }, [getAllTenorsRecords, GetAllInstrumentForTreasury, GetDiscountingRatesForTreasury]);
 
-  const throttledUpdate = useMemo(
-    () =>
-      throttle((discountingUpdate) => {
-        const nonFeDiscountingRates =
-          discountingUpdate?.nonFeDiscountingRates || [];
+  // ---------------- THROTTLED MQTT RATE UPDATE ----------------
+  // Reads from refs — never stale, never recreated.
+  const throttledUpdateRef = useRef(
+    throttle(() => {
+      // ✅ Drain the pending batch
+      const batch = pendingRatesRef.current;
+      if (!batch.length) return;
 
-        if (nonFeDiscountingRates.length === 0) return;
+      // ✅ Flatten all payloads into one rates array
+      const allRates = batch.flatMap(
+        (payload) => payload.nonFeDiscountingRates ?? []
+      );
+      if (!allRates.length) return;
 
-        setDataSource((prevData) =>
-          prevData.map((row) => {
-            let updatedRow = { ...row };
+      // ✅ Apply all rates in a single pass over the current snapshot
+      const updated = dataSourceRef.current.map((row) => {
+        const updatedRow = { ...row };
 
-            nonFeDiscountingRates.forEach((d) => {
-              Object.keys(row).forEach((key) => {
-                if (
-                  key.startsWith("InstrumentID_") &&
-                  row[key] === d.instrumentID &&
-                  row.TenorID === d.tenorID
-                ) {
-                  const currency = key.split("_")[1];
-                  updatedRow[`rate_${currency}`] = d.bidWithSpread;
-                }
-              });
-            });
+        allRates.forEach((d) => {
+          if (String(row.TenorID) !== String(d.tenorID)) return;
 
-            return updatedRow;
-          })
-        );
-      }, 20),
-    []
-  ); // 300ms throttle
+          const instrumentKey = Object.keys(row).find(
+            (key) =>
+              key.startsWith("InstrumentID_") &&
+              String(row[key]) === String(d.instrumentID)
+          );
 
+          if (!instrumentKey) return;
+
+          const currency = instrumentKey.replace("InstrumentID_", "");
+          updatedRow[`rate_${currency}`] = d.bidWithSpread;
+        });
+
+        return updatedRow;
+      });
+
+      dataSourceRef.current = updated;
+      setDataSource(updated);
+
+      // ✅ Clear batch and Redux state after processing
+      pendingRatesRef.current = [];
+      dispatch(clearTreasuryFeDiscountingRates());
+    }, 100) // 100ms — matches BankForwards convention
+  );
+
+  // ✅ Accumulate each incoming MQTT payload, then fire throttle
   useEffect(() => {
-    if (TreasuryNonFeDiscounting) {
-      throttledUpdate(TreasuryNonFeDiscounting);
-    }
-  }, [TreasuryNonFeDiscounting, throttledUpdate]);
+    if (!TreasuryNonFeDiscounting) return;
 
+    pendingRatesRef.current = [...pendingRatesRef.current, TreasuryNonFeDiscounting];
+    throttledUpdateRef.current();
+  }, [TreasuryNonFeDiscounting]);
+
+  // ✅ Cancel throttle on unmount only
+  useEffect(() => {
+    const throttledFn = throttledUpdateRef.current;
+    return () => throttledFn.cancel();
+  }, []);
+
+  // ---------------- RENDER ----------------
   return (
     <>
       <span className="heading mb-2">Non FE Discounting</span>

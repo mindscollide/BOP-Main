@@ -16,7 +16,9 @@ const EMPTY_RATE_VALUE = "-"; // single convention for "no rate"
 
 const BranchForwardsTable = () => {
   const { bidOfferStatus } = useBidOffer();
-  const { allForwardApplicableTenors } = useModal();
+  const { allForwardApplicableTenors,isMarketOn } = useModal();
+
+
 
   // ---------------- TABLE STATE ----------------
   const [dataSource, setDataSource] = useState([]);
@@ -289,9 +291,10 @@ const BranchForwardsTable = () => {
     setDataSource(cleared);
   };
 
+
   useEffect(() => {
-    if (marketStatus === false || ClearRatesData?.areRatesClear) resetRates();
-  }, [marketStatus, ClearRatesData]);
+    if (isMarketOn === false || ClearRatesData?.areRatesClear) resetRates();
+  }, [isMarketOn, ClearRatesData]);
 
   // ---------------- OPEN BOOK FORWARD MODAL ----------------
   const handleBookaForwardCorporate = () => setBookaForwardModalCall(true);

@@ -5,6 +5,7 @@ const ModalContext = createContext();
 
 export const GloballyModalProvider = ({ children }) => {
   const tenorsRef = useRef(null);
+  const [isMarketOn, setIsMarketOn] = useState(false);
   const [createTenorModal, setCreateTenorModal] = useState(false);
   const [iSellAndBuyModal, setISellAndBuyModal] = useState(false);
   const [settingModal, setSettingModal] = useState(false);
@@ -38,6 +39,7 @@ export const GloballyModalProvider = ({ children }) => {
       }
     }
   }, [getAllTenorsRecords]);
+
 
   useEffect(() => {
     if (!updateTenorsMQTT || !tenorsRef.current) return;
@@ -74,7 +76,6 @@ export const GloballyModalProvider = ({ children }) => {
     }
   }, [updateTenorsMQTT]);
 
-
   const value = {
     allForwardApplicableTenors,
     createTenorModal,
@@ -95,6 +96,8 @@ export const GloballyModalProvider = ({ children }) => {
     setPublishedSpotRates,
     setUpdaetTenorsMQTT,
     updateTenorsMQTT,
+    isMarketOn,
+    setIsMarketOn,
     forwardTenors: allForwardApplicableTenors,
   };
   return (
