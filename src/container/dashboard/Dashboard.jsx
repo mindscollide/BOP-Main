@@ -101,7 +101,7 @@ import { useBidOffer } from "@/context/BidOfferContext";
 const Dashboard = () => {
   const { Content } = Layout;
   const dispatch = useDispatch();
-  const { setUpdaetTenorsMQTT,setIsMarketOn } = useModal();
+  const { setUpdaetTenorsMQTT, setIsMarketOn } = useModal();
   const navigate = useNavigate();
   const location = useLocation();
   const audioRef = useRef(null);
@@ -422,6 +422,7 @@ const Dashboard = () => {
           });
           break;
         case "TREASURY_NONFEDISCOUNTING_RATES_FEED":
+          console.log("TREASURY_NONFEDISCOUNTING_RATES_FEED", payload);
           startTransition(() => {
             dispatch(setTreasuryNonFeDiscounting(payload));
           });

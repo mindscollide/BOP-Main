@@ -4,8 +4,7 @@ import { buildDiscountingTable } from "@/components/utils/generateColumnsData";
 import React, { useEffect, useState, useRef } from "react";
 import { throttle } from "lodash";
 import { useSelector, useDispatch } from "react-redux";
-import { clearTreasuryFeDiscountingRates } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
-// import { clearTreasuryNonFeDiscounting } from "@/store/slices/RealtimeActionsSlice"; // ← adjust import path
+import { clearTreasuryNonFeDiscoutingRates } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 
 const NonFeDiscountingTreasuryAndDealer = () => {
   const dispatch = useDispatch();
@@ -14,11 +13,11 @@ const NonFeDiscountingTreasuryAndDealer = () => {
   const [dataSource, setDataSource] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
 
-  // ✅ Ref always holds the latest dataSource snapshot — safe inside throttle
+  // ✅ Always holds latest dataSource snapshot — safe inside throttle
   const dataSourceRef = useRef([]);
 
-  // ✅ Accumulates incoming MQTT payloads between throttle flushes
-  const pendingRatesRef = useRef([]);
+  // ✅ Mirrors the Redux accumulated array — no double-wrapping
+  const treasuryNonFeDiscountingRef = useRef([]);
 
   // ---------------- TABLE INIT FLAG ----------------
   const isTableInitialized = useRef(false);
@@ -38,7 +37,6 @@ const NonFeDiscountingTreasuryAndDealer = () => {
   );
 
   // ---------------- INITIAL TABLE BUILD ----------------
-  // Runs once when instruments + tenors are ready.
   useEffect(() => {
     if (
       isTableInitialized.current ||
@@ -64,8 +62,6 @@ const NonFeDiscountingTreasuryAndDealer = () => {
         IndexCell
       );
 
-      // ✅ Mark initialized regardless of rowData length so MQTT
-      //    effect can manage rows independently from this point on.
       isTableInitialized.current = true;
       setColumnsData(cols);
 
@@ -74,25 +70,25 @@ const NonFeDiscountingTreasuryAndDealer = () => {
         setDataSource(rowData);
       }
     } catch (error) {
-      console.error("Error building discounting table:", error);
+      console.error("Error building NonFE discounting table:", error);
     }
   }, [getAllTenorsRecords, GetAllInstrumentForTreasury, GetDiscountingRatesForTreasury]);
 
   // ---------------- THROTTLED MQTT RATE UPDATE ----------------
-  // Reads from refs — never stale, never recreated.
   const throttledUpdateRef = useRef(
     throttle(() => {
-      // ✅ Drain the pending batch
-      const batch = pendingRatesRef.current;
-      if (!batch.length) return;
+      // ✅ Read directly from ref — always the latest Redux array snapshot
+      const batch = treasuryNonFeDiscountingRef.current;
+      if (!batch?.length) return;
 
-      // ✅ Flatten all payloads into one rates array
+      // ✅ batch is already [{message, nonFeDiscountingRates: [...]}, ...]
+      //    just flatMap the inner rates arrays — no double-nesting
       const allRates = batch.flatMap(
         (payload) => payload.nonFeDiscountingRates ?? []
       );
+
       if (!allRates.length) return;
 
-      // ✅ Apply all rates in a single pass over the current snapshot
       const updated = dataSourceRef.current.map((row) => {
         const updatedRow = { ...row };
 
@@ -117,17 +113,16 @@ const NonFeDiscountingTreasuryAndDealer = () => {
       dataSourceRef.current = updated;
       setDataSource(updated);
 
-      // ✅ Clear batch and Redux state after processing
-      pendingRatesRef.current = [];
-      dispatch(clearTreasuryFeDiscountingRates());
-    }, 100) // 100ms — matches BankForwards convention
+      // ✅ Clear Redux array after processing
+      dispatch(clearTreasuryNonFeDiscoutingRates());
+    }, 10)
   );
 
-  // ✅ Accumulate each incoming MQTT payload, then fire throttle
+  // ✅ Mirror Redux array into ref directly — no extra wrapping
   useEffect(() => {
-    if (!TreasuryNonFeDiscounting) return;
+    if (!TreasuryNonFeDiscounting?.length) return;
 
-    pendingRatesRef.current = [...pendingRatesRef.current, TreasuryNonFeDiscounting];
+    treasuryNonFeDiscountingRef.current = TreasuryNonFeDiscounting;
     throttledUpdateRef.current();
   }, [TreasuryNonFeDiscounting]);
 
@@ -137,7 +132,6 @@ const NonFeDiscountingTreasuryAndDealer = () => {
     return () => throttledFn.cancel();
   }, []);
 
-  // ---------------- RENDER ----------------
   return (
     <>
       <span className="heading mb-2">Non FE Discounting</span>
