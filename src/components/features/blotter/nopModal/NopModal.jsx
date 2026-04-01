@@ -18,7 +18,6 @@ const NopModal = ({ openNopModal, setOpenNopModal }) => {
   const navigate = useNavigate();
   const [dataSource, setDataSource] = useState(null);
   const GetNOPData = useSelector((state) => state.BlotterSlicer.GetNOPData);
-  console.log("GetNOPDataGetNOPData: ", GetNOPData);
 
   const GetAllInstrumentForTreasury = useSelector(
     (state) => state.WatchListReducer.GetAllInstrumentForTreasury
@@ -49,10 +48,7 @@ const NopModal = ({ openNopModal, setOpenNopModal }) => {
       GetNOPData?.listOfInstruments &&
       GetAllInstrumentForTreasury !== null
     ) {
-      console.log(
-        GetAllInstrumentForTreasury,
-        "GetAllInstrumentForTreasuryGetAllInstrumentForTreasuryGetAllInstrumentForTreasury"
-      );
+  
       const NOPData = GetNOPData.listOfInstruments.map((data, index) => ({
         key: index.toString(),
         name: <p className="fw-bold m-0">{data.instrumentName}</p>,

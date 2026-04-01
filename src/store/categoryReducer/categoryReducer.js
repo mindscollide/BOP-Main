@@ -15,6 +15,7 @@ const categoryReducer = createSlice({
     GetCategoryWiseSpotRates: null,
     GetCategoryWiseForwardRates: null,
     GetCategoryWiseDiscountingRates: null,
+    currentCategoryActiveTab: "Spot",
   },
   reducers: {
     UpdateGetCategoryWiseForwardRates: (state) => {
@@ -29,6 +30,9 @@ const categoryReducer = createSlice({
     clearCatgeoryResponseMessage: (state) => {
       state.responseMessage = "";
     },
+    setCurrentCategoryActiveTab : (state, { payload }) => {
+      state.currentCategoryActiveTab = payload;
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -104,6 +108,7 @@ export const {
   UpdatetCategoryWiseSpotRates,
   UpdateGetCategoryWiseDiscountingRates,
   UpdateGetCategoryWiseForwardRates,
+  setCurrentCategoryActiveTab
 } = categoryReducer.actions;
 
 export default categoryReducer.reducer;

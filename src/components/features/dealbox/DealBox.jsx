@@ -1,41 +1,92 @@
 import CustomButton from "@/components/common/globalButton/button";
 import React, { useEffect, useState } from "react";
 import styles from "./DealBox.module.css";
-
 import { Col, Row } from "react-bootstrap";
 import IconElement from "@/components/common/IconElement/IconElement";
 import { useDispatch } from "react-redux";
-import {
-  setDealModalRequest,
-  setViewDealModal,
-} from "@/store/modalSlice/modalSlicer";
+import { setDealModalRequest } from "@/store/modalSlice/modalSlicer";
 import { motion } from "framer-motion";
 import { setBlotterTransactionAddedForTreasuryDealBox } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { useSelector } from "react-redux";
+import { setActiveTreasuryTab } from "@/store/BlotterSlicer/BlotterSlicer";
+import { useNavigate } from "react-router-dom";
+import { setActiveTab } from "@/container/pages/mainCorporate/rfqModal/RFQSlicer";
 
 const DealBox = () => {
+  const navigate = useNavigate();
   const [transactionData, setTransactionData] = useState(null);
+  const activeTab = useSelector(
+    (state) => state.BlotterSlicer.activeTabBlotter
+  );
   const blotterTransactionAdded = useSelector(
-    (state) =>
-      state.RealtimeActionsSlice.BlotterTransactionAddedForTreasuryDealBox
+    (state) => state.RealtimeActionsSlice.BlotterTransactionAddedForTreasury
   );
-  console.log(
-    blotterTransactionAdded,
-    "blotterTransactionAddedblotterTransactionAdded"
-  );
+
   const dispatch = useDispatch();
+  // const openViewDealModal = () => {
+  //   const currentPath = window.location.pathname;
+  //   const activeTreasuryTab = localStorage.getItem("activeTreasuryTab");
+  //   const activeTransactionTab = localStorage.getItem("activeTransactionTab");
+  //   if (
+  //     currentPath !== "/BOP/treasury" ||
+  //     (currentPath === "/BOP/treasury" &&
+  //       activeTransactionTab !== "Outstanding Deals" &&
+  //       activeTreasuryTab !== "Live Rates")
+  //   ) {
+  //     if (currentPath !== "/BOP/treasury") {
+  //       navigate("/BOP/treasury");
+  //     }
+
+  //     localStorage.setItem("activeTreasuryTab", "Live Rates");
+  //     localStorage.setItem("activeTransactionTab", "Outstanding Deals");
+
+  //     window.scrollTo({
+  //       top: document.body.scrollHeight,
+  //       behavior: "smooth",
+  //     });
+  //   }
+
+  //   dispatch(setDealModalRequest(false));
+  //   dispatch(setBlotterTransactionAddedForTreasuryDealBox(null));
+  // };
+
   const openViewDealModal = () => {
-    dispatch(setViewDealModal(true));
-    // setDealData(record);
+    const currentPath = window.location.pathname;
+  
+    // Ensure Treasury tab
+    if (localStorage.getItem("activeTreasuryTab") !== "Live Rates") {
+      localStorage.setItem("activeTreasuryTab", "Live Rates");
+      dispatch(setActiveTab("Live Rates")); // update UI
+    }
+  
+    // Ensure Transaction tab
+    if (localStorage.getItem("activeTransactionTab") !== "Outstanding Deals") {
+      localStorage.setItem("activeTransactionTab", "Outstanding Deals");
+      dispatch(setActiveTreasuryTab("Outstanding Deals")); // <-- important
+    }
+  
+    // Navigate to treasury if needed
+    if (currentPath !== "/BOP/treasury") {
+      navigate("/BOP/treasury");
+    }
+  
+    // Scroll to bottom
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      behavior: "smooth",
+    });
+  
+    dispatch(setDealModalRequest(false));
+    dispatch(setBlotterTransactionAddedForTreasuryDealBox(null));
   };
 
   useEffect(() => {
-    setTimeout(() => {
-      dispatch(setDealModalRequest(false));
-      dispatch(setBlotterTransactionAddedForTreasuryDealBox(null));
-    }, 5000);
+    // setTimeout(() => {
+    //   dispatch(setDealModalRequest(false));
+    //   dispatch(setBlotterTransactionAddedForTreasuryDealBox(null));
+    // }, 9000);
   }, []);
-  console.log(transactionData, "transactionDatatransactionData");
+
   useEffect(() => {
     if (blotterTransactionAdded !== null) {
       try {
@@ -44,6 +95,11 @@ const DealBox = () => {
       } catch (error) {}
     }
   }, [blotterTransactionAdded]);
+
+  const handleClosePopup = () => {
+    dispatch(setDealModalRequest(false));
+    dispatch(setBlotterTransactionAddedForTreasuryDealBox(null));
+  };
 
   return (
     <motion.section
@@ -58,7 +114,7 @@ const DealBox = () => {
         </Col>
         <Col sm={2} md={2} lg={2} className='d-flex justify-content-end px-0'>
           <IconElement
-            onClick={() => dispatch(setDealModalRequest(false))}
+            onClick={handleClosePopup}
             iconClass={"icon-close cursor-pointer"}
           />
         </Col>

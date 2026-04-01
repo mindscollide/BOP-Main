@@ -205,24 +205,12 @@ export const isHolidayForInstrument = (
   if (!selectedDate || !selectedInstrumentId || holidays.length === 0)
     return false;
 
-  console.log(
-    "Checking holidays for date:",
-    selectedDate,
-    selectedInstrumentId,
-    holidays
-  );
 
   const selected = new Date(selectedDate).toDateString();
 
   return holidays.some((holiday) => {
     const holidayDate = new Date(holiday.holidayDate).toDateString();
-    console.log(
-      "isHolidayForInstrumentisHolidayForInstrument",
-      holidayDate,
-      selected,
-      holiday,
-      selectedInstrumentId
-    );
+
     return (
       holidayDate === selected &&
       holiday.currencyIds.includes(selectedInstrumentId)
@@ -236,12 +224,7 @@ export const isHolidayTwoDatesForInstrument = (
   selectedInstrumentId,
   holidays = []
 ) => {
-  console.log(
-    "isHolidayTwoDatesForInstrument called with:",
-    selectedDatesObj,
-    selectedInstrumentId,
-    holidays
-  );
+
   if (!selectedDatesObj || !selectedInstrumentId || holidays.length === 0)
     return false;
 

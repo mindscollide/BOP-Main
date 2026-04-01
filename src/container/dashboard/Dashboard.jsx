@@ -73,7 +73,6 @@ import {
 import { formatDateToUTC } from "@/utils/formatters";
 import { LogoutApi } from "../loginScreens/authActions/logoutAction";
 import DealBox from "@/components/features/dealbox/DealBox";
-import DealViewModal from "../pages/mainCorporate/rfqModal/SpotQuoteModal/SpotQuoteModal";
 import {
   setChatModal,
   setDealModalRequest,
@@ -97,10 +96,12 @@ import { setUpdateVolMeterRealtime } from "@/store/dealerReducer/dealerSlicer";
 import { GetNOPDataAPI } from "@/components/features/blotter/BlotterActions";
 import { getUserSettingDataAPI } from "@/components/features/settingsModal/settingActions";
 import { updateForwardTenors } from "../../store/dealerReducer/dealerSlicer";
+import { useModal } from "@/context/ModalContext";
+import { useBidOffer } from "@/context/BidOfferContext";
 const Dashboard = () => {
   const { Content } = Layout;
   const dispatch = useDispatch();
-
+  const { setUpdaetTenorsMQTT, setIsMarketOn } = useModal();
   const navigate = useNavigate();
   const location = useLocation();
   const audioRef = useRef(null);
@@ -109,6 +110,7 @@ const Dashboard = () => {
   const prevPathRef = useRef(null);
   const chatModal = useSelector((state) => state.modalReducer.chatModal);
   const settingData = useSelector((state) => state.settingSlicer.settingData);
+  const handleMqttMessageRef = useRef(null);
 
   const [isSoundOn, setIsSoundOn] = useState(false);
   // console.log(isSoundOn, "settingModalsettingModal");
@@ -180,6 +182,7 @@ const Dashboard = () => {
 
         // ✅ Market & Tenor
         case "TENOR_CREATED":
+          clg(payload, "TENOR_CREATED");
           dispatch(setTenorsCreated(payload));
           break;
         case "MARKET_TIME_UPDATED":
@@ -211,7 +214,7 @@ const Dashboard = () => {
         case "TENOR_WISE_FORWARD_RATES_PUBLISHED":
           startTransition(() => {
             dispatch(tenorWiseFowardsRatesPublishedActions(payload));
-
+            console.log(payload, "TENOR_WISE_FORWARD_RATES_PUBLISHED");
             let tenorsData = {
               newIsForwardtenorList:
                 payload.tenorWiseForwardRates.newIsForwardtenorList,
@@ -262,6 +265,7 @@ const Dashboard = () => {
 
         // ✅ Blotter Transaction Events (heavy updates → use startTransition)
         case "BLOTTER_TRANSACTION_ADDED":
+          console.log(payload, "BLOTTER_TRANSACTION_ADDED");
           startTransition(() => {
             dispatch(BlotterTransactionAdded(payload));
             dispatch(BlotterTransactionAddedForTreasury(payload));
@@ -306,14 +310,36 @@ const Dashboard = () => {
           startTransition(() => {
             dispatch(BlotterTransactionAccepted(payload));
             dispatch(BlotterTransactionAcceptedForTreasury(payload));
+
+            if (isTreasury) {
+              if (
+                chatModal &&
+                chatModalTransactionId ===
+                  payload?.transaction?.pK_TransactionID
+              ) {
+                dispatch(setChatModal(false));
+              }
+            }
           });
+
           break;
 
         case "BLOTTER_TRANSACTION_CANCELLATION_REQUEST":
           startTransition(() => {
             dispatch(BlotterTransactionCancellationRequest(payload));
             dispatch(BlotterTransactionCancellationRequestForTreasury(payload));
+
+            if (isTreasury) {
+              if (
+                chatModal &&
+                chatModalTransactionId ===
+                  payload?.transaction?.pK_TransactionID
+              ) {
+                dispatch(setChatModal(false));
+              }
+            }
           });
+
           break;
 
         case "BLOTTER_TRANSACTION_CANCELLED":
@@ -338,6 +364,15 @@ const Dashboard = () => {
                 dispatch(GetNOPDataAPI({ navigate }));
               }
             }
+            if (isTreasury) {
+              if (
+                chatModal &&
+                chatModalTransactionId ===
+                  payload?.transaction?.pK_TransactionID
+              ) {
+                dispatch(setChatModal(false));
+              }
+            }
           });
           break;
 
@@ -345,7 +380,15 @@ const Dashboard = () => {
           startTransition(() => {
             dispatch(BlotterTransactionRejected(payload));
             dispatch(BlotterTransactionRejectedForTreasury(payload));
+
+            if (
+              chatModal &&
+              chatModalTransactionId === payload?.transaction?.pK_TransactionID
+            ) {
+              dispatch(setChatModal(false));
+            }
           });
+
           break;
 
         case "BLOTTER_TRANSACTION_ASSIGNED_TO_TREASURY":
@@ -379,6 +422,7 @@ const Dashboard = () => {
           });
           break;
         case "TREASURY_NONFEDISCOUNTING_RATES_FEED":
+          console.log("TREASURY_NONFEDISCOUNTING_RATES_FEED", payload);
           startTransition(() => {
             dispatch(setTreasuryNonFeDiscounting(payload));
           });
@@ -497,7 +541,9 @@ const Dashboard = () => {
         case "UPDATED_TENORS":
           startTransition(() => {
             dispatch(updateForwardTenors(payload));
+            setUpdaetTenorsMQTT(payload);
           });
+          break;
         default:
           console.warn("No specific handler for this message type", payload);
           break;
@@ -630,6 +676,16 @@ const Dashboard = () => {
       }
     }
   }, [settingData]);
+
+  useEffect(() => {
+    if (marketStatus !== null) {
+      try {
+        setIsMarketOn(marketStatus);
+      } catch (error) {
+        console.log(error, "Error in market status useEffect");
+      }
+    }
+  }, [marketStatus]);
   return (
     <Layout className='roboto-13'>
       {!location.pathname.includes("calculator") && <Header />}
@@ -638,9 +694,9 @@ const Dashboard = () => {
       <Content>
         <main className='px-3'>
           <Outlet />
-          {/* <AnimatePresence>
+          <AnimatePresence>
             {blotterTransactionAdded && isTreasury && <DealBox />}
-          </AnimatePresence> */}
+          </AnimatePresence>
           {transactionInfoModal && <InfoTransaction />}
 
           {chatModal && <ChatBox />}

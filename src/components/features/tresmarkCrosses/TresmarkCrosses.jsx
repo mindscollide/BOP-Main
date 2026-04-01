@@ -1,34 +1,39 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import GlobalTable from "../../common/table/GlobalTable";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import { buildTresmarkCrossPremiumTable } from "@/components/utils/generateColumnsData";
 import { throttle } from "lodash";
 import { setTreasuryFowardsTenorsChanges } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
-import { useDispatch } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { GetTresmarkCrossesPremiumsAPI } from "./TresmarkCrossesActions";
+
+const EMPTY_RATE_VALUE = null;
 
 const TresmarkCrosses = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const location = useLocation();
-  const [dataSource, setDataSource] = useState([]);
 
+  // ---------------- TABLE STATE ----------------
+  const [dataSource, setDataSource] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
 
+  // ✅ refs to avoid stale closures in throttle
+  const dataSourceRef = useRef([]);
+  const tresmarkRatesRef = useRef(null);
+
+  const isTableInitialized = useRef(false);
+
+  // ---------------- REDUX SELECTORS ----------------
   const allInstrumentForTreasuryData = useSelector(
     (state) => state.WatchListReducer.GetAllInstrumentForTreasury
   );
-
   const getAllTenorsRecords = useSelector(
     (state) => state.dealerReducer.getAllTenors
   );
-
   const tresmarkCrossPremiumRates = useSelector(
     (state) => state.RealtimeActionsSlice.tresmarkCrossPremiumRates
   );
-
   const GetTresmarkCrossesPremiums = useSelector(
     (state) => state.TresmarkCrossesSlicer.GetTresmarkCrossesPremiums
   );
@@ -36,40 +41,46 @@ const TresmarkCrosses = () => {
     (state) => state.RealtimeActionsSlice.treasuryFowardsTenorsChanges
   );
 
-  const GetAllInstrumentForTreasury = useSelector(
-    (state) => state.WatchListReducer.GetAllInstrumentForTreasury
-  );
-
+  // ---------------- FETCH ON MOUNT ----------------
   useEffect(() => {
-    dispatch(GetTresmarkCrossesPremiumsAPI({ navigate }));
+    dispatch(GetTresmarkCrossesPremiumsAPI());
   }, []);
 
-  // Define the columns structure for the Ant Design Table
-  // Define the data source for the Ant Design Table
+  // ---------------- INITIAL TABLE BUILD ----------------
   useEffect(() => {
-    if (getAllTenorsRecords !== null && allInstrumentForTreasuryData !== null) {
-      try {
-        let getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
-        let getAllInstrument = {
-          instruments: allInstrumentForTreasuryData.forwardInstruments,
-        };
+    if (
+      isTableInitialized.current ||
+      !getAllTenorsRecords ||
+      !allInstrumentForTreasuryData
+    )
+      return;
 
-        const { crossesPremiumsRates = [] } =
-          GetTresmarkCrossesPremiums !== null && GetTresmarkCrossesPremiums;
-        const { rowData, columnsData } = buildTresmarkCrossPremiumTable(
-          3,
-          crossesPremiumsRates,
-          getAllTenorsData,
-          getAllInstrument,
-          IndexCell
-        );
-        if (rowData.length > 0) {
-          setDataSource(rowData);
-          setColumnsData(columnsData);
-        }
-      } catch (error) {
-        console.log(error, "Error while building discounting table");
+    try {
+      const getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
+      const getAllInstrument = {
+        instruments: allInstrumentForTreasuryData.forwardInstruments,
+      };
+
+      // ✅ clean null check
+      const { crossesPremiumsRates = [] } = GetTresmarkCrossesPremiums ?? {};
+
+      const { rowData, columnsData: cols } = buildTresmarkCrossPremiumTable(
+        3,
+        crossesPremiumsRates,
+        getAllTenorsData,
+        getAllInstrument,
+        IndexCell
+      );
+
+      isTableInitialized.current = true;
+
+      if (rowData?.length) {
+        dataSourceRef.current = rowData;
+        setDataSource(rowData);
+        setColumnsData(cols);
       }
+    } catch (error) {
+      console.error("Error building Tresmark Crosses table:", error);
     }
   }, [
     allInstrumentForTreasuryData,
@@ -77,107 +88,164 @@ const TresmarkCrosses = () => {
     GetTresmarkCrossesPremiums,
   ]);
 
+  // ---------------- TENOR SYNC ----------------
   useEffect(() => {
-    if (
-      treasuryFowardsTenorsChanges !== null &&
-      getAllTenorsRecords !== null &&
-      GetAllInstrumentForTreasury !== null
-    ) {
-      try {
-        const { newIsForwardtenorList = [], removedtenorList = [] } =
-          treasuryFowardsTenorsChanges;
-        const allTenors = [...(getAllTenorsRecords.tenors || [])];
+    // ✅ guard: only run if there's actually a change payload
+    if (!treasuryFowardsTenorsChanges || !isTableInitialized.current) return;
 
-        const { forwardInstruments } = GetAllInstrumentForTreasury;
-        // Convert arrays of objects to Set of IDs
-        const removedSet = new Set(
-          removedtenorList.map((item) => item.tenorID)
-        );
-        const newSet = new Set(
-          newIsForwardtenorList.map((item) => item.tenorID)
-        );
+    // ✅ snapshot refs at effect start — prevents stale reads
+    const currentTenors = getAllTenorsRecords?.tenors;
+    const currentInstruments =
+      allInstrumentForTreasuryData?.forwardInstruments;
 
-        // Update each tenor's isForwardingApplicable field
-        const updatedTenors = allTenors.map((tenor) => ({
-          ...tenor,
-          isForwardingApplicable: removedSet.has(tenor.tenorID) ? false : true, // leave unchanged if in neither
-        }));
-        // const filteredTenors = updatedTenors.filter(
-        //   (t) => t.isForwardingApplicable
-        // );
-        // console.log(updatedTenors, "updatedTenorsupdatedTenors");
-        let getAllTenorsData = { tenors: updatedTenors };
-        let getAllInstrument = {
-          instruments: forwardInstruments,
-        };
-
-        const { crossesPremiumsRates = [] } =
-          GetTresmarkCrossesPremiums !== null && GetTresmarkCrossesPremiums;
-        // const { forwardInstruments } = GetAllInstrumentForTreasury;
-        const { rowData, columnsData } = buildTresmarkCrossPremiumTable(
-          3,
-          crossesPremiumsRates,
-          getAllTenorsData,
-          getAllInstrument,
-          IndexCell
-        );
-        if (rowData.length > 0) {
-          setDataSource(rowData);
-          setColumnsData(columnsData);
-        }
-        dispatch(setTreasuryFowardsTenorsChanges(null));
-        // console.log(updatedTenors, "updatedTenorsupdatedTenors");
-      } catch (error) {
-        console.log(error);
-      }
+    if (!currentTenors || !currentInstruments) {
+      dispatch(setTreasuryFowardsTenorsChanges(null));
+      return;
     }
-  }, [
-    treasuryFowardsTenorsChanges,
-    getAllTenorsRecords,
-    GetAllInstrumentForTreasury,
-  ]);
 
-  const throttledTresmarkPremiumRatesUpdate = useMemo(
-    () =>
-      throttle((tresmarkPremiumRatesUpdate) => {
-        const { crossesPremiumsRates } = tresmarkPremiumRatesUpdate;
+    try {
+      const { newIsForwardtenorList = [], removedtenorList = [] } =
+        treasuryFowardsTenorsChanges;
 
-        setDataSource((prevData) =>
-          prevData.map((row) => {
-            let updatedRow = { ...row };
+      const removedSet = new Set(removedtenorList.map((t) => t.tenorID));
 
-            crossesPremiumsRates.forEach((d) => {
-              Object.keys(row).forEach((key) => {
-                if (
-                  key.startsWith("InstrumentID_") &&
-                  row[key] === d.instrumentID &&
-                  row.tenorID === d.tenorID
-                ) {
-                  const currency = key.split("_")[1]; // e.g., USD
-                  updatedRow[`bid_${currency}`] = d.bidPremium;
-                  updatedRow[`ask_${currency}`] = d.askPremium;
-                }
-              });
-            });
+      // ✅ instead of rebuilding the whole table, add/remove rows from ref
+      // REMOVALS
+      let updatedRows = dataSourceRef.current.filter(
+        (row) => !removedSet.has(row.tenorID)
+      );
 
-            return updatedRow;
-          })
-        );
-      }, 20),
-    []
+      // ✅ snapshot before filter for rate inheritance
+      const snapshotRows = [...dataSourceRef.current];
+      const referenceRow = updatedRows[0] ?? snapshotRows[0] ?? null;
+      const existingIDs = new Set(updatedRows.map((r) => r.tenorID));
+
+      // ADDITIONS
+      newIsForwardtenorList.forEach((addedTenor) => {
+        if (existingIDs.has(addedTenor.tenorID)) return;
+
+        const fullTenor =
+          currentTenors.find((t) => t.tenorID === addedTenor.tenorID) ??
+          addedTenor;
+
+        const previousRow =
+          snapshotRows.find((r) => r.tenorID === addedTenor.tenorID) ?? null;
+
+        // Build instrument meta from referenceRow
+        const instrumentMeta = referenceRow
+          ? Object.fromEntries(
+              Object.entries(referenceRow).filter(
+                ([key]) =>
+                  key.startsWith("InstrumentID_") ||
+                  key.startsWith("InstrumentName_")
+              )
+            )
+          : {};
+
+        // Build bid/ask values
+        const bidAskValues = referenceRow
+          ? Object.fromEntries(
+              Object.entries(referenceRow)
+                .filter(
+                  ([key]) =>
+                    key.startsWith("bid_") || key.startsWith("ask_")
+                )
+                .map(([key]) => [
+                  key,
+                  previousRow?.[key] !== undefined &&
+                  previousRow?.[key] !== EMPTY_RATE_VALUE
+                    ? previousRow[key]
+                    : EMPTY_RATE_VALUE,
+                ])
+            )
+          : {};
+
+        updatedRows.push({
+          tenorID: fullTenor.tenorID,
+          tenorName: fullTenor.tenorName,
+          tenorDays: fullTenor.tenorDays,
+          ...instrumentMeta,
+          ...bidAskValues,
+        });
+      });
+
+      updatedRows.sort((a, b) => a.tenorDays - b.tenorDays);
+
+      dataSourceRef.current = updatedRows;
+      setDataSource(updatedRows);
+    } catch (error) {
+      console.error("Tenor sync error in TresmarkCrosses:", error);
+    } finally {
+      // ✅ always clear — even if an error occurs — to break the loop
+      dispatch(setTreasuryFowardsTenorsChanges(null));
+    }
+  // ✅ only depend on the payload — NOT on getAllTenorsRecords or instruments
+  // Those are read inside the effect via closure, avoiding re-trigger loop
+  }, [treasuryFowardsTenorsChanges]);
+
+  // ---------------- THROTTLED MQTT RATE UPDATE ----------------
+  const throttledUpdateRef = useRef(
+    throttle(() => {
+      const pending = tresmarkRatesRef.current;
+      if (!pending?.length) return;
+
+      // ✅ flatten all accumulated payloads
+      const allRates = pending.flatMap(
+        (payload) => payload.crossesPremiumsRates ?? []
+      );
+      if (!allRates.length) return;
+
+      // ✅ read from ref — no stale closure
+      const updated = dataSourceRef.current.map((row) => {
+        const updatedRow = { ...row };
+
+        allRates.forEach((d) => {
+          if (String(row.tenorID) !== String(d.tenorID)) return;
+
+          const instrumentKey = Object.keys(row).find(
+            (key) =>
+              key.startsWith("InstrumentID_") &&
+              String(row[key]) === String(d.instrumentID)
+          );
+          if (!instrumentKey) return;
+
+          // ✅ replace instead of split — safe for all currency codes
+          const currency = instrumentKey.replace("InstrumentID_", "");
+          updatedRow[`bid_${currency}`] = d.bidPremium;
+          updatedRow[`ask_${currency}`] = d.askPremium;
+        });
+
+        return updatedRow;
+      });
+
+      dataSourceRef.current = updated;
+      setDataSource(updated);
+    }, 100)
   );
 
+  // ✅ keep ref in sync, trigger throttle
   useEffect(() => {
     if (tresmarkCrossPremiumRates) {
-      throttledTresmarkPremiumRatesUpdate(tresmarkCrossPremiumRates);
+      tresmarkRatesRef.current = [
+        ...(tresmarkRatesRef.current ?? []),
+        tresmarkCrossPremiumRates,
+      ];
+      throttledUpdateRef.current();
     }
-  }, [tresmarkCrossPremiumRates, throttledTresmarkPremiumRatesUpdate]);
+  }, [tresmarkCrossPremiumRates]);
 
+  // Cancel throttle on unmount only
+  useEffect(() => {
+    const fn = throttledUpdateRef.current;
+    return () => fn.cancel();
+  }, []);
+
+  // ---------------- RENDER ----------------
   return (
     <>
       <h6
         className={
-          location.pathname.toLowerCase().includes("treasury".toLowerCase())
+          location.pathname.toLowerCase().includes("treasury")
             ? "flex-fill fs-4 fw-bold color-black mb-1 ff-roboto"
             : "fs-4 fw-bold color-primary"
         }

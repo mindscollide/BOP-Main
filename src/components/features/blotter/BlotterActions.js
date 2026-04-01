@@ -797,7 +797,7 @@ export const AcceptTransactionAPI = createAsyncThunk(
 export const RejectTransactionAPI = createAsyncThunk(
   "Blotter/Reject",
   async (
-    { navigate, Data, setCancelReasonModal, val },
+    { navigate, Data, setCancelReasonModal, val ,callFunc},
     { dispatch, rejectWithValue }
   ) => {
     try {
@@ -824,6 +824,7 @@ export const RejectTransactionAPI = createAsyncThunk(
             if (val === 1) {
               dispatch(setForwardQuoteModal(false));
               dispatch(setDiscountingQuoteModal(false));
+              callFunc()
             }
             return {
               response: response.data.responseResult,
@@ -2597,7 +2598,7 @@ export const calculateNonFeSwapAndDiscountingRateApi = createAsyncThunk(
               )
           ) {
             return rejectWithValue("No rates available");
-          } else return rejectWithValue;
+          } else return rejectWithValue("Something went wrong");
         } else {
           return rejectWithValue("Something went wrong");
         }

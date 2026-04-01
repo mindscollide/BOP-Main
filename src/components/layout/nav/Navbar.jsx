@@ -24,7 +24,7 @@ import {
   setIBuySellData,
   setRfqModalOpen,
 } from "@/store/modalSlice/modalSlicer";
-import ViewCurrentDeals from "@/components/features/blotter/viewCurrentDeals/ViewCurrentDeals";
+// import ViewCurrentDeals from "@/components/features/blotter/viewCurrentDeals/ViewCurrentDeals";
 import {
   GetCategoryWiseDiscountingRatesApi,
   GetCategoryWiseForwardRatesApi,
@@ -56,12 +56,7 @@ const GlobalNavbar = () => {
   const discountingQuoteModalState = useSelector(
     (state) => state.modalReducer.discountingQuoteModal
   );
-  console.log(
-    spotQuoteModalState,
-    forwardQuoteModalState,
-    discountingQuoteModalState,
-    "discountingQuoteModalState"
-  );
+
   const activeTab = useSelector((state) => state.RFQReducer.activeTab);
 
   const categoryValue = useSelector(
@@ -313,12 +308,12 @@ const GlobalNavbar = () => {
 
   return (
     <>
-      <div className="site-header pt-1">
-        <div className="container-fluid page-gutter">
-          <div className="header-inner d-flex align-items-center">
+      <div className='site-header pt-1'>
+        <div className='container-fluid page-gutter'>
+          <div className='header-inner d-flex align-items-center'>
             <SiteLogoComponent />
-            <div className="ms-auto">
-              <div className="d-flex align-items-center gap-2">
+            <div className='ms-auto'>
+              <div className='d-flex align-items-center gap-2'>
                 {location.pathname !== "/calculator" ? (
                   <>
                     {(shouldIncludeCorporate || shouldIncludeBranch) && (
@@ -328,8 +323,8 @@ const GlobalNavbar = () => {
                             rfqButtonState ? "rfqBtn" : "rfqBtn_disabled"
                           }
                           disabled={rfqButtonState ? false : true}
-                          value="RFQ"
-                          size="small"
+                          value='RFQ'
+                          size='small'
                           icon={<IconElement iconClass={"icon-list fs-6"} />}
                           onClick={onClickRFQ}
                         />
@@ -338,9 +333,9 @@ const GlobalNavbar = () => {
                     {location.pathname.includes("treasury") &&
                     (shouldIncludeDealer || shouldIncludeTreasury) ? (
                       <CustomButton
-                        applyClass="calcBtn"
-                        value="Calculators"
-                        size="large"
+                        applyClass='calcBtn'
+                        value='Calculators'
+                        size='large'
                         onClick={handleCalculatorClick}
                       />
                     ) : null}
@@ -368,15 +363,16 @@ const GlobalNavbar = () => {
         </div>
       </div>
 
-      <SpotQuoteModal />
-      <DiscountingRFQQuoteModal />
-      <ForwardRFQQuoteModal />
+      {spotQuoteModalState && <SpotQuoteModal />}
+      {forwardQuoteModalState && <ForwardRFQQuoteModal />}
+      {discountingQuoteModalState && <DiscountingRFQQuoteModal />}
       {settingModalState && <SettingModal />}
       {/* Forwards RFQ Modal  */}
       {rfqForwardModal && <RFQForwardCorporateModal />}
+      {/* Spot RFQ Modal */}
       {isRfqModalOpen && <RFQModal />}
 
-      {/* Discounting RFQ Modal  */}
+      {/* Discounting RFQ Modal and its for Counter Party */}
       {rfqDiscountingModal && <RFQDiscountingCorporateModal />}
     </>
   );

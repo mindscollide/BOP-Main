@@ -18,7 +18,6 @@ const CalculatorNonFxDiscounting = () => {
   const InstrumentsData = useSelector(
     (state) => state.authReducer.getAllInstruments
   );
-  console.log(InstrumentsData, "instruments data");
   //World Crosses Data to Get the Cross Rates Without Spread
   const WorldCrossesData = useSelector(
     (state) => state.WatchListReducer.GetBankSpotForTreasury
@@ -45,8 +44,7 @@ const CalculatorNonFxDiscounting = () => {
     try {
       if (
         InstrumentsData?.instruments &&
-        Array.isArray(InstrumentsData.instruments) &&
-        WorldCrossesData?.worldCrosses
+        Array.isArray(InstrumentsData.instruments)
       ) {
         const discountings = InstrumentsData.instruments
           .filter((item) => item.isNonFEDiscountingApplicable === true)
@@ -135,85 +133,85 @@ const CalculatorNonFxDiscounting = () => {
 
   return (
     <>
-      <div className="card-box h-auto">
-        <div className="box-header bg-primary-orange px-2 color-white">
-          <div className="d-flex align-items-center">
-            <div className="fs-6 fw-bold">Non FE Discounting</div>
-            <div className="clc-btn-wrapper ms-auto">
+      <div className='card-box h-auto'>
+        <div className='box-header bg-primary-orange px-2 color-white'>
+          <div className='d-flex align-items-center'>
+            <div className='fs-6 fw-bold'>Non FE Discounting</div>
+            <div className='clc-btn-wrapper ms-auto'>
               <CustomButton
-                value="Calculate Rate"
-                applyClass="calculatorButton"
+                value='Calculate Rate'
+                applyClass='calculatorButton'
                 onClick={handleNonFxDiscounting}
               />
             </div>
           </div>
         </div>
-        <div className="box-content-wrapper h-auto">
-          <div className="d-flex align-items-center">
-            <div className="flex-fill px-2 p-2">
-              <label className="mt-1">Currency</label>
+        <div className='box-content-wrapper h-auto'>
+          <div className='d-flex align-items-center'>
+            <div className='flex-fill px-2 p-2'>
+              <label className='mt-1'>Currency</label>
               <SelectDropdown
                 options={discountingApplicableList}
                 value={selectedOption}
                 onChange={(selected) => setSelectedOption(selected)}
-                placeholder="Select a currency"
-                classNamePrefix="RfqSpot"
+                placeholder='Select a currency'
+                classNamePrefix='RfqSpot'
               />
 
-              <label className="mt-1">Ready</label>
+              <label className='mt-1'>Ready</label>
               <InputFIeld
-                type="number"
-                name="price"
-                defaultValue="0"
+                type='number'
+                name='price'
+                defaultValue='0'
                 value={ready}
                 applyClass={"CalculatorTextfield"}
                 disabled={true}
               />
 
-              <label className="mt-1">Tenor</label>
+              <label className='mt-1'>Tenor</label>
               <InputFieldWithTag
-                type="text"
+                type='text'
                 value={inputValue}
                 onChange={handleInputChangeTenor}
-                placeholder="Enter value"
-                applyClass="inputField-calculator"
-                applyClassTag="tag-for-calculator"
-                width="100%" // width of the entire container
-                inputWidth="50%" // width of the input field
+                placeholder='Enter value'
+                applyClass='inputField-calculator'
+                applyClassTag='tag-for-calculator'
+                width='100%' // width of the entire container
+                inputWidth='50%' // width of the input field
                 tagText={tagText}
-                tagWidth="50%" // width of the span
-                tagClassName="yourTagClass"
+                tagWidth='50%' // width of the span
+                tagClassName='yourTagClass'
               />
 
-              <div className="d-flex flex-row mt-1 gap-2">
-                <span className="d-flex flex-column">
+              <div className='d-flex flex-row mt-1 gap-2'>
+                <span className='d-flex flex-column'>
                   <label>Swap</label>
                   <InputFIeld
                     value={formatPkAmount(calculatedSwap, { decimals: 2 })}
                     disabled={true}
-                    applyClass="CalculatorTextfield-withTagInputfield"
+                    applyClass='CalculatorTextfield-withTagInputfield'
                   />
                 </span>
 
-                <span className="d-flex flex-column">
+                <span className='d-flex flex-column'>
                   <label>KIBOR</label>
                   <InputFieldWithTag
-                    type="text"
-                    value={calculatedKibor}
+                    type='text'
+                    value={calculatedKibor?.toFixed(4)}
                     disabled={true}
-                    applyClass="inputField-calculator"
-                    applyClassTag="tag-for-calculator"
-                    width="100%"
-                    inputWidth="75%"
-                    tagText="%"
-                    tagWidth="25%"
+                    applyClass='inputField-calculator'
+                    applyClassTag='tag-for-calculator'
+                    width='100%'
+                    inputWidth='75%'
+                    tagText='%'
+                    tagWidth='25%'
                     // tagClassName="yourTagClass"
                   />
                 </span>
               </div>
             </div>
-            <div className="px-2 text-center">
-              <div className="clc-amount fs-4 fw-bold px-4 py-3 bg-primary color-white">
+            <div className='px-2 text-center'>
+              <div className='clc-amount fs-4 fw-bold px-4 py-3 bg-primary color-white'>
                 {nonFERate}
               </div>
             </div>

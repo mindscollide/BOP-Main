@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import GlobalTable from "@/components/common/table/GlobalTable";
 import { useSelector } from "react-redux";
 import { Col, Row } from "react-bootstrap";
@@ -8,62 +8,101 @@ import { buildDiscountingTable } from "@/components/utils/generateColumnsData";
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import { throttle } from "lodash";
 import { useBidOffer } from "@/context/BidOfferContext";
+import { useModal } from "@/context/ModalContext";
 
 const BranchAndCorporateFeDiscountingTable = () => {
-  //local states
-  const { isBid, isOffer } = useBidOffer();
+  const { isMarketOn } = useModal();
 
-  console.log(isBid, "isBidisBid");
+  /**
+   * Bid / Offer context
+   */
+  const { isBid } = useBidOffer();
+
+  /**
+   * Table state
+   */
   const [dataSource, setDataSource] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
+
+  /**
+   * Modal state
+   */
   const [feDiscountingModalCall, setFeDiscountingModalCall] = useState(false);
 
+  /**
+   * Trade rights state
+   */
   const [rfqButtonState, setRFqButtonState] = useState(null);
 
+  /**
+   * Prevents table rebuild which was reverting MQTT updates
+   */
+  const isTableInitialized = useRef(false);
+
+  /**
+   * ---------------- REDUX SELECTORS ----------------
+   */
+
   const isTradeRights = useSelector(
-    (state) => state.RealtimeActionsSlice.tradeRightsStatusUpdated,
+    (state) => state.RealtimeActionsSlice.tradeRightsStatusUpdated
   );
+
   const getAllInstrumentsForCounterPartiesData = useSelector(
-    (state) =>
-      state.WatchListReducer?.getAllInstrumentForCounterParties ?? null,
+    (state) => state.WatchListReducer?.getAllInstrumentForCounterParties ?? null
   );
+
   const CounterPartyFeDiscounting = useSelector(
-    (state) => state.RealtimeActionsSlice.CounterPartyFeDiscounting,
+    (state) => state.RealtimeActionsSlice.CounterPartyFeDiscounting
   );
+
   const GetDiscountingRatesForCounterParty = useSelector(
-    (state) => state.WatchListReducer.GetDiscountingRatesForCounterParty,
+    (state) => state.WatchListReducer.GetDiscountingRatesForCounterParty
   );
 
   const getAllTenorsRecords = useSelector(
-    (state) => state.dealerReducer.getAllTenors,
+    (state) => state.dealerReducer.getAllTenors
   );
 
   const marketStatus = useSelector(
-    (state) => state.WatchListReducer.getMarketStatus,
+    (state) => state.WatchListReducer.getMarketStatus
   );
 
   const ClearRatesData = useSelector(
-    (state) => state.RealtimeActionsSlice.ClearRatesData,
+    (state) => state.RealtimeActionsSlice.ClearRatesData
   );
 
+  /**
+   * ------------------------------------------------
+   * Update RFQ button state when trade rights change
+   * ------------------------------------------------
+   */
   useEffect(() => {
     if (isTradeRights !== null) {
       setRFqButtonState(JSON.parse(isTradeRights));
-      console.log(isTradeRights, "isTradeRightsisTradeRights");
     }
   }, [isTradeRights]);
 
+  /**
+   * ------------------------------------------------
+   * BUILD TABLE STRUCTURE (ONLY ONCE)
+   *
+   * Prevents rebuild which previously removed MQTT updates
+   * ------------------------------------------------
+   */
   useEffect(() => {
     if (
       getAllTenorsRecords !== null &&
-      getAllInstrumentsForCounterPartiesData != null
+      getAllInstrumentsForCounterPartiesData !== null &&
+      !isTableInitialized.current &&
+      GetDiscountingRatesForCounterParty !== null
     ) {
       try {
         const { feDiscountingRates = [] } =
-          GetDiscountingRatesForCounterParty !== null &&
-          GetDiscountingRatesForCounterParty;
-        let getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
-        let getAllInstrument = {
+          GetDiscountingRatesForCounterParty ?? {};
+
+        const getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
+
+        const getAllInstrument = {
           instruments:
             getAllInstrumentsForCounterPartiesData.discountingApplicableInstruments,
         };
@@ -75,14 +114,21 @@ const BranchAndCorporateFeDiscountingTable = () => {
           getAllInstrument,
           IndexCell,
           null,
-          !isBid,
+          !isBid
         );
 
         if (rowData.length > 0) {
           setDataSource(rowData);
           setColumnsData(columnsData);
+
+          /**
+           * Mark table initialized
+           */
+          isTableInitialized.current = true;
         }
-      } catch (error) {}
+      } catch (error) {
+        console.error("Error building discounting table", error);
+      }
     }
   }, [
     getAllTenorsRecords,
@@ -91,6 +137,14 @@ const BranchAndCorporateFeDiscountingTable = () => {
     isBid,
   ]);
 
+  /**
+   * ------------------------------------------------
+   * REALTIME MQTT UPDATE HANDLER
+   *
+   * Updates only affected cells
+   * throttle prevents excessive renders
+   * ------------------------------------------------
+   */
   const throttledUpdate = useMemo(
     () =>
       throttle((discountingUpdate) => {
@@ -108,7 +162,7 @@ const BranchAndCorporateFeDiscountingTable = () => {
 
                 const match = feDiscountingInstrumentData.find(
                   (d) =>
-                    d.instrumentID === instrumentID && d.tenorID === tenorID,
+                    d.instrumentID === instrumentID && d.tenorID === tenorID
                 );
 
                 if (match) {
@@ -118,20 +172,38 @@ const BranchAndCorporateFeDiscountingTable = () => {
             });
 
             return updatedRow;
-          }),
+          })
         );
       }, 20),
-    [],
+    []
   );
 
+  /**
+   * Trigger updates when MQTT data arrives
+   */
   useEffect(() => {
     if (CounterPartyFeDiscounting) {
       throttledUpdate(CounterPartyFeDiscounting);
     }
   }, [CounterPartyFeDiscounting, throttledUpdate]);
 
+  /**
+   * Cleanup throttle
+   */
   useEffect(() => {
-    if (marketStatus !== null && marketStatus === false) {
+    return () => {
+      throttledUpdate.cancel();
+    };
+  }, [throttledUpdate]);
+
+  /**
+   * ------------------------------------------------
+   * MARKET CLOSED HANDLER
+   * Reset rates when market closes
+   * ------------------------------------------------
+   */
+  useEffect(() => {
+    if (isMarketOn === false) {
       setDataSource((prevData) =>
         prevData.map((row) => {
           const updatedRow = { ...row };
@@ -144,15 +216,18 @@ const BranchAndCorporateFeDiscountingTable = () => {
           });
 
           return updatedRow;
-        }),
+        })
       );
     }
-  }, [marketStatus]);
+  }, [isMarketOn]);
 
-  // For clear Rates
+  /**
+   * ------------------------------------------------
+   * CLEAR RATES HANDLER
+   * ------------------------------------------------
+   */
   useEffect(() => {
     if (ClearRatesData?.areRatesClear) {
-      console.log("Cgcecececec");
       setDataSource((prevData) =>
         prevData.map((row) => {
           const updatedRow = { ...row };
@@ -165,11 +240,14 @@ const BranchAndCorporateFeDiscountingTable = () => {
           });
 
           return updatedRow;
-        }),
+        })
       );
     }
   }, [ClearRatesData]);
 
+  /**
+   * Open FE Discounting modal
+   */
   const handleFEDiscountingModal = () => {
     setFeDiscountingModalCall(true);
   };
@@ -177,9 +255,10 @@ const BranchAndCorporateFeDiscountingTable = () => {
   return (
     <>
       <Row>
-        <Col lg={12} md={12} sm={12} className="heading mb-2">
+        <Col lg={12} md={12} sm={12} className='heading mb-2'>
           FE Discounting
         </Col>
+
         <Col lg={12} md={12} sm={12}>
           <GlobalTable
             columns={columnsData}
@@ -187,6 +266,7 @@ const BranchAndCorporateFeDiscountingTable = () => {
             prefixCls={"branch_forwardsTable"}
             pagination={false}
             bordered
+            rowKey='TenorID'
             rowClassName={(record, index) =>
               index % 2 === 0
                 ? "branch_forwardsTable-odd"
@@ -196,28 +276,21 @@ const BranchAndCorporateFeDiscountingTable = () => {
         </Col>
       </Row>
 
-      <Row className="my-2">
+      <Row className='my-2'>
         <Col
           lg={12}
           md={12}
           sm={12}
-          className="d-flex justify-content-center align-items-center gap-2"
-        >
+          className='d-flex justify-content-center align-items-center gap-2'>
           <CustomButton
-            value="FE Discounting"
+            value='FE Discounting'
             applyClass={"FEDiscounting"}
             onClick={handleFEDiscountingModal}
-            disabled={
-              !isBid
-                ? true
-                : (marketStatus !== null && marketStatus === false) ||
-                    !isTradeRights
-                  ? true
-                  : false
-            }
+            disabled={!isBid || marketStatus === false || !rfqButtonState}
           />
         </Col>
       </Row>
+
       {feDiscountingModalCall && (
         <FEDiscountingModal
           feDiscountingModalCall={feDiscountingModalCall}

@@ -1,5 +1,6 @@
 import React, { lazy, Suspense } from "react";
 import BankForwards from "./bankForwards/BankForwards";
+import SectionLoader from "@/components/common/loader/SectionLoader";
 
 const Forwards = () => {
   const isDealerOrIsTreasury =
@@ -10,12 +11,21 @@ const Forwards = () => {
         import("@/components/features/tresmarkCrosses/TresmarkCrosses")
       )
     : null;
+
+  const BankForwards = isDealerOrIsTreasury
+    ? lazy(() =>
+        import(
+          "@/container/pages/mainTreasury/tabsContent/forwards/bankForwards/BankForwards"
+        )
+      )
+    : null;
   return (
     <>
       {" "}
-      <Suspense fallback={<div>Loading table...</div>}>
+      <Suspense fallback={<SectionLoader />}>
         <BankForwards />
-
+      </Suspense>
+      <Suspense fallback={<SectionLoader />}>
         <TresmarkCrosses />
       </Suspense>
     </>

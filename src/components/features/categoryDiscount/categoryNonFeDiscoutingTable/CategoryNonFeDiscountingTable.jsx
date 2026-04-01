@@ -13,14 +13,12 @@ const CategoryNonFeDiscountingTable = () => {
   const dispatch = useDispatch();
   const [dataSource, setDataSource] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
+  const { isMarketOn } = useModal();
 
   const GetCategoryWiseDiscountingRates = useSelector(
     (state) => state.categoryReducer.GetCategoryWiseDiscountingRates
   );
-  console.log(
-    GetCategoryWiseDiscountingRates,
-    "GetCategoryWiseDiscountingRatesGetCategoryWiseDiscountingRates"
-  );
+
   const ClearRatesData = useSelector(
     (state) => state.RealtimeActionsSlice.CategoryDiscountingClearRates
   );
@@ -35,12 +33,8 @@ const CategoryNonFeDiscountingTable = () => {
     (state) => state.RealtimeActionsSlice.CategoryNonFeDiscouting
   );
 
-  const marketStatus = useSelector(
-    (state) => state.WatchListReducer.getMarketStatus
-  );
-
   useEffect(() => {
-    if (getAllTenorsRecords !== null && allInstrumentForTreasuryData) {
+    if (getAllTenorsRecords !== null && allInstrumentForTreasuryData !== null) {
       try {
         const { nonFEDiscountingRates = [] } =
           GetCategoryWiseDiscountingRates !== null &&
@@ -106,7 +100,7 @@ const CategoryNonFeDiscountingTable = () => {
   }, [CategoryNonFeDiscouting, throttledUpdate]);
 
   useEffect(() => {
-    if (marketStatus !== null && marketStatus === false) {
+    if (isMarketOn !== null && isMarketOn === false) {
       setDataSource((prevData) =>
         prevData.map((row) => {
           const updatedRow = { ...row };
@@ -119,54 +113,49 @@ const CategoryNonFeDiscountingTable = () => {
         })
       );
     }
-  }, [marketStatus]);
+  }, [isMarketOn]);
 
-// ✅ For clear FE Discounting Rates
-useEffect(() => {
-  if (!ClearRatesData?.areRatesClear) return;
+  // ✅ For clear FE Discounting Rates
+  useEffect(() => {
+    if (!ClearRatesData?.areRatesClear) return;
 
-  try {
-    if (GetCategoryWiseDiscountingRates?.nonFEDiscountingRates?.length) {
-      // 🔹 Reset Redux rates to "0"
-      const clearedDiscountingRates =
-        GetCategoryWiseDiscountingRates.nonFEDiscountingRates.map((item) => ({
-          ...item,
-          rate: "0",
-        }));
+    try {
+      if (GetCategoryWiseDiscountingRates?.nonFEDiscountingRates?.length) {
+        // 🔹 Reset Redux rates to "0"
+        const clearedDiscountingRates =
+          GetCategoryWiseDiscountingRates.nonFEDiscountingRates.map((item) => ({
+            ...item,
+            rate: "0",
+          }));
 
-      const updatedData = {
-        ...GetCategoryWiseDiscountingRates,
-        nonFEDiscountingRates: clearedDiscountingRates,
-      };
+        const updatedData = {
+          ...GetCategoryWiseDiscountingRates,
+          nonFEDiscountingRates: clearedDiscountingRates,
+        };
 
-      dispatch(UpdateGetCategoryWiseDiscountingRates(updatedData));
-
-      console.log(
-        clearedDiscountingRates,
-        "✅ Cleared FE Discounting Rates in Redux"
-      );
-    } else {
-      // 🔹 Fallback: Clear only local dataSource
-      setDataSource((prevData) =>
-        prevData.map((row) => {
-          const updatedRow = { ...row };
-          for (const key in updatedRow) {
-            if (key.startsWith("rate_")) {
-              updatedRow[key] = "0";
+        dispatch(UpdateGetCategoryWiseDiscountingRates(updatedData));
+      } else {
+        // 🔹 Fallback: Clear only local dataSource
+        setDataSource((prevData) =>
+          prevData.map((row) => {
+            const updatedRow = { ...row };
+            for (const key in updatedRow) {
+              if (key.startsWith("rate_")) {
+                updatedRow[key] = "0";
+              }
             }
-          }
-          return updatedRow;
-        })
-      );
-      console.log("✅ Cleared FE Discounting Rates in local dataSource");
-    }
+            return updatedRow;
+          })
+        );
+        console.log("✅ Cleared FE Discounting Rates in local dataSource");
+      }
 
-    // 🔹 Always reset clear flag
-    dispatch(clearCategoryDiscountingClearRates());
-  } catch (error) {
-    console.error("❌ Error while clearing FE Discounting Rates:", error);
-  }
-}, [ClearRatesData, GetCategoryWiseDiscountingRates, dispatch]);
+      // 🔹 Always reset clear flag
+      dispatch(clearCategoryDiscountingClearRates());
+    } catch (error) {
+      console.error("❌ Error while clearing FE Discounting Rates:", error);
+    }
+  }, [ClearRatesData, GetCategoryWiseDiscountingRates, dispatch]);
 
   return (
     <Row>

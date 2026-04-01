@@ -49,9 +49,12 @@ const RealtimeActionsSlice = createSlice({
     CounterPartySpotRates: null,
     CategorySpotRates: null,
     CategoryForwardRates: null,
-    TreasuryFeDiscounting: null,
-    TreasuryNonFeDiscounting: null,
-    TreasuryForwardRates: null,
+    // TreasuryFeDiscounting: null,
+    // TreasuryNonFeDiscounting: null,
+    // TreasuryForwardRates: null,
+    TreasuryFeDiscounting: [],
+    TreasuryNonFeDiscounting: [],
+    TreasuryForwardRates: [],
     FxTradingCards: null,
     CategoryFeDiscounting: null,
     CounterPartyNonFeDiscounting: null,
@@ -116,13 +119,27 @@ const RealtimeActionsSlice = createSlice({
       state.FxTradingCards = payload;
     },
     setTreasuryFeDiscounting: (state, { payload }) => {
-      state.TreasuryFeDiscounting = payload;
+      // state.TreasuryFeDiscounting = payload;
+
+      state.TreasuryFeDiscounting = [
+        ...(state.TreasuryFeDiscounting ?? []),
+        payload,
+      ];
     },
     setTreasuryNonFeDiscounting: (state, { payload }) => {
-      state.TreasuryNonFeDiscounting = payload;
+      // state.TreasuryNonFeDiscounting = payload;
+      // ✅ accumulate payloads, don't overwrite
+      state.TreasuryNonFeDiscounting = [
+        ...(state.TreasuryNonFeDiscounting ?? []),
+        payload,
+      ];
     },
     setTreasuryForwardRates: (state, { payload }) => {
-      state.TreasuryForwardRates = payload;
+      // ✅ accumulate payloads, don't overwrite
+      state.TreasuryForwardRates = [
+        ...(state.TreasuryForwardRates ?? []),
+        payload,
+      ];
     },
     setCategorySpotRates: (state, { payload }) => {
       state.CategorySpotRates = payload;
@@ -192,6 +209,7 @@ const RealtimeActionsSlice = createSlice({
     },
     BlotterTransactionAddedForTreasury(state, { payload }) {
       state.BlotterTransactionAddedForTreasury = payload;
+      state.BlotterTransactionAddedForTreasuryDealBox = payload;
     },
     setBlotterTransactionAddedForTreasuryDealBox(state, { payload }) {
       state.BlotterTransactionAddedForTreasuryDealBox = payload;
@@ -241,6 +259,17 @@ const RealtimeActionsSlice = createSlice({
     },
     setTresmarkCrossPremiumRates(state, { payload }) {
       state.tresmarkCrossPremiumRates = payload;
+    },
+
+    // ✅ add a clear action to reset after processing
+    clearTreasuryForwardRates: (state) => {
+      state.TreasuryForwardRates = [];
+    },
+    clearTreasuryFeDiscountingRates: (state) => {
+      state.TreasuryFeDiscounting = [];
+    },
+    clearTreasuryNonFeDiscoutingRates: (state) => {
+      state.TreasuryNonFeDiscounting = [];
     },
   },
 });
@@ -301,6 +330,9 @@ export const {
   clearCategoryForwardClearRates,
   clearCategorySpotClearRates,
   setTresmarkCrossPremiumRates,
+  clearTreasuryForwardRates,
+  clearTreasuryNonFeDiscoutingRates,
+  clearTreasuryFeDiscountingRates,
 } = RealtimeActionsSlice.actions;
 
 export default RealtimeActionsSlice.reducer;

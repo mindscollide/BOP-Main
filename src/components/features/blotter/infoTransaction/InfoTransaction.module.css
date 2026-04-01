@@ -53,6 +53,7 @@
   margin: 0 !important;
   font-size: 13px !important;
   font-weight: 700;
+  word-wrap: break-word;
 }
 
 .transactionInfolabelInititedBy {

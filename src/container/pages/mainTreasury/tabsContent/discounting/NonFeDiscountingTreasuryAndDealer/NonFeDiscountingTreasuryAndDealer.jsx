@@ -1,14 +1,28 @@
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import GlobalTable from "@/components/common/table/GlobalTable";
 import { buildDiscountingTable } from "@/components/utils/generateColumnsData";
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { throttle } from "lodash";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { clearTreasuryNonFeDiscoutingRates } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 
 const NonFeDiscountingTreasuryAndDealer = () => {
+  const dispatch = useDispatch();
+
+  // ---------------- TABLE STATE ----------------
   const [dataSource, setDataSource] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
 
+  // ✅ Always holds latest dataSource snapshot — safe inside throttle
+  const dataSourceRef = useRef([]);
+
+  // ✅ Mirrors the Redux accumulated array — no double-wrapping
+  const treasuryNonFeDiscountingRef = useRef([]);
+
+  // ---------------- TABLE INIT FLAG ----------------
+  const isTableInitialized = useRef(false);
+
+  // ---------------- REDUX SELECTORS ----------------
   const GetDiscountingRatesForTreasury = useSelector(
     (state) => state.WatchListReducer.GetDiscountingRatesForTreasury
   );
@@ -18,22 +32,28 @@ const NonFeDiscountingTreasuryAndDealer = () => {
   const GetAllInstrumentForTreasury = useSelector(
     (state) => state.WatchListReducer.GetAllInstrumentForTreasury
   );
-
   const TreasuryNonFeDiscounting = useSelector(
     (state) => state.RealtimeActionsSlice.TreasuryNonFeDiscounting
   );
 
+  // ---------------- INITIAL TABLE BUILD ----------------
   useEffect(() => {
-    if (GetAllInstrumentForTreasury !== null && getAllTenorsRecords !== null) {
+    if (
+      !isTableInitialized.current &&
+      getAllTenorsRecords !== null &&
+      GetAllInstrumentForTreasury !== null &&
+      GetDiscountingRatesForTreasury !== null
+    )
       try {
         const { nonFEDiscountingRates = [] } =
-          GetDiscountingRatesForTreasury !== null &&
-          GetDiscountingRatesForTreasury;
-        let getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
-        let getAllInstrument = {
+          GetDiscountingRatesForTreasury ?? {};
+
+        const getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
+        const getAllInstrument = {
           instruments: GetAllInstrumentForTreasury.nonFEDiscountingInstruments,
         };
-        const { columnsData, rowData } = buildDiscountingTable(
+
+        const { columnsData: cols, rowData } = buildDiscountingTable(
           3,
           nonFEDiscountingRates,
           getAllTenorsData,
@@ -41,59 +61,83 @@ const NonFeDiscountingTreasuryAndDealer = () => {
           IndexCell
         );
 
-        if (rowData.length > 0) {
+        isTableInitialized.current = true;
+        setColumnsData(cols);
+
+        if (rowData?.length) {
+          dataSourceRef.current = rowData;
           setDataSource(rowData);
-          setColumnsData(columnsData);
         }
-      } catch (error) {}
-    }
+      } catch (error) {
+        console.error("Error building NonFE discounting table:", error);
+      }
   }, [
     getAllTenorsRecords,
     GetAllInstrumentForTreasury,
     GetDiscountingRatesForTreasury,
   ]);
 
-  const throttledUpdate = useMemo(
-    () =>
-      throttle((discountingUpdate) => {
-        const nonFeDiscountingRates =
-          discountingUpdate?.nonFeDiscountingRates || [];
+  // ---------------- THROTTLED MQTT RATE UPDATE ----------------
+  const throttledUpdateRef = useRef(
+    throttle(() => {
+      // ✅ Read directly from ref — always the latest Redux array snapshot
+      const batch = treasuryNonFeDiscountingRef.current;
+      if (!batch?.length) return;
 
-        if (nonFeDiscountingRates.length === 0) return;
+      // ✅ batch is already [{message, nonFeDiscountingRates: [...]}, ...]
+      //    just flatMap the inner rates arrays — no double-nesting
+      const allRates = batch.flatMap(
+        (payload) => payload.nonFeDiscountingRates ?? []
+      );
 
-        setDataSource((prevData) =>
-          prevData.map((row) => {
-            let updatedRow = { ...row };
+      if (!allRates.length) return;
 
-            nonFeDiscountingRates.forEach((d) => {
-              Object.keys(row).forEach((key) => {
-                if (
-                  key.startsWith("InstrumentID_") &&
-                  row[key] === d.instrumentID &&
-                  row.TenorID === d.tenorID
-                ) {
-                  const currency = key.split("_")[1];
-                  updatedRow[`rate_${currency}`] = d.bidWithSpread;
-                }
-              });
-            });
+      const updated = dataSourceRef.current.map((row) => {
+        const updatedRow = { ...row };
 
-            return updatedRow;
-          })
-        );
-      }, 20),
-    []
-  ); // 300ms throttle
+        allRates.forEach((d) => {
+          if (String(row.TenorID) !== String(d.tenorID)) return;
 
+          const instrumentKey = Object.keys(row).find(
+            (key) =>
+              key.startsWith("InstrumentID_") &&
+              String(row[key]) === String(d.instrumentID)
+          );
+
+          if (!instrumentKey) return;
+
+          const currency = instrumentKey.replace("InstrumentID_", "");
+          updatedRow[`rate_${currency}`] = d.bidWithSpread;
+        });
+
+        return updatedRow;
+      });
+
+      dataSourceRef.current = updated;
+      setDataSource(updated);
+
+      // ✅ Clear Redux array after processing
+      dispatch(clearTreasuryNonFeDiscoutingRates());
+    }, 10)
+  );
+
+  // ✅ Mirror Redux array into ref directly — no extra wrapping
   useEffect(() => {
-    if (TreasuryNonFeDiscounting) {
-      throttledUpdate(TreasuryNonFeDiscounting);
-    }
-  }, [TreasuryNonFeDiscounting, throttledUpdate]);
+    if (!TreasuryNonFeDiscounting?.length) return;
+
+    treasuryNonFeDiscountingRef.current = TreasuryNonFeDiscounting;
+    throttledUpdateRef.current();
+  }, [TreasuryNonFeDiscounting]);
+
+  // ✅ Cancel throttle on unmount only
+  useEffect(() => {
+    const throttledFn = throttledUpdateRef.current;
+    return () => throttledFn.cancel();
+  }, []);
 
   return (
     <>
-      <span className="heading mb-2">Non FE Discounting</span>
+      <span className='heading mb-2'>Non FE Discounting</span>
 
       <GlobalTable
         columns={columnsData}

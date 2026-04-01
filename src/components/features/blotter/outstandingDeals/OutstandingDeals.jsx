@@ -37,7 +37,7 @@ import {
   setForwardQuoteModal,
   setViewDealModal,
 } from "@/store/modalSlice/modalSlicer";
-import { RFQTImer } from "@/components/utils/Timer";
+import { RFQTimer } from "@/components/utils/Timer";
 import { convertDateTimeIntoLocal, formatPkAmount } from "@/utils/formatters";
 import { getAllChatByTransactionId } from "@/components/features/chatBox/ChatActions";
 import CancelReasonModal from "../cancelReasonModal/cancelReasonModal";
@@ -49,7 +49,7 @@ import {
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import { useNotification } from "@/context/NotificationProvider";
 import { Empty } from "antd";
-import { set } from "lodash";
+import { useBlotterTransaction } from "@/context/BlotterTransactionContext";
 
 // Custom styles for the component
 const useStyles = makeStyles((theme) => ({
@@ -102,17 +102,14 @@ const useStyles = makeStyles((theme) => ({
  * @component
  * @returns {JSX.Element} The rendered OutstandingDeals component.
  */
-const OutstandingDeals = ({
-  treasuryOutStandingDealRecords,
-  treasuryOutStandingDealsRow,
-  setHasBottomReachedOutstanding,
-  treasuryOutStandingDeal,
-  hasBottomReachedOutstanding,
-}) => {
-  console.log(
+const OutstandingDeals = () => {
+  const {
+    treasuryOutStandingDealRecords,
+    treasuryOutStandingDealsRow,
+    setHasBottomReachedOutstanding,
+    treasuryOutStandingDeal,
     hasBottomReachedOutstanding,
-    "hasBottomReachedOutstandinghasBottomReachedOutstanding"
-  );
+  } = useBlotterTransaction(); // Custom hook to manage transaction context
   const classes = useStyles();
   const { showMessage } = useNotification();
   const dispatch = useDispatch();
@@ -494,33 +491,33 @@ const OutstandingDeals = ({
       label: "Time",
       width: 60,
       render: (record) => {
-        let Data = { PK_TransactionID: record.pK_TransactionID };
+        const Data = { PK_TransactionID: record.pK_TransactionID };
+
         const isRFQ =
           record.isRFQ &&
           record.statusID === 2 &&
           record.rfqTimerDetails !== null &&
           record.rfqTimerDetails?.isEnded === false;
+
         const isAssignedUser =
           record.statusID === 5 &&
           Number(localStorage.getItem("userID")) ===
             Number(record.treasuryPersonID);
-        const rfqTimer =
-          (isRFQ || isAssignedUser) && record.rfqTimerDetails?.endTime
-            ? convertDateTimeIntoLocal(record.rfqTimerDetails.endTime)
-            : null;
-        const serverTime =
-          (isRFQ || isAssignedUser) && record.rfqTimerDetails?.serverTime
-            ? convertDateTimeIntoLocal(
-                record.rfqTimerDetails?.serverTime.replace(/[-:\s]/g, "")
-              )
-            : null;
+
+        const showTimer =
+          (isRFQ || isAssignedUser) &&
+          record.rfqTimerDetails?.endTime &&
+          record.rfqTimerDetails?.serverTime;
+
         return (
           <span>
             {formatDateTimeToUTCTime(record.tradeDateTime)}{" "}
-            {(isRFQ || isAssignedUser) && rfqTimer && (
-              <RFQTImer
-                severTime={serverTime}
-                endTime={rfqTimer}
+            {showTimer && (
+              <RFQTimer
+                key={record.pK_TransactionID + record.rfqTimerDetails?.endTime}
+                rfqId={record.pK_TransactionID}
+                severTime={record.rfqTimerDetails.serverTime} // raw value
+                endTime={record.rfqTimerDetails.endTime} // raw value
                 dispatch={dispatch}
                 apiFunction={ExpireRFQTransaction}
                 navigate={navigate}
@@ -545,8 +542,7 @@ const OutstandingDeals = ({
               : record.statusID === 2
               ? classes.statusPending
               : classes.statusRejected
-          }
-        >
+          }>
           {record.status}
         </span>
       ),
@@ -563,9 +559,9 @@ const OutstandingDeals = ({
                 assignTranId === record.pK_TransactionID &&
                 AssignTransactionAPILoading
               }
-              icon={<i className="icon-user-check"></i>}
+              icon={<i className='icon-user-check'></i>}
               size={"small"}
-              className="btn btn-primary btn-sm d-flex justify-content-center align-items-center"
+              className='btn btn-primary btn-sm d-flex justify-content-center align-items-center'
               onClick={() => handleClickAssignTransaction(record)}
             />
           ) : record.statusID === 6 ? (
@@ -575,8 +571,8 @@ const OutstandingDeals = ({
                   acceptTranCancelReqId === record.pK_TransactionID &&
                   AcceptTransactionCancellationRequestLoading
                 }
-                icon={<i className="icon-check"></i>}
-                className="btn btn-sm btn-danger d-flex justify-content-center align-items-center"
+                icon={<i className='icon-check'></i>}
+                className='btn btn-sm btn-danger d-flex justify-content-center align-items-center'
                 size={"small"}
                 onClick={() =>
                   handleAcceptTransactionCancellation(record.pK_TransactionID)
@@ -588,8 +584,8 @@ const OutstandingDeals = ({
                   (RejectTransactionAPILoading ||
                     RejectTransactionCancellationRequestLoading)
                 }
-                icon={<i className="icon-close"></i>}
-                className="btn btn-sm btn-success d-flex justify-content-center align-items-center"
+                icon={<i className='icon-close'></i>}
+                className='btn btn-sm btn-success d-flex justify-content-center align-items-center'
                 size={"small"}
                 onClick={() =>
                   handleRejectTransactionCancellation(record.pK_TransactionID)
@@ -602,18 +598,18 @@ const OutstandingDeals = ({
               <>
                 {record.isRFQ === true ? (
                   <CustomButton
-                    icon={<i className="icon-open"></i>}
+                    icon={<i className='icon-open'></i>}
                     size={"small"}
-                    className="btn btn-sm btn-primary d-flex justify-content-center align-items-center"
+                    className='btn btn-sm btn-primary d-flex justify-content-center align-items-center'
                     onClick={() => openViewDeal(record, record.natureType)}
                   />
                 ) : record.natureType === 2 ||
                   record.natureType === 3 ||
                   record.natureType === 4 ? (
                   <CustomButton
-                    icon={<i className="icon-open"></i>}
+                    icon={<i className='icon-open'></i>}
                     size={"small"}
-                    className="btn btn-sm btn-primary d-flex justify-content-center align-items-center"
+                    className='btn btn-sm btn-primary d-flex justify-content-center align-items-center'
                     onClick={() => openViewDeal(record, record.natureType)}
                   />
                 ) : (
@@ -623,9 +619,9 @@ const OutstandingDeals = ({
                         acceptTranId === record.pK_TransactionID &&
                         AcceptTransactionAPILoading
                       }
-                      icon={<i className="icon-check"></i>}
+                      icon={<i className='icon-check'></i>}
                       size={"small"}
-                      className="btn btn-sm btn-success blotterCheckerButton d-flex justify-content-center align-items-center"
+                      className='btn btn-sm btn-success blotterCheckerButton d-flex justify-content-center align-items-center'
                       onClick={() => acceptTransaction(record)}
                     />
                     <CustomButton
@@ -633,9 +629,9 @@ const OutstandingDeals = ({
                       //   rejectTranId === record.pK_TransactionID &&
                       //   RejectTransactionAPILoading
                       // }
-                      icon={<i className="icon-close"></i>}
+                      icon={<i className='icon-close'></i>}
                       size={"small"}
-                      className="btn btn-sm btn-danger blotterCheckerButton d-flex justify-content-center align-items-center"
+                      className='btn btn-sm btn-danger blotterCheckerButton d-flex justify-content-center align-items-center'
                       onClick={() => rejectTransaction(record)}
                     />
                   </>
@@ -644,8 +640,8 @@ const OutstandingDeals = ({
             ) : record.statusID === 2 ? (
               <CustomButton
                 size={"small"}
-                icon={<i className="icon-user-check blotterCheckerButton"></i>}
-                className="btn btn-primary d-flex justify-content-center align-items-center"
+                icon={<i className='icon-user-check blotterCheckerButton'></i>}
+                className='btn btn-primary d-flex justify-content-center align-items-center'
                 onClick={() => handleClickAssignTransaction(record)}
               />
             ) : null
@@ -658,14 +654,14 @@ const OutstandingDeals = ({
       label: "",
       width: 120,
       render: (record) => (
-        <div className="d-flex justify-content-center align-items-center">
+        <div className='d-flex justify-content-center align-items-center'>
           {record.statusID === 6 && (
             <CustomButton
               icon={
-                <i className="icon-view-comment d-flex justify-content-center align-items-center blotterTableIconSize"></i>
+                <i className='icon-view-comment d-flex justify-content-center align-items-center blotterTableIconSize'></i>
               }
               size={"small"}
-              className="btn btn-primary"
+              className='btn btn-primary'
               onClick={() => handleShowCommentModal(record.comment)}
             />
           )}
@@ -677,9 +673,9 @@ const OutstandingDeals = ({
                   record.pK_TransactionID === chatUserId &&
                   getAllChatByTransactionIdLoading
                 }
-                icon={<i className="icon-chat2"></i>}
+                icon={<i className='icon-chat2'></i>}
                 size={"small"}
-                className="btn btn-danger chat-btn-trigger d-flex justify-content-center align-items-center"
+                className='btn btn-danger chat-btn-trigger d-flex justify-content-center align-items-center'
                 onClick={() =>
                   handleClickChat(
                     record.pK_TransactionID,
@@ -703,21 +699,20 @@ const OutstandingDeals = ({
             size={"small"}
             icon={
               <svg
-                id="info_Layer_1"
-                x="0px"
-                y="0px"
-                width="12px"
-                height="12px"
-                fill="#ffffff"
-                viewBox="0 0 55 55"
-              >
+                id='info_Layer_1'
+                x='0px'
+                y='0px'
+                width='12px'
+                height='12px'
+                fill='#ffffff'
+                viewBox='0 0 55 55'>
                 <g>
-                  <path d="M41.407,45.858c0.067,0.838,0.156,1.672,0.183,2.508   c0.005,0.152-0.205,0.376-0.37,0.461c-1.347,0.687-2.679,1.416-4.069,2.005c-3.305,1.396-6.715,2.5-10.277,3.009   c-1.447,0.206-2.936,0.154-4.403,0.153c-0.477-0.001-0.968-0.178-1.424-0.345c-1.313-0.481-1.98-1.443-1.948-2.85   c0.015-0.583,0.103-1.179,0.253-1.744c1.863-7.013,3.752-14.02,5.61-21.037c0.199-0.751,0.327-1.543,0.341-2.318   c0.021-1.142-0.615-1.925-1.667-2.331c-1.605-0.618-3.258-0.468-4.89-0.161c-1.764,0.332-3.468,0.873-5.149,1.884   c-0.074-0.978-0.157-1.863-0.187-2.75c-0.005-0.127,0.234-0.307,0.396-0.388c1.334-0.67,2.648-1.389,4.021-1.968   c3.327-1.403,6.755-2.512,10.337-3.021c1.465-0.208,2.994-0.294,4.457-0.125c2.782,0.323,3.808,2.02,3.073,4.73   c-0.94,3.474-1.914,6.941-2.838,10.419c-1.049,3.953-2.087,7.912-3.077,11.879c-0.524,2.107,0.385,3.449,2.526,3.839   c2.048,0.376,4.038-0.017,5.981-0.634C39.313,46.75,40.296,46.295,41.407,45.858z"></path>
-                  <circle cx="27.5" cy="7.608" r="6.609"></circle>
+                  <path d='M41.407,45.858c0.067,0.838,0.156,1.672,0.183,2.508   c0.005,0.152-0.205,0.376-0.37,0.461c-1.347,0.687-2.679,1.416-4.069,2.005c-3.305,1.396-6.715,2.5-10.277,3.009   c-1.447,0.206-2.936,0.154-4.403,0.153c-0.477-0.001-0.968-0.178-1.424-0.345c-1.313-0.481-1.98-1.443-1.948-2.85   c0.015-0.583,0.103-1.179,0.253-1.744c1.863-7.013,3.752-14.02,5.61-21.037c0.199-0.751,0.327-1.543,0.341-2.318   c0.021-1.142-0.615-1.925-1.667-2.331c-1.605-0.618-3.258-0.468-4.89-0.161c-1.764,0.332-3.468,0.873-5.149,1.884   c-0.074-0.978-0.157-1.863-0.187-2.75c-0.005-0.127,0.234-0.307,0.396-0.388c1.334-0.67,2.648-1.389,4.021-1.968   c3.327-1.403,6.755-2.512,10.337-3.021c1.465-0.208,2.994-0.294,4.457-0.125c2.782,0.323,3.808,2.02,3.073,4.73   c-0.94,3.474-1.914,6.941-2.838,10.419c-1.049,3.953-2.087,7.912-3.077,11.879c-0.524,2.107,0.385,3.449,2.526,3.839   c2.048,0.376,4.038-0.017,5.981-0.634C39.313,46.75,40.296,46.295,41.407,45.858z'></path>
+                  <circle cx='27.5' cy='7.608' r='6.609'></circle>
                 </g>
               </svg>
             }
-            className="btn btn-sm btn-primary info-btn-trigger ms-1 d-flex justify-content-center align-items-center"
+            className='btn btn-sm btn-primary info-btn-trigger ms-1 d-flex justify-content-center align-items-center'
           />
         </div>
       ),
@@ -729,17 +724,15 @@ const OutstandingDeals = ({
       <TableContainer
         ref={outstandingTableContainerRef}
         sx={{ maxHeight: 300, overflow: "auto" }}
-        className={classes.tableContainer}
-      >
-        <Table stickyHeader size="small">
+        className={classes.tableContainer}>
+        <Table stickyHeader size='small'>
           <TableHead>
             <TableRow>
               {columns.map((column) => (
                 <TableCell
                   key={column.id}
                   style={{ width: column.width, whiteSpace: "nowrap" }}
-                  align={column.align || "left"}
-                >
+                  align={column.align || "left"}>
                   {column.label}
                 </TableCell>
               ))}
@@ -752,8 +745,7 @@ const OutstandingDeals = ({
               return (
                 <TableRow
                   key={`${row.pK_TransactionID}-${index}`}
-                  ref={isLast ? lastRowRef : null}
-                >
+                  ref={isLast ? lastRowRef : null}>
                   {columns.map((column) => (
                     <TableCell
                       key={column.id}
@@ -763,8 +755,7 @@ const OutstandingDeals = ({
                         whiteSpace: "nowrap",
                         fontSize: "13px",
                         fontWeight: "500",
-                      }}
-                    >
+                      }}>
                       {column.render ? column.render(row) : row[column.id]}
                     </TableCell>
                   ))}
@@ -785,12 +776,11 @@ const OutstandingDeals = ({
                   maxWidth: "100%",
                   textAlign: "center",
                 }}
-                image={Empty.PRESENTED_IMAGE_SIMPLE}
-              ></Empty>
+                image={Empty.PRESENTED_IMAGE_SIMPLE}></Empty>
             </>
           )}
         {hasBottomReachedOutstanding && (
-          <Box display="flex" justifyContent="center" p={2}>
+          <Box display='flex' justifyContent='center' p={2}>
             <CircularProgress size={24} />
           </Box>
         )}

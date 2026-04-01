@@ -45,10 +45,14 @@ const authSlice = createSlice({
     VerifyOTP: null,
     GenerateOTP: null,
     GetUsersEmail: null,
+    globalSnackBarMessage: "",
   },
   reducers: {
     clearAuthResponseMessage: (state) => {
       state.responseMessage = "";
+    },
+    setGlobalSnackBarMessage: (state, { payload }) => {
+      state.globalSnackBarMessage = payload;
     },
   },
   extraReducers: (builder) => {
@@ -108,7 +112,7 @@ const authSlice = createSlice({
         state.responseMessage = payload;
         state.resetPasswordResponse = null;
       })
- 
+
       .addCase(getAllCategoriesAction.pending, (state) => {
         state.Loader = true;
       })
@@ -294,5 +298,6 @@ const authSlice = createSlice({
       });
   },
 });
-export const { clearAuthResponseMessage } = authSlice.actions;
+export const { clearAuthResponseMessage, setGlobalSnackBarMessage } =
+  authSlice.actions;
 export default authSlice.reducer;

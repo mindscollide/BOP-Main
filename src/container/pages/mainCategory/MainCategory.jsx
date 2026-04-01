@@ -8,6 +8,7 @@ import { setActiveTab } from "../mainCorporate/rfqModal/RFQSlicer";
 import { getAllTreasuryInstrumentsApi } from "@/components/features/SpotBranch/WatchlistAction";
 import { getAllTenorsAction } from "../mainDealer/dealerActions";
 import SectionLoader from "@/components/common/sectionLoader/SectionLoader";
+import { setCurrentCategoryActiveTab } from "@/store/categoryReducer/categoryReducer";
 
 // Lazy load the tab components
 const SpotDealerAndTreasury = lazy(() =>
@@ -25,10 +26,22 @@ const CategoryDiscounting = lazy(() =>
 const MainCategory = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const activeTab = useSelector((state) => state.RFQReducer.activeTab);
-
+  const activeCategoryTab = useSelector((state) => state.categoryReducer.currentCategoryActiveTab);
+  console.log({ activeCategoryTab }, "activeTabactiveTabactiveTab");
   useEffect(() => {
     startTransition(() => {
+      let storedActiveTab = localStorage.getItem("MainCategoryActiveTab");
+      if (!storedActiveTab) {
+        storedActiveTab = "Spot"; // Default to "Spot" if no value is stored
+        startTransition(() => {
+          dispatch(setCurrentCategoryActiveTab(storedActiveTab));
+        });
+        localStorage.setItem("MainCategoryActiveTab", storedActiveTab);
+      } else {
+        startTransition(() => {
+          dispatch(setCurrentCategoryActiveTab(storedActiveTab));
+        });
+      }
       dispatch(getAllCategoriesAction({ navigate }));
       dispatch(getAllTreasuryInstrumentsApi({ navigate }));
       dispatch(getAllTenorsAction({ navigate }));
@@ -38,7 +51,7 @@ const MainCategory = () => {
   const handleTabChange = (tabTitle) => {
     localStorage.setItem("MainCategoryActiveTab", tabTitle);
     startTransition(() => {
-      dispatch(setActiveTab(tabTitle));
+      dispatch(setCurrentCategoryActiveTab(tabTitle));
     });
   };
 
@@ -48,7 +61,7 @@ const MainCategory = () => {
       content: (
         <span className="position-relative">
           <Suspense fallback={<SectionLoader />}>
-            {activeTab === "Spot" && <SpotDealerAndTreasury />}
+            {activeCategoryTab === "Spot" && <SpotDealerAndTreasury />}
           </Suspense>
         </span>
       ),
@@ -58,7 +71,7 @@ const MainCategory = () => {
       content: (
         <span className="position-relative">
           <Suspense fallback={<SectionLoader />}>
-            {activeTab === "Forwards" && (
+            {activeCategoryTab === "Forwards" && (
               <>
                 <CategoryForwards />
               </>
@@ -72,7 +85,7 @@ const MainCategory = () => {
       content: (
         <span className="position-relative">
           <Suspense fallback={<SectionLoader />}>
-            {activeTab === "Discounting" && <CategoryDiscounting />}
+            {activeCategoryTab === "Discounting" && <CategoryDiscounting />}
           </Suspense>
         </span>
       ),
@@ -82,9 +95,8 @@ const MainCategory = () => {
   return (
     <GlobalTabs
       tabs={tabsData}
-      activeKey={localStorage.getItem("MainCategoryActiveTab") || "Spot"}
+      activeKey={activeCategoryTab}
       onTabChange={handleTabChange}
-      defaultActiveKey="Spot" // Changed from "0" to match your tab titles
       tabClass="mb-4"
     />
   );

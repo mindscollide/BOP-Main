@@ -1,8 +1,7 @@
 import React, { Suspense, lazy, useEffect } from "react";
 import GlobalTabs from "../../../components/common/tabs/Tabs";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { setActiveTab } from "../mainCorporate/rfqModal/RFQSlicer";
-import { useDispatch } from "react-redux";
 import BlotterHeader from "@/components/features/blotter/blotterHeader/BlotterHeader";
 import TXNSummary from "@/components/features/blotter/txnSummary/TXNSummary";
 import { useNavigate } from "react-router-dom";
@@ -19,6 +18,7 @@ import {
 import { getAllTenorsAction } from "../mainDealer/dealerActions";
 import SectionLoader from "@/components/common/sectionLoader/SectionLoader";
 import { setBlotterLoader } from "@/store/BlotterSlicer/BlotterSlicer";
+import TransactionProvider from "@/context/BlotterTransactionContext";
 
 const shouldIncludeComponents =
   import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
@@ -48,16 +48,23 @@ const MainBranch = () => {
   const navigate = useNavigate();
   const activeTab = useSelector((state) => state.RFQReducer.activeTab);
 
-  //WatchList table Data Api Call
+  // Initialize tab from localStorage
+  useEffect(() => {
+    const savedTab = localStorage.getItem("activeBranchTab") || "Spot";
+    dispatch(setActiveTab(savedTab));
+  }, []);
+
+  // WatchList table Data Api Call
   useEffect(() => {
     try {
-      dispatch(getAllHolidaysForTransactionApi({}))
+      dispatch(getAllHolidaysForTransactionApi({}));
       dispatch(GetSpotRatesForCounterPartyAPI(navigate));
+
       let Data = { sRow: 0, Length: 10 };
-      dispatch(setBlotterLoader(true)); // Set the blotter loader to true
+
+      dispatch(setBlotterLoader(true));
       dispatch(BlotterDataAPI({ navigate, Data }));
-      dispatch(GetDashboardDataAPI({ navigate })); // Fetching the Dashboard Data
-      // dispatch(getAllTenorsAction({ navigate }));
+      dispatch(GetDashboardDataAPI({ navigate }));
       dispatch(getAllTenorsAction({ navigate }));
       dispatch(GetForwardRatesForCounterPartyApi({ navigate }));
       dispatch(GetDiscountingRatesForCounterPartyApi({ navigate }));
@@ -67,58 +74,59 @@ const MainBranch = () => {
   }, []);
 
   const handleTabChange = (tabTitle) => {
-    localStorage.setItem("activeBranchTab", tabTitle)
-    dispatch(setActiveTab(tabTitle));
+    dispatch(setActiveTab(tabTitle)); // immediate UI update
+    localStorage.setItem("activeBranchTab", tabTitle); // persist after reload
   };
 
   const tabsData = [
     {
       title: "Spot",
-      content:
-        SpotBranch  ? (
-          <Suspense fallback={<>Loading....</>}>
-            <SpotBranch />
-            <section className="bg-white mt-2 mb-4 p-2">
-              <BlotterHeader />
-            </section>
-          </Suspense>
-        ) : null,
+      content: (
+        <Suspense fallback={<SectionLoader />}>
+          <SpotBranch />
+          <section className='bg-white mt-2 mb-4 p-2'>
+            <TransactionProvider>
+              <TXNSummary />
+            </TransactionProvider>
+          </section>
+        </Suspense>
+      ),
     },
     {
       title: "Forwards",
-      content:
-        ForwardsForBranch ? (
-          <Suspense fallback={<>Loading Forwards.... </>}>
-            <ForwardsForBranch />
-            <section className="bg-white p-2">
-              <BlotterHeader />
-            </section>
-          </Suspense>
-        ) : null,
+      content: (
+        <Suspense fallback={<SectionLoader />}>
+          <ForwardsForBranch />
+          <section className='bg-white p-2'>
+            <TransactionProvider>
+              <TXNSummary />
+            </TransactionProvider>
+          </section>
+        </Suspense>
+      ),
     },
     {
       title: "Discounting",
-      content:
-        BranchDiscountingTable  ? (
-          <Suspense fallback={<>Loading Discounting...</>}>
-            <BranchDiscountingTable />
-            <section className="bg-white p-2">
-              <BlotterHeader />
-            </section>
-          </Suspense>
-        ) : null,
+      content: (
+        <Suspense fallback={<SectionLoader />}>
+          <BranchDiscountingTable />
+          <section className='bg-white p-2'>
+            <TransactionProvider>
+              <TXNSummary />
+            </TransactionProvider>
+          </section>
+        </Suspense>
+      ),
     },
   ];
+
   return (
-    <>
-      <GlobalTabs
-        tabs={tabsData}
-        onTabChange={handleTabChange}
-        activeKey={localStorage.getItem("activeBranchTab") || "Spot"}
-        defaultActiveKey={"0"}
-        tabClass="mb-4 position-relative"
-      />
-    </>
+    <GlobalTabs
+      tabs={tabsData}
+      onTabChange={handleTabChange}
+      activeKey={activeTab}
+      tabClass='mb-4 position-relative'
+    />
   );
 };
 
