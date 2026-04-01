@@ -8,6 +8,7 @@ import { throttle } from "lodash";
 import { useDispatch } from "react-redux";
 import { clearCategoryDiscountingClearRates } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { UpdateGetCategoryWiseDiscountingRates } from "@/store/categoryReducer/categoryReducer";
+import { useModal } from "@/context/ModalContext";
 
 const CategoryFeDiscountingTable = () => {
   const dispatch = useDispatch();
@@ -32,9 +33,7 @@ const CategoryFeDiscountingTable = () => {
     (state) => state.RealtimeActionsSlice.CategoryFeDiscounting
   );
 
-  const marketStatus = useSelector(
-    (state) => state.WatchListReducer.getMarketStatus
-  );
+  const { isMarketOn } = useModal();
 
   const ClearRatesData = useSelector(
     (state) => state.RealtimeActionsSlice.CategoryDiscountingClearRates
@@ -50,7 +49,10 @@ const CategoryFeDiscountingTable = () => {
   );
 
   useEffect(() => {
-    if (getAllTenorsRecords !== null && allInstrumentForTreasuryData !== null) {
+    if (
+      getAllTenorsRecords !== null &&
+      allInstrumentForTreasuryData !== null 
+    ) {
       try {
         const { feDiscountingRates = [] } =
           GetCategoryWiseDiscountingRates !== null &&
@@ -116,7 +118,7 @@ const CategoryFeDiscountingTable = () => {
   }, [CategoryFeDiscounting, throttledUpdate]);
 
   useEffect(() => {
-    if (marketStatus !== null && marketStatus === false) {
+    if (isMarketOn !== null && isMarketOn === false) {
       // Market closed: set all rates to 0
       setDataSource((prevData) =>
         prevData.map((row) => {
@@ -130,7 +132,7 @@ const CategoryFeDiscountingTable = () => {
         })
       );
     }
-  }, [marketStatus]);
+  }, [isMarketOn]);
 
   // ✅ For clear FE Discounting Rates
   useEffect(() => {

@@ -207,7 +207,7 @@ export const BankTableDataProvider = ({ children }) => {
 
         Object.keys(updatedRow).forEach((key) => {
           if (key.startsWith("bid_") || key.startsWith("ask_")) {
-            updatedRow[key] = "-";
+            updatedRow[key] = "0";
           }
         });
 

@@ -4,7 +4,10 @@ import { buildForwardsTable } from "@/components/utils/generateColumnsData";
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { throttle } from "lodash";
-import { clearTreasuryForwardRates, setTreasuryFowardsTenorsChanges } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
+import {
+  clearTreasuryForwardRates,
+  setTreasuryFowardsTenorsChanges,
+} from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { Col, Row } from "react-bootstrap";
 
 // ---------------- CONSTANTS ----------------
@@ -147,7 +150,8 @@ const BankForwards = () => {
     if (
       isTableInitialized.current ||
       !getAllTenorsRecords ||
-      !GetAllInstrumentForTreasury
+      !GetAllInstrumentForTreasury ||
+      !GetBankForwardForTreasury
     )
       return;
 

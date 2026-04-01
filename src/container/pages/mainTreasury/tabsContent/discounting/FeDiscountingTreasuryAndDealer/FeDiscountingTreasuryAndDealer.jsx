@@ -40,40 +40,38 @@ const FeDiscountingTreasuryAndDealer = () => {
   // Runs once when instruments + tenors are ready.
   useEffect(() => {
     if (
-      isTableInitialized.current ||
-      !getAllTenorsRecords ||
-      !GetAllInstrumentForTreasury
+      getAllTenorsRecords !== null &&
+      GetAllInstrumentForTreasury !== null &&
+      GetDiscountingRatesForTreasury !== null
     )
-      return;
+      try {
+        const { feDiscountingRates = [] } = GetDiscountingRatesForTreasury;
 
-    try {
-      const { feDiscountingRates = [] } = GetDiscountingRatesForTreasury ?? {};
+        const getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
+        const getAllInstrument = {
+          instruments: GetAllInstrumentForTreasury.discountingInstruments,
+        };
 
-      const getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
-      const getAllInstrument = {
-        instruments: GetAllInstrumentForTreasury.discountingInstruments,
-      };
+        const { columnsData: cols, rowData } = buildDiscountingTable(
+          3,
+          feDiscountingRates,
+          getAllTenorsData,
+          getAllInstrument,
+          IndexCell
+        );
 
-      const { columnsData: cols, rowData } = buildDiscountingTable(
-        3,
-        feDiscountingRates,
-        getAllTenorsData,
-        getAllInstrument,
-        IndexCell
-      );
+        // ✅ Mark initialized regardless of rowData length so MQTT
+        //    effect can manage rows independently from this point on.
+        isTableInitialized.current = true;
+        setColumnsData(cols);
 
-      // ✅ Mark initialized regardless of rowData length so MQTT
-      //    effect can manage rows independently from this point on.
-      isTableInitialized.current = true;
-      setColumnsData(cols);
-
-      if (rowData?.length) {
-        dataSourceRef.current = rowData;
-        setFeDiscountingData(rowData);
+        if (rowData?.length) {
+          dataSourceRef.current = rowData;
+          setFeDiscountingData(rowData);
+        }
+      } catch (error) {
+        console.error("Error building FE discounting table:", error);
       }
-    } catch (error) {
-      console.error("Error building FE discounting table:", error);
-    }
   }, [
     getAllTenorsRecords,
     GetAllInstrumentForTreasury,

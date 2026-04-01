@@ -16,9 +16,7 @@ const EMPTY_RATE_VALUE = "-"; // single convention for "no rate"
 
 const BranchForwardsTable = () => {
   const { bidOfferStatus } = useBidOffer();
-  const { allForwardApplicableTenors,isMarketOn } = useModal();
-
-
+  const { allForwardApplicableTenors, isMarketOn } = useModal();
 
   // ---------------- TABLE STATE ----------------
   const [dataSource, setDataSource] = useState([]);
@@ -75,7 +73,8 @@ const BranchForwardsTable = () => {
     if (
       isTableInitialized.current || // ✅ skip if already built
       !getAllInstrumentsForCounterPartiesData ||
-      !getAllTenorsRecords
+      !getAllTenorsRecords ||
+      !GetForwardRatesForCounterPartyData
     )
       return;
 
@@ -290,7 +289,6 @@ const BranchForwardsTable = () => {
     dataSourceRef.current = cleared;
     setDataSource(cleared);
   };
-
 
   useEffect(() => {
     if (isMarketOn === false || ClearRatesData?.areRatesClear) resetRates();

@@ -197,7 +197,7 @@ const CalculatorNonFxDiscounting = () => {
                   <label>KIBOR</label>
                   <InputFieldWithTag
                     type='text'
-                    value={calculatedKibor}
+                    value={calculatedKibor?.toFixed(4)}
                     disabled={true}
                     applyClass='inputField-calculator'
                     applyClassTag='tag-for-calculator'

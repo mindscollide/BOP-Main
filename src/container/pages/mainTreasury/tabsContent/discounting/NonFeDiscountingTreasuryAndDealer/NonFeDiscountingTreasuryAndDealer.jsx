@@ -39,40 +39,43 @@ const NonFeDiscountingTreasuryAndDealer = () => {
   // ---------------- INITIAL TABLE BUILD ----------------
   useEffect(() => {
     if (
-      isTableInitialized.current ||
-      !getAllTenorsRecords ||
-      !GetAllInstrumentForTreasury
+      !isTableInitialized.current &&
+      getAllTenorsRecords !== null &&
+      GetAllInstrumentForTreasury !== null &&
+      GetDiscountingRatesForTreasury !== null
     )
-      return;
+      try {
+        const { nonFEDiscountingRates = [] } =
+          GetDiscountingRatesForTreasury ?? {};
 
-    try {
-      const { nonFEDiscountingRates = [] } =
-        GetDiscountingRatesForTreasury ?? {};
+        const getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
+        const getAllInstrument = {
+          instruments: GetAllInstrumentForTreasury.nonFEDiscountingInstruments,
+        };
 
-      const getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
-      const getAllInstrument = {
-        instruments: GetAllInstrumentForTreasury.nonFEDiscountingInstruments,
-      };
+        const { columnsData: cols, rowData } = buildDiscountingTable(
+          3,
+          nonFEDiscountingRates,
+          getAllTenorsData,
+          getAllInstrument,
+          IndexCell
+        );
 
-      const { columnsData: cols, rowData } = buildDiscountingTable(
-        3,
-        nonFEDiscountingRates,
-        getAllTenorsData,
-        getAllInstrument,
-        IndexCell
-      );
+        isTableInitialized.current = true;
+        setColumnsData(cols);
 
-      isTableInitialized.current = true;
-      setColumnsData(cols);
-
-      if (rowData?.length) {
-        dataSourceRef.current = rowData;
-        setDataSource(rowData);
+        if (rowData?.length) {
+          dataSourceRef.current = rowData;
+          setDataSource(rowData);
+        }
+      } catch (error) {
+        console.error("Error building NonFE discounting table:", error);
       }
-    } catch (error) {
-      console.error("Error building NonFE discounting table:", error);
-    }
-  }, [getAllTenorsRecords, GetAllInstrumentForTreasury, GetDiscountingRatesForTreasury]);
+  }, [
+    getAllTenorsRecords,
+    GetAllInstrumentForTreasury,
+    GetDiscountingRatesForTreasury,
+  ]);
 
   // ---------------- THROTTLED MQTT RATE UPDATE ----------------
   const throttledUpdateRef = useRef(
@@ -134,7 +137,7 @@ const NonFeDiscountingTreasuryAndDealer = () => {
 
   return (
     <>
-      <span className="heading mb-2">Non FE Discounting</span>
+      <span className='heading mb-2'>Non FE Discounting</span>
 
       <GlobalTable
         columns={columnsData}
