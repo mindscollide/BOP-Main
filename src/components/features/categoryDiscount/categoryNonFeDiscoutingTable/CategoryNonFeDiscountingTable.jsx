@@ -1,6 +1,7 @@
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import GlobalTable from "@/components/common/table/GlobalTable";
 import { buildDiscountingTable } from "@/components/utils/generateColumnsData";
+import { useModal } from "@/context/ModalContext";
 import { UpdateGetCategoryWiseDiscountingRates } from "@/store/categoryReducer/categoryReducer";
 import { clearCategoryDiscountingClearRates } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { throttle } from "lodash";

@@ -59,10 +59,6 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
     (state) => state.dealerReducer.getAllTenors
   );
 
-  const marketStatus = useSelector(
-    (state) => state.WatchListReducer.getMarketStatus
-  );
-
   const ClearRatesData = useSelector(
     (state) => state.RealtimeActionsSlice.ClearRatesData
   );
@@ -279,7 +275,7 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
               value='Non-FE Discounting'
               applyClass={"FowwardBranchBookaForwardBtn"}
               onClick={handleNonFEDiscountingModal}
-              disabled={!isBid || marketStatus === false || !rfqButtonState}
+              disabled={!isBid || isMarketOn === false || !rfqButtonState}
             />
           </Col>
         </Row>

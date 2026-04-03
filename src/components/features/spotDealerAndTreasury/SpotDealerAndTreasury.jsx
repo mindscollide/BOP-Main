@@ -6,10 +6,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { throttle } from "lodash";
 import { clearCategorySpotClearRates } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { UpdatetCategoryWiseSpotRates } from "@/store/categoryReducer/categoryReducer";
+import { useModal } from "@/context/ModalContext";
 
 const SpotDealerAndTreasury = () => {
   const dispatch = useDispatch();
   const [spotsData, setSpotsData] = useState([]);
+
+  console.log(spotsData, "spotsDataspotsData")
 
   // Ref to keep latest data for throttled updates
   const spotsDataRef = useRef([]);
@@ -27,9 +30,7 @@ const SpotDealerAndTreasury = () => {
   const categorySpotRates = useSelector(
     (state) => state.RealtimeActionsSlice.CategorySpotRates
   );
-  const marketStatus = useSelector(
-    (state) => state.WatchListReducer.getMarketStatus
-  );
+  const { isMarketOn } = useModal();
 
   // -------------------
   // Function to build spot data
@@ -72,7 +73,7 @@ const SpotDealerAndTreasury = () => {
   // INITIAL DATA POPULATION
   // -------------------
   useEffect(() => {
-    if (!allInstrumentForTreasuryData || GetCategoryWiseSpotRatesDaata) return;
+    if (!allInstrumentForTreasuryData || !GetCategoryWiseSpotRatesDaata) return;
 
     const enrichedData = buildSpotData(
       allInstrumentForTreasuryData,
@@ -118,7 +119,7 @@ const SpotDealerAndTreasury = () => {
   // MARKET OFF: Zero all bids/offers
   // -------------------
   useEffect(() => {
-    if (marketStatus === false) {
+    if (isMarketOn === false) {
       const updated = spotsDataRef.current.map((data) => ({
         ...data,
         bid: 0,
@@ -127,7 +128,7 @@ const SpotDealerAndTreasury = () => {
       spotsDataRef.current = updated;
       setSpotsData(updated);
     }
-  }, [marketStatus]);
+  }, [isMarketOn]);
 
   // -------------------
   // CLEAR RATES: Zero out category rates
@@ -169,7 +170,7 @@ const SpotDealerAndTreasury = () => {
                         BidBoxHeading='I Sell'
                         BidAmountValue={spotCardsData.bid}
                         applyClass={
-                          marketStatus ? "SellCard" : "SellCard_MarketOff"
+                          isMarketOn ? "SellCard" : "SellCard_MarketOff"
                         }
                       />
                     </Col>
@@ -179,7 +180,7 @@ const SpotDealerAndTreasury = () => {
                         BidBoxHeading='I Buy'
                         BidAmountValue={spotCardsData.offer}
                         applyClass={
-                          marketStatus ? "BuyCard" : "BuyCard_MarketOff"
+                          isMarketOn ? "BuyCard" : "BuyCard_MarketOff"
                         }
                       />
                     </Col>

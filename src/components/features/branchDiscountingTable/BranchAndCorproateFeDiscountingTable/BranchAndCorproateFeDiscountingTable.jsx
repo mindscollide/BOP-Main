@@ -63,10 +63,6 @@ const BranchAndCorporateFeDiscountingTable = () => {
     (state) => state.dealerReducer.getAllTenors
   );
 
-  const marketStatus = useSelector(
-    (state) => state.WatchListReducer.getMarketStatus
-  );
-
   const ClearRatesData = useSelector(
     (state) => state.RealtimeActionsSlice.ClearRatesData
   );
@@ -286,7 +282,7 @@ const BranchAndCorporateFeDiscountingTable = () => {
               value='FE Discounting'
               applyClass={"FEDiscounting"}
               onClick={handleFEDiscountingModal}
-              disabled={!isBid || marketStatus === false || !rfqButtonState}
+              disabled={!isBid || isMarketOn === false || !rfqButtonState}
             />
           </Col>
         </Row>

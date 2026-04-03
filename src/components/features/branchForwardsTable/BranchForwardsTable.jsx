@@ -50,9 +50,6 @@ const BranchForwardsTable = () => {
   const GetForwardRatesForCounterPartyData = useSelector(
     (state) => state.WatchListReducer.GetForwardRatesForCounterParty
   );
-  const marketStatus = useSelector(
-    (state) => state.WatchListReducer.getMarketStatus
-  );
   const ClearRatesData = useSelector(
     (state) => state.RealtimeActionsSlice.ClearRatesData
   );
@@ -324,7 +321,7 @@ const BranchForwardsTable = () => {
               value='Book a Forward'
               applyClass='FowwardBranchBookaForwardBtn'
               onClick={handleBookaForwardCorporate}
-              disabled={marketStatus === false || !rfqButtonState}
+              disabled={isMarketOn === false || !rfqButtonState}
             />
           </Col>
         </Row>

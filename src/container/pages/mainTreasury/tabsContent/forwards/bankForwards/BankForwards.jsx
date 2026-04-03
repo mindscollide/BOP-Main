@@ -136,9 +136,7 @@ const BankForwards = () => {
   const TreasuryForwardRates = useSelector(
     (state) => state.RealtimeActionsSlice.TreasuryForwardRates
   );
-  const marketStatus = useSelector(
-    (state) => state.WatchListReducer.getMarketStatus
-  );
+
   const treasuryFowardsTenorsChanges = useSelector(
     (state) => state.RealtimeActionsSlice.treasuryFowardsTenorsChanges
   );
@@ -346,24 +344,6 @@ const BankForwards = () => {
     return () => throttledFn.cancel();
   }, []);
 
-  // ---------------- MARKET CLOSED / CLEAR RATES ----------------
-  // Uses strict === false to avoid firing on undefined (initial render)
-  // useEffect(() => {
-  //   if (marketStatus !== false) return;
-
-  //   const cleared = dataSourceRef.current.map((row) => {
-  //     const updatedRow = { ...row };
-  //     Object.keys(updatedRow).forEach((key) => {
-  //       if (key.startsWith("bid_") || key.startsWith("ask_")) {
-  //         updatedRow[key] = EMPTY_RATE_VALUE; // consistent with new-row convention
-  //       }
-  //     });
-  //     return updatedRow;
-  //   });
-
-  //   dataSourceRef.current = cleared;
-  //   setDataSource(cleared);
-  // }, [marketStatus]);
 
   // ---------------- RENDER ----------------
   return (

@@ -15,6 +15,7 @@ import { InputCell } from "@/components/common/inputField/InputCell";
 import { useNotification } from "@/context/NotificationProvider";
 import { formatDateUTCToGMT } from "@/components/utils/timeFunction";
 import moment from "moment";
+import { useModal } from "@/context/ModalContext";
 
 /**
  * NonFeDiscountingTable component renders a table for displaying and managing
@@ -34,10 +35,7 @@ const NonFeDiscountingTable = () => {
   const navigate = useNavigate();
   const [date, setDate] = useState("");
   const { showMessage } = useNotification();
-
-  const marketStatus = useSelector(
-    (state) => state.RealtimeActionsSlice.marketStatus
-  );
+  const { isMarketOn } = useModal();
 
   const [tableData, setTableData] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
@@ -171,24 +169,24 @@ const NonFeDiscountingTable = () => {
   };
   return (
     <>
-      <div className="datetime fw-bold text-end mb-2 ff-roboto">
+      <div className='datetime fw-bold text-end mb-2 ff-roboto'>
         {date
           ? moment(formatDateUTCToGMT(date)).format("DD MMM YYYY, hh:mm:ss")
           : ""}
       </div>
       <GlobalTable
-        prefixCls="DealerAndTreasuryDiscountTable"
+        prefixCls='DealerAndTreasuryDiscountTable'
         columns={columnsData}
         dataSource={tableData}
         pagination={false}
       />
 
-      <span className="d-flex justify-content-center mt-4">
+      <span className='d-flex justify-content-center mt-4'>
         <CustomButton
-          applyClass="publishForwardsBtn"
+          applyClass='publishForwardsBtn'
           value={"Publish Non FE Discounting"}
           onClick={handlePublishDiscount}
-          disabled={marketStatus === false ? true : false}
+          disabled={isMarketOn === false ? true : false}
           loading={publishNonFeDiscountingLoading}
         />
       </span>

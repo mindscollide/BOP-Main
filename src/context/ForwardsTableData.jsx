@@ -14,7 +14,7 @@ import { useModal } from "./ModalContext";
 const BankTableDataContext = createContext();
 
 export const BankTableDataProvider = ({ children }) => {
-  const { allForwardApplicableTenors } = useModal();
+  const { allForwardApplicableTenors, isMarketOn } = useModal();
 
   const isTableInitialized = useRef(false);
 
@@ -41,10 +41,6 @@ export const BankTableDataProvider = ({ children }) => {
 
   const TreasuryForwardRates = useSelector(
     (state) => state.RealtimeActionsSlice.TreasuryForwardRates
-  );
-
-  const marketStatus = useSelector(
-    (state) => state.WatchListReducer.getMarketStatus
   );
 
   // ---------------- INITIAL TABLE BUILD ----------------
@@ -114,15 +110,11 @@ export const BankTableDataProvider = ({ children }) => {
 
       forwardRates.forEach((rate) => {
         const currency =
-          instrumentTenorMapRef.current[
-            `${rate.instrumentID}-${rate.tenorID}`
-          ];
+          instrumentTenorMapRef.current[`${rate.instrumentID}-${rate.tenorID}`];
 
         if (!currency) return;
 
-        const rowIndex = updated.findIndex(
-          (r) => r.tenorID === rate.tenorID
-        );
+        const rowIndex = updated.findIndex((r) => r.tenorID === rate.tenorID);
 
         if (rowIndex === -1) return;
 
@@ -162,15 +154,11 @@ export const BankTableDataProvider = ({ children }) => {
     let updatedRows = [...dataSourceRef.current];
 
     // remove disabled tenors
-    updatedRows = updatedRows.filter((row) =>
-      activeIDs.has(row.tenorID)
-    );
+    updatedRows = updatedRows.filter((row) => activeIDs.has(row.tenorID));
 
     // add new tenors
     activeTenors.forEach((tenor) => {
-      const exists = updatedRows.some(
-        (row) => row.tenorID === tenor.tenorID
-      );
+      const exists = updatedRows.some((row) => row.tenorID === tenor.tenorID);
 
       if (!exists) {
         const newRow = {
@@ -181,11 +169,9 @@ export const BankTableDataProvider = ({ children }) => {
 
         bankForwardsColumnsData.forEach((group) => {
           group.children?.forEach((col) => {
-            if (col.dataIndex?.startsWith("bid_"))
-              newRow[col.dataIndex] = "-";
+            if (col.dataIndex?.startsWith("bid_")) newRow[col.dataIndex] = "-";
 
-            if (col.dataIndex?.startsWith("ask_"))
-              newRow[col.dataIndex] = "-";
+            if (col.dataIndex?.startsWith("ask_")) newRow[col.dataIndex] = "-";
           });
         });
 
@@ -201,7 +187,7 @@ export const BankTableDataProvider = ({ children }) => {
 
   // ---------------- MARKET CLOSED ----------------
   useEffect(() => {
-    if (marketStatus === false && dataSourceRef.current.length) {
+    if (isMarketOn === false && dataSourceRef.current.length) {
       const cleared = dataSourceRef.current.map((row) => {
         const updatedRow = { ...row };
 
@@ -217,19 +203,17 @@ export const BankTableDataProvider = ({ children }) => {
       dataSourceRef.current = cleared;
       setBankForwardsSource(cleared);
     }
-  }, [marketStatus]);
+  }, [isMarketOn]);
 
   return (
     <BankTableDataContext.Provider
       value={{
         bankForwardsSource,
         bankForwardsColumnsData,
-      }}
-    >
+      }}>
       {children}
     </BankTableDataContext.Provider>
   );
 };
 
-export const useBankFowardsTableData = () =>
-  useContext(BankTableDataContext);
+export const useBankFowardsTableData = () => useContext(BankTableDataContext);

@@ -8,6 +8,7 @@ import {
   clearCategoryForwardClearRates,
   setCategoryFowardsTenorsChanges,
 } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
+import { useModal } from "@/context/ModalContext";
 
 // ---------------- CONSTANTS ----------------
 const FORWARDS_TABLE_TYPE = 3;
@@ -63,6 +64,7 @@ const buildNewTenorRow = (tenor, previousRow, referenceRow) => {
 
 const CategoryForwards = () => {
   const dispatch = useDispatch();
+  const { isMarketOn } = useModal();
 
   // ---------------- TABLE STATE ----------------
   const [dataSource, setDataSource] = useState([]);
@@ -88,9 +90,7 @@ const CategoryForwards = () => {
   const CategoryForwardRates = useSelector(
     (state) => state.RealtimeActionsSlice.CategoryForwardRates
   );
-  const marketStatus = useSelector(
-    (state) => state.WatchListReducer.getMarketStatus
-  );
+
   const ClearRatesData = useSelector(
     (state) => state.RealtimeActionsSlice.CategoryForwardClearRates
   );
@@ -190,9 +190,8 @@ const CategoryForwards = () => {
 
         // Inherit rates if this tenor previously existed before removal
         const previousRow =
-          dataSourceRef.current.find(
-            (r) => r.tenorID === addedTenor.tenorID
-          ) ?? null;
+          dataSourceRef.current.find((r) => r.tenorID === addedTenor.tenorID) ??
+          null;
 
         const newRow = buildNewTenorRow(fullTenor, previousRow, referenceRow);
         updatedRows.push(newRow);
@@ -262,7 +261,7 @@ const CategoryForwards = () => {
   // ---------------- MARKET CLOSED ----------------
   // Strict === false guard prevents firing on undefined at initial render
   useEffect(() => {
-    if (marketStatus !== false) return;
+    if (isMarketOn !== false) return;
 
     const cleared = dataSourceRef.current.map((row) => {
       const updatedRow = { ...row };
@@ -276,7 +275,7 @@ const CategoryForwards = () => {
 
     dataSourceRef.current = cleared;
     setDataSource(cleared);
-  }, [marketStatus]);
+  }, [isMarketOn]);
 
   // ---------------- CLEAR RATES ----------------
   // Clears bid/ask directly from dataSourceRef — no Redux roundtrip needed.
@@ -304,10 +303,10 @@ const CategoryForwards = () => {
   // ---------------- RENDER ----------------
   return (
     <>
-      <span className="heading mb-2">Forward</span>
+      <span className='heading mb-2'>Forward</span>
       <GlobalTable
         columns={columnsDataState}
-        prefixCls="Dealer_Forwards"
+        prefixCls='Dealer_Forwards'
         dataSource={dataSource}
         pagination={false}
       />

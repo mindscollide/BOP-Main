@@ -18,6 +18,7 @@ import {
   setFxTradingCards,
 } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { setWatchlistTableDataCopy } from "@/store/watchListSlicer/WatchListSlicer";
+import { useModal } from "@/context/ModalContext";
 
 const initialWatchlistData = Object.fromEntries(
   Array.from({ length: 6 }, (_, i) => [
@@ -74,9 +75,7 @@ const SpotBranch = () => {
   const FxTradingCards = useSelector(
     (state) => state.RealtimeActionsSlice.FxTradingCards
   );
-  const marketStatus = useSelector(
-    (state) => state.WatchListReducer.getMarketStatus
-  );
+  const { isMarketOn } = useModal();
 
   const ClearRatesData = useSelector(
     (state) => state.RealtimeActionsSlice.ClearRatesData
@@ -302,7 +301,7 @@ const SpotBranch = () => {
 
   useEffect(() => {
     try {
-      if (marketStatus !== null && marketStatus === false) {
+      if (isMarketOn !== null && isMarketOn === false) {
         // setWatchlistData(initialWatchlistData);
         setWatchlistData((prev) => {
           const updated = { ...prev };
@@ -329,14 +328,9 @@ const SpotBranch = () => {
         });
       }
     } catch (error) {
-      console.error("Invalid marketStatus JSON:", marketStatus);
+      console.error("Invalid marketStatus JSON:", isMarketOn);
     }
-  }, [marketStatus]);
-
-  console.log(
-    { ClearRatesData, marketStatus, watchlistTableData },
-    "ClearRatesDataClearRatesData"
-  );
+  }, [isMarketOn]);
 
   useEffect(() => {
     try {
@@ -382,7 +376,7 @@ const SpotBranch = () => {
       align: "left",
       render: (text, record) => {
         return (
-          <span className="instrument-column">
+          <span className='instrument-column'>
             {`${record.instrumentTitle}`}
           </span>
         );
@@ -395,12 +389,12 @@ const SpotBranch = () => {
       width: "120px",
       align: "center",
       render: (text, record) => (
-        <div className="d-flex justify-content-center">
+        <div className='d-flex justify-content-center'>
           <BidAmountBox
             // spot={true}
             bankSpot={true}
             BidAmountValue={text}
-            applyClass="BidCardBox"
+            applyClass='BidCardBox'
           />
         </div>
       ),
@@ -412,11 +406,11 @@ const SpotBranch = () => {
       align: "center",
       width: "120px",
       render: (text, record) => (
-        <div className="d-flex justify-content-center">
+        <div className='d-flex justify-content-center'>
           <BidAmountBox
             bankSpot={true}
             BidAmountValue={text}
-            applyClass="OfferCardBox"
+            applyClass='OfferCardBox'
           />
         </div>
       ),
@@ -464,8 +458,7 @@ const SpotBranch = () => {
               ...style,
               ...provided.draggableProps.style,
             }}
-            className={className}
-          >
+            className={className}>
             {children}
           </tr>
         )}
@@ -475,16 +468,16 @@ const SpotBranch = () => {
   return (
     <section>
       <DragDropContext onDragEnd={onDragEnd}>
-        <Row className="px-2">
+        <Row className='px-2'>
           <Col lg={9} md={9} sm={12}>
-            <span className="FxTradingOuterBox">
-              <Row className="mt-2">
+            <span className='FxTradingOuterBox'>
+              <Row className='mt-2'>
                 <Col lg={12} md={12} sm={12}>
-                  <span className="FxTradingLabel">FX Trading</span>
+                  <span className='FxTradingLabel'>FX Trading</span>
                 </Col>
               </Row>
 
-              <Row className="mt-3">
+              <Row className='mt-3'>
                 {[...Array(6)].map((_, index) => {
                   const droppableId = `watchlist${index + 1}`;
                   const data = watchlistData[droppableId] || {}; // Get data if available, else empty
@@ -494,8 +487,7 @@ const SpotBranch = () => {
                         {(provided) => (
                           <div
                             ref={provided.innerRef}
-                            {...provided.droppableProps}
-                          >
+                            {...provided.droppableProps}>
                             <BranchRateCardsOfWatchList
                               currencyLabel={data.currecncyLabel || ""}
                               buyHeading={isBranch ? "BOP Buy" : "I Buy"}
@@ -533,17 +525,16 @@ const SpotBranch = () => {
             </span>
           </Col>
           <Col lg={3} md={3} sm={12}>
-            <div className="WatchListOuterBox">
+            <div className='WatchListOuterBox'>
               <Row>
                 <Col lg={6} md={6} sm={12}>
-                  <span className="WatchlistLabel">Watchlist</span>
+                  <span className='WatchlistLabel'>Watchlist</span>
                 </Col>
                 <Col
                   lg={6}
                   md={6}
                   sm={12}
-                  className="d-flex justify-content-end"
-                >
+                  className='d-flex justify-content-end'>
                   {/* <span>21-11-2022 9:18 PM</span> */}
                   <span>
                     {watchListDateTime !== null &&
@@ -555,12 +546,11 @@ const SpotBranch = () => {
               <Row>
                 <Col lg={12} md={12} sm={12}>
                   {watchlistTableData.length > 0 ? (
-                    <Droppable droppableId="droppable" direction="vertical">
+                    <Droppable droppableId='droppable' direction='vertical'>
                       {(provided) => (
                         <div
                           ref={provided.innerRef}
-                          {...provided.droppableProps}
-                        >
+                          {...provided.droppableProps}>
                           <GlobalTable
                             columns={columns}
                             dataSource={watchlistTableData}
