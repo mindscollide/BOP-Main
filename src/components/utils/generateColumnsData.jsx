@@ -32,6 +32,7 @@ export const buildDiscountingTable = (
     const rateMap = {};
     Data?.forEach((rate) => {
       const key = `${rate.instrumentID}-${rate.tenorID}`;
+      console.log({ key, rate }, "applicableInstrumentsapplicableInstruments");
       rateMap[key] = rate.rate;
     });
 
@@ -48,8 +49,18 @@ export const buildDiscountingTable = (
 
         applicableInstruments.forEach((instrument) => {
           const compositeKey = `${instrument.instrumentID}-${tenor.tenorID}`;
+          console.log(
+            { compositeKey },
+            "applicableInstrumentsapplicableInstruments"
+          );
 
           const rateValue = rateMap[compositeKey] ?? 0;
+          // ✅ Zero out rates when isBid is false, at data level not render level
+          const rateValue2 = isBid ? rateMap[compositeKey] ?? 0 : 0;
+          console.log(
+            { rateValue, rateValue2, isBid },
+            "applicableInstrumentsapplicableInstruments"
+          );
 
           row[`rate_${instrument.instrumentName}`] = rateValue;
           row[`InstrumentID_${instrument.instrumentName}`] =
