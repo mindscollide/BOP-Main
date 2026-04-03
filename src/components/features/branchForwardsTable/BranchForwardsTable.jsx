@@ -71,44 +71,43 @@ const BranchForwardsTable = () => {
   // by its own dedicated effect below.
   useEffect(() => {
     if (
-      isTableInitialized.current || // ✅ skip if already built
-      !getAllInstrumentsForCounterPartiesData ||
-      !getAllTenorsRecords ||
-      !GetForwardRatesForCounterPartyData
+      !isTableInitialized.current &&
+      getAllInstrumentsForCounterPartiesData !== null &&
+      getAllTenorsRecords !== null &&
+      getAllInstrumentsForCounterPartiesData !== null
     )
-      return;
+      try {
+        const { forwardApplicableInstruments } =
+          getAllInstrumentsForCounterPartiesData;
 
-    try {
-      const { forwardApplicableInstruments } =
-        getAllInstrumentsForCounterPartiesData;
+        const { forwardRates = [] } = GetForwardRatesForCounterPartyData ?? {};
+        const getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
+        const getAllInstrument = { instruments: forwardApplicableInstruments };
 
-      const { forwardRates = [] } = GetForwardRatesForCounterPartyData ?? {};
-      const getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
-      const getAllInstrument = { instruments: forwardApplicableInstruments };
+        instrumentListRef.current = forwardApplicableInstruments;
 
-      instrumentListRef.current = forwardApplicableInstruments;
+        const { rowData, columnsData } = buildForwardsTable(
+          FORWARDS_TABLE_TYPE,
+          forwardRates,
+          getAllTenorsData,
+          getAllInstrument,
+          IndexCell,
+          null,
+          bidOfferStatus
+        );
 
-      const { rowData, columnsData } = buildForwardsTable(
-        FORWARDS_TABLE_TYPE,
-        forwardRates,
-        getAllTenorsData,
-        getAllInstrument,
-        IndexCell,
-        null,
-        bidOfferStatus
-      );
+        isTableInitialized.current = true;
 
-      columnsDataRef.current = columnsData;
-      setColumnsDataState(columnsData);
-      isTableInitialized.current = true;
+        if (rowData.length) {
+          dataSourceRef.current = rowData;
+          columnsDataRef.current = columnsData;
 
-      if (rowData.length) {
-        dataSourceRef.current = rowData;
-        setDataSource(rowData);
+          setDataSource(rowData);
+          setColumnsDataState(columnsData);
+        }
+      } catch (error) {
+        console.error("Error building forwards table:", error);
       }
-    } catch (error) {
-      console.error("Error building forwards table:", error);
-    }
   }, [
     getAllInstrumentsForCounterPartiesData,
     GetForwardRatesForCounterPartyData,
@@ -318,17 +317,18 @@ const BranchForwardsTable = () => {
           />
         </Col>
       </Row>
-
-      <Row className='my-2'>
-        <Col lg={12} className='d-flex justify-content-center'>
-          <CustomButton
-            value='Book a Forward'
-            applyClass='FowwardBranchBookaForwardBtn'
-            onClick={handleBookaForwardCorporate}
-            disabled={marketStatus === false || !rfqButtonState}
-          />
-        </Col>
-      </Row>
+      {dataSource.length !== 0 && (
+        <Row className='my-2'>
+          <Col lg={12} className='d-flex justify-content-center'>
+            <CustomButton
+              value='Book a Forward'
+              applyClass='FowwardBranchBookaForwardBtn'
+              onClick={handleBookaForwardCorporate}
+              disabled={marketStatus === false || !rfqButtonState}
+            />
+          </Col>
+        </Row>
+      )}
 
       {bookaForwardModalCall && (
         <CorporateBookaForwardModal

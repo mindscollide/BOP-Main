@@ -275,21 +275,22 @@ const BranchAndCorporateFeDiscountingTable = () => {
           />
         </Col>
       </Row>
-
-      <Row className='my-2'>
-        <Col
-          lg={12}
-          md={12}
-          sm={12}
-          className='d-flex justify-content-center align-items-center gap-2'>
-          <CustomButton
-            value='FE Discounting'
-            applyClass={"FEDiscounting"}
-            onClick={handleFEDiscountingModal}
-            disabled={!isBid || marketStatus === false || !rfqButtonState}
-          />
-        </Col>
-      </Row>
+      {dataSource.length !== 0 && (
+        <Row className='my-2'>
+          <Col
+            lg={12}
+            md={12}
+            sm={12}
+            className='d-flex justify-content-center align-items-center gap-2'>
+            <CustomButton
+              value='FE Discounting'
+              applyClass={"FEDiscounting"}
+              onClick={handleFEDiscountingModal}
+              disabled={!isBid || marketStatus === false || !rfqButtonState}
+            />
+          </Col>
+        </Row>
+      )}
 
       {feDiscountingModalCall && (
         <FEDiscountingModal

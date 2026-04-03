@@ -148,51 +148,48 @@ const BankForwards = () => {
   // Sets isTableInitialized so the tenor-sync effect can take over.
   useEffect(() => {
     if (
-      isTableInitialized.current ||
-      !getAllTenorsRecords ||
-      !GetAllInstrumentForTreasury ||
-      !GetBankForwardForTreasury
+      !isTableInitialized.current &&
+      getAllTenorsRecords !== null &&
+      GetAllInstrumentForTreasury !== null &&
+      GetBankForwardForTreasury !== null
     )
-      return;
+      try {
+        const { forwardRates = [] } = GetBankForwardForTreasury ?? {};
+        const { forwardInstruments = [] } = GetAllInstrumentForTreasury;
+        instrumentListRef.current = forwardInstruments;
 
-    try {
-      const { forwardRates = [] } = GetBankForwardForTreasury ?? {};
-      const { forwardInstruments = [] } = GetAllInstrumentForTreasury;
-      instrumentListRef.current = forwardInstruments;
+        const { rowData, columnsData } = buildForwardsTable(
+          FORWARDS_TABLE_TYPE,
+          forwardRates,
+          { tenors: getAllTenorsRecords.tenors },
+          { instruments: forwardInstruments },
+          IndexCell
+        );
 
-      const { rowData, columnsData } = buildForwardsTable(
-        FORWARDS_TABLE_TYPE,
-        forwardRates,
-        { tenors: getAllTenorsRecords.tenors },
-        { instruments: forwardInstruments },
-        IndexCell
-      );
+        // Mark initialized regardless of rowData length so tenor-sync
+        // effect can manage rows independently from this point on.
+        columnsDataRef.current = columnsData;
+        setColumnsDataState(columnsData);
+        isTableInitialized.current = true;
 
-      // Mark initialized regardless of rowData length so tenor-sync
-      // effect can manage rows independently from this point on.
-      columnsDataRef.current = columnsData;
-      setColumnsDataState(columnsData);
-      isTableInitialized.current = true;
-
-      if (rowData?.length) {
-        dataSourceRef.current = rowData;
-        setDataSource(rowData);
+        if (rowData?.length) {
+          dataSourceRef.current = rowData;
+          setDataSource(rowData);
+        }
+      } catch (error) {
+        console.error("Error building forwards table:", error);
       }
-    } catch (error) {
-      console.error("Error building forwards table:", error);
-    }
   }, [
     GetBankForwardForTreasury,
     getAllTenorsRecords,
     GetAllInstrumentForTreasury,
   ]);
-
   // ---------------- TENOR SYNC (MQTT EVENT) ----------------
   // Incrementally adds / removes rows when tenor applicability changes.
   // Does NOT rebuild the entire table — preserves live MQTT rates.
   useEffect(() => {
     if (
-      !isTableInitialized.current ||
+      isTableInitialized.current ||
       !treasuryFowardsTenorsChanges ||
       !getAllTenorsRecords
     )

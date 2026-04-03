@@ -257,9 +257,10 @@ export const GetForwardRatesForCounterPartyApi = createAsyncThunk(
                 "WatchList_WatchListServiceManager_GetForwardRatesForCounterParty_02".toLowerCase()
               )
           ) {
-            return rejectWithValue(
-              import.meta.env.VITE_MQTT_PORT === "8883" ? "" : "No Record Found"
-            );
+            return {
+              response: response.data.responseResult,
+              message: "",
+            };
           } else if (
             responseMessage
               .toLowerCase()
@@ -330,9 +331,10 @@ export const GetDiscountingRatesForCounterPartyApi = createAsyncThunk(
                 "WatchList_WatchListServiceManager_GetDiscountingRatesForCounterParty_02".toLowerCase()
               )
           ) {
-            return rejectWithValue(
-              import.meta.env.VITE_MQTT_PORT === "8883" ? "" : "No Record Found"
-            );
+            return {
+              response: response.data.responseResult,
+              message: "",
+            };
           } else if (
             responseMessage
               .toLowerCase()
@@ -471,9 +473,10 @@ export const GetBankForwardForTreasuryApi = createAsyncThunk(
                 "WatchList_WatchListServiceManager_GetBankForwardForTreasury_02".toLowerCase()
               )
           ) {
-            return rejectWithValue(
-              import.meta.env.VITE_MQTT_PORT === "8883" ? "" : "No Record Found"
-            );
+            return {
+              response: response.data.responseResult,
+              message: "",
+            };
           } else if (
             responseMessage
               .toLowerCase()
@@ -602,9 +605,10 @@ export const GetDiscountingRatesForTreasuryApi = createAsyncThunk(
                 "WatchList_WatchListServiceManager_GetDiscountingRatesForTreasury_02".toLowerCase()
               )
           ) {
-            return rejectWithValue(
-              import.meta.env.VITE_MQTT_PORT === "8883" ? "" : "No Record Found"
-            );
+            return {
+              response: response.data.responseResult,
+              message: "",
+            };
           } else if (
             responseMessage
               .toLowerCase()

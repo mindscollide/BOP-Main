@@ -80,11 +80,11 @@ const BlotterHeader = () => {
       title: "TXN Summary",
       content: (
         <section className='position-relative'>
-          <Suspense fallback={<SectionLoader />}>
-            {activeTransactionBlotterTab === "TXN Summary" && (
+          {activeTransactionBlotterTab === "TXN Summary" && (
+            <Suspense fallback={<SectionLoader />}>
               <TXNTreasurySummary />
-            )}{" "}
-          </Suspense>
+            </Suspense>
+          )}{" "}
         </section>
       ),
     },
@@ -92,11 +92,11 @@ const BlotterHeader = () => {
       title: "Outstanding Deals",
       content: (
         <section className='position-relative'>
-          <Suspense fallback={<SectionLoader />}>
-            {activeTransactionBlotterTab === "Outstanding Deals" && (
+          {activeTransactionBlotterTab === "Outstanding Deals" && (
+            <Suspense fallback={<SectionLoader />}>
               <OutstandingDeals />
-            )}
-          </Suspense>
+            </Suspense>
+          )}
         </section>
       ),
     },

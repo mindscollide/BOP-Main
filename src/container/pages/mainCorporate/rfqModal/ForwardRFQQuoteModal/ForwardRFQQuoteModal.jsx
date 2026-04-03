@@ -1,5 +1,5 @@
 import GlobalModal from "@/components/common/globalModal/Modal";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import styles from "./ForwardRFQQuoteModal.module.css";
 import IconElement from "@/components/common/IconElement/IconElement";
@@ -25,10 +25,8 @@ import { formatDateUTCToGMT } from "@/components/utils/timeFunction";
 import TextArea from "@/components/common/textArea/TextArea";
 import { formatPkAmount } from "@/utils/formatters";
 
-const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
-
 const ForwardRFQQuoteModal = ({ dealData }) => {
-  console.log(dealData, "dealDatadealData");
+  const readyInputRef = useRef();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [readyValue, setReadyValue] = useState("");
@@ -36,7 +34,6 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
   const [readyRateValue, setReadyRateValue] = useState("");
   const [tenorDays, setTenorDays] = useState("");
 
-  // console.log(readyRateValue, "readyRateValuereadyRateValue");
   const [cancelReasonComment, setCancelReasonComment] = useState("");
 
   const [quoteDataModal, setQuoteDataModal] = useState(true);
@@ -46,25 +43,25 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
 
   console.log(forwardQuoteData, "forwardQuoteData");
   const forwardQuoteModal = useSelector(
-    (state) => state.modalReducer.forwardQuoteModal
+    (state) => state.modalReducer.forwardQuoteModal,
   );
   const forwardQuoteModalData = useSelector(
-    (state) => state.BlotterSlicer.forwardQuoteModalData
+    (state) => state.BlotterSlicer.forwardQuoteModalData,
   );
   const GetForwardTransactionDetails = useSelector(
-    (state) => state.BlotterSlicer.GetForwardTransactionDetails
+    (state) => state.BlotterSlicer.GetForwardTransactionDetails,
   );
 
   const RFQForwardTransactionQuotationLoading = useSelector(
-    (state) => state.BlotterSlicer.RFQForwardTransactionQuotationLoading
+    (state) => state.BlotterSlicer.RFQForwardTransactionQuotationLoading,
   );
 
   const AcceptTransactionAPILoading = useSelector(
-    (state) => state.BlotterSlicer.AcceptTransactionAPILoading
+    (state) => state.BlotterSlicer.AcceptTransactionAPILoading,
   );
 
   const RejectTransactionAPILoading = useSelector(
-    (state) => state.BlotterSlicer.RejectTransactionAPILoading
+    (state) => state.BlotterSlicer.RejectTransactionAPILoading,
   );
   console.log(GetForwardTransactionDetails, "testGetForwardTransactionDetails");
 
@@ -84,7 +81,7 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
         setForwardQuoteData(forwardQuoteModalData);
         console.log(
           forwardQuoteModalData,
-          "forwardQuoteModalDataforwardQuoteModalData"
+          "forwardQuoteModalDataforwardQuoteModalData",
         );
         let Data = {
           PK_TransactionID: forwardQuoteModalData.pK_TransactionID,
@@ -102,13 +99,18 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
       try {
         const { rate, ready, swap, tenorDays } =
           GetForwardTransactionDetails.transactionDetailsModel;
-        setReadyValue(ready);
+        if (ready === "" || ready === 0) {
+          readyInputRef.current?.focus();
+        }
+        let readyValData = forwardQuoteData.isRFQ ? "" : ready;
+        let swapValData = forwardQuoteData.isRFQ ? "" : swap;
+        setReadyValue(readyValData);
         setTenorDays(tenorDays);
-        setSwapValue(swap.toFixed(4));
+        setSwapValue(swapValData.toFixed(4));
         setReadyRateValue(rate);
-        dispatch(clearGetForwardTransactionDetails())
+        dispatch(clearGetForwardTransactionDetails());
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     }
   }, [GetForwardTransactionDetails]);
@@ -189,14 +191,10 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
     return Number(val.toString().replace(/,/g, ""));
   };
 
-  const calculateNewReadyValue = (instrumentName) => {
+  const calculateNewReadyValue = () => {
     const numReady = parseNumber(readyValue);
     const numSwap = parseNumber(swapValue);
 
-    console.log(
-      { numSwap, numReady, readyValue, swapValue },
-      "numReadynumReady"
-    );
     const adjustedSwap =
       // instrumentName?.toUpperCase() === "USD" ? numSwap / 100.0 : numSwap;
       forwardQuoteData?.ccY1?.toUpperCase() === "USD"
@@ -230,7 +228,8 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                   sm={3}
                   md={3}
                   lg={3}
-                  className={styles["DealViewModal_oneSide"]}>
+                  className={styles["DealViewModal_oneSide"]}
+                >
                   <Row>
                     <Col sm={12} md={12} lg={12}>
                       <label className={styles["DealViewModal__label"]}>
@@ -299,8 +298,8 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                             {" "}
                             {moment(
                               formatDateUTCToGMT(
-                                forwardQuoteData?.rfqDealDetails.tenorDate
-                              )
+                                forwardQuoteData?.rfqDealDetails.tenorDate,
+                              ),
                             ).format("ddd, MMM DD, YYYY")}
                           </>
                         ) : (
@@ -328,8 +327,8 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                             {" "}
                             {moment(
                               formatDateUTCToGMT(
-                                forwardQuoteData?.rfqDealDetails.optionsDate
-                              )
+                                forwardQuoteData?.rfqDealDetails.optionsDate,
+                              ),
                             ).format("ddd, MMM DD, YYYY")}
                           </>
                         ) : (
@@ -351,16 +350,17 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                   sm={9}
                   md={9}
                   lg={9}
-                  className={styles["DealViewModal_SecondSide"]}>
-                  <Row className='mb-3'>
+                  className={styles["DealViewModal_SecondSide"]}
+                >
+                  <Row className="mb-3">
                     <Col sm={10} md={10} lg={10}>
                       {forwardQuoteData?.branchName !== "" &&
                       forwardQuoteData?.branchCode !== "" ? (
-                        <div className='mb-3 color-black br-detail-hd'>
+                        <div className="mb-3 color-black br-detail-hd">
                           <span className={styles["company-name"]}>
                             {forwardQuoteData?.branchName}
                           </span>
-                          <span className='br-code fs-sm'>
+                          <span className="br-code fs-sm">
                             ({forwardQuoteData?.branchCode})
                           </span>
                         </div>
@@ -369,7 +369,7 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                       <div className={styles["company-name-hd"]}>
                         {forwardQuoteData?.corporateName}
                       </div>
-                      <div className='d-inline-block txn-id fs-normal color-black'>
+                      <div className="d-inline-block txn-id fs-normal color-black">
                         {forwardQuoteData?.txnid}
                       </div>
                     </Col>
@@ -377,39 +377,43 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                       sm={2}
                       md={2}
                       lg={2}
-                      className='d-flex justify-content-end'>
+                      className="d-flex justify-content-end"
+                    >
                       <IconElement
                         onClick={closeModal}
                         iconClass={"icon-close fs-4 cursor-pointer"}
                       />
                     </Col>
                   </Row>
-                  <section className='d-flex justify-content-center align-items-center overflow-hidden h-75'>
+                  <section className="d-flex justify-content-center align-items-center overflow-hidden h-75">
                     <Row>
                       <Col
                         sm={12}
                         md={12}
                         lg={12}
-                        className='d-flex align-items-center gap-2'>
+                        className="d-flex align-items-center gap-2"
+                      >
                         <label className={styles["DealViewModal_label"]}>
                           Ready
                         </label>
                         <NumericFormat
                           customInput={InputFIeld}
                           value={readyValue}
-                          thousandSeparator=','
+                          thousandSeparator=","
                           disabled={!forwardQuoteData?.isRFQ}
                           applyClass={"DiscountingQuoteInput"}
                           maxLength={5}
                           allowNegative={false}
                           onChange={(e) => handleChangeRate(e, "readyValue")}
+                          getInputRef={readyInputRef}
                         />
                       </Col>
                       <Col
                         sm={12}
                         md={12}
                         lg={12}
-                        className='d-flex my-3 align-items-center gap-2'>
+                        className="d-flex my-3 align-items-center gap-2"
+                      >
                         <label className={styles["DealViewModal_label"]}>
                           Swap
                         </label>
@@ -417,23 +421,19 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                           customInput={InputFIeld}
                           value={formatPkAmount(swapValue, { decimals: 2 })}
                           disabled={!forwardQuoteData?.isRFQ}
-                          thousandSeparator=','
+                          thousandSeparator=","
                           applyClass={"DiscountingQuoteInput"}
                           maxLength={8}
                           allowNegative={false}
                           onChange={(e) => handleChangeRate(e, "swapValue")}
                         />
-                        {/* <InputFIeld
-                    applyClass={"DiscountingQuoteInput"}
-                    value={swapValue}
-                    onChange={(e) => handleChangeRate(e, "swapValue")}
-                  /> */}
                       </Col>
                       <Col
                         sm={12}
                         md={12}
                         lg={12}
-                        className='d-flex align-items-center gap-2'>
+                        className="d-flex align-items-center gap-2"
+                      >
                         <label className={styles["DealViewModal_label"]}>
                           Rate
                         </label>
@@ -450,9 +450,11 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                           sm={12}
                           md={12}
                           lg={12}
-                          className='d-flex align-items-center gap-2 mt-4'>
+                          className="d-flex align-items-center gap-2 mt-4"
+                        >
                           <label
-                            className={styles["DealViewModal_label"]}></label>
+                            className={styles["DealViewModal_label"]}
+                          ></label>
                           <CustomButton
                             icon={<IconElement iconClass={"icon-send fs-5"} />}
                             iconPosition={"left"}
@@ -460,6 +462,11 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                             applyClass={"SubmitButtonFowardDealBox"}
                             className={"px-4"}
                             onClick={handleSubmit}
+                            disabled={
+                              readyValue === "" || Number(readyValue) === 0
+                                ? true
+                                : false
+                            }
                             loading={RFQForwardTransactionQuotationLoading}
                           />
                         </Col>
@@ -468,7 +475,8 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                           sm={12}
                           md={12}
                           lg={12}
-                          className='d-flex align-items-center justify-content-center gap-2 mt-4'>
+                          className="d-flex align-items-center justify-content-center gap-2 mt-4"
+                        >
                           <CustomButton
                             icon={<IconElement iconClass={"icon-send fs-5"} />}
                             iconPosition={"left"}
@@ -477,7 +485,12 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                             className={"px-4"}
                             onClick={handleAccept}
                             loading={AcceptTransactionAPILoading}
-                            disabled={RejectTransactionAPILoading ? true : false}
+                            disabled={
+                              RejectTransactionAPILoading ||
+                              readyRateValue === ""
+                                ? true
+                                : false
+                            }
                           />
                           <CustomButton
                             icon={<IconElement iconClass={"icon-send fs-5"} />}
@@ -487,7 +500,12 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                             className={"px-4"}
                             onClick={handleReject}
                             loading={RejectTransactionAPILoading}
-                            disabled={AcceptTransactionAPILoading ? true : false}
+                            disabled={
+                              AcceptTransactionAPILoading ||
+                              readyRateValue === ""
+                                ? true
+                                : false
+                            }
                           />
                         </Col>
                       )}
@@ -503,15 +521,16 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                   sm={12}
                   md={12}
                   lg={12}
-                  className='modal-title fw-bold color-blue h5'>
+                  className="modal-title fw-bold color-blue h5"
+                >
                   Cancel Reason
                 </Col>
               </Row>
-              <Row className='form-group'>
-                <span className='col-form-label mt-4'>Cancel Reason</span>
+              <Row className="form-group">
+                <span className="col-form-label mt-4">Cancel Reason</span>
                 <Col sm={12} md={12} lg={12}>
                   <TextArea
-                    className='form-control'
+                    className="form-control"
                     name={"cancelReasonInput"}
                     value={cancelReasonComment}
                     maxLength={1500}
@@ -533,16 +552,17 @@ const ForwardRFQQuoteModal = ({ dealData }) => {
                 lg={12}
                 md={12}
                 sm={12}
-                className='d-flex gap-1 justify-content-center'>
+                className="d-flex gap-1 justify-content-center"
+              >
                 <CustomButton
                   applyClass={"cancelReasonModalSubmitBtn"}
-                  value='Submit'
+                  value="Submit"
                   onClick={handleRejectWithReason}
                   disabled={cancelReasonComment !== "" ? false : true}
                 />
                 <CustomButton
                   applyClass={"cancelReasonModalCancelBtn"}
-                  value='Close'
+                  value="Close"
                   onClick={handeClickHide}
                 />
               </Col>
