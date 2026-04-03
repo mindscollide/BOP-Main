@@ -422,7 +422,6 @@ const Dashboard = () => {
           });
           break;
         case "TREASURY_NONFEDISCOUNTING_RATES_FEED":
-          console.log("TREASURY_NONFEDISCOUNTING_RATES_FEED", payload);
           startTransition(() => {
             dispatch(setTreasuryNonFeDiscounting(payload));
           });

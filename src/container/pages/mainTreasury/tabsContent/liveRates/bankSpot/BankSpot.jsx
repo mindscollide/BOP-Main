@@ -12,7 +12,7 @@ import BidAmountBox from "../../../../../../components/common/bidAmountBox/BidAm
 import { formatDateUTCToGMT } from "../../../../../../components/utils/timeFunction";
 import SectionLoader from "@/components/common/sectionLoader/SectionLoader";
 
-// ── Selectors ────────────────────────────────────────────────────────────────
+// ── Selectors ─────────────────────────────────────────────────────────────────
 const selectCrossInstruments = (state) =>
   state.WatchListReducer.GetAllInstrumentForTreasury?.crossInstruments;
 const selectTreasuryFeed = (state) =>
@@ -24,7 +24,7 @@ const selectWorldCurrencies = (state) =>
 const selectIsLoading = (state) =>
   state.WatchListReducer.GetBankSpotForTreasurySpinner;
 
-// ── Stable columns (no runtime deps) ─────────────────────────────────────────
+// ── Stable columns (defined once, never re-created) ───────────────────────────
 const COLUMNS = [
   {
     key: "instrument",
@@ -120,24 +120,25 @@ const COLUMNS = [
   },
 ];
 
-// ── Row key: stable, no version ───────────────────────────────────────────────
+// ── Stable row key (no version — avoids DOM thrashing) ────────────────────────
 const getRowKey = (record) =>
   `${record.instrumentID}-${record.secondaryInstrumentID}`;
 
 // ── Component ─────────────────────────────────────────────────────────────────
 const BankSpot = memo(() => {
   const crossInstruments = useSelector(selectCrossInstruments, shallowEqual);
-  const fullFeed        = useSelector(selectTreasuryFeed);          // raw feed
-  const worldCrosses    = useSelector(selectWorldCrosses, shallowEqual);
-  const worldCurrencies = useSelector(selectWorldCurrencies, shallowEqual);
-  const isLoading       = useSelector(selectIsLoading);
+  const fullFeed         = useSelector(selectTreasuryFeed);
+  const worldCrosses     = useSelector(selectWorldCrosses, shallowEqual);
+  const worldCurrencies  = useSelector(selectWorldCurrencies, shallowEqual);
+  const isLoading        = useSelector(selectIsLoading);
 
   const [processedData, setProcessedData] = useState([]);
 
   const rafRef      = useRef(null);
-  const pendingFeed = useRef(null); // only keep the LATEST feed snapshot
+  const pendingFeed = useRef(null);
+  const lastFeedRef = useRef(null); // ✅ tracks last applied feed values for diffing
 
-  // ── Build base rows from static data ─────────────────────────────────────
+  // ── Build base rows from static Redux data ────────────────────────────────
   const enrichedData = useMemo(() => {
     if (!crossInstruments?.length) return [];
 
@@ -150,31 +151,33 @@ const BankSpot = memo(() => {
       const matchedCurrency = worldCurrencies.find(
         (wc) => wc.instrumentID === instrument.instrumentID
       );
-      const isUSD = instrument.instrumentID === 21;
+      const isGold = instrument.instrumentID === 21;
 
       return {
         instrumentID:            instrument.instrumentID,
         secondaryInstrumentID:   instrument.secondaryInstrumentID,
         instrumentName:          instrument.instrumentName,
         secondaryInstrumentName: instrument.secondaryInstrumentName,
-        time:          matchedCross?.time ?? "",
-        worldCrossBid: matchedCross?.bid  ?? 0,
+        time:            matchedCross?.time  ?? "",
+        worldCrossBid:   matchedCross?.bid   ?? 0,
         worldCrossOffer: matchedCross?.offer ?? 0,
-        worldCurBid:   isUSD ? (matchedCross?.bid   ?? 0) : (matchedCurrency?.bid   ?? 0),
-        worldCurOffer: isUSD ? (matchedCross?.offer ?? 0) : (matchedCurrency?.offer ?? 0),
+        worldCurBid:     isGold ? (matchedCross?.bid   ?? 0) : (matchedCurrency?.bid   ?? 0),
+        worldCurOffer:   isGold ? (matchedCross?.offer ?? 0) : (matchedCurrency?.offer ?? 0),
       };
     });
   }, [crossInstruments, worldCrosses, worldCurrencies]);
 
-  // Sync enriched → processedData whenever static data changes
+  // Sync enriched base data → processedData (static data changes only)
   useEffect(() => {
-    if (enrichedData.length > 0) setProcessedData(enrichedData);
+    if (enrichedData.length > 0) {
+      lastFeedRef.current = null; // ✅ reset feed diff tracker on base data change
+      setProcessedData(enrichedData);
+    }
   }, [enrichedData]);
 
-  // ── Apply a single feed snapshot to current rows ──────────────────────────
+  // ── Pure feed applier — returns prevData (same ref) if nothing changed ────
   const applyFeed = useCallback((feed, prevData) => {
     const { instrumentCrossRate: cross, instrumentParitySpot: spot } = feed;
-
     let changed = false;
 
     const next = prevData.map((item) => {
@@ -193,14 +196,18 @@ const BankSpot = memo(() => {
           worldCrossOffer: cross.ask,
           time:            cross.updateDateTime,
         };
-        // Gold: cross rate also drives worldCur
+        // Gold: cross rate also drives worldCur fields
         if (item.instrumentID === 21) {
-          updated = { ...updated, worldCurBid: cross.bid, worldCurOffer: cross.ask };
+          updated = {
+            ...updated,
+            worldCurBid:   cross.bid,
+            worldCurOffer: cross.ask,
+          };
         }
         changed = true;
       }
 
-      // Parity spot update (non-gold)
+      // Parity spot update (non-gold only)
       if (
         spot &&
         item.instrumentID === spot.instrumentID &&
@@ -208,24 +215,64 @@ const BankSpot = memo(() => {
         (Number(updated.worldCurBid)   !== Number(spot.bid) ||
          Number(updated.worldCurOffer) !== Number(spot.ask))
       ) {
-        updated = { ...updated, worldCurBid: spot.bid, worldCurOffer: spot.ask };
+        updated = {
+          ...updated,
+          worldCurBid:   spot.bid,
+          worldCurOffer: spot.ask,
+        };
         changed = true;
       }
 
       return updated;
     });
 
+    // ✅ Same reference = React skips re-render entirely
     return changed ? next : prevData;
   }, []);
 
-  // ── RAF-batched feed handler ──────────────────────────────────────────────
+  // ── RAF-batched feed effect with value-level diffing ──────────────────────
   useEffect(() => {
     if (!fullFeed) return;
 
-    // Always overwrite — we only ever need the latest snapshot
+    const cross = fullFeed.instrumentCrossRate;
+    const spot  = fullFeed.instrumentParitySpot;
+    const last  = lastFeedRef.current;
+
+    // ✅ Bail out if all tracked values are identical to last applied feed
+    //    This is the primary guard against the "Maximum update depth exceeded" loop:
+    //    Redux may emit a new fullFeed object reference even when values haven't
+    //    changed, which would otherwise re-trigger this effect every render.
+    if (
+      last &&
+      last.crossBid   === cross?.bid &&
+      last.crossAsk   === cross?.ask &&
+      last.crossID    === cross?.instrumentID &&
+      last.crossSecID === cross?.secondaryInstrumentID &&
+      last.crossTime  === cross?.updateDateTime &&
+      last.spotBid    === spot?.bid &&
+      last.spotAsk    === spot?.ask &&
+      last.spotID     === spot?.instrumentID
+    ) {
+      return;
+    }
+
+    // ✅ Snapshot values for next render's diff
+    lastFeedRef.current = {
+      crossBid:   cross?.bid,
+      crossAsk:   cross?.ask,
+      crossID:    cross?.instrumentID,
+      crossSecID: cross?.secondaryInstrumentID,
+      crossTime:  cross?.updateDateTime,
+      spotBid:    spot?.bid,
+      spotAsk:    spot?.ask,
+      spotID:     spot?.instrumentID,
+    };
+
+    // ✅ Always overwrite — only the latest feed snapshot matters
     pendingFeed.current = fullFeed;
 
-    if (rafRef.current) return; // RAF already scheduled
+    // ✅ Only schedule one RAF per frame
+    if (rafRef.current) return;
 
     rafRef.current = requestAnimationFrame(() => {
       rafRef.current = null;
@@ -237,9 +284,11 @@ const BankSpot = memo(() => {
     });
   }, [fullFeed, applyFeed]);
 
-  // Cleanup RAF on unmount
-  useEffect(() => () => {
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+  // ── Cleanup RAF on unmount ────────────────────────────────────────────────
+  useEffect(() => {
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
   }, []);
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -251,9 +300,9 @@ const BankSpot = memo(() => {
 
       <div className="mb-2 h-100 position-relative">
         <GlobalTable
-          columns={COLUMNS}           // ✅ stable reference, never re-created
+          columns={COLUMNS}
           dataSource={processedData}
-          rowKey={getRowKey}          // ✅ stable identity, no version thrashing
+          rowKey={getRowKey}
           prefixCls="BankSpot_Table"
           pagination={false}
           scroll={{ x: "max-content", y: 245 }}
