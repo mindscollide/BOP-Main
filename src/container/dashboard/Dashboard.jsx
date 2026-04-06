@@ -592,6 +592,7 @@ const Dashboard = () => {
       }
     };
   }, [categoryValue]);
+  
   useEffect(() => {
     if (!isConnected) return;
 
