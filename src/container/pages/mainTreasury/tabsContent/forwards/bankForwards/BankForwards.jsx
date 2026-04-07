@@ -136,9 +136,7 @@ const BankForwards = () => {
   const TreasuryForwardRates = useSelector(
     (state) => state.RealtimeActionsSlice.TreasuryForwardRates
   );
-  const marketStatus = useSelector(
-    (state) => state.WatchListReducer.getMarketStatus
-  );
+
   const treasuryFowardsTenorsChanges = useSelector(
     (state) => state.RealtimeActionsSlice.treasuryFowardsTenorsChanges
   );
@@ -148,51 +146,48 @@ const BankForwards = () => {
   // Sets isTableInitialized so the tenor-sync effect can take over.
   useEffect(() => {
     if (
-      isTableInitialized.current ||
-      !getAllTenorsRecords ||
-      !GetAllInstrumentForTreasury ||
-      !GetBankForwardForTreasury
+      !isTableInitialized.current &&
+      getAllTenorsRecords !== null &&
+      GetAllInstrumentForTreasury !== null &&
+      GetBankForwardForTreasury !== null
     )
-      return;
+      try {
+        const { forwardRates = [] } = GetBankForwardForTreasury ?? {};
+        const { forwardInstruments = [] } = GetAllInstrumentForTreasury;
+        instrumentListRef.current = forwardInstruments;
 
-    try {
-      const { forwardRates = [] } = GetBankForwardForTreasury ?? {};
-      const { forwardInstruments = [] } = GetAllInstrumentForTreasury;
-      instrumentListRef.current = forwardInstruments;
+        const { rowData, columnsData } = buildForwardsTable(
+          FORWARDS_TABLE_TYPE,
+          forwardRates,
+          { tenors: getAllTenorsRecords.tenors },
+          { instruments: forwardInstruments },
+          IndexCell
+        );
 
-      const { rowData, columnsData } = buildForwardsTable(
-        FORWARDS_TABLE_TYPE,
-        forwardRates,
-        { tenors: getAllTenorsRecords.tenors },
-        { instruments: forwardInstruments },
-        IndexCell
-      );
+        // Mark initialized regardless of rowData length so tenor-sync
+        // effect can manage rows independently from this point on.
+        columnsDataRef.current = columnsData;
+        setColumnsDataState(columnsData);
+        isTableInitialized.current = true;
 
-      // Mark initialized regardless of rowData length so tenor-sync
-      // effect can manage rows independently from this point on.
-      columnsDataRef.current = columnsData;
-      setColumnsDataState(columnsData);
-      isTableInitialized.current = true;
-
-      if (rowData?.length) {
-        dataSourceRef.current = rowData;
-        setDataSource(rowData);
+        if (rowData?.length) {
+          dataSourceRef.current = rowData;
+          setDataSource(rowData);
+        }
+      } catch (error) {
+        console.error("Error building forwards table:", error);
       }
-    } catch (error) {
-      console.error("Error building forwards table:", error);
-    }
   }, [
     GetBankForwardForTreasury,
     getAllTenorsRecords,
     GetAllInstrumentForTreasury,
   ]);
-
   // ---------------- TENOR SYNC (MQTT EVENT) ----------------
   // Incrementally adds / removes rows when tenor applicability changes.
   // Does NOT rebuild the entire table — preserves live MQTT rates.
   useEffect(() => {
     if (
-      !isTableInitialized.current ||
+      isTableInitialized.current ||
       !treasuryFowardsTenorsChanges ||
       !getAllTenorsRecords
     )
@@ -349,24 +344,6 @@ const BankForwards = () => {
     return () => throttledFn.cancel();
   }, []);
 
-  // ---------------- MARKET CLOSED / CLEAR RATES ----------------
-  // Uses strict === false to avoid firing on undefined (initial render)
-  // useEffect(() => {
-  //   if (marketStatus !== false) return;
-
-  //   const cleared = dataSourceRef.current.map((row) => {
-  //     const updatedRow = { ...row };
-  //     Object.keys(updatedRow).forEach((key) => {
-  //       if (key.startsWith("bid_") || key.startsWith("ask_")) {
-  //         updatedRow[key] = EMPTY_RATE_VALUE; // consistent with new-row convention
-  //       }
-  //     });
-  //     return updatedRow;
-  //   });
-
-  //   dataSourceRef.current = cleared;
-  //   setDataSource(cleared);
-  // }, [marketStatus]);
 
   // ---------------- RENDER ----------------
   return (

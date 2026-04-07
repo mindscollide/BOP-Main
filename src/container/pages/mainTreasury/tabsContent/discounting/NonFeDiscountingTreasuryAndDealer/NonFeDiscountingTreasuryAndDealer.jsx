@@ -39,9 +39,9 @@ const NonFeDiscountingTreasuryAndDealer = () => {
   // ---------------- INITIAL TABLE BUILD ----------------
   useEffect(() => {
     if (
-      !isTableInitialized.current &&
       getAllTenorsRecords !== null &&
       GetAllInstrumentForTreasury !== null &&
+      !isTableInitialized.current &&
       GetDiscountingRatesForTreasury !== null
     )
       try {
@@ -60,7 +60,6 @@ const NonFeDiscountingTreasuryAndDealer = () => {
           getAllInstrument,
           IndexCell
         );
-
         isTableInitialized.current = true;
         setColumnsData(cols);
 
@@ -76,7 +75,6 @@ const NonFeDiscountingTreasuryAndDealer = () => {
     GetAllInstrumentForTreasury,
     GetDiscountingRatesForTreasury,
   ]);
-
   // ---------------- THROTTLED MQTT RATE UPDATE ----------------
   const throttledUpdateRef = useRef(
     throttle(() => {

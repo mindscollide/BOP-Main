@@ -10,6 +10,7 @@ import {
 } from "@/store/modalSlice/modalSlicer";
 import { clearBidOfferStatus } from "@/store/watchListSlicer/WatchListSlicer";
 import { useBidOffer } from "@/context/BidOfferContext";
+import { useModal } from "@/context/ModalContext";
 
 const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
 
@@ -32,20 +33,17 @@ const BranchRateCardsOfWatchList = ({
   // Local RFQ button state from Redux trade rights
   const [rfqButtonState, setRFqButtonState] = useState(true);
   const { isBid, isOffer } = useBidOffer();
+  const { isMarketOn } = useModal();
 
   const isTradeRights = useSelector(
     (state) => state.RealtimeActionsSlice.tradeRightsStatusUpdated
   );
 
-  const marketStatus = useSelector(
-    (state) => state.WatchListReducer.getMarketStatus
-  );
-
   /**
    * Derived disable states based on bidOfferStatus
    */
-  const isBuyDisabled = !isBid || !rfqButtonState || !marketStatus;
-  const isSellDisabled = !isOffer || !rfqButtonState || !marketStatus;
+  const isBuyDisabled = !isBid || !rfqButtonState || !isMarketOn;
+  const isSellDisabled = !isOffer || !rfqButtonState || !isMarketOn;
   /**
    * Open modal with buy/sell data
    */
@@ -81,24 +79,23 @@ const BranchRateCardsOfWatchList = ({
       {currencyLabel ? (
         <span
           className={
-            !marketStatus || !rfqButtonState
+            !isMarketOn || !rfqButtonState
               ? "DroppableBox_disbaled"
               : "DroppableBox"
-          }
-        >
+          }>
           <Row>
             <Col lg={12} md={12} sm={12}>
-              <span className="DroppableBoxCurrencyLabel">
+              <span className='DroppableBoxCurrencyLabel'>
                 {viewInstumentName}
               </span>
-              <span className="color-white fs-5 fw-normal">
+              <span className='color-white fs-5 fw-normal'>
                 {" "}
                 {viewSecondaryInstrumentName}
               </span>
             </Col>
           </Row>
 
-          <Row className="mt-4">
+          <Row className='mt-4'>
             {isBranch ? (
               <>
                 <Col lg={6} md={6} sm={6}>

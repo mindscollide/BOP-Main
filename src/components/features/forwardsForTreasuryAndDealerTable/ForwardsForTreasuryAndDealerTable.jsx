@@ -19,6 +19,7 @@ import { NumericFormat } from "react-number-format";
 import moment from "moment";
 import { formatDateUTCToGMT } from "@/components/utils/timeFunction";
 import { setGlobalSnackBarMessage } from "@/store/authSlicer/authSlicer";
+import { useModal } from "@/context/ModalContext";
 
 // Define condition to include components
 const shouldIncludeComponents =
@@ -64,14 +65,11 @@ const TenoreWiseCurrentAndLastRates = ({
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { isMarketOn } = useModal();
   const [date, setDate] = useState("");
   const { showMessage } = useNotification();
   const PublishForwardsButtonLoading = useSelector(
     (state) => state.dealerReducer.publishTenorWiseForwardsLoading
-  );
-  console.log(PublishForwardsButtonLoading, "PublishForwardsButtonLoading");
-  const marketStatus = useSelector(
-    (state) => state.RealtimeActionsSlice.marketStatus
   );
 
   const getAllTenorsData = useSelector(
@@ -530,7 +528,7 @@ const TenoreWiseCurrentAndLastRates = ({
                   loading={PublishForwardsButtonLoading}
                   onClick={handlePublishForwards}
                   disabled={
-                    marketStatus === false
+                    isMarketOn === false
                       ? true
                       : forwardsForTreasuryBranch.length === 0
                       ? false

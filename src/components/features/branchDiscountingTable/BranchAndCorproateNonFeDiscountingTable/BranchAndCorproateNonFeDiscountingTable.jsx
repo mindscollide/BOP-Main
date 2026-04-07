@@ -59,10 +59,6 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
     (state) => state.dealerReducer.getAllTenors
   );
 
-  const marketStatus = useSelector(
-    (state) => state.WatchListReducer.getMarketStatus
-  );
-
   const ClearRatesData = useSelector(
     (state) => state.RealtimeActionsSlice.ClearRatesData
   );
@@ -89,7 +85,8 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
     if (
       getAllTenorsRecords !== null &&
       getAllInstrumentsForCounterPartiesData !== null &&
-      !isTableInitialized.current
+      !isTableInitialized.current &&
+      GetDiscountingRatesForCounterParty !== null
     ) {
       try {
         const { nonFEDiscountingRates = [] } =
@@ -267,21 +264,22 @@ const BranchAndCorporateNonFeDiscountingTable = () => {
           />
         </Col>
       </Row>
-
-      <Row className='my-2'>
-        <Col
-          lg={12}
-          md={12}
-          sm={12}
-          className='d-flex justify-content-center align-items-center gap-2'>
-          <CustomButton
-            value='Non-FE Discounting'
-            applyClass={"FowwardBranchBookaForwardBtn"}
-            onClick={handleNonFEDiscountingModal}
-            disabled={!isBid || marketStatus === false || !rfqButtonState}
-          />
-        </Col>
-      </Row>
+      {dataSource.length !== 0 && (
+        <Row className='my-2'>
+          <Col
+            lg={12}
+            md={12}
+            sm={12}
+            className='d-flex justify-content-center align-items-center gap-2'>
+            <CustomButton
+              value='Non-FE Discounting'
+              applyClass={"FowwardBranchBookaForwardBtn"}
+              onClick={handleNonFEDiscountingModal}
+              disabled={!isBid || isMarketOn === false || !rfqButtonState}
+            />
+          </Col>
+        </Row>
+      )}
 
       {nonfeDiscountingModalCall && (
         <NonFEDiscountingModal

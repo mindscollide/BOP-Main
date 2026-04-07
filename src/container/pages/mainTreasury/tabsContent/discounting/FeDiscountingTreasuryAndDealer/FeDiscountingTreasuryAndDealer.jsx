@@ -40,12 +40,14 @@ const FeDiscountingTreasuryAndDealer = () => {
   // Runs once when instruments + tenors are ready.
   useEffect(() => {
     if (
+      !isTableInitialized.current &&
       getAllTenorsRecords !== null &&
       GetAllInstrumentForTreasury !== null &&
       GetDiscountingRatesForTreasury !== null
     )
       try {
-        const { feDiscountingRates = [] } = GetDiscountingRatesForTreasury;
+        const { feDiscountingRates = [] } =
+          GetDiscountingRatesForTreasury ?? {};
 
         const getAllTenorsData = { tenors: getAllTenorsRecords.tenors };
         const getAllInstrument = {

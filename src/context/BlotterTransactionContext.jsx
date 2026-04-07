@@ -48,16 +48,14 @@ const TransactionProvider = ({ children }) => {
 
   // ─── Selectors ───────────────────────────────────────────────────────────────
   const blotterTransactionRFQExpiredForTreasury = useSelector(
-    (state) =>
-      state.RealtimeActionsSlice.BlotterTransactionRFQExpiredForTreasury
+    (state) => state.RealtimeActionsSlice.BlotterTransactionRFQExpiredForTreasury
   );
   const blotterTransactionAcceptedForTreasury = useSelector(
     (state) => state.RealtimeActionsSlice.BlotterTransactionAcceptedForTreasury
   );
   const blotterTransactionCancellationRequestDataForTreasury = useSelector(
     (state) =>
-      state.RealtimeActionsSlice
-        .BlotterTransactionCancellationRequestDataForTreasury
+      state.RealtimeActionsSlice.BlotterTransactionCancellationRequestDataForTreasury
   );
   const blotterTranscationCancelledForTreasury = useSelector(
     (state) => state.RealtimeActionsSlice.BlotterTranscationCancelledForTreasury
@@ -90,8 +88,7 @@ const TransactionProvider = ({ children }) => {
     (state) => state.RealtimeActionsSlice.BlotterTranscationCancelled
   );
   const blotterTransactionCancellationRequest = useSelector(
-    (state) =>
-      state.RealtimeActionsSlice.BlotterTransactionCancellationRequestData
+    (state) => state.RealtimeActionsSlice.BlotterTransactionCancellationRequestData
   );
   const blotterTransactionRejected = useSelector(
     (state) => state.RealtimeActionsSlice.BlotterTransactionRejected
@@ -113,7 +110,6 @@ const TransactionProvider = ({ children }) => {
     if (!isTreasury || !tnxSummary?.length) return;
 
     if (hasBottomReachedTreasuryTXN) {
-      // ✅ All setState calls at top level — never nested
       setTreasuryTXNSummary((prev) => [...prev, ...tnxSummary]);
       setTreasuryTXNSummaryTotalRecords(totalCount);
       setTreasuryTXNSummarysRow((prev) => prev + tnxSummary.length);
@@ -141,7 +137,6 @@ const TransactionProvider = ({ children }) => {
     if (!isTreasury || !outstandingDeals?.length) return;
 
     if (hasBottomReachedOutstanding) {
-      // ✅ All setState calls at top level — never nested
       setTreasuryOutStandingDeal((prev) => [...prev, ...outstandingDeals]);
       setTreasuryOutStandingDealRecords(totalCount);
       setTreasuryOutStandingDealsRow((prev) => prev + outstandingDeals.length);
@@ -153,255 +148,253 @@ const TransactionProvider = ({ children }) => {
     setHasBottomReachedOutstanding(false);
   }, [getBlotterOutstandingData]);
 
-  // ─── TXN Summary — MQTT updates ──────────────────────────────────────────────
+  // ─── Outstanding Deals — MQTT: TRANSACTION ADDED ─────────────────────────────
   useLayoutEffect(() => {
-    // ✅ Pure helper — returns new array only, no setState inside
-    const applyUpdate = (prevData, transaction) => {
-      const updated = [...(prevData || [])];
-      const idx = updated.findIndex(
+    if (!blotterTransactionAdded?.transaction) return;
+    const transaction = blotterTransactionAdded.transaction;
+
+    setTreasuryOutStandingDeal((prev) => {
+      const idx = prev.findIndex(
         (item) => item.pK_TransactionID === transaction.pK_TransactionID
       );
-
-      console.log(updated, transaction, idx, "applyUpdateapplyUpdate");
       if (idx !== -1) {
+        const updated = [...prev];
         updated[idx] = transaction;
-        return { data: updated, countDelta: 0 }; // existing row updated
+        return updated;
       }
-      return { data: [transaction, ...updated], countDelta: 1 }; // new row prepended
-    };
+      setTreasuryOutStandingDealRecords((r) => r + 1);
+      setTreasuryOutStandingDealsRow((r) => r + 1);
+      return [transaction, ...prev];
+    });
 
-    if (blotterTransactionRFQExpiredForTreasury?.transaction) {
-      console.log(
-        blotterTransactionRFQExpiredForTreasury?.transaction,
-        "applyUpdateapplyUpdate"
-      );
+    dispatch(BlotterTransactionAdded(null));
+  }, [blotterTransactionAdded]);
 
-      const { data, countDelta } = applyUpdate(
-        treasuryTXNSummary,
-        blotterTransactionRFQExpiredForTreasury.transaction
-      );
-      setTreasuryTXNSummary(data);
-      dispatch(setBlotterTransactionRFQExpiredForTreasury(null))
-
-      if (countDelta) {
-        setTreasuryTXNSummarysRow((prev) => prev + 1);
-        setTreasuryTXNSummaryTotalRecords((prev) => prev + 1);
-      }
-    }
-
-    if (blotterTransactionAcceptedForTreasury?.transaction) {
-      console.log(
-        blotterTransactionAcceptedForTreasury?.transaction,
-        "applyUpdateapplyUpdate"
-      );
-
-      const { data, countDelta } = applyUpdate(
-        treasuryTXNSummary,
-        blotterTransactionAcceptedForTreasury.transaction
-      );
-      setTreasuryTXNSummary(data);
-      dispatch(BlotterTransactionAcceptedForTreasury(null))
-
-      if (countDelta) {
-        setTreasuryTXNSummarysRow((prev) => prev + 1);
-        setTreasuryTXNSummaryTotalRecords((prev) => prev + 1);
-      }
-    }
-
-    if (blotterTranscationCancelledForTreasury?.transaction) {
-      console.log(
-        blotterTranscationCancelledForTreasury?.transaction,
-        "applyUpdateapplyUpdate"
-      );
-
-      const { data, countDelta } = applyUpdate(
-        treasuryTXNSummary,
-        blotterTranscationCancelledForTreasury.transaction
-      );
-      setTreasuryTXNSummary(data);
-      dispatch(BlotterTranscationCancelledForTreasury(null))
-
-      if (countDelta) {
-        setTreasuryTXNSummarysRow((prev) => prev + 1);
-        setTreasuryTXNSummaryTotalRecords((prev) => prev + 1);
-      }
-    }
-
-    if (blotterTransactionRejectedForTreasury?.transaction) {
-      console.log(
-        blotterTransactionRejectedForTreasury?.transaction,
-        "applyUpdateapplyUpdate"
-      );
-
-      const { data, countDelta } = applyUpdate(
-        treasuryTXNSummary,
-        blotterTransactionRejectedForTreasury.transaction
-      );
-      setTreasuryTXNSummary(data);
-      dispatch(BlotterTransactionRejectedForTreasury(null))
-
-      if (countDelta) {
-        setTreasuryTXNSummarysRow((prev) => prev + 1);
-        setTreasuryTXNSummaryTotalRecords((prev) => prev + 1);
-      }
-    }
-
-    if (blotterTransactionCancellationRequestDataForTreasury?.transaction) {
-      console.log(
-        blotterTransactionCancellationRequestDataForTreasury?.transaction,
-        "applyUpdateapplyUpdate"
-      );
-
-      const { transaction } =
-        blotterTransactionCancellationRequestDataForTreasury;
-      // ✅ Compute filtered array first, then call setState separately
-      const filtered = (treasuryTXNSummary || []).filter(
-        (item) => item.pK_TransactionID !== transaction.pK_TransactionID
-      );
-      setTreasuryTXNSummary(filtered);
-      setTreasuryTXNSummaryTotalRecords((prev) => prev - 1);
-      setTreasuryTXNSummarysRow((prev) => prev - 1);
-      dispatch(BlotterTransactionCancellationRequestForTreasury(null));
-    }
-  }, [
-    blotterTransactionRFQExpiredForTreasury,
-    blotterTransactionAcceptedForTreasury,
-    blotterTransactionCancellationRequestDataForTreasury,
-    blotterTranscationCancelledForTreasury,
-    blotterTransactionRejectedForTreasury,
-  ]);
-
-  // ─── Outstanding Deals — MQTT updates ────────────────────────────────────────
+  // ─── Outstanding Deals — MQTT: RFQ QUOTED ────────────────────────────────────
   useLayoutEffect(() => {
-    try {
-      if (blotterTransactionAdded?.transaction) {
-        const transaction = blotterTransactionAdded.transaction;
-        const current = treasuryOutStandingDeal || [];
-        const idx = current.findIndex(
-          (item) => item.pK_TransactionID === transaction.pK_TransactionID
-        );
+    if (!blotterTransactionRFQQuoted?.transaction) return;
+    const transaction = blotterTransactionRFQQuoted.transaction;
 
-        if (idx !== -1) {
-          // ✅ Update existing row — no count change
-          const updated = [...current];
-          updated[idx] = transaction;
-          setTreasuryOutStandingDeal(updated);
-        } else {
-          // ✅ Prepend new row — update counts separately at top level
-          setTreasuryOutStandingDeal([transaction, ...current]);
-          setTreasuryOutStandingDealRecords((prev) => prev + 1);
-          setTreasuryOutStandingDealsRow((prev) => prev + 1);
-        }
-        dispatch(BlotterTransactionAdded(null));
+    setTreasuryOutStandingDeal((prev) =>
+      prev.map((item) =>
+        item.pK_TransactionID === transaction.pK_TransactionID
+          ? {
+              ...item,
+              bid: transaction.bid,
+              offer: transaction.offer,
+              amount: transaction.amount,
+              statusID: transaction.statusID,
+              rfqTimerDetails:
+                transaction.rfqTimerDetails ?? item.rfqTimerDetails,
+            }
+          : item
+      )
+    );
+
+    dispatch(BlotterTransactionRFQQuoted(null));
+  }, [blotterTransactionRFQQuoted]);
+
+  // ─── Outstanding Deals — MQTT: RFQ EXPIRED ───────────────────────────────────
+  useLayoutEffect(() => {
+    if (!blotterTransactionRFQExpired?.transaction) return;
+    const { pK_TransactionID } = blotterTransactionRFQExpired.transaction;
+
+    setTreasuryOutStandingDeal((prev) =>
+      prev.filter((item) => item.pK_TransactionID !== pK_TransactionID)
+    );
+    setTreasuryOutStandingDealRecords((r) => r - 1);
+    setTreasuryOutStandingDealsRow((r) => r - 1);
+
+    dispatch(BlotterTransactionRFQExpired(null));
+  }, [blotterTransactionRFQExpired]);
+
+  // ─── Outstanding Deals — MQTT: ACCEPTED ──────────────────────────────────────
+  useLayoutEffect(() => {
+    if (!blotterTransactionAccepted?.transaction) return;
+    const { pK_TransactionID } = blotterTransactionAccepted.transaction;
+
+    setTreasuryOutStandingDeal((prev) =>
+      prev.filter((item) => item.pK_TransactionID !== pK_TransactionID)
+    );
+    setTreasuryOutStandingDealRecords((r) => r - 1);
+    setTreasuryOutStandingDealsRow((r) => r - 1);
+
+    dispatch(BlotterTransactionAccepted(null));
+  }, [blotterTransactionAccepted]);
+
+  // ─── Outstanding Deals — MQTT: CANCELLED ─────────────────────────────────────
+  useLayoutEffect(() => {
+    if (!blotterTranscationCancelled?.transaction) return;
+    const { pK_TransactionID } = blotterTranscationCancelled.transaction;
+
+    setTreasuryOutStandingDeal((prev) =>
+      prev.filter((item) => item.pK_TransactionID !== pK_TransactionID)
+    );
+    setTreasuryOutStandingDealRecords((r) => r - 1);
+    setTreasuryOutStandingDealsRow((r) => r - 1);
+
+    dispatch(BlotterTranscationCancelled(null));
+  }, [blotterTranscationCancelled]);
+
+  // ─── Outstanding Deals — MQTT: REJECTED ──────────────────────────────────────
+  useLayoutEffect(() => {
+    if (!blotterTransactionRejected?.transaction) return;
+    const { pK_TransactionID } = blotterTransactionRejected.transaction;
+
+    setTreasuryOutStandingDeal((prev) =>
+      prev.filter((item) => item.pK_TransactionID !== pK_TransactionID)
+    );
+    setTreasuryOutStandingDealRecords((r) => r - 1);
+    setTreasuryOutStandingDealsRow((r) => r - 1);
+
+    dispatch(BlotterTransactionRejected(null));
+  }, [blotterTransactionRejected]);
+
+  // ─── Outstanding Deals — MQTT: ASSIGNED ──────────────────────────────────────
+  useLayoutEffect(() => {
+    if (!blotterTransactionAssigned) return;
+    const transaction = blotterTransactionAssigned;
+
+    setTreasuryOutStandingDeal((prev) =>
+      prev.map((item) =>
+        item.pK_TransactionID === transaction.transactionID
+          ? {
+              ...item,
+              status:
+                Number(localStorage.getItem("userID")) ===
+                Number(transaction.treasuryPersonID)
+                  ? transaction.statusForAssignedUser
+                  : transaction.statusForOtherTreasury,
+              statusID: transaction.statusID,
+              treasuryPersonID: transaction.treasuryPersonID,
+            }
+          : item
+      )
+    );
+
+    dispatch(BlotterTransactionAssigned(null));
+  }, [blotterTransactionAssigned]);
+
+  // ─── Outstanding Deals — MQTT: CANCELLATION REQUEST ──────────────────────────
+  useLayoutEffect(() => {
+    if (!blotterTransactionCancellationRequest?.transaction) return;
+    const transaction = blotterTransactionCancellationRequest.transaction;
+
+    setTreasuryOutStandingDeal((prev) => {
+      const exists = prev.some(
+        (item) => item.pK_TransactionID === transaction.pK_TransactionID
+      );
+      if (exists) return prev;
+      setTreasuryOutStandingDealRecords((r) => r + 1);
+      setTreasuryOutStandingDealsRow((r) => r + 1);
+      return [transaction, ...prev];
+    });
+
+    dispatch(BlotterTransactionCancellationRequest(null));
+  }, [blotterTransactionCancellationRequest]);
+
+  // ─── TXN Summary — MQTT: RFQ EXPIRED ─────────────────────────────────────────
+  useLayoutEffect(() => {
+    if (!blotterTransactionRFQExpiredForTreasury?.transaction) return;
+    const transaction = blotterTransactionRFQExpiredForTreasury.transaction;
+
+    setTreasuryTXNSummary((prev) => {
+      const idx = prev.findIndex(
+        (item) => item.pK_TransactionID === transaction.pK_TransactionID
+      );
+      if (idx !== -1) {
+        const updated = [...prev];
+        updated[idx] = transaction;
+        return updated;
       }
+      setTreasuryTXNSummarysRow((r) => r + 1);
+      setTreasuryTXNSummaryTotalRecords((r) => r + 1);
+      return [transaction, ...prev];
+    });
 
-      if (blotterTransactionRFQQuoted?.transaction) {
-        const transaction = blotterTransactionRFQQuoted.transaction;
-        setTreasuryOutStandingDeal((prev) =>
-          (prev || []).map((item) =>
-            item.pK_TransactionID === transaction.pK_TransactionID
-              ? {
-                  ...item,
-                  bid: transaction.bid,
-                  offer: transaction.offer,
-                  amount: transaction.amount,
-                  statusID: transaction.statusID,
-                  rfqTimerDetails:
-                    transaction.rfqTimerDetails ?? item.rfqTimerDetails,
-                }
-              : item
-          )
-        );
-        dispatch(BlotterTransactionRFQQuoted(null));
+    dispatch(setBlotterTransactionRFQExpiredForTreasury(null));
+  }, [blotterTransactionRFQExpiredForTreasury]);
+
+  // ─── TXN Summary — MQTT: ACCEPTED ────────────────────────────────────────────
+  useLayoutEffect(() => {
+    if (!blotterTransactionAcceptedForTreasury?.transaction) return;
+    const transaction = blotterTransactionAcceptedForTreasury.transaction;
+
+    setTreasuryTXNSummary((prev) => {
+      const idx = prev.findIndex(
+        (item) => item.pK_TransactionID === transaction.pK_TransactionID
+      );
+      if (idx !== -1) {
+        const updated = [...prev];
+        updated[idx] = transaction;
+        return updated;
       }
+      setTreasuryTXNSummarysRow((r) => r + 1);
+      setTreasuryTXNSummaryTotalRecords((r) => r + 1);
+      return [transaction, ...prev];
+    });
 
-      // ✅ Shared handler for remove-type events
-      const removeTypes = [
-        {
-          data: blotterTransactionRFQExpired,
-          type: "expired",
-          action: BlotterTransactionRFQExpired,
-        },
-        {
-          data: blotterTransactionAccepted,
-          type: "accepted",
-          action: BlotterTransactionAccepted,
-        },
-        {
-          data: blotterTranscationCancelled,
-          type: "cancelled",
-          action: BlotterTranscationCancelled,
-        },
-        {
-          data: blotterTransactionRejected,
-          type: "rejected",
-          action: BlotterTransactionRejected,
-        },
-      ];
+    dispatch(BlotterTransactionAcceptedForTreasury(null));
+  }, [blotterTransactionAcceptedForTreasury]);
 
-      removeTypes.forEach(({ data, action }) => {
-        if (!data?.transaction) return;
-        const { pK_TransactionID } = data.transaction;
+  // ─── TXN Summary — MQTT: CANCELLED ───────────────────────────────────────────
+  useLayoutEffect(() => {
+    if (!blotterTranscationCancelledForTreasury?.transaction) return;
+    const transaction = blotterTranscationCancelledForTreasury.transaction;
 
-        // ✅ Compute filtered array first — no setState inside setState
-        const filtered = (treasuryOutStandingDeal || []).filter(
-          (item) => item.pK_TransactionID !== pK_TransactionID
-        );
-        setTreasuryOutStandingDeal(filtered);
-        setTreasuryOutStandingDealRecords((prev) => prev - 1);
-        setTreasuryOutStandingDealsRow((prev) => prev - 1);
-        dispatch(action(null));
-      });
-
-      if (blotterTransactionAssigned) {
-        const transaction = blotterTransactionAssigned;
-        setTreasuryOutStandingDeal((prev) =>
-          (prev || []).map((item) =>
-            item.pK_TransactionID === transaction.transactionID
-              ? {
-                  ...item,
-                  status:
-                    Number(localStorage.getItem("userID")) ===
-                    Number(transaction.treasuryPersonID)
-                      ? transaction.statusForAssignedUser
-                      : transaction.statusForOtherTreasury,
-                  statusID: transaction.statusID,
-                  treasuryPersonID: transaction.treasuryPersonID,
-                }
-              : item
-          )
-        );
-        dispatch(BlotterTransactionAssigned(null));
+    setTreasuryTXNSummary((prev) => {
+      const idx = prev.findIndex(
+        (item) => item.pK_TransactionID === transaction.pK_TransactionID
+      );
+      if (idx !== -1) {
+        const updated = [...prev];
+        updated[idx] = transaction;
+        return updated;
       }
+      setTreasuryTXNSummarysRow((r) => r + 1);
+      setTreasuryTXNSummaryTotalRecords((r) => r + 1);
+      return [transaction, ...prev];
+    });
 
-      if (blotterTransactionCancellationRequest?.transaction) {
-        const transaction = blotterTransactionCancellationRequest.transaction;
-        const current = treasuryOutStandingDeal || [];
-        const exists = current.some(
-          (item) => item.pK_TransactionID === transaction.pK_TransactionID
-        );
+    dispatch(BlotterTranscationCancelledForTreasury(null));
+  }, [blotterTranscationCancelledForTreasury]);
 
-        if (!exists) {
-          // ✅ Compute new array first, setState separately at top level
-          setTreasuryOutStandingDeal([transaction, ...current]);
-          setTreasuryOutStandingDealRecords((prev) => prev + 1);
-          setTreasuryOutStandingDealsRow((prev) => prev + 1);
-        }
-        dispatch(BlotterTransactionCancellationRequest(null));
+  // ─── TXN Summary — MQTT: REJECTED ────────────────────────────────────────────
+  useLayoutEffect(() => {
+    if (!blotterTransactionRejectedForTreasury?.transaction) return;
+    const transaction = blotterTransactionRejectedForTreasury.transaction;
+
+    setTreasuryTXNSummary((prev) => {
+      const idx = prev.findIndex(
+        (item) => item.pK_TransactionID === transaction.pK_TransactionID
+      );
+      if (idx !== -1) {
+        const updated = [...prev];
+        updated[idx] = transaction;
+        return updated;
       }
-    } catch (error) {
-      console.error("Error in unified transaction handler:", error);
-    }
-  }, [
-    blotterTransactionAdded,
-    blotterTransactionRFQQuoted,
-    blotterTransactionRFQExpired,
-    blotterTransactionAccepted,
-    blotterTranscationCancelled,
-    blotterTransactionRejected,
-    blotterTransactionAssigned,
-    blotterTransactionCancellationRequest,
-  ]);
+      setTreasuryTXNSummarysRow((r) => r + 1);
+      setTreasuryTXNSummaryTotalRecords((r) => r + 1);
+      return [transaction, ...prev];
+    });
+
+    dispatch(BlotterTransactionRejectedForTreasury(null));
+  }, [blotterTransactionRejectedForTreasury]);
+
+  // ─── TXN Summary — MQTT: CANCELLATION REQUEST ────────────────────────────────
+  useLayoutEffect(() => {
+    if (!blotterTransactionCancellationRequestDataForTreasury?.transaction) return;
+    const { pK_TransactionID } =
+      blotterTransactionCancellationRequestDataForTreasury.transaction;
+
+    setTreasuryTXNSummary((prev) =>
+      prev.filter((item) => item.pK_TransactionID !== pK_TransactionID)
+    );
+    setTreasuryTXNSummaryTotalRecords((r) => r - 1);
+    setTreasuryTXNSummarysRow((r) => r - 1);
+
+    dispatch(BlotterTransactionCancellationRequestForTreasury(null));
+  }, [blotterTransactionCancellationRequestDataForTreasury]);
 
   return (
     <TransactionContext.Provider
