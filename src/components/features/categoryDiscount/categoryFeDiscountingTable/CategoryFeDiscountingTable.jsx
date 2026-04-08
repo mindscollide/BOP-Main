@@ -1,7 +1,7 @@
 import { IndexCell } from "@/components/common/inputField/IndexCell";
 import GlobalTable from "@/components/common/table/GlobalTable";
 import { buildDiscountingTable } from "@/components/utils/generateColumnsData";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { throttle } from "lodash";
@@ -14,6 +14,10 @@ const CategoryFeDiscountingTable = () => {
   const dispatch = useDispatch();
   const [dataSource, setDataSource] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
+
+    // ---------------- TABLE INIT FLAG ----------------
+    const isTableInitialized = useRef(false);
+
 
   const GetCategoryWiseDiscountingRates = useSelector(
     (state) => state.categoryReducer.GetCategoryWiseDiscountingRates
@@ -49,9 +53,10 @@ const CategoryFeDiscountingTable = () => {
   );
 
   useEffect(() => {
-    if (
+    if (!isTableInitialized.current &&
       getAllTenorsRecords !== null &&
-      allInstrumentForTreasuryData !== null 
+      allInstrumentForTreasuryData !== null &&
+      GetCategoryWiseDiscountingRates !== null
     ) {
       try {
         const { feDiscountingRates = [] } =
@@ -72,6 +77,7 @@ const CategoryFeDiscountingTable = () => {
 
         if (rowData.length > 0) {
           setDataSource(rowData);
+          isTableInitialized.current = true; // Mark table as initialized
           setColumnsData(columnsData);
         }
       } catch (error) {}

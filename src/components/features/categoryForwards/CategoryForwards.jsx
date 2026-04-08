@@ -104,37 +104,36 @@ const CategoryForwards = () => {
   // is handled by its own dedicated effect below.
   useEffect(() => {
     if (
-      isTableInitialized.current ||
-      !getAllTenorsRecords ||
-      !allInstrumentForTreasuryData
+      !isTableInitialized.current &&
+      getAllTenorsRecords !== null &&
+      allInstrumentForTreasuryData !== null &&
+      GetCategoryWiseForwardRatesData !== null
     )
-      return;
+      try {
+        const { forwardRates = [] } = GetCategoryWiseForwardRatesData ?? {};
+        const { forwardInstruments = [] } = allInstrumentForTreasuryData;
 
-    try {
-      const { forwardRates = [] } = GetCategoryWiseForwardRatesData ?? {};
-      const { forwardInstruments = [] } = allInstrumentForTreasuryData;
+        const { rowData, columnsData } = buildForwardsTable(
+          FORWARDS_TABLE_TYPE,
+          forwardRates,
+          { tenors: getAllTenorsRecords.tenors },
+          { instruments: forwardInstruments },
+          IndexCell
+        );
 
-      const { rowData, columnsData } = buildForwardsTable(
-        FORWARDS_TABLE_TYPE,
-        forwardRates,
-        { tenors: getAllTenorsRecords.tenors },
-        { instruments: forwardInstruments },
-        IndexCell
-      );
+        // Mark initialized regardless of rowData length so the
+        // tenor-sync effect can manage rows independently from this point on.
+        columnsDataRef.current = columnsData;
+        setColumnsDataState(columnsData);
+        isTableInitialized.current = true;
 
-      // Mark initialized regardless of rowData length so the
-      // tenor-sync effect can manage rows independently from this point on.
-      columnsDataRef.current = columnsData;
-      setColumnsDataState(columnsData);
-      isTableInitialized.current = true;
-
-      if (rowData?.length) {
-        dataSourceRef.current = rowData;
-        setDataSource(rowData);
+        if (rowData?.length) {
+          dataSourceRef.current = rowData;
+          setDataSource(rowData);
+        }
+      } catch (error) {
+        console.error("Error building category forwards table:", error);
       }
-    } catch (error) {
-      console.error("Error building category forwards table:", error);
-    }
   }, [
     allInstrumentForTreasuryData,
     getAllTenorsRecords,

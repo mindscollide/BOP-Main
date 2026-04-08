@@ -182,9 +182,10 @@ export const GetCategoryWiseForwardRatesApi = createAsyncThunk(
                 "WatchList_WatchListServiceManager_GetCategoryWiseForwardRates_02".toLowerCase()
               )
           ) {
-            return rejectWithValue(
-              import.meta.env.VITE_MQTT_PORT === "8883" ? "" : "No Record Found"
-            );
+            return {
+              response: response.data.responseResult,
+              message: "",
+            };
           }
           //  else if (
           //   responseMessage
@@ -261,9 +262,10 @@ export const GetCategoryWiseDiscountingRatesApi = createAsyncThunk(
                 "WatchList_WatchListServiceManager_GetCategoryWiseDiscountingRates_02".toLowerCase()
               )
           ) {
-            return rejectWithValue(
-              import.meta.env.VITE_MQTT_PORT === "8883" ? "" : "No Record Found"
-            );
+            return {
+              response: response.data.responseResult,
+              message: "",
+            };
           } else if (
             responseMessage
               .toLowerCase()

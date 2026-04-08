@@ -5,7 +5,7 @@ import { useModal } from "@/context/ModalContext";
 import { UpdateGetCategoryWiseDiscountingRates } from "@/store/categoryReducer/categoryReducer";
 import { clearCategoryDiscountingClearRates } from "@/store/realtimeActionsSlicer/realtimeActionSlice";
 import { throttle } from "lodash";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
@@ -15,6 +15,9 @@ const CategoryNonFeDiscountingTable = () => {
   const [dataSource, setDataSource] = useState([]);
   const [columnsData, setColumnsData] = useState([]);
   const { isMarketOn } = useModal();
+
+  // ---------------- TABLE INIT FLAG ----------------
+  const isTableInitialized = useRef(false);
 
   const GetCategoryWiseDiscountingRates = useSelector(
     (state) => state.categoryReducer.GetCategoryWiseDiscountingRates
@@ -35,7 +38,12 @@ const CategoryNonFeDiscountingTable = () => {
   );
 
   useEffect(() => {
-    if (getAllTenorsRecords !== null && allInstrumentForTreasuryData !== null) {
+    if (
+      !isTableInitialized.current &&
+      getAllTenorsRecords !== null &&
+      allInstrumentForTreasuryData !== null &&
+      GetCategoryWiseDiscountingRates !== null
+    ) {
       try {
         const { nonFEDiscountingRates = [] } =
           GetCategoryWiseDiscountingRates !== null &&
@@ -55,6 +63,7 @@ const CategoryNonFeDiscountingTable = () => {
 
         if (rowData.length > 0) {
           setDataSource(rowData);
+          isTableInitialized.current = true;
           setColumnsData(columnsData);
         }
       } catch (error) {}
