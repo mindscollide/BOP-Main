@@ -109,9 +109,10 @@ export const GetCategoryWiseSpotRatesApi = createAsyncThunk(
                 "WatchList_WatchListServiceManager_GetCategoryWiseSpotRates_02".toLowerCase()
               )
           ) {
-            return rejectWithValue(
-              import.meta.env.VITE_MQTT_PORT === "8883" ? "" : "No Record Found"
-            );
+            return {
+              response: response.data.responseResult,
+              message: "",
+            };
           } else if (
             responseMessage
               .toLowerCase()
@@ -203,11 +204,10 @@ export const GetCategoryWiseForwardRatesApi = createAsyncThunk(
                 "WatchList_WatchListServiceManager_GetCategoryWiseForwardRates_04".toLowerCase()
               )
           ) {
-            return rejectWithValue(
-              import.meta.env.VITE_MQTT_PORT === "8883"
-                ? ""
-                : "Fowards Rates Not Published"
-            );
+            return {
+              response: response.data.responseResult,
+              message: "",
+            };
           } else {
             console.log("", response.data);
             return rejectWithValue("Something went wrong");

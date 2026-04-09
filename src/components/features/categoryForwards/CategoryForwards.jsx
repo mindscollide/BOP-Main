@@ -81,6 +81,11 @@ const CategoryForwards = () => {
   const GetCategoryWiseForwardRatesData = useSelector(
     (state) => state.categoryReducer.GetCategoryWiseForwardRates
   );
+
+  console.log(
+    GetCategoryWiseForwardRatesData,
+    "GetCategoryWiseForwardRatesDataGetCategoryWiseForwardRatesData"
+  );
   const allInstrumentForTreasuryData = useSelector(
     (state) => state.WatchListReducer.GetAllInstrumentForTreasury
   );
@@ -110,7 +115,8 @@ const CategoryForwards = () => {
       GetCategoryWiseForwardRatesData !== null
     )
       try {
-        const { forwardRates = [] } = GetCategoryWiseForwardRatesData ?? {};
+        const forwardRates =
+          GetCategoryWiseForwardRatesData?.forwardRates ?? [];
         const { forwardInstruments = [] } = allInstrumentForTreasuryData;
 
         const { rowData, columnsData } = buildForwardsTable(
