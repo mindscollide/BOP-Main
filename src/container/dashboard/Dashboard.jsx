@@ -541,6 +541,15 @@ const Dashboard = () => {
           startTransition(() => {
             dispatch(updateForwardTenors(payload));
             setUpdaetTenorsMQTT(payload);
+            if (payload.updatedTenorList) {
+              const tenorsData = {
+                newIsForwardtenorList: payload.updatedTenorList.newIsForwardtenorList ?? [],
+                removedtenorList: payload.updatedTenorList.removedtenorList ?? [],
+                updateTenorsDays: payload.updatedTenorList.updatedTenorDaysList ?? [],
+              };
+              dispatch(setCategoryFowardsTenorsChanges(tenorsData));
+              dispatch(setTreasuryFowardsTenorsChanges(tenorsData));
+            }
           });
           break;
         default:
