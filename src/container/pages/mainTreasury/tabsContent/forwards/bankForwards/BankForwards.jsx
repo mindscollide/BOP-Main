@@ -26,8 +26,8 @@ const extractInstrumentMeta = (referenceRow) => {
   return Object.fromEntries(
     Object.entries(referenceRow).filter(
       ([key]) =>
-        key.startsWith("InstrumentID_") || key.startsWith("InstrumentName_")
-    )
+        key.startsWith("InstrumentID_") || key.startsWith("InstrumentName_"),
+    ),
   );
 };
 
@@ -40,7 +40,7 @@ const buildEmptyRateColumns = (referenceRow) => {
   return Object.fromEntries(
     Object.entries(referenceRow)
       .filter(([key]) => key.startsWith("bid_") || key.startsWith("ask_"))
-      .map(([key]) => [key, EMPTY_RATE_VALUE])
+      .map(([key]) => [key, EMPTY_RATE_VALUE]),
   );
 };
 
@@ -54,7 +54,7 @@ const buildNewTenorRow = (
   tenor,
   previousRow,
   referenceRow,
-  instrumentList = []
+  instrumentList = [],
 ) => {
   const sourceRow = referenceRow ?? previousRow ?? null;
 
@@ -81,7 +81,7 @@ const buildNewTenorRow = (
             previousRow?.[key] !== EMPTY_RATE_VALUE
               ? previousRow[key]
               : EMPTY_RATE_VALUE,
-          ])
+          ]),
       )
     : (() => {
         // ✅ fallback: build empty bid/ask keys from master instrument list
@@ -122,23 +122,24 @@ const BankForwards = () => {
 
   // ---------------- TABLE INIT FLAG ----------------
   const isTableInitialized = useRef(false);
+  const [tableReady, setTableReady] = useState(false);
 
   // ---------------- REDUX SELECTORS ----------------
   const getAllTenorsRecords = useSelector(
-    (state) => state.dealerReducer.getAllTenors
+    (state) => state.dealerReducer.getAllTenors,
   );
   const GetBankForwardForTreasury = useSelector(
-    (state) => state.WatchListReducer.GetBankForwardForTreasury
+    (state) => state.WatchListReducer.GetBankForwardForTreasury,
   );
   const GetAllInstrumentForTreasury = useSelector(
-    (state) => state.WatchListReducer.GetAllInstrumentForTreasury
+    (state) => state.WatchListReducer.GetAllInstrumentForTreasury,
   );
   const TreasuryForwardRates = useSelector(
-    (state) => state.RealtimeActionsSlice.TreasuryForwardRates
+    (state) => state.RealtimeActionsSlice.TreasuryForwardRates,
   );
 
   const treasuryFowardsTenorsChanges = useSelector(
-    (state) => state.RealtimeActionsSlice.treasuryFowardsTenorsChanges
+    (state) => state.RealtimeActionsSlice.treasuryFowardsTenorsChanges,
   );
 
   // ---------------- INITIAL TABLE BUILD ----------------
@@ -161,7 +162,7 @@ const BankForwards = () => {
           forwardRates,
           { tenors: getAllTenorsRecords.tenors },
           { instruments: forwardInstruments },
-          IndexCell
+          IndexCell,
         );
 
         // Mark initialized regardless of rowData length so tenor-sync
@@ -169,6 +170,7 @@ const BankForwards = () => {
         columnsDataRef.current = columnsData;
         setColumnsDataState(columnsData);
         isTableInitialized.current = true;
+        setTableReady(true);
 
         if (rowData?.length) {
           dataSourceRef.current = rowData;
@@ -187,71 +189,71 @@ const BankForwards = () => {
   // Does NOT rebuild the entire table — preserves live MQTT rates.
   useEffect(() => {
     if (
-      isTableInitialized.current ||
-      !treasuryFowardsTenorsChanges ||
-      !getAllTenorsRecords
-    )
-      return;
+      tableReady &&
+      treasuryFowardsTenorsChanges !== null &&
+      getAllTenorsRecords !== null
+    ) {
+      try {
+        const { newIsForwardtenorList = [], removedtenorList = [] } =
+          treasuryFowardsTenorsChanges;
 
-    try {
-      const { newIsForwardtenorList = [], removedtenorList = [] } =
-        treasuryFowardsTenorsChanges;
+        // Build lookup sets from the MQTT payload directly
+        const removedSet = new Set(removedtenorList.map((t) => t.tenorID));
+        const addedSet = new Set(newIsForwardtenorList.map((t) => t.tenorID));
 
-      // Build lookup sets from the MQTT payload directly
-      const removedSet = new Set(removedtenorList.map((t) => t.tenorID));
-      const addedSet = new Set(newIsForwardtenorList.map((t) => t.tenorID));
+        // No actual changes — bail early
+        if (!removedSet.size && !addedSet.size) {
+          dispatch(setTreasuryFowardsTenorsChanges(null));
+          return;
+        }
 
-      // No actual changes — bail early
-      if (!removedSet.size && !addedSet.size) {
-        dispatch(setTreasuryFowardsTenorsChanges(null));
-        return;
-      }
+        const referenceRow = dataSourceRef.current[0] ?? null;
 
-      const referenceRow = dataSourceRef.current[0] ?? null;
-
-      // ── REMOVALS ──────────────────────────────────────────
-      let updatedRows = dataSourceRef.current.filter(
-        (row) => !removedSet.has(row.tenorID)
-      );
-
-      const existingIDs = new Set(updatedRows.map((r) => r.tenorID));
-
-      // ── ADDITIONS ─────────────────────────────────────────
-      // newIsForwardtenorList contains tenors now applicable
-      // cross-reference against allTenors to get full tenor metadata
-      newIsForwardtenorList.forEach((addedTenor) => {
-        if (existingIDs.has(addedTenor.tenorID)) return; // already present
-
-        // Get full tenor details (tenorName, tenorDays etc.) from allTenors
-        const fullTenor =
-          getAllTenorsRecords.tenors.find(
-            (t) => t.tenorID === addedTenor.tenorID
-          ) ?? addedTenor; // fallback to payload if not found
-
-        // Inherit rates if this tenor existed before removal
-        const previousRow =
-          dataSourceRef.current.find((r) => r.tenorID === addedTenor.tenorID) ??
-          null;
-        // In BranchForwardsTable tenor sync effect
-        const newRow = buildNewTenorRow(
-          fullTenor,
-          previousRow,
-          referenceRow,
-          instrumentListRef.current // ✅ pass master list as fallback
+        // ── REMOVALS ──────────────────────────────────────────
+        let updatedRows = dataSourceRef.current.filter(
+          (row) => !removedSet.has(row.tenorID),
         );
-        updatedRows.push(newRow);
-      });
 
-      updatedRows.sort((a, b) => a.tenorDays - b.tenorDays);
+        const existingIDs = new Set(updatedRows.map((r) => r.tenorID));
 
-      dataSourceRef.current = updatedRows;
-      setDataSource(updatedRows);
+        // ── ADDITIONS ─────────────────────────────────────────
+        // newIsForwardtenorList contains tenors now applicable
+        // cross-reference against allTenors to get full tenor metadata
+        newIsForwardtenorList.forEach((addedTenor) => {
+          if (existingIDs.has(addedTenor.tenorID)) return; // already present
 
-      dispatch(setTreasuryFowardsTenorsChanges(null));
-    } catch (error) {
-      console.error("Tenor sync error:", error);
+          // Get full tenor details (tenorName, tenorDays etc.) from allTenors
+          const fullTenor =
+            getAllTenorsRecords.tenors.find(
+              (t) => t.tenorID === addedTenor.tenorID,
+            ) ?? addedTenor; // fallback to payload if not found
+
+          // Inherit rates if this tenor existed before removal
+          const previousRow =
+            dataSourceRef.current.find(
+              (r) => r.tenorID === addedTenor.tenorID,
+            ) ?? null;
+          // In BranchForwardsTable tenor sync effect
+          const newRow = buildNewTenorRow(
+            fullTenor,
+            previousRow,
+            referenceRow,
+            instrumentListRef.current, // ✅ pass master list as fallback
+          );
+          updatedRows.push(newRow);
+        });
+
+        updatedRows.sort((a, b) => a.tenorDays - b.tenorDays);
+
+        dataSourceRef.current = updatedRows;
+        setDataSource(updatedRows);
+
+        dispatch(setTreasuryFowardsTenorsChanges(null));
+      } catch (error) {
+        console.error("Tenor sync error:", error);
+      }
     }
-  }, [treasuryFowardsTenorsChanges, getAllTenorsRecords]);
+  }, [treasuryFowardsTenorsChanges, getAllTenorsRecords, tableReady]);
 
   // ---------------- THROTTLED MQTT RATE UPDATE ----------------
   // Uses a ref-stored throttle so it's never recreated and always
@@ -297,7 +299,7 @@ const BankForwards = () => {
 
       // ✅ flatten all payloads into one forwardRates array
       const allForwardRates = pendingBatch.flatMap(
-        (payload) => payload.forwardRates ?? []
+        (payload) => payload.forwardRates ?? [],
       );
       if (!allForwardRates.length) return;
 
@@ -310,7 +312,7 @@ const BankForwards = () => {
           const instrumentKey = Object.keys(row).find(
             (key) =>
               key.startsWith("InstrumentID_") &&
-              String(row[key]) === String(d.instrumentID)
+              String(row[key]) === String(d.instrumentID),
           );
           if (!instrumentKey) return;
 
@@ -327,7 +329,7 @@ const BankForwards = () => {
 
       // ✅ clear after processing
       dispatch(clearTreasuryForwardRates());
-    }, 100)
+    }, 100),
   );
 
   // Fire throttled update on new rates
@@ -343,7 +345,6 @@ const BankForwards = () => {
     const throttledFn = updateForwardRatesRef.current;
     return () => throttledFn.cancel();
   }, []);
-
 
   // ---------------- RENDER ----------------
   return (
