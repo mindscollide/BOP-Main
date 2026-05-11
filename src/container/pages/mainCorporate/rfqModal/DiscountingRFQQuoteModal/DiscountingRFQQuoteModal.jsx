@@ -51,34 +51,34 @@ const DiscountingRFQQuoteModal = () => {
   const [cancelReasonModal, setCancelReasonModal] = useState(false);
 
   const discountingQuoteModalState = useSelector(
-    (state) => state.modalReducer.discountingQuoteModal
+    (state) => state.modalReducer.discountingQuoteModal,
   );
   const GetNonFEDiscountingTransactionDetail = useSelector(
-    (state) => state.BlotterSlicer.GetNonFEDiscountingTransactionDetails
+    (state) => state.BlotterSlicer.GetNonFEDiscountingTransactionDetails,
   );
 
   const GetFEDiscountingTransactionDetail = useSelector(
-    (state) => state.BlotterSlicer.GetFEDiscountingTransactionDetails
+    (state) => state.BlotterSlicer.GetFEDiscountingTransactionDetails,
   );
   const discountingQuoteModalData = useSelector(
-    (state) => state.BlotterSlicer.discountingQuoteModalData
+    (state) => state.BlotterSlicer.discountingQuoteModalData,
   );
   const [DiscountingQuoteData, setDiscountingQuoteData] = useState(null);
 
   const RFQNonFEDiscountingTransactionQuotationLoading = useSelector(
     (state) =>
-      state.BlotterSlicer.RFQNonFEDiscountingTransactionQuotationLoading
+      state.BlotterSlicer.RFQNonFEDiscountingTransactionQuotationLoading,
   );
   const RFQFEDiscountingTransactionQuotationLoading = useSelector(
-    (state) => state.BlotterSlicer.RFQFEDiscountingTransactionQuotationLoading
+    (state) => state.BlotterSlicer.RFQFEDiscountingTransactionQuotationLoading,
   );
 
   const AcceptTransactionAPILoading = useSelector(
-    (state) => state.BlotterSlicer.AcceptTransactionAPILoading
+    (state) => state.BlotterSlicer.AcceptTransactionAPILoading,
   );
 
   const RejectTransactionAPILoading = useSelector(
-    (state) => state.BlotterSlicer.RejectTransactionAPILoading
+    (state) => state.BlotterSlicer.RejectTransactionAPILoading,
   );
 
   const closeModal = () => {
@@ -96,7 +96,7 @@ const DiscountingRFQQuoteModal = () => {
 
         console.log(
           GetNonFEDiscountingTransactionDetail.transactionDetailsModel,
-          "GetNonFEDiscountingTransactionDetails"
+          "GetNonFEDiscountingTransactionDetails",
         );
         setReadyValue(ready);
         setKiborValue(kibor.toFixed(4));
@@ -115,7 +115,7 @@ const DiscountingRFQQuoteModal = () => {
           GetFEDiscountingTransactionDetail.transactionDetailsModel;
         console.log(
           GetFEDiscountingTransactionDetail.transactionDetailsModel,
-          "GetNonFEDiscountingTransactionDetails"
+          "GetNonFEDiscountingTransactionDetails",
         );
 
         setKiborValue(discountingFactor.toFixed(4));
@@ -131,7 +131,7 @@ const DiscountingRFQQuoteModal = () => {
         setDiscountingQuoteData(discountingQuoteModalData);
         console.log(
           discountingQuoteModalData,
-          "discountingQuoteModalDatadiscountingQuoteModalData"
+          "discountingQuoteModalDatadiscountingQuoteModalData",
         );
         let Data = {
           PK_TransactionID: discountingQuoteModalData.pK_TransactionID,
@@ -139,11 +139,11 @@ const DiscountingRFQQuoteModal = () => {
         let val = 1;
         if (discountingQuoteModalData.natureType === 3) {
           dispatch(
-            GetFEDiscountingTransactionDetailsApi({ navigate, Data, val })
+            GetFEDiscountingTransactionDetailsApi({ navigate, Data, val }),
           );
         } else if (discountingQuoteModalData.natureType === 4) {
           dispatch(
-            GetNonFEDiscountingTransactionDetailsApi({ navigate, Data, val })
+            GetNonFEDiscountingTransactionDetailsApi({ navigate, Data, val }),
           );
         }
       } catch (error) {
@@ -178,14 +178,14 @@ const DiscountingRFQQuoteModal = () => {
       final = calculateFeRatesReadyRate(
         ready,
         kibor,
-        DiscountingQuoteData?.rfqDealDetails?.tenorDays
+        DiscountingQuoteData?.rfqDealDetails?.tenorDays,
       );
     } else if (DiscountingQuoteData?.natureType === 4) {
       final = calculateNonFeDiscountingRate(
         ready,
         kibor,
         swap,
-        DiscountingQuoteData?.rfqDealDetails?.tenorDays
+        DiscountingQuoteData?.rfqDealDetails?.tenorDays,
       );
     }
 
@@ -307,7 +307,10 @@ const DiscountingRFQQuoteModal = () => {
                     <label className={styles["DealViewModal__label"]}>
                       CCY2
                     </label>
-                    <p className={styles["DealViewModal__value"]}>PKR</p>
+                    <p className={styles["DealViewModal__value"]}>
+                      {" "}
+                      {DiscountingQuoteData?.ccY2}
+                    </p>
                   </Col>
                   <Col sm={12} md={12} lg={12}>
                     <label className={styles["DealViewModal__label"]}>
@@ -332,8 +335,8 @@ const DiscountingRFQQuoteModal = () => {
                     <p className={styles["DealViewModal__value"]}>
                       {moment(
                         formatDateUTCToGMT(
-                          DiscountingQuoteData?.rfqDealDetails?.tenorDate
-                        )
+                          DiscountingQuoteData?.rfqDealDetails?.tenorDate,
+                        ),
                       ).format("ddd DD MMM, YYYY")}
                     </p>
                   </Col>
@@ -503,8 +506,8 @@ const DiscountingRFQQuoteModal = () => {
                             DiscountingQuoteData?.natureType === 4
                               ? RFQNonFEDiscountingTransactionQuotationLoading
                               : DiscountingQuoteData?.natureType === 3
-                              ? RFQFEDiscountingTransactionQuotationLoading
-                              : false
+                                ? RFQFEDiscountingTransactionQuotationLoading
+                                : false
                           }
                         />
                       </Col>

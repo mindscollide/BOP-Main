@@ -27,22 +27,22 @@ const SpotQuoteModal = ({ dealData }) => {
   const [selectedTransactionID, setSelectedTransactionID] = useState(null);
 
   const spotQuoteModalState = useSelector(
-    (state) => state.modalReducer.spotQuoteModal
+    (state) => state.modalReducer.spotQuoteModal,
   );
   const spotQuoteModalData = useSelector(
-    (state) => state.BlotterSlicer.spotQuoteModalData
+    (state) => state.BlotterSlicer.spotQuoteModalData,
   );
 
   const RFQTransactionQuotationLoading = useSelector(
-    (state) => state.BlotterSlicer.RFQTransactionQuotationLoading
+    (state) => state.BlotterSlicer.RFQTransactionQuotationLoading,
   );
 
   const AcceptTransactionAPILoading = useSelector(
-    (state) => state.BlotterSlicer.AcceptTransactionAPILoading
+    (state) => state.BlotterSlicer.AcceptTransactionAPILoading,
   );
 
   const RejectTransactionAPILoading = useSelector(
-    (state) => state.BlotterSlicer.RejectTransactionAPILoading
+    (state) => state.BlotterSlicer.RejectTransactionAPILoading,
   );
 
   console.log(spotQuoteModalData, "spotQuoteModalDataspotQuoteModalData");
@@ -110,7 +110,6 @@ const SpotQuoteModal = ({ dealData }) => {
     };
     //Reject API Call
     dispatch(RejectTransactionAPI({ navigate, Data, val, callFunc }));
-
   };
   return (
     <GlobalModal
@@ -157,7 +156,10 @@ const SpotQuoteModal = ({ dealData }) => {
                 </Col>
                 <Col sm={12} md={12} lg={12}>
                   <label className={styles["DealViewModal__label"]}>CCY2</label>
-                  <p className={styles["DealViewModal__value"]}>PKR</p>
+                  <p className={styles["DealViewModal__value"]}>
+                    {" "}
+                    {spotQuoteModalData?.ccY2}
+                  </p>
                 </Col>
                 <Col sm={12} md={12} lg={12}>
                   <label className={styles["DealViewModal__label"]}>
