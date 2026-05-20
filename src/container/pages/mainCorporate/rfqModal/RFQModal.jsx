@@ -126,7 +126,7 @@ const RFQModal = () => {
   });
   const [selectedCurrency, setSelectedCurrency] = useState(null);
 
-  console.log(selectedNature, "selectedCurrencyselectedCurrency");
+  console.log(currencyOptions, "selectedCurrencyselectedCurrency");
   const [amountData, setAmountData] = useState("");
   const [acNumberData, setAcNumberData] = useState("");
   const [lcNumberData, setLcNumberData] = useState("");
@@ -635,83 +635,75 @@ const RFQModal = () => {
    * 3. Updates all related state (selectedNature, natureOfBusinessOptions, typeOptionSelected)
    * 4. Sets first valid option as default selection
    */
-  // const handleChangeType = (selectType) => {
-  //   // Validate input data exists
-  //   if (!natureOfBusinessList?.natureOfTransactions) {
-  //     console.error("Nature of business data not available");
-  //     return;
-  //   }
+const handleChangeType = (selectType) => {
+  if (!natureOfBusinessList?.natureOfTransactions) {
+    console.error("Nature of business data not available");
+    return;
+  }
 
-  //   // Filter and transform options based on transaction type
-  //   const filteredOptions = natureOfBusinessList.natureOfTransactions
-  //     .filter((business) => {
-  //       const isSpotTransaction = business.isForSpot === true;
+  const isBuy = selectType.value === 1;
 
-  //       // Check transaction type compatibility
-  //       if (selectType.value === 1) {
-  //         if (isCorporate) {
-  //           return isSpotTransaction && business.isForSell === true;
-  //         }
-  //         return isSpotTransaction && business.isForBuy === true;
-  //       }
-  //       if (isCorporate) {
-  //         return isSpotTransaction && business.isForBuy === true;
-  //       }
-  //       return isSpotTransaction && business.isForSell === true;
-  //     })
-  //     .map((business) => ({
-  //       ...business,
-  //       label: business.name,
-  //       value: business.id,
-  //     }));
-  //   if (iBuySellData === null) {
-  //     // Update state with new options and selections
+  const filteredOptions = natureOfBusinessList.natureOfTransactions
+    .filter((business) => {
+      const isSpotTransaction = business.isForSpot === true;
 
-  //     setNatureOfBusinessOptions(filteredOptions);
+      if (!isSpotTransaction) return false;
 
-  //     // Set first option as default if available, otherwise null
-  //     setSelectedNature(filteredOptions[0] || null);
-  //   }
-
-  //   // Update selected transaction type
-  //   setTypeOptionSelected(selectType);
-  // };
-  const handleChangeType = (selectedValue) => {
-    setTypeOptionSelected(selectedValue);
-
-    if (!natureOfBusinessList?.natureOfTransactions) return;
-
-    try {
-      const { natureOfTransactions } = natureOfBusinessList;
-
-      // Step 1: Filter Spot only
-      const filterJustForSpot = natureOfTransactions.filter(
-        (item) => item.isForSpot
-      );
-
-      // Step 2: Filter Buy or Sell
-      const filteredData = filterJustForSpot.filter((item) =>
-        selectedValue?.value === 1 ? item.isForBuy : item.isForSell
-      );
-
-      // Step 3: Map to Select Options
-      const mappedOptions = filteredData.map((item) => ({
-        label: item.name,
-        value: item.id,
-      }));
-
-      setNatureOfBusinessOptions(mappedOptions);
-
-      // Step 4: Auto select first option safely
-      if (mappedOptions.length > 0) {
-        setSelectedNature(mappedOptions[0]);
-      } else {
-        setSelectedNature(null);
+      if (isCorporate) {
+        return isBuy ? business.isForSell : business.isForBuy;
       }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+
+      return isBuy ? business.isForBuy : business.isForSell;
+    })
+    .map((business) => ({
+      ...business,
+      label: business.name,
+      value: business.id,
+    }));
+
+  if (iBuySellData === null) {
+    setNatureOfBusinessOptions(filteredOptions);
+    setSelectedNature(filteredOptions.length ? filteredOptions[0] : null);
+  }
+
+  setTypeOptionSelected(selectType);
+};
+  // const handleChangeType = (selectedValue) => {
+  //   setTypeOptionSelected(selectedValue);
+
+  //   if (!natureOfBusinessList?.natureOfTransactions) return;
+
+  //   try {
+  //     const { natureOfTransactions } = natureOfBusinessList;
+
+  //     // Step 1: Filter Spot only
+  //     const filterJustForSpot = natureOfTransactions.filter(
+  //       (item) => item.isForSpot
+  //     );
+
+  //     // Step 2: Filter Buy or Sell
+  //     const filteredData = filterJustForSpot.filter((item) =>
+  //       selectedValue?.value === 1 ? item.isForBuy : item.isForSell
+  //     );
+
+  //     // Step 3: Map to Select Options
+  //     const mappedOptions = filteredData.map((item) => ({
+  //       label: item.name,
+  //       value: item.id,
+  //     }));
+
+  //     setNatureOfBusinessOptions(mappedOptions);
+
+  //     // Step 4: Auto select first option safely
+  //     if (mappedOptions.length > 0) {
+  //       setSelectedNature(mappedOptions[0]);
+  //     } else {
+  //       setSelectedNature(null);
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
   /**
    * Handles corporate selection change (for branch users)
    * @param {Object} selectedOption - The selected corporate
