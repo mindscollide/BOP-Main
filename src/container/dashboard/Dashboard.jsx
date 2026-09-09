@@ -182,7 +182,6 @@ const Dashboard = () => {
 
         // ✅ Market & Tenor
         case "TENOR_CREATED":
-          clg(payload, "TENOR_CREATED");
           dispatch(setTenorsCreated(payload));
           break;
         case "MARKET_TIME_UPDATED":
@@ -650,7 +649,7 @@ const Dashboard = () => {
     dispatch(getMarketStatusApi({ navigate }));
     dispatch(GetBidOfferStatusApi({}));
 
-    if (isTreasury === "true") {
+    if (isTreasury) {
       setTimeout(() => {
         dispatch(setDealModalRequest(true));
       }, 5000);
@@ -661,7 +660,7 @@ const Dashboard = () => {
         dispatch(getAllActiveCorporatesApi({ navigate }));
       }
     }
-    if (isTreasury === "false") {
+    if (!isTreasury) {
       dispatch(getAllInstrumentsApi({ navigate }));
     }
   }, []);

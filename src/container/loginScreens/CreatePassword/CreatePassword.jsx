@@ -44,6 +44,9 @@ const CreatePassword = () => {
       dispatch(validateLinkForCorporateCreatePasswordApi({ validateValue }));
       console.log(validateValue, "validateValue");
       console.log(location, "validateLinkForCorporateCreatePasswordApi");
+    } else {
+      // No create-password token in the URL — someone hit this route directly, send them to login.
+      navigate("/");
     }
   }, [location]);
   useEffect(() => {

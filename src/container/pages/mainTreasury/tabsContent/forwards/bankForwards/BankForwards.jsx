@@ -258,39 +258,6 @@ const BankForwards = () => {
   // ---------------- THROTTLED MQTT RATE UPDATE ----------------
   // Uses a ref-stored throttle so it's never recreated and always
   // reads the latest dataSourceRef.current snapshot.
-  // const updateForwardRatesRef = useRef(
-  //   throttle((treasuryForwardRates) => {
-  //     const { forwardRates = [] } = treasuryForwardRates;
-  //     if (!forwardRates.length) return;
-
-  //     const updated = dataSourceRef.current.map((row) => {
-  //       const updatedRow = { ...row };
-
-  //       forwardRates.forEach((d) => {
-  //         if (String(row.tenorID) !== String(d.tenorID)) return;
-
-  //         const instrumentKey = Object.keys(row).find(
-  //           (key) =>
-  //             key.startsWith("InstrumentID_") &&
-  //             String(row[key]) === String(d.instrumentID)
-  //         );
-
-  //         if (!instrumentKey) return;
-
-  //         // "InstrumentID_USD" → "USD", "InstrumentID_CNY" → "CNY"
-  //         const currency = instrumentKey.replace("InstrumentID_", "");
-
-  //         updatedRow[`bid_${currency}`] = d.bidWithSpread;
-  //         updatedRow[`ask_${currency}`] = d.askWithSpread;
-  //       });
-
-  //       return updatedRow;
-  //     });
-
-  //     dataSourceRef.current = updated;
-  //     setDataSource(updated);
-  //   }, 100) // 100ms — safe default for high-frequency MQTT feeds
-  // );
   const updateForwardRatesRef = useRef(
     throttle(() => {
       // ✅ read directly from ref — always latest snapshot

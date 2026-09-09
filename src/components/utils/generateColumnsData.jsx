@@ -5,7 +5,7 @@ export const buildDiscountingTable = (
   getAllInstrument,
   InputFIeld,
   onInputChange,
-  isBid
+  isBid,
 ) => {
   if (!Data || !getAllTenorsData || !getAllInstrument) {
     return { rowData: [], columnsData: [] };
@@ -20,8 +20,8 @@ export const buildDiscountingTable = (
       value === 1
         ? instruments?.filter((inst) => inst.discountingApplicable) || []
         : value === 3 || value === 5
-        ? instruments
-        : instruments;
+          ? instruments
+          : instruments;
 
     const applicableTenors =
       value === 1 || value === 3 || value === 5
@@ -32,7 +32,6 @@ export const buildDiscountingTable = (
     const rateMap = {};
     Data?.forEach((rate) => {
       const key = `${rate.instrumentID}-${rate.tenorID}`;
-      console.log({ key, rate }, "applicableInstrumentsapplicableInstruments");
       rateMap[key] = rate.rate;
     });
 
@@ -49,18 +48,10 @@ export const buildDiscountingTable = (
 
         applicableInstruments.forEach((instrument) => {
           const compositeKey = `${instrument.instrumentID}-${tenor.tenorID}`;
-          console.log(
-            { compositeKey },
-            "applicableInstrumentsapplicableInstruments"
-          );
 
           const rateValue = rateMap[compositeKey] ?? 0;
           // ✅ Zero out rates when isBid is false, at data level not render level
-          const rateValue2 = isBid ? rateMap[compositeKey] ?? 0 : 0;
-          console.log(
-            { rateValue, rateValue2, isBid },
-            "applicableInstrumentsapplicableInstruments"
-          );
+          const rateValue2 = isBid ? (rateMap[compositeKey] ?? 0) : 0;
 
           row[`rate_${instrument.instrumentName}`] = rateValue;
           row[`InstrumentID_${instrument.instrumentName}`] =
@@ -189,7 +180,7 @@ export const buildForwardsTable = (
   getAllInstrument,
   InputFIeld,
   onInputChange,
-  bidOfferStatus
+  bidOfferStatus,
 ) => {
   if (!Data || !getAllTenorsData || !getAllInstrument) {
     return { rowData: [], columnsData: [] };
@@ -202,9 +193,9 @@ export const buildForwardsTable = (
       value === 1
         ? instruments?.filter((inst) => inst.discountingApplicable) || []
         : value === 3
-        ? // value 3 for when  treasury forwards application is used
-          instruments
-        : instruments;
+          ? // value 3 for when  treasury forwards application is used
+            instruments
+          : instruments;
 
     const applicableTenors =
       value === 1 || value === 3
@@ -217,7 +208,7 @@ export const buildForwardsTable = (
       const key = `${entry.instrumentID}-${entry.tenorID}`;
       rateMap[key] = {
         bid: entry.bid ?? 0,
-        ask: value === 3 ? entry.offer : entry.ask ?? "-",
+        ask: value === 3 ? entry.offer : (entry.ask ?? "-"),
       };
     });
 
@@ -368,7 +359,7 @@ export const buildTresmarkCrossPremiumTable = (
   value,
   Data,
   getAllTenorsData,
-  getAllInstrument
+  getAllInstrument,
 ) => {
   if (!Data || !getAllTenorsData || !getAllInstrument) {
     return { rowData: [], columnsData: [] };

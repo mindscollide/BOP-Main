@@ -1,4 +1,4 @@
-import { emailValidation } from "@/common/utils";
+import { emailValidation, bopEmailValidation } from "@/common/utils";
 
 /**
  * Updates the email field and its related validation states.
@@ -24,10 +24,12 @@ const updatePassword = (password, setCredentials) => {
 };
 
 const updateUsername = (username, setCredentials) => {
+  const isValid = bopEmailValidation(username);
   setCredentials((prev) => ({
     ...prev,
     email: username,
-    hasErrroOnUserName: username !== "" ? false : true,
+    hasErrorOnUserName: username === "" ? true : false,
+    hasUserNameIsValid: isValid,
   }));
 };
 export { updateEmail, updatePassword, updateUsername };

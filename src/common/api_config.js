@@ -467,6 +467,19 @@ export const UpdateBid_OfferStatusRM = {
 export const GetBid_OfferStatusRM = {
   RequestMethod: "ServiceManager.GetBid_OfferStatus",
 };
-export const GetAllHolidaysForTransactionRM= {
+export const GetAllHolidaysForTransactionRM = {
   RequestMethod: "ServiceManager.GetAllHolidaysForTransaction",
+};
+
+export const BankResetPassword = {
+  RequestMethod: "ServiceManager.ResetPassword",
+};
+
+export const EmailTokenVerify = {
+  RequestMethod: "ServiceManager.EmailTokenVerify",
+};
+
+export const ForgetPassword = {
+  RequestMethod: "ServiceManager.ForgetPassword"
 }
+

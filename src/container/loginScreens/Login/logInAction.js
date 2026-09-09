@@ -5,7 +5,7 @@ import {
   VerifyOTP,
 } from "@/common/api_config";
 import { authApi } from "@/common/apiend_points";
-import { roleBasedNavigation, setCustomHeaders } from "@/common/utils";
+import { encrypt, encryptField, roleBasedNavigation, setCustomHeaders } from "@/common/utils";
 import createPostAPI from "@/utils/axiosInstance";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
@@ -16,13 +16,18 @@ export const loginInApi = createAsyncThunk(
     try {
       let getBlotterData = createPostAPI(
         authApi,
-        loginRequestMethod.RequestMethod
+        loginRequestMethod.RequestMethod,
       );
 
       const response = await getBlotterData(Data);
       if (response.data.responseCode === 200) {
-        const { isExecuted, responseMessage, token, refreshToken } =
-          response.data.responseResult;
+        const {
+          isExecuted,
+          responseMessage,
+          token,
+          refreshToken,
+          isPasswordReset,
+        } = response.data.responseResult;
         console.log(isExecuted, "messageKeymessageKey");
 
         if (isExecuted) {
@@ -67,6 +72,21 @@ export const loginInApi = createAsyncThunk(
                 userRoleID,
                 userStatusID,
               } = response.data.responseResult.user;
+              if (!isPasswordReset) {
+
+                const encryptedName = await encryptField(firstName);
+                const encryptedUserID = await encryptField(String(userID));
+                navigate("/resetPassword", {
+                  state: {
+                    isResetPassword: false,
+                    firstName: encryptedName,
+                    email: email,
+                    userID: encryptedUserID,
+                  },
+                });
+                return;
+              }
+
               localStorage.setItem("token", token);
               localStorage.setItem("refreshToken", refreshToken);
               localStorage.setItem("name", firstName);
@@ -105,7 +125,7 @@ export const loginInApi = createAsyncThunk(
       console.log("", error);
       return rejectWithValue("Something went wrong");
     }
-  }
+  },
 );
 
 // Define the login async thunk
@@ -115,7 +135,7 @@ export const corporateUserLoginInApi = createAsyncThunk(
     try {
       let corporateUserLoginIn = createPostAPI(
         authApi,
-        corporateUserRequestMethod.RequestMethod
+        corporateUserRequestMethod.RequestMethod,
       );
 
       const response = await corporateUserLoginIn(Data);
@@ -156,56 +176,56 @@ export const corporateUserLoginInApi = createAsyncThunk(
               localStorage.setItem("refreshToken", refreshToken);
               localStorage.setItem(
                 "name",
-                response.data.responseResult.user.firstName
+                response.data.responseResult.user.firstName,
               );
               localStorage.setItem(
                 "email",
-                response.data.responseResult.user.email
+                response.data.responseResult.user.email,
               );
               localStorage.setItem(
                 "roleId",
-                response.data.responseResult.user.userRoleID
+                response.data.responseResult.user.userRoleID,
               );
               localStorage.setItem(
                 "userID",
-                response.data.responseResult.user.userID
+                response.data.responseResult.user.userID,
               );
               localStorage.setItem(
                 "corporate",
-                JSON.stringify(response.data.responseResult.user.corporate)
+                JSON.stringify(response.data.responseResult.user.corporate),
               );
               localStorage.setItem(
                 "employeeID",
-                response.data.responseResult.user.employeeID
+                response.data.responseResult.user.employeeID,
               );
               localStorage.setItem(
                 "ldapAccount",
-                response.data.responseResult.user.ldapAccount
+                response.data.responseResult.user.ldapAccount,
               );
               localStorage.setItem(
                 "contactNumber",
-                response.data.responseResult.user.contactNumber
+                response.data.responseResult.user.contactNumber,
               );
               localStorage.setItem(
                 "userStatusID",
-                response.data.responseResult.user.userStatusID
+                response.data.responseResult.user.userStatusID,
               );
               localStorage.setItem(
                 "isFEEnabled",
-                JSON.parse(response.data.responseResult.user.isFEEnabled)
+                JSON.parse(response.data.responseResult.user.isFEEnabled),
               );
               localStorage.setItem(
                 "isNonFEEnabled",
-                JSON.parse(response.data.responseResult.user.isNonFEEnabled)
+                JSON.parse(response.data.responseResult.user.isNonFEEnabled),
               );
               localStorage.setItem(
                 "isTradeRights",
-                response.data.responseResult.user.corporate.isTrade
+                response.data.responseResult.user.corporate.isTrade,
               );
 
               roleBasedNavigation(
                 navigate,
-                response.data.responseResult.user.userRoleID
+                response.data.responseResult.user.userRoleID,
               );
               return {
                 response: response.data.responseResult,
@@ -217,51 +237,51 @@ export const corporateUserLoginInApi = createAsyncThunk(
               localStorage.setItem("refreshToken", refreshToken);
               localStorage.setItem(
                 "name",
-                response.data.responseResult.user.firstName
+                response.data.responseResult.user.firstName,
               );
               localStorage.setItem(
                 "email",
-                response.data.responseResult.user.email
+                response.data.responseResult.user.email,
               );
               localStorage.setItem(
                 "roleId",
-                response.data.responseResult.user.userRoleID
+                response.data.responseResult.user.userRoleID,
               );
               localStorage.setItem(
                 "userID",
-                response.data.responseResult.user.userID
+                response.data.responseResult.user.userID,
               );
               localStorage.setItem(
                 "corporate",
-                JSON.stringify(response.data.responseResult.user.corporate)
+                JSON.stringify(response.data.responseResult.user.corporate),
               );
               localStorage.setItem(
                 "employeeID",
-                response.data.responseResult.user.employeeID
+                response.data.responseResult.user.employeeID,
               );
               localStorage.setItem(
                 "ldapAccount",
-                response.data.responseResult.user.ldapAccount
+                response.data.responseResult.user.ldapAccount,
               );
               localStorage.setItem(
                 "contactNumber",
-                response.data.responseResult.user.contactNumber
+                response.data.responseResult.user.contactNumber,
               );
               localStorage.setItem(
                 "userStatusID",
-                response.data.responseResult.user.userStatusID
+                response.data.responseResult.user.userStatusID,
               );
               localStorage.setItem(
                 "isFEEnabled",
-                JSON.parse(response.data.responseResult.user.isFEEnabled)
+                JSON.parse(response.data.responseResult.user.isFEEnabled),
               );
               localStorage.setItem(
                 "isNonFEEnabled",
-                JSON.parse(response.data.responseResult.user.isNonFEEnabled)
+                JSON.parse(response.data.responseResult.user.isNonFEEnabled),
               );
               localStorage.setItem(
                 "isTradeRights",
-                response.data.responseResult.user.corporate.isTrade
+                response.data.responseResult.user.corporate.isTrade,
               );
 
               navigate("/2fa");
@@ -284,7 +304,7 @@ export const corporateUserLoginInApi = createAsyncThunk(
       // Reject with error message
       return rejectWithValue("Something went wrong");
     }
-  }
+  },
 );
 
 // Define the login async thunk
@@ -311,7 +331,7 @@ export const VerifyOTPApi = createAsyncThunk(
 
             case "ERM_AuthService_AuthManager_VerifyOTP_05".toLowerCase():
               return rejectWithValue(
-                "The user has reached the maximum number of wrong attempts"
+                "The user has reached the maximum number of wrong attempts",
               );
 
             case "ERM_AuthService_AuthManager_VerifyOTP_01".toLowerCase():
@@ -340,7 +360,7 @@ export const VerifyOTPApi = createAsyncThunk(
       // Reject with error message
       return rejectWithValue("Something went wrong");
     }
-  }
+  },
 );
 
 // Define the login async thunk
@@ -381,5 +401,5 @@ export const GenerateOTPApi = createAsyncThunk(
       // Reject with error message
       return rejectWithValue("Something went wrong");
     }
-  }
+  },
 );

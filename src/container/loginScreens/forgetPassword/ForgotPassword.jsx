@@ -6,10 +6,16 @@ import IconElement from "@/components/common/IconElement/IconElement";
 import CustomButton from "@/components/common/globalButton/button";
 import { Link, useNavigate } from "react-router-dom";
 import { resetAndForgotPassword } from "./forgotPassword_Actions";
+import { ForgotPasswordApi } from "../authActions/AuthActions";
 import { emailValidation } from "@/common/utils";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { message } from "antd";
+
+const shouldIsCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
+const shouldIsBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
+const shouldIsDealer = import.meta.env.VITE_APP_INCLUDE_DEALER === "true";
+const shouldIsTreasury = import.meta.env.VITE_APP_INCLUDE_TREASURY === "true";
 
 const ForgotPassword = () => {
   const dispatch = useDispatch();
@@ -22,15 +28,33 @@ const ForgotPassword = () => {
   const handleClickResetBtn = (e) => {
     e.preventDefault();
     const isValidEmail = emailValidation(email);
-    if (isValidEmail) {
-      let Data = {
-        Email: email,
-      };
-      dispatch(resetAndForgotPassword({ navigate, Data }));
-      setEmailError({ status: false, message: "" });
-    } else if (!isValidEmail) {
+    if (!isValidEmail) {
       setEmailError({ status: true, message: "Enter a valid email address" });
+      return;
     }
+    setEmailError({ status: false, message: "" });
+
+    if (shouldIsCorporate) {
+      let Data = { Email: email };
+      dispatch(resetAndForgotPassword({ navigate, Data }));
+      return;
+    }
+
+    let Data = {
+      Email: email,
+      RoleID: shouldIsBranch ? 9 : shouldIsDealer ? 7 : shouldIsTreasury ? 8 : 0,
+    };
+    dispatch(ForgotPasswordApi({ Data, navigate }))
+      .unwrap()
+      .then(() => {
+        navigate("/emailsent", { state: Data });
+      })
+      .catch((error) => {
+        setEmailError({
+          status: true,
+          message: error || "Something went wrong",
+        });
+      });
   };
 
   const emailRef = useRef(null);

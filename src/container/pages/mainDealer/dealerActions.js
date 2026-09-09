@@ -846,7 +846,6 @@ export const GetVoltMeterStatusApi = createAsyncThunk(
                 "UploadRate_UploadRateServiceManager_GetVoltMeterStatus_01".toLowerCase()
               )
           ) {
-            console.log(response, "GetVoltMeterStatusApiGetVoltMeterStatusApi");
             return {
               response: response.data.responseResult,
               message: "",

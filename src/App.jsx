@@ -26,6 +26,8 @@ import {
   ErrorFallback,
   logErrors,
 } from "./components/common/errorBoundary/ErrorBoundary";
+import ResetPasswordLinkExpired from "./container/loginScreens/resetPasswordLinkExpired";
+import Redirected from "./container/loginScreens/redirected";
 
 function App() {
   const [routes, setRoutes] = useState([]);
@@ -68,12 +70,12 @@ function App() {
       import.meta.env.VITE_APP_INCLUDE_BRANCH === "true"
         ? "BOP - Branch"
         : import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true"
-        ? "BOP - Corporate"
-        : import.meta.env.VITE_APP_INCLUDE_TREASURY === "true"
-        ? "BOP - Treasury"
-        : import.meta.env.VITE_APP_INCLUDE_DEALER === "true"
-        ? "BOP - Dealer"
-        : "BOP";
+          ? "BOP - Corporate"
+          : import.meta.env.VITE_APP_INCLUDE_TREASURY === "true"
+            ? "BOP - Treasury"
+            : import.meta.env.VITE_APP_INCLUDE_DEALER === "true"
+              ? "BOP - Dealer"
+              : "BOP";
   }, []);
 
   // 🔹 Load routes dynamically
@@ -101,7 +103,7 @@ function App() {
       dashboardRoute.children.push({
         path: "branch",
         element: withErrorBoundary(
-          <PrivateRoute element={Branch && <Branch />} />
+          <PrivateRoute element={Branch && <Branch />} />,
         ),
       });
     }
@@ -119,19 +121,19 @@ function App() {
       dashboardRoute.children.push({
         path: "dealer",
         element: withErrorBoundary(
-          <PrivateRoute element={Dealer && <Dealer />} />
+          <PrivateRoute element={Dealer && <Dealer />} />,
         ),
       });
       dashboardRoute.children.push({
         path: "treasury",
         element: withErrorBoundary(
-          <PrivateRoute element={Treasury && <Treasury />} />
+          <PrivateRoute element={Treasury && <Treasury />} />,
         ),
       });
       dashboardRoute.children.push({
         path: "category",
         element: withErrorBoundary(
-          <PrivateRoute element={Category && <Category />} />
+          <PrivateRoute element={Category && <Category />} />,
         ),
       });
     }
@@ -153,25 +155,25 @@ function App() {
       dashboardRoute.children.push({
         path: "reports/dailyTrade",
         element: withErrorBoundary(
-          <PrivateRoute element={DailyTrades && <DailyTrades />} />
+          <PrivateRoute element={DailyTrades && <DailyTrades />} />,
         ),
       });
       dashboardRoute.children.push({
         path: "dealer",
         element: withErrorBoundary(
-          <PrivateRoute element={Dealer && <Dealer />} />
+          <PrivateRoute element={Dealer && <Dealer />} />,
         ),
       });
       dashboardRoute.children.push({
         path: "treasury",
         element: withErrorBoundary(
-          <PrivateRoute element={Treasury && <Treasury />} />
+          <PrivateRoute element={Treasury && <Treasury />} />,
         ),
       });
       dashboardRoute.children.push({
         path: "category",
         element: withErrorBoundary(
-          <PrivateRoute element={Category && <Category />} />
+          <PrivateRoute element={Category && <Category />} />,
         ),
       });
     }
@@ -183,7 +185,7 @@ function App() {
       dashboardRoute.children.push({
         path: "corporate",
         element: withErrorBoundary(
-          <PrivateRoute element={Corporate && <Corporate />} />
+          <PrivateRoute element={Corporate && <Corporate />} />,
         ),
       });
     }
@@ -209,6 +211,12 @@ function App() {
       },
       { path: "/2fa", element: withErrorBoundary(<TwoFaVerification />) },
       { path: "/resetPassword", element: withErrorBoundary(<ResetPassword />) },
+      {
+        path: "/resetPasswordLinkExpired",
+        element: withErrorBoundary(<ResetPasswordLinkExpired />),
+      },
+      { path: "/redirected", element: withErrorBoundary(<Redirected />) },
+
       { path: "*", element: <Navigate to={"/"} /> },
     ];
 

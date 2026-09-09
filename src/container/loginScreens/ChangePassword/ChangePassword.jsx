@@ -47,6 +47,9 @@ const ChangePassword = () => {
       dispatch(validateLinkForCorporateCreatePasswordApi({ validateValue }));
       console.log(validateValue, "validateValue");
       console.log(location, "validateLinkForCorporateCreatePasswordApi");
+    } else {
+      // No reset token in the URL — someone hit this route directly, send them to login.
+      navigate("/");
     }
   }, [location]);
   useEffect(() => {
@@ -118,10 +121,7 @@ const ChangePassword = () => {
     };
 
     dispatch(CreateCorporateUserForgotPasswordApi({ navigate, Data }));
-    console.log(
-      "handleClickCreatePassword",
-      "handleClickCreatePasswordhandleClickCreatePassword"
-    );
+ 
   };
   return (
     <section className={styles["sign-in"]}>

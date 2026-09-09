@@ -23,6 +23,11 @@ import {
   CreateCorporateUserForgotPasswordApi,
   ResetPasswordCorporateApi,
 } from "@/container/loginScreens/ChangePassword/changePasswordActions";
+import {
+  EmailTokenVerifyApi,
+  ForgotPasswordApi,
+  ResetPasswordApi,
+} from "@/container/loginScreens/authActions/AuthActions";
 
 const authSlice = createSlice({
   name: "auth",
@@ -46,6 +51,9 @@ const authSlice = createSlice({
     GenerateOTP: null,
     GetUsersEmail: null,
     globalSnackBarMessage: "",
+    resetPassword: null,
+    forgotPassword: null,
+    resetPasswordEmailVerification: null,
   },
   reducers: {
     clearAuthResponseMessage: (state) => {
@@ -90,7 +98,6 @@ const authSlice = createSlice({
       })
       // Rejected state (when the API call fails)
       .addCase(corporateUserLoginInApi.rejected, (state, action) => {
-        console.log(action, "actionaction");
         state.Loader = false;
         state.responseMessage = action.payload;
         state.user = null;
@@ -99,14 +106,12 @@ const authSlice = createSlice({
         state.Loader = true;
       })
       .addCase(resetAndForgotPassword.fulfilled, (state, { payload }) => {
-        console.log(payload, "payloadpayload");
         state.Loader = false;
         state.error = null;
         state.responseMessage = payload?.message;
         state.resetPasswordResponse = payload?.response;
       })
       .addCase(resetAndForgotPassword.rejected, (state, { payload }) => {
-        console.log(payload, "payloadpayload");
         state.Loader = false;
         state.error = null;
         state.responseMessage = payload;
@@ -135,7 +140,7 @@ const authSlice = createSlice({
           state.Loader = false;
           state.isValidatedCreatePasswordString = payload?.response;
           state.responseMessage = payload?.message;
-        }
+        },
       )
       .addCase(
         validateLinkForCorporateCreatePasswordApi.rejected,
@@ -143,7 +148,7 @@ const authSlice = createSlice({
           state.Loader = false;
           state.isValidatedCreatePasswordString = null;
           state.responseMessage = payload;
-        }
+        },
       )
       .addCase(createCorporateCreatePasswordApi.pending, (state) => {
         state.Loader = true;
@@ -154,7 +159,7 @@ const authSlice = createSlice({
           state.Loader = false;
           state.passwordCreated = payload?.response;
           state.responseMessage = payload?.message;
-        }
+        },
       )
       .addCase(
         createCorporateCreatePasswordApi.rejected,
@@ -163,7 +168,7 @@ const authSlice = createSlice({
           state.Loader = false;
           state.passwordCreated = null;
           state.responseMessage = payload;
-        }
+        },
       )
       .addCase(LogoutApi.pending, (state) => {
         state.Loader = true;
@@ -200,7 +205,7 @@ const authSlice = createSlice({
           state.Loader = false;
           state.GetAllNatureOfTransactions = payload?.response;
           state.responseMessage = payload?.message;
-        }
+        },
       )
       .addCase(GetAllNatureOfTransactionsApi.rejected, (state, { payload }) => {
         state.Loader = false;
@@ -243,7 +248,7 @@ const authSlice = createSlice({
           state.Loader = false;
           state.CreateCorporateUserForgotPassword = payload?.response;
           state.responseMessage = payload?.message;
-        }
+        },
       )
       .addCase(
         CreateCorporateUserForgotPasswordApi.rejected,
@@ -252,7 +257,7 @@ const authSlice = createSlice({
           state.Loader = false;
           state.CreateCorporateUserForgotPassword = null;
           state.responseMessage = payload;
-        }
+        },
       )
       .addCase(VerifyOTPApi.pending, (state) => {
         state.Loader = true;
@@ -291,9 +296,47 @@ const authSlice = createSlice({
         state.responseMessage = payload?.message;
       })
       .addCase(GetUsersEmailApi.rejected, (state, { payload }) => {
-        console.log(payload);
         state.Loader = false;
         state.GetUsersEmail = null;
+        state.responseMessage = payload;
+      })
+      .addCase(ResetPasswordApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(ResetPasswordApi.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.resetPassword = payload.response;
+        state.responseMessage = payload.message;
+      })
+      .addCase(ResetPasswordApi.rejected, (state, { payload }) => {
+        state.Loader = false;
+        state.resetPassword = null;
+        state.responseMessage = payload;
+      })
+      .addCase(EmailTokenVerifyApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(EmailTokenVerifyApi.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.resetPasswordEmailVerification = payload.response;
+        state.responseMessage = payload.message;
+      })
+      .addCase(EmailTokenVerifyApi.rejected, (state, { payload }) => {
+        state.Loader = false;
+        state.resetPasswordEmailVerification = null;
+        state.responseMessage = payload;
+      })
+      .addCase(ForgotPasswordApi.pending, (state) => {
+        state.Loader = true;
+      })
+      .addCase(ForgotPasswordApi.fulfilled, (state, { payload }) => {
+        state.Loader = false;
+        state.forgotPassword = payload.response;
+        state.responseMessage = payload.message;
+      })
+      .addCase(ForgotPasswordApi.rejected, (state, { payload }) => {
+        state.Loader = false;
+        state.forgotPassword = null;
         state.responseMessage = payload;
       });
   },

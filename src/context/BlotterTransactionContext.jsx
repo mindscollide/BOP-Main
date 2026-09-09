@@ -17,10 +17,9 @@ import React, {
   createContext,
   useState,
   useContext,
-  useLayoutEffect,
+  useEffect,
 } from "react";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export const TransactionContext = createContext();
 
@@ -95,7 +94,7 @@ const TransactionProvider = ({ children }) => {
   );
 
   // ─── TXN Summary — initial load ──────────────────────────────────────────────
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (GlobalStateGetBlotterData === null) {
       if (!hasBottomReachedTreasuryTXN) {
         setTreasuryTXNSummary([]);
@@ -122,7 +121,7 @@ const TransactionProvider = ({ children }) => {
   }, [GlobalStateGetBlotterData]);
 
   // ─── Outstanding Deals — initial load ────────────────────────────────────────
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (getBlotterOutstandingData === null) {
       if (!hasBottomReachedOutstanding) {
         setTreasuryOutStandingDeal([]);
@@ -149,7 +148,7 @@ const TransactionProvider = ({ children }) => {
   }, [getBlotterOutstandingData]);
 
   // ─── Outstanding Deals — MQTT: TRANSACTION ADDED ─────────────────────────────
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!blotterTransactionAdded?.transaction) return;
     const transaction = blotterTransactionAdded.transaction;
 
@@ -162,16 +161,16 @@ const TransactionProvider = ({ children }) => {
         updated[idx] = transaction;
         return updated;
       }
-      setTreasuryOutStandingDealRecords((r) => r + 1);
-      setTreasuryOutStandingDealsRow((r) => r + 1);
       return [transaction, ...prev];
     });
+    setTreasuryOutStandingDealRecords((r) => r + 1);
+    setTreasuryOutStandingDealsRow((r) => r + 1);
 
     dispatch(BlotterTransactionAdded(null));
   }, [blotterTransactionAdded]);
 
   // ─── Outstanding Deals — MQTT: RFQ QUOTED ────────────────────────────────────
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!blotterTransactionRFQQuoted?.transaction) return;
     const transaction = blotterTransactionRFQQuoted.transaction;
 
@@ -195,7 +194,7 @@ const TransactionProvider = ({ children }) => {
   }, [blotterTransactionRFQQuoted]);
 
   // ─── Outstanding Deals — MQTT: RFQ EXPIRED ───────────────────────────────────
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!blotterTransactionRFQExpired?.transaction) return;
     const { pK_TransactionID } = blotterTransactionRFQExpired.transaction;
 
@@ -209,7 +208,7 @@ const TransactionProvider = ({ children }) => {
   }, [blotterTransactionRFQExpired]);
 
   // ─── Outstanding Deals — MQTT: ACCEPTED ──────────────────────────────────────
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!blotterTransactionAccepted?.transaction) return;
     const { pK_TransactionID } = blotterTransactionAccepted.transaction;
 
@@ -223,7 +222,7 @@ const TransactionProvider = ({ children }) => {
   }, [blotterTransactionAccepted]);
 
   // ─── Outstanding Deals — MQTT: CANCELLED ─────────────────────────────────────
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!blotterTranscationCancelled?.transaction) return;
     const { pK_TransactionID } = blotterTranscationCancelled.transaction;
 
@@ -237,7 +236,7 @@ const TransactionProvider = ({ children }) => {
   }, [blotterTranscationCancelled]);
 
   // ─── Outstanding Deals — MQTT: REJECTED ──────────────────────────────────────
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!blotterTransactionRejected?.transaction) return;
     const { pK_TransactionID } = blotterTransactionRejected.transaction;
 
@@ -251,7 +250,7 @@ const TransactionProvider = ({ children }) => {
   }, [blotterTransactionRejected]);
 
   // ─── Outstanding Deals — MQTT: ASSIGNED ──────────────────────────────────────
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!blotterTransactionAssigned) return;
     const transaction = blotterTransactionAssigned;
 
@@ -276,7 +275,7 @@ const TransactionProvider = ({ children }) => {
   }, [blotterTransactionAssigned]);
 
   // ─── Outstanding Deals — MQTT: CANCELLATION REQUEST ──────────────────────────
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!blotterTransactionCancellationRequest?.transaction) return;
     const transaction = blotterTransactionCancellationRequest.transaction;
 
@@ -285,16 +284,16 @@ const TransactionProvider = ({ children }) => {
         (item) => item.pK_TransactionID === transaction.pK_TransactionID
       );
       if (exists) return prev;
-      setTreasuryOutStandingDealRecords((r) => r + 1);
-      setTreasuryOutStandingDealsRow((r) => r + 1);
       return [transaction, ...prev];
     });
+    setTreasuryOutStandingDealRecords((r) => r + 1);
+    setTreasuryOutStandingDealsRow((r) => r + 1);
 
     dispatch(BlotterTransactionCancellationRequest(null));
   }, [blotterTransactionCancellationRequest]);
 
   // ─── TXN Summary — MQTT: RFQ EXPIRED ─────────────────────────────────────────
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!blotterTransactionRFQExpiredForTreasury?.transaction) return;
     const transaction = blotterTransactionRFQExpiredForTreasury.transaction;
 
@@ -307,16 +306,16 @@ const TransactionProvider = ({ children }) => {
         updated[idx] = transaction;
         return updated;
       }
-      setTreasuryTXNSummarysRow((r) => r + 1);
-      setTreasuryTXNSummaryTotalRecords((r) => r + 1);
       return [transaction, ...prev];
     });
+    setTreasuryTXNSummarysRow((r) => r + 1);
+    setTreasuryTXNSummaryTotalRecords((r) => r + 1);
 
     dispatch(setBlotterTransactionRFQExpiredForTreasury(null));
   }, [blotterTransactionRFQExpiredForTreasury]);
 
   // ─── TXN Summary — MQTT: ACCEPTED ────────────────────────────────────────────
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!blotterTransactionAcceptedForTreasury?.transaction) return;
     const transaction = blotterTransactionAcceptedForTreasury.transaction;
 
@@ -329,16 +328,16 @@ const TransactionProvider = ({ children }) => {
         updated[idx] = transaction;
         return updated;
       }
-      setTreasuryTXNSummarysRow((r) => r + 1);
-      setTreasuryTXNSummaryTotalRecords((r) => r + 1);
       return [transaction, ...prev];
     });
+    setTreasuryTXNSummarysRow((r) => r + 1);
+    setTreasuryTXNSummaryTotalRecords((r) => r + 1);
 
     dispatch(BlotterTransactionAcceptedForTreasury(null));
   }, [blotterTransactionAcceptedForTreasury]);
 
   // ─── TXN Summary — MQTT: CANCELLED ───────────────────────────────────────────
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!blotterTranscationCancelledForTreasury?.transaction) return;
     const transaction = blotterTranscationCancelledForTreasury.transaction;
 
@@ -351,16 +350,16 @@ const TransactionProvider = ({ children }) => {
         updated[idx] = transaction;
         return updated;
       }
-      setTreasuryTXNSummarysRow((r) => r + 1);
-      setTreasuryTXNSummaryTotalRecords((r) => r + 1);
       return [transaction, ...prev];
     });
+    setTreasuryTXNSummarysRow((r) => r + 1);
+    setTreasuryTXNSummaryTotalRecords((r) => r + 1);
 
     dispatch(BlotterTranscationCancelledForTreasury(null));
   }, [blotterTranscationCancelledForTreasury]);
 
   // ─── TXN Summary — MQTT: REJECTED ────────────────────────────────────────────
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!blotterTransactionRejectedForTreasury?.transaction) return;
     const transaction = blotterTransactionRejectedForTreasury.transaction;
 
@@ -373,16 +372,16 @@ const TransactionProvider = ({ children }) => {
         updated[idx] = transaction;
         return updated;
       }
-      setTreasuryTXNSummarysRow((r) => r + 1);
-      setTreasuryTXNSummaryTotalRecords((r) => r + 1);
       return [transaction, ...prev];
     });
+    setTreasuryTXNSummarysRow((r) => r + 1);
+    setTreasuryTXNSummaryTotalRecords((r) => r + 1);
 
     dispatch(BlotterTransactionRejectedForTreasury(null));
   }, [blotterTransactionRejectedForTreasury]);
 
   // ─── TXN Summary — MQTT: CANCELLATION REQUEST ────────────────────────────────
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!blotterTransactionCancellationRequestDataForTreasury?.transaction) return;
     const { pK_TransactionID } =
       blotterTransactionCancellationRequestDataForTreasury.transaction;

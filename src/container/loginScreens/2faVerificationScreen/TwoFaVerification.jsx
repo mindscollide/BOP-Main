@@ -31,6 +31,14 @@ const TwoFaVerification = () => {
   });
 
   const [canResend, setCanResend] = useState(false);
+
+  useEffect(() => {
+    // No in-progress login (userID/email) — someone hit this route directly, send them to login.
+    if (!localStorage.getItem("userID") || !localStorage.getItem("email")) {
+      navigate("/");
+    }
+  }, []);
+
   useEffect(() => {
     if (timeLeft <= 0) {
       setCanResend(true);
