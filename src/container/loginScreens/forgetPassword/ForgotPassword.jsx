@@ -46,6 +46,13 @@ const ForgotPassword = () => {
     let encryptedEmail = await encryptField(email); // Base64 encode the email
     let Data = {
       Email: encryptedEmail,
+      RoleID: shouldIsBranch
+        ? 9
+        : shouldIsDealer
+          ? 7
+          : shouldIsTreasury
+            ? 8
+            : 0,
     };
     dispatch(ForgotPasswordApi({ Data, navigate }));
   };
@@ -103,15 +110,15 @@ const ForgotPassword = () => {
             </span>
             <>
               <InputGroup>
-                <InputGroup.Text className={styles["Icon-Field-class"]}>
-                  <IconElement iconClass={"icon-user"} />
+                <InputGroup.Text >
+                  <IconElement iconClass="icon-User" />
                 </InputGroup.Text>
                 <Form.Control
-                  name='email'
+                  name='new_email'
                   ref={emailRef}
                   onKeyDown={(e) => handleKeyDown(e, "email")}
                   autoComplete='off'
-                  type='email'
+                  type='text'
                   className={styles["form-comtrol-textfield"]}
                   placeholder='Email ID'
                   onChange={handleChangeEmailInput}
@@ -129,8 +136,7 @@ const ForgotPassword = () => {
 
             <CustomButton
               className='mt-3'
-              value={"Recover"}
-              // type="submit"
+              value={"Forgot Password"}
               onClick={handleClickResetBtn}
               applyClass={"authLoginBtn"}
               disabled={email ? false : true}

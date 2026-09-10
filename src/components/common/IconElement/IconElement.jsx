@@ -22,7 +22,6 @@ const IconElement = ({
 
   return (
     <>
-      {/* Show icon only if a file is selected */}
 
       <i
         className={`${iconClass} ${applyClass}`}
