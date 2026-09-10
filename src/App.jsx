@@ -12,10 +12,7 @@ import "@fontsource/poppins";
 import "@fontsource/roboto";
 import MainCalculator from "@/container/pages/mainCalculator/MainCalculator";
 import BopLogin from "@/container/loginScreens/Login/BopLogin";
-import ChangePassword from "@/container/loginScreens/ChangePassword/ChangePassword";
 import ForgotPassword from "@/container/loginScreens/forgetPassword/ForgotPassword";
-import CreatePassword from "@/container/loginScreens/CreatePassword/CreatePassword";
-import TwoFaVerification from "@/container/loginScreens/2faVerificationScreen/TwoFaVerification";
 import ResetPassword from "@/container/loginScreens/ResetPassword/ResetPassword";
 import PrivateRoute from "./routes/PrivateRoutes";
 import Loader from "./components/common/loader/Loader";
@@ -31,17 +28,32 @@ import Redirected from "./container/loginScreens/redirected";
 
 function App() {
   const [routes, setRoutes] = useState([]);
-  const currentVersion = useRef(null);
+  // Holds the entry-bundle path (e.g. "/assets/index-<hash>.js") last seen in
+  // index.html, so a later poll can tell a fresh deployment happened.
+  const currentBundlePath = useRef(null);
 
-  // 🔹 Auto-update page when version.json changes
+  // 🔹 Auto-reload when a new deployment is detected.
+  // No dedicated version.json/version endpoint: anything under public/ is served
+  // with zero access control, so a purpose-named file just advertises itself as
+  // an easy target to probe. index.html is already unavoidably public (it boots
+  // the SPA) and Vite stamps a fresh content-hash into its entry <script src>
+  // on every build — that's reused as the deployment signal instead.
   useEffect(() => {
-    const checkVersion = async () => {
+    const ENTRY_SCRIPT_SRC_REGEX = /<script[^>]+src="([^"]+\.js)"[^>]*>/i;
+
+    const checkForNewDeployment = async () => {
       try {
-        const response = await fetch("/version.json", { cache: "no-cache" }); // ✅ root path
+        const response = await fetch("/index.html", { cache: "no-cache" });
+        const html = await response.text();
+        const match = html.match(ENTRY_SCRIPT_SRC_REGEX);
+        const bundlePath = match?.[1];
 
-        const data = await response.json();
+        if (!bundlePath) return;
 
-        if (currentVersion.current && currentVersion.current !== data.version) {
+        if (
+          currentBundlePath.current &&
+          currentBundlePath.current !== bundlePath
+        ) {
           // 🔹 Clear browser caches (for service workers / cache API)
           if ("caches" in window) {
             caches.keys().then((names) => {
@@ -51,16 +63,17 @@ function App() {
             });
           }
           window.location.reload(true); // force reload
+          return;
         }
 
-        currentVersion.current = data.version;
+        currentBundlePath.current = bundlePath;
       } catch (err) {
-        console.log("Error checking version.json:", err);
+        console.log("Error checking index.html for a new deployment:", err);
       }
     };
 
-    checkVersion();
-    const interval = setInterval(checkVersion, 30000); // check every 30 sec
+    checkForNewDeployment();
+    const interval = setInterval(checkForNewDeployment, 30000); // check every 30 sec
     return () => clearInterval(interval);
   }, []);
 
@@ -178,7 +191,10 @@ function App() {
       });
     }
 
-    if (import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true") {
+    const shouldIsCorporate =
+      import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
+
+    if (shouldIsCorporate) {
       const Corporate = (
         await import("./container/pages/mainCorporate/MainCorporate")
       ).default;
@@ -194,10 +210,6 @@ function App() {
       dashboardRoute,
       { path: "/", element: withErrorBoundary(<BopLogin />) },
       {
-        path: "/changePassword",
-        element: withErrorBoundary(<ChangePassword />),
-      },
-      {
         path: "/forgotpassword",
         element: withErrorBoundary(<ForgotPassword />),
       },
@@ -205,20 +217,42 @@ function App() {
         path: "/emailsent",
         element: withErrorBoundary(<ForgotPasswordEmailSentTo />),
       },
-      {
-        path: "/createPassword",
-        element: withErrorBoundary(<CreatePassword />),
-      },
-      { path: "/2fa", element: withErrorBoundary(<TwoFaVerification />) },
       { path: "/resetPassword", element: withErrorBoundary(<ResetPassword />) },
       {
         path: "/resetPasswordLinkExpired",
         element: withErrorBoundary(<ResetPasswordLinkExpired />),
       },
       { path: "/redirected", element: withErrorBoundary(<Redirected />) },
-
-      { path: "*", element: <Navigate to={"/"} /> },
     ];
+
+    // Corporate-only auth screens — kept out of the Branch/Dealer/Treasury bundles entirely.
+    if (shouldIsCorporate) {
+      const ChangePassword = (
+        await import("./container/loginScreens/ChangePassword/ChangePassword")
+      ).default;
+      const CreatePassword = (
+        await import("./container/loginScreens/CreatePassword/CreatePassword")
+      ).default;
+      const TwoFaVerification = (
+        await import(
+          "./container/loginScreens/2faVerificationScreen/TwoFaVerification"
+        )
+      ).default;
+
+      tempRoutes.push(
+        {
+          path: "/changePassword",
+          element: withErrorBoundary(<ChangePassword />),
+        },
+        {
+          path: "/createPassword",
+          element: withErrorBoundary(<CreatePassword />),
+        },
+        { path: "/2fa", element: withErrorBoundary(<TwoFaVerification />) },
+      );
+    }
+
+    tempRoutes.push({ path: "*", element: <Navigate to={"/"} /> });
 
     setRoutes(tempRoutes);
   };
