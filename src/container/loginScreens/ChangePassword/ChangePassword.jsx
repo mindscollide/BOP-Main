@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Col, Form, InputGroup, Row } from "react-bootstrap";
+import { Col, InputGroup, Row } from "react-bootstrap";
 import BOPLogo from "@/assets/logo.png";
 import styles from "./ChangePassword.module.css";
 import IconElement from "@/components/common/IconElement/IconElement";
 import CustomButton from "@/components/common/globalButton/button";
+import MaskedPasswordInput from "@/components/common/maskedPasswordInput/MaskedPasswordInput";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 // import {
@@ -150,15 +151,14 @@ const ChangePassword = () => {
               >
                 <IconElement iconClass={"icon-lock"} />
               </InputGroup.Text>
-              <Form.Control
+              <MaskedPasswordInput
                 name="passwordText"
-                autoComplete="off"
                 onChange={(event) =>
                   handleChangePassword("createPassword", event)
                 }
                 className={styles["form-comtrol-textfield-password"]}
                 placeholder="Password"
-                type={createPasswordData.showPassword ? "text" : "password"}
+                revealed={createPasswordData.showPassword}
                 aria-label="passwordText"
                 aria-describedby="basic-addon2"
               />
@@ -202,12 +202,9 @@ const ChangePassword = () => {
               >
                 <IconElement iconClass={"icon-lock"} />
               </InputGroup.Text>
-              <Form.Control
+              <MaskedPasswordInput
                 name="passwordText"
-                autoComplete="off"
-                type={
-                  createPasswordData.showConfirmPassword ? "text" : "password"
-                }
+                revealed={createPasswordData.showConfirmPassword}
                 onChange={(event) =>
                   handleChangePassword("confirmPassword", event)
                 }

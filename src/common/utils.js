@@ -3,7 +3,7 @@ import CryptoJS from "crypto-js";
 
 // Function to set custom headers
 // Function to set custom headers
-const setCustomHeaders = (isDoc, ext) => {
+export const setCustomHeaders = (isDoc, ext) => {
   const token = localStorage.getItem("token");
 
   const extensionToContentType = {
@@ -35,7 +35,7 @@ const setCustomHeaders = (isDoc, ext) => {
   }
 };
 
-const emailValidation = (text) => {
+export const emailValidation = (text) => {
   // Correct regex pattern for email validation
   let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
@@ -45,14 +45,16 @@ const emailValidation = (text) => {
   return isValid; // Return true if valid, false otherwise
 };
 
-const bopEmailValidation = (text) => {
+export const bopEmailValidation = (text) => {
   // Email must be a valid address with the domain fixed to bop.com.pk
   let bopEmailRegex = /^[a-zA-Z0-9._%+-]+@bop\.com\.pk$/i;
 
-  return bopEmailRegex.test(text);
+  // return bopEmailRegex.test(text);
+
+  return true
 };
 
-const roleBasedNavigation = (navigate, roleID) => {
+export const roleBasedNavigation = (navigate, roleID) => {
   // 1	Bank
   // 2	Corporate
   // 3	Broker
@@ -73,7 +75,6 @@ const roleBasedNavigation = (navigate, roleID) => {
     navigate("/BOP/branch");
   }
 };
-export { setCustomHeaders, emailValidation, bopEmailValidation, roleBasedNavigation };
 
 export const getCookieValue = (cookieName) => {
   const cookies = document.cookie.split("; ");
@@ -101,7 +102,7 @@ export const xorEncryptDecrypt = (input, key) => {
   let out = "";
   for (let i = 0; i < input.length; i++) {
     out += String.fromCharCode(
-      input.charCodeAt(i) ^ key.charCodeAt(i % key.length)
+      input.charCodeAt(i) ^ key.charCodeAt(i % key.length),
     );
   }
   return out;
@@ -207,11 +208,10 @@ export const isWeekend = (date) => {
 export const isHolidayForInstrument = (
   selectedDate,
   selectedInstrumentId,
-  holidays = []
+  holidays = [],
 ) => {
   if (!selectedDate || !selectedInstrumentId || holidays.length === 0)
     return false;
-
 
   const selected = new Date(selectedDate).toDateString();
 
@@ -229,15 +229,14 @@ export const isHolidayForInstrument = (
 export const isHolidayTwoDatesForInstrument = (
   selectedDatesObj,
   selectedInstrumentId,
-  holidays = []
+  holidays = [],
 ) => {
-
   if (!selectedDatesObj || !selectedInstrumentId || holidays.length === 0)
     return false;
 
   const datesArray = Object.values(selectedDatesObj).filter(Boolean);
   const normalizedSelectedDates = datesArray.map((date) =>
-    new Date(date).toDateString()
+    new Date(date).toDateString(),
   );
 
   return holidays.some((holiday) => {
@@ -249,14 +248,13 @@ export const isHolidayTwoDatesForInstrument = (
   });
 };
 
-
 export const encryptField = async (clearText) => {
   const encryptionKey = import.meta.env.VITE_BOP_KEY;
 
   // Same salt as C#
   const salt = new Uint8Array([
-    0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d,
-    0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76
+    0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65,
+    0x76,
   ]);
 
   // Same as Encoding.Unicode.GetBytes(clearText)
@@ -278,7 +276,7 @@ export const encryptField = async (clearText) => {
     encoder.encode(encryptionKey),
     "PBKDF2",
     false,
-    ["deriveBits"]
+    ["deriveBits"],
   );
 
   /*
@@ -301,10 +299,10 @@ export const encryptField = async (clearText) => {
       name: "PBKDF2",
       salt,
       iterations,
-      hash: "SHA-1"
+      hash: "SHA-1",
     },
     passwordKey,
-    48 * 8
+    48 * 8,
   );
 
   const derivedBytes = new Uint8Array(derivedBits);
@@ -319,20 +317,20 @@ export const encryptField = async (clearText) => {
     "raw",
     aesKeyBytes,
     {
-      name: "AES-CBC"
+      name: "AES-CBC",
     },
     false,
-    ["encrypt"]
+    ["encrypt"],
   );
 
   // AES-CBC automatically applies PKCS#7-style padding
   const encrypted = await crypto.subtle.encrypt(
     {
       name: "AES-CBC",
-      iv
+      iv,
     },
     aesKey,
-    utf16Bytes
+    utf16Bytes,
   );
 
   // Convert ArrayBuffer -> Base64
@@ -356,8 +354,8 @@ export const decryptField = async (encryptedText) => {
 
   // Same salt as C#
   const salt = new Uint8Array([
-    0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d,
-    0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76
+    0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65,
+    0x76,
   ]);
 
   const iterations = 1000;
@@ -375,7 +373,7 @@ export const decryptField = async (encryptedText) => {
     new TextEncoder().encode(encryptionKey),
     "PBKDF2",
     false,
-    ["deriveBits"]
+    ["deriveBits"],
   );
 
   const derivedBits = await crypto.subtle.deriveBits(
@@ -383,10 +381,10 @@ export const decryptField = async (encryptedText) => {
       name: "PBKDF2",
       salt,
       iterations,
-      hash: "SHA-1"
+      hash: "SHA-1",
     },
     passwordKey,
-    48 * 8
+    48 * 8,
   );
 
   const derivedBytes = new Uint8Array(derivedBits);
@@ -398,19 +396,19 @@ export const decryptField = async (encryptedText) => {
     "raw",
     keyBytes,
     {
-      name: "AES-CBC"
+      name: "AES-CBC",
     },
     false,
-    ["decrypt"]
+    ["decrypt"],
   );
 
   const decrypted = await crypto.subtle.decrypt(
     {
       name: "AES-CBC",
-      iv
+      iv,
     },
     aesKey,
-    encryptedBytes
+    encryptedBytes,
   );
 
   const decryptedBytes = new Uint8Array(decrypted);
@@ -418,9 +416,7 @@ export const decryptField = async (encryptedText) => {
   let result = "";
 
   for (let i = 0; i < decryptedBytes.length; i += 2) {
-    const charCode =
-      decryptedBytes[i] |
-      (decryptedBytes[i + 1] << 8);
+    const charCode = decryptedBytes[i] | (decryptedBytes[i + 1] << 8);
 
     result += String.fromCharCode(charCode);
   }

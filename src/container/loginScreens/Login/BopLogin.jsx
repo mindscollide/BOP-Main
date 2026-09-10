@@ -16,6 +16,7 @@ import {
 } from "@/common/utils";
 import { updateEmail, updatePassword, updateUsername } from "./Loginfunctions";
 import { useNotification } from "@/context/NotificationProvider";
+import MaskedPasswordInput from "@/components/common/maskedPasswordInput/MaskedPasswordInput";
 
 const shouldIsCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
 const shouldIsBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
@@ -315,17 +316,16 @@ const BopLogin = () => {
                 <InputGroup.Text className={styles["Icon-Field-class"]}>
                   <IconElement iconClass={"icon-lock"} />
                 </InputGroup.Text>
-                <Form.Control
+                <MaskedPasswordInput
                   ref={passwordRef}
                   onKeyDown={(e) => handleKeyDown(e, "password")}
                   name='password'
-                  autoComplete='off'
                   className={styles["form-comtrol-textfield-password"]}
                   placeholder='Password'
                   required
                   value={credentials.password}
                   onChange={handleChangeFields}
-                  type={showPassword ? "text" : "password"}
+                  revealed={showPassword}
                   aria-label='password'
                 />
                 {/* <InputGroup.Text
@@ -343,31 +343,33 @@ const BopLogin = () => {
               )}
 
               {/* {shouldIsCorporate && ( */}
-                <Row className='d-flex align-items-center mt-2'>
-                  <Col
-                    sm={6}
-                    md={6}
-                    lg={6}
-                    className='d-flex justify-content-start'>
+              <Row className='d-flex align-items-center mt-2'>
+                <Col
+                  sm={6}
+                  md={6}
+                  lg={6}
+                  className='d-flex justify-content-start'>
+                  {shouldIsCorporate && (
                     <Form.Check
                       checked={rememberMe}
                       type='checkbox'
                       onChange={handleChangeRememberMe}
                       label='Remember me'
                     />
-                  </Col>
-                  <Col
-                    sm={6}
-                    md={6}
-                    lg={6}
-                    className='d-flex justify-content-end'>
-                    <Link
-                      to={"/forgotpassword"}
-                      className={styles["forgotPasswordLink"]}>
-                      Forgot Password?
-                    </Link>
-                  </Col>
-                </Row>
+                  )}
+                </Col>
+                <Col
+                  sm={6}
+                  md={6}
+                  lg={6}
+                  className='d-flex justify-content-end'>
+                  <Link
+                    to={"/forgotpassword"}
+                    className={styles["forgotPasswordLink"]}>
+                    Forgot Password?
+                  </Link>
+                </Col>
+              </Row>
               {/* )} */}
 
               <CustomButton

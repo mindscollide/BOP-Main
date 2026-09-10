@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Col, Form, InputGroup, Row } from "react-bootstrap";
+import { Col, InputGroup, Row } from "react-bootstrap";
 import BOPLogo from "@/assets/logo.png";
 import styles from "./ResetPassword.module.css";
 import IconElement from "@/components/common/IconElement/IconElement";
@@ -10,6 +10,7 @@ import { ResetPasswordCorporateApi } from "../ChangePassword/changePasswordActio
 import { useNotification } from "@/context/NotificationProvider";
 import { decryptField, encryptField } from "@/common/utils";
 import { ResetPasswordApi } from "../authActions/AuthActions";
+import MaskedPasswordInput from "@/components/common/maskedPasswordInput/MaskedPasswordInput";
 const shouldIsCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
 const shouldIsBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
 const shouldIsDealer = import.meta.env.VITE_APP_INCLUDE_DEALER === "true";
@@ -237,13 +238,11 @@ const ResetPassword = () => {
                 className={styles["Icon-Field-class"]}>
                 <IconElement iconClass={"icon-lock"} />
               </InputGroup.Text>
-              <Form.Control
+              <MaskedPasswordInput
                 name='passwordText'
-                autoComplete='off'
                 onChange={(event) => handleChangePassword("newPassword", event)}
                 className={styles["form-comtrol-textfield-password"]}
                 placeholder='Password'
-                type='password'
                 aria-label='passwordText'
               />
             </InputGroup>
@@ -253,15 +252,13 @@ const ResetPassword = () => {
                 className={styles["Icon-Field-class"]}>
                 <IconElement iconClass={"icon-lock"} />
               </InputGroup.Text>
-              <Form.Control
+              <MaskedPasswordInput
                 name='passwordText'
-                autoComplete='off'
                 onChange={(event) =>
                   handleChangePassword("confirmPassword", event)
                 }
                 className={styles["form-comtrol-textfield-password"]}
                 placeholder='New Confirm Password'
-                type='password'
                 aria-label='passwordText'
               />
             </InputGroup>
@@ -396,7 +393,7 @@ const ResetPassword = () => {
             <CustomButton
               disabled={!isFormValid}
               onClick={handleClickResetPassword}
-              value={"Change Password"}
+              value={"Reset Password"}
               applyClass={"changePasswordBtn"}
             />
           </section>

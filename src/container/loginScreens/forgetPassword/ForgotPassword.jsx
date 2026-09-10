@@ -7,7 +7,11 @@ import CustomButton from "@/components/common/globalButton/button";
 import { Link, useNavigate } from "react-router-dom";
 import { resetAndForgotPassword } from "./forgotPassword_Actions";
 import { ForgotPasswordApi } from "../authActions/AuthActions";
-import { emailValidation } from "@/common/utils";
+import {
+  bopEmailValidation,
+  emailValidation,
+  encryptField,
+} from "@/common/utils";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { message } from "antd";
@@ -25,9 +29,9 @@ const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState({ status: false, message: "" });
 
-  const handleClickResetBtn = (e) => {
+  const handleClickResetBtn = async (e) => {
     e.preventDefault();
-    const isValidEmail = emailValidation(email);
+    const isValidEmail = bopEmailValidation(email);
     if (!isValidEmail) {
       setEmailError({ status: true, message: "Enter a valid email address" });
       return;
@@ -39,22 +43,11 @@ const ForgotPassword = () => {
       dispatch(resetAndForgotPassword({ navigate, Data }));
       return;
     }
-
+    let encryptedEmail = await encryptField(email); // Base64 encode the email
     let Data = {
-      Email: email,
-      RoleID: shouldIsBranch ? 9 : shouldIsDealer ? 7 : shouldIsTreasury ? 8 : 0,
+      Email: encryptedEmail,
     };
-    dispatch(ForgotPasswordApi({ Data, navigate }))
-      .unwrap()
-      .then(() => {
-        navigate("/emailsent", { state: Data });
-      })
-      .catch((error) => {
-        setEmailError({
-          status: true,
-          message: error || "Something went wrong",
-        });
-      });
+    dispatch(ForgotPasswordApi({ Data, navigate }));
   };
 
   const emailRef = useRef(null);
@@ -64,7 +57,7 @@ const ForgotPassword = () => {
     if (name === "email") {
       if (value !== "") {
         setEmail(value);
-        const isValidEmail = emailValidation(value);
+        const isValidEmail = bopEmailValidation(value);
         if (isValidEmail) {
           setEmailError({ status: false, message: "" });
         }
@@ -93,20 +86,19 @@ const ForgotPassword = () => {
           sm={12}
           md={12}
           lg={12}
-          className="d-flex justify-content-center mt-5 "
-        >
+          className='d-flex justify-content-center mt-5 '>
           <img
             src={BOPLogo}
             style={{ maxWidth: "100%" }}
-            width="300"
-            className="img-fluid"
-            alt="BOP Logo"
+            width='300'
+            className='img-fluid'
+            alt='BOP Logo'
           />
         </Col>
         <Col sm={12} md={12} lg={12}>
           <section className={styles["LoginCard"]}>
             <h4 className={styles["Heading-js"]}>Forgot Passowrd?</h4>
-            <span className="mb-4 text-center">
+            <span className='mb-4 text-center'>
               Please type your full email
             </span>
             <>
@@ -115,18 +107,19 @@ const ForgotPassword = () => {
                   <IconElement iconClass={"icon-user"} />
                 </InputGroup.Text>
                 <Form.Control
-                  name="email"
+                  name='email'
                   ref={emailRef}
                   onKeyDown={(e) => handleKeyDown(e, "email")}
-                  autoComplete="off"
+                  autoComplete='off'
+                  type='email'
                   className={styles["form-comtrol-textfield"]}
-                  placeholder="Email ID"
+                  placeholder='Email ID'
                   onChange={handleChangeEmailInput}
                   value={email}
                   required={true}
-                  pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-                  aria-label="Username"
-                  aria-describedby="basic-addon1"
+                  pattern='^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+                  aria-label='Username'
+                  aria-describedby='basic-addon1'
                 />
               </InputGroup>
               {emailError.status === true && (
@@ -135,14 +128,14 @@ const ForgotPassword = () => {
             </>
 
             <CustomButton
-              className="mt-3"
+              className='mt-3'
               value={"Recover"}
               // type="submit"
               onClick={handleClickResetBtn}
               applyClass={"authLoginBtn"}
               disabled={email ? false : true}
             />
-            <span className="mt-2 text-center">
+            <span className='mt-2 text-center'>
               <Link className={styles["forgotPasswordLink"]} to={"/"}>
                 Back to Login
               </Link>

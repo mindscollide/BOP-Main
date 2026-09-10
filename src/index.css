@@ -48,3 +48,12 @@
 .anticon {
   vertical-align: 0 !important;
 }
+
+/* Masks a plain text input as password dots. Used by MaskedPasswordInput so
+   credential fields are never <input type="password">, which is what triggers
+   the browser's save-password prompt and autofill. */
+.masked-input {
+  -webkit-text-security: disc;
+  -moz-text-security: disc;
+  text-security: disc;
+}

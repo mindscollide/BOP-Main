@@ -12,20 +12,6 @@ const ResetPasswordLinkExpired = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
-  const auth = useSelector((state) => state.authReducer);
-
-  console.log(auth, location, "auth");
-  useEffect(() => {
-    const decryptedEMail = async () => {
-      const email = await decryptField(
-        "7rAvOFF1yzzCM2Q+8MKO4qOLyrZpirRLCLEm9EOt/lOtGFnfpeLjw+VVdrJAjDPp1IQ1xiW9P8rRkwnOTeOfvw==",
-      );
-
-      console.log(email, "resetEmail");
-    };
-
-    decryptedEMail();
-  }, []);
 
   const handleClickSendRequestAgain = () => {
     dispatch(

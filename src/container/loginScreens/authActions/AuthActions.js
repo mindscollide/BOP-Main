@@ -134,7 +134,10 @@ export const ForgotPasswordApi = createAsyncThunk(
                 "ERM_AuthService_AuthManager_SendEmailForForgetPasword_01".toLowerCase(),
               )
           ) {
-            navigate("/emailsent", { replace: true });
+            navigate("/emailsent", {
+              replace: true,
+              state: "EmailSentSuccessfully",
+            });
             return {
               response: response.data.responseResult,
               message: "Email Sent Successfully",
@@ -172,7 +175,7 @@ export const ForgotPasswordApi = createAsyncThunk(
           ) {
             return rejectWithValue("Something went wrong");
           } else {
-            return rejectWithValue(responseMessage || "Something went wrong");
+            return rejectWithValue("Something went wrong");
           }
         } else {
           return rejectWithValue(responseMessage || "Something went wrong");
