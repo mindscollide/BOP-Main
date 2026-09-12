@@ -37,6 +37,7 @@ export const loginInApi = createAsyncThunk(
             case "ERM_AuthService_AuthManager_Login_01".toLowerCase():
             case "ERM_AuthService_AuthManager_Login_02".toLowerCase():
             case "ERM_AuthService_AuthManager_Login_04".toLowerCase():
+              return rejectWithValue("Wrong Password")
             case "ERM_AuthService_AuthManager_Login_05".toLowerCase():
               return rejectWithValue("User is Locked");
             case "ERM_AuthService_AuthManager_Login_06".toLowerCase():
@@ -48,7 +49,7 @@ export const loginInApi = createAsyncThunk(
             case "ERM_AuthService_AuthManager_Login_09".toLowerCase():
               return rejectWithValue("Login Failed");
             case "ERM_AuthService_AuthManager_Login_10".toLowerCase():
-              return rejectWithValue("Login Failed");
+              return rejectWithValue("Invalid User");
             case "ERM_AuthService_AuthManager_Login_11".toLowerCase():
               return rejectWithValue("Someting went wrong");
             case "ERM_AuthService_AuthManager_Login_12".toLowerCase():

@@ -61,7 +61,7 @@ const ForgotPassword = () => {
   const handleChangeEmailInput = (event) => {
     const { name, value } = event.target;
 
-    if (name === "email") {
+    if (name === "new_email") {
       if (value !== "") {
         setEmail(value);
         const isValidEmail = bopEmailValidation(value);
@@ -79,7 +79,7 @@ const ForgotPassword = () => {
     // console.log(e, fieldName, "testestets");
     if (e.key === "Enter") {
       e.preventDefault();
-      if (fieldName === "email") {
+      if (fieldName === "new_email") {
         handleClickResetBtn(e);
       }
     }
@@ -110,13 +110,13 @@ const ForgotPassword = () => {
             </span>
             <>
               <InputGroup>
-                <InputGroup.Text >
-                  <IconElement iconClass="icon-User" />
+                <InputGroup.Text className={styles["Icon-Field-class"]}>
+                  <IconElement iconClass={"icon-user"} />
                 </InputGroup.Text>
                 <Form.Control
                   name='new_email'
                   ref={emailRef}
-                  onKeyDown={(e) => handleKeyDown(e, "email")}
+                  onKeyDown={(e) => handleKeyDown(e, "new_email")}
                   autoComplete='off'
                   type='text'
                   className={styles["form-comtrol-textfield"]}

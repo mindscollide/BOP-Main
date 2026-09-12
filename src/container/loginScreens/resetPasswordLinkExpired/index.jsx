@@ -15,7 +15,18 @@ const ResetPasswordLinkExpired = () => {
 
   const handleClickSendRequestAgain = () => {
     dispatch(
-      ForgotPasswordApi({ Data: { Email: location.state?.email }, navigate }),
+      ForgotPasswordApi({
+        Data: {
+          Email: location.state?.email,
+          RoleID: shouldIsBranch
+            ? 9
+            : shouldIsDealer
+              ? 7
+              : shouldIsTreasury
+                ? 8
+                : 0,
+        }, navigate
+      }),
     );
   };
   return (
