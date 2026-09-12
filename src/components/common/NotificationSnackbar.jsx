@@ -16,11 +16,16 @@ const NotificationSnackbar = ({ messages }) => {
 
         shownKeys.current.add(key);
 
+        const severityClass =
+          msg?.severity?.toLowerCase() === "success"
+            ? "custom-notification-snackbar-success"
+            : "custom-notification-snackbar-error";
+
         const newNotif = {
           key,
           message: msg.message,
           description: msg.description,
-          className: "custom-notification-snackbar",
+          className: `custom-notification-snackbar ${severityClass}`,
           closeIcon: <IconElement iconClass="icon-close" />,
           duration: 3,
           onClose: () => {

@@ -43,11 +43,13 @@ const categoryReducer = createSlice({
         state.Loader = false;
         state.getAllCategoriesRecords = payload?.response;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       .addCase(getAllCategoryTableData.rejected, (state, { payload }) => {
         state.Loader = false;
         state.getAllCategoriesRecords = null;
         state.responseMessage = payload;
+        state.errorSeverity = "error";
       })
       .addCase(GetCategoryWiseSpotRatesApi.pending, (state) => {
         state.Loader = true;
@@ -56,11 +58,13 @@ const categoryReducer = createSlice({
         state.Loader = false;
         state.GetCategoryWiseSpotRates = payload?.response;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       .addCase(GetCategoryWiseSpotRatesApi.rejected, (state, { payload }) => {
         state.Loader = false;
         state.GetCategoryWiseSpotRates = null;
         state.responseMessage = payload;
+        state.errorSeverity = "error";
       })
       .addCase(GetCategoryWiseForwardRatesApi.pending, (state) => {
         state.Loader = true;
@@ -71,6 +75,7 @@ const categoryReducer = createSlice({
           state.Loader = false;
           state.GetCategoryWiseForwardRates = payload?.response;
           state.responseMessage = payload?.message;
+          state.errorSeverity = "success";
         }
       )
       .addCase(
@@ -79,6 +84,7 @@ const categoryReducer = createSlice({
           state.Loader = false;
           state.GetCategoryWiseForwardRates = null;
           state.responseMessage = payload;
+          state.errorSeverity = "error";
         }
       )
       .addCase(GetCategoryWiseDiscountingRatesApi.pending, (state) => {
@@ -90,6 +96,7 @@ const categoryReducer = createSlice({
           state.Loader = false;
           state.GetCategoryWiseDiscountingRates = payload?.response;
           state.responseMessage = payload?.message;
+          state.errorSeverity = "success";
         }
       )
       .addCase(
@@ -98,6 +105,7 @@ const categoryReducer = createSlice({
           state.Loader = false;
           state.GetCategoryWiseDiscountingRates = null;
           state.responseMessage = payload;
+          state.errorSeverity = "error";
         }
       );
   },

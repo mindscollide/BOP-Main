@@ -7,6 +7,7 @@ import {
 const RFQSlice = createSlice({
   name: "RFQSlice",
   initialState: {
+    errorSeverity: null,
     responseMessage: "",
     Loader: false,
     error: null,
@@ -27,6 +28,7 @@ const RFQSlice = createSlice({
         state.saveRFQTransactionData = payload?.response;
         state.error = null;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       // Rejected state (when the API call fails ViewAllNatureOfBussinessAPI)
       .addCase(SaveTransactionRFQAPI.rejected, (state, action) => {
@@ -34,6 +36,7 @@ const RFQSlice = createSlice({
         state.Loader = false;
         state.error = action.payload;
         state.saveRFQTransactionData = null;
+        state.errorSeverity = "error";
       });
 
     builder.addCase(setActiveTab, (state, action) => {

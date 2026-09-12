@@ -1,5 +1,8 @@
+.ant-notification {
+  z-index: 10000 !important;
+}
 .custom-notification-snackbar {
-  padding: 20px 12px !important;
+  padding: 12px !important;
   background-color: #fff;
   border-radius: 4px;
 }
@@ -12,6 +15,7 @@
 .custom-notification-snackbar .ant-notification-notice-close {
   text-decoration: none !important;
   color: #fff !important;
+  top: 13px !important;
 }
 .custom-notification-snackbar {
   max-width: 350px !important;
@@ -22,6 +26,14 @@
 [class*=" icon-"] {
   font-size: 17px !important;
   vertical-align: middle;
+}
+
+.custom-notification-snackbar-success {
+  background: #32a852 !important;
+}
+
+.custom-notification-snackbar-error {
+  background: #ce0000 !important;
 }
 
 .blotterTableIconSize {

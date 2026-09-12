@@ -8,6 +8,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const settingSlicer = createSlice({
   name: "settingSlicer",
   initialState: {
+    errorSeverity: null,
     responseMessage: "",
     Loader: false,
     error: null,
@@ -34,6 +35,7 @@ const settingSlicer = createSlice({
         state.settingData = payload;
         state.error = null;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       // Rejected state (when the API call fails)
       .addCase(getUserSettingDataAPI.rejected, (state, action) => {
@@ -41,6 +43,7 @@ const settingSlicer = createSlice({
         state.Loader = false;
         state.error = action.payload;
         state.settingData = null;
+        state.errorSeverity = "error";
       })
       .addCase(getMarkingTimingApi.pending, (state) => {
         state.Loader = true;
@@ -51,12 +54,14 @@ const settingSlicer = createSlice({
         state.getMarketTimingData = payload;
         state.error = null;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       .addCase(getMarkingTimingApi.rejected, (state, action) => {
         console.log(action, "actionaction");
         state.Loader = false;
         state.error = action.payload;
         state.getMarketTimingData = null;
+        state.errorSeverity = "error";
       })
       .addCase(updateUserSettingDataAPI.pending, (state) => {
         state.Loader = true;
@@ -67,12 +72,14 @@ const settingSlicer = createSlice({
         state.updateSettingData = payload;
         state.error = null;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       .addCase(updateUserSettingDataAPI.rejected, (state, action) => {
         console.log(action, "actionaction");
         state.Loader = false;
         state.error = action.payload;
         state.updateSettingData = null;
+        state.errorSeverity = "error";
       });
   },
 });

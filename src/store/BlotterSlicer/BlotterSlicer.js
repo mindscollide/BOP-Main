@@ -39,6 +39,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const BlotterSlicer = createSlice({
   name: "CorporateBlotterSlicer",
   initialState: {
+    errorSeverity: null,
     responseMessage: "",
     Loader: false,
     error: null,
@@ -314,6 +315,7 @@ const BlotterSlicer = createSlice({
           state.CalculateFESwapAndDiscountingApiLoading = false;
           state.CalculateFESwapAndDiscountingRate = payload?.response;
           state.responseMessage = payload?.message;
+          state.errorSeverity = "success";
         }
       )
       .addCase(
@@ -323,6 +325,7 @@ const BlotterSlicer = createSlice({
           state.CalculateFESwapAndDiscountingApiLoading = false;
           state.CalculateFESwapAndDiscountingRate = null;
           state.responseMessage = payload;
+          state.errorSeverity = "error";
         }
       )
       // Pending state (while the API call is being made CorporateBlotterDataAPI)
@@ -344,6 +347,7 @@ const BlotterSlicer = createSlice({
 
         state.error = null;
         state.responseMessage = payload?.message ?? "";
+        state.errorSeverity = "success";
       })
 
       // Rejected state (when the API call fails CorporateBlotterDataAPI)
@@ -356,6 +360,7 @@ const BlotterSlicer = createSlice({
         state.txnSummaryDataTotalRecords = 0;
         state.txnSummaryData = [];
         state.getBlotterApiData = null;
+        state.errorSeverity = "error";
       })
       .addCase(GetBlotterOutstandingDealsDataAPI.pending, (state) => {
         state.Loader = true;
@@ -375,6 +380,7 @@ const BlotterSlicer = createSlice({
           state.outStandingDealsRow = state.outStandingDealData.length;
           state.error = null;
           state.responseMessage = payload?.message ?? "";
+          state.errorSeverity = "success";
         }
       )
       .addCase(GetBlotterOutstandingDealsDataAPI.rejected, (state, action) => {
@@ -385,6 +391,7 @@ const BlotterSlicer = createSlice({
         state.outStandingDealDataTotalRecords = 0;
         state.outStandingDealsRow = 0;
         state.outStandingDealData = [];
+        state.errorSeverity = "error";
       })
       .addCase(SaveSpotTransactionAPI.pending, (state) => {
         state.Loader = true;
@@ -397,6 +404,7 @@ const BlotterSlicer = createSlice({
         state.saveSpotTransaction = payload?.response;
         state.error = null;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       .addCase(SaveSpotTransactionAPI.rejected, (state, { payload }) => {
         console.log(payload, "actionaction");
@@ -404,6 +412,7 @@ const BlotterSlicer = createSlice({
         state.SaveSpotTransactionAPILoading = false;
         state.responseMessage = payload;
         state.saveSpotTransaction = null;
+        state.errorSeverity = "error";
       })
       .addCase(SaveForwardTransactionAPI.pending, (state) => {
         state.Loader = true;
@@ -416,6 +425,7 @@ const BlotterSlicer = createSlice({
         state.saveForwardsTransaction = payload?.response;
         state.error = null;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       .addCase(SaveForwardTransactionAPI.rejected, (state, action) => {
         console.log(action, "actionaction");
@@ -423,6 +433,7 @@ const BlotterSlicer = createSlice({
         state.SaveForwardTransactionAPILoading = false;
         state.error = action.payload;
         state.saveForwardsTransaction = null;
+        state.errorSeverity = "error";
       })
       .addCase(SaveFEDiscountingTransactionAPI.pending, (state) => {
         state.Loader = true;
@@ -437,6 +448,7 @@ const BlotterSlicer = createSlice({
           state.saveFedDiscountTransaction = payload?.response;
           state.error = null;
           state.responseMessage = payload?.message;
+          state.errorSeverity = "success";
         }
       )
       .addCase(SaveFEDiscountingTransactionAPI.rejected, (state, action) => {
@@ -446,6 +458,7 @@ const BlotterSlicer = createSlice({
         state.error = action.payload;
         state.responseMessage = action?.payload;
         state.saveFedDiscountTransaction = null;
+        state.errorSeverity = "error";
       })
       .addCase(SaveNonFEDiscountingTransactionAPI.pending, (state) => {
         state.Loader = true;
@@ -460,6 +473,7 @@ const BlotterSlicer = createSlice({
           state.saveNonFeDiscountTransaction = payload?.response;
           state.error = null;
           state.responseMessage = payload?.message;
+          state.errorSeverity = "success";
         }
       )
       .addCase(SaveNonFEDiscountingTransactionAPI.rejected, (state, action) => {
@@ -469,6 +483,7 @@ const BlotterSlicer = createSlice({
         state.error = action.payload;
         state.saveNonFeDiscountTransaction = null;
         state.responseMessage = action?.payload;
+        state.errorSeverity = "error";
       })
       .addCase(AssignTransactionAPI.pending, (state) => {
         state.Loader = true;
@@ -481,6 +496,7 @@ const BlotterSlicer = createSlice({
         state.assignTransaction = payload?.response;
         state.error = null;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       .addCase(AssignTransactionAPI.rejected, (state, action) => {
         console.log(action, "actionaction");
@@ -489,6 +505,7 @@ const BlotterSlicer = createSlice({
         state.error = action.payload;
         state.responseMessage = action?.payload;
         state.assignTransaction = null;
+        state.errorSeverity = "error";
       })
       .addCase(AcceptTransactionAPI.pending, (state) => {
         state.Loader = true;
@@ -501,6 +518,7 @@ const BlotterSlicer = createSlice({
         state.acceptTransaction = payload?.response;
         state.error = null;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       .addCase(AcceptTransactionAPI.rejected, (state, action) => {
         console.log(action, "actionaction");
@@ -509,6 +527,7 @@ const BlotterSlicer = createSlice({
         state.error = action.payload;
         state.responseMessage = action?.payload;
         state.acceptTransaction = null;
+        state.errorSeverity = "error";
       })
       .addCase(RejectTransactionAPI.pending, (state) => {
         state.Loader = true;
@@ -521,6 +540,7 @@ const BlotterSlicer = createSlice({
         state.rejectedTransaction = payload?.response;
         state.error = null;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       .addCase(RejectTransactionAPI.rejected, (state, action) => {
         console.log(action, "actionaction");
@@ -529,6 +549,7 @@ const BlotterSlicer = createSlice({
         state.responseMessage = action?.payload;
         state.error = action.payload;
         state.rejectedTransaction = null;
+        state.errorSeverity = "error";
       })
       .addCase(RFQTransactionQuotation.pending, (state) => {
         state.Loader = true;
@@ -541,6 +562,7 @@ const BlotterSlicer = createSlice({
         state.rfqSaveQuotation = payload?.response;
         state.error = null;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       .addCase(RFQTransactionQuotation.rejected, (state, action) => {
         console.log(action, "actionaction");
@@ -549,6 +571,7 @@ const BlotterSlicer = createSlice({
         state.error = action.payload;
         state.responseMessage = action?.payload;
         state.rfqSaveQuotation = null;
+        state.errorSeverity = "error";
       })
       .addCase(CancelPendingTransactionApi.pending, (state) => {
         state.Loader = true;
@@ -561,6 +584,7 @@ const BlotterSlicer = createSlice({
         state.responseMessage = payload?.message;
         state.cancelPendingTransaction = payload?.response;
         state.error = null;
+        state.errorSeverity = "success";
       })
       .addCase(CancelPendingTransactionApi.rejected, (state, action) => {
         console.log(action, "actionaction");
@@ -569,6 +593,7 @@ const BlotterSlicer = createSlice({
         state.cancelPendingTransaction = null;
         state.responseMessage = action?.payload;
         state.error = action.payload;
+        state.errorSeverity = "error";
       })
       .addCase(calculateTenorSwapAndForwardRateApi.pending, (state) => {
         state.Loader = false;
@@ -583,6 +608,7 @@ const BlotterSlicer = createSlice({
           state.calculateTenorSwapAndForwardRateData = payload?.response;
           state.error = null;
           state.responseMessage = payload?.message;
+          state.errorSeverity = "success";
         }
       )
       .addCase(
@@ -594,6 +620,7 @@ const BlotterSlicer = createSlice({
           state.error = action.payload;
           state.responseMessage = action?.payload;
           state.calculateTenorSwapAndForwardRateData = null;
+          state.errorSeverity = "error";
         }
       )
 
@@ -611,6 +638,7 @@ const BlotterSlicer = createSlice({
           state.GetSpotRatesForCounterParty = payload?.response;
           state.error = null;
           state.responseMessage = payload?.message;
+          state.errorSeverity = "success";
         }
       )
       .addCase(GetSpotRatesForCounterPartyAPI.rejected, (state, action) => {
@@ -620,6 +648,7 @@ const BlotterSlicer = createSlice({
         state.error = action.payload;
         state.responseMessage = action?.payload;
         state.GetSpotRatesForCounterParty = null;
+        state.errorSeverity = "error";
       })
       .addCase(SaveForwardTransactionRFQApi.pending, (state) => {
         state.Loader = true;
@@ -630,12 +659,14 @@ const BlotterSlicer = createSlice({
         state.SaveForwardTransactionRFQApiLoading = false;
         state.saveForwardRFQTransaction = payload.response;
         state.responseMessage = payload.message;
+        state.errorSeverity = "success";
       })
       .addCase(SaveForwardTransactionRFQApi.rejected, (state, { payload }) => {
         state.Loader = false;
         state.SaveForwardTransactionRFQApiLoading = false;
         state.saveForwardRFQTransaction = null;
         state.responseMessage = payload;
+        state.errorSeverity = "error";
       })
       .addCase(GetFEDiscountingTransactionDetailsApi.pending, (state) => {
         state.Loader = true;
@@ -648,6 +679,7 @@ const BlotterSlicer = createSlice({
           state.GetFEDiscountingTransactionDetailsApiLoading = false;
           state.GetFEDiscountingTransactionDetails = payload.response;
           state.responseMessage = payload.message;
+          state.errorSeverity = "success";
         }
       )
       .addCase(
@@ -658,6 +690,7 @@ const BlotterSlicer = createSlice({
           state.error = action.payload;
           state.GetFEDiscountingTransactionDetails = null;
           state.responseMessage = action.payload?.message || action.payload;
+          state.errorSeverity = "error";
         }
       )
       .addCase(GetSpotTransactionDetailsApi.pending, (state) => {
@@ -669,12 +702,14 @@ const BlotterSlicer = createSlice({
         state.GetSpotTransactionDetailsApiLoading = false;
         state.GetSpotTransactionDetails = payload.response;
         state.responseMessage = payload.message;
+        state.errorSeverity = "success";
       })
       .addCase(GetSpotTransactionDetailsApi.rejected, (state, { payload }) => {
         state.Loader = false;
         state.GetSpotTransactionDetailsApiLoading = false;
         state.GetSpotTransactionDetails = null;
         state.responseMessage = payload;
+        state.errorSeverity = "error";
       })
       .addCase(GetForwardTransactionDetailsApi.pending, (state) => {
         state.Loader = true;
@@ -687,6 +722,7 @@ const BlotterSlicer = createSlice({
           state.GetForwardTransactionDetailsApiLoading = false;
           state.GetForwardTransactionDetails = payload.response;
           state.responseMessage = payload.message;
+          state.errorSeverity = "success";
         }
       )
       .addCase(
@@ -696,6 +732,7 @@ const BlotterSlicer = createSlice({
           state.GetForwardTransactionDetailsApiLoading = false;
           state.GetForwardTransactionDetails = null;
           state.responseMessage = payload;
+          state.errorSeverity = "error";
         }
       )
       .addCase(GetNonFEDiscountingTransactionDetailsApi.pending, (state) => {
@@ -709,6 +746,7 @@ const BlotterSlicer = createSlice({
           state.GetNonFEDiscountingTransactionDetailsApiLoading = false;
           state.GetNonFEDiscountingTransactionDetails = payload.response;
           state.responseMessage = payload.message;
+          state.errorSeverity = "success";
         }
       )
       .addCase(
@@ -718,6 +756,7 @@ const BlotterSlicer = createSlice({
           state.GetNonFEDiscountingTransactionDetailsApiLoading = false;
           state.GetNonFEDiscountingTransactionDetails = null;
           state.responseMessage = payload;
+          state.errorSeverity = "error";
         }
       )
       .addCase(GetNOPDataAPI.pending, (state) => {
@@ -729,12 +768,14 @@ const BlotterSlicer = createSlice({
         state.GetNOPDataAPILoading = false;
         state.GetNOPData = payload.response;
         state.responseMessage = payload.message;
+        state.errorSeverity = "success";
       })
       .addCase(GetNOPDataAPI.rejected, (state, { payload }) => {
         state.Loader = false;
         state.GetNOPDataAPILoading = false;
         state.GetNOPData = null;
         state.responseMessage = payload;
+        state.errorSeverity = "error";
       })
       .addCase(calculateNonFeSwapAndDiscountingRateApi.pending, (state) => {
         state.Loader = false;
@@ -747,6 +788,7 @@ const BlotterSlicer = createSlice({
           state.calculateNonFeSwapAndDiscountingRateApiLoading = false;
           state.calculateNonFeSwapAndDiscountingRate = payload?.response;
           state.responseMessage = payload?.message;
+          state.errorSeverity = "success";
         }
       )
       .addCase(
@@ -756,6 +798,7 @@ const BlotterSlicer = createSlice({
           state.calculateNonFeSwapAndDiscountingRateApiLoading = false;
           state.calculateNonFeSwapAndDiscountingRate = null;
           state.responseMessage = payload;
+          state.errorSeverity = "error";
         }
       )
       .addCase(CalculateFEDiscountingAPI.pending, (state) => {
@@ -767,12 +810,14 @@ const BlotterSlicer = createSlice({
         state.CalculateFEDiscountingAPILoading = false;
         state.CalculateFEDiscountingData = payload?.response;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       .addCase(CalculateFEDiscountingAPI.rejected, (state, { payload }) => {
         state.Loader = false;
         state.CalculateFEDiscountingAPILoading = false;
         state.CalculateFEDiscountingData = null;
         state.responseMessage = payload;
+        state.errorSeverity = "error";
       })
 
       .addCase(SaveSpotTransactionRFQ.pending, (state) => {
@@ -783,11 +828,13 @@ const BlotterSlicer = createSlice({
         state.Loader = false;
         state.SaveSpotTransactionRFQLoading = false;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       .addCase(SaveSpotTransactionRFQ.rejected, (state, { payload }) => {
         state.Loader = false;
         state.SaveSpotTransactionRFQLoading = false;
         state.responseMessage = payload;
+        state.errorSeverity = "error";
       })
       .addCase(RFQForwardTransactionQuotation.pending, (state) => {
         state.Loader = true;
@@ -801,6 +848,7 @@ const BlotterSlicer = createSlice({
           state.forwardRfqQuotation = payload?.response;
           state.error = null;
           state.responseMessage = payload?.message;
+          state.errorSeverity = "success";
         }
       )
       .addCase(RFQForwardTransactionQuotation.rejected, (state, action) => {
@@ -810,6 +858,7 @@ const BlotterSlicer = createSlice({
         state.error = action.payload;
         state.responseMessage = action?.payload;
         state.forwardRfqQuotation = null;
+        state.errorSeverity = "error";
       })
       .addCase(RFQFEDiscountingTransactionQuotation.pending, (state) => {
         state.Loader = true;
@@ -823,6 +872,7 @@ const BlotterSlicer = createSlice({
           state.feDiscountingQuotation = payload?.response;
           state.error = null;
           state.responseMessage = payload?.message;
+          state.errorSeverity = "success";
         }
       )
       .addCase(
@@ -833,6 +883,7 @@ const BlotterSlicer = createSlice({
           state.error = payload;
           state.responseMessage = payload;
           state.feDiscountingQuotation = null;
+          state.errorSeverity = "error";
         }
       )
       .addCase(RFQNonFEDiscountingTransactionQuotation.pending, (state) => {
@@ -847,6 +898,7 @@ const BlotterSlicer = createSlice({
           state.nonFeDiscountingQuotation = payload?.response;
           state.error = null;
           state.responseMessage = payload?.message;
+          state.errorSeverity = "success";
         }
       )
       .addCase(
@@ -857,6 +909,7 @@ const BlotterSlicer = createSlice({
           state.error = payload;
           state.responseMessage = payload;
           state.nonFeDiscountingQuotation = null;
+          state.errorSeverity = "error";
         }
       )
       .addCase(SaveNonFEDiscountingTransactionRFQ.pending, (state) => {
@@ -868,6 +921,7 @@ const BlotterSlicer = createSlice({
           state.SaveNonFEDiscountingTransactionRFQLoading = false;
           state.saveFEDiscountingTransactionRFQ = payload?.response;
           state.responseMessage = payload?.message;
+          state.errorSeverity = "success";
         }
       )
       .addCase(
@@ -877,6 +931,7 @@ const BlotterSlicer = createSlice({
           state.saveFEDiscountingTransactionRFQ = null;
 
           state.responseMessage = payload;
+          state.errorSeverity = "error";
         }
       )
       .addCase(SaveFEDiscountingTransactionRFQ.pending, (state) => {
@@ -888,6 +943,7 @@ const BlotterSlicer = createSlice({
           state.SaveFEDiscountingTransactionRFQLoading = false;
           state.saveFEDiscountingTransactionRFQ = payload?.response;
           state.responseMessage = payload?.message;
+          state.errorSeverity = "success";
         }
       )
       .addCase(
@@ -897,6 +953,7 @@ const BlotterSlicer = createSlice({
           state.saveFEDiscountingTransactionRFQ = null;
 
           state.responseMessage = payload;
+          state.errorSeverity = "error";
         }
       )
       .addCase(AcceptTransactionCancellationRequest.pending, (state) => {
@@ -904,54 +961,66 @@ const BlotterSlicer = createSlice({
       })
       .addCase(AcceptTransactionCancellationRequest.fulfilled, (state) => {
         state.AcceptTransactionCancellationRequestLoading = false;
+        state.errorSeverity = "success";
       })
       .addCase(AcceptTransactionCancellationRequest.rejected, (state) => {
         state.AcceptTransactionCancellationRequestLoading = false;
+        state.errorSeverity = "error";
       })
       .addCase(RejectTransactionCancellationRequest.pending, (state) => {
         state.RejectTransactionCancellationRequestLoading = true;
       })
       .addCase(RejectTransactionCancellationRequest.fulfilled, (state) => {
         state.RejectTransactionCancellationRequestLoading = false;
+        state.errorSeverity = "success";
       })
       .addCase(RejectTransactionCancellationRequest.rejected, (state) => {
         state.RejectTransactionCancellationRequestLoading = false;
+        state.errorSeverity = "error";
       })
       .addCase(AcceptRFQTransaction.pending, (state) => {
         state.AcceptRFQTransactionLoading = true;
       })
       .addCase(AcceptRFQTransaction.fulfilled, (state) => {
         state.AcceptRFQTransactionLoading = false;
+        state.errorSeverity = "success";
       })
       .addCase(AcceptRFQTransaction.rejected, (state) => {
         state.AcceptRFQTransactionLoading = false;
+        state.errorSeverity = "error";
       })
       .addCase(CancelTransaction.pending, (state) => {
         state.CancelTransactionLoading = true;
       })
       .addCase(CancelTransaction.fulfilled, (state) => {
         state.CancelTransactionLoading = false;
+        state.errorSeverity = "success";
       })
       .addCase(CancelTransaction.rejected, (state) => {
         state.CancelTransactionLoading = false;
+        state.errorSeverity = "error";
       })
       .addCase(RejectRFQTransaction.pending, (state) => {
         state.RejectRFQTransactionLoading = true;
       })
       .addCase(RejectRFQTransaction.fulfilled, (state) => {
         state.RejectRFQTransactionLoading = false;
+        state.errorSeverity = "success";
       })
       .addCase(RejectRFQTransaction.rejected, (state) => {
         state.RejectRFQTransactionLoading = false;
+        state.errorSeverity = "error";
       })
       .addCase(RequestCancellation.pending, (state) => {
         state.RequestCancellationLoading = true;
       })
       .addCase(RequestCancellation.fulfilled, (state) => {
         state.RequestCancellationLoading = false;
+        state.errorSeverity = "success";
       })
       .addCase(RequestCancellation.rejected, (state) => {
         state.RequestCancellationLoading = false;
+        state.errorSeverity = "error";
       });
   },
 });

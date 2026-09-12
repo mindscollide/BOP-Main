@@ -26,6 +26,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const dealerReducer = createSlice({
   name: "uploadRates",
   initialState: {
+    errorSeverity: null,
     ratesData: null,
     responseMessage: "",
     error: null,
@@ -143,11 +144,13 @@ const dealerReducer = createSlice({
         state.marketOnOffLoading = false;
         state.responseMessage = payload?.message;
         state.marketOnOff = payload?.response;
+        state.errorSeverity = "success";
       })
       .addCase(marketOnOffAction.rejected, (state, { payload }) => {
         state.marketOnOffLoading = false;
         state.marketOnOff = null;
         state.error = payload;
+        state.errorSeverity = "error";
       })
 
       // ✅ Clear Rates
@@ -157,11 +160,13 @@ const dealerReducer = createSlice({
       .addCase(clearRatesAction.fulfilled, (state, { payload }) => {
         state.clearRatesLoading = false;
         state.clearRates = payload?.response;
+        state.errorSeverity = "success";
       })
       .addCase(clearRatesAction.rejected, (state, { payload }) => {
         state.clearRatesLoading = false;
         state.clearRates = null;
         state.error = payload;
+        state.errorSeverity = "error";
       })
 
       // ✅ Get Last Publish Rates
@@ -172,11 +177,13 @@ const dealerReducer = createSlice({
         state.getLastPublishRatesLoading = false;
         state.getLastPublishRates = payload?.response;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       .addCase(getLastPublishRatesAction.rejected, (state, { payload }) => {
         state.getLastPublishRatesLoading = false;
         state.getLastPublishRates = null;
         state.error = payload;
+        state.errorSeverity = "error";
       })
 
       // ✅ Publish New Rates
@@ -188,11 +195,13 @@ const dealerReducer = createSlice({
         state.getCurrentPublishRate = payload?.response;
         state.getLastPublishRates = payload?.response;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       .addCase(PublishNewRatesAction.rejected, (state, { payload }) => {
         state.publishNewRatesLoading = false;
         state.getCurrentPublishRate = null;
         state.error = payload;
+        state.errorSeverity = "error";
       })
 
       // ✅ Get All Tenors
@@ -203,11 +212,13 @@ const dealerReducer = createSlice({
         state.getAllTenorsLoading = false;
         state.getAllTenors = payload?.response;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       .addCase(getAllTenorsAction.rejected, (state, { payload }) => {
         state.getAllTenorsLoading = false;
         state.getAllTenors = null;
         state.error = payload;
+        state.errorSeverity = "error";
       })
 
       // ✅ Create Tenor
@@ -218,11 +229,13 @@ const dealerReducer = createSlice({
         state.createTenorLoading = false;
         state.createTenor = payload?.response;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       .addCase(createTenorAction.rejected, (state, { payload }) => {
         state.createTenorLoading = false;
         state.createTenor = null;
         state.error = payload;
+        state.errorSeverity = "error";
       })
 
       // ✅ Get Tenor Wise Forwards
@@ -233,11 +246,13 @@ const dealerReducer = createSlice({
         state.getTenorWiseForwardsLoading = false;
         state.getTenorWiseForwardsRates = payload?.response;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       .addCase(getTenorWiseForwardsAction.rejected, (state, { payload }) => {
         state.getTenorWiseForwardsLoading = false;
         state.getTenorWiseForwardsRates = null;
         state.error = payload;
+        state.errorSeverity = "error";
       })
 
       // ✅ Publish Tenor Wise Forwards
@@ -250,6 +265,7 @@ const dealerReducer = createSlice({
           state.publishTenorWiseForwardsLoading = false;
           state.publishTenorwiseForwardRates = payload?.response;
           state.responseMessage = payload?.message;
+          state.errorSeverity = "success";
         }
       )
       .addCase(
@@ -258,6 +274,7 @@ const dealerReducer = createSlice({
           state.publishTenorWiseForwardsLoading = false;
           state.publishTenorwiseForwardRates = null;
           state.error = payload;
+          state.errorSeverity = "error";
         }
       )
 
@@ -269,11 +286,13 @@ const dealerReducer = createSlice({
         state.getDiscountingRatesLoading = false;
         state.getDiscountingWiseRates = payload?.response;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       .addCase(getDiscountingRatesAction.rejected, (state, { payload }) => {
         state.getDiscountingRatesLoading = false;
         state.getDiscountingWiseRates = null;
         state.error = payload;
+        state.errorSeverity = "error";
       })
 
       // ✅ Publish Discounting Rates
@@ -286,12 +305,14 @@ const dealerReducer = createSlice({
           state.publishDiscountingRatesLoading = false;
           state.publishDiscountRates = payload?.response;
           state.responseMessage = payload?.message;
+          state.errorSeverity = "success";
         }
       )
       .addCase(publishDiscountingRatesAction.rejected, (state, { payload }) => {
         state.publishDiscountingRatesLoading = false;
         state.publishDiscountRates = null;
         state.error = payload;
+        state.errorSeverity = "error";
       })
 
       // ✅ FE Discounting
@@ -302,11 +323,13 @@ const dealerReducer = createSlice({
         state.getFeDiscountingLoading = false;
         state.getFeDiscounting = payload?.response;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       .addCase(GetFEDiscountingTableApi.rejected, (state, { payload }) => {
         state.getFeDiscountingLoading = false;
         state.getFeDiscounting = null;
         state.error = payload;
+        state.errorSeverity = "error";
       })
 
       .addCase(PublishFEDiscountingTableApi.pending, (state) => {
@@ -316,11 +339,13 @@ const dealerReducer = createSlice({
         state.publishFeDiscountingLoading = false;
         state.publishFeDiscounting = payload?.response;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       .addCase(PublishFEDiscountingTableApi.rejected, (state, { payload }) => {
         state.publishFeDiscountingLoading = false;
         state.publishFeDiscounting = null;
         state.error = payload;
+        state.errorSeverity = "error";
       })
 
       // ✅ Non-FE Discounting
@@ -331,11 +356,13 @@ const dealerReducer = createSlice({
         state.getNonFeDiscountingLoading = false;
         state.getNonFeDiscounting = payload?.response;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       .addCase(GetNonFEDiscountingTableApi.rejected, (state, { payload }) => {
         state.getNonFeDiscountingLoading = false;
         state.getNonFeDiscounting = null;
         state.error = payload;
+        state.errorSeverity = "error";
       })
 
       .addCase(PublishNonFEDiscountingTableApi.pending, (state) => {
@@ -347,6 +374,7 @@ const dealerReducer = createSlice({
           state.publishNonFeDiscountingLoading = false;
           state.publishNonFeDiscounting = payload?.response;
           state.responseMessage = payload?.message;
+          state.errorSeverity = "success";
         }
       )
       .addCase(
@@ -355,6 +383,7 @@ const dealerReducer = createSlice({
           state.publishNonFeDiscountingLoading = false;
           state.publishNonFeDiscounting = null;
           state.error = payload;
+          state.errorSeverity = "error";
         }
       )
 
@@ -366,11 +395,13 @@ const dealerReducer = createSlice({
         state.getDealerDashboardLoading = false;
         state.getDealerDashboardData = payload?.response;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       .addCase(getDealerDashboardApi.rejected, (state, { payload }) => {
         state.getDealerDashboardLoading = false;
         state.getDealerDashboardData = null;
         state.error = payload;
+        state.errorSeverity = "error";
       })
 
       // ✅ Volt Meter
@@ -381,11 +412,13 @@ const dealerReducer = createSlice({
         state.getVoltMeterStatusLoading = false;
         state.GetVoltMeterStatus = payload?.response;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       .addCase(GetVoltMeterStatusApi.rejected, (state, { payload }) => {
         state.getVoltMeterStatusLoading = false;
         state.GetVoltMeterStatus = null;
         state.error = payload;
+        state.errorSeverity = "error";
       })
 
       .addCase(UpdateVoltMeterStatusApi.pending, (state) => {
@@ -395,11 +428,13 @@ const dealerReducer = createSlice({
         state.updateVoltMeterStatusLoading = false;
         state.UpdateVoltMeterStatus = payload?.response;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       .addCase(UpdateVoltMeterStatusApi.rejected, (state, { payload }) => {
         state.updateVoltMeterStatusLoading = false;
         state.UpdateVoltMeterStatus = null;
         state.error = payload;
+        state.errorSeverity = "error";
       });
   },
 });

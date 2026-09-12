@@ -5,6 +5,7 @@ import { GetAllTradesAPI } from "./DailyTradeActions";
 const DailyTradeSlicer = createSlice({
   name: "DailyTradeSlicer",
   initialState: {
+    errorSeverity: null,
     responseMessage: "",
     Loader: false,
     error: null,
@@ -26,6 +27,7 @@ const DailyTradeSlicer = createSlice({
         state.GetAllTrades = payload?.response;
         state.error = null;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       // Rejected state (when the API call fails ViewAllNatureOfBussinessAPI)
       .addCase(GetAllTradesAPI.rejected, (state, action) => {
@@ -33,6 +35,7 @@ const DailyTradeSlicer = createSlice({
         state.Loader = false;
         state.error = action.payload;
         state.GetAllTrades = null;
+        state.errorSeverity = "error";
       });
 
     // builder.addCase(setActiveTab, (state, action) => {

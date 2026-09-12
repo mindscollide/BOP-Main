@@ -4,6 +4,7 @@ import { GetTresmarkCrossesPremiumsAPI } from "./TresmarkCrossesActions";
 const TresmarkCrossesReducer = createSlice({
   name: "TresmarkCrossesReducer",
   initialState: {
+    errorSeverity: null,
     GetTresmarkCrossesPremiums: null,
     responseMessage: "",
     error: null,
@@ -29,12 +30,14 @@ const TresmarkCrossesReducer = createSlice({
           state.GetTresmarkCrossesPremiums = payload?.response;
           state.error = null;
           state.responseMessage = payload?.message;
+          state.errorSeverity = "success";
         }
       )
       .addCase(GetTresmarkCrossesPremiumsAPI.rejected, (state, action) => {
         state.Loading = false;
         state.GetTresmarkCrossesPremiums = null;
         state.error = action.payload;
+        state.errorSeverity = "error";
       });
   },
 });

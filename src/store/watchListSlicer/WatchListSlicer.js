@@ -19,6 +19,7 @@ import {
 const WatchListSlice = createSlice({
   name: "WatchList",
   initialState: {
+    errorSeverity: null,
     responseMessage: "",
     error: null,
 
@@ -111,11 +112,13 @@ const WatchListSlice = createSlice({
         state.GetMisDataByRangeLoading = false;
         state.GetMisDataByRange = payload?.response;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       .addCase(GetMisDataByRangeAPI.rejected, (state, { payload }) => {
         state.GetMisDataByRangeLoading = false;
         state.GetMisDataByRange = null;
         state.error = payload;
+        state.errorSeverity = "error";
       })
 
       // ------------------ GetDashboardData ------------------
@@ -126,11 +129,13 @@ const WatchListSlice = createSlice({
         state.GetDashboardDataLoading = false;
         state.getAllInstrumentForCounterParties = payload?.response;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       .addCase(GetDashboardDataAPI.rejected, (state, { payload }) => {
         state.GetDashboardDataLoading = false;
         state.getAllInstrumentForCounterParties = null;
         state.error = payload;
+        state.errorSeverity = "error";
       })
 
       // ------------------ SaveUserDashboard ------------------
@@ -141,11 +146,13 @@ const WatchListSlice = createSlice({
         state.SaveUserDashboardLoading = false;
         state.SaveUserDashboardData = payload?.response;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       .addCase(SaveUserDashboardAPI.rejected, (state, { payload }) => {
         state.SaveUserDashboardLoading = false;
         state.SaveUserDashboardData = null;
         state.error = payload;
+        state.errorSeverity = "error";
       })
 
       // ------------------ GetAllTreasuryInstruments ------------------
@@ -156,11 +163,13 @@ const WatchListSlice = createSlice({
         state.GetAllTreasuryInstrumentsLoading = false;
         state.GetAllInstrumentForTreasury = payload?.response;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       .addCase(getAllTreasuryInstrumentsApi.rejected, (state, { payload }) => {
         state.GetAllTreasuryInstrumentsLoading = false;
         state.GetAllInstrumentForTreasury = null;
         state.error = payload;
+        state.errorSeverity = "error";
       })
 
       // ------------------ GetForwardRatesForCounterParty ------------------
@@ -173,6 +182,7 @@ const WatchListSlice = createSlice({
           state.GetForwardRatesForCounterPartyLoading = false;
           state.GetForwardRatesForCounterParty = payload?.response;
           state.responseMessage = payload?.message;
+          state.errorSeverity = "success";
         }
       )
       .addCase(
@@ -181,6 +191,7 @@ const WatchListSlice = createSlice({
           state.GetForwardRatesForCounterPartyLoading = false;
           state.GetForwardRatesForCounterParty = null;
           state.error = payload;
+          state.errorSeverity = "error";
         }
       )
 
@@ -194,6 +205,7 @@ const WatchListSlice = createSlice({
           state.GetDiscountingRatesForCounterPartyLoading = false;
           state.GetDiscountingRatesForCounterParty = payload?.response;
           state.responseMessage = payload?.message;
+          state.errorSeverity = "success";
         }
       )
       .addCase(
@@ -202,6 +214,7 @@ const WatchListSlice = createSlice({
           state.GetDiscountingRatesForCounterPartyLoading = false;
           state.GetDiscountingRatesForCounterParty = null;
           state.error = payload;
+          state.errorSeverity = "error";
         }
       )
 
@@ -213,11 +226,13 @@ const WatchListSlice = createSlice({
         state.GetBankSpotForTreasuryLoading = false;
         state.GetBankSpotForTreasury = payload?.response;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       .addCase(GetBankSpotForTreasuryApi.rejected, (state, { payload }) => {
         state.GetBankSpotForTreasuryLoading = false;
         state.GetBankSpotForTreasury = null;
         state.error = payload;
+        state.errorSeverity = "error";
       })
 
       // ------------------ GetBankForwardForTreasury ------------------
@@ -228,11 +243,13 @@ const WatchListSlice = createSlice({
         state.GetBankForwardForTreasuryLoading = false;
         state.GetBankForwardForTreasury = payload?.response;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       .addCase(GetBankForwardForTreasuryApi.rejected, (state, { payload }) => {
         state.GetBankForwardForTreasuryLoading = false;
         state.GetBankForwardForTreasury = null;
         state.error = payload;
+        state.errorSeverity = "error";
       })
 
       // ------------------ GetDiscountingRatesForTreasury ------------------
@@ -245,6 +262,7 @@ const WatchListSlice = createSlice({
           state.GetDiscountingRatesForTreasuryLoading = false;
           state.GetDiscountingRatesForTreasury = payload?.response;
           state.responseMessage = payload?.message;
+          state.errorSeverity = "success";
         }
       )
       .addCase(
@@ -253,6 +271,7 @@ const WatchListSlice = createSlice({
           state.GetDiscountingRatesForTreasuryLoading = false;
           state.GetDiscountingRatesForTreasury = null;
           state.error = payload;
+          state.errorSeverity = "error";
         }
       )
 
@@ -264,11 +283,13 @@ const WatchListSlice = createSlice({
         state.GetMarketStatusLoading = false;
         state.getMarketStatus = payload?.response;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       .addCase(getMarketStatusApi.rejected, (state, { payload }) => {
         state.GetMarketStatusLoading = false;
         state.getMarketStatus = null;
         state.error = payload;
+        state.errorSeverity = "error";
       })
 
       //----------------GetCorporateDailyVolume------------------
@@ -279,11 +300,13 @@ const WatchListSlice = createSlice({
         state.GetCorporateDailyVolumeLoading = false;
         state.GetCorporateDailyVolume = payload?.response;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       .addCase(GetCorporateDailyVolumeAPI.rejected, (state, { payload }) => {
         state.GetCorporateDailyVolumeLoading = false;
         state.GetCorporateDailyVolume = null;
         state.error = payload;
+        state.errorSeverity = "error";
       })
       .addCase(UpdateBidOfferStatusAPI.pending, (state) => {
         state.UpdateBidOfferStatusLoading = true;
@@ -292,12 +315,14 @@ const WatchListSlice = createSlice({
         state.UpdateBidOfferStatusLoading = false;
         state.UpdateBidOfferStatus = payload?.response;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       .addCase(UpdateBidOfferStatusAPI.rejected, (state, { payload }) => {
         state.UpdateBidOfferStatusLoading = false;
         state.UpdateBidOfferStatus = null;
         state.error = payload;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "error";
       })
       .addCase(GetBidOfferStatusApi.pending, (state) => {
         state.GetBidOfferStatusLoading = true;
@@ -306,11 +331,13 @@ const WatchListSlice = createSlice({
         state.GetBidOfferStatusLoading = false;
         state.getBidOfferStatus = payload?.response;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       .addCase(GetBidOfferStatusApi.rejected, (state, { payload }) => {
         state.GetBidOfferStatusLoading = false;
         state.getBidOfferStatus = null;
         state.error = payload;
+        state.errorSeverity = "error";
       })
       .addCase(getAllHolidaysForTransactionApi.pending, (state) => {})
       .addCase(
@@ -318,6 +345,7 @@ const WatchListSlice = createSlice({
         (state, { payload }) => {
           state.getAllHolidays = payload?.response;
           state.responseMessage = payload?.message;
+          state.errorSeverity = "success";
         }
       )
       .addCase(
@@ -325,6 +353,7 @@ const WatchListSlice = createSlice({
         (state, { payload }) => {
           state.getAllHolidays = null;
           state.error = payload;
+          state.errorSeverity = "error";
         }
       );
   },

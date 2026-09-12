@@ -16,6 +16,7 @@ import {
 const ReportSlicer = createSlice({
   name: "ReportSlicer",
   initialState: {
+    errorSeverity: null,
     Loader: false,
     error: null,
     responseMessage: "",
@@ -44,12 +45,14 @@ const ReportSlicer = createSlice({
         state.Loader = false;
         state.error = null;
         state.responseMessage = payload?.message || "Download successful";
+        state.errorSeverity = "success";
       })
       // Rejected state
       .addCase(DownloadFileAPI.rejected, (state, action) => {
         state.Loader = false;
         state.error = action.payload || "Download failed";
         state.responseMessage = "";
+        state.errorSeverity = "error";
       })
 
       // Pending state
@@ -68,6 +71,7 @@ const ReportSlicer = createSlice({
           state.Loader = false;
           state.error = null;
           state.responseMessage = payload?.message || "Download successful";
+          state.errorSeverity = "success";
         }
       )
       // Rejected state
@@ -77,6 +81,7 @@ const ReportSlicer = createSlice({
           state.Loader = false;
           state.error = action.payload || "Download failed";
           state.responseMessage = "";
+          state.errorSeverity = "error";
         }
       )
 
@@ -96,6 +101,7 @@ const ReportSlicer = createSlice({
           state.Loader = false;
           state.error = null;
           state.responseMessage = payload?.message || "Download successful";
+          state.errorSeverity = "success";
         }
       )
       // Rejected state
@@ -105,6 +111,7 @@ const ReportSlicer = createSlice({
           state.Loader = false;
           state.error = action.payload || "Download failed";
           state.responseMessage = "";
+          state.errorSeverity = "error";
         }
       )
 
@@ -124,6 +131,7 @@ const ReportSlicer = createSlice({
           state.Loader = false;
           state.error = null;
           state.responseMessage = payload?.message || "Download successful";
+          state.errorSeverity = "success";
         }
       )
       // Rejected state
@@ -133,6 +141,7 @@ const ReportSlicer = createSlice({
           state.Loader = false;
           state.error = action.payload || "Download failed";
           state.responseMessage = "";
+          state.errorSeverity = "error";
         }
       )
 
@@ -149,6 +158,7 @@ const ReportSlicer = createSlice({
           state.Loader = false;
           state.error = null;
           state.responseMessage = payload?.message || "Download successful";
+          state.errorSeverity = "success";
         }
       )
       // Rejected state
@@ -158,6 +168,7 @@ const ReportSlicer = createSlice({
           state.Loader = false;
           state.error = action.payload || "Download failed";
           state.responseMessage = "";
+          state.errorSeverity = "error";
         }
       )
 
@@ -177,6 +188,7 @@ const ReportSlicer = createSlice({
           state.Loader = false;
           state.error = null;
           state.responseMessage = payload?.message || "Download successful";
+          state.errorSeverity = "success";
         }
       )
       // Rejected state
@@ -186,6 +198,7 @@ const ReportSlicer = createSlice({
           state.Loader = false;
           state.error = action.payload || "Download failed";
           state.responseMessage = "";
+          state.errorSeverity = "error";
         }
       )
 
@@ -206,6 +219,7 @@ const ReportSlicer = createSlice({
           state.error = null;
           state.downloadPDFReportBlotterTransactionTreasury = payload.response;
           state.responseMessage = payload?.message || "Download successful";
+          state.errorSeverity = "success";
         }
       )
       // Rejected state
@@ -216,6 +230,7 @@ const ReportSlicer = createSlice({
           state.downloadPDFReportBlotterTransactionTreasury = null;
           state.error = action.payload || "Download failed";
           state.responseMessage = "";
+          state.errorSeverity = "error";
         }
       )
 
@@ -232,6 +247,7 @@ const ReportSlicer = createSlice({
           state.Loader = false;
           state.error = null;
           state.responseMessage = payload?.message || "Download successful";
+          state.errorSeverity = "success";
         }
       )
       // Rejected state
@@ -241,6 +257,7 @@ const ReportSlicer = createSlice({
           state.Loader = false;
           state.error = action.payload || "Download failed";
           state.responseMessage = "";
+          state.errorSeverity = "error";
         }
       )
 
@@ -259,6 +276,7 @@ const ReportSlicer = createSlice({
           state.EmailBlotterTransactionDetailsForBranchAPILoading = false;
           state.error = null;
           state.responseMessage = payload.message || "Email Sent successful";
+          state.errorSeverity = "success";
         }
       )
       // Rejected state
@@ -269,6 +287,7 @@ const ReportSlicer = createSlice({
           state.EmailBlotterTransactionDetailsForBranchAPILoading = false;
           state.error = action.payload || "Download failed";
           state.responseMessage = "";
+          state.errorSeverity = "error";
         }
       )
 
@@ -291,6 +310,7 @@ const ReportSlicer = createSlice({
 
           state.error = null;
           state.responseMessage = payload.message || "Email Sent successful";
+          state.errorSeverity = "success";
         }
       )
       // Rejected state
@@ -301,6 +321,7 @@ const ReportSlicer = createSlice({
           state.EmailBlotterTransactionDetailsForCorporateAPILoading = false;
           state.error = action.payload || "Download failed";
           state.responseMessage = "";
+          state.errorSeverity = "error";
         }
       )
 
@@ -322,6 +343,7 @@ const ReportSlicer = createSlice({
           state.EmailBlotterTransactionDetailsForTreasuryAPILoading = false;
           state.error = null;
           state.responseMessage = payload.message || "Email Sent successful";
+          state.errorSeverity = "success";
         }
       )
       // Rejected state
@@ -332,6 +354,7 @@ const ReportSlicer = createSlice({
           state.EmailBlotterTransactionDetailsForTreasuryAPILoading = false;
           state.error = action.payload || "Download failed";
           state.responseMessage = "";
+          state.errorSeverity = "error";
         }
       );
   },

@@ -9,6 +9,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const chatSlicer = createSlice({
   name: "chatSlicer",
   initialState: {
+    errorSeverity: null,
     Loader: false,
     responseMessage: "",
     error: null,
@@ -31,11 +32,13 @@ const chatSlicer = createSlice({
         state.getAllChatByTransactions = payload?.response;
         state.error = null;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       .addCase(getAllChatByTransactionId.rejected, (state, { payload }) => {
         state.Loader = false;
         state.getAllChatByTransactionIdLoading = false;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "error";
       })
 
       .addCase(saveChatApi.pending, (state) => {
@@ -46,10 +49,12 @@ const chatSlicer = createSlice({
         state.saveChatResponse = payload?.response;
         state.responseMessage = payload?.message;
         state.error = null;
+        state.errorSeverity = "success";
       })
       .addCase(saveChatApi.rejected, (state, { payload }) => {
         state.Loader = false;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "error";
       })
       .addCase(uploadDocumentApi.pending, (state) => {
         state.Loader = false;
@@ -59,10 +64,12 @@ const chatSlicer = createSlice({
         state.uploadDocument = payload?.response;
         state.responseMessage = payload?.message;
         state.error = null;
+        state.errorSeverity = "success";
       })
       .addCase(uploadDocumentApi.rejected, (state, { payload }) => {
         state.Loader = false;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "error";
       })
       .addCase(DownloadFileApi.pending, (state) => {
         state.Loader = true;
@@ -72,10 +79,12 @@ const chatSlicer = createSlice({
         state.DownloadFile = payload?.response;
         state.responseMessage = payload?.message;
         state.error = null;
+        state.errorSeverity = "success";
       })
       .addCase(DownloadFileApi.rejected, (state, { payload }) => {
         state.Loader = false;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "error";
       });
   },
 });

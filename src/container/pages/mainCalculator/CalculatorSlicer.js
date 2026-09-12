@@ -8,6 +8,7 @@ import {
 const CalculatorSlice = createSlice({
   name: "CalculatorSlice",
   initialState: {
+    errorSeverity: null,
     responseMessage: "",
     Loader: false,
     error: null,
@@ -30,6 +31,7 @@ const CalculatorSlice = createSlice({
         state.calculatorData = payload?.response;
         state.error = null;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       // Rejected state (when the API call fails GetAllCalculatorData)
       .addCase(GetAllCalculatorData.rejected, (state, action) => {
@@ -37,6 +39,7 @@ const CalculatorSlice = createSlice({
         state.Loader = false;
         state.error = action.payload;
         state.calculatorData = null;
+        state.errorSeverity = "error";
       })
 
       // Pending state (while the API call is being made CalculateFxDiscountingAPI)
@@ -50,6 +53,7 @@ const CalculatorSlice = createSlice({
         state.calculateFXDiscountingData = payload?.response;
         state.error = null;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       // Rejected state (when the API call fails CalculateFxDiscountingAPI)
       .addCase(CalculateFxDiscountingAPI.rejected, (state, action) => {
@@ -57,6 +61,7 @@ const CalculatorSlice = createSlice({
         state.Loader = false;
         state.error = action.payload;
         state.calculateFXDiscountingData = null;
+        state.errorSeverity = "error";
       })
 
       // Pending state (while the API call is being made CalculateNonFxDiscountingAPI)
@@ -70,6 +75,7 @@ const CalculatorSlice = createSlice({
         state.calculateNonFXDiscountingData = payload?.response;
         state.error = null;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       // Rejected state (when the API call fails CalculateNonFxDiscountingAPI)
       .addCase(CalculateNonFxDiscountingAPI.rejected, (state, action) => {
@@ -77,6 +83,7 @@ const CalculatorSlice = createSlice({
         state.Loader = false;
         state.error = action.payload;
         state.calculateNonFXDiscountingData = null;
+        state.errorSeverity = "error";
       })
 
       // Pending state (while the API call is being made CalculateForwardsAPI)
@@ -90,6 +97,7 @@ const CalculatorSlice = createSlice({
         state.calculateForwardsData = payload?.response;
         state.error = null;
         state.responseMessage = payload?.message;
+        state.errorSeverity = "success";
       })
       // Rejected state (when the API call fails CalculateForwardsAPI)
       .addCase(CalculateForwardsAPI.rejected, (state, action) => {
@@ -97,6 +105,7 @@ const CalculatorSlice = createSlice({
         state.Loader = false;
         state.error = action.payload;
         state.calculateForwardsData = null;
+        state.errorSeverity = "error";
       });
   },
 });
