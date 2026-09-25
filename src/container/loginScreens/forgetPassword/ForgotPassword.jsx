@@ -104,14 +104,14 @@ const ForgotPassword = () => {
         </Col>
         <Col sm={12} md={12} lg={12}>
           <section className={styles["LoginCard"]}>
-            <h4 className={styles["Heading-js"]}>Forgot Passowrd?</h4>
+            <h4 className={styles["Heading-js"]}>Recover Password</h4>
             <span className='mb-4 text-center'>
               Please type your full email
             </span>
             <>
               <InputGroup>
                 <InputGroup.Text className={styles["Icon-Field-class"]}>
-                  <IconElement iconClass={"icon-user"} />
+                  <IconElement iconClass={"icon-email"} />
                 </InputGroup.Text>
                 <Form.Control
                   name='new_email'
@@ -136,10 +136,10 @@ const ForgotPassword = () => {
 
             <CustomButton
               className='mt-3'
-              value={"Forgot Password"}
+              value={"Send Change Password Link"}
               onClick={handleClickResetBtn}
               applyClass={"authLoginBtn"}
-              disabled={email ? false : true}
+              // disabled={email ? false : true}
             />
             <span className='mt-2 text-center'>
               <Link className={styles["forgotPasswordLink"]} to={"/"}>
