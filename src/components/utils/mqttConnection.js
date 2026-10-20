@@ -12,7 +12,7 @@ export const useMqttClient = ({
   const topicsToSubscribeRef = useRef([]);
   const randomString = useRef(secureRandomString());
   const onConnectedSetRef = useRef(false); // ✅ guard against reassigning onConnected
-  const pingIntervalRef = useRef(null);    // ✅ keep-alive ping interval
+  const pingIntervalRef = useRef(null); // ✅ keep-alive ping interval
 
   const isBranch = import.meta.env.VITE_APP_INCLUDE_BRANCH === "true";
   const isCorporate = import.meta.env.VITE_APP_INCLUDE_CORPORATE === "true";
@@ -27,7 +27,7 @@ export const useMqttClient = ({
         onSuccess: () => {
           console.log(`Subscribed: ${topic}`);
           setSubscribedTopics((prev) =>
-            prev.includes(topic) ? prev : [...prev, topic]
+            prev.includes(topic) ? prev : [...prev, topic],
           );
         },
         onFailure: (err) => {
@@ -91,7 +91,7 @@ export const useMqttClient = ({
         console.error("Message parse error:", err);
       }
     },
-    [onMessageArrivedCallback]
+    [onMessageArrivedCallback],
   );
 
   // ✅ Connection lost handler
@@ -103,7 +103,7 @@ export const useMqttClient = ({
       stopPing(); // ✅ stop ping on disconnect
       onConnectionLostCallback?.(resObj);
     },
-    [onConnectionLostCallback, stopPing]
+    [onConnectionLostCallback, stopPing],
   );
 
   // ✅ Main connect function
@@ -121,7 +121,7 @@ export const useMqttClient = ({
         clientRef.current = new Paho.Client(
           import.meta.env.VITE_MQTT_HOST,
           Number(import.meta.env.VITE_MQTT_PORT),
-          randomString.current
+          randomString.current,
         );
 
         clientRef.current.onConnectionLost = onConnectionLost;
@@ -164,21 +164,26 @@ export const useMqttClient = ({
             console.error("MQTT connect failed:", err?.errorMessage);
             setIsConnected(false);
           },
-          keepAliveInterval: 30,  // ✅ lowered from 60 → 30s to prevent broker timeout
+          keepAliveInterval: 30, // ✅ lowered from 60 → 30s to prevent broker timeout
           reconnect: true,
           cleanSession: false,
           timeout: 30,
           userName: import.meta.env.VITE_MQTT_USERNAME,
           password: import.meta.env.VITE_MQTT_PASSWORD,
-          useSSL:
-            import.meta.env.VITE_MQTT_PORT === "8883" &&
-            import.meta.env.VITE_MQTT_HOST === "boptrade.tresmark.com",
+          useSSL: import.meta.env.VITE_MQTT_PORT === "8883" ? true: false,
         });
       } catch (e) {
         console.error("MQTT connect exception:", e.message);
       }
     },
-    [onMessageArrived, onConnectionLost, subscribeToTopics, startPing, isBranch, isCorporate]
+    [
+      onMessageArrived,
+      onConnectionLost,
+      subscribeToTopics,
+      startPing,
+      isBranch,
+      isCorporate,
+    ],
   );
 
   // ✅ Clean disconnect
