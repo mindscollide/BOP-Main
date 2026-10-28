@@ -113,7 +113,6 @@ const Dashboard = () => {
   const handleMqttMessageRef = useRef(null);
 
   const [isSoundOn, setIsSoundOn] = useState(false);
-  // console.log(isSoundOn, "settingModalsettingModal");
   const categoryValue = useSelector(
     (state) => state.dealerReducer.categoryValue
   );
@@ -143,12 +142,12 @@ const Dashboard = () => {
   const subscribeID = IsBranch
     ? "BOP_BRANCH"
     : IsCorporate
-    ? "BOP_CORPORATE"
-    : isTreasury
-    ? "BOP_TREASURY"
-    : isDealer
-    ? "BOP_DEALER"
-    : null;
+      ? "BOP_CORPORATE"
+      : isTreasury
+        ? "BOP_TREASURY"
+        : isDealer
+          ? "BOP_DEALER"
+          : null;
   const userID = localStorage.getItem("userID");
 
   // Update setting response when settingState changes
@@ -188,7 +187,6 @@ const Dashboard = () => {
           dispatch(setMarketTimingsUpdated(payload));
           break;
         case "MARKET_STATUS_UPDATED":
-          console.log("MARKET_STATUS_UPDATED", payload);
           dispatch(marketStatusUpdated(payload.marketStatus.isMarketOn));
           dispatch(setMarketStatus(payload.marketStatus.isMarketOn));
           break;
@@ -213,7 +211,6 @@ const Dashboard = () => {
         case "TENOR_WISE_FORWARD_RATES_PUBLISHED":
           startTransition(() => {
             dispatch(tenorWiseFowardsRatesPublishedActions(payload));
-            console.log(payload, "TENOR_WISE_FORWARD_RATES_PUBLISHED");
             let tenorsData = {
               newIsForwardtenorList:
                 payload.tenorWiseForwardRates.newIsForwardtenorList,
@@ -264,7 +261,6 @@ const Dashboard = () => {
 
         // ✅ Blotter Transaction Events (heavy updates → use startTransition)
         case "BLOTTER_TRANSACTION_ADDED":
-          console.log(payload, "BLOTTER_TRANSACTION_ADDED");
           startTransition(() => {
             dispatch(BlotterTransactionAdded(payload));
             dispatch(BlotterTransactionAddedForTreasury(payload));
@@ -290,7 +286,6 @@ const Dashboard = () => {
           break;
 
         case "BLOTTER_TRANSACTION_RFQ_QUOTED":
-          console.log(payload, "BLOTTER_TRANSACTION_RFQ_QUOTED");
           startTransition(() => {
             dispatch(BlotterTransactionRFQQuoted(payload));
             dispatch(BlotterTransactionRFQQuotedForTreasury(payload));
@@ -314,7 +309,7 @@ const Dashboard = () => {
               if (
                 chatModal &&
                 chatModalTransactionId ===
-                  payload?.transaction?.pK_TransactionID
+                payload?.transaction?.pK_TransactionID
               ) {
                 dispatch(setChatModal(false));
               }
@@ -332,7 +327,7 @@ const Dashboard = () => {
               if (
                 chatModal &&
                 chatModalTransactionId ===
-                  payload?.transaction?.pK_TransactionID
+                payload?.transaction?.pK_TransactionID
               ) {
                 dispatch(setChatModal(false));
               }
@@ -367,7 +362,7 @@ const Dashboard = () => {
               if (
                 chatModal &&
                 chatModalTransactionId ===
-                  payload?.transaction?.pK_TransactionID
+                payload?.transaction?.pK_TransactionID
               ) {
                 dispatch(setChatModal(false));
               }
@@ -396,6 +391,7 @@ const Dashboard = () => {
 
         // ✅ Spot/Forward rates — wrap in transition
         case "TREASURY_SPOT_RATES_FEED":
+       
           startTransition(() => {
             dispatch(setTreasurySpotRatesFeed(payload));
           });
@@ -411,6 +407,7 @@ const Dashboard = () => {
           });
           break;
         case "TREASURY_FORWARD_RATES_FEED":
+
           startTransition(() => {
             dispatch(setTreasuryForwardRates(payload));
           });
@@ -476,7 +473,6 @@ const Dashboard = () => {
           break;
 
         case "TREASURY_NOP_UPDATED":
-          console.log(data.payload, "TREASURY_NOP_UPDATED");
           dispatch(GetNOPDataAPI({ navigate }));
 
           const startDate = new Date();
@@ -600,7 +596,7 @@ const Dashboard = () => {
       }
     };
   }, [categoryValue]);
-  
+
   useEffect(() => {
     if (!isConnected) return;
 
@@ -671,10 +667,10 @@ const Dashboard = () => {
       let getSoundVal =
         settingData?.response && Array.isArray(settingData?.response)
           ? settingData.response.filter(
-              (data) =>
-                data.configKey === "BD_SoundOnEveryMessage" ||
-                data.configKey === "CU_SoundOnEveryMessage"
-            )
+            (data) =>
+              data.configKey === "BD_SoundOnEveryMessage" ||
+              data.configKey === "CU_SoundOnEveryMessage"
+          )
           : null;
 
       if (getSoundVal !== null && getSoundVal.length > 0) {

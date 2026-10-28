@@ -127,14 +127,14 @@ const getRowKey = (record) =>
 // ── Component ─────────────────────────────────────────────────────────────────
 const BankSpot = memo(() => {
   const crossInstruments = useSelector(selectCrossInstruments, shallowEqual);
-  const fullFeed         = useSelector(selectTreasuryFeed);
-  const worldCrosses     = useSelector(selectWorldCrosses, shallowEqual);
-  const worldCurrencies  = useSelector(selectWorldCurrencies, shallowEqual);
-  const isLoading        = useSelector(selectIsLoading);
+  const fullFeed = useSelector(selectTreasuryFeed);
+  const worldCrosses = useSelector(selectWorldCrosses, shallowEqual);
+  const worldCurrencies = useSelector(selectWorldCurrencies, shallowEqual);
+  const isLoading = useSelector(selectIsLoading);
 
   const [processedData, setProcessedData] = useState([]);
 
-  const rafRef      = useRef(null);
+  const rafRef = useRef(null);
   const pendingFeed = useRef(null);
   const lastFeedRef = useRef(null); // ✅ tracks last applied feed values for diffing
 
@@ -154,15 +154,15 @@ const BankSpot = memo(() => {
       const isGold = instrument.instrumentID === 21;
 
       return {
-        instrumentID:            instrument.instrumentID,
-        secondaryInstrumentID:   instrument.secondaryInstrumentID,
-        instrumentName:          instrument.instrumentName,
+        instrumentID: instrument.instrumentID,
+        secondaryInstrumentID: instrument.secondaryInstrumentID,
+        instrumentName: instrument.instrumentName,
         secondaryInstrumentName: instrument.secondaryInstrumentName,
-        time:            matchedCross?.time  ?? "",
-        worldCrossBid:   matchedCross?.bid   ?? 0,
+        time: matchedCross?.time ?? "",
+        worldCrossBid: matchedCross?.bid ?? 0,
         worldCrossOffer: matchedCross?.offer ?? 0,
-        worldCurBid:     isGold ? (matchedCross?.bid   ?? 0) : (matchedCurrency?.bid   ?? 0),
-        worldCurOffer:   isGold ? (matchedCross?.offer ?? 0) : (matchedCurrency?.offer ?? 0),
+        worldCurBid: isGold ? (matchedCross?.bid ?? 0) : (matchedCurrency?.bid ?? 0),
+        worldCurOffer: isGold ? (matchedCross?.offer ?? 0) : (matchedCurrency?.offer ?? 0),
       };
     });
   }, [crossInstruments, worldCrosses, worldCurrencies]);
@@ -176,67 +176,82 @@ const BankSpot = memo(() => {
   }, [enrichedData]);
 
   // ── Pure feed applier — returns prevData (same ref) if nothing changed ────
-  const applyFeed = useCallback((feed, prevData) => {
-    const { instrumentCrossRate: cross, instrumentParitySpot: spot } = feed;
-    let changed = false;
 
-    const next = prevData.map((item) => {
-      let updated = item;
 
-      // Cross rate update
-      if (
-        cross &&
-        item.instrumentID === cross.instrumentID &&
-        item.secondaryInstrumentID === cross.secondaryInstrumentID &&
-        item.worldCrossBid !== cross.bid
-      ) {
+const applyFeed = useCallback((feed, prevData) => {
+  const { instrumentCrossRate: cross, instrumentParitySpot: spot } = feed;
+  let changed = false;
+
+  const next = prevData.map((item) => {
+    let updated = item;
+
+    // Cross rate update
+    if (
+      cross &&
+      item.instrumentID === cross.instrumentID &&
+      item.secondaryInstrumentID === cross.secondaryInstrumentID &&
+      (
+        Number(item.worldCrossBid) !== Number(cross.bid) ||
+        Number(item.worldCrossOffer) !== Number(cross.ask) ||
+        item.time !== cross.updateDateTime
+      )
+    ) {
+      updated = {
+        ...updated,
+        worldCrossBid: cross.bid,
+        worldCrossOffer: cross.ask,
+        time: cross.updateDateTime,
+      };
+
+      // Only Gold (instrumentID 21):
+      // Cross rate also updates Parity/Currency fields,
+      // even when instrumentParitySpot is null.
+      if (item.instrumentID === 21) {
         updated = {
           ...updated,
-          worldCrossBid:   cross.bid,
-          worldCrossOffer: cross.ask,
-          time:            cross.updateDateTime,
+          worldCurBid: cross.bid,
+          worldCurOffer: cross.ask,
         };
-        // Gold: cross rate also drives worldCur fields
-        if (item.instrumentID === 21) {
-          updated = {
-            ...updated,
-            worldCurBid:   cross.bid,
-            worldCurOffer: cross.ask,
-          };
-        }
-        changed = true;
       }
 
-      // Parity spot update (non-gold only)
-      if (
-        spot &&
-        item.instrumentID === spot.instrumentID &&
-        item.instrumentID !== 21 &&
-        (Number(updated.worldCurBid)   !== Number(spot.bid) ||
-         Number(updated.worldCurOffer) !== Number(spot.ask))
-      ) {
-        updated = {
-          ...updated,
-          worldCurBid:   spot.bid,
-          worldCurOffer: spot.ask,
-        };
-        changed = true;
-      }
+      changed = true;
+    }
 
-      return updated;
-    });
+    // Existing Parity spot update for non-Gold instruments
+    if (
+      spot &&
+      item.instrumentID === spot.instrumentID &&
+      item.instrumentID !== 21 &&
+      (
+        Number(updated.worldCurBid) !== Number(spot.bid) ||
+        Number(updated.worldCurOffer) !== Number(spot.ask)
+      )
+    ) {
+      updated = {
+        ...updated,
+        worldCurBid: spot.bid,
+        worldCurOffer: spot.ask,
+      };
 
-    // ✅ Same reference = React skips re-render entirely
-    return changed ? next : prevData;
-  }, []);
+      changed = true;
+    }
+
+    return updated;
+  });
+
+  // Return the same reference when no values changed
+  return changed ? next : prevData;
+}, []);
+
+
 
   // ── RAF-batched feed effect with value-level diffing ──────────────────────
   useEffect(() => {
     if (!fullFeed) return;
 
     const cross = fullFeed.instrumentCrossRate;
-    const spot  = fullFeed.instrumentParitySpot;
-    const last  = lastFeedRef.current;
+    const spot = fullFeed.instrumentParitySpot;
+    const last = lastFeedRef.current;
 
     // ✅ Bail out if all tracked values are identical to last applied feed
     //    This is the primary guard against the "Maximum update depth exceeded" loop:
@@ -244,28 +259,28 @@ const BankSpot = memo(() => {
     //    changed, which would otherwise re-trigger this effect every render.
     if (
       last &&
-      last.crossBid   === cross?.bid &&
-      last.crossAsk   === cross?.ask &&
-      last.crossID    === cross?.instrumentID &&
+      last.crossBid === cross?.bid &&
+      last.crossAsk === cross?.ask &&
+      last.crossID === cross?.instrumentID &&
       last.crossSecID === cross?.secondaryInstrumentID &&
-      last.crossTime  === cross?.updateDateTime &&
-      last.spotBid    === spot?.bid &&
-      last.spotAsk    === spot?.ask &&
-      last.spotID     === spot?.instrumentID
+      last.crossTime === cross?.updateDateTime &&
+      last.spotBid === spot?.bid &&
+      last.spotAsk === spot?.ask &&
+      last.spotID === spot?.instrumentID
     ) {
       return;
     }
 
     // ✅ Snapshot values for next render's diff
     lastFeedRef.current = {
-      crossBid:   cross?.bid,
-      crossAsk:   cross?.ask,
-      crossID:    cross?.instrumentID,
+      crossBid: cross?.bid,
+      crossAsk: cross?.ask,
+      crossID: cross?.instrumentID,
       crossSecID: cross?.secondaryInstrumentID,
-      crossTime:  cross?.updateDateTime,
-      spotBid:    spot?.bid,
-      spotAsk:    spot?.ask,
-      spotID:     spot?.instrumentID,
+      crossTime: cross?.updateDateTime,
+      spotBid: spot?.bid,
+      spotAsk: spot?.ask,
+      spotID: spot?.instrumentID,
     };
 
     // ✅ Always overwrite — only the latest feed snapshot matters

@@ -16,7 +16,7 @@ import GlobalErrorBoundary from "./ErorBoundary";
 // Disable console methods in production for better security and performance
 if (import.meta.env.VITE_MQTT_HOST !== "192.168.18.243") {
   console.log = () => {};
-  console.error = () => {};
+  // console.error = () => {};
   console.debug = () => {};
   console.warn = () => {};
 }

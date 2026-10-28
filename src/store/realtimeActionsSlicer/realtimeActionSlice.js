@@ -94,7 +94,6 @@ const RealtimeActionsSlice = createSlice({
       state.treasuryFowardsTenorsChanges = payload;
     },
     setClearRates: (state, { payload }) => {
-      console.log(payload, "checker");
       state.ClearRatesData = payload;
       state.CategorySpotClearRates = payload;
       state.CategoryForwardClearRates = payload;
