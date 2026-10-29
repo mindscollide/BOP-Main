@@ -89,7 +89,12 @@ const TXNTreasurySummary = () => {
     setHasBottomReachedTreasuryTXN,
     hasBottomReachedTreasuryTXN,
   } = useBlotterTransaction(); // Access transaction context if needed
-
+  console.log("Treasury TXN Debug:", {
+    hasBottomReachedTreasuryTXN,
+    treasuryTXNSummaryTotalRecords,
+    treasuryTXNSummarysRow,
+    treasuryTXNSummaryLength: treasuryTXNSummary.length,
+  });
   const classes = useStyles();
   const { showMessage } = useNotification();
   const dispatch = useDispatch();
@@ -388,12 +393,12 @@ const TXNTreasurySummary = () => {
               record.status === "Accepted"
                 ? classes.statusAccepted
                 : record.status === "Rejected"
-                ? classes.statusRejected
-                : record.status === "Cancelled"
-                ? classes.statusCancelledVal
-                : record.status === "Expired" || record.status === "Rejected"
-                ? classes.statusExpiredVal
-                : ""
+                  ? classes.statusRejected
+                  : record.status === "Cancelled"
+                    ? classes.statusCancelledVal
+                    : record.status === "Expired" || record.status === "Rejected"
+                      ? classes.statusExpiredVal
+                      : ""
             }>
             {record.status}
           </span>

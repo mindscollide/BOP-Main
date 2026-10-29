@@ -161,10 +161,12 @@ const TransactionProvider = ({ children }) => {
         updated[idx] = transaction;
         return updated;
       }
+
+      setTreasuryOutStandingDealRecords((r) => r + 1);
+      setTreasuryOutStandingDealsRow((r) => r + 1);
+
       return [transaction, ...prev];
     });
-    setTreasuryOutStandingDealRecords((r) => r + 1);
-    setTreasuryOutStandingDealsRow((r) => r + 1);
 
     dispatch(BlotterTransactionAdded(null));
   }, [blotterTransactionAdded]);
@@ -178,14 +180,14 @@ const TransactionProvider = ({ children }) => {
       prev.map((item) =>
         item.pK_TransactionID === transaction.pK_TransactionID
           ? {
-              ...item,
-              bid: transaction.bid,
-              offer: transaction.offer,
-              amount: transaction.amount,
-              statusID: transaction.statusID,
-              rfqTimerDetails:
-                transaction.rfqTimerDetails ?? item.rfqTimerDetails,
-            }
+            ...item,
+            bid: transaction.bid,
+            offer: transaction.offer,
+            amount: transaction.amount,
+            statusID: transaction.statusID,
+            rfqTimerDetails:
+              transaction.rfqTimerDetails ?? item.rfqTimerDetails,
+          }
           : item
       )
     );
@@ -198,11 +200,18 @@ const TransactionProvider = ({ children }) => {
     if (!blotterTransactionRFQExpired?.transaction) return;
     const { pK_TransactionID } = blotterTransactionRFQExpired.transaction;
 
-    setTreasuryOutStandingDeal((prev) =>
-      prev.filter((item) => item.pK_TransactionID !== pK_TransactionID)
-    );
-    setTreasuryOutStandingDealRecords((r) => r - 1);
-    setTreasuryOutStandingDealsRow((r) => r - 1);
+    setTreasuryOutStandingDeal((prev) => {
+      const exists = prev.some(
+        (item) => item.pK_TransactionID === pK_TransactionID
+      );
+      if (!exists) return prev;
+
+      setTreasuryOutStandingDealRecords((r) => Math.max(0, r - 1));
+      setTreasuryOutStandingDealsRow((r) => Math.max(0, r - 1));
+      return prev.filter(
+        (item) => item.pK_TransactionID !== pK_TransactionID
+      );
+    });
 
     dispatch(BlotterTransactionRFQExpired(null));
   }, [blotterTransactionRFQExpired]);
@@ -212,11 +221,18 @@ const TransactionProvider = ({ children }) => {
     if (!blotterTransactionAccepted?.transaction) return;
     const { pK_TransactionID } = blotterTransactionAccepted.transaction;
 
-    setTreasuryOutStandingDeal((prev) =>
-      prev.filter((item) => item.pK_TransactionID !== pK_TransactionID)
-    );
-    setTreasuryOutStandingDealRecords((r) => r - 1);
-    setTreasuryOutStandingDealsRow((r) => r - 1);
+    setTreasuryOutStandingDeal((prev) => {
+      const exists = prev.some(
+        (item) => item.pK_TransactionID === pK_TransactionID
+      );
+      if (!exists) return prev;
+
+      setTreasuryOutStandingDealRecords((r) => Math.max(0, r - 1));
+      setTreasuryOutStandingDealsRow((r) => Math.max(0, r - 1));
+      return prev.filter(
+        (item) => item.pK_TransactionID !== pK_TransactionID
+      );
+    });
 
     dispatch(BlotterTransactionAccepted(null));
   }, [blotterTransactionAccepted]);
@@ -226,11 +242,18 @@ const TransactionProvider = ({ children }) => {
     if (!blotterTranscationCancelled?.transaction) return;
     const { pK_TransactionID } = blotterTranscationCancelled.transaction;
 
-    setTreasuryOutStandingDeal((prev) =>
-      prev.filter((item) => item.pK_TransactionID !== pK_TransactionID)
-    );
-    setTreasuryOutStandingDealRecords((r) => r - 1);
-    setTreasuryOutStandingDealsRow((r) => r - 1);
+    setTreasuryOutStandingDeal((prev) => {
+      const exists = prev.some(
+        (item) => item.pK_TransactionID === pK_TransactionID
+      );
+      if (!exists) return prev;
+
+      setTreasuryOutStandingDealRecords((r) => Math.max(0, r - 1));
+      setTreasuryOutStandingDealsRow((r) => Math.max(0, r - 1));
+      return prev.filter(
+        (item) => item.pK_TransactionID !== pK_TransactionID
+      );
+    });
 
     dispatch(BlotterTranscationCancelled(null));
   }, [blotterTranscationCancelled]);
@@ -240,11 +263,18 @@ const TransactionProvider = ({ children }) => {
     if (!blotterTransactionRejected?.transaction) return;
     const { pK_TransactionID } = blotterTransactionRejected.transaction;
 
-    setTreasuryOutStandingDeal((prev) =>
-      prev.filter((item) => item.pK_TransactionID !== pK_TransactionID)
-    );
-    setTreasuryOutStandingDealRecords((r) => r - 1);
-    setTreasuryOutStandingDealsRow((r) => r - 1);
+    setTreasuryOutStandingDeal((prev) => {
+      const exists = prev.some(
+        (item) => item.pK_TransactionID === pK_TransactionID
+      );
+      if (!exists) return prev;
+
+      setTreasuryOutStandingDealRecords((r) => Math.max(0, r - 1));
+      setTreasuryOutStandingDealsRow((r) => Math.max(0, r - 1));
+      return prev.filter(
+        (item) => item.pK_TransactionID !== pK_TransactionID
+      );
+    });
 
     dispatch(BlotterTransactionRejected(null));
   }, [blotterTransactionRejected]);
@@ -258,15 +288,15 @@ const TransactionProvider = ({ children }) => {
       prev.map((item) =>
         item.pK_TransactionID === transaction.transactionID
           ? {
-              ...item,
-              status:
-                Number(localStorage.getItem("userID")) ===
+            ...item,
+            status:
+              Number(localStorage.getItem("userID")) ===
                 Number(transaction.treasuryPersonID)
-                  ? transaction.statusForAssignedUser
-                  : transaction.statusForOtherTreasury,
-              statusID: transaction.statusID,
-              treasuryPersonID: transaction.treasuryPersonID,
-            }
+                ? transaction.statusForAssignedUser
+                : transaction.statusForOtherTreasury,
+            statusID: transaction.statusID,
+            treasuryPersonID: transaction.treasuryPersonID,
+          }
           : item
       )
     );
@@ -275,22 +305,35 @@ const TransactionProvider = ({ children }) => {
   }, [blotterTransactionAssigned]);
 
   // ─── Outstanding Deals — MQTT: CANCELLATION REQUEST ──────────────────────────
+
   useEffect(() => {
     if (!blotterTransactionCancellationRequest?.transaction) return;
+
     const transaction = blotterTransactionCancellationRequest.transaction;
 
     setTreasuryOutStandingDeal((prev) => {
-      const exists = prev.some(
-        (item) => item.pK_TransactionID === transaction.pK_TransactionID
+      const idx = prev.findIndex(
+        (item) =>
+          item.pK_TransactionID === transaction.pK_TransactionID
       );
-      if (exists) return prev;
+
+      if (idx !== -1) {
+        // Existing record: update only, no increment
+        const updated = [...prev];
+        updated[idx] = transaction;
+        return updated;
+      }
+
+      // New record: increment counters
+      setTreasuryOutStandingDealRecords((r) => r + 1);
+      setTreasuryOutStandingDealsRow((r) => r + 1);
+
       return [transaction, ...prev];
     });
-    setTreasuryOutStandingDealRecords((r) => r + 1);
-    setTreasuryOutStandingDealsRow((r) => r + 1);
 
     dispatch(BlotterTransactionCancellationRequest(null));
   }, [blotterTransactionCancellationRequest]);
+
 
   // ─── TXN Summary — MQTT: RFQ EXPIRED ─────────────────────────────────────────
   useEffect(() => {
@@ -306,10 +349,11 @@ const TransactionProvider = ({ children }) => {
         updated[idx] = transaction;
         return updated;
       }
+      setTreasuryTXNSummarysRow((r) => r + 1);
+      setTreasuryTXNSummaryTotalRecords((r) => r + 1);
       return [transaction, ...prev];
     });
-    setTreasuryTXNSummarysRow((r) => r + 1);
-    setTreasuryTXNSummaryTotalRecords((r) => r + 1);
+
 
     dispatch(setBlotterTransactionRFQExpiredForTreasury(null));
   }, [blotterTransactionRFQExpiredForTreasury]);
@@ -328,35 +372,45 @@ const TransactionProvider = ({ children }) => {
         updated[idx] = transaction;
         return updated;
       }
+      setTreasuryTXNSummarysRow((r) => r + 1);
+      setTreasuryTXNSummaryTotalRecords((r) => r + 1);
       return [transaction, ...prev];
     });
-    setTreasuryTXNSummarysRow((r) => r + 1);
-    setTreasuryTXNSummaryTotalRecords((r) => r + 1);
+
 
     dispatch(BlotterTransactionAcceptedForTreasury(null));
   }, [blotterTransactionAcceptedForTreasury]);
 
   // ─── TXN Summary — MQTT: CANCELLED ───────────────────────────────────────────
+
   useEffect(() => {
     if (!blotterTranscationCancelledForTreasury?.transaction) return;
+
     const transaction = blotterTranscationCancelledForTreasury.transaction;
 
     setTreasuryTXNSummary((prev) => {
       const idx = prev.findIndex(
-        (item) => item.pK_TransactionID === transaction.pK_TransactionID
+        (item) =>
+          item.pK_TransactionID === transaction.pK_TransactionID
       );
+
       if (idx !== -1) {
+        // Existing transaction: update only
         const updated = [...prev];
         updated[idx] = transaction;
         return updated;
       }
+
+      // New transaction: add and increment counts
+      setTreasuryTXNSummarysRow((r) => r + 1);
+      setTreasuryTXNSummaryTotalRecords((r) => r + 1);
+
       return [transaction, ...prev];
     });
-    setTreasuryTXNSummarysRow((r) => r + 1);
-    setTreasuryTXNSummaryTotalRecords((r) => r + 1);
 
     dispatch(BlotterTranscationCancelledForTreasury(null));
   }, [blotterTranscationCancelledForTreasury]);
+
 
   // ─── TXN Summary — MQTT: REJECTED ────────────────────────────────────────────
   useEffect(() => {
@@ -372,10 +426,11 @@ const TransactionProvider = ({ children }) => {
         updated[idx] = transaction;
         return updated;
       }
+      setTreasuryTXNSummarysRow((r) => r + 1);
+      setTreasuryTXNSummaryTotalRecords((r) => r + 1);
       return [transaction, ...prev];
     });
-    setTreasuryTXNSummarysRow((r) => r + 1);
-    setTreasuryTXNSummaryTotalRecords((r) => r + 1);
+
 
     dispatch(BlotterTransactionRejectedForTreasury(null));
   }, [blotterTransactionRejectedForTreasury]);
@@ -386,11 +441,18 @@ const TransactionProvider = ({ children }) => {
     const { pK_TransactionID } =
       blotterTransactionCancellationRequestDataForTreasury.transaction;
 
-    setTreasuryTXNSummary((prev) =>
-      prev.filter((item) => item.pK_TransactionID !== pK_TransactionID)
-    );
-    setTreasuryTXNSummaryTotalRecords((r) => r - 1);
-    setTreasuryTXNSummarysRow((r) => r - 1);
+    setTreasuryTXNSummary((prev) => {
+      const exists = prev.some(
+        (item) => item.pK_TransactionID === pK_TransactionID
+      );
+      if (!exists) return prev;
+
+      setTreasuryTXNSummaryTotalRecords((r) => Math.max(0, r - 1));
+      setTreasuryTXNSummarysRow((r) => Math.max(0, r - 1));
+      return prev.filter(
+        (item) => item.pK_TransactionID !== pK_TransactionID
+      );
+    });
 
     dispatch(BlotterTransactionCancellationRequestForTreasury(null));
   }, [blotterTransactionCancellationRequestDataForTreasury]);
