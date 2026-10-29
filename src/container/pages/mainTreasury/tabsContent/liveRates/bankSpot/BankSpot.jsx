@@ -192,8 +192,7 @@ const applyFeed = useCallback((feed, prevData) => {
       item.secondaryInstrumentID === cross.secondaryInstrumentID &&
       (
         Number(item.worldCrossBid) !== Number(cross.bid) ||
-        Number(item.worldCrossOffer) !== Number(cross.ask) ||
-        item.time !== cross.updateDateTime
+        Number(item.worldCrossOffer) !== Number(cross.ask)
       )
     ) {
       updated = {
