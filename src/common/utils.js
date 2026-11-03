@@ -47,8 +47,8 @@ export const emailValidation = (text) => {
 
 export const bopEmailValidation = (text) => {
   // Email must be a valid address with the domain fixed to bop.com.pk
-  // let bopEmailRegex = /^[a-zA-Z0-9._%+-]+@bop\.com\.pk$/i;
-  const bopEmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  let bopEmailRegex = /^[a-zA-Z0-9._%+-]+@bop\.com\.pk$/i;
+  // const bopEmailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   return bopEmailRegex.test(text);
 };
