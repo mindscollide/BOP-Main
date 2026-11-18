@@ -1,6 +1,23 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { isEqual } from "lodash";
 
+// Feed messages used to be appended to an array that only the table component
+// cleared, so it grew without bound whenever that table wasn't mounted. Consumers
+// apply every rate in order, so the last rate per tenor+instrument is all that
+// matters — keep a single merged payload instead.
+const mergeLatestRates = (existing, payload, ratesKey) => {
+  const latest = new Map();
+  const collect = (rates) =>
+    (rates ?? []).forEach((r) =>
+      latest.set(`${r.tenorID}-${r.instrumentID}`, r),
+    );
+
+  (existing ?? []).forEach((p) => collect(p?.[ratesKey]));
+  collect(payload?.[ratesKey]);
+
+  return [{ ...payload, [ratesKey]: [...latest.values()] }];
+};
+
 const RealtimeActionsSlice = createSlice({
   name: "realtimeActions",
   initialState: {
@@ -118,27 +135,25 @@ const RealtimeActionsSlice = createSlice({
       state.FxTradingCards = payload;
     },
     setTreasuryFeDiscounting: (state, { payload }) => {
-      // state.TreasuryFeDiscounting = payload;
-
-      state.TreasuryFeDiscounting = [
-        ...(state.TreasuryFeDiscounting ?? []),
+      state.TreasuryFeDiscounting = mergeLatestRates(
+        state.TreasuryFeDiscounting,
         payload,
-      ];
+        "feDiscountingRates",
+      );
     },
     setTreasuryNonFeDiscounting: (state, { payload }) => {
-      // state.TreasuryNonFeDiscounting = payload;
-      // ✅ accumulate payloads, don't overwrite
-      state.TreasuryNonFeDiscounting = [
-        ...(state.TreasuryNonFeDiscounting ?? []),
+      state.TreasuryNonFeDiscounting = mergeLatestRates(
+        state.TreasuryNonFeDiscounting,
         payload,
-      ];
+        "nonFeDiscountingRates",
+      );
     },
     setTreasuryForwardRates: (state, { payload }) => {
-      // ✅ accumulate payloads, don't overwrite
-      state.TreasuryForwardRates = [
-        ...(state.TreasuryForwardRates ?? []),
+      state.TreasuryForwardRates = mergeLatestRates(
+        state.TreasuryForwardRates,
         payload,
-      ];
+        "forwardRates",
+      );
     },
     setCategorySpotRates: (state, { payload }) => {
       state.CategorySpotRates = payload;

@@ -158,7 +158,7 @@ const BopLogin = () => {
       }
     } else {
       if (!bopEmailValidation(email) && email !== "") {
-        setUserNameError("Email must be a valid @bop.com.pk address");
+        setUserNameError("Email must be a valid ");
         return;
       }
 
@@ -224,7 +224,7 @@ const BopLogin = () => {
             if (!credentials.email) {
               setUserNameError("Please enter your email");
             } else if (!credentials.hasUserNameIsValid) {
-              setUserNameError("Email must be a valid @bop.com.pk address");
+              setUserNameError("Email must be a valid");
             }
           }
         } else if (fieldName === "password") {
