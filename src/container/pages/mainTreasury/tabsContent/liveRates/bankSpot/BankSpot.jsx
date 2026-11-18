@@ -230,6 +230,8 @@ const applyFeed = useCallback((feed, prevData) => {
         ...updated,
         worldCurBid: spot.bid,
         worldCurOffer: spot.ask,
+        time: cross.updateDateTime,
+
       };
 
       changed = true;
