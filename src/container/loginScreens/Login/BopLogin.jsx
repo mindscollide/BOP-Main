@@ -43,16 +43,13 @@ const BopLogin = () => {
   const [passwordError, setPasswordError] = useState("");
   const [userNameError, setUserNameError] = useState("");
 
+
   // Load remembered credentials on component mount
   useEffect(() => {
     const rememberedEmail = localStorage.getItem("rememberedEmail");
     const encryptedPassword = localStorage.getItem("rememberedPassword");
     localStorage.clear(); // Clear localStorage to avoid conflicts with other data
-    console.log(
-      rememberedEmail,
-      encryptedPassword,
-      "encryptedPasswordencryptedPassword",
-    );
+ 
     if (rememberedEmail || (encryptedPassword && encryptedPassword === null)) {
       setCredentials((prev) => ({
         ...prev,
@@ -158,7 +155,7 @@ const BopLogin = () => {
       }
     } else {
       if (!bopEmailValidation(email) && email !== "") {
-        setUserNameError("Email must be a valid ");
+        setUserNameError("Email must be a valid");
         return;
       }
 

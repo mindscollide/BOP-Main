@@ -28,18 +28,16 @@ export const loginInApi = createAsyncThunk(
           refreshToken,
           isPasswordReset,
         } = response.data.responseResult;
-        console.log(isExecuted, "messageKeymessageKey");
 
         if (isExecuted) {
-          console.log(responseMessage, "responseMessage");
 
           switch (responseMessage.toLowerCase()) {
             case "ERM_AuthService_AuthManager_Login_01".toLowerCase():
             case "ERM_AuthService_AuthManager_Login_02".toLowerCase():
             case "ERM_AuthService_AuthManager_Login_04".toLowerCase():
-              return rejectWithValue("Wrong Password")
+              return rejectWithValue("Invalid login credentails. Please try again")
             case "ERM_AuthService_AuthManager_Login_05".toLowerCase():
-              return rejectWithValue("User is Locked");
+              return rejectWithValue("Account locked. Contact your administrator.");
             case "ERM_AuthService_AuthManager_Login_06".toLowerCase():
               return rejectWithValue("User is Disabled");
             case "ERM_AuthService_AuthManager_Login_07".toLowerCase():
